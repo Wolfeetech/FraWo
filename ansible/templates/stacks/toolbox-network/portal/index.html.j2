@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Homeserver 2027 Portal</title>
+  <style>
+    :root {
+      --ink: #0f172a;
+      --paper: #f4efe4;
+      --line: #d8d1c2;
+      --accent: #0f766e;
+      --glow: rgba(15, 118, 110, 0.18);
+    }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: "Noto Sans", "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, var(--glow), transparent 32%),
+        linear-gradient(180deg, #f7f3ea 0%, #ece5d7 100%);
+      display: grid;
+      place-items: center;
+      padding: 2rem;
+    }
+    main {
+      width: min(980px, 100%);
+      background: rgba(255, 255, 255, 0.88);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      padding: 2.4rem;
+      box-shadow: 0 24px 80px rgba(15, 23, 42, 0.12);
+      backdrop-filter: blur(8px);
+    }
+    h1 {
+      margin: 0 0 0.75rem;
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      line-height: 1;
+      letter-spacing: -0.04em;
+    }
+    p {
+      margin: 0 0 2rem;
+      font-size: 1.05rem;
+      max-width: 50rem;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+    a {
+      display: block;
+      padding: 1.15rem;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      text-decoration: none;
+      color: inherit;
+      background: linear-gradient(180deg, rgba(15, 118, 110, 0.08), rgba(255, 255, 255, 0.95));
+      transition: transform 120ms ease, box-shadow 120ms ease;
+    }
+    a:hover,
+    a:focus {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 32px rgba(15, 118, 110, 0.14);
+      outline: none;
+    }
+    strong {
+      display: block;
+      font-size: 1.1rem;
+      margin-bottom: 0.45rem;
+    }
+    .url {
+      display: block;
+      font-size: 0.86rem;
+      opacity: 0.78;
+      word-break: break-word;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Homeserver 2027</h1>
+    <p>Shared internal frontdoor for the local services used by Wolf and Franz. This page is intentionally lightweight and keeps the Surface Go kiosk path consistent before a dedicated portal application exists.</p>
+    <section class="grid">
+{% for link in toolbox_network_portal_links %}
+      <a href="{{ link.url }}">
+        <strong>{{ link.label }}</strong>
+        <span class="url">{{ link.url }}</span>
+      </a>
+{% endfor %}
+    </section>
+  </main>
+</body>
+</html>

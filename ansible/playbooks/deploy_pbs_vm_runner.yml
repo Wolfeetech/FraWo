@@ -1,0 +1,54 @@
+---
+- name: Prepare PBS VM deployment runner on Proxmox
+  hosts: proxmox
+  remote_user: root
+  vars:
+    ansible_remote_tmp: /tmp/.ansible-root
+
+  pre_tasks:
+    - name: Assert PBS VM metadata is present
+      ansible.builtin.assert:
+        that:
+          - proxmox_pbs_runner_script_path is defined
+          - proxmox_pbs_iso_dir is defined
+          - proxmox_pbs_iso_file is defined
+          - proxmox_pbs_vmid is defined
+          - proxmox_pbs_name is defined
+          - proxmox_pbs_storage is defined
+          - proxmox_pbs_bridge is defined
+          - proxmox_pbs_machine is defined
+          - proxmox_pbs_bios is defined
+          - proxmox_pbs_cpu is defined
+          - proxmox_pbs_cores is defined
+          - proxmox_pbs_memory_mb is defined
+          - proxmox_pbs_system_disk_gb is defined
+          - proxmox_pbs_datastore_mount_path is defined
+          - proxmox_pbs_datastore_min_gib is defined
+          - proxmox_pbs_agent_enabled is defined
+          - proxmox_pbs_onboot is defined
+          - proxmox_pbs_protection is defined
+          - proxmox_pbs_firewall is defined
+          - proxmox_pbs_start_after_create is defined
+
+  tasks:
+    - name: Ensure PBS ISO directory exists
+      ansible.builtin.file:
+        path: "{{ proxmox_pbs_iso_dir }}"
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Install PBS VM deployment runner
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/proxmox/homeserver2027-deploy-pbs-vm.sh.j2"
+        dest: "{{ proxmox_pbs_runner_script_path }}"
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Execute PBS VM deployment runner when explicitly requested
+      ansible.builtin.command: "{{ proxmox_pbs_runner_script_path }}"
+      when:
+        - not ansible_check_mode
+        - proxmox_pbs_execute | default(false) | bool

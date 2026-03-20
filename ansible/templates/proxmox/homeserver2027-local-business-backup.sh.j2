@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+BACKUP_STORAGE="{{ proxmox_local_backup_storage }}"
+BACKUP_DIR="{{ proxmox_local_backup_dir }}"
+KEEP_LAST="{{ proxmox_local_backup_keep_last }}"
+MIN_AVAILABLE_GIB="{{ proxmox_local_backup_min_available_gib }}"
+VMIDS="{{ proxmox_local_backup_vmids | join(' ') }}"
+
+log() {
+  printf '[proxmox-local-backup] %s\n' "$*"
+}
+
+available_gib="$(
+  pvesm status \
+    | awk -v storage="${BACKUP_STORAGE}" '$1 == storage {printf "%.2f", $6 / 1024 / 1024; exit}'
+)"
+
+if [[ -z "${available_gib}" ]]; then
+  echo "Could not determine available space for storage ${BACKUP_STORAGE}" >&2
+  exit 1
+fi
+
+log "Available space on ${BACKUP_STORAGE}: ${available_gib} GiB"
+awk -v avail="${available_gib}" -v min="${MIN_AVAILABLE_GIB}" 'BEGIN { if (avail + 0 < min + 0) exit 1 }' || {
+  echo "Available space on ${BACKUP_STORAGE} below safety threshold ${MIN_AVAILABLE_GIB} GiB" >&2
+  exit 1
+}
+
+for vmid in ${VMIDS}; do
+  log "Running vzdump for VM ${vmid}"
+  vzdump "${vmid}" --mode snapshot --compress zstd --storage "${BACKUP_STORAGE}" --remove 0
+done
+
+for vmid in ${VMIDS}; do
+  log "Pruning local archives for VM ${vmid} down to ${KEEP_LAST}"
+  archives="$(ls -1t "${BACKUP_DIR}"/vzdump-qemu-"${vmid}"-*.vma.zst 2>/dev/null || true)"
+  if [[ -z "${archives}" ]]; then
+    continue
+  fi
+
+  printf '%s\n' "${archives}" \
+    | awk -v keep="${KEEP_LAST}" 'NR > keep {print}' \
+    | while IFS= read -r archive; do
+        [[ -n "${archive}" ]] || continue
+        log "Deleting ${archive}"
+        rm -f "${archive}"
+      done
+done
+
+log "Backup run completed"

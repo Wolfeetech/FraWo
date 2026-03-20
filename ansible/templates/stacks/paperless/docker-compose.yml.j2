@@ -1,0 +1,49 @@
+version: '3'
+services:
+  broker:
+    image: docker.io/library/redis:7
+    restart: always
+
+  db:
+    image: docker.io/library/postgres:15
+    restart: always
+    env_file:
+      - stack.env
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  webserver:
+    image: ghcr.io/paperless-ngx/paperless-ngx:latest
+    restart: always
+    depends_on:
+      - db
+      - broker
+      - gotenberg
+      - tika
+    ports:
+      - "{{ compose_http_port }}:8000"
+    env_file:
+      - stack.env
+    volumes:
+      - data:/usr/src/paperless/data
+      - media:/usr/src/paperless/media
+      - export:/usr/src/paperless/export
+      - consume:/usr/src/paperless/consume
+
+  gotenberg:
+    image: docker.io/gotenberg/gotenberg:7
+    restart: always
+    command:
+      - 'gotenberg'
+      - '--chromium-allow-list=file:///.*'
+
+  tika:
+    image: docker.io/apache/tika:latest
+    restart: always
+
+volumes:
+  data:
+  media:
+  pgdata:
+  export:
+  consume:

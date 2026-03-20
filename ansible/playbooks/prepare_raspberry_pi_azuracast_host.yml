@@ -1,0 +1,154 @@
+---
+- name: Prepare Raspberry Pi radio node for AzuraCast
+  hosts: raspberry_pi_radio
+  become: true
+
+  vars:
+    azuracast_root: /var/azuracast
+    azuracast_swapfile: /swapfile
+    azuracast_swap_size_gb: 2
+    azuracast_media_root: /srv/radio-library
+    azuracast_assets_root: /srv/radio-assets
+    azuracast_docker_script_url: https://raw.githubusercontent.com/AzuraCast/AzuraCast/main/docker.sh
+
+  tasks:
+    - name: Ensure AzuraCast root exists
+      ansible.builtin.file:
+        path: "{{ azuracast_root }}"
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Ensure radio media roots exist
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: wolf
+        group: wolf
+        mode: "0755"
+      loop:
+        - "{{ azuracast_media_root }}"
+        - "{{ azuracast_assets_root }}"
+
+    - name: Check whether swapfile exists
+      ansible.builtin.stat:
+        path: "{{ azuracast_swapfile }}"
+      register: azuracast_swapfile_stat
+
+    - name: Allocate swapfile for low-RAM Pi hosts
+      ansible.builtin.command:
+        cmd: "fallocate -l {{ azuracast_swap_size_gb }}G {{ azuracast_swapfile }}"
+      when: not azuracast_swapfile_stat.stat.exists
+
+    - name: Ensure swapfile permissions are strict
+      ansible.builtin.file:
+        path: "{{ azuracast_swapfile }}"
+        owner: root
+        group: root
+        mode: "0600"
+      when: not azuracast_swapfile_stat.stat.exists
+
+    - name: Format swapfile
+      ansible.builtin.command:
+        cmd: "mkswap {{ azuracast_swapfile }}"
+      when: not azuracast_swapfile_stat.stat.exists
+
+    - name: Enable swapfile immediately
+      ansible.builtin.command:
+        cmd: "swapon {{ azuracast_swapfile }}"
+      when: not azuracast_swapfile_stat.stat.exists
+
+    - name: Persist swapfile in fstab
+      ansible.builtin.lineinfile:
+        path: /etc/fstab
+        line: "{{ azuracast_swapfile }} none swap sw 0 0"
+        state: present
+
+    - name: Ensure Docker config directory exists
+      ansible.builtin.file:
+        path: /etc/docker
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Disable Docker userland proxy for lower overhead
+      ansible.builtin.copy:
+        dest: /etc/docker/daemon.json
+        owner: root
+        group: root
+        mode: "0644"
+        content: |
+          {
+            "userland-proxy": false
+          }
+      notify: restart docker
+
+    - name: Download AzuraCast utility script
+      ansible.builtin.get_url:
+        url: "{{ azuracast_docker_script_url }}"
+        dest: "{{ azuracast_root }}/docker.sh"
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Check whether docker compose is already available
+      ansible.builtin.command:
+        cmd: docker compose version
+      register: azuracast_docker_compose_check
+      changed_when: false
+      failed_when: false
+
+    - name: Install Docker Compose through AzuraCast utility script when missing
+      ansible.builtin.command:
+        cmd: ./docker.sh install-docker-compose
+      args:
+        chdir: "{{ azuracast_root }}"
+      register: azuracast_install_compose
+      failed_when: false
+      when: azuracast_docker_compose_check.rc != 0
+
+    - name: Ensure Docker CLI plugin directory exists
+      ansible.builtin.file:
+        path: /usr/libexec/docker/cli-plugins
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Install Docker Compose CLI plugin from downloaded AzuraCast artifact
+      ansible.builtin.copy:
+        src: "{{ azuracast_root }}/docker-compose"
+        dest: /usr/libexec/docker/cli-plugins/docker-compose
+        remote_src: true
+        owner: root
+        group: root
+        mode: "0755"
+      when:
+        - azuracast_docker_compose_check.rc != 0
+        - azuracast_install_compose is defined
+        - azuracast_install_compose.rc != 0
+
+    - name: Install legacy docker-compose shim for convenience
+      ansible.builtin.file:
+        src: /usr/libexec/docker/cli-plugins/docker-compose
+        dest: /usr/local/bin/docker-compose
+        state: link
+      when:
+        - azuracast_docker_compose_check.rc != 0
+        - azuracast_install_compose is defined
+        - azuracast_install_compose.rc != 0
+
+    - name: Re-check docker compose availability
+      ansible.builtin.command:
+        cmd: docker compose version
+      register: azuracast_docker_compose_final
+      changed_when: false
+      failed_when: azuracast_docker_compose_final.rc != 0
+
+  handlers:
+    - name: restart docker
+      ansible.builtin.systemd:
+        name: docker
+        state: restarted

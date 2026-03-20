@@ -1,0 +1,81 @@
+---
+- name: Prepare Raspberry Pi radio media layout
+  hosts: raspberry_pi_radio
+  become: true
+
+  tasks:
+    - name: Ensure radio library root exists
+      ansible.builtin.file:
+        path: "{{ rpi_radio_library_root }}"
+        state: directory
+        owner: "{{ rpi_radio_admin_user }}"
+        group: "{{ rpi_radio_admin_user }}"
+        mode: "0755"
+
+    - name: Ensure radio assets root exists
+      ansible.builtin.file:
+        path: "{{ rpi_radio_assets_root }}"
+        state: directory
+        owner: "{{ rpi_radio_admin_user }}"
+        group: "{{ rpi_radio_admin_user }}"
+        mode: "0755"
+
+    - name: Ensure radio library subdirectories exist
+      ansible.builtin.file:
+        path: "{{ rpi_radio_library_root }}/{{ item }}"
+        state: directory
+        owner: "{{ rpi_radio_admin_user }}"
+        group: "{{ rpi_radio_admin_user }}"
+        mode: "0755"
+      loop: "{{ rpi_radio_library_dirs }}"
+
+    - name: Ensure radio assets subdirectories exist
+      ansible.builtin.file:
+        path: "{{ rpi_radio_assets_root }}/{{ item }}"
+        state: directory
+        owner: "{{ rpi_radio_admin_user }}"
+        group: "{{ rpi_radio_admin_user }}"
+        mode: "0755"
+      loop: "{{ rpi_radio_assets_dirs }}"
+
+    - name: Install radio library README
+      ansible.builtin.copy:
+        dest: "{{ rpi_radio_library_root }}/README.txt"
+        owner: "{{ rpi_radio_admin_user }}"
+        group: "{{ rpi_radio_admin_user }}"
+        mode: "0644"
+        content: |
+          RadioLibrary on the FRAWO radio node
+
+          This path is the curated song library for AzuraCast.
+
+          Expected subdirectories:
+          - incoming: temporary drop area before curation
+          - music: canonical curated song library
+          - playlists: optional playlist exports or import material
+
+          Operational rule:
+          - do not treat the Pi root disk as the long-term source of truth
+          - later bind the final network-backed music path here
+
+    - name: Install radio assets README
+      ansible.builtin.copy:
+        dest: "{{ rpi_radio_assets_root }}/README.txt"
+        owner: "{{ rpi_radio_admin_user }}"
+        group: "{{ rpi_radio_admin_user }}"
+        mode: "0644"
+        content: |
+          RadioAssets on the FRAWO radio node
+
+          This path stores non-song material for the station.
+
+          Expected subdirectories:
+          - ids: spoken IDs and branding cuts
+          - jingles: short station jingles
+          - shows: prepared shows or long-form segments
+          - staging: temporary work area before curation
+          - sweepers: short transitions and sweepers
+
+          Operational rule:
+          - keep assets curated and lightweight on the Pi
+          - move larger canonical archives to the later media source of truth

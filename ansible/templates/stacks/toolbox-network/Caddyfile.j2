@@ -1,0 +1,37 @@
+{
+  auto_https off
+}
+
+:80 {
+  @health path /healthz
+  respond @health 200
+  respond "Homeserver 2027 toolbox network foundation active.\n" 200
+}
+
+{% for item in toolbox_network_internal_proxy_hosts %}
+http://{{ item.hostname }} {
+  reverse_proxy {{ item.upstream }}
+}
+
+{% endfor %}
+{% for item in toolbox_network_static_file_hosts %}
+http://{{ item.hostname }} {
+  root * {{ item.root }}
+  file_server
+}
+
+{% endfor %}
+{% for item in toolbox_network_placeholder_hosts %}
+http://{{ item.hostname }} {
+  respond "{{ item.message }}" 503
+}
+
+{% endfor %}
+{% for item in toolbox_network_tailscale_mobile_proxies %}
+http://:{{ item.listen_port }} {
+  reverse_proxy {{ item.upstream }} {
+    header_up Host {{ item.host_header }}
+  }
+}
+
+{% endfor %}

@@ -1,0 +1,118 @@
+---
+- name: Prepare toolbox for Tailscale subnet routing
+  hosts: toolbox
+  remote_user: root
+  vars:
+    ansible_remote_tmp: /tmp/.ansible-root
+    toolbox_tailscale_routes_csv: "{{ toolbox_tailscale_advertise_routes | join(',') }}"
+
+  pre_tasks:
+    - name: Assert toolbox Tailscale metadata is present
+      ansible.builtin.assert:
+        that:
+          - toolbox_tailscale_hostname is defined
+          - toolbox_tailscale_repo_key_url is defined
+          - toolbox_tailscale_repo_list_url is defined
+          - toolbox_tailscale_advertise_routes is defined
+
+    - name: Assert /dev/net/tun is present in toolbox
+      ansible.builtin.stat:
+        path: /dev/net/tun
+      register: toolbox_tun_device
+
+    - name: Fail when /dev/net/tun is missing
+      ansible.builtin.assert:
+        that:
+          - toolbox_tun_device.stat.exists
+          - toolbox_tun_device.stat.ischr is defined
+        fail_msg: "/dev/net/tun is missing in toolbox. Run make toolbox-tun-prep first."
+
+  tasks:
+    - name: Install Tailscale apt prerequisites
+      ansible.builtin.apt:
+        name:
+          - ca-certificates
+          - curl
+        state: present
+        update_cache: true
+
+    - name: Ensure apt keyring directory exists
+      ansible.builtin.file:
+        path: /usr/share/keyrings
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Install Tailscale archive keyring
+      ansible.builtin.get_url:
+        url: "{{ toolbox_tailscale_repo_key_url }}"
+        dest: /usr/share/keyrings/tailscale-archive-keyring.gpg
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Install Tailscale apt source list
+      ansible.builtin.get_url:
+        url: "{{ toolbox_tailscale_repo_list_url }}"
+        dest: /etc/apt/sources.list.d/tailscale.list
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Install Tailscale packages
+      ansible.builtin.apt:
+        name: tailscale
+        state: present
+        update_cache: true
+
+    - name: Install subnet-router sysctl settings
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/network/99-tailscale-subnet-router.conf.j2"
+        dest: /etc/sysctl.d/99-tailscale-subnet-router.conf
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Apply IPv4 forwarding immediately
+      ansible.builtin.command: sysctl -w net.ipv4.ip_forward=1
+      changed_when: true
+      when: not ansible_check_mode
+
+    - name: Apply IPv6 forwarding immediately
+      ansible.builtin.command: sysctl -w net.ipv6.conf.all.forwarding=1
+      changed_when: true
+      when: not ansible_check_mode
+
+    - name: Ensure tailscaled is enabled
+      ansible.builtin.systemd:
+        name: tailscaled
+        enabled: true
+        state: started
+      when: not ansible_check_mode
+
+    - name: Join tailnet when auth key is present
+      ansible.builtin.command:
+        argv:
+          - tailscale
+          - up
+          - --reset
+          - "--hostname={{ toolbox_tailscale_hostname }}"
+          - "--advertise-routes={{ toolbox_tailscale_routes_csv }}"
+          - "--accept-dns={{ toolbox_tailscale_accept_dns | ternary('true', 'false') }}"
+          - "--authkey={{ homeserver_vault_tailscale_authkey }}"
+      no_log: true
+      when:
+        - not ansible_check_mode
+        - homeserver_vault_tailscale_authkey is defined
+        - homeserver_vault_tailscale_authkey | length > 0
+
+    - name: Read Tailscale backend state
+      ansible.builtin.command: tailscale status --json
+      register: toolbox_tailscale_status_json
+      changed_when: false
+      failed_when: false
+
+    - name: Show Tailscale backend state
+      ansible.builtin.debug:
+        msg: "{{ toolbox_tailscale_status_json.stdout | default('tailscale status unavailable') }}"

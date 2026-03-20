@@ -1,0 +1,14 @@
+[Unit]
+Description=Homeserver 2027 interim local business backup
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart={{ proxmox_local_backup_script_path }}
+Nice=10
+IOSchedulingClass=best-effort
+IOSchedulingPriority=7
+
+[Install]
+WantedBy=multi-user.target

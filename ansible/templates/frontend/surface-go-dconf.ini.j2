@@ -1,0 +1,14 @@
+[org/gnome/desktop/a11y/applications]
+screen-keyboard-enabled={{ 'true' if surface_go_enable_screen_keyboard else 'false' }}
+
+[org/gnome/desktop/interface]
+toolkit-accessibility={{ 'true' if surface_go_enable_toolkit_accessibility else 'false' }}
+text-scaling-factor={{ surface_go_text_scaling_factor }}
+clock-format='24h'
+
+[org/gnome/desktop/session]
+idle-delay=uint32 {{ surface_go_idle_delay_seconds }}
+
+[org/gnome/settings-daemon/plugins/power]
+sleep-inactive-ac-type='{{ surface_go_sleep_inactive_ac_type }}'
+sleep-inactive-battery-type='{{ surface_go_sleep_inactive_battery_type }}'

@@ -1,0 +1,14 @@
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+*.log
+*.retry
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+.coverage
+dist/
+build/

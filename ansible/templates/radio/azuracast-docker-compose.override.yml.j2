@@ -1,0 +1,4 @@
+services:
+  web:
+    volumes:
+      - '{{ rpi_radio_usb_music_mountpoint }}/{{ rpi_radio_usb_music_subdir }}:/var/azuracast/stations/{{ rpi_radio_station_shortcode }}/media'

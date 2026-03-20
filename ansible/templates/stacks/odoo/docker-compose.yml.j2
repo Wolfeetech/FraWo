@@ -1,0 +1,25 @@
+version: "3"
+services:
+  web:
+    image: odoo:17
+    depends_on:
+      - db
+    restart: unless-stopped
+    ports:
+      - "{{ compose_http_port }}:8069"
+    env_file:
+      - stack.env
+    volumes:
+      - odoo-data:/var/lib/odoo
+
+  db:
+    image: postgres:15
+    restart: unless-stopped
+    env_file:
+      - stack.env
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+volumes:
+  odoo-data:
+  db-data:

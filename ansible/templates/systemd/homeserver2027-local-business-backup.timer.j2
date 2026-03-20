@@ -1,0 +1,10 @@
+[Unit]
+Description=Homeserver 2027 interim local business backup timer
+
+[Timer]
+OnCalendar={{ proxmox_local_backup_on_calendar }}
+Persistent=true
+Unit={{ proxmox_local_backup_service_name }}
+
+[Install]
+WantedBy=timers.target

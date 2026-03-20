@@ -1,0 +1,54 @@
+---
+proxmox_local_backup_service_name: homeserver2027-local-business-backup.service
+proxmox_local_backup_timer_name: homeserver2027-local-business-backup.timer
+proxmox_local_backup_script_path: /usr/local/sbin/homeserver2027-local-business-backup.sh
+proxmox_local_backup_storage: local
+proxmox_local_backup_dir: /var/lib/vz/dump
+proxmox_local_backup_vmids:
+  - 200
+  - 210
+  - 220
+  - 230
+proxmox_local_backup_keep_last: 2
+proxmox_local_backup_min_available_gib: 12
+proxmox_local_backup_on_calendar: "*-*-* 02:40:00"
+proxmox_haos_runner_script_path: /usr/local/sbin/homeserver2027-deploy-haos-vm.sh
+proxmox_haos_image_dir: /var/lib/vz/template/qcow2
+proxmox_haos_vmid: 210
+proxmox_haos_name: haos
+proxmox_haos_storage: local-lvm
+proxmox_haos_bridge: vmbr0
+proxmox_haos_machine: q35
+proxmox_haos_bios: ovmf
+proxmox_haos_cpu: host
+proxmox_haos_cores: 2
+proxmox_haos_memory_mb: 4096
+proxmox_haos_disk_gb: 32
+proxmox_haos_agent_enabled: 1
+proxmox_haos_onboot: 1
+proxmox_haos_protection: 1
+proxmox_haos_firewall: 1
+proxmox_haos_start_after_create: false
+proxmox_pbs_runner_script_path: /usr/local/sbin/homeserver2027-deploy-pbs-vm.sh
+proxmox_pbs_iso_dir: /var/lib/vz/template/iso
+proxmox_pbs_iso_file: proxmox-backup-server-current.iso
+proxmox_pbs_iso_source_file: proxmox-backup-server_4.1-1.iso
+proxmox_pbs_iso_url: https://enterprise.proxmox.com/iso/proxmox-backup-server_4.1-1.iso
+proxmox_pbs_iso_sha256: 670f0a71ee25e00cc7839bebb3f399594f5257e49a224a91ce517460e7ab171e
+proxmox_pbs_vmid: 240
+proxmox_pbs_name: pbs
+proxmox_pbs_storage: local-lvm
+proxmox_pbs_bridge: vmbr0
+proxmox_pbs_machine: q35
+proxmox_pbs_bios: seabios
+proxmox_pbs_cpu: host
+proxmox_pbs_cores: 2
+proxmox_pbs_memory_mb: 4096
+proxmox_pbs_system_disk_gb: 32
+proxmox_pbs_datastore_mount_path: /srv/pbs-datastore
+proxmox_pbs_datastore_min_gib: 128
+proxmox_pbs_agent_enabled: 1
+proxmox_pbs_onboot: 1
+proxmox_pbs_protection: 1
+proxmox_pbs_firewall: 1
+proxmox_pbs_start_after_create: false

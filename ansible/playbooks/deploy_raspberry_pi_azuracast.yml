@@ -1,0 +1,63 @@
+---
+- name: Deploy internal AzuraCast on Raspberry Pi radio node
+  hosts: raspberry_pi_radio
+  become: true
+
+  vars:
+    azuracast_root: /var/azuracast
+
+  tasks:
+    - name: Check whether AzuraCast compose file already exists
+      ansible.builtin.stat:
+        path: "{{ azuracast_root }}/docker-compose.yml"
+      register: azuracast_compose_stat
+
+    - name: Set AzuraCast release channel to Stable explicitly
+      ansible.builtin.shell: |
+        set -eu
+        ./docker.sh setup-release stable
+      args:
+        chdir: "{{ azuracast_root }}"
+        executable: /bin/bash
+      when: not azuracast_compose_stat.stat.exists
+
+    - name: Install AzuraCast using unattended install
+      ansible.builtin.shell: |
+        set -eu
+        yes '' | ./docker.sh install
+      args:
+        chdir: "{{ azuracast_root }}"
+        executable: /bin/bash
+      when: not azuracast_compose_stat.stat.exists
+
+    - name: Ensure Docker services are up after install
+      ansible.builtin.command:
+        cmd: docker ps --format '{{ "{{" }}.Names{{ "}}" }}'
+      register: azuracast_docker_ps
+      changed_when: false
+
+    - name: Wait for AzuraCast containers to appear after first install
+      ansible.builtin.command:
+        cmd: docker ps --format '{{ "{{" }}.Names{{ "}}" }}'
+      register: azuracast_docker_ps_wait
+      changed_when: false
+      retries: 18
+      delay: 10
+      until:
+        - "'azuracast' in azuracast_docker_ps_wait.stdout or 'web' in azuracast_docker_ps_wait.stdout"
+
+    - name: Wait for AzuraCast web port to answer locally
+      ansible.builtin.uri:
+        url: http://127.0.0.1/
+        method: GET
+        status_code: [200, 302]
+      register: azuracast_http_check
+      retries: 18
+      delay: 10
+      until: azuracast_http_check.status in [200, 302]
+
+    - name: Assert AzuraCast containers are present
+      ansible.builtin.assert:
+        that:
+          - "'azuracast' in azuracast_docker_ps_wait.stdout or 'web' in azuracast_docker_ps_wait.stdout"
+        fail_msg: "AzuraCast containers are not visible after deployment."

@@ -1,0 +1,43 @@
+---
+surface_go_target_hostname: surface-go-frontend
+surface_go_admin_user: frawo
+surface_go_kiosk_user: frontend
+surface_go_portal_dir: /opt/homeserver2027/frontend-portal
+surface_go_kiosk_start_url: file:///opt/homeserver2027/frontend-portal/index.html
+surface_go_browser_binary: /usr/bin/firefox
+surface_go_firefox_package: firefox
+surface_go_text_scaling_factor: 1.25
+surface_go_enable_screen_keyboard: true
+surface_go_enable_toolkit_accessibility: true
+surface_go_idle_delay_seconds: 0
+surface_go_sleep_inactive_ac_type: nothing
+surface_go_sleep_inactive_battery_type: suspend
+surface_go_tailscale_repo_key_url: https://pkgs.tailscale.com/stable/ubuntu/noble.noarmor.gpg
+surface_go_tailscale_repo_list_url: https://pkgs.tailscale.com/stable/ubuntu/noble.tailscale-keyring.list
+surface_go_required_packages:
+  - openssh-server
+  - curl
+  - ca-certificates
+  - unattended-upgrades
+  - gdm3
+  - firefox
+  - dconf-cli
+surface_go_absent_packages:
+  - nginx
+  - nginx-common
+  - nginx-core
+  - nginx-full
+  - nginx-light
+surface_go_portal_links:
+  - label: Home Assistant
+    url: http://ha.hs27.internal
+  - label: Nextcloud
+    url: http://cloud.hs27.internal
+  - label: Radio
+    url: http://radio.hs27.internal
+  - label: Radio Control
+    url: http://radio.hs27.internal/login
+  - label: Paperless
+    url: http://paperless.hs27.internal
+  - label: Odoo
+    url: http://odoo.hs27.internal/web/login

@@ -1,0 +1,179 @@
+---
+- name: Bootstrap Surface Go frontend node
+  hosts: surface_go_frontend
+  become: true
+
+  tasks:
+    - name: Refresh apt cache
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Install required frontend packages
+      ansible.builtin.apt:
+        name: "{{ surface_go_required_packages }}"
+        state: present
+
+    - name: Remove local webserver leftovers
+      ansible.builtin.apt:
+        name: "{{ surface_go_absent_packages }}"
+        state: absent
+        purge: true
+        autoremove: true
+
+    - name: Ensure Tailscale keyring directory exists
+      ansible.builtin.file:
+        path: /usr/share/keyrings
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Install Tailscale apt key
+      ansible.builtin.get_url:
+        url: "{{ surface_go_tailscale_repo_key_url }}"
+        dest: /usr/share/keyrings/tailscale-archive-keyring.gpg
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Install Tailscale apt source
+      ansible.builtin.get_url:
+        url: "{{ surface_go_tailscale_repo_list_url }}"
+        dest: /etc/apt/sources.list.d/tailscale.list
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Refresh apt cache after adding Tailscale repository
+      ansible.builtin.apt:
+        update_cache: true
+
+    - name: Install Tailscale
+      ansible.builtin.apt:
+        name: tailscale
+        state: present
+
+    - name: Ensure frontend hostname is set
+      ansible.builtin.hostname:
+        name: "{{ surface_go_target_hostname }}"
+
+    - name: Ensure kiosk user exists
+      ansible.builtin.user:
+        name: "{{ surface_go_kiosk_user }}"
+        create_home: true
+        shell: /bin/bash
+
+    - name: Ensure kiosk user is not in sudo group
+      ansible.builtin.command:
+        cmd: "gpasswd -d {{ surface_go_kiosk_user }} sudo"
+      register: surface_go_sudo_remove
+      changed_when: surface_go_sudo_remove.rc == 0
+      failed_when: surface_go_sudo_remove.rc not in [0, 3]
+
+    - name: Ensure portal directory exists
+      ansible.builtin.file:
+        path: "{{ surface_go_portal_dir }}"
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Install local frontend portal
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/frontend/surface-go-portal/index.html.j2"
+        dest: "{{ surface_go_portal_dir }}/index.html"
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Ensure kiosk autostart directory exists
+      ansible.builtin.file:
+        path: "/home/{{ surface_go_kiosk_user }}/.config/autostart"
+        state: directory
+        owner: "{{ surface_go_kiosk_user }}"
+        group: "{{ surface_go_kiosk_user }}"
+        mode: "0755"
+
+    - name: Ensure dconf local defaults directory exists
+      ansible.builtin.file:
+        path: /etc/dconf/db/local.d
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Install touch-friendly GNOME defaults
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/frontend/surface-go-dconf.ini.j2"
+        dest: /etc/dconf/db/local.d/00-homeserver2027-frontend
+        owner: root
+        group: root
+        mode: "0644"
+      notify: update dconf
+
+    - name: Install kiosk desktop autostart entry
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/frontend/homeserver2027-kiosk.desktop.j2"
+        dest: "/home/{{ surface_go_kiosk_user }}/.config/autostart/homeserver2027-kiosk.desktop"
+        owner: "{{ surface_go_kiosk_user }}"
+        group: "{{ surface_go_kiosk_user }}"
+        mode: "0644"
+
+    - name: Ensure GDM autologin settings are present
+      ansible.builtin.blockinfile:
+        path: /etc/gdm3/custom.conf
+        marker: "# {mark} HOMESERVER2027 FRONTEND"
+        insertafter: '^\[daemon\]$'
+        block: |
+          AutomaticLoginEnable=true
+          AutomaticLogin={{ surface_go_kiosk_user }}
+
+    - name: Ensure sshd drop-in directory exists
+      ansible.builtin.file:
+        path: /etc/ssh/sshd_config.d
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Install SSH baseline drop-in
+      ansible.builtin.copy:
+        dest: /etc/ssh/sshd_config.d/90-homeserver2027-frontend.conf
+        owner: root
+        group: root
+        mode: "0644"
+        content: |
+          PermitRootLogin no
+          PasswordAuthentication yes
+          KbdInteractiveAuthentication yes
+          X11Forwarding no
+      notify: restart ssh
+
+    - name: Ensure openssh-server is enabled
+      ansible.builtin.systemd:
+        name: ssh
+        enabled: true
+        state: started
+
+    - name: Ensure tailscaled is enabled
+      ansible.builtin.systemd:
+        name: tailscaled
+        enabled: true
+        state: started
+
+    - name: Ensure unattended-upgrades is enabled
+      ansible.builtin.systemd:
+        name: unattended-upgrades
+        enabled: true
+        state: started
+
+  handlers:
+    - name: restart ssh
+      ansible.builtin.systemd:
+        name: ssh
+        state: restarted
+
+    - name: update dconf
+      ansible.builtin.command:
+        cmd: dconf update

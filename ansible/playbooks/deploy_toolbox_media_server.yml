@@ -1,0 +1,126 @@
+---
+- name: Deploy toolbox media server
+  hosts: toolbox
+  remote_user: root
+  vars:
+    ansible_remote_tmp: /tmp/.ansible-root
+
+  pre_tasks:
+    - name: Assert toolbox media metadata is present
+      ansible.builtin.assert:
+        that:
+          - toolbox_media_stack_name is defined
+          - toolbox_media_service_name is defined
+          - toolbox_media_compose_template is defined
+          - toolbox_media_stack_dir is defined
+          - toolbox_media_library_root is defined
+          - toolbox_media_config_root is defined
+          - toolbox_media_library_dirs is defined
+
+  tasks:
+    - name: Install toolbox media packages
+      ansible.builtin.apt:
+        name:
+          - docker.io
+          - docker-compose
+        state: present
+        update_cache: true
+
+    - name: Ensure docker service is enabled
+      ansible.builtin.systemd:
+        name: docker
+        enabled: true
+        state: started
+      when: not ansible_check_mode
+
+    - name: Ensure media stack and storage directories exist
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+      loop:
+        - "{{ homeserver_compose_root }}"
+        - "{{ toolbox_media_stack_dir }}"
+        - "{{ toolbox_media_config_root }}"
+        - "{{ toolbox_media_config_root }}/config"
+        - "{{ toolbox_media_config_root }}/cache"
+        - "{{ toolbox_media_library_root }}"
+
+    - name: Ensure media library subdirectories exist
+      ansible.builtin.file:
+        path: "{{ toolbox_media_library_root }}/{{ item }}"
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+      loop: "{{ toolbox_media_library_dirs }}"
+
+    - name: Install media library role marker
+      ansible.builtin.copy:
+        dest: "{{ toolbox_media_library_root }}/README_FRAWO_MEDIA_LIBRARY.txt"
+        owner: root
+        group: root
+        mode: "0644"
+        content: |
+          FRAWO Media Library
+
+          Rolle:
+          - interner Medienserver-Bestand fuer Jellyfin
+          - spaeterer Zielpfad fuer TV-/Google-TV-/Thomson-Wiedergabe
+          - getrennt von der AzuraCast-Logik auf dem Raspberry Pi
+
+          Verzeichnisstruktur:
+          - movies
+          - shows
+          - music
+          - homevideos
+
+          Hinweise:
+          - AzuraCast auf dem Pi bleibt fuer Radio und AutoDJ zustaendig.
+          - Jellyfin nutzt dieselbe Dateibasis spaeter nur lesend fuer Medienwiedergabe.
+          - Vorlaeufig kann die Library leer bleiben; der Infrastrukturpfad ist trotzdem produktiv vorbereitet.
+
+    - name: Install toolbox media compose file
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/{{ toolbox_media_compose_template }}"
+        dest: "{{ toolbox_media_stack_dir }}/docker-compose.yml"
+        owner: root
+        group: root
+        mode: "0644"
+      notify: restart toolbox media stack
+
+    - name: Install systemd service for toolbox media stack
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/systemd/homeserver-compose-stack.service.j2"
+        dest: "/etc/systemd/system/{{ toolbox_media_service_name }}"
+        owner: root
+        group: root
+        mode: "0644"
+      vars:
+        compose_stack_name: "{{ toolbox_media_stack_name }}"
+        compose_service_name: "{{ toolbox_media_service_name }}"
+      notify:
+        - reload systemd
+        - restart toolbox media stack
+
+    - name: Ensure toolbox media stack service is enabled
+      ansible.builtin.systemd:
+        name: "{{ toolbox_media_service_name }}"
+        enabled: true
+        state: started
+        daemon_reload: true
+      when: not ansible_check_mode
+
+  handlers:
+    - name: reload systemd
+      ansible.builtin.systemd:
+        daemon_reload: true
+      when: not ansible_check_mode
+
+    - name: restart toolbox media stack
+      ansible.builtin.systemd:
+        name: "{{ toolbox_media_service_name }}"
+        state: restarted
+      when: not ansible_check_mode

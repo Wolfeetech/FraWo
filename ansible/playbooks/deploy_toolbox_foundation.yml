@@ -1,0 +1,134 @@
+---
+- name: Deploy toolbox network foundation
+  hosts: toolbox
+  remote_user: root
+  vars:
+    ansible_remote_tmp: /tmp/.ansible-root
+    toolbox_network_stack_dir: "{{ homeserver_compose_root }}/{{ toolbox_network_stack_name }}"
+
+  pre_tasks:
+    - name: Assert toolbox metadata and secrets are present
+      ansible.builtin.assert:
+        that:
+          - toolbox_network_stack_name is defined
+          - toolbox_network_service_name is defined
+          - toolbox_network_compose_template is defined
+          - toolbox_network_caddy_template is defined
+          - toolbox_network_adguard_template is defined
+          - toolbox_network_internal_proxy_hosts is defined
+          - toolbox_network_static_file_hosts is defined
+          - toolbox_network_placeholder_hosts is defined
+          - toolbox_network_adguard_rewrites is defined
+          - toolbox_network_portal_links is defined
+          - homeserver_vault_adguard_admin_password is defined
+          - homeserver_vault_adguard_admin_password_hash is defined
+
+  tasks:
+    - name: Install toolbox foundation packages
+      ansible.builtin.apt:
+        name:
+          - docker.io
+          - docker-compose
+          - ca-certificates
+          - curl
+        state: present
+        update_cache: true
+
+    - name: Ensure docker service is enabled
+      ansible.builtin.systemd:
+        name: docker
+        enabled: true
+        state: started
+      when: not ansible_check_mode
+
+    - name: Ensure compose root exists
+      ansible.builtin.file:
+        path: "{{ homeserver_compose_root }}"
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Ensure toolbox stack directories exist
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+      loop:
+        - "{{ toolbox_network_stack_dir }}"
+        - "{{ toolbox_network_stack_dir }}/adguard"
+        - "{{ toolbox_network_stack_dir }}/adguard/work"
+        - "{{ toolbox_network_stack_dir }}/adguard/conf"
+        - "{{ toolbox_network_stack_dir }}/portal"
+
+    - name: Install toolbox network compose file
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/{{ toolbox_network_compose_template }}"
+        dest: "{{ toolbox_network_stack_dir }}/docker-compose.yml"
+        owner: root
+        group: root
+        mode: "0644"
+      notify: restart toolbox network stack
+
+    - name: Install toolbox caddy config
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/{{ toolbox_network_caddy_template }}"
+        dest: "{{ toolbox_network_stack_dir }}/Caddyfile"
+        owner: root
+        group: root
+        mode: "0644"
+      notify: restart toolbox network stack
+
+    - name: Install toolbox AdGuard config
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/{{ toolbox_network_adguard_template }}"
+        dest: "{{ toolbox_network_stack_dir }}/adguard/conf/AdGuardHome.yaml"
+        owner: root
+        group: root
+        mode: "0600"
+      notify: restart toolbox network stack
+
+    - name: Install toolbox portal page
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/stacks/toolbox-network/portal/index.html.j2"
+        dest: "{{ toolbox_network_stack_dir }}/portal/index.html"
+        owner: root
+        group: root
+        mode: "0644"
+      notify: restart toolbox network stack
+
+    - name: Install systemd service for toolbox stack
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/systemd/homeserver-compose-stack.service.j2"
+        dest: "/etc/systemd/system/{{ toolbox_network_service_name }}"
+        owner: root
+        group: root
+        mode: "0644"
+      vars:
+        compose_stack_name: "{{ toolbox_network_stack_name }}"
+        compose_service_name: "{{ toolbox_network_service_name }}"
+      notify:
+        - reload systemd
+        - restart toolbox network stack
+
+    - name: Ensure toolbox network stack service is enabled
+      ansible.builtin.systemd:
+        name: "{{ toolbox_network_service_name }}"
+        enabled: true
+        state: started
+        daemon_reload: true
+      when: not ansible_check_mode
+
+  handlers:
+    - name: reload systemd
+      ansible.builtin.systemd:
+        daemon_reload: true
+      when: not ansible_check_mode
+
+    - name: restart toolbox network stack
+      ansible.builtin.systemd:
+        name: "{{ toolbox_network_service_name }}"
+        state: restarted
+      when: not ansible_check_mode

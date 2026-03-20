@@ -1,0 +1,118 @@
+---
+- name: Integrate Raspberry Pi USB music source into AzuraCast
+  hosts: raspberry_pi_radio
+  become: true
+
+  vars:
+    rpi_radio_station_media_path: "/var/azuracast/stations/{{ rpi_radio_station_shortcode }}/media"
+    rpi_radio_usb_source_path: "{{ rpi_radio_usb_music_mountpoint }}/{{ rpi_radio_usb_music_subdir }}"
+    rpi_radio_default_playlist_id: 1
+
+  tasks:
+    - name: Ensure USB music mountpoint exists
+      ansible.builtin.file:
+        path: "{{ rpi_radio_usb_music_mountpoint }}"
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Mount USB music source for AzuraCast-managed media access
+      ansible.posix.mount:
+        path: "{{ rpi_radio_usb_music_mountpoint }}"
+        src: "UUID={{ rpi_radio_usb_music_uuid }}"
+        fstype: "{{ rpi_radio_usb_music_fstype }}"
+        opts: "{{ rpi_radio_usb_music_mount_opts }}"
+        state: mounted
+      register: rpi_radio_usb_mount
+
+    - name: Assert expected USB music subdirectory exists
+      ansible.builtin.stat:
+        path: "{{ rpi_radio_usb_source_path }}"
+      register: rpi_radio_usb_source_stat
+
+    - name: Fail if expected USB music subdirectory is missing
+      ansible.builtin.assert:
+        that:
+          - rpi_radio_usb_source_stat.stat.exists
+          - rpi_radio_usb_source_stat.stat.isdir
+        fail_msg: "Expected USB music path {{ rpi_radio_usb_source_path }} is missing."
+
+    - name: Install AzuraCast override for USB media bind
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/radio/azuracast-docker-compose.override.yml.j2"
+        dest: /var/azuracast/docker-compose.override.yml
+        owner: root
+        group: root
+        mode: "0644"
+      register: rpi_radio_override
+
+    - name: Recreate AzuraCast with USB media override
+      ansible.builtin.command:
+        cmd: docker compose up -d
+      args:
+        chdir: /var/azuracast
+      when: rpi_radio_usb_mount.changed or rpi_radio_override.changed
+
+    - name: Wait for AzuraCast web UI after USB media integration
+      ansible.builtin.uri:
+        url: http://127.0.0.1/
+        method: GET
+        status_code: [200, 302]
+      register: rpi_radio_azuracast_http
+      retries: 30
+      delay: 5
+      until: rpi_radio_azuracast_http.status in [200, 302]
+
+    - name: Count files visible inside station media path
+      ansible.builtin.command:
+        cmd: "docker exec azuracast sh -lc 'find {{ rpi_radio_station_media_path | quote }} -type f | wc -l'"
+      register: rpi_radio_media_file_count
+      changed_when: false
+
+    - name: Assert music files are visible inside AzuraCast container
+      ansible.builtin.assert:
+        that:
+          - (rpi_radio_media_file_count.stdout | trim | int) > 0
+        fail_msg: "No music files are visible inside {{ rpi_radio_station_media_path }} after USB integration."
+
+    - name: Trigger AzuraCast sync after USB media integration
+      ansible.builtin.command:
+        cmd: docker exec azuracast azuracast_cli azuracast:sync:run
+      changed_when: true
+
+    - name: Count station media records after USB media sync
+      ansible.builtin.command:
+        cmd: >-
+          docker exec azuracast azuracast_cli dbal:run-sql --force-fetch
+          "SELECT COUNT(*) AS media_count FROM station_media;"
+      register: rpi_radio_station_media_count
+      changed_when: false
+
+    - name: Associate imported media with default station playlist
+      ansible.builtin.command:
+        cmd: >-
+          docker exec azuracast azuracast_cli dbal:run-sql
+          "INSERT INTO station_playlist_media (playlist_id, media_id, weight, last_played, is_queued, folder_id)
+          SELECT {{ rpi_radio_default_playlist_id }}, sm.id, sm.id, 0, 0, NULL
+          FROM station_media sm
+          LEFT JOIN station_playlist_media spm
+            ON spm.playlist_id = {{ rpi_radio_default_playlist_id }} AND spm.media_id = sm.id
+          WHERE spm.id IS NULL;"
+      changed_when: true
+
+    - name: Restart AzuraCast radio services after playlist association
+      ansible.builtin.command:
+        cmd: docker exec azuracast azuracast_cli azuracast:radio:restart 1
+      changed_when: true
+
+    - name: Wait for station nowplaying endpoint after radio restart
+      ansible.builtin.command:
+        cmd: >-
+          docker exec azuracast sh -lc
+          "curl -s http://127.0.0.1/api/nowplaying | jq -r '.[0].station.shortcode'"
+      register: rpi_radio_nowplaying_check
+      changed_when: false
+      retries: 20
+      delay: 5
+      until: (rpi_radio_nowplaying_check.stdout | trim) == rpi_radio_station_shortcode
