@@ -276,7 +276,11 @@
   - `frontend` als kiosk-User ohne sudo vorhanden
   - lokales Portal und GDM-Autologin gesetzt
   - `nginx` entfernt, `HTTP/80` und `HTTPS/443` geschlossen
-  - Tailscale ist installiert, aber noch nicht im Tailnet authorisiert
+  - Tailscale ist jetzt im Tailnet und aktuell ueber `100.106.67.127` verifiziert
+  - GNOME-Idle ist `0`, Schlafmodus auf Netzstrom und Akku ist auf `nothing` gesetzt
+  - Root-Sleep-Haertung ist jetzt fertig: `sleep.target`, `suspend.target`, `hibernate.target` und `hybrid-sleep.target` sind maskiert
+  - Reboot-Test ueber den Tailnet-Pfad ist erfolgreich
+  - letzter offener Rest ist nur noch die visuelle Reboot-/Kiosk-Abnahme vor Ort
 - Verbindlicher Zielpfad:
   - Clean Rebuild statt In-Place-Entschlackung
   - `Ubuntu Desktop 24.04 LTS`
@@ -294,6 +298,7 @@
 - Caddy in `CT 100` bietet internes L7-Routing.
 - AdGuard Home laeuft als interner DNS-/Filter-Dienst in `CT 100` im Opt-in-Testbetrieb.
 - `portal.hs27.internal` ist die gemeinsame interne Frontdoor fuer den spaeteren Surface-Go-Kioskpfad.
+- Der technische Surface-Kern ist jetzt gruen: SSH, Tailscale, Root-Sleep-Hardening und lokaler Portalservice stehen; offen ist vor allem lokaler UX-Feinschliff fuer Browser-/Touch-Tastatur-Verhalten.
 - Einfuehrungsmodell fuer AdGuard Home:
   - Phase 1: Opt-in-Testbetrieb fuer Trusted Clients, Admin-Endgeraete und `hs27.internal` ist live
   - Phase 2: primaerer LAN-DNS erst nach kontrollierter DHCP-Fuehrung und dokumentiertem Rollback
@@ -331,10 +336,29 @@
   - `make pbs-preflight`
   - `make pbs-stage-gate`
   - `make pbs-vm-check`
-- Aktueller Stage-Gate-Blocker fuer PBS:
-  - kein separates Backup-Storage unter `/srv/pbs-datastore` gemountet
-  - die PBS-Installer-ISO liegt jetzt bereit unter `/var/lib/vz/template/iso/proxmox-backup-server-current.iso`
+- Aktueller verifizierter PBS-v1-Stand:
+  - die PBS-Installer-ISO liegt bereit unter `/var/lib/vz/template/iso/proxmox-backup-server-current.iso`
   - SHA256 der aktuell gestagten ISO: `670f0a71ee25e00cc7839bebb3f399594f5257e49a224a91ce517460e7ab171e`
+  - `VM 240 pbs` ist installiert und per SSH/Web auf `192.168.2.25` erreichbar
+  - Datastore `hs27-interim` liegt im Gast auf `/mnt/datastore-interim`
+  - Proxmox-Storage `pbs-interim` ist aktiv
+  - taeglicher PBS-Job `hs27-pbs-interim-daily` fuer `200,210,220,230` ist angelegt
+  - Interim-Retention ist platzbewusst gesetzt:
+    - Schedule `02:40,14:40`
+    - `keep-daily=2`
+    - `keep-weekly=1`
+    - `keep-monthly=1`
+  - erster gruener Proof-Backup-Lauf ist jetzt nachgewiesen:
+    - `VM 220`
+    - Snapshot `vm/220/2026-03-21T10:04:30Z`
+    - Proxmox-Taskstatus `exitstatus: OK`
+  - erster gruener Restore-Drill auf dem PBS-v1-Pfad ist jetzt ebenfalls nachgewiesen:
+    - Restore von `VM 220` nach Test-VM `920`
+    - Test-IP `192.168.2.240`
+    - Odoo-Login unter `/web/login` mit `HTTP 200`
+    - Test-VM `920` danach wieder entfernt
+  - zweiter automatisierter Restore-Drill auf dem PBS-v1-Pfad hat die Stabilität erfolgreich bestätigt
+  - offener Restblock sind jetzt wiederkehrende Restore-/Betriebsnachweise, nicht mehr die Erstinbetriebnahme
 - Proxmox-Snapshot-Guardrails wurden gehaertet:
   - temporaere Codex-Snapshots auf den Business-VMs werden nach erfolgreicher Verifikation wieder entfernt
   - `local-lvm` ist vergroessert und hat aktive Thin-Pool-Autoextend-Regeln
@@ -393,8 +417,9 @@
 
 1. `NETWORK_INVENTORY.md` mit Easy-Box-Leases und DHCP-Reservierungen final abgleichen
    - bereits teilaufgeloest: `Wolf_Pixel`, `SonRoku`, Growbox-Shellys
-   - `Surface_Laptop` ist jetzt als `yourparty-Surface-Go.local` auf `192.168.2.154` identifiziert
-   - offen bleiben vor allem `fireTV`, `Franz_iphone`, `udhcpc1.21.1`, `udhcp 1.24.1` sowie die privaten MAC-Clients `.141-.144`
+   - Router-Label-Mapping ist inzwischen weitgehend sauber; `fireTV`, `Franz_iphone`, `udhcpc1.21.1` und `udhcp 1.24.1` sind bereits auf aktive IPs gemappt
+   - offen bleiben vor allem die privaten MAC-Clients `.141-.144` sowie kleinere Alias-/Raumzuordnungen aus dem Router-Ueberblick
+   - neuer Fingerprint-Stand fuer `.141-.144`: alle vier antworten auf Ping, aber halten `53/80/443/5353/8008/8069/8080` geschlossen und liefern kein HTTP; aktuell also eher stille Privat-Clients als Admin-/IoT-Endpunkte
    - `ROUTER_LEASE_RECONCILIATION_RUNBOOK.md` ist jetzt der kanonische Browser-Pfad fuer diesen Abgleich
 2. `CT 100` als Netzwerk-Basis fuer die naechste Phase vorbereiten
    - Tailnet-Join fuer `toolbox` ist abgeschlossen
@@ -406,9 +431,15 @@
    - Split-DNS fuer `hs27.internal` ist auf dem ZenBook verifiziert; naechster Ausfuehrungsschritt ist der echte Handy-Off-LAN-Test und danach der DNS-Pilot
 3. Den verifizierten lokalen Backup-/Restore-Proof fuer `VM 200`, `VM 220` und `VM 230` in PBS-Zielarchitektur, Retention und taegliche Jobs ueberfuehren
    - lokaler Proof und taeglicher Zwischenstandard auf Proxmox sind erfolgreich dokumentiert
-   - Runner und Stage-Gate-Pfad fuer `VM 240` sind vorbereitet
-   - die offizielle PBS-ISO ist bereits staged und verifiziert
-   - naechster Schritt ist separates Backup-Storage statt weiterer Planungsarbeit
+   - Runner und Stage-Gate-Pfad fuer `VM 240` sind nicht nur vorbereitet, sondern live umgesetzt
+   - `VM 240 pbs` laeuft jetzt mit `3072 MB` RAM, `32G` Systemdisk auf `local-lvm` und `40G` USB-Data-Disk auf `pbs-usb`
+   - Datastore `hs27-interim` ist im Gast aktiv und Proxmox-Storage `pbs-interim` ist angebunden
+   - taeglicher PBS-Job `hs27-pbs-interim-daily` ist angelegt
+   - platzbewusste Interim-Retention ist aktiv: `02:40,14:40` mit `keep-daily=2`, `keep-weekly=1`, `keep-monthly=1`
+   - erster gruener Proof-Backup-Lauf ist jetzt erbracht: `VM 220` erfolgreich nach `pbs-interim`
+   - erster gruener Restore-Drill ist jetzt ebenfalls erbracht: `VM 220` -> Test-VM `920` -> `HTTP 200` auf Odoo-Login
+   - zweiter automatisierter Restore-Drill (`VM 220` -> `920`) war ebenfalls erfolgreich und beweist die Reproduzierbarkeit
+   - der aktuelle Restblock ist jetzt primär größeres PBS-Storage für den späteren Dauerbetrieb
 4. Die spaetere Public-Exposure-Architektur planen, aber noch nicht live schalten
    - `PUBLIC_EDGE_ARCHITECTURE_PLAN.md` ist jetzt der kanonische Zielpfad
    - Domain-/DNS-Modell
@@ -419,8 +450,10 @@
    - `ha.hs27.internal` liefert bereits ueber `CT 100`
    - lokaler Backup-Bestand deckt `VM 210` jetzt mit ab
    - USB-Passthrough bleibt bis zum Anstecken echter Adapter nur Planungsstand
+   - der neue Audit-Guardrail ist aktiv: der sichtbare externe USB-Pfad ist derzeit nur der PBS-Backup-Stick und zaehlt ausdruecklich nicht als HAOS-Dongle
 6. Hardware-Audit fuer Zigbee- und Bluetooth-Dongles:
-   - erster Auditlauf abgeschlossen: aktuell keine externen Adapter sichtbar
+   - aktueller Auditlauf ist jetzt praeziser: Root-Hubs plus ein USB-Massenspeicher (`USB Disk 3.0`) sind sichtbar, aber keine seriellen Funkadapter
+   - `make haos-usb-audit` ist jetzt der kanonische Schnellcheck
    - bei neuer Hardware erneut `lsusb` und `/dev/serial/by-id` erfassen
    - dann Vendor-ID, Product-ID und Zielgeraet pro Adapter dokumentieren
    - Verhalten nach Host- und VM-Reboot pruefen
@@ -441,9 +474,15 @@
    - vor spaeteren zusaetzlichen Frontdoor-/Public-Edge-Diensten den Rootfs- und RAM-Bedarf von `CT 100` neu bewerten
 14. Shared Frontend Node `Surface Go` in den finalen Managed-Frontend-Standard ueberfuehren
    - Clean Rebuild und Basis-Bootstrap sind abgeschlossen
-   - SSH-Key-Zugang, Kiosk-User `frontend`, lokales Portal und GDM-Autologin sind live
-   - naechster technischer Schritt ist der Tailnet-Join fuer das Surface und danach die Postinstall-Abnahme per Reboot
+   - SSH-Key-Zugang, Tailnet-Admin-Pfad, Kiosk-User `frontend`, lokales Portal und GDM-Autologin sind live
+   - Root-Sleep-Haertung ist abgeschlossen; die Sleep-Targets sind maskiert
+   - das Surface-Frontend nutzt jetzt einen robusteren lokalen Pfad:
+     - lokaler Portalservice auf `127.0.0.1:17827`
+     - sichtbarer Launcher `FRAWO Control`
+     - `epiphany-browser` ueber lokalen Wrapper als aktuelle Browser-Instanz
    - das Surface-Portal soll jetzt `Radio` und `Radio Control` nativ fuer AzuraCast anbieten
+   - die lokale Surface-Portal-Vorlage ist jetzt auch fuer den gemeinsamen Live-Status-Snapshot aus `portal.hs27.internal/status.json` vorbereitet
+   - der technische Kern ist gruen; offener Restblock ist jetzt lokaler Browser-/Touch-Tastatur-Polish
 15. Installationsmedien und Remote-Zugriff fuer die naechste Hardwarewelle vorbereiten
    - `MEDIA_AND_REMOTE_PREP.md` ist die kanonische Anleitung
    - Raspberry Pi 4 Zielimage: `Ubuntu Server 22.04.5 LTS ARM64`
@@ -468,7 +507,55 @@
    - `MEDIA_SERVER_CLIENT_SETUP.md` beschreibt die ersten TV-/Browser-Pfade fuer Thomson und Google TV
    - Jellyfin ist jetzt intern live auf `http://media.hs27.internal`, direkt auf `http://192.168.2.20:8096` und mobil ueber `http://100.99.206.128:8449`
    - `make toolbox-media-check` ist jetzt der schnelle Betriebscheck
-   - naechster Schritt ist die UI-basierte Erstkonfiguration mit Admin-Account und Bibliotheksanbindung
+   - ein wiederholbarer Bootstrap-Sync vom Pi ist jetzt live:
+     - Quelle `wolf@100.64.23.77:/srv/radio-library/music-usb/yourparty.radio/`
+     - Ziel `/srv/media-library/music/bootstrap-radio-usb/`
+     - Check `make toolbox-media-sync-check`
+     - Musikreport `make toolbox-music-library-report`
+   - `CT 100 toolbox` wurde fuer diesen Pfad operativ vergroessert:
+     - Rootfs effektiv `96G`
+     - im Gast aktuell rund `82G` frei
+     - Ausloeser war `No space left on device` beim ersten 67G-Bootstrap-Import
+   - Jellyfin-Erstkonfiguration ist inzwischen fuer den Musikpfad abgeschlossen:
+     - `StartupWizardCompleted=true`
+     - mindestens ein lokaler Benutzer ist vorhanden
+     - `Music` ist an `/media/music` angebunden
+   - neuer Qualitaets-Check fuer den Bootstrap-Bestand:
+     - `make toolbox-music-scan-issues`
+     - letzter Befund: `84` `ffprobe`-Fehler, `2` verdaechtige Dateien, wenige harmlose Cover-/Bilddateien
+     - auffaellige Beispiele:
+       - `124 kbpsChris Stussy - Desire (Jentzen Dub).mp4`
+       - `.07 Christian Harder vs Si Begg - Popland (Unreleased Si Begg Dub).flac.RlfOrq`
+   - neuer Kurations-Helfer:
+     - `make toolbox-music-curation-candidates`
+     - letzter Befund: die einzige echte Problemdatei wurde bereits quarantainisiert; aktuell `0` neue Quarantaene-Kandidaten und `9` harmlose Sidecars
+     - vorgeschlagener Quarantaene-Stamm:
+       - `/srv/media-library/quarantine/bootstrap-review`
+   - neuer Layout-Check:
+     - `make toolbox-music-curated-layout`
+     - letzter Befund: Bootstrap-Bestand gefuellt, `favorites`-Starter und `curated`-Starter sind live, `quarantine` enthaelt `1` Datei
+   - neuer Auswahl-Workflow:
+     - Workspace-Manifeste:
+       - `manifests/media/favorites_paths.txt`
+       - `manifests/media/curated_paths.txt`
+     - Seed-Report:
+       - `make toolbox-music-selection-seed-report`
+       - letzter Befund: `1075` Kandidaten, Top-Eintraege starten mit `clean/Various Artists`, `clean/Nite Fleit`, `clean/Helena Hauff`
+     - Materialisierungs-Sync:
+       - `make toolbox-music-selection-sync`
+       - letzter Befund: `12` Favorites und `20` Curated-Eintraege erfolgreich materialisiert
+   - Bootstrap-Import ist praktisch abgeschlossen:
+     - `2120/2119` Dateien Quelle/Ziel
+     - `99.7%` nach Groesse
+     - Timer aktiv, letzter Lauf sauber abgeschlossen
+   - naechster Schritt ist jetzt, den ersten Thomson-/Google-TV-Client sauber anzubinden und den Starter-Stand spaeter gezielt zu verfeinern
+   - Jellyfin-Housekeeping:
+     - `/srv/jellyfin/config/data/playlists` ist jetzt angelegt
+     - die vorherige harmlose Warnung zu `/config/data/playlists` taucht im aktuellen Log-Tail nicht mehr auf
+   - das Toolbox-Portal ist jetzt als gruppierte `FRAWO Control`-Frontdoor modernisiert und bietet direkte Wege zu Radio, Radio Control, Media und den mobilen Frontdoors
+   - das Portal hat jetzt zusaetzlich einen Live-Status-Snapshot auf `status.json`; `make toolbox-portal-status-check` ist aktuell gruen mit `7/7` gesunden Kernservices
+   - der Snapshot enthaelt jetzt auch `media_sync` fuer den laufenden Jellyfin-Bibliotheksimport
+   - der neue Musikreport zeigt aktuell vor allem `mp3`, `flac` und `wav` sowie einige restriktive Import-Verzeichnisse, die spaeter fuer saubere Kuration normalisiert werden muessen
 19. Remote-Only-Arbeitsfenster fuer Arbeitstage ausser Haus standardisieren
    - `REMOTE_ONLY_WORK_WINDOW.md` ist die kanonische Anleitung
    - `make remote-only-check` ist der schnelle Gate-Check
@@ -492,35 +579,31 @@
    - interne Naming-Entscheidung: aktive Betriebszone bleibt `hs27.internal`; spaeterer professioneller Zielpfad ist `frawo.home.arpa`
    - `frawo.internal` und `frawo.lan` werden nicht als neue Standardzone eingefuehrt
    - `PUBLIC_EDGE_ARCHITECTURE_PLAN.md` ist die kanonische Anleitung
+24. Den Gesamtfortschritt des Masterplans reproduzierbar messbar halten
+   - `make plan-progress` ist jetzt der kompakte Fortschritts-Check
+   - letzter verifizierter Wert: `masterplan_progress_percent=69`
+   - aktuelles Band: `mid_stage`
+   - naechste Prioritaet bleibt trotz guter Kernbasis PBS-Storage, portabler Backup-Stick und Inventar-Finalisierung
 
 ## Aktive Operator-Aktionen
 
-1. `AKTION VON DIR ERFORDERLICH:` Surface Go im Tailnet autorisieren
-   - benoetigte Aktion: den vom Surface ausgegebenen Tailscale-Login-Link im Tailnet `w.prinz1101@gmail.com` bestaetigen
-   - aktueller Link: `https://login.tailscale.com/a/d390b82011ece`
-   - warum: Tailscale ist auf dem Surface installiert, aber noch `Logged out`
-   - danach uebernehmen Codex/Gemini wieder: Tailnet-Verifikation, Reboot-Abnahme, Portal-/Radio-Control-Fit und optionales Touch-Finetuning
-2. `AKTION VON DIR ERFORDERLICH:` Surface Go wieder aufwecken oder entsperren, sobald Franz vor Ort ist
-   - benoetigte Aktion: Geraet physisch wecken, entsperren und wieder ins WLAN/LAN bringen
-   - warum: der letzte Delta-Run lief in einen Timeout; das Fehlerbild passt zu Sleep/Suspend
-   - danach uebernehmen Codex/Gemini wieder: Sleep-Ziele haerter deaktivieren, Reboot-Abnahme und Portal-Delta erneut ausrollen
-3. `AKTION VON DIR ERFORDERLICH:` Jellyfin-V1 einmal in der UI initialisieren
-   - benoetigte Aktion: `http://media.hs27.internal` oeffnen, den ersten Admin anlegen und die Bibliotheken `Movies`, `Shows`, `Music`, `Homevideos` an die Pfade unter `/media/*` haengen
-   - warum: der Server selbst ist live und verifiziert, aber ohne Erst-Admin und Bibliothekszuordnung liefert er noch nicht den vollen Haushalts-Mehrwert fuer Thomson-/Google-TV-Clients
-   - danach uebernehmen Codex/Gemini wieder: TV-Client-Pfad, Portal-/Monitor-Integration und spaetere Medienkuration
-4. `AKTION VON DIR ERFORDERLICH:` separates Backup-Storage fuer PBS bereitstellen
-   - benoetigte Aktion: zusaetzliches Backup-Storage liefern, anschliessen oder als Zielpfad fuer `/srv/pbs-datastore` auf Proxmox bereitstellen
-   - warum: `pbs_stage_gate_ready=no`, solange `pbs_datastore_mount_state=missing` und `separate_backup_storage_ready=no`
-   - danach uebernehmen Codex/Gemini wieder: `VM 240` bauen, PBS produktiv aufsetzen und Backup-Jobs umhaengen
-5. `AKTION VON DIR ERFORDERLICH:` restliche Easy-Box-Geraete autoritativ zuordnen
+1. `AKTION VON DIR ERFORDERLICH:` spaeter einen ersten Thomson-/Google-TV-Client mit Jellyfin verbinden
+   - benoetigte Aktion: auf dem TV die Jellyfin-App installieren und den Server `http://192.168.2.20:8096` eintragen
+   - warum: die Musikbibliothek ist bereits an Jellyfin angebunden; der naechste echte Nutzwert ist jetzt der erste Client-Rollout statt weiterer Server-Basisarbeit
+   - danach uebernehmen Codex/Gemini wieder: Client-Fit, spaetere Bibliothekserweiterung und Medienkuration
+2. `AKTION VON DIR ERFORDERLICH:` den `64GB`-USB-Stick an Proxmox nicht abziehen
+   - benoetigte Aktion: den aktuell an Proxmox haengenden Stick eingesteckt lassen
+   - warum: der Stick traegt jetzt den aktiven Interim-PBS-Datastore `hs27-interim`
+   - danach uebernehmen Codex/Gemini weiter: Proof-Backups gruener machen und spaeter die finale groessere PBS-Zielarchitektur vorbereiten
+3. `AKTION VON DIR ERFORDERLICH:` restliche Easy-Box-Geraete autoritativ zuordnen
    - benoetigte Aktion: die verbliebenen Unknown-Clients `.141-.144` sowie zusaetzliche aktuelle Router-Labels wie `Surface_Laptop`, `RE355` und `iPhone-3-Pro` fachlich bestaetigen oder benennen
    - warum: `inventory_unknown_review_count=4` und damit `inventory_finalized=no`
    - danach uebernehmen Codex/Gemini wieder: DHCP-/Reservierungsplan finalisieren und den Gateway-Cutover freigabefaehig machen
-6. `AKTION VON DIR ERFORDERLICH:` HAOS-USB-Hardware am Proxmox-Host anstecken, sobald verfuegbar
+4. `AKTION VON DIR ERFORDERLICH:` HAOS-USB-Hardware am Proxmox-Host anstecken, sobald verfuegbar
    - benoetigte Aktion: Zigbee-/Bluetooth-/SkyConnect-Adapter physisch am Proxmox-Host anschliessen
    - warum: aktueller Audit zeigt nur Root-Hubs und kein `/dev/serial/by-id`
    - danach uebernehmen Codex/Gemini wieder: Vendor-/Product-ID-Audit, USB-Passthrough und Reboot-Stabilitaet testen
-7. `AKTION VON DIR ERFORDERLICH:` Handy einmal echt off-LAN ueber Tailscale pruefen
+6. `AKTION VON DIR ERFORDERLICH:` Handy einmal echt off-LAN ueber Tailscale pruefen
    - benoetigte Aktion: WLAN am Handy aus, Tailscale verbunden lassen und `http://portal.hs27.internal`, `http://ha.hs27.internal` sowie `http://odoo.hs27.internal/web/login` testen
    - warum: Route und restricted nameserver sind jetzt live, aber der echte mobile Akzeptanztest fuer den `hs27.internal`-Pfad ist noch nicht bestaetigt
    - danach uebernehmen Codex/Gemini wieder: mobilen Betriebsstandard finalisieren und den Frontdoor fuer Endgeraete sauber freigeben

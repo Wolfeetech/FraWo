@@ -5,6 +5,8 @@ log() {
   printf '[haos-preflight] %s\n' "$*"
 }
 
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
 remote() {
   ssh proxmox "$@"
 }
@@ -67,28 +69,20 @@ for line in subprocess.check_output(['pvesm', 'status'], text=True).splitlines()
 PY"
 
 log "Collecting USB audit"
-usb_output="$(remote "lsusb")"
-printf '%s\n' "$usb_output"
-serial_by_id="$(remote "ls -1 /dev/serial/by-id 2>/dev/null || true")"
-if [[ -n "$serial_by_id" ]]; then
-  printf '%s\n' "$serial_by_id"
-else
-  echo "serial_by_id=empty"
-fi
+usb_audit_output="$("${ROOT_DIR}/scripts/haos_usb_audit_report.sh")"
+printf '%s\n' "$usb_audit_output"
 
-usb_device_count="$(printf '%s\n' "$usb_output" | grep -c '^Bus ' || true)"
-non_root_hub_count="$(printf '%s\n' "$usb_output" | grep '^Bus ' | grep -vc 'Linux Foundation .* root hub' || true)"
-echo "usb_total_entries=${usb_device_count}"
-echo "usb_candidate_devices=${non_root_hub_count}"
+usb_passthrough_candidate_present="$(printf '%s\n' "$usb_audit_output" | awk -F= '/^usb_passthrough_candidate_present=/{print $2; exit}')"
+serial_devices_present="$(printf '%s\n' "$usb_audit_output" | awk -F= '/^serial_devices_present=/{print $2; exit}')"
 
 log "Recommendation"
-if [[ "$vm210_exists" == "yes" && "$non_root_hub_count" -eq 0 ]]; then
+if [[ "$vm210_exists" == "yes" && "$usb_passthrough_candidate_present" != "yes" && "$serial_devices_present" != "yes" ]]; then
   echo "usb_passthrough_ready=no"
   echo "recommendation=vm210_exists_continue_with_addressing_snapshot_and_later_usb_passthrough"
 elif [[ "$vm210_exists" == "yes" ]]; then
   echo "usb_passthrough_ready=yes"
   echo "recommendation=vm210_exists_continue_with_addressing_and_detected_usb_planning"
-elif [[ "$non_root_hub_count" -eq 0 ]]; then
+elif [[ "$usb_passthrough_candidate_present" != "yes" && "$serial_devices_present" != "yes" ]]; then
   echo "usb_passthrough_ready=no"
   echo "recommendation=build_haos_baseline_only_after_network_stage_gate_or_wait_for_usb_adapters"
 else

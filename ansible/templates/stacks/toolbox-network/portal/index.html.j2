@@ -1,98 +1,354 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Homeserver 2027 Portal</title>
+  <title>FRAWO Control</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
+    
     :root {
-      --ink: #0f172a;
-      --paper: #f4efe4;
-      --line: #d8d1c2;
-      --accent: #0f766e;
-      --glow: rgba(15, 118, 110, 0.18);
+      --bg: #09090b;
+      --glass: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --glass-hover: rgba(255, 255, 255, 0.07);
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --primary: #f59e0b;
+      --secondary: #10b981;
+      --accent-glow: rgba(245, 158, 11, 0.15);
     }
-    * {
-      box-sizing: border-box;
-    }
+    
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
     body {
-      margin: 0;
+      font-family: 'Outfit', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
       min-height: 100vh;
-      color: var(--ink);
-      font-family: "Noto Sans", "Segoe UI", sans-serif;
-      background:
-        radial-gradient(circle at top left, var(--glow), transparent 32%),
-        linear-gradient(180deg, #f7f3ea 0%, #ece5d7 100%);
-      display: grid;
-      place-items: center;
-      padding: 2rem;
+      overflow-x: hidden;
+      position: relative;
     }
+
+    .blob {
+      position: absolute;
+      filter: blur(80px);
+      z-index: -1;
+      opacity: 0.6;
+      animation: pulse 10s alternate infinite;
+    }
+    .blob.orange {
+      top: -10%; left: -10%;
+      width: 50vw; height: 50vw;
+      background: radial-gradient(circle, rgba(245,158,11,0.3) 0%, transparent 70%);
+      animation-delay: 0s;
+    }
+    .blob.teal {
+      bottom: -10%; right: -10%;
+      width: 60vw; height: 60vw;
+      background: radial-gradient(circle, rgba(16,185,129,0.2) 0%, transparent 70%);
+      animation-delay: -5s;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1) translate(0, 0); }
+      100% { transform: scale(1.1) translate(20px, -20px); }
+    }
+
     main {
-      width: min(980px, 100%);
-      background: rgba(255, 255, 255, 0.88);
-      border: 1px solid var(--line);
-      border-radius: 28px;
-      padding: 2.4rem;
-      box-shadow: 0 24px 80px rgba(15, 23, 42, 0.12);
-      backdrop-filter: blur(8px);
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 4rem 2rem;
     }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 4rem;
+      animation: fadeUp 1s ease-out;
+    }
+    
     h1 {
-      margin: 0 0 0.75rem;
-      font-size: clamp(2rem, 4vw, 3.5rem);
-      line-height: 1;
-      letter-spacing: -0.04em;
+      font-size: clamp(3rem, 8vw, 5rem);
+      font-weight: 800;
+      letter-spacing: -0.05em;
+      background: linear-gradient(135deg, #fff 0%, #cbd5e1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 1rem;
     }
-    p {
-      margin: 0 0 2rem;
-      font-size: 1.05rem;
-      max-width: 50rem;
+    
+    .hero p {
+      font-size: 1.25rem;
+      color: var(--text-muted);
+      max-width: 600px;
+      margin: 0 auto 2rem;
+      line-height: 1.6;
     }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+
+    .hero-meta {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
       gap: 1rem;
     }
-    a {
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.6rem 1.2rem;
+      border-radius: 999px;
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text);
+      transition: all 0.3s ease;
+    }
+
+    .pill::before {
+      content: "";
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--secondary);
+      box-shadow: 0 0 10px var(--secondary);
+    }
+    
+    .pill:hover { background: var(--glass-hover); transform: translateY(-2px); }
+
+    .status-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 4rem;
+      animation: fadeUp 1s ease-out 0.2s backwards;
+    }
+
+    .glass-card {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 1.5rem;
+      backdrop-filter: blur(20px);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .glass-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .glass-card:hover {
+      transform: translateY(-5px);
+      background: var(--glass-hover);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 20px var(--accent-glow);
+      border-color: rgba(245, 158, 11, 0.3);
+    }
+
+    .glass-card:hover::before { opacity: 1; }
+
+    .status-label {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      font-weight: 600;
       display: block;
-      padding: 1.15rem;
-      border-radius: 18px;
-      border: 1px solid var(--line);
+      margin-bottom: 0.5rem;
+    }
+
+    .status-value {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.03em;
+    }
+
+    .service-meta {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+      display: block;
+    }
+
+    .section-head {
+      margin-bottom: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      border-bottom: 1px solid var(--glass-border);
+      padding-bottom: 1rem;
+    }
+
+    .section-head h2 {
+      font-size: 1.8rem;
+      font-weight: 600;
+    }
+
+    .section-note { color: var(--text-muted); font-size: 0.9rem; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 4rem;
+    }
+
+    a.app-card {
+      display: flex;
+      flex-direction: column;
       text-decoration: none;
       color: inherit;
-      background: linear-gradient(180deg, rgba(15, 118, 110, 0.08), rgba(255, 255, 255, 0.95));
-      transition: transform 120ms ease, box-shadow 120ms ease;
+      padding: 1.8rem;
     }
-    a:hover,
-    a:focus {
-      transform: translateY(-2px);
-      box-shadow: 0 16px 32px rgba(15, 118, 110, 0.14);
-      outline: none;
+
+    .app-card .eyebrow {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--primary);
+      font-weight: 800;
+      margin-bottom: 1rem;
     }
-    strong {
-      display: block;
-      font-size: 1.1rem;
-      margin-bottom: 0.45rem;
+
+    .app-card strong {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
     }
-    .url {
-      display: block;
-      font-size: 0.86rem;
-      opacity: 0.78;
-      word-break: break-word;
+
+    .app-card .hint {
+      color: var(--text-muted);
+      font-size: 1rem;
+      line-height: 1.5;
+      margin-bottom: 1.5rem;
+      flex-grow: 1;
+    }
+
+    .app-card .url {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.3);
+      font-family: monospace;
+      transition: color 0.3s ease;
+    }
+
+    .app-card:hover .url { color: var(--primary); }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 768px) {
+      main { padding: 2rem 1rem; }
+      h1 { font-size: 2.5rem; }
     }
   </style>
 </head>
 <body>
+  <div class="blob orange"></div>
+  <div class="blob teal"></div>
+  
   <main>
-    <h1>Homeserver 2027</h1>
-    <p>Shared internal frontdoor for the local services used by Wolf and Franz. This page is intentionally lightweight and keeps the Surface Go kiosk path consistent before a dedicated portal application exists.</p>
-    <section class="grid">
-{% for link in toolbox_network_portal_links %}
-      <a href="{{ link.url }}">
-        <strong>{{ link.label }}</strong>
-        <span class="url">{{ link.url }}</span>
-      </a>
+    <section class="hero">
+      <h1>FRAWO Control</h1>
+      <p>Exklusiver Zugang für Haushalt und Studio. Radio, Medien, Smart Home und Arbeitsdienste sind nur einen Fingertipp entfernt.</p>
+      <div class="hero-meta">
+        <span class="pill">Radio auf Pi</span>
+        <span class="pill">Medien auf Toolbox</span>
+        <span class="pill">Tailscale gesichert</span>
+      </div>
+    </section>
+
+    <section class="status-strip">
+      <div class="glass-card">
+        <span class="status-label">Plattform Kern</span>
+        <span class="status-value" id="platform-core">Lädt...</span>
+      </div>
+      <div class="glass-card">
+        <span class="status-label">Gesunde Dienste</span>
+        <span class="status-value" id="healthy-count">-</span>
+      </div>
+      <div class="glass-card">
+        <span class="status-label">Systemstatus</span>
+        <span class="status-value" id="snapshot-time">Ausstehend</span>
+      </div>
+      <div class="glass-card">
+        <span class="status-label">Medien-Scan</span>
+        <span class="status-value" id="media-sync-state">Ausstehend</span>
+        <span class="service-meta" id="media-sync-meta">Warte auf Sync-Daten</span>
+      </div>
+    </section>
+
+    <div id="service-health" style="margin-bottom: 3rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+    </div>
+
+    <section class="sections">
+{% for group_name, links in toolbox_network_portal_links | groupby('group') %}
+      <div class="section-container">
+        <div class="section-head">
+          <h2>{{ group_name }}</h2>
+          <span class="section-note">{{ links | length }} Module aktiv</span>
+        </div>
+        <div class="grid">
+{% for link in links %}
+          <a href="{{ link.url }}" class="glass-card app-card">
+            <span class="eyebrow">{{ link.group }}</span>
+            <strong>{{ link.label }}</strong>
+            <span class="hint">{{ link.hint | default('Interner Dienst') }}</span>
+            <span class="url">{{ link.url }}</span>
+          </a>
+{% endfor %}
+        </div>
+      </div>
 {% endfor %}
     </section>
   </main>
+  
+  <script>
+    const platformCore = document.getElementById("platform-core");
+    const healthyCount = document.getElementById("healthy-count");
+    const snapshotTime = document.getElementById("snapshot-time");
+    const mediaSyncState = document.getElementById("media-sync-state");
+    const mediaSyncMeta = document.getElementById("media-sync-meta");
+    const serviceHealth = document.getElementById("service-health");
+
+    async function loadStatus() {
+      try {
+        const response = await fetch("./status.json", { cache: "no-store" });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data = await response.json();
+        
+        platformCore.textContent = data.platform_core === "ok" ? "Aktiv" : "Warnung";
+        platformCore.style.color = data.platform_core === "ok" ? "var(--secondary)" : "var(--primary)";
+        
+        healthyCount.textContent = `${data.healthy_services}/${data.total_services}`;
+        snapshotTime.textContent = new Date(data.generated_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+        
+        mediaSyncState.textContent = data.media_sync.state === "running" ? "Importiert" : data.media_sync.state;
+        mediaSyncMeta.textContent = `${data.media_sync.target_file_count} Dateien synchronisiert`;
+        
+        serviceHealth.innerHTML = data.services.map((service) => `
+          <div class="pill" style="\${service.status !== 'ok' ? 'border-color: var(--primary);' : ''}">
+            <strong style="margin-right:0.5rem;">\${service.label}</strong>
+            <span style="opacity:0.7; font-size:0.8rem; font-weight:normal;">\${service.status === "ok" ? "Online" : "Prüfen"}</span>
+          </div>
+        `).join("");
+      } catch (error) {
+        platformCore.textContent = "Offline";
+        snapshotTime.textContent = "Getrennt";
+        mediaSyncState.textContent = "Fehler";
+        mediaSyncMeta.textContent = "Keine Verbindung zum Server";
+      }
+    }
+    loadStatus();
+  </script>
 </body>
 </html>

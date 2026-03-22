@@ -33,8 +33,11 @@ This is the shared operational workspace for Homeserver 2027.
 20. `PUBLIC_EDGE_ARCHITECTURE_PLAN.md`
 21. `RASPBERRY_PI_RADIO_NODE_PLAN.md`
 22. `RPI_RESOURCE_ALLOCATION_PLAN.md`
-23. `PBS_VM_240_SETUP_PLAN.md`
-24. `HAOS_VM_210_SETUP_PLAN.md`
+23. `MEDIA_SERVER_PLAN.md`
+24. `MEDIA_SERVER_CLIENT_SETUP.md`
+25. `OPERATOR_TODO_QUEUE.md`
+26. `PBS_VM_240_SETUP_PLAN.md`
+27. `HAOS_VM_210_SETUP_PLAN.md`
 
 ## Canonical Files
 
@@ -82,6 +85,12 @@ This is the shared operational workspace for Homeserver 2027.
   - verified live resource budget and low-resource tuning profile for the Pi radio node
 - `TAILSCALE_PHONE_ACCESS.md`
   - practical mobile-access runbook for subnet routing, DNS and phone testing
+- `MEDIA_SERVER_PLAN.md`
+  - canonical rollout and target state for Jellyfin V1 on toolbox
+- `MEDIA_SERVER_CLIENT_SETUP.md`
+  - operator runbook for TV, browser and mobile client connection paths
+- `OPERATOR_TODO_QUEUE.md`
+  - short operator-facing queue for the next manual unblock steps
 - `PBS_VM_240_SETUP_PLAN.md`
   - controlled rollout path and stage gates for the planned PBS VM
 - `MORNING_ROUTINE.md`
@@ -160,11 +169,13 @@ make rpi-radio-integration-check
 make rpi-azuracast-check
 make rpi-resource-check
 make business-drift-check
+make basics-check
 make ansible-syntax-check-toolbox
 make ansible-syntax-check-toolbox-tailscale
 make ansible-syntax-check-toolbox-mobile-firewall
 make toolbox-deploy
 make toolbox-network-check
+make toolbox-portal-status-check
 make toolbox-tun-prep
 make toolbox-tailscale-prep
 make toolbox-tailscale-check
@@ -172,17 +183,40 @@ make toolbox-tailscale-login-url
 make toolbox-tailscale-join-assist
 make toolbox-tailscale-mobile-check
 make toolbox-mobile-firewall-deploy
+make toolbox-media-check
+make toolbox-media-sync-check
+make toolbox-media-bootstrap-progress
+make toolbox-music-library-report
+make toolbox-music-scan-issues
+make toolbox-music-curation-candidates
+make toolbox-music-curated-layout
+make toolbox-music-quarantine-candidates
+make toolbox-music-selection-seed-report
+make toolbox-music-selection-sync
+make ops-brief
+make operator-todos
+make surface-go-root-sleep-harden
 make rightsize-stage-gate
 make rightsize-plan
 make rightsize-apply
 make easybox-browser-probe
 make pbs-preflight
 make pbs-stage-gate
+make pbs-proof-check
+make pbs-restore-proof
+make inventory-unknown-report
 make pbs-iso-stage
 make ansible-syntax-check-pbs
 make pbs-runner-deploy
 make pbs-vm-check
+make pbs-guest-check
+make portable-backup-usb-prepare DEV=/dev/sdX
+make portable-backup-usb-autoprepare
+make portable-backup-usb-fill
+make portable-backup-usb-check
+make portable-backup-usb-run
 make haos-preflight
+make haos-usb-audit
 make haos-stage-gate
 make ansible-syntax-check-haos
 make haos-runner-deploy

@@ -12,7 +12,7 @@ require_cmd() {
   fi
 }
 
-for cmd in findmnt python3 qm; do
+for cmd in findmnt pvesm python3 qm; do
   require_cmd "$cmd"
 done
 
@@ -26,6 +26,8 @@ VM_CPU="{{ proxmox_pbs_cpu }}"
 VM_CORES="{{ proxmox_pbs_cores }}"
 VM_MEMORY_MB="{{ proxmox_pbs_memory_mb }}"
 VM_SYSTEM_DISK_GB="{{ proxmox_pbs_system_disk_gb }}"
+VM_DATA_STORAGE_ID="{{ proxmox_pbs_data_storage_id }}"
+VM_DATA_DISK_GB="{{ proxmox_pbs_data_disk_gb }}"
 VM_AGENT_ENABLED="{{ proxmox_pbs_agent_enabled }}"
 VM_ONBOOT="{{ proxmox_pbs_onboot }}"
 VM_PROTECTION="{{ proxmox_pbs_protection }}"
@@ -49,6 +51,11 @@ fi
 
 if ! findmnt -rn "$PBS_DATASTORE_PATH" >/dev/null 2>&1; then
   log "Required separate datastore mount ${PBS_DATASTORE_PATH} is not present."
+  exit 1
+fi
+
+if ! pvesm status --storage "$VM_DATA_STORAGE_ID" >/dev/null 2>&1; then
+  log "Required Proxmox storage ${VM_DATA_STORAGE_ID} is not present."
   exit 1
 fi
 
@@ -84,6 +91,7 @@ qm create "$VMID" \
   --memory "$VM_MEMORY_MB" \
   --scsihw virtio-scsi-single \
   --scsi0 "${VM_STORAGE}:${VM_SYSTEM_DISK_GB},discard=on,ssd=1,iothread=1" \
+  --scsi1 "${VM_DATA_STORAGE_ID}:${VM_DATA_DISK_GB},discard=on,ssd=1,iothread=1" \
   --ide2 "local:iso/{{ proxmox_pbs_iso_file }},media=cdrom" \
   --net0 "virtio,bridge=${VM_BRIDGE},firewall=${VM_FIREWALL}" \
   --serial0 socket \

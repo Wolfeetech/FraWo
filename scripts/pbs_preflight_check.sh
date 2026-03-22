@@ -33,8 +33,10 @@ PBS_ISO_FILE="$(read_hostvar proxmox_pbs_iso_file)"
 log "Checking whether VM ${PBS_VMID} already exists"
 if ssh proxmox "qm status ${PBS_VMID} >/dev/null 2>&1"; then
   echo "vm${PBS_VMID}_exists=yes"
+  vm_exists="yes"
 else
   echo "vm${PBS_VMID}_exists=no"
+  vm_exists="no"
 fi
 
 log "Collecting host memory baseline"
@@ -112,7 +114,9 @@ echo "pbs_datastore_available_gib=${datastore_mount_available_gib}"
 echo "separate_backup_storage_ready=${separate_backup_storage_ready}"
 
 log "Recommendation"
-if [[ "${separate_backup_storage_ready}" == "yes" ]]; then
+if [[ "${vm_exists}" == "yes" ]]; then
+  echo "recommendation=vm240_exists_validate_guest_state"
+elif [[ "${separate_backup_storage_ready}" == "yes" ]]; then
   echo "recommendation=stage_pbs_iso_then_build_vm240"
 else
   echo "recommendation=mount_separate_backup_storage_before_building_pbs_vm"

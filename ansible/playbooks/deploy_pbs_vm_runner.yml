@@ -24,6 +24,8 @@
           - proxmox_pbs_system_disk_gb is defined
           - proxmox_pbs_datastore_mount_path is defined
           - proxmox_pbs_datastore_min_gib is defined
+          - proxmox_pbs_data_storage_id is defined
+          - proxmox_pbs_data_disk_gb is defined
           - proxmox_pbs_agent_enabled is defined
           - proxmox_pbs_onboot is defined
           - proxmox_pbs_protection is defined

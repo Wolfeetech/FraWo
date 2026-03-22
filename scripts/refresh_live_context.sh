@@ -65,8 +65,10 @@ cat > "${OUTPUT_FILE}" <<EOF
 23. \`RADIO_OPERATIONS_STANDARD.md\`
 24. \`MEDIA_SERVER_PLAN.md\`
 25. \`MEDIA_SERVER_CLIENT_SETUP.md\`
-26. \`PBS_VM_240_SETUP_PLAN.md\`
-27. \`HAOS_VM_210_SETUP_PLAN.md\`
+26. \`OPERATOR_TODO_QUEUE.md\`
+27. \`PBS_VM_240_SETUP_PLAN.md\`
+28. \`HAOS_VM_210_SETUP_PLAN.md\`
+29. \`PORTABLE_BACKUP_USB_PLAN.md\`
 
 ## Canonical Sources
 
@@ -96,8 +98,10 @@ cat > "${OUTPUT_FILE}" <<EOF
 - \`RADIO_OPERATIONS_STANDARD.md\` updated: \`$(mtime "${ROOT_DIR}/RADIO_OPERATIONS_STANDARD.md")\`
 - \`MEDIA_SERVER_PLAN.md\` updated: \`$(mtime "${ROOT_DIR}/MEDIA_SERVER_PLAN.md")\`
 - \`MEDIA_SERVER_CLIENT_SETUP.md\` updated: \`$(mtime "${ROOT_DIR}/MEDIA_SERVER_CLIENT_SETUP.md")\`
+- \`OPERATOR_TODO_QUEUE.md\` updated: \`$(mtime "${ROOT_DIR}/OPERATOR_TODO_QUEUE.md")\`
 - \`PBS_VM_240_SETUP_PLAN.md\` updated: \`$(mtime "${ROOT_DIR}/PBS_VM_240_SETUP_PLAN.md")\`
 - \`HAOS_VM_210_SETUP_PLAN.md\` updated: \`$(mtime "${ROOT_DIR}/HAOS_VM_210_SETUP_PLAN.md")\`
+- \`PORTABLE_BACKUP_USB_PLAN.md\` updated: \`$(mtime "${ROOT_DIR}/PORTABLE_BACKUP_USB_PLAN.md")\`
 - \`ansible/inventory/hosts.yml\` updated: \`$(mtime "${ROOT_DIR}/ansible/inventory/hosts.yml")\`
 - \`ansible/inventory/group_vars/all/vault.yml\` updated: \`$(mtime "${ROOT_DIR}/ansible/inventory/group_vars/all/vault.yml")\`
 
@@ -114,14 +118,15 @@ cat > "${OUTPUT_FILE}" <<EOF
 - Business stacks are running from \`/opt/homeserver2027/stacks\` under systemd-managed local IaC
 - Home Assistant OS is stable on \`192.168.2.24:8123\` and \`ha.hs27.internal\` now returns \`HTTP 200\` through Caddy
 - Local Proxmox backup proof completed on \`2026-03-18\` for \`VM 200\`, \`VM 220\` and \`VM 230\`; daily local backup coverage now includes \`VM 210\`
-- PBS runner path is prepared, the official installer ISO is staged, and the PBS stage gate remains blocked until separate backup storage is mounted on Proxmox
+- PBS runner path is live, the official installer ISO is staged, interim USB-backed storage is mounted on Proxmox at \`/srv/pbs-datastore\`, \`VM 240 pbs\` is installed on \`192.168.2.25\`, datastore \`hs27-interim\` is active, Proxmox storage \`pbs-interim\` is active, and the first green proof-backup plus restore drill are already verified for \`VM 220\`
 - Capacity review says the host is memory-overcommitted on paper; immediate right-sizing candidates are \`VM 200\` and \`VM 220\`, while \`VM 210\` should not be reduced
 - Right-sizing stage gate is green; the actual memory reduction remains a maintenance-window change and is not yet applied
-- Shared frontend node on \`192.168.2.154\` is now rebuilt as \`surface-go-frontend\`; SSH, kiosk baseline, local portal and hardening are applied, but the node is currently offline/asleep and still needs Tailnet verification plus final post-install acceptance
+- Shared frontend node on \`192.168.2.154\` is now rebuilt as \`surface-go-frontend\`; SSH, Tailnet admin on \`100.106.67.127\`, root sleep hardening, and the robust local portal path \`http://127.0.0.1:17827\` are live via the visible \`FRAWO Control\` launcher
 - Local media prep is staged on the ZenBook: \`/dev/mmcblk0\` for Raspberry Pi, \`/dev/sdd\` is now the ready blue Ventoy install-/image-stick, and \`/dev/sdc1\` is the ready exFAT Favorites-stick \`FRAWO_FAVS\`
+- Portable backup USB path has been repurposed: the dedicated \`64GB\` stick is attached directly to Proxmox as \`HS27_PORTABLEBK\`, mounted on \`/srv/portable-backup-usb\`, bind-mounted to \`/srv/pbs-datastore\`, and now backs the interim PBS-v1 path instead of continuing as a portable archive shuttle
 - Raspberry-Pi radio node is live: \`radio-node\` on \`192.168.2.155\` / \`100.64.23.77\`, AzuraCast containers are running, \`radio.hs27.internal\` currently returns \`HTTP 302\` to \`/login\`, and the status API is reachable
 - Raspberry-Pi radio node uses the conservative pi4_2gb_single_station_low_resource profile with about 1.8 GiB RAM, 2 GiB swap, about 21 GiB free rootfs, COMPOSE_HTTP_TIMEOUT=900, PHP_FPM_MAX_CHILDREN=2, NOW_PLAYING_DELAY_TIME=15, NOW_PLAYING_MAX_CONCURRENT_PROCESSES=1, and ENABLE_WEB_UPDATER=false
-- Media server V1 is now live on \`CT 100 toolbox\`: Jellyfin is reachable internally on \`http://media.hs27.internal\`, directly on \`http://192.168.2.20:8096\`, and through the mobile Tailscale frontdoor on \`:8449\`; the remaining step is the UI-based first admin and library attachment
+- Media server V1 is now live on \`CT 100 toolbox\`: Jellyfin is reachable internally on \`http://media.hs27.internal\`, directly on \`http://192.168.2.20:8096\`, and through the mobile Tailscale frontdoor on \`:8449\`; the startup wizard is complete and the music library is attached while the bootstrap import continues
 - ZenBook remote posture is now stronger: Tailscale joined on \`100.76.249.126\` and AnyDesk is installed and active as a GUI fallback
 - Remote-only work windows are now codified through \`REMOTE_ONLY_WORK_WINDOW.md\` and \`make remote-only-check\`
 

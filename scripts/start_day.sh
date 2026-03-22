@@ -10,6 +10,7 @@ make ansible-ping
 make qga-check
 make business-drift-check
 make toolbox-network-check
+make toolbox-portal-status-check
 make toolbox-media-check
 make toolbox-tailscale-check
 make rpi-radio-integration-check
@@ -18,6 +19,7 @@ make haos-reverse-proxy-check
 make backup-list
 make proxmox-local-backup-check
 make pbs-stage-gate
+make pbs-proof-check
 make haos-stage-gate
 make security-baseline-check
 make surface-go-check

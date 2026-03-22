@@ -16,7 +16,13 @@ This document is the operator runbook for the first usable FRAWO media experienc
 - reverse proxy path is verified internally
 - mobile Tailscale frontdoor is verified
 - no public edge is involved yet
-- the first Jellyfin admin account still needs to be created in the UI
+- the Jellyfin startup wizard is complete
+- at least one local Jellyfin user exists
+- the `Music` library is already attached at:
+  - `/media/music`
+- a bootstrap sync from the Pi USB music library into the toolbox media library is now running
+- current target path for the imported radio music is:
+  - `/media/music/bootstrap-radio-usb`
 
 ## Google TV / Android TV / Thomson
 
@@ -28,7 +34,7 @@ Use this path first because it is the clearest practical value for the household
    - `http://192.168.2.20:8096`
 4. If internal DNS is available on that client, the nicer alternative is:
    - `http://media.hs27.internal`
-5. Sign in with the Jellyfin admin or a later user account once the first UI setup is complete.
+5. Sign in with the Jellyfin admin or a later user account.
 
 ## Browser Clients
 
@@ -44,20 +50,25 @@ Use this path first because it is the clearest practical value for the household
 
 This is an interim internal/mobile path, not the final public design.
 
-## First UI Steps Still Needed
+## First Client Rollout Steps
 
-1. Open `http://media.hs27.internal`
-2. Create the first Jellyfin admin account
-3. Attach the initial libraries:
-   - Movies -> `/media/movies`
-   - Shows -> `/media/shows`
-   - Music -> `/media/music`
-   - Homevideos -> `/media/homevideos`
-4. Leave transcoding conservative at first
-5. Add TV clients only after the admin setup is complete
+1. Install the Jellyfin app on the first Thomson / Google TV device.
+2. Add the server:
+   - preferred: `http://192.168.2.20:8096`
+   - alternative with internal DNS: `http://media.hs27.internal`
+3. Sign in with the existing Jellyfin user.
+4. Start with the `Music` library only.
+5. Expect the library to keep growing while the bootstrap sync is still running.
+6. Add `Movies`, `Shows` and `Homevideos` only when there is real content there.
 
 ## Notes
 
 - `AzuraCast` on the Pi remains the radio system
 - `Jellyfin` on toolbox is for on-demand media playback
 - the long-term storage source still needs to mature beyond the temporary USB/bootstrap state
+- the current practical bridge is: Pi USB library -> toolbox media bootstrap path -> Jellyfin
+- a local manifest-based workflow for later `favorites` and `curated` selections now exists in the workspace:
+  - `manifests/media/favorites_paths.txt`
+  - `manifests/media/curated_paths.txt`
+  - `make toolbox-music-selection-seed-report`
+  - `make toolbox-music-selection-sync`

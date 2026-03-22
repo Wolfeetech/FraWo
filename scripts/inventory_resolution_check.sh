@@ -38,6 +38,8 @@ echo "inventory_resolution_ready=${inventory_resolution_ready}"
 
 if [[ "${inventory_resolution_ready}" == "yes" ]]; then
   echo "recommendation=inventory_is_clean_enough_for_gateway_prework"
+elif [[ "${unresolved_router_labels_csv}" == "none" ]]; then
+  echo "recommendation=resolve_remaining_owner_mapping_for_unknown_private_mac_clients"
 else
   echo "recommendation=finish_manual_easybox_lease_mapping_before_gateway_cutover"
 fi

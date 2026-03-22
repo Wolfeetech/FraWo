@@ -2,11 +2,14 @@
 
 ## Latest Verified Run
 
-- Verification date: `2026-03-18`
-- Backup storage: `local` on Proxmox
+- Verification date: `2026-03-21`
+- Verified backup paths:
+  - `local` on Proxmox
+  - `pbs-interim` on `VM 240 pbs`
 - Restore target storage: `local-lvm`
 - Scope of protected business VMs in this proof:
   - `VM 200` Nextcloud
+  - `VM 210` HAOS
   - `VM 220` Odoo
   - `VM 230` Paperless
 
@@ -30,9 +33,39 @@
   - `VM 920` was stopped and destroyed again after the proof
   - the Proxmox config for `VM 920` no longer exists
 
+## PBS Interim V1 Proof - 2026-03-21
+
+- PBS target:
+  - guest `VM 240 pbs`
+  - address `192.168.2.25`
+  - datastore `hs27-interim`
+  - Proxmox storage `pbs-interim`
+- Proof-backup result:
+  - source VM `220`
+  - snapshot `vm/220/2026-03-21T10:04:30Z`
+  - Proxmox task status `exitstatus: OK`
+- Proof-restore result:
+  - restored test VM `920`
+  - temporary proof IP `192.168.2.240`
+  - verification endpoint `http://192.168.2.240:8069/web/login`
+  - guest-agent status after boot `qga_ok`
+  - HTTP verification result `200 OK`
+  - cleanup result:
+    - `VM 920` was stopped and destroyed again after the proof
+    - the Proxmox config for `VM 920` no longer exists
+
 ## Operational Notes
 
 - The local proof path is valid as an interim safeguard until PBS is live.
+- PBS-v1 is now also practically proven on the interim USB-backed path:
+  - backup target `pbs-interim`
+  - datastore `hs27-interim`
+  - first backup proof and first restore proof are both green for `VM 220`
+  - current interim retention:
+    - `02:40,14:40`
+    - `keep-daily=2`
+    - `keep-weekly=1`
+    - `keep-monthly=1`
 - Interim local night operation is now also live on Proxmox:
   - systemd timer `homeserver2027-local-business-backup.timer`
   - next scheduled run: daily at `02:40`
@@ -64,6 +97,7 @@
 
 ## Next Step
 
-1. Keep the scheduled local backup timer as the interim operating standard until PBS takes over.
-2. Move from the interim local timer to a scheduled PBS-oriented backup regime.
-3. Repeat restore tests on a rotating basis, for example monthly on `VM 200` or `VM 230`.
+1. Keep the scheduled local backup timer as a second local safety net while PBS-v1 is stabilized.
+2. Keep the scheduled PBS regime active on `pbs-interim`.
+3. Repeat restore tests on a rotating basis, for example monthly on `VM 200`, `VM 210` or `VM 230`.
+4. Migrate later from the `64GB` interim USB target to larger dedicated PBS storage.

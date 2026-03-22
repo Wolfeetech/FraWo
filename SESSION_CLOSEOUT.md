@@ -201,12 +201,12 @@
    - `Surface_Laptop` is now effectively resolved to `yourparty-Surface-Go.local` on `192.168.2.154`, but the device still needs a clean rebuild into the managed frontend standard.
    - Unknown devices `.141-.144`, the exact `.107`/`.114` Shelly alias split, and labels such as `fireTV` and `Franz_iphone` still need authoritative identification from the Easy Box.
    - Router credentials are now stored and `user_lang.json` is reachable through the new browser-context probe, but authenticated login and lease extraction are still not reproduced.
-   - The Surface Go currently exposes `HTTP/80` with the Ubuntu `nginx` default page and no `SSH`, so it is identified but not yet remotely manageable.
+   - The Surface Go is now rebuilt as `surface-go-frontend`, reachable by SSH and Tailscale, and technically manageable; the remaining work is touch/browser UX polish.
 2. Medium: Backup and restore are now locally proven, but the durable PBS operating model is still not live.
-   - The current stopgap is now stronger than before: successful restore proof plus a live daily local timer on Proxmox `local`.
-   - The PBS runner and stage-gate path are now prepared, and the official installer ISO is staged on Proxmox.
-   - We still need separate backup storage, scheduled PBS jobs and recurring restore drills before calling the platform fully hardened.
-   - Local retention remains latest `2` archives per business VM until PBS takes over.
+   - The current stopgap is now much stronger: successful local proof, successful PBS proof-backup and successful PBS restore drill.
+   - The PBS guest is live on `192.168.2.25`, the datastore `hs27-interim` is active, and scheduled jobs with retention are already in place.
+   - We still need larger dedicated backup storage and recurring restore drills before calling the platform fully hardened.
+   - Local retention remains a useful secondary safety net while the PBS-v1 path is stabilized.
 3. Low: One older snapshot still exists on `VM 100`.
    - This was left untouched intentionally because it is outside the business-VM change scope and may still be part of the Toolbox/Tailscale workstream.
 4. Low: `CT 100` network foundation is now live and Tailscale is joined.

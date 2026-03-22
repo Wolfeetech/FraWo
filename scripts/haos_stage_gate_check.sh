@@ -91,7 +91,7 @@ elif [[ "$vm210_exists" == "yes" && "$haos_current_ipv4" == "unknown" ]]; then
 elif [[ "$vm210_exists" == "yes" && "$haos_current_ipv4" != "192.168.2.24" ]]; then
   echo "recommendation=stabilize_vm210_address_then_switch_ha_internal_dns"
 elif [[ "$vm210_exists" == "yes" && "$usb_passthrough_ready" == "no" ]]; then
-  echo "recommendation=vm210_online_continue_with_snapshot_addons_and_later_usb_passthrough"
+  echo "recommendation=vm210_online_stable_wait_for_real_usb_dongles_not_storage_only_usb"
 elif [[ "$vm210_exists" == "yes" ]]; then
   echo "recommendation=vm210_stable_continue_with_snapshot_addons_and_usb_passthrough"
 elif [[ "$haos_stage_gate_ready" == "yes" && "$usb_passthrough_ready" == "no" ]]; then

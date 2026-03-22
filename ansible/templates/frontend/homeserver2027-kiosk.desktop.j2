@@ -1,8 +1,10 @@
 [Desktop Entry]
 Type=Application
 Version=1.0
-Name=Homeserver 2027 Kiosk
-Comment=Launch the shared frontend portal in kiosk mode
-Exec={{ surface_go_browser_binary }} --kiosk {{ surface_go_kiosk_start_url }}
+Name=FRAWO Control
+Comment=Oeffnet das gemeinsame FRAWO-Frontend
+Exec={{ surface_go_launcher_script }}
 Terminal=false
+Icon=web-browser
+Categories=Network;WebBrowser;
 X-GNOME-Autostart-enabled=true

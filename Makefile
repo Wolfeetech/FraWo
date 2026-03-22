@@ -1,4 +1,4 @@
-.PHONY: refresh-context inventory-check ansible-ping qga-check close-day start-day ansible-syntax-check ansible-syntax-check-toolbox ansible-syntax-check-toolbox-tailscale ansible-syntax-check-toolbox-mobile-firewall ansible-syntax-check-proxmox-backups ansible-syntax-check-haos ansible-syntax-check-business-hardening ansible-syntax-check-pbs ansible-syntax-check-surface-go ansible-syntax-check-rpi-radio ansible-syntax-check-rpi-radio-media ansible-syntax-check-rpi-radio-usb ansible-syntax-check-rpi-azuracast-host ansible-syntax-check-rpi-azuracast ansible-syntax-check-rpi-azuracast-tuning ansible-list-business proxmox-storage-check backup-proof backup-list business-drift-check backup-prune-dry-run backup-prune toolbox-deploy toolbox-network-check toolbox-tun-prep toolbox-tailscale-prep toolbox-tailscale-check toolbox-tailscale-login-url toolbox-tailscale-join-assist toolbox-tailscale-mobile-check toolbox-mobile-firewall-deploy toolbox-media-deploy toolbox-media-check rightsize-stage-gate rightsize-plan rightsize-apply haos-preflight haos-stage-gate haos-runner-deploy haos-vm-check haos-reverse-proxy-enable haos-reverse-proxy-check gateway-cutover-stage-gate pbs-preflight pbs-stage-gate pbs-runner-deploy pbs-vm-check pbs-iso-stage proxmox-local-backup-deploy proxmox-local-backup-check security-baseline-check business-hardening-deploy easybox-browser-probe easybox-authenticated-overview capacity-review surface-go-check surface-go-bootstrap media-fetch media-devices surface-iso-fetch surface-usb-prepare usb-stick-roles-prepare favorites-usb-prepare rpi-sd-flash rpi-firstboot-seed rpi-radio-bootstrap rpi-radio-media-prepare rpi-radio-media-check rpi-radio-usb-integrate rpi-radio-usb-check rpi-azuracast-host-prepare rpi-azuracast-deploy rpi-radio-check rpi-radio-integration-check rpi-azuracast-check rpi-azuracast-tune rpi-resource-check radio-ops-check anydesk-zenbook-install zenbook-remote-check remote-only-check adguard-pilot-check tailscale-split-dns-check inventory-resolution-check
+.PHONY: refresh-context inventory-check ansible-ping qga-check close-day start-day ansible-syntax-check ansible-syntax-check-toolbox ansible-syntax-check-toolbox-tailscale ansible-syntax-check-toolbox-mobile-firewall ansible-syntax-check-proxmox-backups ansible-syntax-check-haos ansible-syntax-check-business-hardening ansible-syntax-check-pbs ansible-syntax-check-surface-go ansible-syntax-check-rpi-radio ansible-syntax-check-rpi-radio-media ansible-syntax-check-rpi-radio-usb ansible-syntax-check-rpi-azuracast-host ansible-syntax-check-rpi-azuracast ansible-syntax-check-rpi-azuracast-tuning ansible-list-business proxmox-storage-check backup-proof backup-list business-drift-check basics-check backup-prune-dry-run backup-prune toolbox-deploy toolbox-network-check toolbox-portal-status-check toolbox-tun-prep toolbox-tailscale-prep toolbox-tailscale-check toolbox-tailscale-login-url toolbox-tailscale-join-assist toolbox-tailscale-mobile-check toolbox-mobile-firewall-deploy toolbox-media-deploy toolbox-media-check toolbox-jellyfin-ui-check toolbox-media-sync-deploy toolbox-media-sync-check toolbox-media-bootstrap-progress toolbox-music-library-report toolbox-music-scan-issues toolbox-music-curation-candidates toolbox-music-curated-layout toolbox-music-quarantine-candidates toolbox-music-selection-sync toolbox-music-selection-seed-report toolbox-music-selection-generate-starter toolbox-music-selection-promote-starter rightsize-stage-gate rightsize-plan rightsize-apply haos-preflight haos-usb-audit haos-stage-gate haos-runner-deploy haos-vm-check haos-reverse-proxy-enable haos-reverse-proxy-check gateway-cutover-stage-gate pbs-preflight pbs-stage-gate pbs-proof-check pbs-restore-proof pbs-runner-deploy pbs-vm-check pbs-guest-check pbs-iso-stage pbs-usb-interim-prepare proxmox-local-backup-deploy proxmox-local-backup-check portable-backup-usb-prepare portable-backup-usb-autoprepare portable-backup-usb-fill portable-backup-usb-check portable-backup-usb-run security-baseline-check business-hardening-deploy easybox-browser-probe easybox-authenticated-overview capacity-review plan-progress surface-go-check surface-go-bootstrap surface-go-root-sleep-harden media-fetch media-devices surface-iso-fetch surface-usb-prepare usb-stick-roles-prepare favorites-usb-prepare rpi-sd-flash rpi-firstboot-seed rpi-radio-bootstrap rpi-radio-media-prepare rpi-radio-media-check rpi-radio-usb-integrate rpi-radio-usb-check rpi-azuracast-host-prepare rpi-azuracast-deploy rpi-radio-check rpi-radio-integration-check rpi-azuracast-check rpi-azuracast-tune rpi-resource-check radio-ops-check anydesk-zenbook-install zenbook-remote-check remote-only-check operator-todos ops-brief adguard-pilot-check tailscale-split-dns-check inventory-resolution-check inventory-unknown-report
 
 refresh-context:
 	./scripts/refresh_live_context.sh
@@ -88,6 +88,9 @@ backup-proof:
 business-drift-check:
 	./scripts/business_service_drift_check.sh
 
+basics-check:
+	./scripts/platform_basics_check.sh
+
 security-baseline-check:
 	./scripts/security_baseline_check.sh
 
@@ -96,6 +99,9 @@ business-hardening-deploy:
 
 toolbox-network-check:
 	./scripts/toolbox_network_check.sh
+
+toolbox-portal-status-check:
+	./scripts/toolbox_portal_status_check.sh
 
 toolbox-tailscale-check:
 	./scripts/toolbox_tailscale_check.sh
@@ -118,6 +124,45 @@ toolbox-media-deploy:
 toolbox-media-check:
 	./scripts/toolbox_media_server_check.sh
 
+toolbox-jellyfin-ui-check:
+	./scripts/toolbox_jellyfin_ui_check.sh
+
+toolbox-media-sync-deploy:
+	ansible-playbook ansible/playbooks/deploy_toolbox_media_sync.yml
+
+toolbox-media-sync-check:
+	./scripts/toolbox_media_sync_check.sh
+
+toolbox-media-bootstrap-progress:
+	./scripts/toolbox_media_bootstrap_progress.sh
+
+toolbox-music-library-report:
+	./scripts/toolbox_music_library_report.sh
+
+toolbox-music-scan-issues:
+	./scripts/toolbox_music_scan_issue_report.sh
+
+toolbox-music-curation-candidates:
+	./scripts/toolbox_music_curation_candidates.sh
+
+toolbox-music-curated-layout:
+	./scripts/toolbox_music_curated_layout_check.sh
+
+toolbox-music-quarantine-candidates:
+	./scripts/toolbox_quarantine_music_candidates.sh
+
+toolbox-music-selection-sync:
+	./scripts/toolbox_music_selection_sync.sh
+
+toolbox-music-selection-seed-report:
+	./scripts/toolbox_music_selection_seed_report.sh
+
+toolbox-music-selection-generate-starter:
+	./scripts/toolbox_music_selection_generate_starter.sh
+
+toolbox-music-selection-promote-starter:
+	./scripts/toolbox_music_selection_promote_starter.sh
+
 rightsize-stage-gate:
 	./scripts/rightsize_stage_gate_check.sh
 
@@ -136,11 +181,17 @@ easybox-authenticated-overview:
 capacity-review:
 	./scripts/capacity_review_check.sh
 
+plan-progress:
+	./scripts/plan_progress_check.sh
+
 surface-go-check:
 	./scripts/surface_go_frontend_check.sh
 
 surface-go-bootstrap:
 	ansible-playbook ansible/playbooks/bootstrap_surface_go_frontend.yml
+
+surface-go-root-sleep-harden:
+	./scripts/surface_go_root_sleep_hardening.sh
 
 media-fetch:
 	./scripts/fetch_install_media.sh
@@ -214,6 +265,12 @@ zenbook-remote-check:
 remote-only-check:
 	./scripts/remote_only_stage_gate_check.sh
 
+operator-todos:
+	./scripts/operator_todo_queue.sh
+
+ops-brief:
+	./scripts/ops_brief.sh
+
 adguard-pilot-check:
 	./scripts/adguard_pilot_readiness_check.sh
 
@@ -223,8 +280,14 @@ tailscale-split-dns-check:
 inventory-resolution-check:
 	./scripts/inventory_resolution_check.sh
 
+inventory-unknown-report:
+	./scripts/inventory_unknown_review_report.sh
+
 haos-preflight:
 	./scripts/haos_preflight_check.sh
+
+haos-usb-audit:
+	./scripts/haos_usb_audit_report.sh
 
 haos-stage-gate:
 	./scripts/haos_stage_gate_check.sh
@@ -250,20 +313,47 @@ pbs-preflight:
 pbs-stage-gate:
 	./scripts/pbs_stage_gate_check.sh
 
+pbs-proof-check:
+	./scripts/pbs_proof_backup_check.sh
+
+pbs-restore-proof:
+	./scripts/proxmox_pbs_restore_proof.sh
+
 pbs-runner-deploy:
 	ansible-playbook ansible/playbooks/deploy_pbs_vm_runner.yml
 
 pbs-vm-check:
 	./scripts/proxmox_pbs_vm_check.sh
 
+pbs-guest-check:
+	./scripts/pbs_guest_postinstall_check.sh
+
 pbs-iso-stage:
 	./scripts/proxmox_stage_pbs_iso.sh
+
+pbs-usb-interim-prepare:
+	./scripts/proxmox_prepare_interim_pbs_usb_datastore.sh
 
 proxmox-local-backup-deploy:
 	ansible-playbook ansible/playbooks/deploy_proxmox_local_backup_ops.yml
 
 proxmox-local-backup-check:
 	./scripts/proxmox_local_backup_ops_check.sh
+
+portable-backup-usb-prepare:
+	./scripts/proxmox_portable_backup_usb_prepare.sh $(DEV)
+
+portable-backup-usb-autoprepare:
+	./scripts/proxmox_portable_backup_usb_autoprepare.sh $(DEV)
+
+portable-backup-usb-fill:
+	./scripts/proxmox_portable_backup_usb_fill.sh
+
+portable-backup-usb-check:
+	./scripts/proxmox_portable_backup_usb_check.sh
+
+portable-backup-usb-run:
+	./scripts/proxmox_portable_backup_usb_run.sh $(DEV)
 
 backup-prune-dry-run:
 	./scripts/proxmox_prune_local_backups.sh

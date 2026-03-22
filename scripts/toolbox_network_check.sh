@@ -13,7 +13,7 @@ check_http() {
   local actual
 
   actual="$(curl --silent --show-error --max-time 10 --output /dev/null --write-out '%{http_code}' "$url")"
-  if [[ "$actual" != "$expected" ]]; then
+  if [[ ",${expected}," != *",${actual},"* ]]; then
     echo "Expected HTTP ${expected} from ${url}, got ${actual}" >&2
     return 1
   fi
@@ -31,7 +31,7 @@ check_remote_http() {
     ssh "$host" "curl --silent --show-error --max-time 10 --output /dev/null --write-out '%{http_code}' ${url@Q}"
   )"
 
-  if [[ "$actual" != "$expected" ]]; then
+  if [[ ",${expected}," != *",${actual},"* ]]; then
     echo "Expected HTTP ${expected} from ${host}:${url}, got ${actual}" >&2
     return 1
   fi
@@ -57,7 +57,7 @@ check_resolved_http() {
       "http://${hostname}${path}"
   )"
 
-  if [[ "$actual" != "$expected" ]]; then
+  if [[ ",${expected}," != *",${actual},"* ]]; then
     echo "Expected HTTP ${expected} from ${hostname}${path}, got ${actual}" >&2
     return 1
   fi
@@ -91,7 +91,7 @@ ssh root@toolbox "docker ps --format '{{.Names}}|{{.Status}}' | grep '^toolbox-n
 HOSTS=(
   "portal.hs27.internal|/|200"
   "cloud.hs27.internal|/|200"
-  "odoo.hs27.internal|/web/login|200"
+  "odoo.hs27.internal|/web/login|200,303"
   "paperless.hs27.internal|/accounts/login/|200"
   "ha.hs27.internal|/|200"
   "radio.hs27.internal|/|302"

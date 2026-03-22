@@ -1,0 +1,16 @@
+# Favorites starter suggestion
+# Generated automatically from the current bootstrap music seed.
+# Relative paths under /srv/media-library/music/bootstrap-radio-usb
+
+clean/Roza Terenzi & D. Tiffany
+clean/Roza Terenzi
+clean/Hermeth
+clean/Mr. Ho
+clean/Itoa
+clean/Dubman F_
+clean/Human Safari
+clean/Sam Brickel
+clean/Adam Pits
+clean/PRZ
+clean/DJ MELL G
+clean/Hedchef

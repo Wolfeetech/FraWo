@@ -32,18 +32,30 @@ pbs_4gb_fit="$(extract_value pbs_4gb_fit "$preflight_output")"
 pbs_system_disk_fit="$(extract_value pbs_system_disk_fit "$preflight_output")"
 pbs_iso_present="$(extract_value pbs_iso_present "$preflight_output")"
 separate_backup_storage_ready="$(extract_value separate_backup_storage_ready "$preflight_output")"
+guest_postinstall_output="$("${ROOT_DIR}/scripts/pbs_guest_postinstall_check.sh")"
+pbs_guest_postinstall_ready="$(extract_value pbs_guest_postinstall_ready "$guest_postinstall_output")"
+proof_backup_output="$("${ROOT_DIR}/scripts/pbs_proof_backup_check.sh")"
+pbs_storage_active="$(extract_value pbs_storage_active "$proof_backup_output")"
+pbs_proof_backup_exists="$(extract_value pbs_proof_backup_exists "$proof_backup_output")"
 
 pbs_stage_gate_ready="no"
-if [[ "$backup_timer_live" == "yes" && "$local_backup_archives_present" == "yes" && "$vm240_exists" == "no" && "$pbs_4gb_fit" == "yes" && "$pbs_system_disk_fit" == "yes" && "$pbs_iso_present" == "yes" && "$separate_backup_storage_ready" == "yes" ]]; then
+if [[ "$backup_timer_live" == "yes" && "$local_backup_archives_present" == "yes" && "$pbs_guest_postinstall_ready" == "yes" && "$pbs_storage_active" == "yes" && "$pbs_proof_backup_exists" == "yes" ]]; then
   pbs_stage_gate_ready="yes"
 fi
 
 echo "backup_timer_live=${backup_timer_live}"
 echo "local_backup_archives_present=${local_backup_archives_present}"
+echo "pbs_guest_postinstall_ready=${pbs_guest_postinstall_ready}"
+echo "pbs_storage_active=${pbs_storage_active}"
+echo "pbs_proof_backup_exists=${pbs_proof_backup_exists}"
 echo "pbs_stage_gate_ready=${pbs_stage_gate_ready}"
 
 if [[ "$pbs_stage_gate_ready" == "yes" ]]; then
-  echo "recommendation=build_pbs_vm_240_now"
+  echo "recommendation=begin_restore_drills_on_pbs_v1"
+elif [[ "$pbs_guest_postinstall_ready" == "yes" && "$pbs_storage_active" == "yes" && "$pbs_proof_backup_exists" != "yes" ]]; then
+  echo "recommendation=stabilize_proof_backup_on_active_pbs"
+elif [[ "$vm240_exists" == "yes" ]]; then
+  echo "recommendation=finish_guest_install_for_existing_vm240"
 elif [[ "$separate_backup_storage_ready" != "yes" ]]; then
   echo "recommendation=wait_for_separate_backup_storage_before_building_pbs_vm"
 elif [[ "$pbs_iso_present" != "yes" ]]; then

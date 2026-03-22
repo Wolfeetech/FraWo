@@ -49,17 +49,77 @@ toolbox_network_static_file_hosts:
 toolbox_network_placeholder_hosts: []
 toolbox_network_portal_links:
   - label: Media
+    group: Playback
+    hint: Jellyfin for movies, shows, music and TV clients
     url: http://media.hs27.internal
+  - label: Media Mobile
+    group: Playback
+    hint: Interim Tailscale path for mobile testing
+    url: http://100.99.206.128:8449
+  - label: Radio
+    group: Playback
+    hint: Live station and player surface
+    url: http://radio.hs27.internal
+  - label: Radio Control
+    group: Playback
+    hint: AzuraCast admin and station control
+    url: http://radio.hs27.internal/login
   - label: Home Assistant
+    group: Operations
+    hint: Automation, dashboards and device state
     url: http://ha.hs27.internal
   - label: Nextcloud
+    group: Work
+    hint: Files, collaboration and shared documents
     url: http://cloud.hs27.internal
-  - label: Radio
-    url: http://radio.hs27.internal
   - label: Paperless
+    group: Work
+    hint: Document archive and OCR workflow
     url: http://paperless.hs27.internal
   - label: Odoo
+    group: Work
+    hint: ERP, CRM and operations login
     url: http://odoo.hs27.internal/web/login
+  - label: Portal Mobile
+    group: Operations
+    hint: Tailscale-only frontdoor for remote access
+    url: http://100.99.206.128:8447
+toolbox_network_status_targets:
+  - key: media
+    label: Media
+    check_url: http://127.0.0.1:8096
+    success_codes: [200, 302]
+    summary: Jellyfin for TVs, browser playback and shared media
+  - key: radio
+    label: Radio
+    check_url: http://100.64.23.77/api/nowplaying
+    success_codes: [200]
+    summary: AzuraCast live station and now playing feed
+  - key: home_assistant
+    label: Home Assistant
+    check_url: http://192.168.2.24:8123
+    success_codes: [200]
+    summary: Household automation and dashboards
+  - key: nextcloud
+    label: Nextcloud
+    check_url: http://192.168.2.21
+    success_codes: [200]
+    summary: Files, collaboration and shared storage
+  - key: paperless
+    label: Paperless
+    check_url: http://192.168.2.23:8000
+    success_codes: [200]
+    summary: Document archive and OCR workflows
+  - key: odoo
+    label: Odoo
+    check_url: http://192.168.2.22:8069/web/login
+    success_codes: [200]
+    summary: ERP, CRM and business workflows
+  - key: portal
+    label: Portal
+    check_url: http://127.0.0.1
+    success_codes: [200]
+    summary: Internal frontdoor and service navigation
 toolbox_network_tailscale_mobile_proxies:
   - name: media_mobile
     listen_port: 8449
@@ -107,4 +167,21 @@ toolbox_media_library_dirs:
   - shows
   - music
   - homevideos
+toolbox_media_curation_dirs:
+  - movies/inbox
+  - shows/inbox
+  - music/bootstrap-radio-usb
+  - music/curated
+  - music/favorites
+  - music/inbox
+  - homevideos/inbox
+  - quarantine
+toolbox_media_radio_sync_key_path: /root/.ssh/homeserver2027_media_sync
+toolbox_media_radio_sync_source_user: wolf
+toolbox_media_radio_sync_source_host: 100.64.23.77
+toolbox_media_radio_sync_source_path: /srv/radio-library/music-usb/yourparty.radio/
+toolbox_media_radio_sync_target_path: /srv/media-library/music/bootstrap-radio-usb/
+toolbox_media_radio_sync_log_path: /var/log/homeserver2027-media-sync.log
+toolbox_media_radio_sync_exclude_file: /etc/homeserver2027/media-sync-excludes.txt
+toolbox_media_quarantine_root: /srv/media-library/quarantine/bootstrap-review
 toolbox_media_published_server_url: http://media.hs27.internal

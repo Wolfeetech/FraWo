@@ -1,0 +1,11 @@
+[Unit]
+Description=Periodic Homeserver 2027 media sync from radio node
+
+[Timer]
+OnBootSec=10m
+OnUnitActiveSec=6h
+AccuracySec=5m
+Unit=homeserver2027-media-sync.service
+
+[Install]
+WantedBy=timers.target

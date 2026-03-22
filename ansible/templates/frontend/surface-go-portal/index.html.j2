@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Homeserver 2027 Frontend</title>
+  <title>FRAWO Surface</title>
   <style>
     :root {
-      --ink: #0f172a;
+      --ink: #14213d;
       --paper: #f3efe5;
-      --accent: #0f766e;
+      --accent: #d97706;
       --accent-soft: #d8efe8;
-      --frame: #d8d1c2;
+      --frame: rgba(20, 33, 61, 0.12);
     }
     * {
       box-sizing: border-box;
@@ -21,31 +21,142 @@
       font-family: "Noto Sans", "Segoe UI", sans-serif;
       color: var(--ink);
       background:
-        radial-gradient(circle at top left, rgba(15, 118, 110, 0.18), transparent 30%),
+        radial-gradient(circle at top left, rgba(217, 119, 6, 0.12), transparent 26%),
+        radial-gradient(circle at bottom right, rgba(15, 118, 110, 0.18), transparent 32%),
         linear-gradient(160deg, #f7f4ec 0%, #ece6da 45%, #f4f0e7 100%);
-      display: grid;
-      place-items: center;
-      padding: 2rem;
+      padding: 1.4rem;
     }
     main {
-      width: min(960px, 100%);
+      width: min(1180px, 100%);
+      margin: 0 auto;
       background: rgba(255, 255, 255, 0.88);
       border: 1px solid var(--frame);
-      border-radius: 28px;
-      padding: 2.5rem;
+      border-radius: 30px;
+      padding: 1.4rem;
       box-shadow: 0 24px 80px rgba(15, 23, 42, 0.12);
       backdrop-filter: blur(8px);
     }
+    .hero {
+      display: grid;
+      gap: 0.8rem;
+      margin-bottom: 1.2rem;
+    }
     h1 {
-      margin: 0 0 0.75rem;
-      font-size: clamp(2rem, 5vw, 3.6rem);
+      margin: 0;
+      font-size: clamp(2.4rem, 6vw, 4.2rem);
       line-height: 1;
       letter-spacing: -0.04em;
     }
     p {
-      margin: 0 0 2rem;
-      font-size: 1.1rem;
-      max-width: 48rem;
+      margin: 0;
+      font-size: 1.02rem;
+      max-width: 52rem;
+      line-height: 1.5;
+    }
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.6rem 0.82rem;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid var(--frame);
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+    .pill::before {
+      content: "";
+      width: 0.55rem;
+      height: 0.55rem;
+      border-radius: 999px;
+      background: #0f766e;
+    }
+    .sections {
+      display: grid;
+      gap: 1rem;
+    }
+    .status-strip {
+      display: grid;
+      gap: 1rem;
+      margin-bottom: 1.2rem;
+    }
+    .status-overview {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 0.85rem;
+    }
+    .status-card {
+      padding: 1rem;
+      border-radius: 20px;
+      border: 1px solid var(--frame);
+      background: rgba(255, 255, 255, 0.72);
+    }
+    .status-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      opacity: 0.72;
+    }
+    .status-value {
+      display: block;
+      margin-top: 0.35rem;
+      font-size: 1.45rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+    .service-health {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 0.75rem;
+    }
+    .service-pill {
+      display: grid;
+      gap: 0.2rem;
+      padding: 0.85rem 0.9rem;
+      border-radius: 18px;
+      border: 1px solid var(--frame);
+      background: rgba(255, 255, 255, 0.78);
+    }
+    .service-pill.ok {
+      border-color: rgba(15, 118, 110, 0.26);
+      box-shadow: inset 0 0 0 1px rgba(15, 118, 110, 0.06);
+    }
+    .service-pill.attention {
+      border-color: rgba(217, 119, 6, 0.34);
+      box-shadow: inset 0 0 0 1px rgba(217, 119, 6, 0.08);
+    }
+    .service-pill strong {
+      font-size: 1rem;
+    }
+    .service-meta {
+      font-size: 0.84rem;
+      opacity: 0.76;
+    }
+    .section {
+      border: 1px solid var(--frame);
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.52);
+      padding: 0.9rem;
+    }
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 0.75rem;
+      margin-bottom: 0.8rem;
+    }
+    .section h2 {
+      margin: 0;
+      font-size: 1.15rem;
+    }
+    .section-note {
+      font-size: 0.88rem;
+      opacity: 0.75;
     }
     .grid {
       display: grid;
@@ -53,15 +164,15 @@
       gap: 1rem;
     }
     a {
-      display: block;
-      padding: 1.2rem 1.1rem;
-      border-radius: 18px;
+      display: grid;
+      gap: 0.5rem;
+      min-height: 175px;
+      padding: 1.15rem 1rem;
+      border-radius: 20px;
       border: 1px solid var(--frame);
-      background: linear-gradient(180deg, rgba(216, 239, 232, 0.7), rgba(255, 255, 255, 0.95));
+      background: linear-gradient(180deg, rgba(216, 239, 232, 0.6), rgba(255, 255, 255, 0.95));
       color: inherit;
       text-decoration: none;
-      font-size: 1.1rem;
-      font-weight: 700;
       transition: transform 120ms ease, box-shadow 120ms ease;
     }
     a:focus,
@@ -70,28 +181,148 @@
       box-shadow: 0 16px 32px rgba(15, 118, 110, 0.14);
       outline: none;
     }
+    .eyebrow {
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    strong {
+      font-size: 1.1rem;
+    }
+    .hint {
+      font-size: 0.95rem;
+      line-height: 1.42;
+      opacity: 0.86;
+    }
     .url {
       display: block;
-      margin-top: 0.5rem;
+      margin-top: auto;
       font-size: 0.86rem;
       font-weight: 500;
       opacity: 0.75;
       word-break: break-word;
     }
+    @media (max-width: 720px) {
+      body {
+        padding: 0.8rem;
+      }
+      main {
+        padding: 1rem;
+      }
+      a {
+        min-height: 0;
+      }
+      .section-head {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
   </style>
 </head>
 <body>
   <main>
-    <h1>Homeserver 2027</h1>
-    <p>Shared frontend for the internal services used by Wolf and Franz. This page stays local to the Surface Go and avoids running any extra webserver on the device.</p>
-    <section class="grid">
-{% for link in surface_go_portal_links %}
-      <a href="{{ link.url }}">
-        {{ link.label }}
-        <span class="url">{{ link.url }}</span>
-      </a>
+    <section class="hero">
+      <h1>FRAWO Surface</h1>
+      <p>Gemeinsames Touch-Frontend fuer Medien, Radio und Haushalt. Die Seite liegt lokal auf dem Geraet, zeigt aber direkt in die aktiven internen Dienste.</p>
+      <div class="hero-meta">
+        <span class="pill">Touch-Kiosk zuerst</span>
+        <span class="pill">Radio und Medien bereit</span>
+        <span class="pill">Admin-Zugang getrennt</span>
+      </div>
+    </section>
+    <section class="status-strip">
+      <div class="status-overview">
+        <article class="status-card">
+          <span class="status-label">Plattform</span>
+          <span class="status-value" id="platform-core">Laedt</span>
+        </article>
+        <article class="status-card">
+          <span class="status-label">Gesunde Dienste</span>
+          <span class="status-value" id="healthy-count">-</span>
+        </article>
+        <article class="status-card">
+          <span class="status-label">Snapshot</span>
+          <span class="status-value" id="snapshot-time">Ausstehend</span>
+        </article>
+        <article class="status-card">
+          <span class="status-label">Medienimport</span>
+          <span class="status-value" id="media-sync-state">Ausstehend</span>
+          <span class="service-meta" id="media-sync-meta">Warte auf Sync-Daten</span>
+        </article>
+      </div>
+      <div class="service-health" id="service-health">
+        <article class="service-pill">
+          <strong>Status-Snapshot</strong>
+          <span class="service-meta">Warte auf Laufzeitdaten</span>
+        </article>
+      </div>
+    </section>
+    <section class="sections">
+{% for group_name, links in surface_go_portal_links | groupby('group') %}
+      <section class="section">
+        <div class="section-head">
+          <h2>{{ group_name }}</h2>
+          <span class="section-note">{{ links | length }} Ziele</span>
+        </div>
+        <div class="grid">
+{% for link in links %}
+          <a href="{{ link.url }}">
+            <span class="eyebrow">{{ link.group }}</span>
+            <strong>{{ link.label }}</strong>
+            <span class="hint">{{ link.hint | default('Interner Einstiegspunkt') }}</span>
+            <span class="url">{{ link.url }}</span>
+          </a>
+{% endfor %}
+        </div>
+      </section>
 {% endfor %}
     </section>
   </main>
+  <script>
+    const platformCore = document.getElementById("platform-core");
+    const healthyCount = document.getElementById("healthy-count");
+    const snapshotTime = document.getElementById("snapshot-time");
+    const mediaSyncState = document.getElementById("media-sync-state");
+    const mediaSyncMeta = document.getElementById("media-sync-meta");
+    const serviceHealth = document.getElementById("service-health");
+
+    async function loadStatus() {
+      try {
+        const response = await fetch("http://portal.hs27.internal/status.json", { cache: "no-store" });
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+        const data = await response.json();
+        platformCore.textContent = data.platform_core === "ok" ? "Stabil" : "Achtung";
+        healthyCount.textContent = `${data.healthy_services}/${data.total_services}`;
+        snapshotTime.textContent = new Date(data.generated_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+        mediaSyncState.textContent = data.media_sync.state === "running" ? "Import laeuft" : data.media_sync.state;
+        mediaSyncMeta.textContent = `${data.media_sync.target_file_count} files • ${data.media_sync.target_size}`;
+        serviceHealth.innerHTML = data.services.map((service) => `
+          <article class="service-pill ${service.status}">
+            <strong>${service.label}</strong>
+            <span class="service-meta">${service.status === "ok" ? "OK" : "Pruefen"} • HTTP ${service.http_code}</span>
+            <span class="service-meta">${service.summary}</span>
+          </article>
+        `).join("");
+      } catch (error) {
+        platformCore.textContent = "Offline";
+        healthyCount.textContent = "-";
+        snapshotTime.textContent = "Nicht verfuegbar";
+        mediaSyncState.textContent = "Unbekannt";
+        mediaSyncMeta.textContent = "Sync-Daten nicht verfuegbar";
+        serviceHealth.innerHTML = `
+          <article class="service-pill attention">
+            <strong>Status-Snapshot nicht verfuegbar</strong>
+            <span class="service-meta">Das lokale Portal ist bereit, aber der gemeinsame Kontroll-Snapshot konnte noch nicht geladen werden.</span>
+          </article>
+        `;
+      }
+    }
+
+    loadStatus();
+  </script>
 </body>
 </html>

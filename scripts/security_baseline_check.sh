@@ -124,7 +124,7 @@ filter_toolbox_effective_lan_ports() {
 import sys
 
 ports = [p for p in sys.argv[1].split(',') if p]
-  excluded = {"8443", "8444", "8445", "8446", "8447", "8448", "8449"}
+excluded = {"8443", "8444", "8445", "8446", "8447", "8448", "8449"}
 filtered = [p for p in ports if p not in excluded]
 print(','.join(filtered))
 PY

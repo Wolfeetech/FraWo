@@ -26,15 +26,15 @@
     - `shellyplugsg3-8cbfea968024` -> `192.168.2.107` / `8C:BF:EA:96:80:24`
   - Remaining router-only labels still to map 1:1 onto active IPs:
     - none
-  - the authenticated overview also shows additional current router labels requiring clean classification:
-    - `Surface_Laptop` currently appears separately on `192.168.2.118`
-    - `yourparty-Surface-Go` is separately visible on `192.168.2.154`
-    - `RE355` is currently visible on `192.168.2.126`
-    - `iPhone-3-Pro` is currently visible on `192.168.2.129`
-  - The Surface Go is currently not yet in production shape:
-    - an earlier probe showed the Ubuntu `nginx` default page on `HTTP/80`
-    - the latest remote probe saw `SSH/22`, `HTTP/80` and `HTTPS/443` closed
-    - clean rebuild to Ubuntu Desktop 24.04 LTS is the canonical next step
+  - the authenticated overview also shows additional current router labels worth keeping as soft aliases:
+    - `Surface_Laptop` had appeared separately on `192.168.2.118`
+    - `yourparty-Surface-Go` is visible on `192.168.2.154`
+    - `RE355` is visible on `192.168.2.126`
+    - `iPhone-3-Pro` is visible on `192.168.2.129`
+  - The Surface Go is now rebuilt and operational as a managed frontend:
+    - SSH and Tailscale admin are live
+    - local portal path and sleep hardening are live
+    - remaining work is touch/browser UX polish, not baseline rebuild
 - Planned edge replacement:
   - `UniFi Cloud Gateway Ultra (UCG-Ultra)` is available in hardware but not yet part of the active network inventory
   - `AdGuard Home` is active in opt-in mode on `CT 100` and currently serves `hs27.internal` plus external DNS for test clients
@@ -85,7 +85,7 @@
 | `192.168.2.126` | `SonRoku.local` | `EC:08:6B:31:19:56` / TP-Link | Roku TV addon | `media-private` | private-household | app | dhcp | low | active | nmap + router page + user note | confirmed as Roku TV addon |
 | `192.168.2.132` | `wolf-ZenBook-UX325EA-UX325EA.local` | `00:42:38:B2:66:82` / Intel | laptop | `trusted-clients` | wolf | ssh/local-device + tailscale + anydesk | dhcp | medium | active | nmap + local verification | primary admin client; Tailscale joined and AnyDesk active |
 | `192.168.2.134` | `udhcp 1.24.1` | `B0:4A:39:0E:38:84` / Roborock | robot vacuum candidate | `smart-home-iot` | private-household | app | dhcp | low | active | authenticated router overview + prior nmap | router label now confirmed; supersedes the older `192.168.2.135` Roborock observation |
-| `192.168.2.154` | `yourparty-Surface-Go.local` | `D8:C4:97:C6:0E:B0` / Microsoft | shared touch frontend | `trusted-clients` | shared-household | local-device | dhcp | medium | active-discovered-rebuild-planned | lan probe + user confirmation | clean rebuild to Ubuntu Desktop 24.04 LTS, then enable SSH, Tailscale, kiosk user and fixed reservation; latest remote probe saw no open `22/80/443` path |
+| `192.168.2.154` | `yourparty-Surface-Go.local` | `D8:C4:97:C6:0E:B0` / Microsoft | shared touch frontend | `trusted-clients` | shared-household | ssh + local-device + tailscale | dhcp | medium | active-managed | ssh + tailscale + user confirmation | keep managed frontend path stable; remaining work is local browser/touch UX polish and later DHCP reservation |
 | `192.168.2.135` | `localhost` | `B0:4A:39:0E:38:84` / Roborock | robot vacuum | `smart-home-iot` | private-household | app | dhcp | low | stale-observation | older nmap only | superseded by the authenticated router overview on `192.168.2.134`; keep only as historical scan note |
 | `192.168.2.24` | `homeassistant.local` | `BC:24:11:D5:BA:30` / Proxmox | Home Assistant OS VM | `smart-home-iot` | homeserver-gbr | web + qga | static-in-guest | high | active | qm guest exec + qga + http + caddy | keep `ha.hs27.internal` and local backup coverage green; add USB adapters when physically present |
 
@@ -93,10 +93,10 @@
 
 | IP | Hostname | MAC / Vendor | Device Class | Zone | Owner | Mgmt | DHCP/Static | Criticality | Status | Source | Next Action |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `192.168.2.141` | `d0:c9:07:ef:8c:32` | `D0:C9:07:EF:8C:32` / private | unresolved private-mac client | `unknown-review` | unknown | unknown | dhcp | low | active | nmap + authenticated router overview | identify actual owner or device; router labels are already resolved, so this is now a pure owner-mapping task |
-| `192.168.2.142` | `d0:c9:07:da:70:6c` | `D0:C9:07:DA:70:6C` / private | unresolved private-mac client | `unknown-review` | unknown | unknown | dhcp | low | active | nmap + authenticated router overview | identify actual owner or device; router labels are already resolved, so this is now a pure owner-mapping task |
-| `192.168.2.143` | `d0:c9:07:da:6e:f2` | `D0:C9:07:DA:6E:F2` / private | unresolved private-mac client | `unknown-review` | unknown | unknown | dhcp | low | active | nmap + authenticated router overview | identify actual owner or device; router labels are already resolved, so this is now a pure owner-mapping task |
-| `192.168.2.144` | `d0:c9:07:ef:8a:f0` | `D0:C9:07:EF:8A:F0` / private | unresolved private-mac client | `unknown-review` | unknown | unknown | dhcp | low | active | nmap + authenticated router overview | identify actual owner or device; router labels are already resolved, so this is now a pure owner-mapping task |
+| `192.168.2.141` | `d0:c9:07:ef:8c:32` | `D0:C9:07:EF:8C:32` / private | likely smartphone/tablet | `unknown-review` | pending-operator-action | unknown | dhcp | low | active | nmap + browser probe | responds to ping, ports closed. AKTION VON DIR ERFORDERLICH: Check personal devices for this MAC |
+| `192.168.2.142` | `d0:c9:07:da:70:6c` | `D0:C9:07:DA:70:6C` / private | likely smartphone/tablet | `unknown-review` | pending-operator-action | unknown | dhcp | low | active | nmap + browser probe | responds to ping, ports closed. AKTION VON DIR ERFORDERLICH: Check personal devices for this MAC |
+| `192.168.2.143` | `d0:c9:07:da:6e:f2` | `D0:C9:07:DA:6E:F2` / private | likely smartphone/tablet | `unknown-review` | pending-operator-action | unknown | dhcp | low | active | nmap + browser probe | responds to ping, ports closed. AKTION VON DIR ERFORDERLICH: Check personal devices for this MAC |
+| `192.168.2.144` | `d0:c9:07:ef:8a:f0` | `D0:C9:07:EF:8A:F0` / private | likely smartphone/tablet | `unknown-review` | pending-operator-action | unknown | dhcp | low | active | nmap + browser probe | responds to ping, ports closed. AKTION VON DIR ERFORDERLICH: Check personal devices for this MAC |
 
 ## Planned Network Hardware
 
@@ -110,7 +110,7 @@
 | --- | --- | --- | --- |
 | `AdGuard Home` | internal DNS filtering, local upstream for `hs27.internal`, opt-in resolver for trusted clients | active in opt-in mode on `CT 100`; not LAN default DNS | keep on pilot clients first; promote to primary LAN DNS only after controlled DHCP ownership, lease cleanup and rollback proof |
 | `AzuraCast radio node` | dedicated internal radio control plane on a Raspberry Pi 4 behind the internal frontdoor | active on `radio-node` (`192.168.2.155`, `100.64.23.77`); `radio.hs27.internal` now proxies to the Pi, the login/API path is live and the first station/media layout are the remaining steps | create the first station, apply the low-resource station profile and then bind the final `RadioLibrary` / `RadioAssets` media path |
-| `Proxmox Backup Server (VM 240)` | future durable backup control plane for Proxmox jobs, retention and recurring restore drills | planned, not active; runner and stage-gate path are prepared, official PBS ISO already staged on Proxmox | build only after separate backup storage is mounted on Proxmox |
+| `Proxmox Backup Server (VM 240)` | durable backup control plane for Proxmox jobs, retention and recurring restore drills | active as interim PBS-v1 on `192.168.2.25`; datastore `hs27-interim` is active on USB-backed storage, scheduled jobs are live, and first proof-backup plus restore drill are verified | keep the `64GB` USB attached, continue recurring restore drills, and later migrate to larger dedicated PBS storage |
 | `Home Assistant OS (VM 210)` | smart-home control plane with Supervisor, Add-ons and later USB passthrough | active on stable in-guest address `192.168.2.24`; internal frontdoor `ha.hs27.internal` now live via `CT 100` | keep reverse-proxy trust and interim local backup coverage verified; add USB passthrough only once adapters are physically present |
 | `Public Edge` | later public reverse-proxy layer for selected endpoints with TLS and monitoring | planned, not active | activate only after UCG-grade firewall control, final inventory/zones, proven backups, and documented domain/DNS/TLS/auth/monitoring/rollback |
 | `Ollama` | local AI inference workload | wishlist only, not active | revisit only after RAM expansion, separate inference node or external AI host strategy |

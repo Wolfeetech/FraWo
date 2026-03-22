@@ -1,0 +1,145 @@
+---
+- name: Prepare toolbox side of radio-to-media sync
+  hosts: toolbox
+  remote_user: root
+  vars:
+    ansible_remote_tmp: /tmp/.ansible-root
+
+  pre_tasks:
+    - name: Assert toolbox media sync metadata is present
+      ansible.builtin.assert:
+        that:
+          - toolbox_media_library_root is defined
+          - toolbox_media_curation_dirs is defined
+          - toolbox_media_radio_sync_key_path is defined
+          - toolbox_media_radio_sync_source_user is defined
+          - toolbox_media_radio_sync_source_host is defined
+          - toolbox_media_radio_sync_source_path is defined
+          - toolbox_media_radio_sync_target_path is defined
+
+  tasks:
+    - name: Install toolbox media sync packages
+      ansible.builtin.apt:
+        name:
+          - rsync
+          - openssh-client
+        state: present
+        update_cache: true
+
+    - name: Ensure toolbox media curation directories exist
+      ansible.builtin.file:
+        path: "{{ toolbox_media_library_root }}/{{ item }}"
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+      loop: "{{ toolbox_media_curation_dirs }}"
+
+    - name: Ensure toolbox media sync config directory exists
+      ansible.builtin.file:
+        path: "{{ toolbox_media_radio_sync_exclude_file | dirname }}"
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Ensure toolbox media sync exclude file exists
+      ansible.builtin.file:
+        path: "{{ toolbox_media_radio_sync_exclude_file }}"
+        state: touch
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Ensure root ssh directory exists on toolbox
+      ansible.builtin.file:
+        path: /root/.ssh
+        state: directory
+        owner: root
+        group: root
+        mode: "0700"
+
+    - name: Generate dedicated toolbox media sync ssh key
+      ansible.builtin.command:
+        cmd: "ssh-keygen -t ed25519 -N '' -f {{ toolbox_media_radio_sync_key_path }} -C homeserver2027-media-sync"
+      args:
+        creates: "{{ toolbox_media_radio_sync_key_path }}"
+
+    - name: Read toolbox media sync public key
+      ansible.builtin.slurp:
+        src: "{{ toolbox_media_radio_sync_key_path }}.pub"
+      register: toolbox_media_sync_pubkey_raw
+
+    - name: Expose toolbox media sync public key to later plays
+      ansible.builtin.set_fact:
+        toolbox_media_sync_pubkey: "{{ toolbox_media_sync_pubkey_raw.content | b64decode | trim }}"
+
+    - name: Install toolbox media sync script
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/media/homeserver2027-sync-radio-usb-to-toolbox-media.sh.j2"
+        dest: /usr/local/sbin/homeserver2027-sync-radio-usb-to-toolbox-media.sh
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Install toolbox media sync service
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/systemd/homeserver2027-media-sync.service.j2"
+        dest: /etc/systemd/system/homeserver2027-media-sync.service
+        owner: root
+        group: root
+        mode: "0644"
+      notify: reload systemd
+
+    - name: Install toolbox media sync timer
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/systemd/homeserver2027-media-sync.timer.j2"
+        dest: /etc/systemd/system/homeserver2027-media-sync.timer
+        owner: root
+        group: root
+        mode: "0644"
+      notify: reload systemd
+
+  handlers:
+    - name: reload systemd
+      ansible.builtin.systemd:
+        daemon_reload: true
+      when: not ansible_check_mode
+
+- name: Authorize toolbox media sync key on radio node
+  hosts: raspberry_pi_radio
+  become: true
+
+  tasks:
+    - name: Assert toolbox media sync public key is available
+      ansible.builtin.assert:
+        that:
+          - hostvars['toolbox']['toolbox_media_sync_pubkey'] is defined
+          - hostvars['toolbox']['toolbox_media_sync_pubkey'] | length > 0
+
+    - name: Authorize toolbox media sync key for radio admin user
+      ansible.posix.authorized_key:
+        user: "{{ rpi_radio_admin_user }}"
+        state: present
+        key: "{{ hostvars['toolbox']['toolbox_media_sync_pubkey'] }}"
+
+- name: Enable and start toolbox media sync timer
+  hosts: toolbox
+  remote_user: root
+  vars:
+    ansible_remote_tmp: /tmp/.ansible-root
+
+  tasks:
+    - name: Ensure toolbox media sync timer is enabled
+      ansible.builtin.systemd:
+        name: homeserver2027-media-sync.timer
+        enabled: true
+        state: started
+        daemon_reload: true
+      when: not ansible_check_mode
+
+    - name: Kick off first toolbox media sync run
+      ansible.builtin.systemd:
+        name: homeserver2027-media-sync.service
+        state: started
+      when: not ansible_check_mode

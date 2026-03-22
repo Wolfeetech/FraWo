@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+URL="{{ surface_go_kiosk_start_url }}"
+BROWSER="{{ surface_go_browser_binary }}"
+
+pkill -u "${USER}" -x epiphany >/dev/null 2>&1 || true
+sleep 1
+exec "${BROWSER}" --private-instance "${URL}"

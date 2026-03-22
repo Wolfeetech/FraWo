@@ -20,6 +20,7 @@
           - toolbox_network_placeholder_hosts is defined
           - toolbox_network_adguard_rewrites is defined
           - toolbox_network_portal_links is defined
+          - toolbox_network_status_targets is defined
           - homeserver_vault_adguard_admin_password is defined
           - homeserver_vault_adguard_admin_password_hash is defined
 
@@ -99,6 +100,32 @@
         mode: "0644"
       notify: restart toolbox network stack
 
+    - name: Install toolbox portal status snapshot generator
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/network/homeserver2027-portal-status-snapshot.py.j2"
+        dest: /usr/local/sbin/homeserver2027-portal-status-snapshot.py
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Install toolbox portal status snapshot service
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/systemd/homeserver2027-portal-status-snapshot.service.j2"
+        dest: /etc/systemd/system/homeserver2027-portal-status-snapshot.service
+        owner: root
+        group: root
+        mode: "0644"
+      notify: reload systemd
+
+    - name: Install toolbox portal status snapshot timer
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/systemd/homeserver2027-portal-status-snapshot.timer.j2"
+        dest: /etc/systemd/system/homeserver2027-portal-status-snapshot.timer
+        owner: root
+        group: root
+        mode: "0644"
+      notify: reload systemd
+
     - name: Install systemd service for toolbox stack
       ansible.builtin.template:
         src: "{{ playbook_dir }}/../templates/systemd/homeserver-compose-stack.service.j2"
@@ -119,6 +146,20 @@
         enabled: true
         state: started
         daemon_reload: true
+      when: not ansible_check_mode
+
+    - name: Ensure toolbox portal status snapshot timer is enabled
+      ansible.builtin.systemd:
+        name: homeserver2027-portal-status-snapshot.timer
+        enabled: true
+        state: started
+        daemon_reload: true
+      when: not ansible_check_mode
+
+    - name: Run toolbox portal status snapshot once
+      ansible.builtin.systemd:
+        name: homeserver2027-portal-status-snapshot.service
+        state: started
       when: not ansible_check_mode
 
   handlers:

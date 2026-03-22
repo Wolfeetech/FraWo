@@ -43,10 +43,12 @@ proxmox_pbs_machine: q35
 proxmox_pbs_bios: seabios
 proxmox_pbs_cpu: host
 proxmox_pbs_cores: 2
-proxmox_pbs_memory_mb: 4096
+proxmox_pbs_memory_mb: 3072
 proxmox_pbs_system_disk_gb: 32
 proxmox_pbs_datastore_mount_path: /srv/pbs-datastore
-proxmox_pbs_datastore_min_gib: 128
+proxmox_pbs_datastore_min_gib: 40
+proxmox_pbs_data_storage_id: pbs-usb
+proxmox_pbs_data_disk_gb: 40
 proxmox_pbs_agent_enabled: 1
 proxmox_pbs_onboot: 1
 proxmox_pbs_protection: 1

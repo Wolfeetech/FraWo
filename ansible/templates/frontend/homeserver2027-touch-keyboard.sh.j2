@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+pkill -u "${USER}" -x onboard >/dev/null 2>&1 || true
+pkill -u "${USER}" -x maliit-keyboard >/dev/null 2>&1 || true
+pkill -u "${USER}" -f matchbox-keyboard >/dev/null 2>&1 || true
+sleep 1
+
+auth_file="$(ls -1 /run/user/$(id -u)/.mutter-Xwaylandauth.* 2>/dev/null | head -n1 || true)"
+export DISPLAY="${DISPLAY:-:2}"
+if [[ -n "${auth_file}" ]]; then
+  export XAUTHORITY="${auth_file}"
+fi
+
+# Start keyboard in background to allow window management
+/usr/bin/matchbox-keyboard &
+KBD_PID=$!
+
+# Wait for window to appear and force it to foreground
+sleep 1
+if command -v wmctrl >/dev/null 2>&1; then
+  wmctrl -r "matchbox-keyboard" -b add,above >/dev/null 2>&1 || true
+  wmctrl -r "keyboard" -b add,above >/dev/null 2>&1 || true
+fi
+
+wait $KBD_PID

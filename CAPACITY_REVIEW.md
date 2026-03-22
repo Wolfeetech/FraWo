@@ -62,14 +62,16 @@ Live-Last:
 - Rootfs-Nutzung: ca. `3.2 GB`
 
 Bewertung:
-- fuer `Caddy + AdGuard + Tailscale` aktuell klar ausreichend
-- fuer den spaeteren AzuraCast-Betrieb ist `10 GB` Rootfs zu knapp
+- fuer `Caddy + AdGuard + Tailscale` war `10 GB` urspruenglich ausreichend
+- fuer den spaeteren Medienserver-/Jellyfin-Betrieb war `10 GB` Rootfs zu knapp
+
+Ist-Update vom `2026-03-20`:
+- `CT 100` wurde wegen des Jellyfin-Bootstrap-Imports inzwischen operativ auf effektiv `96G` Rootfs vergroessert
+- der Ausloeser war ein echter Laufzeitfehler `No space left on device` waehrend des Pi->Toolbox-Mediensyncs
 
 Empfehlung:
-- jetzt: unveraendert lassen
-- vor AzuraCast:
-  - Rootfs auf mindestens `20-32 GB` vergroessern
-  - RAM auf `3072-4096 MB` neu bewerten
+- Rootfs fuer `CT 100` nicht mehr unter `64-96 GB` planen, solange Jellyfin und bootstrap-/kurationsnahe Medienpfade dort laufen
+- RAM auf `3072-4096 MB` spaeter neu bewerten, wenn mehr Medien-/Portal-/Edge-Dienste hinzukommen
 
 ### VM 200 Nextcloud
 

@@ -75,17 +75,49 @@
       ansible.builtin.file:
         path: "{{ surface_go_portal_dir }}"
         state: directory
-        owner: root
-        group: root
+        owner: "{{ surface_go_kiosk_user }}"
+        group: "{{ surface_go_kiosk_user }}"
         mode: "0755"
 
     - name: Install local frontend portal
       ansible.builtin.template:
         src: "{{ playbook_dir }}/../templates/frontend/surface-go-portal/index.html.j2"
         dest: "{{ surface_go_portal_dir }}/index.html"
+        owner: "{{ surface_go_kiosk_user }}"
+        group: "{{ surface_go_kiosk_user }}"
+        mode: "0644"
+
+    - name: Install local portal service unit
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/frontend/homeserver2027-surface-portal.service.j2"
+        dest: /etc/systemd/system/homeserver2027-surface-portal.service
         owner: root
         group: root
         mode: "0644"
+      notify: reload systemd
+
+    - name: Install frontend launcher wrapper
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/frontend/homeserver2027-frawo-control.sh.j2"
+        dest: "{{ surface_go_launcher_script }}"
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Install touch keyboard launcher wrapper
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/frontend/homeserver2027-touch-keyboard.sh.j2"
+        dest: "{{ surface_go_keyboard_launcher_script }}"
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Ensure local portal service is enabled
+      ansible.builtin.systemd:
+        name: homeserver2027-surface-portal.service
+        enabled: true
+        state: restarted
+        daemon_reload: true
 
     - name: Ensure kiosk autostart directory exists
       ansible.builtin.file:
@@ -93,6 +125,30 @@
         state: directory
         owner: "{{ surface_go_kiosk_user }}"
         group: "{{ surface_go_kiosk_user }}"
+        mode: "0755"
+
+    - name: Ensure kiosk applications directory exists
+      ansible.builtin.file:
+        path: "/home/{{ surface_go_kiosk_user }}/.local/share/applications"
+        state: directory
+        owner: "{{ surface_go_kiosk_user }}"
+        group: "{{ surface_go_kiosk_user }}"
+        mode: "0755"
+
+    - name: Ensure kiosk desktop directory exists
+      ansible.builtin.file:
+        path: "/home/{{ surface_go_kiosk_user }}/Desktop"
+        state: directory
+        owner: "{{ surface_go_kiosk_user }}"
+        group: "{{ surface_go_kiosk_user }}"
+        mode: "0755"
+
+    - name: Ensure admin desktop directory exists
+      ansible.builtin.file:
+        path: "/home/{{ surface_go_admin_user }}/Desktop"
+        state: directory
+        owner: "{{ surface_go_admin_user }}"
+        group: "{{ surface_go_admin_user }}"
         mode: "0755"
 
     - name: Ensure dconf local defaults directory exists
@@ -119,6 +175,46 @@
         owner: "{{ surface_go_kiosk_user }}"
         group: "{{ surface_go_kiosk_user }}"
         mode: "0644"
+
+    - name: Install kiosk application launcher
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/frontend/homeserver2027-kiosk.desktop.j2"
+        dest: "/home/{{ surface_go_kiosk_user }}/.local/share/applications/frawo-control.desktop"
+        owner: "{{ surface_go_kiosk_user }}"
+        group: "{{ surface_go_kiosk_user }}"
+        mode: "0755"
+
+    - name: Install kiosk desktop launcher
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/frontend/homeserver2027-kiosk.desktop.j2"
+        dest: "/home/{{ surface_go_kiosk_user }}/Desktop/FRAWO Control.desktop"
+        owner: "{{ surface_go_kiosk_user }}"
+        group: "{{ surface_go_kiosk_user }}"
+        mode: "0755"
+
+    - name: Install admin desktop launcher
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/frontend/homeserver2027-kiosk.desktop.j2"
+        dest: "/home/{{ surface_go_admin_user }}/Desktop/FRAWO-Control.desktop"
+        owner: "{{ surface_go_admin_user }}"
+        group: "{{ surface_go_admin_user }}"
+        mode: "0755"
+
+    - name: Install keyboard launcher on kiosk desktop
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/frontend/surface-go-keyboard.desktop.j2"
+        dest: "/home/{{ surface_go_kiosk_user }}/Desktop/Bildschirmtastatur.desktop"
+        owner: "{{ surface_go_kiosk_user }}"
+        group: "{{ surface_go_kiosk_user }}"
+        mode: "0755"
+
+    - name: Install keyboard launcher on admin desktop
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/frontend/surface-go-keyboard.desktop.j2"
+        dest: "/home/{{ surface_go_admin_user }}/Desktop/Bildschirmtastatur.desktop"
+        owner: "{{ surface_go_admin_user }}"
+        group: "{{ surface_go_admin_user }}"
+        mode: "0755"
 
     - name: Ensure GDM autologin settings are present
       ansible.builtin.blockinfile:
@@ -173,6 +269,10 @@
       ansible.builtin.systemd:
         name: ssh
         state: restarted
+
+    - name: reload systemd
+      ansible.builtin.systemd:
+        daemon_reload: true
 
     - name: update dconf
       ansible.builtin.command:

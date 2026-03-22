@@ -15,8 +15,14 @@ This document is the canonical rebuild and post-install runbook for the shared S
   - SSH baseline is active
   - local portal and kiosk baseline are applied
   - `nginx` is absent and `HTTP/80` / `HTTPS/443` are closed
-  - the node later went offline again with a sleep/off-network pattern and is currently not under active remote control
-  - remaining technical steps are: verify the Tailscale join, hard-disable sleep targets and finish the reboot/kiosk acceptance
+  - the node is reachable again over Tailnet on `100.106.67.127`
+  - GNOME idle is `0` and both AC and battery sleep policy are now `nothing`
+  - root-level sleep target masking is complete
+  - a remote reboot came back cleanly over SSH
+  - the local portal is now served via `http://127.0.0.1:17827`
+  - the current working launcher is `FRAWO Control`
+  - the browser fallback is currently `epiphany-browser`
+  - visual acceptance has been reached in the live `frawo` desktop session
 
 ## Target Standard
 
@@ -82,9 +88,10 @@ Therefore the professional default is:
   - local `nginx` removed
   - `OpenSSH` enabled
   - root SSH login disabled
-  - Firefox installed for kiosk mode
+  - `epiphany-browser` is available as the current local launcher path via `FRAWO Control`
   - `Tailscale` installed from the official Ubuntu package feed
-  - kiosk autostart points to a local portal file under `/opt/homeserver2027/frontend-portal/index.html`
+  - the local portal is rendered into `/home/frontend/homeserver2027-portal`
+  - a loopback-only local HTTP service serves that portal on `127.0.0.1:17827`
   - `gdm3` autologin is configured for `frontend`
   - GNOME defaults are tuned for touch use:
     - on-screen keyboard enabled
@@ -94,19 +101,38 @@ Therefore the professional default is:
 
 ## Local Portal Contract
 
-The local portal page is intentionally static and file-based.
+The local portal content stays static, but it is now served over loopback HTTP instead of opening a raw `file://` path.
 
 Why:
-- no local webserver is needed
-- the kiosk still has a controlled landing page
-- internal service links stay easy to update
+- the original `file://` browser path was fragile on the rebuilt Surface
+- a tiny loopback-only HTTP service avoids the browser sandbox edge cases
+- the kiosk still keeps a controlled local landing page without a LAN-exposed webserver
 
 Default portal links:
 - `Home Assistant` -> `http://ha.hs27.internal`
+
+## Current Reality
+
+- Infrastructure status is green:
+  - SSH works
+  - Tailscale admin works
+  - root sleep hardening is complete
+  - local portal service on `127.0.0.1:17827` is live
+- Remaining Surface work is now mostly UX polish:
+  - browser launch behavior should stay on the local loopback portal path
+  - touch keyboard behavior still needs pragmatic local refinement
+  - current working hypothesis: the touch keyboard may be opening behind the browser window instead of in the visible foreground
+  - treat these as frontend sidequests, not as blockers for the core server platform
 - `Nextcloud` -> `http://cloud.hs27.internal`
+- `Media` -> `http://media.hs27.internal`
 - `Radio` -> `http://radio.hs27.internal`
+- `Radio Control` -> `http://radio.hs27.internal/login`
 - `Paperless` -> `http://paperless.hs27.internal`
 - `Odoo` -> `http://odoo.hs27.internal/web/login`
+
+The current design direction mirrors the grouped `FRAWO Control` portal now live on `portal.hs27.internal`, so the Surface can present the same mental model once the device is reachable again.
+
+The Surface portal is now also prepared to load the shared live status snapshot from `http://portal.hs27.internal/status.json`, so the kiosk can expose a compact health overview instead of only static links.
 
 ## Acceptance Criteria
 
@@ -115,7 +141,8 @@ Default portal links:
 - `Tailscale` is installed and reaches `Running`.
 - `nginx` is absent and `HTTP/80` is no longer exposed by default.
 - Kiosk autologin works without manual intervention.
-- Firefox launches in kiosk mode to the local portal page.
+- The local portal is reachable on `http://127.0.0.1:17827`.
+- `FRAWO Control` launches the portal in the local desktop session.
 - `frontend` has no sudo privileges.
 - `frawo` remains available for local admin tasks.
 - Touch usage is acceptable with the stock Ubuntu kernel, or a documented `linux-surface` follow-up exists.

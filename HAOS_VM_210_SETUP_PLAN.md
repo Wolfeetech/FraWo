@@ -50,6 +50,7 @@ Auf dem echten Proxmox-Host ist der aktuelle Live-Stand fuer `VM 210` wie folgt 
 - `/dev/serial/by-id` und `/dev/serial/by-path` sind leer.
 - Das bedeutet:
   - aktuell ist noch kein Zigbee-, SkyConnect- oder USB-Bluetooth-Adapter am Host sichtbar
+  - der einzig sichtbare externe USB-Pfad ist derzeit der Proxmox-Backup-Stick, nicht ein HAOS-Dongle
   - USB-Passthrough ist deshalb noch nicht praktisch konfigurierbar
   - der HAOS-Basisaufbau ist bereits erfolgreich ohne Dongles erfolgt
 - Ressourcenstand am Host zum Auditzeitpunkt:
@@ -241,6 +242,7 @@ Auf dem Proxmox-Host erfassen:
 ```bash
 lsusb
 ls -l /dev/serial/by-id
+make haos-usb-audit
 ```
 
 Dokumentieren:
@@ -251,6 +253,11 @@ Dokumentieren:
 - Product-ID
 - ob mehrere identische Geraete vorhanden sind
 - welcher Adapter in HAOS fuer Zigbee bzw. Bluetooth vorgesehen ist
+
+Wichtiger Guardrail:
+
+- USB-Massenspeicher wie der aktuelle PBS-Backup-Stick zaehlen ausdruecklich **nicht** als HAOS-Passthrough-Kandidaten.
+- Erst serielle Funkadapter oder klar erkennbare Zigbee-/Bluetooth-Dongles machen den USB-Pfad praktisch bereit.
 
 ### Standardpfad: Vendor/Product-ID
 

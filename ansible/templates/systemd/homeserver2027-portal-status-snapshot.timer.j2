@@ -1,0 +1,11 @@
+[Unit]
+Description=Refresh Homeserver 2027 portal status snapshot
+
+[Timer]
+OnBootSec=45s
+OnUnitActiveSec=60s
+AccuracySec=15s
+Unit=homeserver2027-portal-status-snapshot.service
+
+[Install]
+WantedBy=timers.target

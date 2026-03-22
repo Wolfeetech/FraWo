@@ -1,0 +1,10 @@
+[Unit]
+Description=Homeserver 2027 sync radio USB library into toolbox media library
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/homeserver2027-sync-radio-usb-to-toolbox-media.sh
+User=root
+Group=root

@@ -45,14 +45,20 @@
   - `VM 220` = Odoo, ERP/CRM, Ziel-IP `192.168.2.22`
   - `VM 230` = Paperless-ngx, Ziel-IP `192.168.2.23`
   - `raspberry_pi_radio` = spaeter dedizierter Radio-Node fuer AzuraCast
-  - `surface_go_frontend` = gemeinsamer Frontend-Knoten `surface-go-frontend` auf `192.168.2.154`, Ubuntu Desktop 24.04 LTS frisch installiert, Basis-Bootstrap angewendet, SSH-Key-Zugang aktiv, Tailscale noch zu autorisieren
+  - `surface_go_frontend` = gemeinsamer Frontend-Knoten `surface-go-frontend` auf `192.168.2.154`, Ubuntu Desktop 24.04 LTS frisch installiert, Basis-Bootstrap angewendet, SSH-Key-Zugang aktiv, Tailnet-Zugriff aktuell verifiziert ueber `100.106.67.127`
 - Aeltere Aussagen wie "Toolbox nur Admin", "Home Assistant in CT 100" oder vertauschte IDs fuer Odoo und Nextcloud gelten als ueberholt.
 - Surface-Stand vom letzten echten Live-Lauf:
   - `surface-go-frontend` ist frisch installiert und basis-konfiguriert
   - SSH-Key-Zugang steht
   - `frontend`-Kiosk-User und lokales Portal sind live
-  - Tailscale-Login-Link ist erzeugt, aber Tailnet-Status noch final zu bestaetigen
-  - der letzte Delta-Run traf auf ein vermutlich schlafendes/offline Geraet; vor weiteren Surface-Aenderungen immer erst Erreichbarkeit pruefen
+  - Tailnet-Zugang ist verifiziert, die Surface-Pruefroutine erkennt jetzt auch den Tailscale-Admin-Pfad
+  - Akku- und AC-Schlafmodus stehen auf `nothing`
+  - Root-Sleep-Haertung ist fertig, die Sleep-Targets sind maskiert und ein Remote-Reboot kam sauber zurueck
+  - der robuste lokale Frontend-Pfad ist jetzt:
+    - Portal-Inhalt unter `/home/frontend/homeserver2027-portal`
+    - loopback-only HTTP auf `127.0.0.1:17827`
+    - Launcher `FRAWO Control`
+    - `epiphany-browser` als aktueller stabiler Browserpfad
 - Radio-Stand vom letzten echten Live-Lauf:
   - `make radio-ops-check` ist gruen
   - `radio.hs27.internal` und `radio.hs27.internal/login` sind intern erreichbar
@@ -62,7 +68,72 @@
   - `make toolbox-media-check` ist gruen
   - Jellyfin V1 laeuft auf `CT 100 toolbox`
   - `media.hs27.internal`, `192.168.2.20:8096` und `100.99.206.128:8449` liefern die UI
-  - naechster Schritt ist die UI-basierte Erstkonfiguration mit Admin-Account und Bibliotheksanbindung
+  - ein Bootstrap-Sync vom Pi in die Toolbox-Mediathek ist jetzt live:
+    - Quelle `wolf@100.64.23.77:/srv/radio-library/music-usb/yourparty.radio/`
+    - Ziel `/srv/media-library/music/bootstrap-radio-usb/`
+    - Check `make toolbox-media-sync-check`
+    - Fortschritt `make toolbox-media-bootstrap-progress`
+    - Musikreport `make toolbox-music-library-report`
+  - `CT 100` wurde dafuer operativ von `10G` auf effektiv `96G` Rootfs vergroessert; ohne diesen Schritt lief der Sync in `No space left on device`
+  - der Startup Wizard ist abgeschlossen und die Musikbibliothek haengt bereits an `/media/music`
+  - naechster Schritt ist jetzt, den Bootstrap-Sync weiterlaufen zu lassen und danach den ersten Thomson-/Google-TV-Client anzubinden
+  - `make toolbox-music-scan-issues` und `make toolbox-music-curation-candidates` liefern jetzt einen echten Kurationsbefund fuer den laufenden Import
+  - letzter Befund: die Problemdatei ist bereits nach `/srv/media-library/quarantine/bootstrap-review` verschoben; aktuell `0` neue Quarantaene-Kandidaten und `9` harmlose Sidecars
+  - `make toolbox-music-curated-layout` zeigt jetzt die naechste saubere Ausbaustufe: Bootstrap voll, `favorites`/`curated` noch leer
+  - neuer Auswahl-Workflow steht:
+    - `manifests/media/favorites_paths.txt`
+    - `manifests/media/curated_paths.txt`
+    - `make toolbox-music-selection-seed-report`
+    - `make toolbox-music-selection-sync`
+  - letzter Seed-Report: `1075` Kandidaten; groesste Bloecke beginnen bei `clean/Various Artists`, `clean/Nite Fleit`, `clean/Helena Hauff`
+ - heuristischer Starter wurde bereits promoted und materialisiert:
+    - `12` Favorites
+    - `20` Curated
+  - aktueller Restpunkt im Bestand: mehrere importierte Artist-/Release-Ordner sind noch mit restriktiven Rechten sichtbar; der Report listet sie fuer spaetere Kuration
+  - portabler Backup-Zwischenpfad ist jetzt ebenfalls vorbereitet:
+    - `PORTABLE_BACKUP_USB_PLAN.md`
+    - `make portable-backup-usb-autoprepare`
+    - `make portable-backup-usb-fill`
+    - `make portable-backup-usb-check`
+    - `make portable-backup-usb-run`
+  - der `64GB`-Stick ist nicht mehr nur Shuttle, sondern traegt jetzt das Interim-PBS-v1
+  - Stand `2026-03-21`: der Stick ist bereits an Proxmox angeschlossen, als `HS27_PORTABLEBK` formatiert und in den Interim-PBS-Pfad repurposed
+  - aktueller Live-Zustand:
+    - `/srv/portable-backup-usb` bleibt der USB-Mount
+    - `/srv/pbs-datastore` ist bind-mounted auf dieselbe USB-Flaeche
+    - Proxmox-Storage `pbs-usb` ist aktiv
+    - `VM 240 pbs` laeuft mit `3072 MB` RAM, `32G` Systemdisk und `40G` USB-Data-Disk
+    - PBS-Gast ist installiert auf `192.168.2.25`
+    - Datastore `hs27-interim` ist aktiv
+    - Proxmox-Storage `pbs-interim` ist aktiv
+    - taeglicher PBS-Job `hs27-pbs-interim-daily` ist angelegt
+    - Interim-Retention ist aktiv: `02:40,14:40`, `keep-daily=2`, `keep-weekly=1`, `keep-monthly=1`
+    - erster gruener Proof-Backup-Lauf ist jetzt erbracht:
+      - `VM 220`
+      - Snapshot `vm/220/2026-03-21T10:04:30Z`
+      - Proxmox-Taskstatus `exitstatus: OK`
+    - erster gruener Restore-Drill ist jetzt ebenfalls erbracht:
+      - `VM 220` -> Test-VM `920`
+      - `HTTP 200` auf `http://192.168.2.240:8069/web/login`
+      - Test-VM danach wieder entfernt
+  - aktueller Restblock sind nun wiederkehrende Restore-Drills und spaeter groesseres PBS-Storage, nicht mehr die PBS-Erstinbetriebnahme
+- Portal-Stand vom letzten echten Live-Lauf:
+  - `portal.hs27.internal` liefert jetzt die modernisierte gruppierte `FRAWO Control`-Frontdoor
+  - Radio, Radio Control, Media, Media Mobile und Portal Mobile sind dort direkt verlinkt
+  - `status.json` liefert dort jetzt einen Live-Snapshot; `make toolbox-portal-status-check` ist aktuell gruen mit `7/7` gesunden Kernservices
+ - der Snapshot enthaelt jetzt auch `media_sync` fuer den laufenden Jellyfin-Bibliotheksimport
+ - die Surface-Portal-Struktur ist analog vorbereitet und laedt den gemeinsamen Status-Snapshot; SSH, Tailscale und lokaler Portalservice sind fertig, waehrend Browser-/Touch-Tastatur-Polish als separater UX-Restblock bleibt
+- Priorisierung fuer Restbudget:
+  - zuerst Server-/Backup-Sicherheit, PBS-Restore-Drills und Inventar-Finalisierung
+  - erst danach Surface-Browser-/Touch-Tastatur-Polish
+ - HAOS-USB-Stand:
+  - `VM 210` ist stabil, aber USB-Passthrough ist bewusst weiter gesperrt
+  - der neue Guardrail ist `make haos-usb-audit`
+  - aktuell sichtbar ist nur der PBS-Backup-Stick (`USB Disk 3.0`), kein Zigbee-/Bluetooth-/SkyConnect-Dongle
+ - Fortschritts-Stand vom letzten echten Live-Lauf:
+  - `make plan-progress` liefert aktuell `masterplan_progress_percent=69`
+  - Band: `mid_stage`
+  - naechste echte Empfehlung: `finish_inventory_and_haos_usb_then_keep_monthly_pbs_restore_drills`
 
 ## Aktive Artefakte
 
