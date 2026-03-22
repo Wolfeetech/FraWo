@@ -168,13 +168,21 @@
         mode: "0644"
       notify: update dconf
 
-    - name: Install kiosk desktop autostart entry
-      ansible.builtin.template:
-        src: "{{ playbook_dir }}/../templates/frontend/homeserver2027-kiosk.desktop.j2"
-        dest: "/home/{{ surface_go_kiosk_user }}/.config/autostart/homeserver2027-kiosk.desktop"
+    - name: Ensure kiosk gnome-kiosk-script directory exists
+      ansible.builtin.file:
+        path: "/home/{{ surface_go_kiosk_user }}/.config/gnome-kiosk-script"
+        state: directory
         owner: "{{ surface_go_kiosk_user }}"
         group: "{{ surface_go_kiosk_user }}"
-        mode: "0644"
+        mode: "0755"
+
+    - name: Install gnome-kiosk launch script
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/frontend/homeserver2027-kiosk-script.sh.j2"
+        dest: "/home/{{ surface_go_kiosk_user }}/.config/gnome-kiosk-script/kiosk-script"
+        owner: "{{ surface_go_kiosk_user }}"
+        group: "{{ surface_go_kiosk_user }}"
+        mode: "0755"
 
     - name: Install kiosk application launcher
       ansible.builtin.template:

@@ -7,7 +7,7 @@ surface_go_portal_dir: /home/frontend/homeserver2027-portal
 surface_go_portal_bind_address: 127.0.0.1
 surface_go_portal_http_port: 17827
 surface_go_kiosk_start_url: http://127.0.0.1:17827
-surface_go_browser_binary: /usr/bin/epiphany-browser
+surface_go_browser_binary: /usr/bin/firefox
 surface_go_launcher_script: /usr/local/bin/homeserver2027-frawo-control
 surface_go_firefox_package: firefox
 surface_go_text_scaling_factor: 1.25
@@ -24,13 +24,9 @@ surface_go_required_packages:
   - ca-certificates
   - unattended-upgrades
   - gdm3
+  - gnome-kiosk
+  - gnome-kiosk-script-session
   - firefox
-  - epiphany-browser
-  - matchbox-keyboard
-  - onboard
-  - maliit-keyboard
-  - maliit-framework
-  - hunspell-de-de
   - dconf-cli
 surface_go_keyboard_launcher_script: /usr/local/bin/homeserver2027-touch-keyboard
 surface_go_absent_packages:

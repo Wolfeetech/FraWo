@@ -5,9 +5,9 @@
 - Name: `Homeserver 2027 Ops Workspace`
 - Alias: `/home/wolf/.gemini/antigravity/brain/Homeserver_2027_Ops_Workspace`
 - Desktop shortcut: `/home/wolf/Desktop/Homeserver 2027 Workspace`
-- Generated at: `2026-03-22 00:10:30 CET`
+- Generated at: `2026-03-22 10:52:20 CET`
 - Git branch: `main`
-- Pending git changes: `88`
+- Pending git changes: `1`
 
 ## Shared Read Order
 
@@ -50,7 +50,7 @@
 - `SESSION_CLOSEOUT.md` updated: `2026-03-21 12:38:14`
 - `EVENING_ROUTINE.md` updated: `2026-03-19 00:01:26`
 - `GEMINI.md` updated: `2026-03-21 13:15:05`
-- `MEMORY.md` updated: `2026-03-22 00:10:30`
+- `MEMORY.md` updated: `2026-03-22 10:52:20`
 - `NETWORK_INVENTORY.md` updated: `2026-03-21 13:59:17`
 - `VM_AUDIT.md` updated: `2026-03-18 20:48:38`
 - `BACKUP_RESTORE_PROOF.md` updated: `2026-03-21 12:37:41`
@@ -116,7 +116,8 @@
    - AdGuard Home und internes Caddy-Routing im Opt-in-Betrieb stabil halten
    - `ADGUARD_PILOT_ROLLOUT_PLAN.md` definiert jetzt Pilot-Clients und Rollback
    - `TAILSCALE_SPLIT_DNS_PLAN.md` definiert jetzt den sauberen `hs27.internal`-Pfad fuer Tailscale-Clients
-   - Split-DNS fuer `hs27.internal` ist auf dem ZenBook verifiziert; naechster Ausfuehrungsschritt ist der echte Handy-Off-LAN-Test und danach der DNS-Pilot
+   - AdGuard DNS-Pilot (Stage A & B) ist auf dem ZenBook erfolgreich ausgerollt und stabil. Das ZenBook nutzt nun 192.168.2.20 lokal. 
+   - Naechster Ausfuehrungsschritt ist der echte Handy-Off-LAN-Test (Stage C) und die finale DHCP-Promotion.
 3. Den verifizierten lokalen Backup-/Restore-Proof fuer `VM 200`, `VM 220` und `VM 230` in PBS-Zielarchitektur, Retention und taegliche Jobs ueberfuehren
    - lokaler Proof und taeglicher Zwischenstandard auf Proxmox sind erfolgreich dokumentiert
    - Runner und Stage-Gate-Pfad fuer `VM 240` sind nicht nur vorbereitet, sondern live umgesetzt
