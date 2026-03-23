@@ -40,6 +40,12 @@
   - `192.168.2.154`
   - lokaler Benutzer `frawo`
   - aktueller Stand: SSH-Key-Zugang aktiv, `frontend`-Kiosk-User vorhanden, lokales Portal installiert
+- neuer lokaler Studio-PC im LAN:
+  - `WOLFSTUDIOPC`
+  - `192.168.2.162`
+  - Router-Overview bestaetigt Ethernet-Link und Hostname
+  - aktueller Admin-Fingerprint: `135/139/445` offen, `22/3389/5985/5986` geschlossen
+  - naechster reproduzierbarer Pfad: Repo lokal auf dem Windows-PC bereitstellen, dann `scripts\\bootstrap_windows_workspace.cmd` fuer Alias und Desktop-Shortcut ausfuehren
 - lokaler Operator-Rechner:
   - `wolf-ZenBook-UX325EA-UX325EA`
   - `Ubuntu 24.04.4 LTS`
@@ -219,8 +225,20 @@
 - Nextcloud wird auf Performance optimiert, mit Redis-Cache und NVMe-nahem Storage.
 - Live-Stand vom Audit:
   - `VM 200 nextcloud` ist lauffaehig, per HTTP erreichbar, QGA-verifiziert und wird jetzt ueber `homeserver-compose-nextcloud.service` aus `/opt/homeserver2027/stacks/nextcloud` betrieben.
+  - am `2026-03-23` wurde ein Drift bereinigt:
+    - der Container lief, Nextcloud selbst war aber noch nicht wirklich installiert
+    - der Stack wurde kontrolliert auf leere Nutzdatenbasis zurueckgesetzt und aus IaC neu initialisiert
+    - Admin-User `frawoadmin` und Frontend-User `frontend` sind jetzt vorhanden
+    - die verwendeten Passwoerter liegen ausschliesslich verschluesselt in `ansible/inventory/group_vars/all/vault.yml`
   - `VM 220 odoo` wurde bereinigt, antwortet wieder auf Port `8069`, ist QGA-verifiziert und wird jetzt ueber `homeserver-compose-odoo.service` aus `/opt/homeserver2027/stacks/odoo` betrieben.
   - `VM 230 paperless` ist gesund, QGA-verifiziert und wird jetzt ueber `homeserver-compose-paperless.service` aus `/opt/homeserver2027/stacks/paperless` betrieben.
+  - fuer `VM 230 paperless` sind jetzt ebenfalls ein Admin-User `frawoadmin` und ein Frontend-User `frontend` vorhanden
+    - die verwendeten Passwoerter liegen ausschliesslich verschluesselt in `ansible/inventory/group_vars/all/vault.yml`
+  - zwischen `VM 230 paperless` und `VM 200 nextcloud` ist jetzt ein erster echter Dokumenten-Bridge-Pfad live:
+    - Nextcloud-Zielnutzer fuer den Brueckenpfad ist `frontend`
+    - Uploads nach `Paperless/Eingang` in Nextcloud werden im 5-Minuten-Takt in den lokalen Paperless-Consume-Pfad verschoben
+    - OCR-/Archivdateien aus `paperless_media/documents/archive` werden im 5-Minuten-Takt nach `Paperless/Archiv` in Nextcloud gespiegelt
+    - Betriebscheck: `make paperless-nextcloud-bridge-check`
   - Server-Baseline auf den Business-VMs ist seit `2026-03-18` gehaertet:
     - `LLMNR=no`
     - `MulticastDNS=no`
@@ -477,7 +495,7 @@
    - Clean Rebuild und Basis-Bootstrap sind abgeschlossen
    - SSH-Key-Zugang, Tailnet-Admin-Pfad, Kiosk-User `frontend`, lokales Portal und GDM-Autologin sind live
    - Root-Sleep-Haertung ist abgeschlossen; die Sleep-Targets sind maskiert
-   - das Surface-Frontend nutzt jetzt einen robusteren lokalen Pfad:
+    - das Surface-Frontend nutzt jetzt einen robusteren lokalen Pfad mit dynamischen Shortcuts (Nextcloud Eingang, Archiv, Paperless Suche) und einer Dokumentenflow-Hilfe.
      - lokaler Portalservice auf `127.0.0.1:17827`
      - sichtbarer Launcher `FRAWO Control`
      - `epiphany-browser` ueber lokalen Wrapper als aktuelle Browser-Instanz
@@ -604,10 +622,18 @@
    - benoetigte Aktion: Zigbee-/Bluetooth-/SkyConnect-Adapter physisch am Proxmox-Host anschliessen
    - warum: aktueller Audit zeigt nur Root-Hubs und kein `/dev/serial/by-id`
    - danach uebernehmen Codex/Gemini wieder: Vendor-/Product-ID-Audit, USB-Passthrough und Reboot-Stabilitaet testen
+5. `AKTION VON DIR ERFORDERLICH:` spaeter einmal einen echten Dokumentenlauf ueber Nextcloud testen
+   - benoetigte Aktion: eine unkritische Beispiel-PDF oder ein Scan in `Paperless/Eingang` in Nextcloud hochladen und spaeter pruefen, ob die digitale Kopie in `Paperless/Archiv` erscheint
+   - warum: der technische Brueckenpfad ist jetzt live, der naechste Mehrwert ist die echte Nutzerakzeptanz mit einem realen Dokument
+   - danach uebernehmen Codex/Gemini wieder: Feinjustierung, Surface-Shortcuts und spaetere Kuration
 6. `AKTION VON DIR ERFORDERLICH:` Handy einmal echt off-LAN ueber Tailscale pruefen
    - benoetigte Aktion: WLAN am Handy aus, Tailscale verbunden lassen und `http://portal.hs27.internal`, `http://ha.hs27.internal` sowie `http://odoo.hs27.internal/web/login` testen
    - warum: Route und restricted nameserver sind jetzt live, aber der echte mobile Akzeptanztest fuer den `hs27.internal`-Pfad ist noch nicht bestaetigt
    - danach uebernehmen Codex/Gemini wieder: mobilen Betriebsstandard finalisieren und den Frontdoor fuer Endgeraete sauber freigeben
+7. `AKTION VON DIR ERFORDERLICH:` Workspace auf `WOLFSTUDIOPC` lokal initialisieren
+   - benoetigte Aktion: den Repo-Ordner auf `WOLFSTUDIOPC` bereitstellen und dort `scripts\bootstrap_windows_workspace.cmd` starten
+   - warum: der Rechner ist jetzt als `192.168.2.162` / `WOLFSTUDIOPC.local` identifiziert, bietet aber derzeit keinen Remote-Admin-Pfad ueber SSH oder WinRM
+   - danach uebernehmen Codex/Gemini wieder: Tailscale-/Workspace-Erreichbarkeit pruefen und den Client weiter in den Managed-Pfad einordnen
 
 ## IaC-Quellen fuer Business-Stacks
 

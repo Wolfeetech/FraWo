@@ -1,0 +1,110 @@
+---
+- name: Deploy Paperless to Nextcloud bridge
+  hosts: paperless_vm
+  become: true
+
+  tasks:
+    - name: Install bridge dependencies
+      ansible.builtin.apt:
+        name:
+          - rclone
+        state: present
+        update_cache: true
+
+    - name: Ensure rclone config directory exists
+      ansible.builtin.file:
+        path: /root/.config/rclone
+        state: directory
+        owner: root
+        group: root
+        mode: "0700"
+
+    - name: Obscure Nextcloud frontend password for rclone
+      ansible.builtin.command: "rclone obscure {{ homeserver_vault_frontend_service_password }}"
+      register: paperless_nextcloud_rclone_obscured_password
+      changed_when: false
+
+    - name: Install root-only rclone config for Nextcloud frontend bridge
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/paperless/paperless-nextcloud-rclone.conf.j2"
+        dest: /root/.config/rclone/rclone.conf
+        owner: root
+        group: root
+        mode: "0600"
+      vars:
+        paperless_nextcloud_rclone_password_obscured: "{{ paperless_nextcloud_rclone_obscured_password.stdout }}"
+      notify: restart paperless bridge service
+
+    - name: Ensure host-side Paperless bridge directories exist
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+      loop:
+        - "{{ paperless_consume_host_dir }}"
+        - "{{ paperless_archive_host_dir }}"
+
+    - name: Install Paperless to Nextcloud bridge sync script
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/paperless/homeserver2027-paperless-nextcloud-bridge.sh.j2"
+        dest: /usr/local/sbin/homeserver2027-paperless-nextcloud-bridge.sh
+        owner: root
+        group: root
+        mode: "0750"
+      notify: restart paperless bridge service
+
+    - name: Install systemd service for Paperless to Nextcloud bridge
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/systemd/homeserver2027-paperless-nextcloud-bridge.service.j2"
+        dest: "/etc/systemd/system/{{ paperless_nextcloud_bridge_service_name }}"
+        owner: root
+        group: root
+        mode: "0644"
+      notify:
+        - reload systemd
+        - restart paperless bridge service
+
+    - name: Install systemd timer for Paperless to Nextcloud bridge
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/systemd/homeserver2027-paperless-nextcloud-bridge.timer.j2"
+        dest: "/etc/systemd/system/{{ paperless_nextcloud_bridge_timer_name }}"
+        owner: root
+        group: root
+        mode: "0644"
+      notify:
+        - reload systemd
+        - restart paperless bridge timer
+
+    - name: Ensure bridge timer is enabled
+      ansible.builtin.systemd:
+        name: "{{ paperless_nextcloud_bridge_timer_name }}"
+        enabled: true
+        state: started
+        daemon_reload: true
+
+    - name: Run bridge service once immediately
+      ansible.builtin.systemd:
+        name: "{{ paperless_nextcloud_bridge_service_name }}"
+        state: started
+      when: not ansible_check_mode
+
+  handlers:
+    - name: reload systemd
+      ansible.builtin.systemd:
+        daemon_reload: true
+      when: not ansible_check_mode
+
+    - name: restart paperless bridge service
+      ansible.builtin.systemd:
+        name: "{{ paperless_nextcloud_bridge_service_name }}"
+        state: restarted
+      when: not ansible_check_mode
+
+    - name: restart paperless bridge timer
+      ansible.builtin.systemd:
+        name: "{{ paperless_nextcloud_bridge_timer_name }}"
+        enabled: true
+        state: restarted
+      when: not ansible_check_mode

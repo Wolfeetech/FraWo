@@ -9,6 +9,7 @@ surface_go_portal_http_port: 17827
 surface_go_kiosk_start_url: http://127.0.0.1:17827
 surface_go_browser_binary: /usr/bin/firefox
 surface_go_launcher_script: /usr/local/bin/homeserver2027-frawo-control
+surface_go_odoo_admin_url: http://odoo.hs27.internal/web/login
 surface_go_firefox_package: firefox
 surface_go_text_scaling_factor: 1.25
 surface_go_enable_screen_keyboard: true
@@ -38,28 +39,36 @@ surface_go_absent_packages:
 surface_go_portal_links:
   - label: Home Assistant
     group: Betrieb
-    hint: Automationen, Geraete und Haushalts-Dashboards
+    hint: Automationen, Geräte und Haushalts-Dashboards
     url: http://ha.hs27.internal
   - label: Nextcloud
     group: Arbeit
-    hint: Dateien, Scans und Zusammenarbeit mit direktem Login
+    hint: Dateien und Zusammenarbeit (Hauptmenü)
     url: http://cloud.hs27.internal/login
+  - label: Nextcloud (Eingang)
+    group: Dokumente
+    hint: Scans und PDFs hier hochladen für automatisches Archiv
+    url: http://cloud.hs27.internal/apps/files/?dir=/Paperless/Eingang
+  - label: Paperless (Archiv)
+    group: Dokumente
+    hint: Zugriff auf die im Archiv gespeicherten PDF-Originale
+    url: http://cloud.hs27.internal/apps/files/?dir=/Paperless/Archiv
+  - label: Dokumenten-Suche
+    group: Dokumente
+    hint: Paperless-Volltextsuche und OCR-Archiv
+    url: http://paperless.hs27.internal/accounts/login/
   - label: Media
     group: Medien
-    hint: Jellyfin fuer Filme, Serien und Musik
+    hint: Jellyfin für Filme, Serien und Musik
     url: http://media.hs27.internal
-  - label: Radio
+  - label: Radio Player
     group: Medien
-    hint: Player-Ansicht fuer den Live-Sender
-    url: http://radio.hs27.internal
+    hint: Touch-optimierte Ansicht für den Live-Sender
+    url: http://radio.hs27.internal/public/frawo-funk
   - label: Radio Control
     group: Medien
-    hint: AzuraCast fuer Sender- und Playlist-Steuerung
+    hint: AzuraCast Sender- und Playlist-Steuerung
     url: http://radio.hs27.internal/login
-  - label: Paperless
-    group: Arbeit
-    hint: Dokumentenarchiv und OCR-Suche mit direktem Login
-    url: http://paperless.hs27.internal/accounts/login/
   - label: Odoo
     group: Arbeit
     hint: ERP und Business-Login

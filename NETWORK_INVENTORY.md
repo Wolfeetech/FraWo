@@ -24,6 +24,8 @@
     - `udhcp 1.24.1` -> `192.168.2.134` / `B0:4A:39:0E:38:84`
     - `Shelly_plug_repeater` -> current authenticated overview now shows `192.168.2.117` / `B0:81:84:A5:EA:08`
     - `shellyplugsg3-8cbfea968024` -> `192.168.2.107` / `8C:BF:EA:96:80:24`
+  - authenticated overview extraction on `2026-03-23` additionally yielded:
+    - `WOLFSTUDIOPC` -> `192.168.2.162` / `34:5A:60:44:22:F4`
   - Remaining router-only labels still to map 1:1 onto active IPs:
     - none
   - the authenticated overview also shows additional current router labels worth keeping as soft aliases:
@@ -86,6 +88,7 @@
 | `192.168.2.132` | `wolf-ZenBook-UX325EA-UX325EA.local` | `00:42:38:B2:66:82` / Intel | laptop | `trusted-clients` | wolf | ssh/local-device + tailscale + anydesk | dhcp | medium | active | nmap + local verification | primary admin client; Tailscale joined and AnyDesk active |
 | `192.168.2.134` | `udhcp 1.24.1` | `B0:4A:39:0E:38:84` / Roborock | robot vacuum candidate | `smart-home-iot` | private-household | app | dhcp | low | active | authenticated router overview + prior nmap | router label now confirmed; supersedes the older `192.168.2.135` Roborock observation |
 | `192.168.2.154` | `yourparty-Surface-Go.local` | `D8:C4:97:C6:0E:B0` / Microsoft | shared touch frontend | `trusted-clients` | shared-household | ssh + local-device + tailscale | dhcp | medium | active-managed | ssh + tailscale + user confirmation | keep managed frontend path stable; remaining work is local browser/touch UX polish and later DHCP reservation |
+| `192.168.2.162` | `WOLFSTUDIOPC.local` | `34:5A:60:44:22:F4` / unknown | studio workstation | `trusted-clients` | wolf | local-device + smb | dhcp | medium | active-observed | authenticated router overview + port probe | join Tailscale, place the repo locally, then run `scripts/bootstrap_windows_workspace.cmd` to expose the stable workspace alias and desktop shortcut |
 | `192.168.2.135` | `localhost` | `B0:4A:39:0E:38:84` / Roborock | robot vacuum | `smart-home-iot` | private-household | app | dhcp | low | stale-observation | older nmap only | superseded by the authenticated router overview on `192.168.2.134`; keep only as historical scan note |
 | `192.168.2.24` | `homeassistant.local` | `BC:24:11:D5:BA:30` / Proxmox | Home Assistant OS VM | `smart-home-iot` | homeserver-gbr | web + qga | static-in-guest | high | active | qm guest exec + qga + http + caddy | keep `ha.hs27.internal` and local backup coverage green; add USB adapters when physically present |
 

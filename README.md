@@ -8,6 +8,10 @@ This is the shared operational workspace for Homeserver 2027.
 - Stable alias: `~/.gemini/antigravity/brain/Homeserver_2027_Ops_Workspace`
 - Desktop shortcut target: `~/Desktop/Homeserver 2027 Workspace`
 - Backing store: the Antigravity-managed workspace directory remains in place to avoid breaking internal tooling
+- Windows local bootstrap after the repo is present on a Windows client:
+  - `scripts\bootstrap_windows_workspace.cmd`
+  - creates the stable alias under `%USERPROFILE%\.gemini\antigravity\brain\Homeserver_2027_Ops_Workspace`
+  - creates the desktop shortcut `Homeserver 2027 Workspace`
 
 ## Read Order
 

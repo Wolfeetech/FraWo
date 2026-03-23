@@ -1,0 +1,9 @@
+[Unit]
+Description=Sync Paperless consume and archive paths with Nextcloud
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/homeserver2027-paperless-nextcloud-bridge.sh
+TimeoutStartSec=0

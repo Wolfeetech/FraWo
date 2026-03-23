@@ -1,0 +1,31 @@
+#!/bin/bash
+set -euo pipefail
+
+RCLONE_CONFIG=/root/.config/rclone/rclone.conf
+RCLONE_REMOTE="{{ paperless_nextcloud_rclone_remote }}"
+REMOTE_ROOT="{{ paperless_nextcloud_remote_root }}"
+REMOTE_INBOX="${REMOTE_ROOT}/{{ paperless_nextcloud_inbox_dir }}"
+REMOTE_ARCHIVE="${REMOTE_ROOT}/{{ paperless_nextcloud_archive_dir }}"
+CONSUME_DIR="{{ paperless_consume_host_dir }}"
+ARCHIVE_DIR="{{ paperless_archive_host_dir }}"
+
+mkdir -p "${CONSUME_DIR}" "${ARCHIVE_DIR}"
+
+/usr/bin/rclone --config "${RCLONE_CONFIG}" mkdir "${RCLONE_REMOTE}:${REMOTE_ROOT}"
+/usr/bin/rclone --config "${RCLONE_CONFIG}" mkdir "${RCLONE_REMOTE}:${REMOTE_INBOX}"
+/usr/bin/rclone --config "${RCLONE_CONFIG}" mkdir "${RCLONE_REMOTE}:${REMOTE_ARCHIVE}"
+
+# Pull newly uploaded inbox files from Nextcloud into the Paperless consume path.
+/usr/bin/rclone \
+  --config "${RCLONE_CONFIG}" \
+  move "${RCLONE_REMOTE}:${REMOTE_INBOX}" "${CONSUME_DIR}" \
+  --ignore-existing \
+  --create-empty-src-dirs
+
+# Mirror OCR'd archive files back into Nextcloud without deleting older copies.
+if [[ -d "${ARCHIVE_DIR}" ]]; then
+  /usr/bin/rclone \
+    --config "${RCLONE_CONFIG}" \
+    copy "${ARCHIVE_DIR}" "${RCLONE_REMOTE}:${REMOTE_ARCHIVE}" \
+    --create-empty-src-dirs
+fi

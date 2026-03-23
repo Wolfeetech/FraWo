@@ -216,6 +216,14 @@
         group: "{{ surface_go_kiosk_user }}"
         mode: "0755"
 
+    - name: Install Odoo admin launcher on kiosk desktop
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/frontend/surface-go-odoo-admin.desktop.j2"
+        dest: "/home/{{ surface_go_kiosk_user }}/Desktop/Odoo-Admin.desktop"
+        owner: "{{ surface_go_kiosk_user }}"
+        group: "{{ surface_go_kiosk_user }}"
+        mode: "0755"
+
     - name: Install keyboard launcher on admin desktop
       ansible.builtin.template:
         src: "{{ playbook_dir }}/../templates/frontend/surface-go-keyboard.desktop.j2"
@@ -224,6 +232,156 @@
         group: "{{ surface_go_admin_user }}"
         mode: "0755"
 
+    - name: Install Odoo admin launcher on admin desktop
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/frontend/surface-go-odoo-admin.desktop.j2"
+        dest: "/home/{{ surface_go_admin_user }}/Desktop/Odoo-Admin.desktop"
+        owner: "{{ surface_go_admin_user }}"
+        group: "{{ surface_go_admin_user }}"
+        mode: "0755"
+
+
+    - name: Install Nextcloud launcher on kiosk desktop
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/frontend/surface-go-nextcloud.desktop.j2"
+        dest: "/home/{{ surface_go_kiosk_user }}/Desktop/Nextcloud.desktop"
+        owner: "{{ surface_go_kiosk_user }}"
+        group: "{{ surface_go_kiosk_user }}"
+        mode: "0755"
+
+    - name: Install Nextcloud Inbox launcher on kiosk desktop
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/frontend/surface-go-nextcloud-inbox.desktop.j2"
+        dest: "/home/{{ surface_go_kiosk_user }}/Desktop/Nextcloud-Eingang.desktop"
+        owner: "{{ surface_go_kiosk_user }}"
+        group: "{{ surface_go_kiosk_user }}"
+        mode: "0755"
+
+    - name: Install Paperless launcher on kiosk desktop
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/frontend/surface-go-paperless.desktop.j2"
+        dest: "/home/{{ surface_go_kiosk_user }}/Desktop/Paperless-Suche.desktop"
+        owner: "{{ surface_go_kiosk_user }}"
+        group: "{{ surface_go_kiosk_user }}"
+        mode: "0755"
+
+    - name: Install Nextcloud launcher on admin desktop
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/frontend/surface-go-nextcloud.desktop.j2"
+        dest: "/home/{{ surface_go_admin_user }}/Desktop/Nextcloud.desktop"
+        owner: "{{ surface_go_admin_user }}"
+        group: "{{ surface_go_admin_user }}"
+        mode: "0755"
+
+    - name: Install Nextcloud Inbox launcher on admin desktop
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/frontend/surface-go-nextcloud-inbox.desktop.j2"
+        dest: "/home/{{ surface_go_admin_user }}/Desktop/Nextcloud-Eingang.desktop"
+        owner: "{{ surface_go_admin_user }}"
+        group: "{{ surface_go_admin_user }}"
+        mode: "0755"
+
+    - name: Install Paperless launcher on admin desktop
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/frontend/surface-go-paperless.desktop.j2"
+        dest: "/home/{{ surface_go_admin_user }}/Desktop/Paperless-Suche.desktop"
+        owner: "{{ surface_go_admin_user }}"
+        group: "{{ surface_go_admin_user }}"
+        mode: "0755"
+    - name: Install Nextcloud launcher on kiosk desktop
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/frontend/surface-go-nextcloud.desktop.j2"
+        dest: "/home/{{ surface_go_kiosk_user }}/Desktop/Nextcloud.desktop"
+        owner: "{{ surface_go_kiosk_user }}"
+        group: "{{ surface_go_kiosk_user }}"
+        mode: "0755"
+
+    - name: Install Nextcloud Inbox launcher on kiosk desktop
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/frontend/surface-go-nextcloud-inbox.desktop.j2"
+        dest: "/home/{{ surface_go_kiosk_user }}/Desktop/Nextcloud-Eingang.desktop"
+        owner: "{{ surface_go_kiosk_user }}"
+        group: "{{ surface_go_kiosk_user }}"
+        mode: "0755"
+
+    - name: Install Paperless launcher on kiosk desktop
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/frontend/surface-go-paperless.desktop.j2"
+        dest: "/home/{{ surface_go_kiosk_user }}/Desktop/Paperless-Suche.desktop"
+        owner: "{{ surface_go_kiosk_user }}"
+        group: "{{ surface_go_kiosk_user }}"
+        mode: "0755"
+
+    - name: Install Nextcloud launcher on admin desktop
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/frontend/surface-go-nextcloud.desktop.j2"
+        dest: "/home/{{ surface_go_admin_user }}/Desktop/Nextcloud.desktop"
+        owner: "{{ surface_go_admin_user }}"
+        group: "{{ surface_go_admin_user }}"
+        mode: "0755"
+
+    - name: Install Nextcloud Inbox launcher on admin desktop
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/frontend/surface-go-nextcloud-inbox.desktop.j2"
+        dest: "/home/{{ surface_go_admin_user }}/Desktop/Nextcloud-Eingang.desktop"
+        owner: "{{ surface_go_admin_user }}"
+        group: "{{ surface_go_admin_user }}"
+        mode: "0755"
+
+    - name: Install Paperless launcher on admin desktop
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/frontend/surface-go-paperless.desktop.j2"
+        dest: "/home/{{ surface_go_admin_user }}/Desktop/Paperless-Suche.desktop"
+        owner: "{{ surface_go_admin_user }}"
+        group: "{{ surface_go_admin_user }}"
+        mode: "0755"
+    - name: Install Nextcloud launcher on kiosk desktop
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/frontend/surface-go-nextcloud.desktop.j2"
+        dest: "/home/{{ surface_go_kiosk_user }}/Desktop/Nextcloud.desktop"
+        owner: "{{ surface_go_kiosk_user }}"
+        group: "{{ surface_go_kiosk_user }}"
+        mode: "0755"
+
+    - name: Install Nextcloud Inbox launcher on kiosk desktop
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/frontend/surface-go-nextcloud-inbox.desktop.j2"
+        dest: "/home/{{ surface_go_kiosk_user }}/Desktop/Nextcloud-Eingang.desktop"
+        owner: "{{ surface_go_kiosk_user }}"
+        group: "{{ surface_go_kiosk_user }}"
+        mode: "0755"
+
+    - name: Install Paperless launcher on kiosk desktop
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/frontend/surface-go-paperless.desktop.j2"
+        dest: "/home/{{ surface_go_kiosk_user }}/Desktop/Paperless-Suche.desktop"
+        owner: "{{ surface_go_kiosk_user }}"
+        group: "{{ surface_go_kiosk_user }}"
+        mode: "0755"
+
+    - name: Install Nextcloud launcher on admin desktop
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/frontend/surface-go-nextcloud.desktop.j2"
+        dest: "/home/{{ surface_go_admin_user }}/Desktop/Nextcloud.desktop"
+        owner: "{{ surface_go_admin_user }}"
+        group: "{{ surface_go_admin_user }}"
+        mode: "0755"
+
+    - name: Install Nextcloud Inbox launcher on admin desktop
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/frontend/surface-go-nextcloud-inbox.desktop.j2"
+        dest: "/home/{{ surface_go_admin_user }}/Desktop/Nextcloud-Eingang.desktop"
+        owner: "{{ surface_go_admin_user }}"
+        group: "{{ surface_go_admin_user }}"
+        mode: "0755"
+
+    - name: Install Paperless launcher on admin desktop
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/frontend/surface-go-paperless.desktop.j2"
+        dest: "/home/{{ surface_go_admin_user }}/Desktop/Paperless-Suche.desktop"
+        owner: "{{ surface_go_admin_user }}"
+        group: "{{ surface_go_admin_user }}"
+        mode: "0755"
     - name: Ensure GDM autologin settings are present
       ansible.builtin.blockinfile:
         path: /etc/gdm3/custom.conf

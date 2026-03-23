@@ -5,9 +5,9 @@
 - Name: `Homeserver 2027 Ops Workspace`
 - Alias: `/home/wolf/.gemini/antigravity/brain/Homeserver_2027_Ops_Workspace`
 - Desktop shortcut: `/home/wolf/Desktop/Homeserver 2027 Workspace`
-- Generated at: `2026-03-22 10:52:20 CET`
+- Generated at: `2026-03-23 16:11:55 CET`
 - Git branch: `main`
-- Pending git changes: `1`
+- Pending git changes: `29`
 
 ## Shared Read Order
 
@@ -43,15 +43,15 @@
 
 ## Canonical Sources
 
-- `README.md` updated: `2026-03-21 13:13:27`
-- `MASTERPLAN.md` updated: `2026-03-21 13:15:05`
+- `README.md` updated: `2026-03-23 16:11:43`
+- `MASTERPLAN.md` updated: `2026-03-23 15:06:52`
 - `MORNING_ROUTINE.md` updated: `2026-03-19 10:15:51`
 - `SECURITY_BASELINE.md` updated: `2026-03-19 21:56:58`
 - `SESSION_CLOSEOUT.md` updated: `2026-03-21 12:38:14`
 - `EVENING_ROUTINE.md` updated: `2026-03-19 00:01:26`
 - `GEMINI.md` updated: `2026-03-21 13:15:05`
-- `MEMORY.md` updated: `2026-03-22 10:52:20`
-- `NETWORK_INVENTORY.md` updated: `2026-03-21 13:59:17`
+- `MEMORY.md` updated: `2026-03-23 16:11:43`
+- `NETWORK_INVENTORY.md` updated: `2026-03-23 16:11:43`
 - `VM_AUDIT.md` updated: `2026-03-18 20:48:38`
 - `BACKUP_RESTORE_PROOF.md` updated: `2026-03-21 12:37:41`
 - `CAPACITY_REVIEW.md` updated: `2026-03-20 20:23:49`
@@ -69,16 +69,16 @@
 - `RADIO_OPERATIONS_STANDARD.md` updated: `2026-03-20 16:57:48`
 - `MEDIA_SERVER_PLAN.md` updated: `2026-03-21 01:26:51`
 - `MEDIA_SERVER_CLIENT_SETUP.md` updated: `2026-03-21 00:52:28`
-- `OPERATOR_TODO_QUEUE.md` updated: `2026-03-21 13:22:30`
+- `OPERATOR_TODO_QUEUE.md` updated: `2026-03-23 16:11:43`
 - `PBS_VM_240_SETUP_PLAN.md` updated: `2026-03-21 14:31:16`
 - `HAOS_VM_210_SETUP_PLAN.md` updated: `2026-03-21 13:13:27`
 - `PORTABLE_BACKUP_USB_PLAN.md` updated: `2026-03-21 10:01:39`
-- `ansible/inventory/hosts.yml` updated: `2026-03-21 10:04:48`
-- `ansible/inventory/group_vars/all/vault.yml` updated: `2026-03-21 14:43:32`
+- `ansible/inventory/hosts.yml` updated: `2026-03-23 16:11:43`
+- `ansible/inventory/group_vars/all/vault.yml` updated: `2026-03-23 14:37:46`
 
 ## Current Estate Snapshot
 
-- Managed hosts in Ansible inventory: `27`
+- Managed hosts in Ansible inventory: `28`
 - Router baseline: `192.168.2.1` Vodafone Easy Box
 - Planned future gateway: `UniFi Cloud Gateway Ultra (UCG-Ultra)`, not yet active
 - Core business nodes: `192.168.2.20` toolbox, `192.168.2.21` nextcloud, `192.168.2.22` odoo, `192.168.2.23` paperless, `192.168.2.24` haos
@@ -165,7 +165,7 @@
    - Clean Rebuild und Basis-Bootstrap sind abgeschlossen
    - SSH-Key-Zugang, Tailnet-Admin-Pfad, Kiosk-User `frontend`, lokales Portal und GDM-Autologin sind live
    - Root-Sleep-Haertung ist abgeschlossen; die Sleep-Targets sind maskiert
-   - das Surface-Frontend nutzt jetzt einen robusteren lokalen Pfad:
+    - das Surface-Frontend nutzt jetzt einen robusteren lokalen Pfad mit dynamischen Shortcuts (Nextcloud Eingang, Archiv, Paperless Suche) und einer Dokumentenflow-Hilfe.
      - lokaler Portalservice auf `127.0.0.1:17827`
      - sichtbarer Launcher `FRAWO Control`
      - `epiphany-browser` ueber lokalen Wrapper als aktuelle Browser-Instanz
@@ -292,10 +292,18 @@
    - benoetigte Aktion: Zigbee-/Bluetooth-/SkyConnect-Adapter physisch am Proxmox-Host anschliessen
    - warum: aktueller Audit zeigt nur Root-Hubs und kein `/dev/serial/by-id`
    - danach uebernehmen Codex/Gemini wieder: Vendor-/Product-ID-Audit, USB-Passthrough und Reboot-Stabilitaet testen
+5. `AKTION VON DIR ERFORDERLICH:` spaeter einmal einen echten Dokumentenlauf ueber Nextcloud testen
+   - benoetigte Aktion: eine unkritische Beispiel-PDF oder ein Scan in `Paperless/Eingang` in Nextcloud hochladen und spaeter pruefen, ob die digitale Kopie in `Paperless/Archiv` erscheint
+   - warum: der technische Brueckenpfad ist jetzt live, der naechste Mehrwert ist die echte Nutzerakzeptanz mit einem realen Dokument
+   - danach uebernehmen Codex/Gemini wieder: Feinjustierung, Surface-Shortcuts und spaetere Kuration
 6. `AKTION VON DIR ERFORDERLICH:` Handy einmal echt off-LAN ueber Tailscale pruefen
    - benoetigte Aktion: WLAN am Handy aus, Tailscale verbunden lassen und `http://portal.hs27.internal`, `http://ha.hs27.internal` sowie `http://odoo.hs27.internal/web/login` testen
    - warum: Route und restricted nameserver sind jetzt live, aber der echte mobile Akzeptanztest fuer den `hs27.internal`-Pfad ist noch nicht bestaetigt
    - danach uebernehmen Codex/Gemini wieder: mobilen Betriebsstandard finalisieren und den Frontdoor fuer Endgeraete sauber freigeben
+7. `AKTION VON DIR ERFORDERLICH:` Workspace auf `WOLFSTUDIOPC` lokal initialisieren
+   - benoetigte Aktion: den Repo-Ordner auf `WOLFSTUDIOPC` bereitstellen und dort `scripts\bootstrap_windows_workspace.cmd` starten
+   - warum: der Rechner ist jetzt als `192.168.2.162` / `WOLFSTUDIOPC.local` identifiziert, bietet aber derzeit keinen Remote-Admin-Pfad ueber SSH oder WinRM
+   - danach uebernehmen Codex/Gemini wieder: Tailscale-/Workspace-Erreichbarkeit pruefen und den Client weiter in den Managed-Pfad einordnen
 
 ## Tonight's Review Findings
 

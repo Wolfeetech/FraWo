@@ -382,264 +382,40 @@
       <div class="card" id="card-actions">
         <div class="card-label">⚡ Direktaktionen</div>
         <div class="action-grid">
-          <a href="http://ha.hs27.internal" class="action-btn">
-            <span class="icon">🏠</span>Smart Home
+          {% for link in surface_go_portal_links %}
+          <a href="{{ link.url }}" class="action-btn" title="{{ link.hint }}">
+            <span class="icon">
+              {% if 'Home Assistant' in link.label %}🏠
+              {% elif 'Nextcloud' in link.label and 'Eingang' in link.label %}📥
+              {% elif 'Nextcloud' in link.label %}☁️
+              {% elif 'Paperless' in link.label or 'Suche' in link.label %}📄
+              {% elif 'Media' in link.label or 'Jellyfin' in link.label %}🎬
+              {% elif 'Radio Player' in link.label %}📻
+              {% elif 'Radio Control' in link.label %}🎛️
+              {% elif 'Odoo' in link.label %}💼
+              {% else %}🔗{% endif %}
+            </span>
+            {{ link.label }}
           </a>
-          <a href="http://media.hs27.internal" class="action-btn">
-            <span class="icon">🎬</span>Medien
-          </a>
-          <a href="http://cloud.hs27.internal" class="action-btn">
-            <span class="icon">☁️</span>Nextcloud
-          </a>
-          <a href="http://paperless.hs27.internal" class="action-btn">
-            <span class="icon">📄</span>Dokumente
-          </a>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- DOC FLOW INFO CARD -->
+      <div class="card" id="card-docflow">
+        <div class="card-label">ℹ️ Dokumenten-Flow</div>
+        <div style="font-size: 0.85rem; line-height: 1.4; color: var(--muted);">
+          <div style="margin-bottom: 0.6rem;">
+            <strong style="color: var(--text);">1. Upload:</strong> Scans oder PDFs nach <code style="color: var(--indigo);">Paperless/Eingang</code> hochladen.
+          </div>
+          <div style="margin-bottom: 0.6rem;">
+            <strong style="color: var(--text);">2. Verarbeitung:</strong> Das System erkennt Texte automatisch (OCR) und sortiert das Dokument ein.
+          </div>
+          <div>
+            <strong style="color: var(--text);">3. Archiv:</strong> Die digitale Kopie erscheint kurz darauf in <code style="color: var(--pink);">Paperless/Archiv</code>.
+          </div>
         </div>
       </div>
 
     </div><!-- /grid -->
   </div><!-- /app -->
-
-  <script>
-    const RADIO_API = 'http://radio.hs27.internal/api/nowplaying/frawo-funk';
-    const STATUS_API = 'http://portal.hs27.internal/status.json';
-    const SKIP_API = 'http://radio.hs27.internal/api/station/frawo-funk/backend/skip';
-
-    // ─── Clock ───────────────────────────────────────────────
-    function tick() {
-      document.getElementById('clock').textContent =
-        new Date().toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
-    }
-    setInterval(tick, 1000); tick();
-
-    
-    // --- Embedded Radio Player ---
-    const streamUrl = 'http://radio.hs27.internal/listen/frawo-funk/radio.mp3';
-    let player = new Audio();
-    let isPlaying = false;
-
-    function toggleRadio() {
-      const btn = document.getElementById('btn-listen');
-      if (isPlaying) {
-        player.pause();
-        player.src = '';
-        isPlaying = false;
-        btn.textContent = '▶️';
-      } else {
-        player.src = streamUrl;
-        player.play().catch(e => console.error(e));
-        isPlaying = true;
-        btn.textContent = '⏸️';
-      }
-    }
-
-
-    // ─── Radio Now Playing ────────────────────────────────────
-    let npDuration = 1, npElapsed = 0, npTimer;
-
-    async function updateRadio() {
-      try {
-        const r = await fetch(RADIO_API, { cache: 'no-store' });
-        const d = await r.json();
-        const np = d.now_playing;
-        const song = np.song;
-
-        document.getElementById('np-art').src = song.art || '';
-        document.getElementById('np-artist').textContent = song.artist || '–';
-        document.getElementById('np-title').textContent = song.title || song.text || '–';
-        document.getElementById('np-album').textContent = song.album || '';
-
-        npDuration = np.duration || 1;
-        npElapsed = np.elapsed || 0;
-
-        const next = d.playing_next;
-        if (next && next.song) {
-          document.getElementById('np-next').innerHTML =
-            `Nächster Titel: <strong>${next.song.artist || ''} – ${next.song.title || next.song.text || ''}</strong>`;
-        }
-
-        // Auto-advance progress locally
-        clearInterval(npTimer);
-        npTimer = setInterval(() => {
-          npElapsed++;
-          const pct = Math.min(100, (npElapsed / npDuration) * 100);
-          document.getElementById('np-progress-bar').style.width = pct + '%';
-        }, 1000);
-
-        // Presence: radio node alive
-        document.getElementById('pi-detail').textContent = d.station.name + ' • live';
-        setPresence('pi-badge', 'Online');
-
-      } catch(e) {
-        document.getElementById('np-title').textContent = 'Fehler beim Laden';
-      }
-    }
-    setInterval(updateRadio, 15000); updateRadio();
-
-    // ─── Skip Button ──────────────────────────────────────────
-    document.getElementById('btn-skip').onclick = async () => {
-      const btn = document.getElementById('btn-skip');
-      btn.textContent = '⌛';
-      try {
-        // AzuraCast backend skip – requires API key; falls back to graceful NOOP
-        await fetch(SKIP_API, { method: 'POST', headers: { 'X-API-Key': '' } });
-        btn.textContent = '✅';
-        setTimeout(() => { btn.textContent = '⏭'; updateRadio(); }, 1500);
-      } catch(e) {
-        btn.textContent = '⏭';
-        // Fallback: navigate to control panel
-        window.open('http://radio.hs27.internal/login', '_blank');
-      }
-    };
-
-    // ─── System Status ────────────────────────────────────────
-    const serviceMap = [
-      { key: 'homeassistant', dot: 'd-ha',    stat: 's-ha',    label: 'ha.hs27.internal' },
-      { key: 'nextcloud',     dot: 'd-cloud', stat: 's-cloud', label: 'cloud.hs27.internal' },
-      { key: 'jellyfin',      dot: 'd-media', stat: 's-media', label: 'media.hs27.internal' },
-      { key: 'azuracast',     dot: 'd-radio', stat: 's-radio', label: 'radio.hs27.internal' },
-      { key: 'odoo',          dot: 'd-odoo',  stat: 's-odoo',  label: 'odoo.hs27.internal' },
-      { key: 'paperless',     dot: 'd-paper', stat: 's-paper', label: 'paperless.hs27.internal' },
-    ];
-
-    async function updateSystemStatus() {
-      try {
-        const r = await fetch(STATUS_API, { cache: 'no-store' });
-        const d = await r.json();
-
-        const sysDot = document.getElementById('sys-dot');
-        const items = Array.isArray(d.services) ? d.services : [];
-
-        serviceMap.forEach(svc => {
-          const found = items.find(i => i.key === svc.key || i.label === svc.label || (i.label && i.label.toLowerCase().includes(svc.key)));
-          const ok = found ? found.status === 'ok' : null;
-          const dotEl = document.getElementById(svc.dot);
-          const statEl = document.getElementById(svc.stat);
-          if (dotEl) { dotEl.className = 'dot' + (ok === false ? ' err' : ok === null ? ' warn' : ''); }
-          if (statEl) { statEl.textContent = ok === false ? 'Fehler' : ok === null ? '?' : 'OK'; }
-        });
-
-        const healthy = d.healthy_services ?? 0, total = d.total_services ?? 0;
-        if (healthy >= total) {
-          sysDot.className = 'dot';
-          document.getElementById('sys-text').textContent = `${healthy}/${total} Dienste OK`;
-        } else {
-          sysDot.className = 'dot warn';
-          document.getElementById('sys-text').textContent = `${healthy}/${total} gesund`;
-        }
-
-      } catch(e) {
-        document.getElementById('sys-dot').className = 'dot err';
-        document.getElementById('sys-text').textContent = 'System offline';
-      }
-    }
-    setInterval(updateSystemStatus, 30000); updateSystemStatus();
-
-    // ─── Presence (Tailscale via ping) ────────────────────────
-    // Since we can't run tailscale CLI in a browser, we probe devices
-    const devices = [
-      { ip: '100.76.249.126', id: 'wolf', name: 'Wolf', label: 'ZenBook', badge: 'wolf-badge', detail: 'wolf-detail' },
-      { ip: '100.64.23.77',   id: 'pi',   name: 'Pi',   label: 'Radio Node', badge: 'pi-badge', detail: 'pi-detail' },
-    ];
-
-    function setPresence(badgeId, text, type) {
-      const el = document.getElementById(badgeId);
-      if (!el) return;
-      el.textContent = text;
-      el.className = 'presence-badge' + (type === 'away' ? ' away' : type === 'offline' ? ' offline' : '');
-    }
-
-    async function probeDevice(dev) {
-      try {
-        const ctrl = new AbortController();
-        const tid = setTimeout(() => ctrl.abort(), 2000);
-        const r = await fetch(`http://${dev.ip}:17827`, { signal: ctrl.signal, mode: 'no-cors', cache: 'no-store' });
-        clearTimeout(tid);
-        setPresence(dev.badge, 'Online', null);
-        document.getElementById(dev.detail).textContent = dev.label + ' • erreichbar';
-      } catch(e) {
-        if (e.name === 'AbortError') {
-          setPresence(dev.badge, 'Keine Antwort', 'away');
-          document.getElementById(dev.detail).textContent = dev.label + ' • Timeout';
-        } else {
-          // net::ERR_CONNECTION_REFUSED still means device is up
-          setPresence(dev.badge, 'Online', null);
-          document.getElementById(dev.detail).textContent = dev.label + ' • im Tailnet';
-        }
-      }
-    }
-
-    // Wolf on ZenBook: probe 100.76.249.126, Franz device unknown – show as dynamic greeting
-    async function updatePresence() {
-      await probeDevice(devices[0]);
-      const wolfBadge = document.getElementById('wolf-badge').textContent;
-      document.getElementById('wolf-detail').textContent =
-        wolfBadge === 'Online' ? 'ZenBook • im Netz' : 'ZenBook • nicht erreichbar';
-      setPresence('franz-badge', 'Unbekannt', 'offline');
-      document.getElementById('franz-detail').textContent = 'Kein Gerät konfiguriert';
-    }
-    setInterval(updatePresence, 20000); updatePresence();
-
-    // ─── Voice Control ────────────────────────────────────────
-    let recognition = null, voiceActive = false;
-    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-
-    function processVoiceCommand(text) {
-      const cmd = text.toLowerCase().trim();
-      const res = document.getElementById('voice-result');
-      if (cmd.includes('skip') || cmd.includes('weiter') || cmd.includes('nächst')) {
-        res.textContent = '⏭ Song wird übersprungen...';
-        document.getElementById('btn-skip').click();
-      } else if (cmd.includes('home') || cmd.includes('smart')) {
-        res.textContent = '🏠 Home Assistant wird geöffnet...';
-        setTimeout(() => window.location = 'http://ha.hs27.internal', 800);
-      } else if (cmd.includes('radio') || cmd.includes('musik')) {
-        res.textContent = '📻 Radio Player wird geöffnet...';
-        setTimeout(() => window.location = 'http://radio.hs27.internal/public/frawo-funk', 800);
-      } else if (cmd.includes('medien') || cmd.includes('film') || cmd.includes('jellyfin')) {
-        res.textContent = '🎬 Jellyfin wird geöffnet...';
-        setTimeout(() => window.location = 'http://media.hs27.internal', 800);
-      } else {
-        res.textContent = `❓ "${text}" – nicht erkannt`;
-        setTimeout(() => res.textContent = '', 3000);
-      }
-    }
-
-    function toggleVoice() {
-      if (!SR) {
-        document.getElementById('voice-transcript').textContent = 'Spracherkennung nicht unterstützt';
-        return;
-      }
-      if (voiceActive) {
-        recognition && recognition.stop();
-        voiceActive = false;
-        document.getElementById('voice-btn').className = '';
-        document.getElementById('voice-btn').textContent = '🎙️';
-        return;
-      }
-      recognition = new SR();
-      recognition.lang = 'de-DE';
-      recognition.interimResults = true;
-      recognition.continuous = false;
-      recognition.onstart = () => {
-        voiceActive = true;
-        document.getElementById('voice-btn').className = 'active';
-        document.getElementById('voice-btn').textContent = '🔴';
-        document.getElementById('voice-transcript').textContent = 'Höre zu...';
-        document.getElementById('voice-result').textContent = '';
-      };
-      recognition.onresult = e => {
-        const t = Array.from(e.results).map(r => r[0].transcript).join('');
-        document.getElementById('voice-transcript').textContent = `"${t}"`;
-        if (e.results[e.results.length-1].isFinal) processVoiceCommand(t);
-      };
-      recognition.onend = () => {
-        voiceActive = false;
-        document.getElementById('voice-btn').className = '';
-        document.getElementById('voice-btn').textContent = '🎙️';
-      };
-      recognition.start();
-    }
-  </script>
-</body>
-</html>

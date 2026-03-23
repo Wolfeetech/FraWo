@@ -41,6 +41,16 @@ What does Wolf or Franz need to do next so Codex or Gemini can continue autonomo
      - touch keyboard behavior may still need one more local polish pass
    - Resume after this: capture concrete UX issues for Gemini instead of reopening the infrastructure baseline.
 
+4. Place the workspace on `WOLFSTUDIOPC` and run the Windows bootstrap once.
+   - Current live fingerprint:
+     - hostname `WOLFSTUDIOPC.local`
+     - IP `192.168.2.162`
+     - Ethernet link active
+   - Needed local action on the PC:
+     - put the repo folder onto the machine
+     - run `scripts\bootstrap_windows_workspace.cmd`
+   - Resume after this: Codex or Gemini can verify the stable alias and fold the PC into the managed trusted-client path.
+
 ## Soon
 
 1. Test one real mobile off-LAN path.
@@ -55,16 +65,27 @@ What does Wolf or Franz need to do next so Codex or Gemini can continue autonomo
    - Quick check: `make inventory-unknown-report`
    - Resume after this: DHCP and gateway planning become cleaner.
 
-3. Do not unplug the `64GB` USB stick from Proxmox.
+3. Decide the document flow for Paperless and Nextcloud.
+   - Current technical base is now live:
+     - `VM 200 nextcloud` is fully installed
+     - `VM 230 paperless` has the required app users
+     - passwords are stored only in encrypted Ansible Vault
+     - `Paperless/Eingang` in Nextcloud is now the upload path into the Paperless consume flow
+     - `Paperless/Archiv` in Nextcloud receives mirrored archive output
+   - Resume after this:
+     - test one real PDF/scan through the new path
+     - then Codex/Gemini can refine shortcuts, naming and user UX
+
+4. Do not unplug the `64GB` USB stick from Proxmox.
   - Why: the stick has now been repurposed into the interim PBS USB storage path for `VM 240`.
   - Resume after this:
     - keep the stick attached as long as PBS uses it
     - Codex/Gemini can continue with PBS proof-backup verification and later migration to larger storage
 
-4. Keep PBS interim online while proof backups are stabilized.
-   - Current live state:
-     - `VM 240 pbs` installed on `192.168.2.25`
-     - datastore `hs27-interim` active
+5. Keep PBS interim online while proof backups are stabilized.
+  - Current live state:
+    - `VM 240 pbs` installed on `192.168.2.25`
+    - datastore `hs27-interim` active
      - Proxmox storage `pbs-interim` active
      - daily job `hs27-pbs-interim-daily` exists
      - retention now keeps the USB usable over time:

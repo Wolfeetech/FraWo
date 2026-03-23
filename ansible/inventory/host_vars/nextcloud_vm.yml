@@ -6,3 +6,5 @@ compose_env_template: stacks/nextcloud/stack.env.j2
 compose_http_port: 80
 nextcloud_php_memory_limit: 512M
 nextcloud_php_upload_limit: 10G
+nextcloud_admin_user: frawoadmin
+nextcloud_frontend_user: frontend

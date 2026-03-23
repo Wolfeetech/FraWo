@@ -53,6 +53,12 @@ Der Server gilt erst dann als wirklich fertig, wenn alle folgenden Punkte erfuel
 
 - Workspace, SSOT, Handoffs und Routinen sind aufgebaut.
 - `VM 200`, `VM 220`, `VM 230` laufen stabil aus IaC-Pfaden.
+- `VM 200 nextcloud` ist jetzt nicht nur containerseitig, sondern auch applikationsseitig sauber installiert; Admin-User `frawoadmin` und Frontend-User `frontend` sind vorhanden, die Passwoerter liegen verschluesselt im Vault.
+- `VM 230 paperless` hat jetzt ebenfalls Admin-User `frawoadmin` und Frontend-User `frontend`; die Passwoerter liegen verschluesselt im Vault.
+- zwischen Paperless und Nextcloud ist jetzt ein erster echter Dokumentenpfad live:
+  - Nextcloud-Upload nach `Paperless/Eingang`
+  - Bruecke im 5-Minuten-Takt in den Paperless-Consume-Pfad
+  - OCR-/Archivspiegelung nach `Paperless/Archiv`
 - `CT 100` stellt internes Caddy und AdGuard im Opt-in-Betrieb bereit.
 - Tailscale auf `CT 100` ist joined und laeuft.
 - `VM 210` ist gebaut, stabil auf `192.168.2.24` und intern ueber `ha.hs27.internal` erreichbar.
@@ -396,11 +402,12 @@ Nie direkt oeffentlich:
 2. Restore-Drills auf dem PBS-v1-Pfad nachweisen.
 3. Danach Inventar-/Lease-Finalisierung abschliessen.
 4. HAOS-USB-Pfad vorbereiten, sobald Hardware steckt.
-5. Radio-Kuration und Surface-Monitor-/Control-Schicht auf Basis des stabilen Pi-Betriebs weiterziehen.
-6. Erste Thomson-/Google-TV-Clients an Jellyfin anbinden.
-7. Rightsizing von `VM 200` und `VM 220` vor dem PBS-Dauerbetrieb einplanen.
-8. Gateway-Cutover erst nach Inventar-Finalisierung und Backup-Nachweis.
-9. Public Edge erst nach Gateway und belastbarem PBS-/Restore-Standard.
+5. Den neuen Paperless-/Nextcloud-Dokumentenpfad mit einem echten Dokumentenlauf abnehmen.
+6. Radio-Kuration und Surface-Monitor-/Control-Schicht auf Basis des stabilen Pi-Betriebs weiterziehen.
+7. Erste Thomson-/Google-TV-Clients an Jellyfin anbinden.
+8. Rightsizing von `VM 200` und `VM 220` vor dem PBS-Dauerbetrieb einplanen.
+9. Gateway-Cutover erst nach Inventar-Finalisierung und Backup-Nachweis.
+10. Public Edge erst nach Gateway und belastbarem PBS-/Restore-Standard.
 
 ## Die wichtigsten Dateien zum Masterplan
 
