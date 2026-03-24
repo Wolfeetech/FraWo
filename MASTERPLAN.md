@@ -22,6 +22,12 @@ Der Zielzustand ist eine hybride Proxmox-Infrastruktur mit klarer Rollentrennung
   - Dokumentenarchiv
 - `VM 240 pbs`
   - dedizierter Proxmox Backup Server
+- `wolfstudiopc`
+  - primäres Admin- und Brückengerät (dieser PC)
+  - SSOT für Netzwerk- und Servermanagement
+- `zenbook_radio_anchor`
+  - zukünftiger Radio-Ankerpunkt ("Villa")
+  - Livestream-Host für Studio-Broadcasts
 - `raspberry_pi_radio`
   - dedizierter interner Radio-Node mit AzuraCast
 - spaeter `surface_go_frontend`
@@ -92,8 +98,12 @@ Der Server gilt erst dann als wirklich fertig, wenn alle folgenden Punkte erfuel
 - AdGuard ist noch nicht primaerer LAN-DNS.
 - UCG-Ultra ist noch nicht integriert.
 - Public Edge ist bewusst noch nicht live.
-- Bevorzugter spaeterer Public-Domain-Pfad ist jetzt `frawo.studio` mit `www.frawo.studio` fuer die GbR-Website und `radio.frawo.studio` fuer den Radio-/Player-Pfad.
+- Bevorzugter spaeterer Public-Domain-Pfad ist jetzt `frawo-tech.de` (Strato, GbR-Hauptdomain) mit `www.frawo-tech.de` fuer die GbR-Website und `radio.frawo-tech.de` fuer den Radio-/Player-Pfad.
+- `yourparty.tech` (Legacy-Projekt): Restlaufzeit sinnvoll nutzen, danach ggf. abschalten oder redirecten.
+- `prinz-stockenweiler.de` (Ionos, Elternhaus): Wolf ist der "Internetangel"; Ziel ist die Fernwartung und Erreichbarkeit aller dortigen Services ("auf dem Server").
+- internes `hs27.internal` bleibt bis zur bewussten internen DNS-Migration unveraendert.
 - Der dedizierte Radio-Node auf dem Raspberry Pi 4 ist intern live: AzuraCast laeuft auf dem Pi, `radio.hs27.internal` liefert intern `HTTP 302` auf `/login`, und die Status-API ist erreichbar.
+
 - Der Radio-Betrieb ist jetzt auch operativ verifiziert: `Radio`, `Radio Control` und `nowplaying` sind intern gruen; naechster Schritt ist die Kuration nach `RadioLibrary` / `RadioAssets` und danach eine touchfreundliche Surface-Monitor-/Control-Schicht.
 - Der Medienserver-V1 ist technisch live und die Jellyfin-Erstkonfiguration ist fuer den Musikpfad abgeschlossen.
 - Der Medienserver-V1 hat jetzt schon einen echten Content-Pfad: Pi-USB-Musik wird in die Toolbox-Mediathek synchronisiert; der verbleibende operative Block ist jetzt vor allem der laufende Bootstrap-Import und danach die Client-/Kurationsschicht.
@@ -107,9 +117,10 @@ Der Server gilt erst dann als wirklich fertig, wenn alle folgenden Punkte erfuel
   - `epiphany-browser` wird aktuell ueber einen lokalen Wrapper als private Instanz gestartet
 - Der praktische Restblock am Surface ist damit auf Browser-/Touch-Tastatur-Feinschliff und spaetere UX-Veredelung geschrumpft, nicht mehr auf Grundfunktion.
 - Neu als Zwischenstufe fuer Backups: der `64GB`-USB-Stick `HS27_PORTABLEBK` ist jetzt fest an Proxmox angeschlossen und traegt das kleine PBS-v1-Zwischenstorage; `VM 240 pbs` laeuft mit `32G` Systemdisk auf `local-lvm`, `40G` USB-Data-Disk auf `pbs-usb` und `3072 MB` RAM.
-- ZenBook-Remote-Zugriff ist vorbereitet:
-  - Tailscale joined
-  - AnyDesk aktiv
+- `surface-go-frontend` auf `192.168.2.154` ist jetzt als `surface-go-frontend` frisch aufgebaut; SSH, lokales Portal und der Tailnet-Pfad auf `100.106.67.127` sind verifiziert.
+- `wolfstudiopc` ist joined und als Admin-Gerät etabliert (`100.98.31.60`).
+- `Zenbook` ist vorbereitet für die spätere Migration als Radio-Anker.
+
 
 ## Roadmap Nach Phasen
 
@@ -375,10 +386,12 @@ Vorbedingungen:
 - Domain, DNS, TLS, Auth, Logging, Monitoring und Rollback definiert
 
 Bevorzugter Zielname:
-- `www.frawo.studio` fuer die Hauptseite
-- `radio.frawo.studio` fuer Radio/Player
+- `www.frawo-tech.de` fuer die Hauptseite
+- `radio.frawo-tech.de` fuer Radio/Player
+- `prinz-stockenweiler.de` (Remote-Admin Elternhaus)
 - internes `hs27.internal` bleibt bis zur bewussten internen DNS-Migration unveraendert
 - spaeterer professioneller interner Zielname ist `frawo.home.arpa`
+
 
 Runbook:
 - `PUBLIC_EDGE_ARCHITECTURE_PLAN.md`
@@ -395,6 +408,10 @@ Nie direkt oeffentlich:
 - `Ollama`
   - derzeit nicht sinnvoll auf dem bestehenden Host
   - Wiedervorlage erst bei RAM-Upgrade oder separatem AI-Node
+- `Anytype`
+  - Integration als lokale SSOT für Wissensmanagement
+  - Synergie mit der HS27-Infrastruktur prüfen
+
 
 ## Was jetzt als Naechstes dran ist
 

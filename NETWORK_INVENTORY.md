@@ -96,10 +96,11 @@
 
 | IP | Hostname | MAC / Vendor | Device Class | Zone | Owner | Mgmt | DHCP/Static | Criticality | Status | Source | Next Action |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `192.168.2.141` | `d0:c9:07:ef:8c:32` | `D0:C9:07:EF:8C:32` / private | likely smartphone/tablet | `unknown-review` | pending-operator-action | unknown | dhcp | low | active | nmap + browser probe | responds to ping, ports closed. AKTION VON DIR ERFORDERLICH: Check personal devices for this MAC |
-| `192.168.2.142` | `d0:c9:07:da:70:6c` | `D0:C9:07:DA:70:6C` / private | likely smartphone/tablet | `unknown-review` | pending-operator-action | unknown | dhcp | low | active | nmap + browser probe | responds to ping, ports closed. AKTION VON DIR ERFORDERLICH: Check personal devices for this MAC |
-| `192.168.2.143` | `d0:c9:07:da:6e:f2` | `D0:C9:07:DA:6E:F2` / private | likely smartphone/tablet | `unknown-review` | pending-operator-action | unknown | dhcp | low | active | nmap + browser probe | responds to ping, ports closed. AKTION VON DIR ERFORDERLICH: Check personal devices for this MAC |
-| `192.168.2.144` | `d0:c9:07:ef:8a:f0` | `D0:C9:07:EF:8A:F0` / private | likely smartphone/tablet | `unknown-review` | pending-operator-action | unknown | dhcp | low | active | nmap + browser probe | responds to ping, ports closed. AKTION VON DIR ERFORDERLICH: Check personal devices for this MAC |
+| `192.168.2.141` | `d0:c9:07:ef:8c:32` | `D0:C9:07:EF:8C:32` / Apple | likely iPhone/iPad | `unknown-review` | private-household | unknown | dhcp | low | active | nmap + browser probe | identified as Apple device; confirm owner |
+| `192.168.2.142` | `d0:c9:07:da:70:6c` | `D0:C9:07:DA:70:6C` / Apple | likely iPhone/iPad | `unknown-review` | private-household | unknown | dhcp | low | active | nmap + browser probe | identified as Apple device; confirm owner |
+| `192.168.2.143` | `d0:c9:07:da:6e:f2` | `D0:C9:07:DA:6E:F2` / Apple | likely iPhone/iPad | `unknown-review` | private-household | unknown | dhcp | low | active | nmap + browser probe | identified as Apple device; confirm owner |
+| `192.168.2.144` | `d0:c9:07:ef:8a:f0` | `D0:C9:07:EF:8A:F0` / Apple | likely iPhone/iPad | `unknown-review` | private-household | unknown | dhcp | low | active | nmap + browser probe | identified as Apple device; confirm owner |
+
 
 ## Planned Network Hardware
 
