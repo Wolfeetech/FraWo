@@ -1,0 +1,56 @@
+---
+- name: Deploy Single Source of Truth Node (CT 110)
+  hosts: proxmox
+  become: true
+  vars:
+    # Needs to be filled in by Codex upon execution
+    sot_vmid: 110
+    sot_hostname: storage-node
+    sot_ip: 192.168.2.30/24
+    sot_gateway: 192.168.2.1
+    sot_password: "{{ lookup('env', 'PROXMOX_LXC_PASSWORD') | default('11011995', true) }}"
+    sot_disk_size: "100G"
+    sot_storage: "local-lvm"
+    
+  tasks:
+    - name: Create Storage-Node LXC container
+      community.general.proxmox:
+        api_host: "127.0.0.1"
+        api_user: "root@pam"
+        api_password: "{{ lookup('env', 'PROXMOX_API_PASSWORD') | default('11011995', true) }}"
+        node: "proxmox-anker"
+        vmid: "{{ sot_vmid }}"
+        hostname: "{{ sot_hostname }}"
+        password: "{{ sot_password }}"
+        ostemplate: "local:vztmpl/debian-12-standard_12.7-1_amd64.tar.zst"
+        cores: 2
+        memory: 1024
+        netif: '{"net0":"name=eth0,bridge=vmbr0,ip={{ sot_ip }},gw={{ sot_gateway }}"}'
+        storage: "{{ sot_storage }}"
+        disk: "{{ sot_disk_size }}"
+        unprivileged: false
+        features:
+          - nesting=1
+          - keyctl=1      # Needed for NFS Server
+        state: present
+      register: lxc_creation
+
+    - name: Ensure Container is started
+      community.general.proxmox:
+        api_host: "127.0.0.1"
+        api_user: "root@pam"
+        api_password: "{{ lookup('env', 'PROXMOX_API_PASSWORD') | default('11011995', true) }}"
+        vmid: "{{ sot_vmid }}"
+        state: started
+
+    - name: Wait for LXC Network
+      ansible.builtin.wait_for:
+        host: "192.168.2.30"
+        port: 22
+        state: started
+        timeout: 60
+      when: lxc_creation.changed
+
+# TODO (Codex): Add separate play targeting the new `storage-node` host
+# to install nfs-kernel-server, create /mnt/data/documents and /mnt/data/media
+# and write the /etc/exports file.

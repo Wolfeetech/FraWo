@@ -347,7 +347,24 @@ Erreicht:
 
 Rest:
 - erste Thomson-/Google-TV-Clients verbinden
-- spaeter Medienquelle und Kuration professionell von der Bootstrap-Phase in einen dauerhaften Pfad ueberfuehren
+- spaeter Medienquelle und Kuration professionell von der Bootstrap-Phase in einen dauerhaften Pfad ueberfuehren (NFS/CT110)
+
+## Phase 6d - Single Source of Truth Storage Node (CT 110)
+
+Ziel:
+- Dokumente (Paperless/Nextcloud) und Medien (Radio/Jellyfin) als Single Source of Truth bündeln, anstatt Isoliert mit Rsync zu jonglieren.
+
+Status:
+- konzeptionell vorbereitet (siehe `SHARED_STORAGE_ARCHITECTURE_PLAN.md`), Umsetzung ausstehend
+
+Erreicht:
+- Architekturplan dokumentiert
+
+Rest:
+- `CT 110 storage` deployen (Debian, NFS/SMB Kernel Server)
+- Nextcloud + Paperless NFS mounts für `/media/archive` vorbereiten
+- Pi AzuraCast + Jellyfin `/mnt/data/media` NFS/Tailscale mounts vorbereiten
+- (Optional Any-Sync/Anytype Node aufziehen)
 
 ## Phase 7 - Gateway-Cutover auf UCG-Ultra
 
@@ -436,4 +453,5 @@ Nie direkt oeffentlich:
 - [REMOTE_ACCESS_STANDARD.md](REMOTE_ACCESS_STANDARD.md)
 - [PBS_VM_240_SETUP_PLAN.md](PBS_VM_240_SETUP_PLAN.md)
 - [HAOS_VM_210_SETUP_PLAN.md](HAOS_VM_210_SETUP_PLAN.md)
+- [SHARED_STORAGE_ARCHITECTURE_PLAN.md](SHARED_STORAGE_ARCHITECTURE_PLAN.md)
 
