@@ -3,7 +3,8 @@
 ## Audit Timestamp
 
 - Primary audit date: `2026-03-17`
-- Audit scope: `CT 100 toolbox`, `VM 200 nextcloud`, `VM 220 odoo`, `VM 230 paperless`
+- Follow-up audit date: `2026-03-24`
+- Audit scope: `CT 100 toolbox`, `VM 200 nextcloud`, `VM 220 odoo`, `VM 230 paperless`, `VM 320 restore-test`
 
 ## CT 100 - Toolbox
 
@@ -208,6 +209,7 @@
   - `VM 920` was removed after verification
 - Remaining backup follow-up:
   - promote the proven local path into scheduled PBS jobs with retention and regular restore drills
+  - **PBS-v1 Drill 2026-03-24**: Successful manual restore of VM 220 to VM 320 (`odoo-restore-test`) on `local-lvm`
 
 ## Service Drift Check - 2026-03-18
 
@@ -290,6 +292,17 @@
   - Home Assistant reverse-proxy trust was enabled for toolbox source IP `192.168.2.20`
   - a local `vzdump` archive for `VM 210` now exists on Proxmox `local`
   - USB passthrough is still not actionable because no target adapter is visible on the Proxmox host
+
+## VM 320 - Restore Test (2026-03-24)
+
+- Proxmox metadata:
+  - VM ID `320`
+  - Name `odoo-restore-test`
+  - Restored from `pbs-interim` (Source: VM 220 odoo, March 21 backup)
+  - Target storage `local-lvm`
+- Verification:
+  - Task initiated 2026-03-24 12:01 (local)
+  - Log confirmed successful extraction to `local-lvm:vm-320-disk-0`
 
 ## Business VM Resolution Hardening - 2026-03-18
 

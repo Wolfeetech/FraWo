@@ -415,24 +415,22 @@ Nie direkt oeffentlich:
 
 ## Was jetzt als Naechstes dran ist
 
-1. Easy-Box-Leases und Reservierungen finalisieren.
-2. Restore-Drills auf dem PBS-v1-Pfad nachweisen.
-3. Danach Inventar-/Lease-Finalisierung abschliessen.
-4. HAOS-USB-Pfad vorbereiten, sobald Hardware steckt.
-5. Den neuen Paperless-/Nextcloud-Dokumentenpfad mit einem echten Dokumentenlauf abnehmen.
-6. Radio-Kuration und Surface-Monitor-/Control-Schicht auf Basis des stabilen Pi-Betriebs weiterziehen.
-7. Erste Thomson-/Google-TV-Clients an Jellyfin anbinden.
-8. Rightsizing von `VM 200` und `VM 220` vor dem PBS-Dauerbetrieb einplanen.
-9. Gateway-Cutover erst nach Inventar-Finalisierung und Backup-Nachweis.
-10. Public Edge erst nach Gateway und belastbarem PBS-/Restore-Standard.
+1. **HAOS-USB-Pfad vorbereiten**: Sobald die Zigbee/Z-Wave Hardware steckt.
+2. **Dokumenten-Workflow**: Paperless-/Nextcloud-Pfad mit einem echten Dokumentenlauf abnehmen.
+3. **Radio & Control**: Radio-Kuration und Surface-Monitor (Kiosk) finalisieren.
+4. **Media Clients**: Jellyfin-Anbindung für Thomson/Google TV.
+5. **Phase 5 & 6**: [x] DONE. Backup-Standard (PBS VM 240) und Netzwerk-Inventar (.14x) sind stabil.
+6. **Gateway-Cutover**: Erst nach Abschluss der oben genannten Stabilitäts-Gates.
+7. **Public Edge**: Finaler Hardening-Schritt.
+
 
 ## Die wichtigsten Dateien zum Masterplan
 
-- [MASTERPLAN.md](/home/wolf/.gemini/antigravity/brain/2c5853e0-5815-4be5-9475-dd2b9bd1e0f2/MASTERPLAN.md)
-- [MEMORY.md](/home/wolf/.gemini/antigravity/brain/2c5853e0-5815-4be5-9475-dd2b9bd1e0f2/MEMORY.md)
-- [NETWORK_INVENTORY.md](/home/wolf/.gemini/antigravity/brain/2c5853e0-5815-4be5-9475-dd2b9bd1e0f2/NETWORK_INVENTORY.md)
-- [VM_AUDIT.md](/home/wolf/.gemini/antigravity/brain/2c5853e0-5815-4be5-9475-dd2b9bd1e0f2/VM_AUDIT.md)
-- [CAPACITY_REVIEW.md](/home/wolf/.gemini/antigravity/brain/2c5853e0-5815-4be5-9475-dd2b9bd1e0f2/CAPACITY_REVIEW.md)
+- [MASTERPLAN.md](MASTERPLAN.md)
+- [NETWORK_INVENTORY.md](NETWORK_INVENTORY.md)
+- [VM_AUDIT.md](VM_AUDIT.md)
+- [CAPACITY_REVIEW.md](CAPACITY_REVIEW.md)
+
 - [BACKUP_RESTORE_PROOF.md](/home/wolf/.gemini/antigravity/brain/2c5853e0-5815-4be5-9475-dd2b9bd1e0f2/BACKUP_RESTORE_PROOF.md)
 - [RASPBERRY_PI_RADIO_NODE_PLAN.md](/home/wolf/.gemini/antigravity/brain/2c5853e0-5815-4be5-9475-dd2b9bd1e0f2/RASPBERRY_PI_RADIO_NODE_PLAN.md)
 - [REMOTE_ACCESS_STANDARD.md](/home/wolf/.gemini/antigravity/brain/2c5853e0-5815-4be5-9475-dd2b9bd1e0f2/REMOTE_ACCESS_STANDARD.md)
