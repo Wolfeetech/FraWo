@@ -416,7 +416,7 @@ Nie direkt oeffentlich:
 ## Was jetzt als Naechstes dran ist
 
 1. **HAOS-USB-Pfad vorbereiten**: Sobald die Zigbee/Z-Wave Hardware steckt.
-2. **Dokumenten-Workflow**: Paperless-/Nextcloud-Pfad mit einem echten Dokumentenlauf abnehmen.
+2. **Dokumenten-Workflow**: [x] DONE. Paperless-/Nextcloud-Pfad ist mit einem echten Dokumentenlauf abgenommen (bridge_timer live, 'probe' Document consumed).
 3. **Radio & Control**: Radio-Kuration und Surface-Monitor (Kiosk) finalisieren.
 4. **Media Clients**: Jellyfin-Anbindung für Thomson/Google TV.
 5. **Phase 5 & 6**: [x] DONE. Backup-Standard (PBS VM 240) und Netzwerk-Inventar (.14x) sind stabil.
@@ -431,8 +431,9 @@ Nie direkt oeffentlich:
 - [VM_AUDIT.md](VM_AUDIT.md)
 - [CAPACITY_REVIEW.md](CAPACITY_REVIEW.md)
 
-- [BACKUP_RESTORE_PROOF.md](/home/wolf/.gemini/antigravity/brain/2c5853e0-5815-4be5-9475-dd2b9bd1e0f2/BACKUP_RESTORE_PROOF.md)
-- [RASPBERRY_PI_RADIO_NODE_PLAN.md](/home/wolf/.gemini/antigravity/brain/2c5853e0-5815-4be5-9475-dd2b9bd1e0f2/RASPBERRY_PI_RADIO_NODE_PLAN.md)
-- [REMOTE_ACCESS_STANDARD.md](/home/wolf/.gemini/antigravity/brain/2c5853e0-5815-4be5-9475-dd2b9bd1e0f2/REMOTE_ACCESS_STANDARD.md)
-- [PBS_VM_240_SETUP_PLAN.md](/home/wolf/.gemini/antigravity/brain/2c5853e0-5815-4be5-9475-dd2b9bd1e0f2/PBS_VM_240_SETUP_PLAN.md)
-- [HAOS_VM_210_SETUP_PLAN.md](/home/wolf/.gemini/antigravity/brain/2c5853e0-5815-4be5-9475-dd2b9bd1e0f2/HAOS_VM_210_SETUP_PLAN.md)
+- [BACKUP_RESTORE_PROOF.md](BACKUP_RESTORE_PROOF.md)
+- [RASPBERRY_PI_RADIO_NODE_PLAN.md](RASPBERRY_PI_RADIO_NODE_PLAN.md)
+- [REMOTE_ACCESS_STANDARD.md](REMOTE_ACCESS_STANDARD.md)
+- [PBS_VM_240_SETUP_PLAN.md](PBS_VM_240_SETUP_PLAN.md)
+- [HAOS_VM_210_SETUP_PLAN.md](HAOS_VM_210_SETUP_PLAN.md)
+
