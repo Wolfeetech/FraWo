@@ -1,0 +1,20 @@
+---
+# ansible/site.yml – Master playbook
+# ---------------------------------------------------------------------------
+# Run:  ansible-playbook -i inventory/hosts.yml site.yml
+# Tags: common:hardening, proxmox_node:config, …
+# ---------------------------------------------------------------------------
+
+- name: Apply common baseline to all hosts
+  hosts: all
+  gather_facts: true
+  roles:
+    - role: common
+      tags: ["common"]
+
+- name: Configure Proxmox nodes
+  hosts: proxmox_nodes
+  gather_facts: true
+  roles:
+    - role: proxmox_node
+      tags: ["proxmox_node"]

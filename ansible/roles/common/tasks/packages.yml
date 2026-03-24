@@ -1,0 +1,23 @@
+---
+# roles/common/tasks/packages.yml
+
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Upgrade all packages
+  ansible.builtin.apt:
+    upgrade: dist
+  when: apt_upgrade_on_run | bool
+  notify: Reboot if required
+
+- name: Install common packages
+  ansible.builtin.apt:
+    name: "{{ common_packages }}"
+    state: present
+
+- name: Remove unused packages
+  ansible.builtin.apt:
+    autoremove: true
+  when: apt_autoremove | bool

@@ -1,0 +1,21 @@
+# ── Terraform ────────────────────────────────────────────────────────────────
+terraform/.terraform/
+terraform/.terraform.lock.hcl
+terraform/terraform.tfstate
+terraform/terraform.tfstate.backup
+terraform/terraform.tfvars          # contains real values – see .example file
+terraform/*.tfplan
+terraform/crash.log
+
+# ── Ansible ──────────────────────────────────────────────────────────────────
+ansible/.vault_pass
+ansible/.ansible_vault_pass
+ansible/*.retry
+
+# ── General ──────────────────────────────────────────────────────────────────
+.DS_Store
+*.swp
+*.swo
+*.bak
+*.orig
+.env

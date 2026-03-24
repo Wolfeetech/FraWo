@@ -1,0 +1,18 @@
+---
+# roles/proxmox_node/tasks/nag.yml
+# Removes the "No valid subscription" pop-up in the Proxmox web UI.
+
+- name: Check if proxmox-widget-toolkit is installed
+  ansible.builtin.stat:
+    path: /usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js
+  register: proxmoxlib_stat
+
+- name: Patch Proxmox subscription nag
+  ansible.builtin.replace:
+    path: /usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js
+    regexp: "res === null \\|\\| res === undefined \\|\\| !res \\|\\| res\\n\\t\\t\\t\\t\\.data\\.status\\.toLowerCase\\(\\) !== 'active'"
+    replace: "false"
+    backup: true
+  when:
+    - proxmox_remove_subscription_nag | bool
+    - proxmoxlib_stat.stat.exists

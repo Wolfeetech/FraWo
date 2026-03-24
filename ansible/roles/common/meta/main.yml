@@ -1,0 +1,22 @@
+galaxy_info:
+  role_name: common
+  author: homeserver-2027
+  description: OS baseline hardening for all Debian/Ubuntu hosts (MASTERPLAN §7)
+  license: MIT
+  min_ansible_version: "2.15"
+  platforms:
+    - name: Debian
+      versions:
+        - "12"
+    - name: Ubuntu
+      versions:
+        - "22.04"
+        - "24.04"
+  galaxy_tags:
+    - hardening
+    - security
+    - ssh
+    - firewall
+    - nftables
+
+dependencies: []

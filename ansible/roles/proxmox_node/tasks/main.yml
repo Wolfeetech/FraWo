@@ -1,0 +1,11 @@
+---
+# roles/proxmox_node/tasks/main.yml
+
+- name: Configure Proxmox APT repositories
+  ansible.builtin.import_tasks: repos.yml
+  tags: ["proxmox_node:repos"]
+
+- name: Remove Proxmox subscription nag
+  ansible.builtin.import_tasks: nag.yml
+  tags: ["proxmox_node:nag"]
+  when: proxmox_remove_subscription_nag | bool

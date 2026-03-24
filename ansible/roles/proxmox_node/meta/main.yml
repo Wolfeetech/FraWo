@@ -1,0 +1,16 @@
+galaxy_info:
+  role_name: proxmox_node
+  author: homeserver-2027
+  description: Proxmox VE node post-install configuration (repos, nag removal)
+  license: MIT
+  min_ansible_version: "2.15"
+  platforms:
+    - name: Debian
+      versions:
+        - "12"
+  galaxy_tags:
+    - proxmox
+    - infrastructure
+
+dependencies:
+  - role: common

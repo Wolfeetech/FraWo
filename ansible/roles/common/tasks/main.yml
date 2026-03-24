@@ -1,0 +1,31 @@
+---
+# roles/common/tasks/main.yml
+# ---------------------------------------------------------------------------
+
+- name: Include package management tasks
+  ansible.builtin.import_tasks: packages.yml
+  tags: ["common:packages"]
+
+- name: Include SSH hardening tasks
+  ansible.builtin.import_tasks: ssh.yml
+  tags: ["common:hardening", "common:ssh"]
+
+- name: Include firewall (nftables) tasks
+  ansible.builtin.import_tasks: firewall.yml
+  tags: ["common:hardening", "common:firewall"]
+
+- name: Include fail2ban tasks
+  ansible.builtin.import_tasks: fail2ban.yml
+  tags: ["common:hardening", "common:fail2ban"]
+
+- name: Include NTP / chrony tasks
+  ansible.builtin.import_tasks: ntp.yml
+  tags: ["common:ntp"]
+
+- name: Include unattended-upgrades tasks
+  ansible.builtin.import_tasks: unattended_upgrades.yml
+  tags: ["common:upgrades"]
+
+- name: Include timezone tasks
+  ansible.builtin.import_tasks: timezone.yml
+  tags: ["common:timezone"]

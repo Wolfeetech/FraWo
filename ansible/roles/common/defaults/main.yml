@@ -1,0 +1,19 @@
+---
+# roles/common/defaults/main.yml
+# ---------------------------------------------------------------------------
+# Default values – override in group_vars or host_vars.
+# ---------------------------------------------------------------------------
+
+common_packages:
+  - curl
+  - gnupg
+  - ca-certificates
+  - unattended-upgrades
+  - apt-listchanges
+  - fail2ban
+  - nftables
+  - chrony
+  - sudo
+  - rsync
+  - htop
+  - vim

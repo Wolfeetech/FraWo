@@ -1,0 +1,41 @@
+---
+# ansible/group_vars/all.yml
+# ---------------------------------------------------------------------------
+# Non-sensitive group variables shared by every host.
+# Sensitive values (passwords, keys) live in vault_all.yml (ansible-vault).
+# ---------------------------------------------------------------------------
+
+# ── Timezone ────────────────────────────────────────────────────────────────
+system_timezone: "Europe/Berlin"
+
+# ── Package management ───────────────────────────────────────────────────────
+apt_upgrade_on_run: true
+apt_autoremove: true
+
+# ── SSH hardening (MASTERPLAN §7) ────────────────────────────────────────────
+ssh_port: 22
+ssh_permit_root_login: "no"
+ssh_password_authentication: "no"
+ssh_pubkey_authentication: "yes"
+ssh_allowed_key_types:
+  - ed25519
+
+# ── Firewall defaults ────────────────────────────────────────────────────────
+nftables_default_inbound: "drop"
+nftables_default_forward: "drop"
+nftables_default_outbound: "accept"
+
+# ── Unattended upgrades (MASTERPLAN §7) ─────────────────────────────────────
+unattended_upgrades_enabled: true
+unattended_upgrades_auto_reboot: false
+unattended_upgrades_auto_reboot_time: "03:30"
+
+# ── Fail2ban ──────────────────────────────────────────────────────────────────
+fail2ban_enabled: true
+fail2ban_ssh_maxretry: 5
+fail2ban_ssh_bantime: 3600   # seconds
+
+# ── NTP ──────────────────────────────────────────────────────────────────────
+ntp_servers:
+  - "0.de.pool.ntp.org"
+  - "1.de.pool.ntp.org"

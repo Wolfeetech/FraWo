@@ -1,0 +1,20 @@
+# ---------------------------------------------------------------------------
+# terraform.tfvars.example
+# Copy this file to terraform.tfvars, fill in your values, and NEVER commit
+# the resulting terraform.tfvars (it is git-ignored).
+# ---------------------------------------------------------------------------
+
+# Proxmox credentials are NOT set here – supply them via environment variables:
+#   export PROXMOX_VE_ENDPOINT="https://pve-01.lan:8006"
+#   export PROXMOX_VE_API_TOKEN="terraform@pve!provider=<uuid>:<secret>"
+
+# SSH public key (ED25519) injected into every VM/LXC via cloud-init.
+# Generate with: ssh-keygen -t ed25519 -C "homeserver-2027"
+ssh_public_key = "ssh-ed25519 AAAA... your-key-comment"
+
+# Override storage IDs if your Proxmox setup differs from the defaults.
+# storage_tier0 = "local-nvme"
+
+# Override node names if yours differ from "pve-01" / "pve-02".
+# proxmox_node_primary   = "pve-01"
+# proxmox_node_secondary = "pve-02"

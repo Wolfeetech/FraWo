@@ -1,0 +1,6 @@
+---
+# roles/proxmox_node/defaults/main.yml
+
+proxmox_no_subscription_repo: true
+proxmox_disable_enterprise_repo: true
+proxmox_remove_subscription_nag: true

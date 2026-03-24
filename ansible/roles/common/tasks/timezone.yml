@@ -1,0 +1,6 @@
+---
+# roles/common/tasks/timezone.yml
+
+- name: Set system timezone
+  community.general.timezone:
+    name: "{{ system_timezone }}"

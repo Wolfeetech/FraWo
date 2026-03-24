@@ -1,0 +1,15 @@
+---
+# ansible/group_vars/vault_all.yml
+# ---------------------------------------------------------------------------
+# THIS FILE IS ENCRYPTED WITH ansible-vault.
+# Encrypt with:  ansible-vault encrypt group_vars/vault_all.yml
+# Edit with:     ansible-vault edit   group_vars/vault_all.yml
+# ---------------------------------------------------------------------------
+# The PLAINTEXT template below shows expected variable names.
+# After encryption, only the ciphertext is stored in git.
+# ---------------------------------------------------------------------------
+
+# vault_admin_password: "REPLACE_WITH_STRONG_PASSWORD"
+# vault_proxmox_api_token_secret: "REPLACE_WITH_TOKEN_SECRET"
+# vault_pbs_encryption_key: "REPLACE_WITH_BASE64_KEY"
+# vault_wireguard_private_key: "REPLACE_WITH_WG_PRIVATE_KEY"
