@@ -24,10 +24,14 @@
     - `udhcp 1.24.1` -> `192.168.2.134` / `B0:4A:39:0E:38:84`
     - `Shelly_plug_repeater` -> current authenticated overview now shows `192.168.2.117` / `B0:81:84:A5:EA:08`
     - `shellyplugsg3-8cbfea968024` -> `192.168.2.107` / `8C:BF:EA:96:80:24`
-  - authenticated overview extraction on `2026-03-23` additionally yielded:
-    - `WOLFSTUDIOPC` -> `192.168.2.162` / `34:5A:60:44:22:F4`
-  - Remaining router-only labels still to map 1:1 onto active IPs:
+- authenticated overview extraction on 2026-03-24 yielded:
+    - .141 -> D0:C9:07:EF:8C:32 (Apple Mobile)
+    - .142 -> D0:C9:07:DA:70:6C (Apple Mobile)
+    - .143 -> D0:C9:07:DA:6E:F2 (Apple Mobile)
+    - .144 -> D0:C9:07:EF:8A:F0 (Apple Mobile)
+- Remaining router-only labels still to map 1:1 onto active IPs:
     - none
+
   - the authenticated overview also shows additional current router labels worth keeping as soft aliases:
     - `Surface_Laptop` had appeared separately on `192.168.2.118`
     - `yourparty-Surface-Go` is visible on `192.168.2.154`
@@ -90,16 +94,18 @@
 | `192.168.2.154` | `yourparty-Surface-Go.local` | `D8:C4:97:C6:0E:B0` / Microsoft | shared touch frontend | `trusted-clients` | shared-household | ssh + local-device + tailscale | dhcp | medium | active-managed | ssh + tailscale + user confirmation | keep managed frontend path stable; remaining work is local browser/touch UX polish and later DHCP reservation |
 | `192.168.2.162` | `WOLFSTUDIOPC.local` | `34:5A:60:44:22:F4` / unknown | studio workstation | `trusted-clients` | wolf | local-device + smb | dhcp | medium | active-observed | authenticated router overview + port probe | join Tailscale, place the repo locally, then run `scripts/bootstrap_windows_workspace.cmd` to expose the stable workspace alias and desktop shortcut |
 | `192.168.2.135` | `localhost` | `B0:4A:39:0E:38:84` / Roborock | robot vacuum | `smart-home-iot` | private-household | app | dhcp | low | stale-observation | older nmap only | superseded by the authenticated router overview on `192.168.2.134`; keep only as historical scan note |
+| `192.168.2.141` | `d0:c9:07:ef:8c:32` | `D0:C9:07:EF:8C:32` / Apple | mobile phone | `trusted-clients` | family | local-device | dhcp | low | active | router overview | family Apple device; confirmed during 2026-03-24 lease review |
+| `192.168.2.142` | `d0:c9:07:da:70:6c` | `D0:C9:07:DA:70:6C` / Apple | mobile phone | `trusted-clients` | family | local-device | dhcp | low | active | router overview | family Apple device; confirmed during 2026-03-24 lease review |
+| `192.168.2.143` | `d0:c9:07:da:6e:f2` | `D0:C9:07:DA:6E:F2` / Apple | mobile phone | `trusted-clients` | family | local-device | dhcp | low | active | router overview | family Apple device; confirmed during 2026-03-24 lease review |
+| `192.168.2.144` | `d0:c9:07:ef:8a:f0` | `D0:C9:07:EF:8A:F0` / Apple | mobile phone | `trusted-clients` | family | local-device | dhcp | low | active | router overview | family Apple device; confirmed during 2026-03-24 lease review |
 | `192.168.2.24` | `homeassistant.local` | `BC:24:11:D5:BA:30` / Proxmox | Home Assistant OS VM | `smart-home-iot` | homeserver-gbr | web + qga | static-in-guest | high | active | qm guest exec + qga + http + caddy | keep `ha.hs27.internal` and local backup coverage green; add USB adapters when physically present |
+
 
 ## Unknown Review Bucket
 
 | IP | Hostname | MAC / Vendor | Device Class | Zone | Owner | Mgmt | DHCP/Static | Criticality | Status | Source | Next Action |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `192.168.2.141` | `d0:c9:07:ef:8c:32` | `D0:C9:07:EF:8C:32` / Apple | likely iPhone/iPad | `unknown-review` | private-household | unknown | dhcp | low | active | nmap + browser probe | identified as Apple device; confirm owner |
-| `192.168.2.142` | `d0:c9:07:da:70:6c` | `D0:C9:07:DA:70:6C` / Apple | likely iPhone/iPad | `unknown-review` | private-household | unknown | dhcp | low | active | nmap + browser probe | identified as Apple device; confirm owner |
-| `192.168.2.143` | `d0:c9:07:da:6e:f2` | `D0:C9:07:DA:6E:F2` / Apple | likely iPhone/iPad | `unknown-review` | private-household | unknown | dhcp | low | active | nmap + browser probe | identified as Apple device; confirm owner |
-| `192.168.2.144` | `d0:c9:07:ef:8a:f0` | `D0:C9:07:EF:8A:F0` / Apple | likely iPhone/iPad | `unknown-review` | private-household | unknown | dhcp | low | active | nmap + browser probe | identified as Apple device; confirm owner |
+
 
 
 ## Planned Network Hardware
