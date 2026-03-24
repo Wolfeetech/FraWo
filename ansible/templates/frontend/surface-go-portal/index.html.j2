@@ -419,3 +419,119 @@
 
     </div><!-- /grid -->
   </div><!-- /app -->
+  <script>
+    // System Clock
+    function updateClock() {
+      const now = new Date();
+      document.getElementById('clock').innerText = now.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // Radio State
+    let radioAudio = null;
+    let isPlaying = false;
+
+    window.toggleRadio = function() {
+      const btn = document.getElementById('btn-listen');
+      if (isPlaying && radioAudio) {
+        radioAudio.pause();
+        radioAudio.src = ''; // disconnect stream
+        isPlaying = false;
+        btn.innerText = '▶️';
+      } else {
+        if (!radioAudio) {
+            radioAudio = new Audio();
+        }
+        radioAudio.src = 'http://radio.hs27.internal/listen/frawo_funk/radio.mp3?' + new Date().getTime(); // prevent cache
+        radioAudio.play().catch(e => console.error(e));
+        isPlaying = true;
+        btn.innerText = '⏸';
+      }
+    };
+
+    // Proxy/CORS safe wrapper for internal API
+    async function fetchNowPlaying() {
+      try {
+        const res = await fetch('http://radio.hs27.internal/api/nowplaying');
+        if (!res.ok) return;
+        const data = await res.json();
+        const np = Array.isArray(data) ? data[0] : (data.now_playing ? data : null); 
+
+        if (np && np.now_playing && np.now_playing.song) {
+          document.getElementById('np-title').innerText = np.now_playing.song.title || 'FraWo Funk';
+          document.getElementById('np-artist').innerText = np.now_playing.song.artist || 'Live';
+          document.getElementById('np-album').innerText = np.now_playing.song.album || '';
+          
+          if (np.now_playing.song.art) {
+            document.getElementById('np-art').src = np.now_playing.song.art;
+          }
+
+          if (np.playing_next && np.playing_next.song) {
+             document.getElementById('np-next').innerHTML = `Als nächstes: <strong>${np.playing_next.song.title}</strong>`;
+          }
+
+          if (np.now_playing.duration > 0) {
+            const pct = (np.now_playing.elapsed / np.now_playing.duration) * 100;
+            document.getElementById('np-progress-bar').style.width = pct + '%';
+          } else {
+            document.getElementById('np-progress-bar').style.width = '100%';
+          }
+        }
+      } catch (err) {
+        console.error("Radio API error:", err);
+      }
+    }
+
+    setInterval(fetchNowPlaying, 10000);
+    fetchNowPlaying();
+
+    // Status fetcher (from central status.json if exists)
+    async function fetchStatus() {
+      try {
+        const res = await fetch('http://portal.hs27.internal/status.json');
+        if (!res.ok) return;
+        const data = await res.json();
+        
+        if (data && data.services) {
+            // update sys-pill
+            const okCount = Object.values(data.services).filter(v => v.status === 'ok').length;
+            const totalCount = Object.keys(data.services).length;
+            
+            if (document.getElementById('sys-text')) {
+                document.getElementById('sys-text').innerText = `System ${okCount}/${totalCount}`;
+            }
+            if (document.getElementById('sys-dot')) {
+                let allOk = okCount === totalCount;
+                document.getElementById('sys-dot').className = allOk ? 'dot' : 'dot warn';
+            }
+
+            const map = {
+                'homeassistant': ['s-ha', 'd-ha'],
+                'nextcloud': ['s-cloud', 'd-cloud'],
+                'jellyfin': ['s-media', 'd-media'],
+                'azuracast': ['s-radio', 'd-radio'],
+                'odoo': ['s-odoo', 'd-odoo'],
+                'paperless': ['s-paper', 'd-paper']
+            };
+
+            for (const [key, val] of Object.entries(data.services)) {
+                if (map[key]) {
+                    const statusElem = document.getElementById(map[key][0]);
+                    const dotElem = document.getElementById(map[key][1]);
+                    
+                    if (statusElem) statusElem.innerText = val.latency_ms ? `${val.latency_ms}ms` : val.status;
+                    if (dotElem) dotElem.className = val.status === 'ok' ? 'dot' : 'dot err';
+                }
+            }
+        }
+      } catch (err) {
+        console.error("Status check error", err);
+      }
+    }
+
+    setInterval(fetchStatus, 30000);
+    fetchStatus();
+  </script>
+</body>
+</html>
