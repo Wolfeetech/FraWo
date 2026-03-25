@@ -85,4 +85,36 @@ homeserver_planned_services:
     status: "wishlist_deferred"
     rationale: "current_proxmox_host_has_15gb_ram_and_not_enough_headroom_for_comfortable_local_inference"
 
+homeserver_storage_node:
+  vmid: 110
+  hostname: storage-node
+  ip: "192.168.2.30"
+  cidr: "192.168.2.30/24"
+  gateway: "192.168.2.1"
+  disk_size: "100G"
+  disk_storage: "local-lvm"
+  ostemplate: "local:vztmpl/debian-12-standard_12.12-1_amd64.tar.zst"
+  smb_user: "radio"
+  media_library_subdir: "yourparty_Libary"
+  smb_shares:
+    - name: "Media"
+      path: "/mnt/data/media"
+      browseable: true
+      writable: true
+    - name: "Documents"
+      path: "/mnt/data/documents"
+      browseable: true
+      writable: true
+  nfs_exports:
+    - path: /mnt/data/documents
+      clients:
+        - "192.168.2.0/24"
+        - "100.64.0.0/10"
+      options: "rw,sync,no_subtree_check,root_squash"
+    - path: /mnt/data/media
+      clients:
+        - "192.168.2.0/24"
+        - "100.64.0.0/10"
+      options: "rw,sync,no_subtree_check,root_squash"
+
 homeserver_compose_root: /opt/homeserver2027/stacks

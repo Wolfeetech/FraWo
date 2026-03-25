@@ -10,8 +10,18 @@ What does Wolf or Franz need to do next so Codex or Gemini can continue autonomo
 
 ## Now
 
-1. Let the first toolbox media sync run for a while.
-   - Current path: Pi USB library -> `/srv/media-library/music/bootstrap-radio-usb`
+1. Deploy the new **Single Source of Truth Storage Node (CT 110)**.
+   - Why: Instead of isolating data in VMs (Nextcloud vs Paperless) or copying media via Rsync (Pi vs Toolbox), we need a centralized NFSv4 data node.
+   - Action: Complete and run `ansible/playbooks/deploy_storage_node.yml` to spin up `CT 110`.
+   - Setup `/mnt/data/documents` and `/mnt/data/media` and export them via NFS.
+   - Reference: `SHARED_STORAGE_ARCHITECTURE_PLAN.md`
+
+2. Implement NFS Mounts in existing VMs:
+   - Mount `/mnt/data/documents` into `VM 230` (Paperless) as `/media/archive`.
+   - Mount `/mnt/data/documents` into `VM 200` (Nextcloud) as an External Storage (Local/NFS).
+   - Mount `/mnt/data/media` into `CT 100` (Jellyfin) and `raspberry_pi_radio` (AzuraCast, via Tailscale).
+
+3. Let the first toolbox media sync run for a while.
    - Why: Jellyfin gets immediate practical value once enough media has landed on the toolbox side.
    - Quick check: `make toolbox-media-bootstrap-progress`
 
@@ -110,6 +120,7 @@ What does Wolf or Franz need to do next so Codex or Gemini can continue autonomo
 
 - `MEMORY.md`
 - `LIVE_CONTEXT.md`
+- `SHARED_STORAGE_ARCHITECTURE_PLAN.md`
 - `MEDIA_SERVER_CLIENT_SETUP.md`
 - `SURFACE_GO_FRONTEND_SETUP_PLAN.md`
 - `PBS_VM_240_SETUP_PLAN.md`

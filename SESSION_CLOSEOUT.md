@@ -21,6 +21,10 @@
   - AdGuard admin reduced to localhost-only on `127.0.0.1:3000`
   - `hs27.internal` rewrites verified to `192.168.2.20`
   - `/dev/net/tun` is present and `tailscaled` is installed, enabled and active
+- **Afternoon Shift Updates**:
+  - `SHARED_STORAGE_ARCHITECTURE_PLAN.md` created to replace Rsync/isolated VM volumes with centralized NFSv4 (`CT 110`).
+  - Surface Go local Kiosk UI finalized via Javascript (Radio direct streaming via web audio, Now Playing poll, system status poll).
+  - Nextcloud to Paperless document bridge positively verified via `probe_20260324.txt`.
 
 ## What Was Finished Today
 
@@ -249,7 +253,9 @@ Remaining items are follow-up work, not emergency break-fix work.
 5. Keep `VM 210 HAOS` on the new steady-state baseline.
    - preserve `192.168.2.24`, `ha.hs27.internal` and local backup coverage
    - add USB passthrough only once the actual adapters are attached
-6. Use `make start-day` as the required operator check before new changes.
+6. Deploy `CT 110 storage-node` based on `ansible/playbooks/deploy_storage_node.yml` and configure NFS.
+7. Integrate NFS mounts: Nextcloud (`/media/archive`), Paperless (`/media/archive`), AzuraCast (`/var/azuracast/stations/.../network`), and Jellyfin.
+8. Use `make start-day` as the required operator check before new changes.
 
 ## Resume Commands
 

@@ -1,0 +1,29 @@
+[global]
+   workgroup = WORKGROUP
+   server role = standalone server
+   map to guest = Never
+   security = user
+   obey pam restrictions = yes
+   pam password change = no
+   passwd program = /usr/bin/passwd %u
+   passwd chat = *Enter\snew\s*\spassword:* %n\n *Retype\snew\s*\spassword:* %n\n *password\supdated\ssuccessfully* .
+   logging = file
+   log file = /var/log/samba/log.%m
+   max log size = 1000
+   server min protocol = SMB3
+   load printers = no
+   disable spoolss = yes
+   unix extensions = no
+
+{% for share in storage_shares %}
+[{{ share.name }}]
+   path = {{ share.path }}
+   browseable = {{ 'yes' if share.browseable | default(true) else 'no' }}
+   read only = {{ 'no' if share.writable | default(true) else 'yes' }}
+   guest ok = no
+   valid users = {{ storage_share_user }}
+   force group = {{ storage_share_user }}
+   create mask = 0660
+   directory mask = 2770
+   inherit permissions = yes
+{% endfor %}

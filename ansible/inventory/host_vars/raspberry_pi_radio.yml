@@ -6,11 +6,11 @@ rpi_radio_compose_root: /opt/homeserver2027/radio-node
 rpi_radio_station_shortcode: frawo-funk
 rpi_radio_library_root: /srv/radio-library
 rpi_radio_assets_root: /srv/radio-assets
-rpi_radio_usb_music_uuid: 76E8-CACF
-rpi_radio_usb_music_fstype: exfat
-rpi_radio_usb_music_mountpoint: /srv/radio-library/music-usb
-rpi_radio_usb_music_subdir: yourparty.radio
-rpi_radio_usb_music_mount_opts: nofail,umask=022,x-systemd.device-timeout=10s
+rpi_radio_media_share: //192.168.2.30/Media
+rpi_radio_media_mountpoint: /srv/radio-library/music-network
+rpi_radio_media_subdir: yourparty_Libary
+rpi_radio_media_credentials_file: /etc/hs27/storage-node-media.credentials
+rpi_radio_media_mount_opts: rw,vers=3.1.1,iocharset=utf8,credentials=/etc/hs27/storage-node-media.credentials,uid=1000,gid=1000,file_mode=0660,dir_mode=0770,nofail,x-systemd.automount,x-systemd.device-timeout=10s
 rpi_radio_library_dirs:
   - incoming
   - music
@@ -42,7 +42,6 @@ rpi_radio_required_packages:
   - gnupg
   - apt-transport-https
   - docker.io
-  - nfs-common
   - cifs-utils
 rpi_radio_absent_packages:
   - apache2

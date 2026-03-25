@@ -1,5 +1,5 @@
 ---
-- name: Curate AzuraCast Radio Library from USB
+- name: Curate AzuraCast Radio Library from network media share
   hosts: raspberry_pi_radio
   become: yes
   tasks:
@@ -11,9 +11,9 @@
         group: "1000"
         mode: '0755'
 
-    - name: Sync curated 'clean' tracks from USB to RadioLibrary using rsync
+    - name: Sync curated 'clean' tracks from SMB-backed media share to RadioLibrary using rsync
       ansible.builtin.command:
-        cmd: rsync -a /srv/radio-library/music-usb/yourparty.radio/clean/ /srv/radio-library/music/clean/
+        cmd: rsync -a /srv/radio-library/music-network/yourparty_Libary/clean/ /srv/radio-library/music/clean/
       register: rsync_result
       changed_when: rsync_result.stdout != ''
 

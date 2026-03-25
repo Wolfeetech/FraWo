@@ -46,12 +46,26 @@ Anstatt NFS/Samba unsauber direkt auf dem Proxmox-Hypervisor zu installieren, ka
 
 ---
 
+## Freigaben-Standard (NFS/SMB)
+
+### NFS (Default)
+- Exports: `/mnt/data/documents`, `/mnt/data/media`
+- Clients: `192.168.2.0/24` und `100.64.0.0/10` (Tailscale)
+- Optionen: `rw,sync,no_subtree_check,root_squash`
+- Mount-Beispiele (NFSv4):
+  - `storage-node:/mnt/data/documents` -> `/media/archive`
+  - `storage-node:/mnt/data/media` -> `/srv/media-library`
+
+### SMB (nur falls Windows-LAN-Clients zwingend noetig)
+- Standard: deaktiviert
+- Wenn benoetigt: SMB nur auf dem Storage-Node, nur LAN, kein Gast, kein Internet, klare Share-Namen
+
 ## Checkliste für Codex (Abendschicht)
 
 Codex sollte heute Abend folgende Schritte nahtlos abarbeiten:
 
 - [ ] **1. Data Node Provisionierung:**
-  Erstellen eines neuen Ansible-Playbooks (`deploy_data_node.yml`), welches einen neuen Debian LXC Container `CT 110` (Name: `storage`) hochzieht.
+  Erstellen eines neuen Ansible-Playbooks (`deploy_storage_node.yml`), welches einen neuen Debian LXC Container `CT 110` (Name: `storage`) hochzieht.
 - [ ] **2. NFS-Server Konfiguration:**
   Den LXC als NFSv4 Server einrichten (`apt install nfs-kernel-server`) und `/etc/exports` definieren (Absicherung via IP-Subnet `192.168.2.0/24` und Tailscale-Subnet).
 - [ ] **3. Paperless Migration:**

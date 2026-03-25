@@ -196,6 +196,34 @@
     - die Shelly-Geraete gehoeren funktional zur Growbox
     - Bewohnerkontext fuer Personen: Wolf und Franz
 
+## Freigaben-Uebersicht
+
+Interne HTTP-Freigaben (LAN, via Caddy / hs27.internal):
+- `portal.hs27.internal` -> CT 100 Caddy (Frontdoor)
+- `cloud.hs27.internal` -> Nextcloud (VM 200)
+- `odoo.hs27.internal` -> Odoo (VM 220)
+- `paperless.hs27.internal` -> Paperless (VM 230)
+- `ha.hs27.internal` -> Home Assistant (VM 210)
+- `radio.hs27.internal` -> AzuraCast (raspberry_pi_radio)
+- `media.hs27.internal` -> Jellyfin (CT 100)
+
+Mobile Tailscale-Frontdoor (Tailscale-only):
+- `100.99.206.128:8443` -> Home Assistant
+- `100.99.206.128:8444` -> Odoo
+- `100.99.206.128:8445` -> Nextcloud
+- `100.99.206.128:8446` -> Paperless
+- `100.99.206.128:8447` -> Portal
+- `100.99.206.128:8448` -> Radio
+- `100.99.206.128:8449` -> Media
+
+Storage-Freigaben (CT 110, geplant):
+- NFS: `/mnt/data/documents` (Paperless + Nextcloud External Storage)
+- NFS: `/mnt/data/media` (Jellyfin + AzuraCast)
+- SMB: nur falls Windows-LAN-Clients zwingend benoetigt; sonst deaktiviert
+
+Lokale Admin-Flaechen (nur localhost):
+- `127.0.0.1:3000` -> AdGuard Admin (CT 100)
+
 ## Gateway-Roadmap
 
 - Aktueller Produktionsrand:
@@ -439,7 +467,11 @@
    - offen bleiben vor allem die privaten MAC-Clients `.141-.144` sowie kleinere Alias-/Raumzuordnungen aus dem Router-Ueberblick
    - neuer Fingerprint-Stand fuer `.141-.144`: alle vier antworten auf Ping, aber halten `53/80/443/5353/8008/8069/8080` geschlossen und liefern kein HTTP; aktuell also eher stille Privat-Clients als Admin-/IoT-Endpunkte
    - `ROUTER_LEASE_RECONCILIATION_RUNBOOK.md` ist jetzt der kanonische Browser-Pfad fuer diesen Abgleich
-2. `CT 100` als Netzwerk-Basis fuer die naechste Phase vorbereiten
+2. Single Source of Truth Storage Node (CT 110) umsetzen
+   - `ansible/playbooks/deploy_storage_node.yml` ausfuehren
+   - NFS-Exports `/mnt/data/documents` und `/mnt/data/media` bereitstellen
+   - Mounts fuer `VM 200`, `VM 230`, `CT 100` und `raspberry_pi_radio` vorbereiten
+3. `CT 100` als Netzwerk-Basis fuer die naechste Phase vorbereiten
    - Tailnet-Join fuer `toolbox` ist abgeschlossen
    - mobiler Interimszugriff ueber `100.99.206.128:8443-8448` ist funktionsfaehig
    - Route `192.168.2.0/24` ist aktiv im Tailnet
@@ -448,7 +480,7 @@
    - `TAILSCALE_SPLIT_DNS_PLAN.md` definiert jetzt den sauberen `hs27.internal`-Pfad fuer Tailscale-Clients
    - AdGuard DNS-Pilot (Stage A & B) ist auf dem ZenBook erfolgreich ausgerollt und stabil. Das ZenBook nutzt nun 192.168.2.20 lokal. 
    - Naechster Ausfuehrungsschritt ist der echte Handy-Off-LAN-Test (Stage C) und die finale DHCP-Promotion.
-3. Den verifizierten lokalen Backup-/Restore-Proof fuer `VM 200`, `VM 220` und `VM 230` in PBS-Zielarchitektur, Retention und taegliche Jobs ueberfuehren
+4. Den verifizierten lokalen Backup-/Restore-Proof fuer `VM 200`, `VM 220` und `VM 230` in PBS-Zielarchitektur, Retention und taegliche Jobs ueberfuehren
    - lokaler Proof und taeglicher Zwischenstandard auf Proxmox sind erfolgreich dokumentiert
    - Runner und Stage-Gate-Pfad fuer `VM 240` sind nicht nur vorbereitet, sondern live umgesetzt
    - `VM 240 pbs` laeuft jetzt mit `3072 MB` RAM, `32G` Systemdisk auf `local-lvm` und `40G` USB-Data-Disk auf `pbs-usb`
@@ -459,39 +491,39 @@
    - erster gruener Restore-Drill ist jetzt ebenfalls erbracht: `VM 220` -> Test-VM `920` -> `HTTP 200` auf Odoo-Login
    - zweiter automatisierter Restore-Drill (`VM 220` -> `920`) war ebenfalls erfolgreich und beweist die Reproduzierbarkeit
    - der aktuelle Restblock ist jetzt primär größeres PBS-Storage für den späteren Dauerbetrieb
-4. Die spaetere Public-Exposure-Architektur planen, aber noch nicht live schalten
+5. Die spaetere Public-Exposure-Architektur planen, aber noch nicht live schalten
    - `PUBLIC_EDGE_ARCHITECTURE_PLAN.md` ist jetzt der kanonische Zielpfad
    - Domain-/DNS-Modell
    - Edge-Trennung
    - TLS, Monitoring, Auth und Rollback
-5. `HAOS_VM_210_SETUP_PLAN.md` vom Basis-Build in den abgesicherten Betriebsstandard ueberfuehren
+6. `HAOS_VM_210_SETUP_PLAN.md` vom Basis-Build in den abgesicherten Betriebsstandard ueberfuehren
    - `VM 210` laeuft stabil auf `192.168.2.24`
    - `ha.hs27.internal` liefert bereits ueber `CT 100`
    - lokaler Backup-Bestand deckt `VM 210` jetzt mit ab
    - USB-Passthrough bleibt bis zum Anstecken echter Adapter nur Planungsstand
    - der neue Audit-Guardrail ist aktiv: der sichtbare externe USB-Pfad ist derzeit nur der PBS-Backup-Stick und zaehlt ausdruecklich nicht als HAOS-Dongle
-6. Hardware-Audit fuer Zigbee- und Bluetooth-Dongles:
+7. Hardware-Audit fuer Zigbee- und Bluetooth-Dongles:
    - aktueller Auditlauf ist jetzt praeziser: Root-Hubs plus ein USB-Massenspeicher (`USB Disk 3.0`) sind sichtbar, aber keine seriellen Funkadapter
    - `make haos-usb-audit` ist jetzt der kanonische Schnellcheck
    - bei neuer Hardware erneut `lsusb` und `/dev/serial/by-id` erfassen
    - dann Vendor-ID, Product-ID und Zielgeraet pro Adapter dokumentieren
    - Verhalten nach Host- und VM-Reboot pruefen
-7. Lokale Proof-Backups bis PBS live ist mit `make backup-prune-dry-run` und `make backup-prune` sauber halten
+8. Lokale Proof-Backups bis PBS live ist mit `make backup-prune-dry-run` und `make backup-prune` sauber halten
    - Standard bis PBS: letzte `2` lokale qemu-Backups pro Business-VM behalten
-8. `make business-drift-check` als Standard-Post-Change-Kontrolle fuer die IaC-gesteuerten Business-Stacks nutzen
+9. `make business-drift-check` als Standard-Post-Change-Kontrolle fuer die IaC-gesteuerten Business-Stacks nutzen
    - Basislauf vom `2026-03-18` ist gruen fuer Nextcloud, Odoo und Paperless
-9. `make start-day` und `make security-baseline-check` als verbindlichen Tagesstart verwenden
+10. `make start-day` und `make security-baseline-check` als verbindlichen Tagesstart verwenden
    - Sicherheits-Baseline prueft Secrets, Port-Flaechen, Tailscale-Zustand und AdGuard-Admin-Flaeche mit
    - `make start-day` prueft jetzt zusaetzlich den PBS-Stage-Gate-Pfad und den Medienserver-V1
-10. Legacy-Snapshot auf `VM 100` nur dann entfernen, wenn der Tailscale-/Toolbox-Pfad dafuer ersetzt oder abgeschlossen ist
-11. EasyBox-805-Weboberflaeche weiter automatisieren, weil `user_lang.json`, Login und `overview.json` jetzt reproduzierbar funktionieren, aber tieferer Lease-/DHCP-Abgleich und Owner-Mapping noch nicht vollstaendig headless abgedeckt sind
-12. `UniFi Cloud Gateway Ultra` als spaetere Netzrand-Migration vorbereiten, aber erst nach abgeschlossenem LXC-/VM-Basisaufbau, validierten Backups und finalem IP-Plan aktivieren
-13. Capacity-Rightsizing in ein Wartungsfenster aufnehmen
+11. Legacy-Snapshot auf `VM 100` nur dann entfernen, wenn der Tailscale-/Toolbox-Pfad dafuer ersetzt oder abgeschlossen ist
+12. EasyBox-805-Weboberflaeche weiter automatisieren, weil `user_lang.json`, Login und `overview.json` jetzt reproduzierbar funktionieren, aber tieferer Lease-/DHCP-Abgleich und Owner-Mapping noch nicht vollstaendig headless abgedeckt sind
+13. `UniFi Cloud Gateway Ultra` als spaetere Netzrand-Migration vorbereiten, aber erst nach abgeschlossenem LXC-/VM-Basisaufbau, validierten Backups und finalem IP-Plan aktivieren
+14. Capacity-Rightsizing in ein Wartungsfenster aufnehmen
    - `VM 200 nextcloud`: Ziel `2048 MB` RAM
    - `VM 220 odoo`: Ziel `2048 MB` RAM
    - `VM 210` und `VM 230` vorerst bewusst unveraendert lassen
    - vor spaeteren zusaetzlichen Frontdoor-/Public-Edge-Diensten den Rootfs- und RAM-Bedarf von `CT 100` neu bewerten
-14. Shared Frontend Node `Surface Go` in den finalen Managed-Frontend-Standard ueberfuehren
+15. Shared Frontend Node `Surface Go` in den finalen Managed-Frontend-Standard ueberfuehren
    - Clean Rebuild und Basis-Bootstrap sind abgeschlossen
    - SSH-Key-Zugang, Tailnet-Admin-Pfad, Kiosk-User `frontend`, lokales Portal und GDM-Autologin sind live
    - Root-Sleep-Haertung ist abgeschlossen; die Sleep-Targets sind maskiert
@@ -502,18 +534,18 @@
    - das Surface-Portal soll jetzt `Radio` und `Radio Control` nativ fuer AzuraCast anbieten
    - die lokale Surface-Portal-Vorlage ist jetzt auch fuer den gemeinsamen Live-Status-Snapshot aus `portal.hs27.internal/status.json` vorbereitet
    - der technische Kern ist gruen; offener Restblock ist jetzt lokaler Browser-/Touch-Tastatur-Polish
-15. Installationsmedien und Remote-Zugriff fuer die naechste Hardwarewelle vorbereiten
+16. Installationsmedien und Remote-Zugriff fuer die naechste Hardwarewelle vorbereiten
    - `MEDIA_AND_REMOTE_PREP.md` ist die kanonische Anleitung
    - Raspberry Pi 4 Zielimage: `Ubuntu Server 22.04.5 LTS ARM64`
    - Surface-Zielimage: `Ubuntu Desktop 24.04.4 LTS`
    - der `7.7G`-Stick `/dev/sdd` ist jetzt fertig als dedizierter Ventoy-Install-/Image-Stick
    - der `14.4G`-Stick `/dev/sdc` ist jetzt fertig als exFAT-Favorites-Stick `FRAWO_FAVS`
    - AnyDesk auf dem ZenBook ist inzwischen installiert und aktiv
-16. Remote-Zugriff professionell absichern und dokumentieren
+17. Remote-Zugriff professionell absichern und dokumentieren
    - `REMOTE_ACCESS_STANDARD.md` ist die kanonische Anleitung
    - Tailscale ist der primaere Remote-Pfad
    - AnyDesk ist der GUI-Fallback auf dem ZenBook
-17. Raspberry-Pi-Radio-Node in den nutzbaren internen Betriebsstandard ueberfuehren
+18. Raspberry-Pi-Radio-Node in den nutzbaren internen Betriebsstandard ueberfuehren
    - `RASPBERRY_PI_RADIO_NODE_PLAN.md` ist die kanonische Anleitung
    - `RADIO_OPERATIONS_STANDARD.md` ist jetzt der operative Betriebsstandard
    - `make radio-ops-check` ist der schnelle Live-Check fuer Radio, Radio Control und `nowplaying`
@@ -521,7 +553,7 @@
    - die erste Station `FraWo - Funk` spielt bereits aus der direkt angeschlossenen USB-Bibliothek
    - naechster Schritt ist die kuratierte Betriebsueberfuehrung von USB-Musik zu `RadioLibrary` / `RadioAssets`
    - direkt danach sollen touchfreundliche Surface-Monitor-/Control-Views auf dieser stabilen Basis entstehen
-18. Medienserver-V1 auf der Toolbox als echten Haushalts-Mehrwert bereitstellen
+19. Medienserver-V1 auf der Toolbox als echten Haushalts-Mehrwert bereitstellen
    - `MEDIA_SERVER_PLAN.md` ist die kanonische Anleitung
    - `MEDIA_SERVER_CLIENT_SETUP.md` beschreibt die ersten TV-/Browser-Pfade fuer Thomson und Google TV
    - Jellyfin ist jetzt intern live auf `http://media.hs27.internal`, direkt auf `http://192.168.2.20:8096` und mobil ueber `http://100.99.206.128:8449`
@@ -575,21 +607,21 @@
    - das Portal hat jetzt zusaetzlich einen Live-Status-Snapshot auf `status.json`; `make toolbox-portal-status-check` ist aktuell gruen mit `7/7` gesunden Kernservices
    - der Snapshot enthaelt jetzt auch `media_sync` fuer den laufenden Jellyfin-Bibliotheksimport
    - der neue Musikreport zeigt aktuell vor allem `mp3`, `flac` und `wav` sowie einige restriktive Import-Verzeichnisse, die spaeter fuer saubere Kuration normalisiert werden muessen
-19. Remote-Only-Arbeitsfenster fuer Arbeitstage ausser Haus standardisieren
+20. Remote-Only-Arbeitsfenster fuer Arbeitstage ausser Haus standardisieren
    - `REMOTE_ONLY_WORK_WINDOW.md` ist die kanonische Anleitung
    - `make remote-only-check` ist der schnelle Gate-Check
    - bis physische Schritte moeglich sind, nur dort freigegebene Aufgaben ziehen
-20. AdGuard-DNS-Pilot kontrolliert vorbereiten
+21. AdGuard-DNS-Pilot kontrolliert vorbereiten
    - `ADGUARD_PILOT_ROLLOUT_PLAN.md` ist die kanonische Anleitung
    - `make adguard-pilot-check` prueft den read-only Pilotpfad und den LAN-Rollback-Schutz
-21. Tailscale-Split-DNS fuer `hs27.internal` kontrolliert vorbereiten
+22. Tailscale-Split-DNS fuer `hs27.internal` kontrolliert vorbereiten
    - `TAILSCALE_SPLIT_DNS_PLAN.md` ist die kanonische Anleitung
    - `make tailscale-split-dns-check` prueft MagicDNS, Client-DNS, AdGuard, die Route-Voraussetzung und jetzt auch den echten `ha.hs27.internal`-Pfad ueber `100.100.100.100`
    - der restricted nameserver fuer `hs27.internal` ist im Tailnet gesetzt; ZenBook-Testpfad ist erfolgreich
-22. Lease-Abgleich browser-first standardisieren
+23. Lease-Abgleich browser-first standardisieren
    - `ROUTER_LEASE_RECONCILIATION_RUNBOOK.md` ist die kanonische Anleitung
    - `make inventory-resolution-check` zeigt die verbleibenden Unknowns und Router-Labels
-23. Public Edge als spaeteren professionellen Endzustand sauber vorkonzipieren
+24. Public Edge als spaeteren professionellen Endzustand sauber vorkonzipieren
    - bevorzugter Marken-/Domainpfad ist jetzt `frawo.studio`
    - Zielhostnamen spaeter:
      - `www.frawo.studio`
@@ -598,7 +630,7 @@
    - interne Naming-Entscheidung: aktive Betriebszone bleibt `hs27.internal`; spaeterer professioneller Zielpfad ist `frawo.home.arpa`
    - `frawo.internal` und `frawo.lan` werden nicht als neue Standardzone eingefuehrt
    - `PUBLIC_EDGE_ARCHITECTURE_PLAN.md` ist die kanonische Anleitung
-24. Den Gesamtfortschritt des Masterplans reproduzierbar messbar halten
+25. Den Gesamtfortschritt des Masterplans reproduzierbar messbar halten
    - `make plan-progress` ist jetzt der kompakte Fortschritts-Check
    - letzter verifizierter Wert: `masterplan_progress_percent=69`
    - aktuelles Band: `mid_stage`
