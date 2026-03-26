@@ -30,7 +30,7 @@ for raw in src.read_text(encoding="utf-8", errors="replace").splitlines():
 header = [
     f"# {title}",
     "# Promoted from the generated starter manifest.",
-    "# Relative paths under /srv/media-library/music/bootstrap-radio-usb",
+    "# Relative paths under /srv/media-library/music-network/yourparty_Libary",
     "",
 ]
 dest.write_text("\n".join(header + entries) + "\n", encoding="utf-8")

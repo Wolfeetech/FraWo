@@ -71,13 +71,43 @@
       changed_when: surface_go_sudo_remove.rc == 0
       failed_when: surface_go_sudo_remove.rc not in [0, 3]
 
-    - name: Ensure portal directory exists
+    - name: Ensure required frontend directories exist
       ansible.builtin.file:
-        path: "{{ surface_go_portal_dir }}"
+        path: "{{ item.path }}"
         state: directory
-        owner: "{{ surface_go_kiosk_user }}"
-        group: "{{ surface_go_kiosk_user }}"
-        mode: "0755"
+        owner: "{{ item.owner }}"
+        group: "{{ item.group }}"
+        mode: "{{ item.mode | default('0755') }}"
+      loop:
+        - path: "{{ surface_go_portal_dir }}"
+          owner: "{{ surface_go_kiosk_user }}"
+          group: "{{ surface_go_kiosk_user }}"
+        - path: "/home/{{ surface_go_kiosk_user }}/.config/autostart"
+          owner: "{{ surface_go_kiosk_user }}"
+          group: "{{ surface_go_kiosk_user }}"
+        - path: "/home/{{ surface_go_kiosk_user }}/.local/share/applications"
+          owner: "{{ surface_go_kiosk_user }}"
+          group: "{{ surface_go_kiosk_user }}"
+        - path: "/home/{{ surface_go_kiosk_user }}/Desktop"
+          owner: "{{ surface_go_kiosk_user }}"
+          group: "{{ surface_go_kiosk_user }}"
+        - path: "/home/{{ surface_go_admin_user }}/Desktop"
+          owner: "{{ surface_go_admin_user }}"
+          group: "{{ surface_go_admin_user }}"
+        - path: "/home/{{ surface_go_kiosk_user }}/.config/gnome-kiosk-script"
+          owner: "{{ surface_go_kiosk_user }}"
+          group: "{{ surface_go_kiosk_user }}"
+        - path: /etc/dconf/db/local.d
+          owner: root
+          group: root
+        - path: /etc/ssh/sshd_config.d
+          owner: root
+          group: root
+        - path: /opt/homeserver2027/install-media/remote
+          owner: root
+          group: root
+      loop_control:
+        label: "{{ item.path }}"
 
     - name: Install local frontend portal
       ansible.builtin.template:
@@ -112,53 +142,6 @@
         group: root
         mode: "0755"
 
-    - name: Ensure local portal service is enabled
-      ansible.builtin.systemd:
-        name: homeserver2027-surface-portal.service
-        enabled: true
-        state: restarted
-        daemon_reload: true
-
-    - name: Ensure kiosk autostart directory exists
-      ansible.builtin.file:
-        path: "/home/{{ surface_go_kiosk_user }}/.config/autostart"
-        state: directory
-        owner: "{{ surface_go_kiosk_user }}"
-        group: "{{ surface_go_kiosk_user }}"
-        mode: "0755"
-
-    - name: Ensure kiosk applications directory exists
-      ansible.builtin.file:
-        path: "/home/{{ surface_go_kiosk_user }}/.local/share/applications"
-        state: directory
-        owner: "{{ surface_go_kiosk_user }}"
-        group: "{{ surface_go_kiosk_user }}"
-        mode: "0755"
-
-    - name: Ensure kiosk desktop directory exists
-      ansible.builtin.file:
-        path: "/home/{{ surface_go_kiosk_user }}/Desktop"
-        state: directory
-        owner: "{{ surface_go_kiosk_user }}"
-        group: "{{ surface_go_kiosk_user }}"
-        mode: "0755"
-
-    - name: Ensure admin desktop directory exists
-      ansible.builtin.file:
-        path: "/home/{{ surface_go_admin_user }}/Desktop"
-        state: directory
-        owner: "{{ surface_go_admin_user }}"
-        group: "{{ surface_go_admin_user }}"
-        mode: "0755"
-
-    - name: Ensure dconf local defaults directory exists
-      ansible.builtin.file:
-        path: /etc/dconf/db/local.d
-        state: directory
-        owner: root
-        group: root
-        mode: "0755"
-
     - name: Install touch-friendly GNOME defaults
       ansible.builtin.template:
         src: "{{ playbook_dir }}/../templates/frontend/surface-go-dconf.ini.j2"
@@ -167,14 +150,6 @@
         group: root
         mode: "0644"
       notify: update dconf
-
-    - name: Ensure kiosk gnome-kiosk-script directory exists
-      ansible.builtin.file:
-        path: "/home/{{ surface_go_kiosk_user }}/.config/gnome-kiosk-script"
-        state: directory
-        owner: "{{ surface_go_kiosk_user }}"
-        group: "{{ surface_go_kiosk_user }}"
-        mode: "0755"
 
     - name: Install gnome-kiosk launch script
       ansible.builtin.template:
@@ -186,202 +161,55 @@
 
     - name: Install kiosk application launcher
       ansible.builtin.template:
-        src: "{{ playbook_dir }}/../templates/frontend/homeserver2027-kiosk.desktop.j2"
+        src: "{{ playbook_dir }}/../templates/frontend/surface-go-launcher.desktop.j2"
         dest: "/home/{{ surface_go_kiosk_user }}/.local/share/applications/frawo-control.desktop"
         owner: "{{ surface_go_kiosk_user }}"
         group: "{{ surface_go_kiosk_user }}"
         mode: "0755"
+      vars:
+        item:
+          name: FRAWO Control
+          comment: Oeffnet das gemeinsame FRAWO-Frontend
+          exec: "{{ surface_go_launcher_script }} --kiosk"
+          icon: web-browser
+          categories: Network;WebBrowser;
 
-    - name: Install kiosk desktop launcher
+    - name: Install kiosk desktop launchers
       ansible.builtin.template:
-        src: "{{ playbook_dir }}/../templates/frontend/homeserver2027-kiosk.desktop.j2"
-        dest: "/home/{{ surface_go_kiosk_user }}/Desktop/FRAWO Control.desktop"
+        src: "{{ playbook_dir }}/../templates/frontend/surface-go-launcher.desktop.j2"
+        dest: "/home/{{ surface_go_kiosk_user }}/Desktop/{{ item.name | regex_replace('[^A-Za-z0-9._ -]', '') }}.desktop"
         owner: "{{ surface_go_kiosk_user }}"
         group: "{{ surface_go_kiosk_user }}"
         mode: "0755"
+      loop: "{{ surface_go_kiosk_desktop_launchers }}"
+      loop_control:
+        label: "{{ item.name }}"
 
-    - name: Install admin desktop launcher
+    - name: Install admin desktop launchers
       ansible.builtin.template:
-        src: "{{ playbook_dir }}/../templates/frontend/homeserver2027-kiosk.desktop.j2"
-        dest: "/home/{{ surface_go_admin_user }}/Desktop/FRAWO-Control.desktop"
+        src: "{{ playbook_dir }}/../templates/frontend/surface-go-launcher.desktop.j2"
+        dest: "/home/{{ surface_go_admin_user }}/Desktop/{{ item.name | regex_replace('[^A-Za-z0-9._ -]', '') }}.desktop"
         owner: "{{ surface_go_admin_user }}"
         group: "{{ surface_go_admin_user }}"
         mode: "0755"
+      loop: "{{ surface_go_admin_desktop_launchers }}"
+      loop_control:
+        label: "{{ item.name }}"
 
-    - name: Install keyboard launcher on kiosk desktop
-      ansible.builtin.template:
-        src: "{{ playbook_dir }}/../templates/frontend/surface-go-keyboard.desktop.j2"
-        dest: "/home/{{ surface_go_kiosk_user }}/Desktop/Bildschirmtastatur.desktop"
-        owner: "{{ surface_go_kiosk_user }}"
-        group: "{{ surface_go_kiosk_user }}"
-        mode: "0755"
+    - name: Download AnyDesk package
+      ansible.builtin.get_url:
+        url: "{{ surface_go_anydesk_package_url }}"
+        dest: "{{ surface_go_anydesk_package_local_path }}"
+        owner: root
+        group: root
+        mode: "0644"
+      when: surface_go_anydesk_enabled | bool
 
-    - name: Install Odoo admin launcher on kiosk desktop
-      ansible.builtin.template:
-        src: "{{ playbook_dir }}/../templates/frontend/surface-go-odoo-admin.desktop.j2"
-        dest: "/home/{{ surface_go_kiosk_user }}/Desktop/Odoo-Admin.desktop"
-        owner: "{{ surface_go_kiosk_user }}"
-        group: "{{ surface_go_kiosk_user }}"
-        mode: "0755"
+    - name: Install AnyDesk package
+      ansible.builtin.apt:
+        deb: "{{ surface_go_anydesk_package_local_path }}"
+      when: surface_go_anydesk_enabled | bool
 
-    - name: Install keyboard launcher on admin desktop
-      ansible.builtin.template:
-        src: "{{ playbook_dir }}/../templates/frontend/surface-go-keyboard.desktop.j2"
-        dest: "/home/{{ surface_go_admin_user }}/Desktop/Bildschirmtastatur.desktop"
-        owner: "{{ surface_go_admin_user }}"
-        group: "{{ surface_go_admin_user }}"
-        mode: "0755"
-
-    - name: Install Odoo admin launcher on admin desktop
-      ansible.builtin.template:
-        src: "{{ playbook_dir }}/../templates/frontend/surface-go-odoo-admin.desktop.j2"
-        dest: "/home/{{ surface_go_admin_user }}/Desktop/Odoo-Admin.desktop"
-        owner: "{{ surface_go_admin_user }}"
-        group: "{{ surface_go_admin_user }}"
-        mode: "0755"
-
-
-    - name: Install Nextcloud launcher on kiosk desktop
-      ansible.builtin.template:
-        src: "{{ playbook_dir }}/../templates/frontend/surface-go-nextcloud.desktop.j2"
-        dest: "/home/{{ surface_go_kiosk_user }}/Desktop/Nextcloud.desktop"
-        owner: "{{ surface_go_kiosk_user }}"
-        group: "{{ surface_go_kiosk_user }}"
-        mode: "0755"
-
-    - name: Install Nextcloud Inbox launcher on kiosk desktop
-      ansible.builtin.template:
-        src: "{{ playbook_dir }}/../templates/frontend/surface-go-nextcloud-inbox.desktop.j2"
-        dest: "/home/{{ surface_go_kiosk_user }}/Desktop/Nextcloud-Eingang.desktop"
-        owner: "{{ surface_go_kiosk_user }}"
-        group: "{{ surface_go_kiosk_user }}"
-        mode: "0755"
-
-    - name: Install Paperless launcher on kiosk desktop
-      ansible.builtin.template:
-        src: "{{ playbook_dir }}/../templates/frontend/surface-go-paperless.desktop.j2"
-        dest: "/home/{{ surface_go_kiosk_user }}/Desktop/Paperless-Suche.desktop"
-        owner: "{{ surface_go_kiosk_user }}"
-        group: "{{ surface_go_kiosk_user }}"
-        mode: "0755"
-
-    - name: Install Nextcloud launcher on admin desktop
-      ansible.builtin.template:
-        src: "{{ playbook_dir }}/../templates/frontend/surface-go-nextcloud.desktop.j2"
-        dest: "/home/{{ surface_go_admin_user }}/Desktop/Nextcloud.desktop"
-        owner: "{{ surface_go_admin_user }}"
-        group: "{{ surface_go_admin_user }}"
-        mode: "0755"
-
-    - name: Install Nextcloud Inbox launcher on admin desktop
-      ansible.builtin.template:
-        src: "{{ playbook_dir }}/../templates/frontend/surface-go-nextcloud-inbox.desktop.j2"
-        dest: "/home/{{ surface_go_admin_user }}/Desktop/Nextcloud-Eingang.desktop"
-        owner: "{{ surface_go_admin_user }}"
-        group: "{{ surface_go_admin_user }}"
-        mode: "0755"
-
-    - name: Install Paperless launcher on admin desktop
-      ansible.builtin.template:
-        src: "{{ playbook_dir }}/../templates/frontend/surface-go-paperless.desktop.j2"
-        dest: "/home/{{ surface_go_admin_user }}/Desktop/Paperless-Suche.desktop"
-        owner: "{{ surface_go_admin_user }}"
-        group: "{{ surface_go_admin_user }}"
-        mode: "0755"
-    - name: Install Nextcloud launcher on kiosk desktop
-      ansible.builtin.template:
-        src: "{{ playbook_dir }}/../templates/frontend/surface-go-nextcloud.desktop.j2"
-        dest: "/home/{{ surface_go_kiosk_user }}/Desktop/Nextcloud.desktop"
-        owner: "{{ surface_go_kiosk_user }}"
-        group: "{{ surface_go_kiosk_user }}"
-        mode: "0755"
-
-    - name: Install Nextcloud Inbox launcher on kiosk desktop
-      ansible.builtin.template:
-        src: "{{ playbook_dir }}/../templates/frontend/surface-go-nextcloud-inbox.desktop.j2"
-        dest: "/home/{{ surface_go_kiosk_user }}/Desktop/Nextcloud-Eingang.desktop"
-        owner: "{{ surface_go_kiosk_user }}"
-        group: "{{ surface_go_kiosk_user }}"
-        mode: "0755"
-
-    - name: Install Paperless launcher on kiosk desktop
-      ansible.builtin.template:
-        src: "{{ playbook_dir }}/../templates/frontend/surface-go-paperless.desktop.j2"
-        dest: "/home/{{ surface_go_kiosk_user }}/Desktop/Paperless-Suche.desktop"
-        owner: "{{ surface_go_kiosk_user }}"
-        group: "{{ surface_go_kiosk_user }}"
-        mode: "0755"
-
-    - name: Install Nextcloud launcher on admin desktop
-      ansible.builtin.template:
-        src: "{{ playbook_dir }}/../templates/frontend/surface-go-nextcloud.desktop.j2"
-        dest: "/home/{{ surface_go_admin_user }}/Desktop/Nextcloud.desktop"
-        owner: "{{ surface_go_admin_user }}"
-        group: "{{ surface_go_admin_user }}"
-        mode: "0755"
-
-    - name: Install Nextcloud Inbox launcher on admin desktop
-      ansible.builtin.template:
-        src: "{{ playbook_dir }}/../templates/frontend/surface-go-nextcloud-inbox.desktop.j2"
-        dest: "/home/{{ surface_go_admin_user }}/Desktop/Nextcloud-Eingang.desktop"
-        owner: "{{ surface_go_admin_user }}"
-        group: "{{ surface_go_admin_user }}"
-        mode: "0755"
-
-    - name: Install Paperless launcher on admin desktop
-      ansible.builtin.template:
-        src: "{{ playbook_dir }}/../templates/frontend/surface-go-paperless.desktop.j2"
-        dest: "/home/{{ surface_go_admin_user }}/Desktop/Paperless-Suche.desktop"
-        owner: "{{ surface_go_admin_user }}"
-        group: "{{ surface_go_admin_user }}"
-        mode: "0755"
-    - name: Install Nextcloud launcher on kiosk desktop
-      ansible.builtin.template:
-        src: "{{ playbook_dir }}/../templates/frontend/surface-go-nextcloud.desktop.j2"
-        dest: "/home/{{ surface_go_kiosk_user }}/Desktop/Nextcloud.desktop"
-        owner: "{{ surface_go_kiosk_user }}"
-        group: "{{ surface_go_kiosk_user }}"
-        mode: "0755"
-
-    - name: Install Nextcloud Inbox launcher on kiosk desktop
-      ansible.builtin.template:
-        src: "{{ playbook_dir }}/../templates/frontend/surface-go-nextcloud-inbox.desktop.j2"
-        dest: "/home/{{ surface_go_kiosk_user }}/Desktop/Nextcloud-Eingang.desktop"
-        owner: "{{ surface_go_kiosk_user }}"
-        group: "{{ surface_go_kiosk_user }}"
-        mode: "0755"
-
-    - name: Install Paperless launcher on kiosk desktop
-      ansible.builtin.template:
-        src: "{{ playbook_dir }}/../templates/frontend/surface-go-paperless.desktop.j2"
-        dest: "/home/{{ surface_go_kiosk_user }}/Desktop/Paperless-Suche.desktop"
-        owner: "{{ surface_go_kiosk_user }}"
-        group: "{{ surface_go_kiosk_user }}"
-        mode: "0755"
-
-    - name: Install Nextcloud launcher on admin desktop
-      ansible.builtin.template:
-        src: "{{ playbook_dir }}/../templates/frontend/surface-go-nextcloud.desktop.j2"
-        dest: "/home/{{ surface_go_admin_user }}/Desktop/Nextcloud.desktop"
-        owner: "{{ surface_go_admin_user }}"
-        group: "{{ surface_go_admin_user }}"
-        mode: "0755"
-
-    - name: Install Nextcloud Inbox launcher on admin desktop
-      ansible.builtin.template:
-        src: "{{ playbook_dir }}/../templates/frontend/surface-go-nextcloud-inbox.desktop.j2"
-        dest: "/home/{{ surface_go_admin_user }}/Desktop/Nextcloud-Eingang.desktop"
-        owner: "{{ surface_go_admin_user }}"
-        group: "{{ surface_go_admin_user }}"
-        mode: "0755"
-
-    - name: Install Paperless launcher on admin desktop
-      ansible.builtin.template:
-        src: "{{ playbook_dir }}/../templates/frontend/surface-go-paperless.desktop.j2"
-        dest: "/home/{{ surface_go_admin_user }}/Desktop/Paperless-Suche.desktop"
-        owner: "{{ surface_go_admin_user }}"
-        group: "{{ surface_go_admin_user }}"
-        mode: "0755"
     - name: Ensure GDM autologin settings are present
       ansible.builtin.blockinfile:
         path: /etc/gdm3/custom.conf
@@ -390,14 +218,6 @@
         block: |
           AutomaticLoginEnable=true
           AutomaticLogin={{ surface_go_kiosk_user }}
-
-    - name: Ensure sshd drop-in directory exists
-      ansible.builtin.file:
-        path: /etc/ssh/sshd_config.d
-        state: directory
-        owner: root
-        group: root
-        mode: "0755"
 
     - name: Install SSH baseline drop-in
       ansible.builtin.copy:
@@ -412,23 +232,29 @@
           X11Forwarding no
       notify: restart ssh
 
-    - name: Ensure openssh-server is enabled
+    - name: Ensure local portal service is enabled
       ansible.builtin.systemd:
-        name: ssh
+        name: homeserver2027-surface-portal.service
         enabled: true
-        state: started
+        state: restarted
+        daemon_reload: true
 
-    - name: Ensure tailscaled is enabled
+    - name: Ensure core frontend services are enabled
       ansible.builtin.systemd:
-        name: tailscaled
+        name: "{{ item }}"
         enabled: true
         state: started
+      loop:
+        - ssh
+        - tailscaled
+        - unattended-upgrades
 
-    - name: Ensure unattended-upgrades is enabled
+    - name: Ensure AnyDesk service is enabled
       ansible.builtin.systemd:
-        name: unattended-upgrades
+        name: "{{ surface_go_anydesk_service_name }}"
         enabled: true
         state: started
+      when: surface_go_anydesk_enabled | bool
 
   handlers:
     - name: restart ssh

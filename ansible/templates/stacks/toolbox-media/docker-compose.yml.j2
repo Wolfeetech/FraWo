@@ -10,4 +10,4 @@ services:
     volumes:
       - {{ toolbox_media_config_root }}/config:/config
       - {{ toolbox_media_config_root }}/cache:/cache
-      - {{ toolbox_media_library_root }}:/media:ro
+      - {{ toolbox_media_library_root }}:/media:ro,rslave

@@ -84,6 +84,54 @@ toolbox_network_portal_links:
     group: Operations
     hint: Tailscale-only frontdoor for remote access
     url: http://100.99.206.128:8447
+toolbox_network_persona_cards:
+  - label: Ich bin Wolf
+    role: Betrieb, Admin und Tagessteuerung
+    summary: Nextcloud, Paperless, Odoo, Home Assistant und Radio Control.
+    primary_label: Arbeitsstart
+    primary_url: http://portal.hs27.internal
+    accent: amber
+    secondary_links:
+      - label: Nextcloud
+        url: http://cloud.hs27.internal
+      - label: Paperless
+        url: http://paperless.hs27.internal
+      - label: Odoo
+        url: http://odoo.hs27.internal/web/login
+      - label: Home Assistant
+        url: http://ha.hs27.internal
+      - label: Radio Control
+        url: http://radio.hs27.internal/login
+  - label: Ich bin Franz
+    role: Dokumente, Medien und Alltag
+    summary: Nextcloud, Paperless, Odoo und die gemeinsame Medienoberfläche.
+    primary_label: Tagesstart
+    primary_url: http://portal.hs27.internal
+    accent: teal
+    secondary_links:
+      - label: Nextcloud
+        url: http://cloud.hs27.internal
+      - label: Paperless
+        url: http://paperless.hs27.internal
+      - label: Odoo
+        url: http://odoo.hs27.internal/web/login
+      - label: Media
+        url: http://media.hs27.internal
+      - label: Radio
+        url: http://radio.hs27.internal
+  - label: Gemeinsames Geraet
+    role: Schnellzugriff fuer Alltag und Wohnzimmer
+    summary: Medien, Radio und einfache Alltagsaktionen ohne Admin-Kontext.
+    primary_label: Medien starten
+    primary_url: http://media.hs27.internal
+    accent: slate
+    secondary_links:
+      - label: Radio
+        url: http://radio.hs27.internal
+      - label: Media
+        url: http://media.hs27.internal
+      - label: Portal Mobile
+        url: http://100.99.206.128:8447
 toolbox_network_status_targets:
   - key: media
     label: Media
@@ -162,6 +210,15 @@ toolbox_media_compose_template: stacks/toolbox-media/docker-compose.yml.j2
 toolbox_media_stack_dir: "{{ homeserver_compose_root }}/{{ toolbox_media_stack_name }}"
 toolbox_media_library_root: /srv/media-library
 toolbox_media_config_root: /srv/jellyfin
+toolbox_lxc_vmid: 100
+toolbox_media_share: //192.168.2.30/Media
+toolbox_media_mountpoint: /srv/media-library/music-network
+toolbox_media_subdir: yourparty_Libary
+toolbox_media_credentials_file: /etc/hs27/storage-node-media.credentials
+toolbox_media_mount_opts: rw,vers=3.1.1,iocharset=utf8,credentials=/etc/hs27/storage-node-media.credentials,nofail,x-systemd.automount,x-systemd.device-timeout=10s
+toolbox_media_proxmox_mountpoint: /mnt/hs27-media
+toolbox_media_proxmox_credentials_file: /root/.smb/storage-node-media.credentials
+toolbox_media_bind_mount_slot: mp0
 toolbox_media_library_dirs:
   - movies
   - shows
@@ -170,7 +227,7 @@ toolbox_media_library_dirs:
 toolbox_media_curation_dirs:
   - movies/inbox
   - shows/inbox
-  - music/bootstrap-radio-usb
+  - music-network
   - music/curated
   - music/favorites
   - music/inbox
@@ -179,8 +236,8 @@ toolbox_media_curation_dirs:
 toolbox_media_radio_sync_key_path: /root/.ssh/homeserver2027_media_sync
 toolbox_media_radio_sync_source_user: wolf
 toolbox_media_radio_sync_source_host: 100.64.23.77
-toolbox_media_radio_sync_source_path: /srv/radio-library/music-usb/yourparty.radio/
-toolbox_media_radio_sync_target_path: /srv/media-library/music/bootstrap-radio-usb/
+toolbox_media_radio_sync_source_path: /srv/radio-library/music-network/yourparty_Libary/
+toolbox_media_radio_sync_target_path: /srv/media-library/music-network/yourparty_Libary/
 toolbox_media_radio_sync_log_path: /var/log/homeserver2027-media-sync.log
 toolbox_media_radio_sync_exclude_file: /etc/homeserver2027/media-sync-excludes.txt
 toolbox_media_quarantine_root: /srv/media-library/quarantine/bootstrap-review

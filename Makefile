@@ -1,4 +1,4 @@
-.PHONY: refresh-context inventory-check ansible-ping qga-check close-day start-day ansible-syntax-check ansible-syntax-check-toolbox ansible-syntax-check-toolbox-tailscale ansible-syntax-check-toolbox-mobile-firewall ansible-syntax-check-proxmox-backups ansible-syntax-check-haos ansible-syntax-check-business-hardening ansible-syntax-check-pbs ansible-syntax-check-surface-go ansible-syntax-check-rpi-radio ansible-syntax-check-rpi-radio-media ansible-syntax-check-rpi-radio-usb ansible-syntax-check-rpi-azuracast-host ansible-syntax-check-rpi-azuracast ansible-syntax-check-rpi-azuracast-tuning ansible-syntax-check-paperless-nextcloud-bridge ansible-list-business proxmox-storage-check backup-proof backup-list business-drift-check basics-check backup-prune-dry-run backup-prune toolbox-deploy toolbox-network-check toolbox-portal-status-check toolbox-tun-prep toolbox-tailscale-prep toolbox-tailscale-check toolbox-tailscale-login-url toolbox-tailscale-join-assist toolbox-tailscale-mobile-check toolbox-mobile-firewall-deploy toolbox-media-deploy toolbox-media-check toolbox-jellyfin-ui-check toolbox-media-sync-deploy toolbox-media-sync-check toolbox-media-bootstrap-progress toolbox-music-library-report toolbox-music-scan-issues toolbox-music-curation-candidates toolbox-music-curated-layout toolbox-music-quarantine-candidates toolbox-music-selection-sync toolbox-music-selection-seed-report toolbox-music-selection-generate-starter toolbox-music-selection-promote-starter rightsize-stage-gate rightsize-plan rightsize-apply haos-preflight haos-usb-audit haos-stage-gate haos-runner-deploy haos-vm-check haos-reverse-proxy-enable haos-reverse-proxy-check gateway-cutover-stage-gate pbs-preflight pbs-stage-gate pbs-proof-check pbs-restore-proof pbs-runner-deploy pbs-vm-check pbs-guest-check pbs-iso-stage pbs-usb-interim-prepare proxmox-local-backup-deploy proxmox-local-backup-check portable-backup-usb-prepare portable-backup-usb-autoprepare portable-backup-usb-fill portable-backup-usb-check portable-backup-usb-run security-baseline-check business-hardening-deploy easybox-browser-probe easybox-authenticated-overview capacity-review plan-progress surface-go-check surface-go-bootstrap surface-go-root-sleep-harden media-fetch media-devices surface-iso-fetch surface-usb-prepare usb-stick-roles-prepare favorites-usb-prepare rpi-sd-flash rpi-firstboot-seed rpi-radio-bootstrap rpi-radio-media-prepare rpi-radio-media-check rpi-radio-usb-integrate rpi-radio-usb-check rpi-azuracast-host-prepare rpi-azuracast-deploy rpi-radio-check rpi-radio-integration-check rpi-azuracast-check rpi-azuracast-tune rpi-resource-check radio-ops-check anydesk-zenbook-install zenbook-remote-check remote-only-check operator-todos ops-brief adguard-pilot-check tailscale-split-dns-check inventory-resolution-check inventory-unknown-report paperless-nextcloud-bridge-deploy paperless-nextcloud-bridge-check
+.PHONY: refresh-context inventory-check ansible-ping qga-check close-day start-day ansible-syntax-check ansible-syntax-check-toolbox ansible-syntax-check-toolbox-tailscale ansible-syntax-check-toolbox-mobile-firewall ansible-syntax-check-proxmox-backups ansible-syntax-check-haos ansible-syntax-check-business-hardening ansible-syntax-check-pbs ansible-syntax-check-surface-go ansible-syntax-check-rpi-radio ansible-syntax-check-rpi-radio-media ansible-syntax-check-rpi-radio-usb ansible-syntax-check-rpi-radio-network ansible-syntax-check-rpi-azuracast-host ansible-syntax-check-rpi-azuracast ansible-syntax-check-rpi-azuracast-tuning ansible-syntax-check-paperless-nextcloud-bridge ansible-list-business proxmox-storage-check backup-proof backup-list business-drift-check basics-check backup-prune-dry-run backup-prune toolbox-deploy toolbox-network-check toolbox-portal-status-check toolbox-tun-prep toolbox-tailscale-prep toolbox-tailscale-check toolbox-tailscale-login-url toolbox-tailscale-join-assist toolbox-tailscale-mobile-check toolbox-mobile-firewall-deploy toolbox-media-deploy toolbox-media-storage-integrate toolbox-media-check toolbox-jellyfin-ui-check toolbox-media-sync-deploy toolbox-media-sync-check toolbox-media-bootstrap-progress media-migration-status toolbox-music-library-report toolbox-music-scan-issues toolbox-music-curation-candidates toolbox-music-curated-layout toolbox-music-quarantine-candidates toolbox-music-selection-sync toolbox-music-selection-seed-report toolbox-music-selection-generate-starter toolbox-music-selection-promote-starter rightsize-stage-gate rightsize-plan rightsize-apply haos-preflight haos-usb-audit haos-stage-gate haos-runner-deploy haos-vm-check haos-reverse-proxy-enable haos-reverse-proxy-check gateway-cutover-stage-gate pbs-preflight pbs-stage-gate pbs-proof-check pbs-restore-proof pbs-runner-deploy pbs-vm-check pbs-guest-check pbs-iso-stage pbs-usb-interim-prepare proxmox-local-backup-deploy proxmox-local-backup-check portable-backup-usb-prepare portable-backup-usb-autoprepare portable-backup-usb-fill portable-backup-usb-check portable-backup-usb-run security-baseline-check business-hardening-deploy easybox-browser-probe easybox-authenticated-overview capacity-review plan-progress surface-go-check surface-go-bootstrap surface-go-root-sleep-harden media-fetch media-devices surface-iso-fetch surface-usb-prepare usb-stick-roles-prepare favorites-usb-prepare rpi-sd-flash rpi-firstboot-seed rpi-radio-bootstrap rpi-radio-media-prepare rpi-radio-media-check rpi-radio-usb-integrate rpi-radio-usb-check rpi-radio-network-integrate rpi-radio-network-check rpi-azuracast-host-prepare rpi-azuracast-deploy rpi-radio-check rpi-radio-integration-check rpi-azuracast-check rpi-azuracast-tune rpi-resource-check radio-ops-check anydesk-zenbook-install zenbook-remote-check remote-only-check operator-todos ops-brief adguard-pilot-check tailscale-split-dns-check inventory-resolution-check inventory-unknown-report paperless-nextcloud-bridge-deploy paperless-nextcloud-bridge-check
 
 refresh-context:
 	./scripts/refresh_live_context.sh
@@ -54,6 +54,9 @@ ansible-syntax-check-rpi-radio-media:
 
 ansible-syntax-check-rpi-radio-usb:
 	ansible-playbook --syntax-check ansible/playbooks/integrate_raspberry_pi_radio_usb_music.yml
+
+ansible-syntax-check-rpi-radio-network:
+	ansible-playbook --syntax-check ansible/playbooks/integrate_raspberry_pi_radio_network_music.yml
 
 ansible-syntax-check-rpi-azuracast-host:
 	ansible-playbook --syntax-check ansible/playbooks/prepare_raspberry_pi_azuracast_host.yml
@@ -130,6 +133,9 @@ toolbox-mobile-firewall-deploy:
 toolbox-media-deploy:
 	ansible-playbook ansible/playbooks/deploy_toolbox_media_server.yml
 
+toolbox-media-storage-integrate:
+	ansible-playbook ansible/playbooks/integrate_toolbox_media_storage.yml
+
 toolbox-media-check:
 	./scripts/toolbox_media_server_check.sh
 
@@ -144,6 +150,9 @@ toolbox-media-sync-check:
 
 toolbox-media-bootstrap-progress:
 	./scripts/toolbox_media_bootstrap_progress.sh
+
+media-migration-status:
+	./scripts/media_migration_status.sh
 
 toolbox-music-library-report:
 	./scripts/toolbox_music_library_report.sh
@@ -238,8 +247,14 @@ rpi-radio-media-check:
 rpi-radio-usb-integrate:
 	ansible-playbook ansible/playbooks/integrate_raspberry_pi_radio_usb_music.yml
 
+rpi-radio-network-integrate:
+	ansible-playbook ansible/playbooks/integrate_raspberry_pi_radio_network_music.yml
+
 rpi-radio-usb-check:
 	./scripts/rpi_radio_usb_music_check.sh
+
+rpi-radio-network-check:
+	./scripts/rpi_radio_network_music_check.sh
 
 rpi-azuracast-host-prepare:
 	ansible-playbook ansible/playbooks/prepare_raspberry_pi_azuracast_host.yml

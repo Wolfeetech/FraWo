@@ -390,7 +390,7 @@ Lokale Admin-Flaechen (nur localhost):
   - Proxmox-Storage `pbs-interim` ist aktiv
   - taeglicher PBS-Job `hs27-pbs-interim-daily` fuer `200,210,220,230` ist angelegt
   - Interim-Retention ist platzbewusst gesetzt:
-    - Schedule `02:40,14:40`
+- Schedule `02:40`
     - `keep-daily=2`
     - `keep-weekly=1`
     - `keep-monthly=1`
@@ -486,7 +486,7 @@ Lokale Admin-Flaechen (nur localhost):
    - `VM 240 pbs` laeuft jetzt mit `3072 MB` RAM, `32G` Systemdisk auf `local-lvm` und `40G` USB-Data-Disk auf `pbs-usb`
    - Datastore `hs27-interim` ist im Gast aktiv und Proxmox-Storage `pbs-interim` ist angebunden
    - taeglicher PBS-Job `hs27-pbs-interim-daily` ist angelegt
-   - platzbewusste Interim-Retention ist aktiv: `02:40,14:40` mit `keep-daily=2`, `keep-weekly=1`, `keep-monthly=1`
+- platzbewusste Interim-Retention ist aktiv: `02:40` mit `keep-daily=2`, `keep-weekly=1`, `keep-monthly=1`
    - erster gruener Proof-Backup-Lauf ist jetzt erbracht: `VM 220` erfolgreich nach `pbs-interim`
    - erster gruener Restore-Drill ist jetzt ebenfalls erbracht: `VM 220` -> Test-VM `920` -> `HTTP 200` auf Odoo-Login
    - zweiter automatisierter Restore-Drill (`VM 220` -> `920`) war ebenfalls erfolgreich und beweist die Reproduzierbarkeit
@@ -622,10 +622,10 @@ Lokale Admin-Flaechen (nur localhost):
    - `ROUTER_LEASE_RECONCILIATION_RUNBOOK.md` ist die kanonische Anleitung
    - `make inventory-resolution-check` zeigt die verbleibenden Unknowns und Router-Labels
 24. Public Edge als spaeteren professionellen Endzustand sauber vorkonzipieren
-   - bevorzugter Marken-/Domainpfad ist jetzt `frawo.studio`
+   - bevorzugter Marken-/Domainpfad ist jetzt `frawo-tech.de`
    - Zielhostnamen spaeter:
-     - `www.frawo.studio`
-     - `radio.frawo.studio`
+     - `www.frawo-tech.de`
+     - `radio.frawo-tech.de`
    - bis dahin bleiben `portal.hs27.internal` und `radio.hs27.internal` die operativen internen Namen
    - interne Naming-Entscheidung: aktive Betriebszone bleibt `hs27.internal`; spaeterer professioneller Zielpfad ist `frawo.home.arpa`
    - `frawo.internal` und `frawo.lan` werden nicht als neue Standardzone eingefuehrt

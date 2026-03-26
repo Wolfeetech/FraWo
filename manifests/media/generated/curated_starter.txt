@@ -1,6 +1,6 @@
 # Curated starter suggestion
 # Generated automatically from the current bootstrap music seed.
-# Relative paths under /srv/media-library/music/bootstrap-radio-usb
+# Relative paths under /srv/media-library/music-network/yourparty_Libary
 
 clean/Digitalis
 clean/Aloka

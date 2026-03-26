@@ -1,79 +1,70 @@
-# Zentrales Storage-Architektur Konzept (Single Source of Truth)
+# Shared Storage Architecture Plan
 
-## Zielsetzung
-Abschaffung von doppelter Datenhaltung. Die Homeserver 2027 Infrastruktur benötigt eine vernetzte "Single Source of Truth" (SST) für Dokumente und Medien, bei der eine einzige Datei auf dem Datenträger liegt und von allen berechtigten Systemen konsumiert wird.
+## Ziel
 
-## Das Problem der Isolation
-Aktuell leben die Dienste in ihren eigenen VMs/LXCs:
-- **Nextcloud (VM 200)** hat sein eigenes Root-Filesystem.
-- **Paperless (VM 230)** hat sein eigenes PDF-Archiv verschlossen.
-- **Jellyfin (CT 100)** und **AzuraCast (Radio Pi)** kopieren Medien über `rsync` hin und her.
+Eine zentrale Dateibasis fuer Dokumente und Medien. Keine dauerhafte Parallelhaltung mehr zwischen Pi, Toolbox, Nextcloud und Paperless.
 
-## Best Practice Lösung: Der "Data Node" (LXC 110)
-Anstatt NFS/Samba unsauber direkt auf dem Proxmox-Hypervisor zu installieren, kapseln wir unseren zentralen Datenpool in einem minimalistischen Container (File-Server).
+## Verbindlicher Standard
 
-- **ID**: `CT 110 data-node`
-- **OS**: Debian 12 (bookworm)
-- **Storage**: Eine große virtuelle Disk (z. B. auf `local-lvm`), die später einfach auf SSDs oder ein ZFS-Mirror migriert werden kann.
-- **Protokoll**:
-  - `NFSv4` (extrem schnell, nativ für Linux, ideal für VMs)
-  - `Samba / SMB` (optional, falls ein direkter Windows-Mount im LAN gewünscht ist)
+- Storage-Node: `CT 110 storage-node`
+- Host/IP: `192.168.2.30`
+- Medien-Share: `\192.168.2.30\Media`
+- kanonische Musikbibliothek: `\192.168.2.30\Media\yourparty_Libary`
+- Dokumenten-Share: `\192.168.2.30\Documents`
+- Protokoll-Standard fuer Clients: `SMB/CIFS`
+- `NFS` bleibt optional fuer spaetere Linux-only Optimierungen, ist aber nicht mehr der Prim?rpfad fuer das Radiosystem.
 
----
+## Warum SMB hier der richtige Prim?rpfad ist
 
-## Umsetzung: Dokumenten-Verschmelzung
+- Windows-Clients brauchen einen nativen `UNC`-Pfad.
+- AzuraCast auf dem Pi und Jellyfin auf der Toolbox koennen denselben Share per `CIFS` mounten.
+- Der Storage-Node ist bereits live und die Shares sind angelegt.
+- Damit gibt es einen klaren gemeinsamen Zielort statt USB-Zwischenpfad plus Toolbox-Bootstrap-Kopie.
 
-**Ziel:** Paperless-Archiv = Nextcloud-Ordner
+## Zielbild je Dienst
 
-1. Auf `CT 110` wird eine NFS-Freigabe `/mnt/data/documents` erstellt.
-2. **Paperless (VM 230)** bindet dies per `/etc/fstab` (NFS) als sein `media/archive` Verzeichnis ein. Jedes OCR-verarbeitete PDF landet sofort auf dem NFS.
-3. **Nextcloud (VM 200)** bindet **exakt diesen** NFS-Ordner ebenfalls schreibgeschützt (oder als Admin mit vollen Rechten) als "Externen Speicher" (Typ: Lokal gemounteter NFS) unter `/Freigaben/Paperless-Archiv` ein.
-4. **Odoo (VM 220)** kann optional Dokumente über das Nextcloud-WebDAV reingeben oder selbst lesend auf das NFS zugreifen.
+### Jellyfin (`CT 100 toolbox`)
+- nutzt wegen unprivilegiertem LXC keinen direkten Container-CIFS-Mount
+- mountet `//192.168.2.30/Media` hostseitig auf Proxmox nach `/mnt/hs27-media`
+- bindet diesen Host-Mount per `mp0` nach `/srv/media-library/music-network` in `CT 100` ein
+- nutzt als kanonische Musikquelle `/srv/media-library/music-network/yourparty_Libary`
+- beh?lt lokale Arbeitsverzeichnisse fuer `curated`, `favorites`, `inbox` und `quarantine`
 
-**Vorteile:** Nextcloud-User müssen nicht in Paperless springen, um alte PDFs durchzusuchen. Alles ist native im Dateimanager.
+### AzuraCast (`raspberry_pi_radio`)
+- mountet `//192.168.2.30/Media` nach `/srv/radio-library/music-network`
+- bindet `/srv/radio-library/music-network/yourparty_Libary` in die Station `frawo-funk`
+- der alte USB-Pfad ist nur noch Legacy-Fallback, nicht mehr produktiver Zielpfad
 
----
+### Nextcloud / Paperless
+- nutzen `\192.168.2.30\Documents` als gemeinsamen Dokumentenpfad
+- operative Migration bleibt ein eigener Schritt, aber die Zielarchitektur ist damit klar
 
-## Umsetzung: Medien-Verschmelzung
+## Verbindliche Ablagestruktur
 
-**Ziel:** Raspberry Pi Radio = Jellyfin Bibliothek = 1 zentraler Ort
+### Media
+- `\192.168.2.30\Media\yourparty_Libary\clean`
+- `\192.168.2.30\Media\yourparty_Libary\curated`
+- `\192.168.2.30\Media\yourparty_Libary\favorites`
+- `\192.168.2.30\Media\yourparty_Libary\incoming`
+- `\192.168.2.30\Media\yourparty_Libary\quarantine`
 
-1. Auf `CT 110` wird eine NFS-Freigabe `/mnt/data/media` erstellt.
-2. Das Master-Verzeichnis (`/music`, `/shows`, `/movies`) liegt zentral hier.
-3. **Jellyfin (CT 100)** bindet `/mnt/data/media/music` über einen Proxmox Bind-Mount (bei LXC zu LXC) oder über NFS ins eigene `/srv/media-library/music` ein.
-4. **AzuraCast Pi (via Tailscale)** bindet sich per Tailnet-IP `100.x.x.x` das NFS-Laufwerk als `/var/azuracast/stations/frawo_funk/media/network` ein.
-5. Die teure "Rsync-Kopie" entfällt. Wenn ein neues Lied hochgeladen wird, haben BEIDE Seiten es in derselben Sekunde abspielbereit im Index.
+### Documents
+- `\192.168.2.30\Documents\paperless-archive`
+- `\192.168.2.30\Documents\nextcloud-drop`
+- `\192.168.2.30\Documents\shared`
 
----
+## Operativer Cutover
 
-## Freigaben-Standard (NFS/SMB)
+1. Storage-Node als kanonischen Dateipfad festziehen.
+2. Toolbox auf hostseitigen SMB-Mount plus Bind-Mount umstellen.
+3. Raspberry Pi auf SMB-Mount umstellen.
+4. Jellyfin- und AzuraCast-Pfade gegen denselben Share pruefen.
+5. Danach alte USB-/Bootstrap-/Rsync-Zwischenpfade aus dem produktiven Betrieb nehmen.
 
-### NFS (Default)
-- Exports: `/mnt/data/documents`, `/mnt/data/media`
-- Clients: `192.168.2.0/24` und `100.64.0.0/10` (Tailscale)
-- Optionen: `rw,sync,no_subtree_check,root_squash`
-- Mount-Beispiele (NFSv4):
-  - `storage-node:/mnt/data/documents` -> `/media/archive`
-  - `storage-node:/mnt/data/media` -> `/srv/media-library`
+## Done-Kriterien
 
-### SMB (nur falls Windows-LAN-Clients zwingend noetig)
-- Standard: deaktiviert
-- Wenn benoetigt: SMB nur auf dem Storage-Node, nur LAN, kein Gast, kein Internet, klare Share-Namen
-
-## Checkliste für Codex (Abendschicht)
-
-Codex sollte heute Abend folgende Schritte nahtlos abarbeiten:
-
-- [ ] **1. Data Node Provisionierung:**
-  Erstellen eines neuen Ansible-Playbooks (`deploy_storage_node.yml`), welches einen neuen Debian LXC Container `CT 110` (Name: `storage`) hochzieht.
-- [ ] **2. NFS-Server Konfiguration:**
-  Den LXC als NFSv4 Server einrichten (`apt install nfs-kernel-server`) und `/etc/exports` definieren (Absicherung via IP-Subnet `192.168.2.0/24` und Tailscale-Subnet).
-- [ ] **3. Paperless Migration:**
-  Das aktuelle Archiv temporär sichern, `/media/archive` auf den NFS-Mount umbiegen und Dateien rüberschieben.
-- [ ] **4. Nextcloud `fstab`:**
-  Das NFS-Share in der Nextcloud-VM mounten und den External Storage in der Nextcloud config via OCC-Command registrieren.
-- [ ] **5. Any-Sync Node (Anytype):**
-  Zusätzlich das Anytype Backbone als Docker Container (any-sync) in `CT 100 toolbox` oder `VM 200` vorbereiten, um P2P Offline-Sync zu garantieren.
-
----
-*Dieser Blueprint orientiert sich strikt an Proxmox Separation of Concerns (SoC) und vermeidet Host-OS Pollution.*
+- `\192.168.2.30\Media\yourparty_Libary` ist les- und schreibbar
+- Jellyfin sieht Dateien ueber den SMB-Mount
+- AzuraCast sieht dieselben Dateien ueber den SMB-Mount
+- `frawo-funk` importiert aus dem SMB-Pfad
+- der produktive Betrieb haengt nicht mehr an `music-usb` oder `bootstrap-radio-usb`

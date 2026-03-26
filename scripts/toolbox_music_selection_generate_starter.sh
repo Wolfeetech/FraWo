@@ -13,7 +13,7 @@ from pathlib import Path
 import json
 import subprocess
 
-root = Path("/srv/media-library/music/bootstrap-radio-usb/clean")
+root = Path("/srv/media-library/music-network/yourparty_Libary/clean")
 audio_ext = {"mp3","flac","wav","m4a","aac","ogg","opus","aiff","aif","alac","wma"}
 blocked_exact = {
     "Various Artists",
@@ -79,7 +79,7 @@ def write_manifest(path: Path, title: str, rows: list[dict]) -> None:
     lines = [
         f"# {title}",
         "# Generated automatically from the current bootstrap music seed.",
-        "# Relative paths under /srv/media-library/music/bootstrap-radio-usb",
+        "# Relative paths under /srv/media-library/music-network/yourparty_Libary",
         "",
     ]
     for row in rows:

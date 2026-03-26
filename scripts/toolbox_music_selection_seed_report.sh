@@ -5,7 +5,7 @@ ssh -o BatchMode=yes root@toolbox python3 - <<'PY'
 from pathlib import Path
 import subprocess
 
-bootstrap = Path("/srv/media-library/music/bootstrap-radio-usb")
+bootstrap = Path("/srv/media-library/music-network/yourparty_Libary")
 candidate_roots = [
     bootstrap / "clean",
     bootstrap / "Contents",

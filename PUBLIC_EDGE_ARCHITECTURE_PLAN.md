@@ -11,6 +11,15 @@ Es geht ausdruecklich nicht um sofortige Freigabe, sondern um:
 - definierte oeffentliche Dienste
 - Rollback und Monitoring
 
+## Release-Default
+
+Stand `2026-03-26` ist der freigegebene Release-Scope fuer `2026-04-01` bewusst klein:
+
+- `frawo-tech.de` leitet spaeter auf `www.frawo-tech.de` um
+- `www.frawo-tech.de` ist die erste oeffentliche FRAWO-Website
+- interne Apps bleiben intern oder Tailscale-only
+- `radio.frawo-tech.de` bleibt vorbereitet, aber nicht Teil des ersten Releases
+
 ## Grundsatz
 
 Oeffentliche Freigaben starten erst, wenn:
@@ -19,30 +28,33 @@ Oeffentliche Freigaben starten erst, wenn:
 - PBS produktiv ist
 - Restore-Drills belastbar sind
 - Inventar und Zonen final sind
-- eine echte Domain vorhanden ist
+- Domain, DNS, TLS, Auth, Logging und Rollback definiert sind
+- der Passwortmanager produktiv eingefuehrt ist
 
-## Bevorzugter Domain-Kandidat
+## Verbindlicher Domain-Pfad
 
 Stand heute ist der bevorzugte oeffentliche Markenpfad:
 
-- primaere Domain: `frawo.studio`
-- Website: `www.frawo.studio`
-- Radio-/Player-Pfad: `radio.frawo.studio`
+- primaere Domain: `frawo-tech.de`
+- Website: `www.frawo-tech.de`
+- Radio-/Player-Pfad spaeter: `radio.frawo-tech.de`
 
 Betriebsregel dazu:
 
-- `www.frawo.studio` wird spaeter der kanonische Web-Hostname.
-- `frawo.studio` leitet spaeter auf `www.frawo.studio` um.
-- `radio.frawo.studio` bleibt technisch getrennt von der Hauptwebsite.
+- `www.frawo-tech.de` wird der kanonische Web-Hostname.
+- `frawo-tech.de` leitet auf `www.frawo-tech.de` um.
+- `radio.frawo-tech.de` bleibt technisch getrennt von der Hauptwebsite.
 - interne Namen bleiben bis zur bewussten internen DNS-Migration unveraendert:
   - `portal.hs27.internal`
   - `radio.hs27.internal`
-- spaeterer professioneller Zielpfad fuer interne Namen ist `frawo.home.arpa`; `frawo.internal` und `frawo.lan` werden nicht als Zielzone eingeplant.
+  - `media.hs27.internal`
+- spaeterer professioneller Zielpfad fuer interne Namen ist `frawo.home.arpa`.
 
-Optional spaeter:
+Veraltet und nicht mehr Zielbild:
 
-- `stream.frawo.studio` nur wenn ein separater reiner Stream-Endpunkt sinnvoll wird
-- defensive Zusatzregistrierungen wie `.de` oder `.tech` nur wenn Budget und Verfuegbarkeit dafuer sprechen
+- `frawo.studio`
+- `www.frawo.studio`
+- `radio.frawo.studio`
 
 ## Nie oeffentlich exponieren
 
@@ -52,17 +64,18 @@ Optional spaeter:
 - Home-Assistant-Admin
 - interne Toolbox-Adminpfade
 - rohe Datenbankports
+- interne Nextcloud-, Paperless- oder Odoo-Admins
 
 ## Geplante oeffentliche Dienste
 
 ### Phase 1
 
-- statische oder sehr schlanke GbR-Website
+- statische oder sehr schlanke GbR-Website auf `www.frawo-tech.de`
 - optional Kontaktformular-/Lead-Pfad
 
 ### Phase 2
 
-- oeffentliche Radio-/Player-Seite
+- oeffentliche Radio-/Player-Seite auf `radio.frawo-tech.de`
 - spaeter Stream-Endpunkte
 
 ### Phase 3
@@ -88,17 +101,17 @@ Optional spaeter:
 
 ### DNS
 
-- Apex- und `www`-Strategie fuer die GbR-Domain
+- Apex- und `www`-Strategie fuer `frawo-tech.de`
 - spaeter eigene Subdomains wie:
-  - `radio.<domain>`
-  - optional `portal.<domain>` nur wenn wirklich gewollt
+  - `radio.frawo-tech.de`
+  - optional `portal.frawo-tech.de` nur bei echtem Produktgrund
 
 Bevorzugter Zielpfad dafuer:
 
-- `frawo.studio` -> Redirect auf `www.frawo.studio`
-- `www.frawo.studio` -> GbR-Website
-- `radio.frawo.studio` -> Radio-/Player-Seite
-- kein oeffentliches `portal.frawo.studio`, solange kein klarer Produktgrund besteht
+- `frawo-tech.de` -> Redirect auf `www.frawo-tech.de`
+- `www.frawo-tech.de` -> GbR-Website
+- `radio.frawo-tech.de` -> Radio-/Player-Seite
+- kein oeffentliches `portal.frawo-tech.de`, solange kein klarer Produktgrund besteht
 
 ### Zertifikate
 
@@ -109,21 +122,24 @@ Bevorzugter Zielpfad dafuer:
 
 Vor dem ersten Public Rollout muessen gruen sein:
 
+- `RELEASE_READINESS_2026-04-01.md`
 - `make gateway-cutover-stage-gate`
 - `make pbs-stage-gate`
 - Inventar final ohne `unknown-review`
 - dokumentierter DNS-/TLS-/Rollback-Pfad
+- produktiver Passwortmanager mit den relevanten Logins
 
 ## Rollout-Reihenfolge
 
-1. `frawo.studio` registrieren und dokumentieren
+1. `frawo-tech.de` final dokumentieren
 2. Public DNS-Modell festziehen
-3. Edge-Hostnamen festlegen
-4. TLS-Automation einrichten
-5. Logging und Uptime-Monitoring festlegen
-6. zuerst statische GbR-Seite veroeffentlichen
-7. erst spaeter Radio
-8. Business-/Portalpfade nur bewusst und spaet
+3. Mailboxen und DNS-Mail-Records sauber setzen
+4. Edge-Hostnamen festlegen
+5. TLS-Automation einrichten
+6. Logging und Uptime-Monitoring festlegen
+7. zuerst statische GbR-Seite veroeffentlichen
+8. erst spaeter Radio
+9. Business-/Portalpfade nur bewusst und spaet
 
 ## Definition of Done
 
@@ -139,3 +155,4 @@ Professionell fertig:
 - PBS/Restore belastbar
 - oeffentliche Hostnames klar getrennt
 - TLS, Logging, Monitoring und Rollback aktiv
+- Secrets nicht mehr dauerhaft in Markdown-Dateien abgelegt

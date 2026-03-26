@@ -114,7 +114,7 @@ What does Wolf or Franz need to do next so Codex or Gemini can continue autonomo
    - Quick check first: `make haos-usb-audit`
 2. Continue radio curation from temporary USB music to `RadioLibrary` / `RadioAssets`.
 3. Move from bootstrap media paths to a more durable long-term media storage layout.
-4. Continue the `frawo.studio` public edge when the internal platform is fully accepted.
+4. Continue the `frawo-tech.de` public edge only after the internal platform is fully accepted.
 
 ## Canonical Detail Sources
 

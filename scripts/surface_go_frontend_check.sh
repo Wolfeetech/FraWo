@@ -92,18 +92,21 @@ portal_service_active="unknown"
 portal_http_local="unknown"
 control_launcher_present="unknown"
 browser_binary_present="unknown"
+anydesk_service_active="unknown"
 
 if [[ "${remote_admin_ready}" == "yes" ]]; then
   portal_service_active="$(remote_probe "systemctl is-active homeserver2027-surface-portal.service" | head -n1)"
   portal_http_local="$(remote_probe "curl -fsSI http://127.0.0.1:17827 >/dev/null && echo ok || echo fail" | head -n1)"
   control_launcher_present="$(remote_probe "test -f /home/frawo/Desktop/FRAWO-Control.desktop && echo yes || echo no" | head -n1)"
-  browser_binary_present="$(remote_probe "command -v epiphany-browser >/dev/null && echo yes || echo no" | head -n1)"
+  browser_binary_present="$(remote_probe "command -v firefox >/dev/null && echo yes || echo no" | head -n1)"
+  anydesk_service_active="$(remote_probe "systemctl is-active anydesk 2>/dev/null || echo not-installed" | head -n1)"
 fi
 
 echo "surface_go_portal_service_active=${portal_service_active:-unknown}"
 echo "surface_go_local_portal_http=${portal_http_local:-unknown}"
 echo "surface_go_control_launcher_present=${control_launcher_present:-unknown}"
 echo "surface_go_browser_binary_present=${browser_binary_present:-unknown}"
+echo "surface_go_anydesk_service_active=${anydesk_service_active:-unknown}"
 
 rebuild_required="yes"
 if [[ "${ssh_port}" == "open" && "${default_nginx}" == "no" ]]; then

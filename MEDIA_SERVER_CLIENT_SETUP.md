@@ -22,7 +22,7 @@ This document is the operator runbook for the first usable FRAWO media experienc
   - `/media/music`
 - a bootstrap sync from the Pi USB music library into the toolbox media library is now running
 - current target path for the imported radio music is:
-  - `/media/music/bootstrap-radio-usb`
+  - `/media/music-network/yourparty_Libary`
 
 ## Google TV / Android TV / Thomson
 

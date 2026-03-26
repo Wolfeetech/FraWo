@@ -2,7 +2,7 @@
 set -euo pipefail
 
 TARGET_HOST="root@toolbox"
-TARGET_PATH="/srv/media-library/music/bootstrap-radio-usb"
+TARGET_PATH="/srv/media-library/music-network/yourparty_Libary"
 
 remote() {
   ssh -o BatchMode=yes "${TARGET_HOST}" "$@"

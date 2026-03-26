@@ -47,7 +47,7 @@ import os
 from pathlib import Path
 
 selection = json.loads(base64.b64decode(os.environ["SELECTION_JSON_B64"]).decode("utf-8"))
-bootstrap_root = Path("/srv/media-library/music/bootstrap-radio-usb")
+bootstrap_root = Path("/srv/media-library/music-network/yourparty_Libary")
 dest_roots = {
     "favorites": Path("/srv/media-library/music/favorites"),
     "curated": Path("/srv/media-library/music/curated"),

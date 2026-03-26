@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+source "${ROOT_DIR}/scripts/rpi_radio_remote.sh"
+
 TARGET_HOST="${1:-100.64.23.77}"
-SSH_TARGET="wolf@${TARGET_HOST}"
-SSH_OPTS=(-o BatchMode=yes -o ConnectTimeout=8 -o StrictHostKeyChecking=accept-new)
 
 run_remote() {
-  ssh "${SSH_OPTS[@]}" "${SSH_TARGET}" "$@"
+  run_rpi_remote "${TARGET_HOST}" "$@"
 }
 
 extract_value() {

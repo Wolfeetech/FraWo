@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+source "${ROOT_DIR}/scripts/rpi_radio_remote.sh"
+
 TARGET_HOST="${1:-100.64.23.77}"
-SSH_TARGET="wolf@${TARGET_HOST}"
-SSH_OPTS=(-o BatchMode=yes -o ConnectTimeout=8 -o StrictHostKeyChecking=accept-new)
 
 run_remote() {
-  ssh "${SSH_OPTS[@]}" "${SSH_TARGET}" "$@"
+  run_rpi_remote "${TARGET_HOST}" "$@"
 }
 
 echo "hostname=$(run_remote "hostname" 2>/dev/null || echo unknown)"
@@ -21,17 +22,16 @@ echo "docker_ps_start"
 run_remote "docker ps --format '{{.Names}}\t{{.Status}}'" 2>/dev/null || true
 echo "docker_ps_end"
 
-headers="$(curl -s -I --max-time 10 "http://${TARGET_HOST}/" | tr -d '\r' || true)"
-http_code="$(printf '%s\n' "${headers}" | awk 'NR==1 {print $2}' | head -n1)"
-http_location="$(printf '%s\n' "${headers}" | awk -F': ' 'tolower($1)=="location" {print $2}' | tail -n1)"
-api_status_http="$(curl -s -o /tmp/homeserver2027_rpi_azuracast_status.json -w '%{http_code}' --max-time 10 "http://${TARGET_HOST}/api/status" || true)"
-api_status_online="$(jq -r '.online // "unknown"' /tmp/homeserver2027_rpi_azuracast_status.json 2>/dev/null || echo unknown)"
-nowplaying_http="$(curl -s -o /tmp/homeserver2027_rpi_azuracast_nowplaying.json -w '%{http_code}' --max-time 10 "http://${TARGET_HOST}/api/nowplaying" || true)"
-station_count="$(jq 'length' /tmp/homeserver2027_rpi_azuracast_nowplaying.json 2>/dev/null || echo unknown)"
-station_name="$(jq -r '.[0].station.name // "unknown"' /tmp/homeserver2027_rpi_azuracast_nowplaying.json 2>/dev/null || echo unknown)"
-station_shortcode="$(jq -r '.[0].station.shortcode // "unknown"' /tmp/homeserver2027_rpi_azuracast_nowplaying.json 2>/dev/null || echo unknown)"
-station_online="$(jq -r '.[0].is_online // "unknown"' /tmp/homeserver2027_rpi_azuracast_nowplaying.json 2>/dev/null || echo unknown)"
-station_song="$(jq -r '.[0].now_playing.song.text // "unknown"' /tmp/homeserver2027_rpi_azuracast_nowplaying.json 2>/dev/null || echo unknown)"
+http_code="$(run_remote "curl -s -o /dev/null -w '%{http_code}' --max-time 10 http://127.0.0.1/" 2>/dev/null || echo 000)"
+http_location="$(run_remote "curl -s -I --max-time 10 http://127.0.0.1/ | tr -d '\r' | awk -F': ' 'tolower(\$1)==\"location\" {print \$2}' | tail -n1" 2>/dev/null || echo none)"
+api_status_http="$(run_remote "curl -s -o /tmp/homeserver2027_rpi_azuracast_status.json -w '%{http_code}' --max-time 10 http://127.0.0.1/api/status" 2>/dev/null || echo 000)"
+api_status_online="$(run_remote "jq -r '.online // \"unknown\"' /tmp/homeserver2027_rpi_azuracast_status.json" 2>/dev/null || echo unknown)"
+nowplaying_http="$(run_remote "curl -s -o /tmp/homeserver2027_rpi_azuracast_nowplaying.json -w '%{http_code}' --max-time 10 http://127.0.0.1/api/nowplaying" 2>/dev/null || echo 000)"
+station_count="$(run_remote "jq 'length' /tmp/homeserver2027_rpi_azuracast_nowplaying.json" 2>/dev/null || echo unknown)"
+station_name="$(run_remote "jq -r '.[0].station.name // \"unknown\"' /tmp/homeserver2027_rpi_azuracast_nowplaying.json" 2>/dev/null || echo unknown)"
+station_shortcode="$(run_remote "jq -r '.[0].station.shortcode // \"unknown\"' /tmp/homeserver2027_rpi_azuracast_nowplaying.json" 2>/dev/null || echo unknown)"
+station_online="$(run_remote "jq -r '.[0].is_online // \"unknown\"' /tmp/homeserver2027_rpi_azuracast_nowplaying.json" 2>/dev/null || echo unknown)"
+station_song="$(run_remote "jq -r '.[0].now_playing.song.text // \"unknown\"' /tmp/homeserver2027_rpi_azuracast_nowplaying.json" 2>/dev/null || echo unknown)"
 
 echo "radio_node_http_code=${http_code:-000}"
 echo "radio_node_http_location=${http_location:-none}"

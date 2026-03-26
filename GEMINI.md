@@ -107,7 +107,7 @@
     - Datastore `hs27-interim` ist aktiv
     - Proxmox-Storage `pbs-interim` ist aktiv
     - taeglicher PBS-Job `hs27-pbs-interim-daily` ist angelegt
-    - Interim-Retention ist aktiv: `02:40,14:40`, `keep-daily=2`, `keep-weekly=1`, `keep-monthly=1`
+- Interim-Retention ist aktiv: `02:40`, `keep-daily=2`, `keep-weekly=1`, `keep-monthly=1`
     - erster gruener Proof-Backup-Lauf ist jetzt erbracht:
       - `VM 220`
       - Snapshot `vm/220/2026-03-21T10:04:30Z`

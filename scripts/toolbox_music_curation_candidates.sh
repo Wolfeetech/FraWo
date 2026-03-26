@@ -4,7 +4,7 @@ set -euo pipefail
 ssh -o BatchMode=yes root@toolbox python3 - <<'PY'
 from pathlib import Path
 
-music_root = Path("/srv/media-library/music/bootstrap-radio-usb")
+music_root = Path("/srv/media-library/music-network/yourparty_Libary")
 quarantine_root = Path("/srv/media-library/quarantine/bootstrap-review")
 
 allowed_audio = {

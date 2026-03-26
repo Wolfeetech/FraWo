@@ -1,0 +1,2 @@
+set -euo pipefail
+sshpass -p 11011995 ssh -o StrictHostKeyChecking=no root@192.168.2.10 "qm guest exec 230 -- bash -lc 'docker exec paperless_webserver_1 python3 manage.py shell -c \"from django.contrib.auth import get_user_model; U=get_user_model(); print(list(U.objects.values(\\\"username\\\",\\\"email\\\",\\\"is_superuser\\\",\\\"is_staff\\\",\\\"is_active\\\")))\"'"

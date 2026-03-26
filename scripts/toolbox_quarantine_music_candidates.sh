@@ -5,7 +5,7 @@ ssh -o BatchMode=yes root@toolbox python3 - <<'PY'
 from pathlib import Path
 import shutil
 
-music_root = Path("/srv/media-library/music/bootstrap-radio-usb")
+music_root = Path("/srv/media-library/music-network/yourparty_Libary")
 quarantine_root = Path("/srv/media-library/quarantine/bootstrap-review")
 exclude_file = Path("/etc/homeserver2027/media-sync-excludes.txt")
 

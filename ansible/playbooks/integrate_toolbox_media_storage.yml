@@ -1,0 +1,92 @@
+---
+- name: Integrate toolbox Jellyfin host with central SMB media storage via Proxmox bind mount
+  hosts: proxmox
+  become: true
+  vars:
+    toolbox_media_share_password: "{{ homeserver_vault_storage_share_password | default(lookup('env', 'HOMESERVER_STORAGE_SHARE_PASSWORD') | default('', true)) }}"
+
+  pre_tasks:
+    - name: Load toolbox host variables for bind mount metadata
+      ansible.builtin.include_vars:
+        file: "{{ playbook_dir }}/../inventory/host_vars/toolbox.yml"
+
+    - name: Assert toolbox SMB metadata is present
+      ansible.builtin.assert:
+        that:
+          - toolbox_lxc_vmid is defined
+          - toolbox_media_mountpoint is defined
+          - toolbox_media_share is defined
+          - toolbox_media_subdir is defined
+          - toolbox_media_proxmox_mountpoint is defined
+          - toolbox_media_proxmox_credentials_file is defined
+          - toolbox_media_bind_mount_slot is defined
+          - toolbox_media_share_password | length > 0
+        fail_msg: "Define toolbox SMB media vars and provide HOMESERVER_STORAGE_SHARE_PASSWORD or homeserver_vault_storage_share_password."
+
+  tasks:
+    - name: Install Proxmox SMB client packages
+      ansible.builtin.apt:
+        name:
+          - cifs-utils
+        state: present
+        update_cache: true
+
+    - name: Ensure Proxmox SMB credential directory exists
+      ansible.builtin.file:
+        path: "{{ toolbox_media_proxmox_credentials_file | dirname }}"
+        state: directory
+        owner: root
+        group: root
+        mode: "0700"
+
+    - name: Install Proxmox SMB credentials for storage-node media share
+      ansible.builtin.copy:
+        dest: "{{ toolbox_media_proxmox_credentials_file }}"
+        owner: root
+        group: root
+        mode: "0600"
+        content: |
+          username=radio
+          password={{ toolbox_media_share_password }}
+      no_log: true
+
+    - name: Ensure Proxmox host mountpoint exists
+      ansible.builtin.file:
+        path: "{{ toolbox_media_proxmox_mountpoint }}"
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Mount central SMB media share on Proxmox host
+      ansible.posix.mount:
+        path: "{{ toolbox_media_proxmox_mountpoint }}"
+        src: "{{ toolbox_media_share }}"
+        fstype: cifs
+        opts: "rw,vers=3.1.1,iocharset=utf8,credentials={{ toolbox_media_proxmox_credentials_file }},nofail,x-systemd.automount,x-systemd.device-timeout=10s"
+        state: mounted
+
+    - name: Ensure toolbox container-side bind mount target exists
+      ansible.builtin.command:
+        cmd: "pct exec {{ toolbox_lxc_vmid }} -- mkdir -p {{ toolbox_media_mountpoint }}"
+      changed_when: false
+
+    - name: Read current toolbox container config
+      ansible.builtin.command:
+        cmd: "pct config {{ toolbox_lxc_vmid }}"
+      register: toolbox_pct_config
+      changed_when: false
+
+    - name: Build expected toolbox bind mount config line
+      ansible.builtin.set_fact:
+        toolbox_expected_bind_mount_line: "{{ toolbox_media_bind_mount_slot }}: {{ toolbox_media_proxmox_mountpoint }},mp={{ toolbox_media_mountpoint }}"
+
+    - name: Attach Proxmox host media mount into toolbox container
+      ansible.builtin.command:
+        cmd: "pct set {{ toolbox_lxc_vmid }} -{{ toolbox_media_bind_mount_slot }} {{ toolbox_media_proxmox_mountpoint }},mp={{ toolbox_media_mountpoint }}"
+      when: toolbox_expected_bind_mount_line not in toolbox_pct_config.stdout
+
+    - name: Assert expected SMB media subdirectory exists inside toolbox container
+      ansible.builtin.command:
+        cmd: "pct exec {{ toolbox_lxc_vmid }} -- test -d {{ toolbox_media_mountpoint }}/{{ toolbox_media_subdir }}"
+      changed_when: false

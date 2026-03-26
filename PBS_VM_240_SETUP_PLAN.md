@@ -50,7 +50,7 @@ Prepare a controlled Proxmox Backup Server rollout path without weakening the cu
   - Proxmox storage `pbs-interim` is already registered and active against `hs27-interim`
   - daily backup job `hs27-pbs-interim-daily` exists for `200,210,220,230`
   - retention is intentionally constrained for the `64GB` stick:
-    - schedule `02:40,14:40`
+  - schedule `02:40`
     - `keep-daily=2`
     - `keep-weekly=1`
     - `keep-monthly=1`

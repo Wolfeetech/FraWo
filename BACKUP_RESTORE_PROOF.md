@@ -62,7 +62,7 @@
   - datastore `hs27-interim`
   - first backup proof and first restore proof are both green for `VM 220`
   - current interim retention:
-    - `02:40,14:40`
+  - `02:40`
     - `keep-daily=2`
     - `keep-weekly=1`
     - `keep-monthly=1`
