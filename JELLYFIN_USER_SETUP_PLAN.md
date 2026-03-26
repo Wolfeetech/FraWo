@@ -10,6 +10,7 @@ Establish a clean Jellyfin user model before broader TV and shared-device rollou
 - `Franz` exists, is visible on the login screen and has no admin rights.
 - `TV Wohnzimmer` exists, is visible on the login screen and has no admin rights.
 - All three interactive profiles have working passwords.
+- On `2026-03-26`, a browser-side connection error was traced to `CT100 toolbox` running with rootfs flag `emergency_ro`; after `e2fsck` on `/var/lib/vz/images/100/vm-100-disk-0.raw`, the Jellyfin auth endpoint returned `200` again.
 - The active production library is `Musik Netzwerk` on `/media/music-network/yourparty_Libary`.
 - The obsolete local bootstrap library has been removed from `CT 100 toolbox`.
 - Quick PIN setup is still open; the Easy Password API returned `403` in this environment, so PINs should be set later in the UI if still wanted.

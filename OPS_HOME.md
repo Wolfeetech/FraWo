@@ -6,6 +6,8 @@ Diese Datei ist die zentrale Operator-Startseite fuer den aktuellen Plattformsta
 
 ## Jetzt zuerst lesen
 
+- Einstieg fuer Wolf und Franz: `START_HERE_WOLF_FRANZ.md`
+- Nutzer-Handout: `WOLF_FRANZ_HANDOUT.md`
 - Executive Roadmap: `EXECUTIVE_ROADMAP.md`
 - Gesamtstatus: `PLATFORM_STATUS.md`
 - Gesamt-Roadmap: `MASTERPLAN.md`

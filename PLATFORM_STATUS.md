@@ -76,3 +76,22 @@
   - `local-lvm` dropped from `100%` to about `40.4%`, so the acute thinpool failure is gone
   - `local` (`/var/lib/vz`) was temporarily pushed high by the `CT100` move, then relieved again by moving old local dump archives onto the 2-TB NTFS SSD
   - current host root usage is back around `78%` and `local` is around `73%`
+
+## Incident Note 2026-03-26
+
+- Symptom:
+  - Jellyfin loaded in the browser, but selecting a preconfigured user produced a connection error.
+- Root cause:
+  - `CT 100 toolbox` rootfs was mounted as `ext4 (rw,relatime,emergency_ro)`.
+  - That left the Jellyfin host partially functional but unstable for auth and write-dependent flows.
+- Resolution:
+  - stopped `CT 100`
+  - ran `e2fsck -f -y /var/lib/vz/images/100/vm-100-disk-0.raw`
+  - restarted `CT 100`
+  - verified `/` inside the container is back to plain `rw`
+  - verified `portal.hs27.internal` and `media.hs27.internal` answer again
+  - verified `POST /Users/AuthenticateByName` for Jellyfin user `Wolf` returns `HTTP 200`
+- Result:
+  - toolbox rootfs is writable again
+  - Jellyfin auth is server-side healthy again
+  - the previous browser-side Jellyfin connection error is no longer attributable to a dead auth backend
