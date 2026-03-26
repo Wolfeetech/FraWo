@@ -9,7 +9,10 @@
 }
 
 {% for item in toolbox_network_internal_proxy_hosts %}
-http://{{ item.hostname }} {
+{{ item.scheme | default('http') }}://{{ item.hostname }} {
+{% if item.tls_internal | default(false) %}
+  tls internal
+{% endif %}
   reverse_proxy {{ item.upstream }}
 }
 

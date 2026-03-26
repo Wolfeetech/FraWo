@@ -12,8 +12,8 @@ Diese Datei ist die zentrale Uebersicht fuer:
 Wichtig:
 
 - Diese Datei ist die Arbeitsuebersicht, nicht der Ersatz fuer den Passwortmanager.
-- Es gibt aktuell noch keinen produktiven Passwortmanager im Projekt; das Zielsystem ist jetzt `Bitwarden Cloud`.
-- Finale Passwoerter werden erst dann als produktiv betrachtet, wenn alle betroffenen Services stabil sind und die Eintraege in Bitwarden liegen.
+- Der produktive Passwortmanager ist jetzt `Vaultwarden` auf `CT120`, aber noch nicht voll nutzbar, bis interner `HTTPS`-Zugriff steht.
+- Finale Passwoerter werden erst dann als produktiv betrachtet, wenn alle betroffenen Services stabil sind und die Eintraege in Vaultwarden liegen.
 - Die neue Domain wird erst freigegeben, wenn die internen Dienste stabil sind, die Benutzer sauber umgestellt wurden und Secrets nicht mehr dauerhaft in Markdown-Dateien liegen.
 
 ## Aktueller interner Zugang
@@ -31,7 +31,7 @@ Wichtig:
 
 ## Aktuelle Admin- und Bootstrap-Logins
 
-Diese Werte sind der aktuelle technische Betriebsstand fuer den internen Zugriff. Sie bleiben relevant, bis alle Finalwerte in Bitwarden liegen und die temporaeren Bootstrap-Zugaenge abgeloest sind.
+Diese Werte sind der aktuelle technische Betriebsstand fuer den internen Zugriff. Sie bleiben relevant, bis alle Finalwerte in Vaultwarden liegen und die temporaeren Bootstrap-Zugaenge abgeloest sind.
 
 | Service | URL | Benutzer | Passwort | Stand |
 | --- | --- | --- | --- | --- |
@@ -75,14 +75,14 @@ Diese Werte sind der aktuelle technische Betriebsstand fuer den internen Zugriff
 
 ### Noch nicht final
 
-- finale Ablage aller aktuellen Passwoerter in `Bitwarden Cloud`
+- finale Ablage aller aktuellen Passwoerter in `Vaultwarden`
 - Rueckbau dieser Datei von Klartext-Passwoertern auf Eintragsreferenzen
 - optionale PIN-Konfiguration in `Jellyfin`
 - reale STRATO-Mailboxen fuer `wolf`, `franz`, `info`, `noreply`
 
-## Bitwarden Zielbild
+## Vaultwarden Zielbild
 
-Die produktive Secret-Ablage wird in `Bitwarden Cloud` organisiert:
+Die produktive Secret-Ablage wird in `Vaultwarden` organisiert:
 
 - `Core Infra`
 - `Business Apps`
@@ -106,6 +106,13 @@ Erst wenn die Eintraege dort liegen, darf diese Datei auf Referenzen statt Klart
 - `info@frawo-tech.de`
 - optional spaeter: `noreply@frawo-tech.de`
 
+## Mail-Zwischenstand
+
+- `wolf@frawo-tech.de` -> Alias auf `wolf@yourparty.tech`
+- `info@frawo-tech.de` -> Alias auf `wolf@yourparty.tech`
+- `noreply@frawo-tech.de` -> Alias auf `wolf@yourparty.tech`
+- `franz@frawo-tech.de` bleibt offen, bis ein eigenes echtes Postfach verfuegbar ist
+
 ## Freigabe-Regel fuer die neue Strato-Domain
 
 Die neue Domain bleibt intern vorbereitet und wird erst released, wenn alle Punkte gruen sind:
@@ -113,13 +120,13 @@ Die neue Domain bleibt intern vorbereitet und wird erst released, wenn alle Punk
 1. interne Dienste stabil ueber `hs27.internal`
 2. `local-lvm` wieder mit ausreichender Reserve
 3. finale Benutzer fuer `wolf`, `franz`, `frontend` angelegt
-4. finale Passwoerter in `Bitwarden Cloud` abgelegt
+4. finale Passwoerter in `Vaultwarden` abgelegt
 5. Jellyfin-, AzuraCast- und AdGuard-Logins finalisiert
 6. DNS-, TLS-, Reverse-Proxy- und Rollback-Pfad sauber dokumentiert
 
 ## Naechste direkte Aufgaben
 
-1. Alle neuen Werte in `Bitwarden Cloud` uebernehmen.
+1. Alle neuen Werte in `Vaultwarden` uebernehmen.
 2. STRATO-Mailboxen fuer `wolf`, `franz`, `info` und `noreply` anlegen.
 3. Optional in `Jellyfin` PINs fuer `Wolf` und `Franz` setzen.
 4. `frontend@frawo-tech.de` erst dann extern releasen, wenn Surface und Kioskpfad wieder stabil sind.

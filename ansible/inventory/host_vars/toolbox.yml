@@ -30,6 +30,8 @@ toolbox_network_adguard_rewrites:
     answer: 192.168.2.20
   - domain: radio.hs27.internal
     answer: 192.168.2.20
+  - domain: vault.hs27.internal
+    answer: 192.168.2.20
 toolbox_network_internal_proxy_hosts:
   - hostname: media.hs27.internal
     upstream: 192.168.2.20:8096
@@ -43,6 +45,10 @@ toolbox_network_internal_proxy_hosts:
     upstream: "{{ homeserver_haos_current_ip }}:8123"
   - hostname: radio.hs27.internal
     upstream: 100.64.23.77:80
+  - hostname: vault.hs27.internal
+    upstream: 192.168.2.26:8080
+    scheme: https
+    tls_internal: true
 toolbox_network_static_file_hosts:
   - hostname: portal.hs27.internal
     root: /srv/portal
@@ -84,6 +90,10 @@ toolbox_network_portal_links:
     group: Operations
     hint: Tailscale-only frontdoor for remote access
     url: http://100.99.206.128:8447
+  - label: Vault
+    group: Operations
+    hint: Secret vault after internal HTTPS rollout
+    url: https://vault.hs27.internal
 toolbox_network_persona_cards:
   - label: Ich bin Wolf
     role: Betrieb, Admin und Tagessteuerung
@@ -168,6 +178,11 @@ toolbox_network_status_targets:
     check_url: http://127.0.0.1
     success_codes: [200]
     summary: Internal frontdoor and service navigation
+  - key: vaultwarden
+    label: Vault
+    check_url: http://192.168.2.26:8080/alive
+    success_codes: [200]
+    summary: Self-hosted secret vault on CT120
 toolbox_network_tailscale_mobile_proxies:
   - name: media_mobile
     listen_port: 8449

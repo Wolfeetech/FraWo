@@ -8,6 +8,10 @@ Diese Datei ist die zentrale Operator-Startseite fuer den aktuellen Plattformsta
 
 - Einstieg fuer Wolf und Franz: `START_HERE_WOLF_FRANZ.md`
 - Nutzer-Handout: `WOLF_FRANZ_HANDOUT.md`
+- Abarbeitungs-Checkliste: `CHECKLIST_NEXT_STEPS_WOLF_FRANZ.md`
+- Vaultwarden Start: `VAULTWARDEN_SELFHOST_START.md`
+- STRATO Mail Rollout: `STRATO_MAIL_ACCOUNT_ROLLOUT_CHECKLIST.md`
+- STRATO Mail Client Setup: `STRATO_MAIL_CLIENT_SETUP.md`
 - Executive Roadmap: `EXECUTIVE_ROADMAP.md`
 - Gesamtstatus: `PLATFORM_STATUS.md`
 - Gesamt-Roadmap: `MASTERPLAN.md`
@@ -20,7 +24,11 @@ Diese Datei ist die zentrale Operator-Startseite fuer den aktuellen Plattformsta
 
 - Public Edge: `PUBLIC_EDGE_ARCHITECTURE_PLAN.md`
 - Mail-Rollout: `MAIL_SYSTEM_ROLLOUT.md`
+- Mail -> Paperless -> Nextcloud: `MAIL_TO_PAPERLESS_NEXTCLOUD_ARCHITECTURE.md`
+- Nextcloud Mail + Odoo Mail: `NEXTCLOUD_MAIL_AND_ODOO_MAIL_ARCHITECTURE.md`
 - Bitwarden + STRATO Runbook: `BITWARDEN_STRATO_EXECUTION_RUNBOOK.md`
+- Vaultwarden Recovery Sheet: `VAULTWARDEN_RECOVERY_SHEET.md`
+- Vaultwarden Internal HTTPS Rollout: `VAULTWARDEN_INTERNAL_HTTPS_ROLLOUT.md`
 - Hosting-Optionen: `ONLINE_HOSTING_OPTIONS.md`
 - Google-Drive-Plan: `GOOGLE_DRIVE_INTEGRATION_PLAN.md`
 - Odoo-Studio-Entscheidung: `ODOO_STUDIO_DECISION.md`
@@ -39,13 +47,13 @@ Diese Datei ist die zentrale Operator-Startseite fuer den aktuellen Plattformsta
 - Oeffentlich live gehen zum `2026-04-01` soll nur die Website auf `www.frawo-tech.de`.
 - Interne Apps bleiben intern oder Tailscale-only.
 - Mailboxen entstehen zuerst bei `STRATO`.
-- Passwoerter muessen in `Bitwarden Cloud`, nicht dauerhaft in Markdown-Dateien, enden.
+- Passwoerter muessen in `Vaultwarden`, nicht dauerhaft in Markdown-Dateien, enden.
 - `Rentner OS` fuer Stockenweiler startet als Managed Support Service, nicht als voll integrierter Zweitstandort.
 
 ## Offene manuelle Blocker
 
 1. STRATO-Mailboxen anlegen.
-2. Bitwarden-Organisation/Vault aufsetzen.
-3. Produktive Logins nach Bitwarden uebernehmen.
+2. Internen `HTTPS`-Pfad fuer Vaultwarden bauen und ersten Benutzer anlegen.
+3. Produktive Logins nach Vaultwarden uebernehmen.
 4. Externen Off-LAN-Scan vom Handy testen.
 5. Website-/DNS-/TLS-Release-Gate auf Gruen ziehen.
