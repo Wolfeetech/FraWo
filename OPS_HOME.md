@@ -17,6 +17,7 @@ Diese Datei ist die zentrale Operator-Startseite fuer den aktuellen Plattformsta
 - Gesamt-Roadmap: `MASTERPLAN.md`
 - Tool-Betriebsanweisungen: `OPERATIONS/TOOLS_OPERATIONS_INDEX.md`
 - Zugangsregister: `ACCESS_REGISTER.md`
+- Vaultwarden-Referenzregister: `ACCESS_REGISTER_VAULTWARDEN_REFERENCES.md`
 - Identitaetsstandard: `IDENTITY_STANDARD.md`
 - Release-Akte: `RELEASE_READINESS_2026-04-01.md`
 
@@ -26,7 +27,7 @@ Diese Datei ist die zentrale Operator-Startseite fuer den aktuellen Plattformsta
 - Mail-Rollout: `MAIL_SYSTEM_ROLLOUT.md`
 - Mail -> Paperless -> Nextcloud: `MAIL_TO_PAPERLESS_NEXTCLOUD_ARCHITECTURE.md`
 - Nextcloud Mail + Odoo Mail: `NEXTCLOUD_MAIL_AND_ODOO_MAIL_ARCHITECTURE.md`
-- Bitwarden + STRATO Runbook: `BITWARDEN_STRATO_EXECUTION_RUNBOOK.md`
+- Vaultwarden + STRATO Runbook: `BITWARDEN_STRATO_EXECUTION_RUNBOOK.md`
 - Vaultwarden Recovery Sheet: `VAULTWARDEN_RECOVERY_SHEET.md`
 - Vaultwarden Internal HTTPS Rollout: `VAULTWARDEN_INTERNAL_HTTPS_ROLLOUT.md`
 - Hosting-Optionen: `ONLINE_HOSTING_OPTIONS.md`
@@ -46,14 +47,16 @@ Diese Datei ist die zentrale Operator-Startseite fuer den aktuellen Plattformsta
 - Interne Plattform ist betriebsfaehig.
 - Oeffentlich live gehen zum `2026-04-01` soll nur die Website auf `www.frawo-tech.de`.
 - Interne Apps bleiben intern oder Tailscale-only.
-- Mailboxen entstehen zuerst bei `STRATO`.
+- Produktiver Vaultwarden-Login ist nur ueber `https://vault.hs27.internal` freigegeben.
+- Der erste produktive Vaultwarden-Benutzer ist `wolf@frawo-tech.de`.
+- Das Vaultwarden-Master-Passwort wird nur manuell gesetzt und nur offline gesichert.
 - Passwoerter muessen in `Vaultwarden`, nicht dauerhaft in Markdown-Dateien, enden.
 - `Rentner OS` fuer Stockenweiler startet als Managed Support Service, nicht als voll integrierter Zweitstandort.
 
 ## Offene manuelle Blocker
 
-1. STRATO-Mailboxen anlegen.
-2. Internen `HTTPS`-Pfad fuer Vaultwarden bauen und ersten Benutzer anlegen.
-3. Produktive Logins nach Vaultwarden uebernehmen.
+1. Internen `HTTPS`-Pfad fuer Vaultwarden bauen.
+2. `wolf@frawo-tech.de` als ersten produktiven Vaultwarden-Benutzer anlegen und Recovery offline sichern.
+3. Produktive `STRATO`- und Core-Infra-Logins nach Vaultwarden uebernehmen.
 4. Externen Off-LAN-Scan vom Handy testen.
 5. Website-/DNS-/TLS-Release-Gate auf Gruen ziehen.

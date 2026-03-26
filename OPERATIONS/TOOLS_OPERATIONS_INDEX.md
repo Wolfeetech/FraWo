@@ -21,6 +21,7 @@ Dieses Verzeichnis ist die betriebliche Bedien- und Betriebsanweisung fuer die w
 ## Bestehende Spezial-Runbooks
 
 - `..\BITWARDEN_STRATO_EXECUTION_RUNBOOK.md`
+- `..\ACCESS_REGISTER_VAULTWARDEN_REFERENCES.md`
 - `..\RADIO_OPERATIONS_STANDARD.md`
 - `..\MOBILE_SCAN_WORKFLOW.md`
 - `..\STRESS_TEST_READINESS.md`

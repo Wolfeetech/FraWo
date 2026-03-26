@@ -11,8 +11,11 @@ Diese Datei ist die zentrale Uebersicht fuer:
 
 Wichtig:
 
-- Diese Datei ist die Arbeitsuebersicht, nicht der Ersatz fuer den Passwortmanager.
+- Diese Datei ist die Arbeitsuebersicht und eine **Uebergangsquelle**, nicht der Ersatz fuer den Passwortmanager.
 - Der produktive Passwortmanager ist jetzt `Vaultwarden` auf `CT120`, aber noch nicht voll nutzbar, bis interner `HTTPS`-Zugriff steht.
+- Produktiver Vaultwarden-Login ist nur ueber `https://vault.hs27.internal` freigegeben.
+- Der erste produktive Vaultwarden-Benutzer ist `wolf@frawo-tech.de`.
+- Das Master-Passwort wird nie in dieser Datei dokumentiert.
 - Finale Passwoerter werden erst dann als produktiv betrachtet, wenn alle betroffenen Services stabil sind und die Eintraege in Vaultwarden liegen.
 - Die neue Domain wird erst freigegeben, wenn die internen Dienste stabil sind, die Benutzer sauber umgestellt wurden und Secrets nicht mehr dauerhaft in Markdown-Dateien liegen.
 
@@ -91,6 +94,15 @@ Die produktive Secret-Ablage wird in `Vaultwarden` organisiert:
 - `Devices`
 - `Stockenweiler`
 
+Reihenfolge:
+
+1. zuerst `https://vault.hs27.internal` per internem `HTTPS` bereitstellen
+2. `wolf@frawo-tech.de` als ersten produktiven Benutzer anlegen
+3. Master-Passwort nur manuell setzen und nur offline sichern
+4. zuerst `STRATO`- und Core-Infra-Zugaenge einpflegen
+5. danach App-Zugaenge aus dieser Datei uebernehmen
+6. erst dann diese Datei auf Referenzen statt Klartext zurueckbauen
+
 Erst wenn die Eintraege dort liegen, darf diese Datei auf Referenzen statt Klartext zurueckgebaut werden.
 
 ## Zielbild Identitaeten
@@ -126,8 +138,11 @@ Die neue Domain bleibt intern vorbereitet und wird erst released, wenn alle Punk
 
 ## Naechste direkte Aufgaben
 
-1. Alle neuen Werte in `Vaultwarden` uebernehmen.
-2. STRATO-Mailboxen fuer `wolf`, `franz`, `info` und `noreply` anlegen.
-3. Optional in `Jellyfin` PINs fuer `Wolf` und `Franz` setzen.
-4. `frontend@frawo-tech.de` erst dann extern releasen, wenn Surface und Kioskpfad wieder stabil sind.
-5. Danach die Domain-/TLS-Freigabe erst nach Secret- und Stabilitaetscheck ziehen.
+1. `vault.hs27.internal` per internem `HTTPS` vor `CT120` schalten.
+2. `wolf@frawo-tech.de` als ersten produktiven Vaultwarden-Benutzer anlegen.
+3. Offline-Recovery-Zettel und zweite Offline-Kopie anlegen.
+4. Zuerst `STRATO`- und Core-Infra-Zugaenge in Vaultwarden uebernehmen.
+5. Danach App-Zugaenge aus dieser Datei uebernehmen.
+6. Optional in `Jellyfin` PINs fuer `Wolf` und `Franz` setzen.
+7. `frontend@frawo-tech.de` erst dann extern releasen, wenn Surface und Kioskpfad wieder stabil sind.
+8. Danach die Domain-/TLS-Freigabe erst nach Secret- und Stabilitaetscheck ziehen.

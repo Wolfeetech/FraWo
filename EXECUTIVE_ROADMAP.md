@@ -9,7 +9,7 @@ Diese Datei ist die kompakteste Fuehrungsansicht fuer den aktuellen Projektstand
 - interner Plattformbetrieb stabil und reproduzierbar
 - Website-First-Release auf `www.frawo-tech.de` am `2026-04-01`
 - reale FRAWO-Mailboxen bei `STRATO`
-- produktive Secret-Ablage in `Bitwarden Cloud`
+- produktive Secret-Ablage in `Vaultwarden` innerhalb der Organisation `FraWo`
 - Stockenweiler als erster externer `Rentner OS`-Testkunde ueber `Tailscale-only`
 
 ## Stand Heute
@@ -23,16 +23,17 @@ Diese Datei ist die kompakteste Fuehrungsansicht fuer den aktuellen Projektstand
 
 ## Jetzt in Reihenfolge
 
-1. `Bitwarden Cloud` einfuehren
-2. produktive Logins aus `ACCESS_REGISTER.md` nach Bitwarden ueberfuehren
-3. STRATO-Mailboxen anlegen:
+1. `Vaultwarden` intern per `HTTPS` fertigstellen
+2. Organisation `FraWo` und die Collections produktiv aufsetzen
+3. produktive Logins aus `ACCESS_REGISTER.md` nach Vaultwarden ueberfuehren
+4. STRATO-Mailboxen anlegen:
    - `wolf@frawo-tech.de`
    - `franz@frawo-tech.de`
    - `info@frawo-tech.de`
    - `noreply@frawo-tech.de`
-4. SPF, DKIM, DMARC dokumentieren und testen
-5. Website-Release-Gate fuer `www.frawo-tech.de` auf Gruen ziehen
-6. danach Stockenweiler / `Rentner OS` v1 vorbereiten
+5. SPF, DKIM, DMARC dokumentieren und testen
+6. Website-Release-Gate fuer `www.frawo-tech.de` auf Gruen ziehen
+7. danach Stockenweiler / `Rentner OS` v1 vorbereiten
 
 ## Nicht Jetzt
 
@@ -44,7 +45,7 @@ Diese Datei ist die kompakteste Fuehrungsansicht fuer den aktuellen Projektstand
 
 ## Definition Of Success
 
-- Secrets liegen produktiv in Bitwarden, nicht nur in Markdown
+- Secrets liegen produktiv in Vaultwarden innerhalb der Organisation `FraWo`, nicht nur in Markdown
 - Mail funktioniert real fuer Wolf, Franz und Systemabender
 - `www.frawo-tech.de` ist klein, sauber und kontrolliert live
 - interner Betrieb bleibt unangetastet stabil
@@ -57,7 +58,7 @@ Diese Datei ist die kompakteste Fuehrungsansicht fuer den aktuellen Projektstand
 - Release-Akte: `RELEASE_READINESS_2026-04-01.md`
 - Stress-Test: `STRESS_TEST_READINESS.md`
 - Mail-Rollout: `MAIL_SYSTEM_ROLLOUT.md`
-- Bitwarden + STRATO Runbook: `BITWARDEN_STRATO_EXECUTION_RUNBOOK.md`
+- Vaultwarden + STRATO Runbook: `BITWARDEN_STRATO_EXECUTION_RUNBOOK.md`
 - Google Drive: `GOOGLE_DRIVE_INTEGRATION_PLAN.md`
 - Zugangsregister: `ACCESS_REGISTER.md`
 - Stockenweiler: `STOCKENWEILER_REMOTE_SUPPORT_PLAN.md`

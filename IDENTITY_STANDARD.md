@@ -18,7 +18,8 @@ Use personal identities for people, role identities for shared functions, and ne
 ## Mail And Secrets Default
 
 - Real mailboxes are created first at `STRATO`.
-- `Bitwarden Cloud` is the target secret home.
+- `Vaultwarden` on `CT120` is the target secret home.
+- Shared business secrets live in the `FraWo` organization, not in isolated personal vaults.
 - Markdown files may document state, but they are not the final password store.
 
 ## Rules
@@ -49,7 +50,19 @@ Use personal identities for people, role identities for shared functions, and ne
 - Remote control of the Studio PC is behind an admin hurdle.
 - Monitoring may be visible by default; control actions may not.
 
-## Bitwarden Structure
+## FraWo Organization
+
+- Organization name: `FraWo`
+- Legal frame: `FraWo GbR`
+- Members:
+  - `wolf@frawo-tech.de` as first owner and DevOps lead
+  - `franz@frawo-tech.de` as second shared business member
+- Site contexts:
+  - `Anker` for the base server and private core network
+  - `Villa` for studio and radio operations
+  - `Stockenweiler` for the external support location
+
+## Vaultwarden Structure
 
 - `Core Infra`
 - `Business Apps`
@@ -61,8 +74,10 @@ Use personal identities for people, role identities for shared functions, and ne
 ## Order Of Work
 
 1. Create the final mailboxes at `STRATO`.
-2. Store them in `Bitwarden Cloud`.
-3. Create or rename app users to match the canonical identities.
-4. Remove temporary shared admin usage.
-5. Harden the Surface Go around the `frontend` role.
-6. Keep a separate secret area for `Stockenweiler`.
+2. Finish internal `HTTPS` for `Vaultwarden`.
+3. Create the `FraWo` organization and the six collections.
+4. Store current platform secrets in `Vaultwarden`.
+5. Create or rename app users to match the canonical identities.
+6. Remove temporary shared admin usage.
+7. Harden the Surface Go around the `frontend` role.
+8. Keep a separate secret area for `Stockenweiler`.

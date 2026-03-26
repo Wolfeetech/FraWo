@@ -8,39 +8,49 @@ Diese Liste ist zum direkten Abarbeiten gedacht.
 
 - [x] Vaultwarden ist technisch erreichbar:
   - `http://192.168.2.26:8080`
-- [x] Aktuell ist die produktive Nutzung ueber Browser/Bitwarden-Clients blockiert, weil noch kein `HTTPS` davor liegt
+- [x] Aktuell ist die produktive Nutzung ueber Browser und Passwortmanager-Clients blockiert, weil noch kein `HTTPS` davor liegt
 - [ ] Deshalb gilt ab jetzt:
-  - `STRATO` zuerst fertig machen
-  - Mailboxen und Passwoerter voruebergehend **offline** festhalten
-  - danach internen `HTTPS`-Pfad fuer Vaultwarden bauen
-  - erst dann die produktiven Eintraege sauber nach Vaultwarden uebernehmen
+  - zuerst internen `HTTPS`-Pfad fuer Vaultwarden bauen
+  - dann `wolf@frawo-tech.de` als ersten produktiven Benutzer anlegen
+  - dabei das Master-Passwort nur manuell setzen
+  - sofort den Offline-Recovery-Zettel und die zweite Offline-Kopie anlegen
+  - erst danach die produktiven Eintraege sauber nach Vaultwarden uebernehmen
 
 ## 0. Henne-Ei-Problem sauber loesen
 
-- [ ] Das Henne-Ei-Problem wird jetzt ueber `STRATO zuerst` geloest
-- [ ] Fuer den Uebergang die neuen Mail-Passwoerter **offline** sichern:
-  - auf Papier
-  - oder in einer lokalen, getrennten, nicht geteilten Notiz
+- [ ] Zuerst `VAULTWARDEN_INTERNAL_HTTPS_ROLLOUT.md` abarbeiten
 - [ ] Sobald Vaultwarden per `HTTPS` bereitsteht:
-  - ersten produktiven Benutzer anlegen
-  - STRATO-Zugaenge dort eintragen
-  - danach App-Zugaenge nachziehen
+  - `wolf@frawo-tech.de` als ersten produktiven Benutzer anlegen
+  - Master-Passwort nur manuell setzen
+  - Offline-Recovery-Zettel ausfuellen
+  - zweite getrennte Offline-Kopie anlegen
+- [ ] Danach zuerst `STRATO`- und Core-Infra-Zugaenge in Vaultwarden eintragen
+- [ ] Danach App-Zugaenge aus `ACCESS_REGISTER.md` nachziehen
 
 Entscheidung:
 
-- `STRATO` wird **jetzt** fertig gemacht
-- Vaultwarden folgt **direkt danach** mit `HTTPS`
+- Vaultwarden-`HTTPS` ist die unmittelbare Vorbedingung
+- `wolf@frawo-tech.de` ist der erste produktive Vaultwarden-Benutzer
+- `franz@frawo-tech.de` folgt erst nach stabilem Erstaufbau
 - danach werden die produktiven Identitaeten sauber eingezogen
 
 ## 1. Vaultwarden jetzt fertig machen
 
 - [ ] Vaultwarden nicht weiter produktiv benutzen, bis `HTTPS` davor liegt
 - [ ] Danach wieder aufnehmen:
-  - Vaultwarden oeffnen
-  - ersten Benutzer anlegen
+  - `https://vault.hs27.internal` oeffnen
+  - `wolf@frawo-tech.de` als ersten produktiven Benutzer anlegen
   - eigenes Master-Passwort selbst setzen
   - Recovery-Zettel ausfuellen
-  - Login pruefen
+  - zweite getrennte Offline-Kopie anlegen
+  - Login ueber `HTTPS` pruefen
+  - erste Sammlungen anlegen:
+    - `Core Infra`
+    - `Business Apps`
+    - `Media`
+    - `Mail & Domains`
+    - `Devices`
+    - `Stockenweiler`
 
 Wichtig:
 
@@ -68,6 +78,12 @@ Nur lokal vorhandene Bootstrap-Dateien:
 - [ ] Mindestens `wolf@frawo-tech.de` und `franz@frawo-tech.de` in `STRATO Webmail` testen
 
 ## 3. Diese produktiven Logins nach Vaultwarden uebernehmen
+
+Reihenfolge:
+
+- [ ] zuerst `STRATO`- und Core-Infra-Zugaenge
+- [ ] danach App-Zugaenge aus `ACCESS_REGISTER.md`
+- [ ] erst danach Klartext in Arbeitsdateien reduzieren
 
 ### Core Apps
 
@@ -167,7 +183,7 @@ Nur lokal vorhandene Bootstrap-Dateien:
   - Benutzer: `TV Wohnzimmer`
   - Passwort: `JF-TV-2026!`
 
-## 3. Interne Dienste kurz pruefen
+## 4. Interne Dienste kurz pruefen
 
 - [ ] Portal: `http://portal.hs27.internal`
 - [ ] Nextcloud: `http://cloud.hs27.internal`
@@ -184,7 +200,7 @@ Hinweis:
   - Site-Daten fuer `media.hs27.internal` loeschen
   - oder direkt neu testen auf `http://192.168.2.20:8096/web/`
 
-## 4. STRATO-Mail vorbereiten
+## 5. STRATO-Mail vorbereiten
 
 - [ ] STRATO-Login bereithalten
 - [ ] Diese Mailboxen anlegen:
@@ -195,13 +211,17 @@ Hinweis:
 - [ ] Jede neue Mailbox sofort in Vaultwarden unter `Mail & Domains` eintragen
 - [ ] Danach SMTP-Standardisierung vorbereiten
 
-## 5. Nach den Mailboxen
+## 6. Nach den Mailboxen
 
-- [ ] Zielidentitaet fuer Vaultwarden auf echte FRAWO-Mail umstellen
-- [ ] `ACCESS_REGISTER.md` schrittweise von Klartext auf Vaultwarden-Referenzen umbauen
+- [ ] `franz@frawo-tech.de` als zweiten produktiven Vaultwarden-Benutzer anlegen
+- [ ] Passwortfreien Referenzstand bauen:
+  - `python scripts/build_vaultwarden_reference_register.py`
+- [ ] `ACCESS_REGISTER_VAULTWARDEN_REFERENCES.md` als Arbeitsreferenz pruefen
+- [ ] Erst danach `ACCESS_REGISTER.md` schrittweise von Klartext auf Vaultwarden-Referenzen umbauen
+- [ ] Lokale Klartext-CSV-Dateien nach sichtbarer Tresor-Verifikation loeschen
 - [ ] Systemmail-Absender spaeter auf `noreply@frawo-tech.de` ziehen
 
-## 6. Wenn etwas unklar ist
+## 7. Wenn etwas unklar ist
 
 - Operator-Start: `OPS_HOME.md`
 - Einstieg: `START_HERE_WOLF_FRANZ.md`
