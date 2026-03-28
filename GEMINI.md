@@ -17,11 +17,12 @@
 
 - Gemini und Codex arbeiten aus demselben Workspace und benutzen dieselben kanonischen Dateien.
 - Vor jeder Arbeit zuerst lesen:
-  1. `LIVE_CONTEXT.md`
-  2. `README.md`
-  3. `MEMORY.md`
-  4. `NETWORK_INVENTORY.md`
-  5. `VM_AUDIT.md`
+  1. `AI_BOOTSTRAP_CONTEXT.md`
+  2. `LIVE_CONTEXT.md`
+  3. `README.md`
+  4. `MEMORY.md`
+  5. `NETWORK_INVENTORY.md`
+  6. `VM_AUDIT.md`
 - Nach jeder sinnvollen Aenderung:
   - kanonische Quelldatei aktualisieren
   - keine Nebennotizen in zufaelligen Dateien hinterlassen
@@ -137,6 +138,7 @@
 
 ## Aktive Artefakte
 
+- `AI_BOOTSTRAP_CONTEXT.md` ist die komprimierte Read-First-Datei fuer kuenftige KI-Starts.
 - `README.md` ist die Frontdoor fuer Menschen und Agenten.
 - `LIVE_CONTEXT.md` ist das automatisch aktualisierte Handoff-Dokument.
 - `NETWORK_INVENTORY.md` ist das kanonische menschlich lesbare LAN-Inventar.

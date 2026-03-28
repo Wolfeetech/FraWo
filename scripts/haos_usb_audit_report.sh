@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+source "${ROOT_DIR}/scripts/inventory_remote.sh"
+
 remote() {
-  ssh proxmox "$@"
+  run_proxmox_remote "$1"
 }
 
 usb_output="$(remote "lsusb")"

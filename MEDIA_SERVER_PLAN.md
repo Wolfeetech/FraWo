@@ -63,7 +63,7 @@ Ziel ist ein sauberer, gemeinsamer Medienbestand fuer:
 
 ## Operativer Restblock
 
-1. Jellyfin-Zugaenge in den Bitwarden Cloud uebernehmen.
+1. Jellyfin-Zugaenge in `Vaultwarden / FraWo / Media` uebernehmen.
 2. Thomson-/Google-TV-Clients anbinden.
 3. Optional PIN-Login fuer `Wolf` und `Franz` spaeter direkt im Jellyfin-UI setzen.
 

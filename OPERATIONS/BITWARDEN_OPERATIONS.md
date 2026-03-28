@@ -81,7 +81,7 @@ Vaultwarden auf `CT120` ist das produktive Secret-Home fuer den Betriebsstandard
 - Ergebnisdatei:
   - `ACCESS_REGISTER_VAULTWARDEN_REFERENCES.md`
 - Diese Datei ist fuer Audit und Betrieb gedacht, nicht fuer Secret-Ablage.
-- Erst nach sichtbarer Verifikation im Tresor duerfen lokale Klartext-CSV-Dateien und spaeter Klartext in `ACCESS_REGISTER.md` weg.
+- Erst nach sichtbarer Verifikation im Tresor duerfen lokale Klartext-CSV-Dateien und das alte externe Klartext-Register endgueltig aus dem aktiven Arbeitsfluss verschwinden.
 - Wenn mit einem aelteren CSV-Export importiert wurde, `AdGuard Admin` auf die korrekte URI `http://127.0.0.1:3000` pruefen.
 
 ## Nie tun
@@ -92,4 +92,4 @@ Vaultwarden auf `CT120` ist das produktive Secret-Home fuer den Betriebsstandard
 
 ## Eskalation
 
-- wenn Vaultwarden noch nicht produktiv befuellt ist, bleibt `ACCESS_REGISTER.md` nur ein Uebergangsartefakt, kein finaler Standard
+- wenn Vaultwarden noch nicht produktiv befuellt ist, bleibt ein externes Klartext-Archiv nur ein Uebergangsartefakt, kein finaler Standard

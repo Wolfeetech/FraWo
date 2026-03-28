@@ -3,460 +3,625 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>FRAWO Control</title>
+  <title>FRAWO MVP</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
-    
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Manrope:wght@500;700;800&display=swap');
+
     :root {
-      --bg: #09090b;
-      --glass: rgba(255, 255, 255, 0.03);
-      --glass-border: rgba(255, 255, 255, 0.08);
-      --glass-hover: rgba(255, 255, 255, 0.07);
-      --text: #f8fafc;
-      --text-muted: #94a3b8;
-      --primary: #f59e0b;
-      --secondary: #10b981;
-      --accent-glow: rgba(245, 158, 11, 0.15);
+      --bg-0: #f4efe4;
+      --bg-1: #e9dfcf;
+      --panel: rgba(255, 249, 239, 0.84);
+      --panel-strong: rgba(255, 250, 243, 0.96);
+      --border: rgba(57, 43, 29, 0.14);
+      --text: #21180f;
+      --muted: #665849;
+      --shadow: rgba(42, 26, 12, 0.12);
+      --amber: #d97706;
+      --teal: #0f766e;
+      --ok: #15803d;
+      --warn: #b45309;
+      --danger: #b91c1c;
     }
-    
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    
+
+    * { box-sizing: border-box; }
+
     body {
-      font-family: 'Outfit', sans-serif;
-      background-color: var(--bg);
-      color: var(--text);
+      margin: 0;
       min-height: 100vh;
-      overflow-x: hidden;
-      position: relative;
-    }
-
-    .blob {
-      position: absolute;
-      filter: blur(80px);
-      z-index: -1;
-      opacity: 0.6;
-      animation: pulse 10s alternate infinite;
-    }
-    .blob.orange {
-      top: -10%; left: -10%;
-      width: 50vw; height: 50vw;
-      background: radial-gradient(circle, rgba(245,158,11,0.3) 0%, transparent 70%);
-      animation-delay: 0s;
-    }
-    .blob.teal {
-      bottom: -10%; right: -10%;
-      width: 60vw; height: 60vw;
-      background: radial-gradient(circle, rgba(16,185,129,0.2) 0%, transparent 70%);
-      animation-delay: -5s;
-    }
-
-    @keyframes pulse {
-      0% { transform: scale(1) translate(0, 0); }
-      100% { transform: scale(1.1) translate(20px, -20px); }
+      font-family: "Space Grotesk", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(15, 118, 110, 0.14), transparent 28%),
+        radial-gradient(circle at right center, rgba(217, 119, 6, 0.16), transparent 24%),
+        linear-gradient(180deg, var(--bg-0) 0%, var(--bg-1) 100%);
     }
 
     main {
-      max-width: 1200px;
+      max-width: 1180px;
       margin: 0 auto;
-      padding: 4rem 2rem;
+      padding: 24px 18px 40px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .hero,
+    .panel {
+      border-radius: 28px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      box-shadow: 0 22px 60px var(--shadow);
+      backdrop-filter: blur(16px);
     }
 
     .hero {
-      text-align: center;
-      margin-bottom: 4rem;
-      animation: fadeUp 1s ease-out;
-    }
-    
-    h1 {
-      font-size: clamp(3rem, 8vw, 5rem);
-      font-weight: 800;
-      letter-spacing: -0.05em;
-      background: linear-gradient(135deg, #fff 0%, #cbd5e1 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 1rem;
-    }
-    
-    .hero p {
-      font-size: 1.25rem;
-      color: var(--text-muted);
-      max-width: 600px;
-      margin: 0 auto 2rem;
-      line-height: 1.6;
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(300px, 0.85fr);
+      gap: 18px;
+      padding: 24px;
     }
 
-    .hero-meta {
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      color: var(--amber);
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--amber);
+      box-shadow: 0 0 0 6px rgba(217, 119, 6, 0.12);
+    }
+
+    h1 {
+      margin: 0 0 14px;
+      font-family: "Manrope", sans-serif;
+      font-size: clamp(2.6rem, 6vw, 4.9rem);
+      line-height: 0.95;
+      letter-spacing: -0.055em;
+      max-width: 11ch;
+    }
+
+    .hero-copy p {
+      margin: 0;
+      max-width: 58ch;
+      color: var(--muted);
+      font-size: 1.03rem;
+      line-height: 1.65;
+    }
+
+    .pill-row {
       display: flex;
-      justify-content: center;
       flex-wrap: wrap;
-      gap: 1rem;
+      gap: 10px;
+      margin-top: 20px;
     }
 
     .pill {
       display: inline-flex;
       align-items: center;
-      gap: 0.5rem;
-      padding: 0.6rem 1.2rem;
+      gap: 8px;
+      padding: 10px 14px;
       border-radius: 999px;
-      background: var(--glass);
-      border: 1px solid var(--glass-border);
-      backdrop-filter: blur(10px);
-      font-size: 0.9rem;
+      border: 1px solid rgba(57, 43, 29, 0.12);
+      background: rgba(255, 252, 246, 0.74);
+      color: var(--muted);
+      font-size: 0.88rem;
       font-weight: 600;
-      color: var(--text);
-      transition: all 0.3s ease;
     }
 
     .pill::before {
       content: "";
-      width: 8px; height: 8px;
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
-      background: var(--secondary);
-      box-shadow: 0 0 10px var(--secondary);
-    }
-    
-    .pill:hover { background: var(--glass-hover); transform: translateY(-2px); }
-
-    .status-strip {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1.5rem;
-      margin-bottom: 4rem;
-      animation: fadeUp 1s ease-out 0.2s backwards;
+      background: var(--ok);
+      box-shadow: 0 0 0 6px rgba(21, 128, 61, 0.1);
     }
 
-
-    .persona-strip {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
-      margin-bottom: 4rem;
-      animation: fadeUp 1s ease-out 0.15s backwards;
-    }
-
-    .glass-card {
-      background: var(--glass);
-      border: 1px solid var(--glass-border);
+    .status-box {
+      padding: 20px;
       border-radius: 24px;
-      padding: 1.5rem;
-      backdrop-filter: blur(20px);
-      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .glass-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0; height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-      opacity: 0;
-      transition: opacity 0.4s ease;
-    }
-
-    .glass-card:hover {
-      transform: translateY(-5px);
-      background: var(--glass-hover);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 20px var(--accent-glow);
-      border-color: rgba(245, 158, 11, 0.3);
-    }
-
-    .glass-card:hover::before { opacity: 1; }
-
-    .status-label {
-      font-size: 0.85rem;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--text-muted);
-      font-weight: 600;
-      display: block;
-      margin-bottom: 0.5rem;
-    }
-
-    .status-value {
-      font-size: 2rem;
-      font-weight: 800;
-      color: var(--text);
-      letter-spacing: -0.03em;
-    }
-
-    .service-meta {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      margin-top: 0.5rem;
-      display: block;
-    }
-
-
-    .persona-card {
-      padding: 1.8rem;
-      min-height: 260px;
-    }
-
-    .persona-card[data-accent="amber"] {
-      border-color: rgba(245, 158, 11, 0.2);
-      box-shadow: inset 0 0 0 1px rgba(245, 158, 11, 0.08);
-    }
-
-    .persona-card[data-accent="teal"] {
-      border-color: rgba(16, 185, 129, 0.2);
-      box-shadow: inset 0 0 0 1px rgba(16, 185, 129, 0.08);
-    }
-
-    .persona-card[data-accent="slate"] {
-      border-color: rgba(148, 163, 184, 0.2);
-      box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.08);
-    }
-
-    .persona-card h2 {
-      font-size: 1.6rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .persona-role {
-      display: block;
-      font-size: 0.85rem;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--primary);
-      font-weight: 800;
-      margin-bottom: 1rem;
-    }
-
-    .persona-summary {
-      color: var(--text-muted);
-      line-height: 1.5;
-      margin-bottom: 1.25rem;
-    }
-
-    .persona-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-      margin-top: auto;
-    }
-
-    .persona-primary,
-    .persona-link {
-      text-decoration: none;
-      border-radius: 999px;
-      font-weight: 700;
-      transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
-    }
-
-    .persona-primary {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0.85rem 1.2rem;
-      background: linear-gradient(135deg, rgba(245, 158, 11, 0.95), rgba(251, 191, 36, 0.85));
-      color: #111827;
-      min-width: 150px;
-    }
-
-    .persona-link {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0.65rem 0.95rem;
-      color: var(--text);
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--glass-border);
-      font-size: 0.9rem;
-    }
-
-    .persona-primary:hover,
-    .persona-link:hover {
-      transform: translateY(-2px);
+      background: linear-gradient(180deg, rgba(255, 251, 245, 0.96), rgba(250, 243, 231, 0.88));
+      border: 1px solid rgba(57, 43, 29, 0.12);
+      display: grid;
+      gap: 14px;
+      align-content: start;
     }
 
     .section-head {
-      margin-bottom: 2rem;
       display: flex;
       justify-content: space-between;
+      gap: 16px;
       align-items: baseline;
-      border-bottom: 1px solid var(--glass-border);
-      padding-bottom: 1rem;
+      margin-bottom: 16px;
     }
 
     .section-head h2 {
-      font-size: 1.8rem;
-      font-weight: 600;
+      margin: 0;
+      font-family: "Manrope", sans-serif;
+      font-size: 1.18rem;
+      letter-spacing: -0.03em;
     }
 
-    .section-note { color: var(--text-muted); font-size: 0.9rem; }
+    .section-head small {
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
 
-    .grid {
+    .metrics {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
-      margin-bottom: 4rem;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
     }
 
-    a.app-card {
+    .metric {
+      padding: 16px;
+      border-radius: 22px;
+      background: var(--panel-strong);
+      border: 1px solid rgba(57, 43, 29, 0.1);
+    }
+
+    .metric-label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-weight: 700;
+    }
+
+    .metric-value {
+      display: block;
+      font-family: "Manrope", sans-serif;
+      font-size: 1.7rem;
+      font-weight: 800;
+      letter-spacing: -0.05em;
+    }
+
+    .metric-note {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.4;
+    }
+
+    .card-grid,
+    .service-grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .card-grid {
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+
+    .card {
+      padding: 24px;
       display: flex;
       flex-direction: column;
-      text-decoration: none;
-      color: inherit;
-      padding: 1.8rem;
+      gap: 18px;
+      min-height: 280px;
+      background: linear-gradient(180deg, rgba(255, 251, 244, 0.92), rgba(250, 242, 229, 0.86));
     }
 
-    .app-card .eyebrow {
+    .card[data-accent="amber"] {
+      border-color: rgba(217, 119, 6, 0.22);
+    }
+
+    .card[data-accent="teal"] {
+      border-color: rgba(15, 118, 110, 0.22);
+    }
+
+    .card-top {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+
+    .card-mark {
+      width: 52px;
+      height: 52px;
+      border-radius: 18px;
+      display: grid;
+      place-items: center;
+      font-family: "Manrope", sans-serif;
+      font-size: 1rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      color: #fffdf8;
+      flex: 0 0 auto;
+    }
+
+    .card[data-accent="amber"] .card-mark {
+      background: linear-gradient(135deg, #d97706, #f59e0b);
+    }
+
+    .card[data-accent="teal"] .card-mark {
+      background: linear-gradient(135deg, #0f766e, #14b8a6);
+    }
+
+    .card-label {
+      margin: 0 0 6px;
+      color: var(--muted);
       font-size: 0.8rem;
       text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--primary);
-      font-weight: 800;
-      margin-bottom: 1rem;
+      letter-spacing: 0.12em;
+      font-weight: 700;
     }
 
-    .app-card strong {
+    .card h3 {
+      margin: 0;
+      font-family: "Manrope", sans-serif;
       font-size: 1.5rem;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
+      line-height: 1.05;
+      letter-spacing: -0.04em;
     }
 
-    .app-card .hint {
-      color: var(--text-muted);
+    .card-summary {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.58;
+      font-size: 0.96rem;
+    }
+
+    .card-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 15px 18px;
+      border-radius: 18px;
+      text-decoration: none;
+      color: #fffdf8;
+      font-weight: 700;
+      box-shadow: 0 18px 35px rgba(42, 26, 12, 0.14);
+    }
+
+    .card-primary::after {
+      content: "Start";
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      opacity: 0.76;
+    }
+
+    .card[data-accent="amber"] .card-primary {
+      background: linear-gradient(135deg, #c96a05, #ea9a0d);
+    }
+
+    .card[data-accent="teal"] .card-primary {
+      background: linear-gradient(135deg, #0c6a62, #16a394);
+    }
+
+    .card-links {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: auto;
+    }
+
+    .card-link {
+      min-height: 72px;
+      padding: 12px 14px;
+      border-radius: 18px;
+      text-decoration: none;
+      background: rgba(255, 252, 246, 0.85);
+      border: 1px solid rgba(57, 43, 29, 0.1);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 8px;
+      transition: transform 0.18s ease, border-color 0.18s ease;
+    }
+
+    .card-link:hover,
+    .card-primary:hover {
+      transform: translateY(-2px);
+    }
+
+    .card-link strong {
+      font-size: 0.95rem;
+      line-height: 1.2;
+    }
+
+    .card-link span {
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.35;
+    }
+
+    .service-panel,
+    .note-panel {
+      padding: 22px;
+    }
+
+    .service-grid {
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+
+    .service-card {
+      padding: 16px;
+      border-radius: 22px;
+      background: var(--panel-strong);
+      border: 1px solid rgba(57, 43, 29, 0.12);
+    }
+
+    .service-card.is-ok {
+      border-color: rgba(21, 128, 61, 0.18);
+    }
+
+    .service-card.is-warn {
+      border-color: rgba(180, 83, 9, 0.22);
+    }
+
+    .service-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+
+    .service-head strong {
       font-size: 1rem;
-      line-height: 1.5;
-      margin-bottom: 1.5rem;
-      flex-grow: 1;
+      line-height: 1.2;
     }
 
-    .app-card .url {
-      font-size: 0.85rem;
-      color: rgba(255,255,255,0.3);
-      font-family: monospace;
-      transition: color 0.3s ease;
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 0.74rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      white-space: nowrap;
     }
 
-    .app-card:hover .url { color: var(--primary); }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
+    .badge.is-ok {
+      background: rgba(21, 128, 61, 0.1);
+      color: var(--ok);
     }
 
-    @media (max-width: 768px) {
-      main { padding: 2rem 1rem; }
-      h1 { font-size: 2.5rem; }
+    .badge.is-warn {
+      background: rgba(180, 83, 9, 0.12);
+      color: var(--warn);
+    }
+
+    .service-card p,
+    .note-panel p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .note-panel ul {
+      margin: 12px 0 0;
+      padding-left: 18px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    @media (max-width: 960px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 680px) {
+      main {
+        padding: 18px 14px 28px;
+      }
+
+      .hero,
+      .panel,
+      .service-panel,
+      .note-panel,
+      .card {
+        border-radius: 22px;
+        padding: 18px;
+      }
+
+      .metrics,
+      .card-links {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        font-size: 2.5rem;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="blob orange"></div>
-  <div class="blob teal"></div>
-  
   <main>
     <section class="hero">
-      <h1>FRAWO Control</h1>
-      <p>Exklusiver Zugang für Haushalt und Studio. Radio, Medien, Smart Home und Arbeitsdienste sind nur einen Fingertipp entfernt.</p>
-      <div class="hero-meta">
-        <span class="pill">Radio auf Pi</span>
-        <span class="pill">Medien auf Toolbox</span>
-        <span class="pill">Tailscale gesichert</span>
-      </div>
+      <article class="hero-copy">
+        <span class="eyebrow">FraWo Arbeitsportal</span>
+        <h1>Arbeitsportal</h1>
+        <p>
+          Zentraler Einstieg fuer Betrieb und Zusammenarbeit. Im aktuellen
+          Arbeitsstand sind <b>Vault</b>, <b>Nextcloud</b>, <b>Paperless</b> und
+          <b>Odoo</b> die aktiven Kernsysteme.
+        </p>
+        <div class="pill-row">
+          <span class="pill">Kernbetrieb aktiv</span>
+          <span class="pill">Franz freigeschaltet</span>
+          <span class="pill">Mail-Basis steht</span>
+        </div>
+      </article>
+
+      <aside class="status-box">
+        <div class="section-head">
+          <h2>Betriebsstatus</h2>
+          <small>Aktueller Arbeitskern</small>
+        </div>
+        <div class="metrics">
+          <div class="metric">
+            <span class="metric-label">MVP Zustand</span>
+            <span class="metric-value" id="platform-core">Laedt</span>
+            <span class="metric-note">Portal, Vault und Business-Apps</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">Kernpfade gesund</span>
+            <span class="metric-value" id="healthy-count">-</span>
+            <span class="metric-note">Nur die heutigen MVP-Ziele</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">Letztes Snapshot</span>
+            <span class="metric-value" id="snapshot-time">Warte</span>
+            <span class="metric-note">Zeitpunkt des letzten Statusbilds</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">Naechster Block</span>
+            <span class="metric-value">Erweiterung</span>
+            <span class="metric-note">Media, Radio, HA, Shared Frontend, PBS</span>
+          </div>
+        </div>
+      </aside>
     </section>
 
-
-    <section class="persona-strip" aria-label="Vorstellungsrunde">
+    <section class="card-grid" aria-label="MVP Startpfade">
 {% for persona in toolbox_network_persona_cards | default([]) %}
-      <article class="glass-card persona-card" data-accent="{{ persona.accent | default('amber') }}">
-        <span class="persona-role">{{ persona.role }}</span>
-        <h2>{{ persona.label }}</h2>
-        <p class="persona-summary">{{ persona.summary }}</p>
-        <div class="persona-actions">
-          <a href="{{ persona.primary_url }}" class="persona-primary">{{ persona.primary_label }}</a>
+{% if 'Wolf' in persona.label %}
+{% set persona_mark = 'WO' %}
+{% else %}
+{% set persona_mark = 'FR' %}
+{% endif %}
+      <article class="panel card" data-accent="{{ persona.accent | default('amber') }}">
+        <div class="card-top">
+          <div class="card-mark">{{ persona_mark }}</div>
+          <div>
+            <p class="card-label">{{ persona.label }}</p>
+            <h3>{{ persona.role }}</h3>
+          </div>
+        </div>
+        <p class="card-summary">{{ persona.summary }}</p>
+        <a class="card-primary" href="{{ persona.primary_url }}">{{ persona.primary_label }}</a>
+        <div class="card-links">
 {% for link in persona.secondary_links | default([]) %}
-          <a href="{{ link.url }}" class="persona-link">{{ link.label }}</a>
+          <a class="card-link" href="{{ link.url }}">
+            <strong>{{ link.label }}</strong>
+            <span>{{ link.url | replace('http://', '') | replace('https://', '') }}</span>
+          </a>
 {% endfor %}
         </div>
       </article>
 {% endfor %}
     </section>
 
-    <section class="status-strip">
-      <div class="glass-card">
-        <span class="status-label">Plattform Kern</span>
-        <span class="status-value" id="platform-core">Lädt...</span>
+    <section class="panel service-panel">
+      <div class="section-head">
+        <h2>Live-Status des MVP</h2>
+        <small>Warnungen bleiben sichtbar</small>
       </div>
-      <div class="glass-card">
-        <span class="status-label">Gesunde Dienste</span>
-        <span class="status-value" id="healthy-count">-</span>
-      </div>
-      <div class="glass-card">
-        <span class="status-label">Systemstatus</span>
-        <span class="status-value" id="snapshot-time">Ausstehend</span>
-      </div>
-      <div class="glass-card">
-        <span class="status-label">Medien-Scan</span>
-        <span class="status-value" id="media-sync-state">Ausstehend</span>
-        <span class="service-meta" id="media-sync-meta">Warte auf Sync-Daten</span>
-      </div>
+      <div id="service-health" class="service-grid"></div>
     </section>
 
-    <div id="service-health" style="margin-bottom: 3rem; display: flex; gap: 1rem; flex-wrap: wrap;">
-    </div>
-
-    <section class="sections">
-{% for group_name, links in toolbox_network_portal_links | groupby('group') %}
-      <div class="section-container">
-        <div class="section-head">
-          <h2>{{ group_name }}</h2>
-          <span class="section-note">{{ links | length }} Module aktiv</span>
-        </div>
-        <div class="grid">
-{% for link in links %}
-          <a href="{{ link.url }}" class="glass-card app-card">
-            <span class="eyebrow">{{ link.group }}</span>
-            <strong>{{ link.label }}</strong>
-            <span class="hint">{{ link.hint | default('Interner Dienst') }}</span>
-            <span class="url">{{ link.url }}</span>
-          </a>
-{% endfor %}
-        </div>
+    <section class="panel note-panel">
+      <div class="section-head">
+        <h2>Nicht im aktuellen Arbeitsportal</h2>
+        <small>Naechste Ausbaustufe</small>
       </div>
-{% endfor %}
+      <p>
+        Erweiterungsthemen bleiben ausserhalb des Startbilds, bis der
+        aktuelle Arbeitskern sichtbar stabil laeuft.
+      </p>
+      <ul>
+        <li>Media, Radio und TV-spezifische Pfade</li>
+        <li>Home Assistant im taeglichen Startbild</li>
+        <li>Shared Frontend und Surface-Go-Kiosk</li>
+        <li>PBS und das spaetere Produktionssiegel</li>
+      </ul>
     </section>
   </main>
-  
+
   <script>
+    const allowedLabels = ["Portal", "Vault", "Nextcloud", "Paperless", "Odoo"];
     const platformCore = document.getElementById("platform-core");
     const healthyCount = document.getElementById("healthy-count");
     const snapshotTime = document.getElementById("snapshot-time");
-    const mediaSyncState = document.getElementById("media-sync-state");
-    const mediaSyncMeta = document.getElementById("media-sync-meta");
     const serviceHealth = document.getElementById("service-health");
+
+    function toneClass(status) {
+      return status === "ok" ? "is-ok" : "is-warn";
+    }
+
+    function toneLabel(status) {
+      return status === "ok" ? "Online" : "Pruefen";
+    }
+
+    function renderMissingService(label) {
+      return `
+        <article class="service-card is-warn">
+          <div class="service-head">
+            <strong>${label}</strong>
+            <span class="badge is-warn">Fehlt</span>
+          </div>
+          <p>Der Kernpfad ist im aktuellen Snapshot nicht sichtbar und muss geprueft werden.</p>
+        </article>
+      `;
+    }
 
     async function loadStatus() {
       try {
         const response = await fetch("./status.json", { cache: "no-store" });
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
         const data = await response.json();
-        
-        platformCore.textContent = data.platform_core === "ok" ? "Aktiv" : "Warnung";
-        platformCore.style.color = data.platform_core === "ok" ? "var(--secondary)" : "var(--primary)";
-        
-        healthyCount.textContent = `${data.healthy_services}/${data.total_services}`;
+        const serviceMap = new Map(
+          (Array.isArray(data.services) ? data.services : []).map((service) => [service.label, service])
+        );
+        const services = allowedLabels.map((label) => serviceMap.get(label) || null);
+        const healthy = services.filter((service) => service && service.status === "ok").length;
+
+        platformCore.textContent = healthy === allowedLabels.length ? "Bereit" : "Pruefen";
+        platformCore.style.color = healthy === allowedLabels.length ? "var(--ok)" : "var(--warn)";
+        healthyCount.textContent = `${healthy}/${allowedLabels.length}`;
         snapshotTime.textContent = new Date(data.generated_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-        
-        mediaSyncState.textContent = data.media_sync.state === "running" ? "Importiert" : data.media_sync.state;
-        mediaSyncMeta.textContent = `${data.media_sync.target_file_count} Dateien synchronisiert`;
-        
-        serviceHealth.innerHTML = data.services.map((service) => `
-          <div class="pill" style="\${service.status !== 'ok' ? 'border-color: var(--primary);' : ''}">
-            <strong style="margin-right:0.5rem;">\${service.label}</strong>
-            <span style="opacity:0.7; font-size:0.8rem; font-weight:normal;">\${service.status === "ok" ? "Online" : "Prüfen"}</span>
-          </div>
-        `).join("");
+
+        serviceHealth.innerHTML = services.map((service, index) => {
+          if (!service) return renderMissingService(allowedLabels[index]);
+          return `
+            <article class="service-card ${toneClass(service.status)}">
+              <div class="service-head">
+                <strong>${service.label}</strong>
+                <span class="badge ${toneClass(service.status)}">${toneLabel(service.status)}</span>
+              </div>
+              <p>${service.summary || "Interner Dienst ohne Zusatzbeschreibung."}</p>
+            </article>
+          `;
+        }).join("");
       } catch (error) {
         platformCore.textContent = "Offline";
+        platformCore.style.color = "var(--danger)";
+        healthyCount.textContent = "0/5";
         snapshotTime.textContent = "Getrennt";
-        mediaSyncState.textContent = "Fehler";
-        mediaSyncMeta.textContent = "Keine Verbindung zum Server";
+        serviceHealth.innerHTML = `
+          <article class="service-card is-warn">
+            <div class="service-head">
+              <strong>Statusfeed nicht erreichbar</strong>
+              <span class="badge is-warn">Fehler</span>
+            </div>
+            <p>Das Portal konnte den MVP-Status nicht lesen. Toolbox oder Browser-Cache pruefen.</p>
+          </article>
+        `;
       }
     }
+
     loadStatus();
   </script>
 </body>

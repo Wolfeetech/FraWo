@@ -2,6 +2,7 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+source "${ROOT_DIR}/scripts/toolbox_remote.sh"
 
 extract_http_code() {
   local url="$1"
@@ -9,15 +10,15 @@ extract_http_code() {
 }
 
 service_status="$(
-  ssh toolbox '
+  run_toolbox_remote '
     systemctl is-enabled homeserver-compose-toolbox-media.service 2>/dev/null || true
     systemctl is-active homeserver-compose-toolbox-media.service 2>/dev/null || true
     docker ps --format "{{.Names}}|{{.Status}}" 2>/dev/null | grep "^jellyfin|" || true
   ' 2>/dev/null || true
 )"
-library_dirs="$(ssh toolbox 'find /srv/media-library -maxdepth 1 -mindepth 1 -type d | sed "s#/srv/media-library/##" | sort | tr "\n" ","' 2>/dev/null || true)"
+library_dirs="$(run_toolbox_remote 'find /srv/media-library -maxdepth 1 -mindepth 1 -type d | sed "s#/srv/media-library/##" | sort | tr "\n" ","' 2>/dev/null || true)"
 startup_wizard_completed="$(
-  ssh toolbox 'python3 - <<'"'"'PY'"'"'
+  run_toolbox_remote 'python3 - <<'"'"'PY'"'"'
 import json
 import urllib.request
 

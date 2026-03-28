@@ -54,26 +54,6 @@ toolbox_network_static_file_hosts:
     root: /srv/portal
 toolbox_network_placeholder_hosts: []
 toolbox_network_portal_links:
-  - label: Media
-    group: Playback
-    hint: Jellyfin for movies, shows, music and TV clients
-    url: http://media.hs27.internal
-  - label: Media Mobile
-    group: Playback
-    hint: Interim Tailscale path for mobile testing
-    url: http://100.99.206.128:8449
-  - label: Radio
-    group: Playback
-    hint: Live station and player surface
-    url: http://radio.hs27.internal
-  - label: Radio Control
-    group: Playback
-    hint: AzuraCast admin and station control
-    url: http://radio.hs27.internal/login
-  - label: Home Assistant
-    group: Operations
-    hint: Automation, dashboards and device state
-    url: http://ha.hs27.internal
   - label: Nextcloud
     group: Work
     hint: Files, collaboration and shared documents
@@ -86,18 +66,18 @@ toolbox_network_portal_links:
     group: Work
     hint: ERP, CRM and operations login
     url: http://odoo.hs27.internal/web/login
-  - label: Portal Mobile
+  - label: Franz Mobil Start
     group: Operations
-    hint: Tailscale-only frontdoor for remote access
-    url: http://100.99.206.128:8447
+    hint: Tailscale-only MVP path for Franz on iPhone
+    url: http://100.99.206.128:8447/franz/
   - label: Vault
     group: Operations
-    hint: Secret vault after internal HTTPS rollout
+    hint: Shared secret vault for the current MVP
     url: https://vault.hs27.internal
 toolbox_network_persona_cards:
   - label: Ich bin Wolf
-    role: Betrieb, Admin und Tagessteuerung
-    summary: Nextcloud, Paperless, Odoo, Home Assistant und Radio Control.
+    role: Betrieb und Tagesarbeit
+    summary: Nur die heutigen Kernpfade fuer die GbR. Alles andere bleibt ausserhalb des MVP-Starts.
     primary_label: Arbeitsstart
     primary_url: http://portal.hs27.internal
     accent: amber
@@ -108,15 +88,13 @@ toolbox_network_persona_cards:
         url: http://paperless.hs27.internal
       - label: Odoo
         url: http://odoo.hs27.internal/web/login
-      - label: Home Assistant
-        url: http://ha.hs27.internal
-      - label: Radio Control
-        url: http://radio.hs27.internal/login
+      - label: Vault
+        url: https://vault.hs27.internal
   - label: Ich bin Franz
-    role: Dokumente, Medien und Alltag
-    summary: Nextcloud, Paperless, Odoo und die gemeinsame Medienoberfläche.
-    primary_label: Tagesstart
-    primary_url: http://portal.hs27.internal
+    role: Dokumente und Arbeit
+    summary: Ein persoenlicher Endnutzerpfad ohne Admin-Konfiguration. Alles startet ueber Franz Start.
+    primary_label: Franz Start
+    primary_url: http://portal.hs27.internal/franz/
     accent: teal
     secondary_links:
       - label: Nextcloud
@@ -125,39 +103,9 @@ toolbox_network_persona_cards:
         url: http://paperless.hs27.internal
       - label: Odoo
         url: http://odoo.hs27.internal/web/login
-      - label: Media
-        url: http://media.hs27.internal
-      - label: Radio
-        url: http://radio.hs27.internal
-  - label: Gemeinsames Geraet
-    role: Schnellzugriff fuer Alltag und Wohnzimmer
-    summary: Medien, Radio und einfache Alltagsaktionen ohne Admin-Kontext.
-    primary_label: Medien starten
-    primary_url: http://media.hs27.internal
-    accent: slate
-    secondary_links:
-      - label: Radio
-        url: http://radio.hs27.internal
-      - label: Media
-        url: http://media.hs27.internal
-      - label: Portal Mobile
-        url: http://100.99.206.128:8447
+      - label: Vault
+        url: https://vault.hs27.internal
 toolbox_network_status_targets:
-  - key: media
-    label: Media
-    check_url: http://127.0.0.1:8096
-    success_codes: [200, 302]
-    summary: Jellyfin for TVs, browser playback and shared media
-  - key: radio
-    label: Radio
-    check_url: http://100.64.23.77/api/nowplaying
-    success_codes: [200]
-    summary: AzuraCast live station and now playing feed
-  - key: home_assistant
-    label: Home Assistant
-    check_url: http://192.168.2.24:8123
-    success_codes: [200]
-    summary: Household automation and dashboards
   - key: nextcloud
     label: Nextcloud
     check_url: http://192.168.2.21
@@ -184,34 +132,10 @@ toolbox_network_status_targets:
     success_codes: [200]
     summary: Self-hosted secret vault on CT120
 toolbox_network_tailscale_mobile_proxies:
-  - name: media_mobile
-    listen_port: 8449
-    upstream: 192.168.2.20:8096
-    host_header: media.hs27.internal
-  - name: ha_mobile
-    listen_port: 8443
-    upstream: "{{ homeserver_haos_current_ip }}:8123"
-    host_header: ha.hs27.internal
-  - name: odoo_mobile
-    listen_port: 8444
-    upstream: 192.168.2.22:8069
-    host_header: odoo.hs27.internal
-  - name: cloud_mobile
-    listen_port: 8445
-    upstream: 192.168.2.21:80
-    host_header: cloud.hs27.internal
-  - name: paperless_mobile
-    listen_port: 8446
-    upstream: 192.168.2.23:8000
-    host_header: paperless.hs27.internal
   - name: portal_mobile
     listen_port: 8447
     upstream: 127.0.0.1:80
     host_header: portal.hs27.internal
-  - name: radio_mobile
-    listen_port: 8448
-    upstream: 100.64.23.77:80
-    host_header: radio.hs27.internal
 toolbox_tailscale_hostname: toolbox
 toolbox_tailscale_repo_key_url: https://pkgs.tailscale.com/stable/debian/bookworm.noarmor.gpg
 toolbox_tailscale_repo_list_url: https://pkgs.tailscale.com/stable/debian/bookworm.tailscale-keyring.list
@@ -256,4 +180,4 @@ toolbox_media_radio_sync_target_path: /srv/media-library/music-network/yourparty
 toolbox_media_radio_sync_log_path: /var/log/homeserver2027-media-sync.log
 toolbox_media_radio_sync_exclude_file: /etc/homeserver2027/media-sync-excludes.txt
 toolbox_media_quarantine_root: /srv/media-library/quarantine/bootstrap-review
-toolbox_media_published_server_url: http://media.hs27.internal
+toolbox_media_published_server_url: http://192.168.2.20:8096

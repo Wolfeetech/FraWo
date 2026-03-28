@@ -23,11 +23,11 @@ Der Zielzustand ist eine hybride Proxmox-Infrastruktur mit klarer Rollentrennung
 - `VM 240 pbs`
   - dedizierter Proxmox Backup Server
 - `wolfstudiopc`
-  - primÃ¤res Admin- und BrÃ¼ckengerÃ¤t (dieser PC)
-  - SSOT fÃ¼r Netzwerk- und Servermanagement
+  - primaeres Admin- und Brueckengeraet (dieser PC)
+  - SSOT fuer Netzwerk- und Servermanagement
 - `zenbook_radio_anchor`
-  - zukÃ¼nftiger Radio-Ankerpunkt ("Villa")
-  - Livestream-Host fÃ¼r Studio-Broadcasts
+  - zukuenftiger Radio-Ankerpunkt ("Villa")
+  - Livestream-Host fuer Studio-Broadcasts
 - `raspberry_pi_radio`
   - dedizierter interner Radio-Node mit AzuraCast
 - spaeter `surface_go_frontend`
@@ -61,10 +61,11 @@ Der Server gilt erst dann als wirklich fertig, wenn alle folgenden Punkte erfuel
 - Gesamtstatus: `PLATFORM_STATUS.md`
 - Identitaetsstandard: `IDENTITY_STANDARD.md`
 - Tool-Betriebsanweisungen: `OPERATIONS/TOOLS_OPERATIONS_INDEX.md`
-- Zugangsregister: `ACCESS_REGISTER.md`
+- Vaultwarden-Referenzregister: `ACCESS_REGISTER_VAULTWARDEN_REFERENCES.md`
+- Business-MVP-Gate: `artifacts/release_mvp_gate/.../release_mvp_gate.md`
 - Release-Akte: `RELEASE_READINESS_2026-04-01.md`
 - Mail-Rollout: `MAIL_SYSTEM_ROLLOUT.md`
-- Bitwarden + STRATO Runbook: `BITWARDEN_STRATO_EXECUTION_RUNBOOK.md`
+- Vaultwarden + STRATO Uebergang: `BITWARDEN_STRATO_EXECUTION_RUNBOOK.md`
 - Mobile-Scan-Workflow: `MOBILE_SCAN_WORKFLOW.md`
 - Stress-Test-Readiness: `STRESS_TEST_READINESS.md`
 - Stockenweiler / Rentner OS: `STOCKENWEILER_REMOTE_SUPPORT_PLAN.md`
@@ -82,73 +83,53 @@ Der Server gilt erst dann als wirklich fertig, wenn alle folgenden Punkte erfuel
 
 ## Aktueller Ist-Stand
 
-### Bereits fertig oder betriebsreif
+### Live gruen fuer den aktuellen Business-MVP
 
 - Workspace, SSOT, Handoffs und Routinen sind aufgebaut.
-- `VM 200`, `VM 220`, `VM 230` laufen stabil aus IaC-Pfaden.
-- `VM 200 nextcloud` ist jetzt nicht nur containerseitig, sondern auch applikationsseitig sauber installiert; Admin-User `frawoadmin` und Frontend-User `frontend` sind vorhanden, die Passwoerter liegen verschluesselt im Vault.
-- `VM 230 paperless` hat jetzt ebenfalls Admin-User `frawoadmin` und Frontend-User `frontend`; die Passwoerter liegen verschluesselt im Vault.
-- zwischen Paperless und Nextcloud ist jetzt ein erster echter Dokumentenpfad live:
-  - Nextcloud-Upload nach `Paperless/Eingang`
-  - Bruecke im 5-Minuten-Takt in den Paperless-Consume-Pfad
-  - OCR-/Archivspiegelung nach `Paperless/Archiv`
-- `CT 100` stellt internes Caddy und AdGuard im Opt-in-Betrieb bereit.
-- Tailscale auf `CT 100` ist joined und laeuft.
-- `VM 210` ist gebaut, stabil auf `192.168.2.24` und intern ueber `ha.hs27.internal` erreichbar.
-- Reverse-Proxy-Trust fuer Home Assistant ist gesetzt.
-- Lokaler Backup-Zwischenstandard ist live und deckt `VM 200`, `VM 210`, `VM 220`, `VM 230` ab.
-- Odoo-Restore-Proof wurde praktisch erfolgreich gezeigt.
-- Capacity-Review ist live und bestaetigt: Host-RAM ist der primaere Skalierungsengpass, Nextcloud und Odoo sind aktuell ueberdimensioniert, HAOS ist bewusst knapp aber passend dimensioniert.
-- mobiler Tailscale-Frontdoor ueber die Toolbox ist live, Tailscale-only gehaertet und liefert die Kerndienste jetzt ueber `100.99.206.128:8443-8448`
-- `portal.hs27.internal` ist live und der mobile Tailscale-Frontdoor deckt jetzt auch das interne Portal auf `100.99.206.128:8447`, Radio auf `:8448` und Media auf `:8449` ab
-- das Toolbox-Portal ist jetzt als gruppierte `FRAWO Control`-Frontdoor aufgewertet und bildet Playback-, Work- und Operations-Ziele klarer ab
-- die `FRAWO Control`-Frontdoor fuehrt jetzt auch einen Live-Status-Snapshot der Kernservices mit und ist aktuell mit `7/7` gruen
-- die `FRAWO Control`-Frontdoor zeigt jetzt zusaetzlich den laufenden Medienimport fuer Jellyfin ueber `status.json`
-- `radio.hs27.internal` zeigt jetzt intern auf den Raspberry-Pi-Radio-Node und liefert die AzuraCast-Login-Seite
-- `media.hs27.internal` zeigt jetzt intern auf Jellyfin auf der Toolbox; der direkte LAN-Pfad `192.168.2.20:8096` und der mobile Tailscale-Pfad `100.99.206.128:8449` liefern konsistent `HTTP 302 -> /web/`
-- der zentrale SMB-Medienpfad auf `CT 110` ist jetzt angelegt; die kanonische Musikbibliothek ist `\\192.168.2.30\Media\yourparty_Libary`
-- `CT 100 toolbox` wurde fuer den Medienpfad operativ vergroessert: Rootfs jetzt effektiv `96G`, im Gast aktuell rund `82G` frei statt vorher `64M`
-- Der Raspberry-Pi-Radio-Node ist jetzt auf ein konservatives `pi4_2gb_single_station_low_resource`-Profil getunt: `4` CPU-Kerne, `~1.8 GiB` RAM, `2 GiB` Swap, `~21 GiB` freies Rootfs und AzuraCast-Leerlauf aktuell bei `~457 MiB`
-- Right-Sizing-Stage-Gate und Wartungs-Runbook fuer `VM 200` und `VM 220` sind einsatzbereit.
+- `CT 100 toolbox`, `CT 120 vaultwarden`, `VM 200 nextcloud`, `VM 220 odoo` und `VM 230 paperless` bilden den aktuellen tragenden Business-Kern.
+- `portal.hs27.internal`, `vault.hs27.internal`, `cloud.hs27.internal`, `paperless.hs27.internal` und `odoo.hs27.internal` sind der aktuelle interne Arbeitsweg.
+- `Nextcloud`, `Paperless` und `Odoo` gelten im Live-Audit als stabil; der Portal-Snapshot meldet den Kern aktuell gruen.
+- `Vaultwarden` ist fuer die Business-Linie produktiv nutzbar; SMTP fuer Einladungen ist gruen.
+- `Franz` hat die `FraWo`-Einladung angenommen; der Benutzerpfad ist organisatorisch vorbereitet.
+- `webmaster@frawo-tech.de` und `franz@frawo-tech.de` sind technisch gegen `IMAP` und `SMTP` verifiziert.
+- Lokale Proxmox-Business-Backups fuer `200`, `210`, `220` und `230` existieren real und sind Teil des aktuellen MVP-Sicherheitsnetzes.
+- `release-mvp-audit` ist technisch komplett gruen; `release-mvp-gate` blockiert aktuell nur noch an sichtbarer manueller Evidenz.
+- Der verbindliche interne MVP-Scope ist:
+  - `Portal`
+  - `Vaultwarden`
+  - `Nextcloud`
+  - `Paperless`
+  - `Odoo`
+  - STRATO-Mail-Backbone
+  - lokale Proxmox-Business-Backups
 
-### Noch nicht fertig
+### Bewusst getrennt oder aktuell blockiert
 
-- Easy-Box-Leases und DHCP-Reservierungen sind noch nicht final abgeglichen, auch wenn Login und der authentifizierte `overview.json`-Pfad jetzt reproduzierbar funktionieren.
-- PBS-v1 ist jetzt als Interim-Build live:
-  - `VM 240 pbs` ist installiert und im Netz auf `192.168.2.25`
-  - Datastore `hs27-interim` liegt auf der USB-gestuetzten `40G`-Gastdisk unter `/mnt/datastore-interim`
-  - Proxmox-Storage `pbs-interim` ist aktiv
-  - ein taeglicher PBS-Job fuer `200,210,220,230` ist angelegt
-  - der erste gruene Proof-Backup- und Restore-Lauf fuer `VM 220` ist erbracht
-  - offener Restblock sind jetzt nur noch rotierende weitere Restore-Drills und spaeter groesseres PBS-Storage
+- Easy-Box-Leases und DHCP-Reservierungen sind noch nicht final abgeglichen.
+- `PBS` ist nicht produktiv gruen:
+  - `VM 240 pbs` existiert, ist aber im aktuellen Live-Audit gestoppt
+  - Datastore, Proof-Backup und Restore-Pfad sind nicht freigegeben
+  - der guarded Rebuild-Pfad ist vorbereitet, der produktive Betrieb aber blockiert
 - USB-Dongles fuer HAOS sind noch nicht am Host sichtbar.
 - AdGuard ist noch nicht primaerer LAN-DNS.
 - UCG-Ultra ist noch nicht integriert.
 - Public Edge ist bewusst noch nicht live.
-- Verbindlicher Release-Scope fuer `2026-04-01` ist nur die Website auf `www.frawo-tech.de`; interne Apps bleiben intern oder Tailscale-only.
-- Bevorzugter spaeterer Public-Domain-Pfad ist jetzt `frawo-tech.de` (Strato, GbR-Hauptdomain) mit `www.frawo-tech.de` fuer die GbR-Website und `radio.frawo-tech.de` fuer den Radio-/Player-Pfad.
-- `yourparty.tech` (Legacy-Projekt): Restlaufzeit sinnvoll nutzen, danach ggf. abschalten oder redirecten.
-- `prinz-stockenweiler.de` (Ionos, Elternhaus): Wolf ist der "Internetangel"; Ziel ist die Fernwartung und Erreichbarkeit aller dortigen Services ("auf dem Server").
-- internes `hs27.internal` bleibt bis zur bewussten internen DNS-Migration unveraendert.
-- Der dedizierte Radio-Node auf dem Raspberry Pi 4 ist intern live: AzuraCast laeuft auf dem Pi, `radio.hs27.internal` liefert intern `HTTP 302` auf `/login`, und die Status-API ist erreichbar.
-
-- Der Radio-Betrieb ist jetzt auch operativ verifiziert: `Radio`, `Radio Control` und `nowplaying` sind intern gruen; der Pi nutzt den zentralen SMB-Pfad produktiv und die Integrationschecks laufen von diesem Admin-PC jetzt auch ueber den Proxmox-/Toolbox-Fallback reproduzierbar.
-- Der Medienserver-V1 ist technisch live und fuer Browser, LAN und den mobilen Tailscale-Pfad betriebsbereit.
-- Die Jellyfin-Erstkonfiguration ist fuer den Musikpfad abgeschlossen; `media.hs27.internal`, `192.168.2.20:8096` und `100.99.206.128:8449` fuehren konsistent in die Web-Oberflaeche.
-- Der verbleibende operative Block auf der Medienseite ist jetzt nicht mehr die USB->SMB-Bibliotheksmigration; die Bibliothek ist vollstaendig auf den SMB-Zielpfad gespiegelt, jetzt folgen Benutzer-/Client-Rollout und das harte Abschalten des alten USB-Zwischenpfads als Produktionsquelle.
-- Das gemeinsame Frontend-Geraet auf `192.168.2.154` war bereits als `surface-go-frontend` frisch aufgebaut; der aktuelle Live-Rollout ist jedoch blockiert, weil das Geraet momentan nicht mehr bootet/startet.
-- Die Root-Sleep-Haertung ist jetzt abgeschlossen: `sleep.target`, `suspend.target`, `hibernate.target` und `hybrid-sleep.target` sind maskiert, ein Reboot-Test ist erfolgreich zurueckgekommen.
-- Das Surface nutzt jetzt einen robusteren lokalen Frontend-Pfad:
-  - lokaler Portalservice auf `127.0.0.1:17827`
-  - loopback-only HTTP auf `127.0.0.1:17827`
-  - `FRAWO Control` als sichtbarer Launcher
-  - Browser-/Launcher-Standard ist im Repo inzwischen auf `firefox` + produktive Launcher fuer `frontend` und `frawo` festgezogen
-- Der praktische Restblock am Surface ist derzeit kein UX-Thema mehr, sondern ein Hardware-/Boot-Blocker ausserhalb des laufenden Serverpfads.
-- Neu als Zwischenstufe fuer Backups: der `64GB`-USB-Stick `HS27_PORTABLEBK` ist jetzt fest an Proxmox angeschlossen und traegt das kleine PBS-v1-Zwischenstorage; `VM 240 pbs` laeuft inzwischen komplett auf `pbs-usb` (`32G` Systemdisk + `40G` Data-Disk) und `3072 MB` RAM.
-- `surface-go-frontend` auf `192.168.2.154` ist jetzt als `surface-go-frontend` frisch aufgebaut; SSH, lokales Portal und der Tailnet-Pfad auf `100.106.67.127` sind verifiziert.
-- `wolfstudiopc` ist joined und als Admin-GerÃ¤t etabliert (`100.98.31.60`).
-- `Zenbook` ist vorbereitet fÃ¼r die spÃ¤tere Migration als Radio-Anker.
-- Der akute local-lvm-Thinpool-Incident vom 25.03.2026 ist behoben:
+- Verbindlicher Release-Scope fuer `2026-04-01` bleibt die Website auf `www.frawo-tech.de`; interne Business-UIs bleiben intern oder Tailscale-only.
+- `frawo-tech.de` bleibt die bevorzugte Hauptdomain fuer Website und spaetere Edge-Freigaben.
+- `yourparty.tech` bleibt Legacy-Kontext; `prinz-stockenweiler.de` bleibt ein getrennter Fernwartungs- und Familienbetriebspfad.
+- internes `hs27.internal` bleibt bis zu einer bewusst geplanten DNS-Migration die aktive interne Betriebszone.
+- `Radio/AzuraCast` ist nicht als integriert verifiziert; die Frontdoor antwortet, der Node selbst ist im aktuellen Audit aber nicht sauber gruen.
+- `Jellyfin` bleibt technisch verfuegbar, gehoert aber nicht zum aktuellen Business-MVP-Freigabesignal.
+- `media.hs27.internal`, `192.168.2.20:8096` und der mobile Tailscale-Pfad bleiben nutzbar, sind aber bewusst ein separater Ausbaupfad.
+- Medien- und Wohnzimmerpfade bleiben fuer den laufenden Betrieb hilfreich, zaehlen aber nicht zum aktuellen Business-MVP-Gate.
+- `surface-go-frontend` ist im aktuellen Live-Audit nicht betriebsbereit; der naechste professionelle Schritt ist ein `clean rebuild`.
+- Historische Surface-Haertungen bleiben relevant, ersetzen aber nicht den aktuellen Rebuild-Bedarf.
+- Repo- und Launcher-Stand fuer das Surface ist vorbereitet; die produktive Aussage bleibt trotzdem: Geraet aktuell nicht bereit.
+- Der kleine USB-Zwischenpfad bleibt historischer Zwischenstand; fuer den naechsten sauberen PBS-Schritt zaehlt nur der guarded Rebuild auf freigegebener Hardware.
+- Alte positive Surface-Verifikationen sind ueberholt und duerfen nicht mehr als aktueller Live-Stand gelesen werden.
+- `wolfstudiopc` ist joined und als Admin-Geraet etabliert (`100.98.31.60`).
+- `Zenbook` ist vorbereitet fuer die spaetere Migration als Radio-Anker.
+- Der akute local-lvm-Thinpool-Incident vom `25.03.2026` ist behoben:
   - alte Rollback-Snapshots entfernt
   - VM 320 odoo-restore-test entfernt
   - produktive VMs neu gestartet
@@ -160,6 +141,13 @@ Der Server gilt erst dann als wirklich fertig, wenn alle folgenden Punkte erfuel
   - der alte lokale Jellyfin-Bootstrap-Bestand `bootstrap-radio-usb` entfernt
   - Jellyfin auf die aktive SMB-Bibliothek `Musik Netzwerk` umgestellt
   - local-lvm von 100% auf rund 40.4% entlastet
+
+### Strategischer Arbeitsmodus ab jetzt
+
+- `release-mvp-gate` bewertet nur den Business-Kern.
+- `production-gate` bleibt unveraendert streng fuer den Vollscope.
+- `PBS`, `surface-go` und `Radio/AzuraCast` werden weiterbearbeitet, blockieren aber nicht mehr den internen Business-MVP-Release.
+- Website-Release und Vollzertifizierung laufen ab jetzt bewusst auf getrennten Spuren.
 
 
 ## Roadmap Nach Phasen
@@ -259,41 +247,28 @@ Ziel:
 - von lokalem Zwischenstandard zu echter Backup-Architektur
 
 Status:
-- in Arbeit
+- blockiert fuer Vollzertifizierung, fuer den aktuellen Business-MVP nicht im Scope
 
 Erreicht:
 - lokaler `vzdump`-Standard
 - timerbasierter Night-Run
 - Odoo-Restore-Proof
 - PBS-Runner, ISO und Stage-Gates vorbereitet
-- `VM 240 pbs` installiert und erreichbar auf `192.168.2.25`
-- Datastore `hs27-interim` auf der `40G`-USB-Data-Disk im PBS-Gast aktiv
-- Proxmox-Storage `pbs-interim` aktiv
-- taeglicher PBS-Backup-Job `hs27-pbs-interim-daily` fuer `200,210,220,230` angelegt
-- aktuelle Interim-Retention ist jetzt platzbewusst gesetzt:
-- Schedule `02:40`
-  - `keep-daily=2`
-  - `keep-weekly=1`
-  - `keep-monthly=1`
-- erster gruener PBS-Proof-Lauf ist jetzt nachgewiesen:
-  - `VM 220` erfolgreich nach `pbs-interim`
-  - Snapshot `vm/220/2026-03-21T10:04:30Z`
-  - Proxmox-Taskstatus `exitstatus: OK`
-- erster gruener PBS-Restore-Drill ist jetzt ebenfalls nachgewiesen:
-  - Restore von `VM 220` nach Test-VM `920`
-  - Test-IP `192.168.2.240`
-  - Odoo-Login unter `/web/login` mit `HTTP 200`
-  - Test-VM `920` danach wieder sauber entfernt
+- guarded Rebuild-Pfad fuer `VM 240 pbs`
+- Device-Inventory, Contract-Check und Datastore-Prepare-Guardrails fuer PBS
 
-Fehlender Blocker:
-- rotierende weitere Restore-Drills auf dem PBS-v1-Pfad fehlen noch
-- fuer entspannten Dauerbetrieb zusaetzlich Host-RAM-Upgrade und spaeter groesseres separates PBS-Storage einplanen
+Aktueller Live-Stand:
+- `VM 240 pbs` existiert, ist aber aktuell `stopped`
+- der produktive PBS-Datastore ist nicht gruen
+- Proof-Backup und Restore-Proof sind im aktuellen Live-Audit nicht erbracht
+- der USB-/Datastore-Pfad bleibt bewusst safety-gated, damit kein falsches Medium formatiert wird
 
-Danach:
-1. Restore-Drills rotierend auf dem PBS-v1-Pfad weiter regelmaessig nachweisen
-2. Inventar- und Easy-Box-Reste finalisieren
-3. spaeter groesseres separates PBS-Storage fuer den Dauerbetrieb bereitstellen
-4. Host-RAM-Upgrade vor spaeterem Dauerbetrieb einplanen
+Naechster sauberer Pfad:
+1. dedizierten Boot-USB und dedizierten Datastore bereitstellen
+2. Seriennummern im PBS-Device-Contract freigeben
+3. guarded Datastore-Prepare ausfuehren
+4. `VM 240` sauber rebuilden
+5. ersten echten PBS-Proof-Backup- und Restore-Drill nachweisen
 
 ## Phase 6 - Inventar und Netzgovernance finalisieren
 
@@ -323,28 +298,17 @@ Ziel:
 - Kiosk-first statt ueberladener Desktop
 
 Status:
-- Repo-seitig vorbereitet, Live-Rollout aktuell durch Hardware-/Boot-Problem blockiert
+- blockiert, nicht Teil des aktuellen Business-MVP
 
 Erreicht:
-- Host `surface-go-frontend` auf `192.168.2.154` per Clean Rebuild neu aufgebaut
-- lokaler Admin-User `frawo` ist bestaetigt und per SSH-Key angebunden
-- Postinstall-Baseline angewendet:
-  - `SSH/22` offen
-  - `nginx` entfernt
-  - Kiosk-User `frontend` erstellt
-  - lokales Portal installiert
-  - GDM-Autologin gesetzt
-  - touchfreundliche GNOME-Defaults angewendet
-- Repo-Standard fuer den produktiven Betrieb ist nachgezogen:
-  - `frontend` als read-only/shared Kiosk-User
-  - `frawo` mit separaten Admin-/Remote-Launchern
-  - AnyDesk-Installpfad und `StudioPC Remote`-Launcher vorbereitet
+- Repo-Standard fuer das Geraet ist vorbereitet
+- Audit- und Rebuild-Pfad fuer das Frontend-Geraet existiert
 
 Rest:
-- Geraet wieder boot-/startfaehig machen
-- danach Playbook erneut live ausrollen und visuell abnehmen
-- feste DHCP-Reservierung
-- optional `linux-surface` nur bei echten Hardware-Luecken
+- aktueller Live-Audit sieht `SSH`, `HTTP` und `HTTPS` geschlossen
+- naechster professioneller Schritt ist ein `clean rebuild`
+- danach Rebuild-Pfad erneut ausrollen und visuell abnehmen
+- feste DHCP-Reservierung und optionales Hardware-Tuning erst nach stabilem Grundzustand
 
 ## Phase 6b - Raspberry Pi Radio Node
 
@@ -352,28 +316,21 @@ Ziel:
 - dedizierter interner Radio-Node statt Medienlast auf `CT 100`
 
 Status:
-- intern produktiv auf SMB integriert, Bibliotheksmigration fachlich abgeschlossen
+- nicht sauber integriert, nicht Teil des aktuellen Business-MVP
 
 Erreicht:
 - Raspberry-Pi-Image ist lokal verifiziert
 - Zielmedium ist identifiziert
 - Zielarchitektur fuer `AzuraCast` ist als separater Pi-Node festgelegt
-- Pi ist per `SSH`, `Tailscale` und `Ansible` in Betrieb
-- AzuraCast laeuft intern auf dem Pi
-- `radio.hs27.internal` liefert intern `HTTP 302` auf `/login`
-- das Host-Medienlayout fuer `RadioLibrary` und `RadioAssets` ist auf dem Pi jetzt vorbereitet
-- die erste Station `FraWo - Funk` existiert
-- die erste produktive Station ist auf `frawo-funk` standardisiert
-- der Pi mountet `//192.168.2.30/Media` produktiv nach `/srv/radio-library/music-network`
-- AzuraCast bindet den SMB-Pfad in die Station `frawo-funk`
-- die Radio-Checks laufen von diesem Admin-PC jetzt reproduzierbar ueber den Proxmox-/Toolbox-Fallback
-- AutoDJ-Basis und Stationspfad sind damit klar vom alten USB-Zwischenpfad getrennt
+- Reverse-Proxy-/Frontdoor-Pfad fuer `radio.hs27.internal` existiert
+- Radio-spezifische Audit-Checks sind im Repo vorhanden
 
 Rest:
-- DHCP-Reservierung sauber festziehen
-- den alten USB-Zwischenpfad operativ entfernen und nicht mehr als produktive Quelle behandeln
-- Medienkurationspfad zwischen zentraler Musikfreigabe, `RadioLibrary` und `RadioAssets` sauber operationalisieren
-- Ressourcen-Feintuning auf dem Pi nach den ersten echten Streams pruefen
+- aktueller Audit-Stand ist `rpi_radio_integrated=no`
+- aktueller Audit-Stand ist `rpi_radio_usb_music_ready=no`
+- SSH-/Betriebspfad auf dem Pi sauber wiederherstellen
+- SMB-/Stationspfad und Medienlayout real verifizieren
+- sichtbaren SMTP-/Benachrichtigungspfad fuer `AzuraCast` erst danach finalisieren
 
 ## Phase 6c - Interner Medienserver
 
@@ -398,7 +355,7 @@ Erreicht:
 - der Docker-Bind in Jellyfin ist auf `rslave` gehaertet, damit der SMB-Inhalt im Container sichtbar bleibt
 
 Rest:
-- Jellyfin-Zugaenge in den Bitwarden Cloud uebernehmen
+- Jellyfin-Zugaenge in `Vaultwarden / FraWo / Media` uebernehmen
 - erste Thomson-/Google-TV-Clients verbinden
 - optionale PIN-Feinarbeit spaeter im Jellyfin-UI setzen
 
@@ -452,16 +409,17 @@ Ziel:
 - sichere, kontrollierte Oeffnung zur Oeffentlichkeit
 
 Status:
-- bewusst spaeter
-- erster geplanter externer Release am `2026-04-01` ist website-first
+- parallel zum internen Business-MVP
+- erster geplanter externer Release am `2026-04-01` bleibt website-first
 
 Vorbedingungen:
-- UCG-Ultra oder gleichwertige Edge-Kontrolle aktiv
-- Inventar und Zonen final
-- PBS und Restore-Standard belastbar
-- Domain, DNS, TLS, Auth, Logging, Monitoring und Rollback definiert
-- produktives `Bitwarden Cloud` eingefuehrt
-- reale FRAWO-Mailboxen vorhanden
+- interner Business-MVP ueber `release-mvp-gate` technisch und sichtbar freigabefaehig
+- Website-Zielsystem ist festgelegt
+- Domain, DNS, TLS, Logging, Monitoring und Rollback sind definiert
+- SPF, DKIM und DMARC sind sauber dokumentiert und getestet
+- produktiver `Vaultwarden / FraWo`-Standard ist eingefuehrt
+- FRAWO-Mailpfade bei `STRATO` sind technisch verifiziert
+- keine internen Business-UIs sind Teil des Public-Scope
 
 Bevorzugter Zielname:
 - `www.frawo-tech.de` fuer die Hauptseite
@@ -490,9 +448,8 @@ Nie direkt oeffentlich:
   - derzeit nicht sinnvoll auf dem bestehenden Host
   - Wiedervorlage erst bei RAM-Upgrade oder separatem AI-Node
 - `Anytype`
-  - Integration als lokale SSOT fÃ¼r Wissensmanagement
-  - Synergie mit der HS27-Infrastruktur prÃ¼fen
-
+  - Integration als lokale SSOT fuer Wissensmanagement
+  - Synergie mit der HS27-Infrastruktur pruefen
 
 ## Finale Roadmap Ab `2026-03-26`
 
@@ -502,20 +459,27 @@ Ziel:
 - aus dem internen Arbeitsstand einen professionell fuehrbaren Betriebsstand machen
 
 Reihenfolge:
-1. `Bitwarden Cloud` produktiv einfuehren
-2. produktive Logins aus `ACCESS_REGISTER.md` in Bitwarden ueberfuehren
-3. reale STRATO-Mailboxen anlegen:
-   - `wolf@frawo-tech.de`
-   - `franz@frawo-tech.de`
-   - `info@frawo-tech.de`
-   - `noreply@frawo-tech.de`
-4. SPF, DKIM und DMARC dokumentieren und testen
-5. SMTP-Absenderpfad fuer `Nextcloud`, `Paperless`, `Odoo` und `AzuraCast` vorbereiten
+1. `Vaultwarden / FraWo` technisch steht; jetzt nur noch sichtbar verifizieren:
+   - `Franz` sieht `FraWo` und die Kern-Collections
+   - sichtbare Stichprobe der importierten Kern-Eintraege
+2. das alte Klartext-Register ist aus dem Workspace entfernt; im Repo gelten nur noch `Vaultwarden` und `ACCESS_REGISTER_VAULTWARDEN_REFERENCES.md`
+3. `STRATO`-Alias-/Postfachmodell sichtbar final verifizieren:
+   - `wolf@frawo-tech.de` als Alias ueber `webmaster@...`
+   - `franz@frawo-tech.de` als eigenes Postfach
+   - `info@frawo-tech.de` technisch pruefen
+   - `noreply@frawo-tech.de` technisch pruefen
+4. Wolf- und Franz-Login-Walkthrough fuer `Vault`, `Nextcloud`, `Paperless` und `Odoo` sichtbar abschliessen
+5. sichtbare SMTP-Testmails fuer `Nextcloud`, `Paperless` und `Odoo` abnehmen
+6. Franz `Surface Laptop` und `iPhone` als produktive Endgeraete sichtbar abnehmen
+7. `Vaultwarden`-Recovery-Material offline in zwei getrennten Kopien bestaetigen
+8. SPF, DKIM und DMARC fuer die Website-/Mail-Linie dokumentieren und testen
+9. `AzuraCast`-SMTP bewusst spaeter separat nachziehen; es blockiert den aktuellen Business-MVP nicht
 
 Definition of done:
 - produktive Secrets liegen nicht mehr nur in Markdown-Dateien
-- Mail-Identitaeten sind real vorhanden
+- Mail-Identitaeten sind technisch sauber definiert und getestet
 - der operative Release- und Support-Pfad ist personengebunden und nachvollziehbar
+- `release-mvp-gate` kann auf `MVP_READY` gehen
 
 ### Welle 2 - Release `2026-04-01` absichern
 
@@ -539,16 +503,18 @@ Explizit nicht im Scope:
 
 Reihenfolge:
 1. `RELEASE_READINESS_2026-04-01.md` auf Gruen ziehen
-2. DNS-/TLS-/Rollback-Pfad finalisieren
-3. Website-Zielsystem und Monitoring festziehen
-4. externen Testlauf fuer DNS, TLS und Mail fahren
-5. erst dann `www.frawo-tech.de` freigeben
+2. `frawo-tech.de` -> `www.frawo-tech.de` Redirect-Modell finalisieren
+3. Website-Zielsystem, TLS-Automation und Monitoring festziehen
+4. SPF, DKIM, DMARC und den externen Testlauf fuer DNS, TLS und Mail fahren
+5. Rollback fuer DNS-/TLS-/Hostwechsel dokumentiert pruefen
+6. erst dann `www.frawo-tech.de` freigeben
 
 Definition of done:
 - Website ist extern erreichbar
 - keine Admin-UIs sind oeffentlich
 - Rollback ist dokumentiert
 - Release ist klein genug, um im Fehlerfall kontrolliert ruecknehmbar zu bleiben
+- voller interner `production-gate` ist fuer diesen Website-Release nicht Voraussetzung
 
 ### Welle 3 - Stockenweiler / `Rentner OS` v1 vorbereiten
 
@@ -571,7 +537,7 @@ Verbindliches Zugriffsmodell:
 Reihenfolge:
 1. `STOCKENWEILER_REMOTE_SUPPORT_PLAN.md` als Betriebsrunbook nutzen
 2. ersten Geraete- und Providerbestand erfassen
-3. getrennten Secret-Bereich `Stockenweiler` in Bitwarden befuellen
+3. getrennten Secret-Bereich `Stockenweiler` in `Vaultwarden / FraWo` befuellen
 4. ersten echten Remote-Support-Pfad testen
 5. dokumentierten Dokumenten-/Scanpfad nur ueber den Standard-Workflow anbinden
 
@@ -594,19 +560,20 @@ Dann folgen:
 
 ## Was jetzt als Naechstes dran ist
 
-1. **Thinpool entspannt**: [x] DONE. `local-lvm` ist von `100%` auf rund `40.4%` gefallen; `local` wurde anschliessend ueber die 2-TB-SSD-Archiventlastung wieder auf rund `73%` gedrueckt.
-2. **Media Logins finalisiert**: [x] DONE. Jellyfin-, AzuraCast- und AdGuard-Zugaenge haben bekannte Endwerte; der fehlende Schritt ist jetzt nur noch die Ablage in `Bitwarden Cloud`.
-3. **Identity Standard Kernsysteme live**: [x] DONE fuer `Nextcloud`, `Paperless`, `Odoo`, `Jellyfin` und `AzuraCast`.
-4. **USB-Altpfad toolboxseitig retiren**: [x] DONE. Jellyfin nutzt jetzt die SMB-Bibliothek `Musik Netzwerk`; der alte lokale Bootstrap-Pfad ist entfernt.
-5. **2-TB-SSD-Strategie festziehen**: die SSD dient jetzt interimistisch als kaltes Archiv fuer lokale Dump-Dateien; entscheiden, ob und wann daraus eine saubere Linux-Serverpartition fuer Archiv/Staging wird.
-6. **Dokumenten-Workflow**: [x] DONE. Paperless-/Nextcloud-Pfad ist mit einem echten Dokumentenlauf abgenommen (bridge_timer live, 'probe' Document consumed).
-7. **Mail- und Secret-Standard einfuehren**: STRATO-Mailboxen anlegen, `Bitwarden Cloud` einfuehren und die produktiven Logins aus den Arbeitsdateien ueberfuehren.
-8. **Website-first Release 2026-04-01 vorbereiten**: `www.frawo-tech.de` als einzigen oeffentlichen Scope bis zum ersten Green Gate festziehen.
+1. **Business-MVP Technik gruen**: [x] DONE. `release-mvp-audit` ist technisch komplett gruen fuer `Portal`, `Vaultwarden`, `Nextcloud`, `Paperless`, `Odoo`, STRATO-Mail-Backbone und lokale Proxmox-Business-Backups.
+2. **Business-MVP Sichtbarkeit fehlt noch**: sichtbare Vaultwarden-Stichprobe, Wolf-/Franz-Walkthrough, sichtbare Mailtests, Geraeteabnahme und Recovery-Material muessen noch auf `passed`.
+3. **Thinpool entspannt**: [x] DONE. `local-lvm` ist aus dem kritischen Bereich heraus und die Plattform ist wieder betriebsfaehig.
+4. **Klartextregister aus dem Workspace entfernt**: [x] DONE. Im Repo gilt nur noch `ACCESS_REGISTER_VAULTWARDEN_REFERENCES.md`; das alte Register ist extern archiviert.
+5. **Mail- und Secret-Standard technisch etabliert**: [x] TEILWEISE DONE. `Vaultwarden`, Invite-SMTP, `webmaster` und `franz` sind technisch verifiziert; sichtbar abnehmen und `noreply` sauber abschliessen bleibt offen.
+6. **2-TB-SSD-Strategie festziehen**: die SSD dient aktuell als kontrollierter Archiv-/Entlastungspfad; die finale Linux-Serverpartition ist spaeter separat zu entscheiden.
+7. **Dokumenten-Workflow**: [x] DONE. Paperless-/Nextcloud-Pfad ist mit einem echten Dokumentenlauf abgenommen.
+8. **Website-first Release 2026-04-01 vorbereiten**: `www.frawo-tech.de` als einzigen oeffentlichen Scope bis zum ersten Website-Green-Gate festziehen.
 9. **Stockenweiler / Rentner OS vorbereiten**: Tailscale-only Managed Support fuer den ersten externen Testkundenfall definieren und inventarisieren.
 10. **HAOS-USB-Pfad vorbereiten**: Sobald die Zigbee/Z-Wave Hardware steckt.
 11. **Surface**: erst nach Hardware-/Boot-Recovery wieder in den produktiven Pfad nehmen.
-12. **Gateway-Cutover**: Erst nach Abschluss der oben genannten Stabilitaets-Gates.
-13. **Public Edge**: Finaler Hardening-Schritt.
+12. **PBS**: guarded Rebuild erst mit sauber freigegebener Hardware und erst fuer die spaetere Vollzertifizierung.
+13. **Gateway-Cutover**: Erst nach Abschluss der oben genannten Stabilitaets-Gates.
+14. **Public Edge**: Finaler Hardening-Schritt.
 
 ## Speicherfazit
 

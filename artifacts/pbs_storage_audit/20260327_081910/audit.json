@@ -1,0 +1,39 @@
+{
+  "rootfs": {
+    "total_bytes": 72594137088,
+    "used_bytes": 18908246016,
+    "free_bytes": 49951494144,
+    "free_gib": 46.52,
+    "used_percent": 26.05
+  },
+  "localfs": {
+    "total_bytes": 72594137088,
+    "used_bytes": 18908246016,
+    "free_bytes": 49951494144,
+    "free_gib": 46.52,
+    "used_percent": 26.05
+  },
+  "raw_usb_candidates": [],
+  "data_bearing_usb_ssd_candidates": [
+    {
+      "path": "/dev/sda",
+      "size_gib": 1863.02,
+      "label": "",
+      "fstype": "",
+      "mountpoint": "",
+      "model": "Tech",
+      "serial": "DD56419883961"
+    }
+  ],
+  "dedicated_backup_partitions": [],
+  "pbs_usb_active": false,
+  "pbs_interim_active": false,
+  "vm240_uses_pbs_usb": true,
+  "findings": [
+    "No clean 64GB-class USB rebuild stick is currently visible.",
+    "The visible USB SSD carries an existing data-bearing filesystem and must not be reformatted blindly.",
+    "No dedicated ext4/xfs backup partition suitable for PBS storage is visible.",
+    "VM 240 still points to disabled pbs-usb storage."
+  ],
+  "recommendation": "blocked_wait_for_clean_hardware"
+}

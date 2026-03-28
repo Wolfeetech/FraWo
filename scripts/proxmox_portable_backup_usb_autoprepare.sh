@@ -2,6 +2,7 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+source "${ROOT_DIR}/scripts/inventory_remote.sh"
 
 if [[ $# -gt 1 ]]; then
   echo "Usage: $0 [/dev/sdX]" >&2
@@ -12,7 +13,7 @@ TARGET_DEVICE="${1:-}"
 
 if [[ -z "${TARGET_DEVICE}" ]]; then
   TARGET_DEVICE="$(
-    ssh proxmox "python3 - <<'PY'
+    run_proxmox_remote "python3 - <<'PY'
 import json
 import subprocess
 import sys

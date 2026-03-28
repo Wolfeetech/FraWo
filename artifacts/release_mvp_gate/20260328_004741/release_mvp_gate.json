@@ -1,0 +1,180 @@
+{
+  "decision": "BLOCKED",
+  "summary_source": "/mnt/c/Users/StudioPC/Documents/Homeserver 2027 Workspace/artifacts/release_mvp_audit/20260328_004657/summary.tsv",
+  "manual_checks_source": "/mnt/c/Users/StudioPC/Documents/Homeserver 2027 Workspace/manifests/release_mvp_gate/manual_checks.json",
+  "critical_codex_checks": [
+    {
+      "id": "document-ownership-check",
+      "status": "passed",
+      "critical": true,
+      "log": "/mnt/c/Users/StudioPC/Documents/Homeserver 2027 Workspace/artifacts/release_mvp_gate/20260328_004741/document-ownership-check.log",
+      "executor": "codex",
+      "command_or_action": "make document-ownership-check"
+    },
+    {
+      "id": "inventory-check",
+      "status": "passed",
+      "critical": true,
+      "log": "/mnt/c/Users/StudioPC/Documents/Homeserver 2027 Workspace/artifacts/release_mvp_audit/20260328_004657/inventory-check.log",
+      "executor": "codex",
+      "command_or_action": "make inventory-check"
+    },
+    {
+      "id": "ansible-ping",
+      "status": "passed",
+      "critical": true,
+      "log": "/mnt/c/Users/StudioPC/Documents/Homeserver 2027 Workspace/artifacts/release_mvp_audit/20260328_004657/ansible-ping.log",
+      "executor": "codex",
+      "command_or_action": "make ansible-ping"
+    },
+    {
+      "id": "qga-check",
+      "status": "passed",
+      "critical": true,
+      "log": "/mnt/c/Users/StudioPC/Documents/Homeserver 2027 Workspace/artifacts/release_mvp_audit/20260328_004657/qga-check.log",
+      "executor": "codex",
+      "command_or_action": "make qga-check"
+    },
+    {
+      "id": "business-drift-check",
+      "status": "passed",
+      "critical": true,
+      "log": "/mnt/c/Users/StudioPC/Documents/Homeserver 2027 Workspace/artifacts/release_mvp_audit/20260328_004657/business-drift-check.log",
+      "executor": "codex",
+      "command_or_action": "make business-drift-check"
+    },
+    {
+      "id": "toolbox-network-check",
+      "status": "passed",
+      "critical": true,
+      "log": "/mnt/c/Users/StudioPC/Documents/Homeserver 2027 Workspace/artifacts/release_mvp_audit/20260328_004657/toolbox-network-check.log",
+      "executor": "codex",
+      "command_or_action": "make toolbox-network-check"
+    },
+    {
+      "id": "toolbox-portal-status-check",
+      "status": "passed",
+      "critical": true,
+      "log": "/mnt/c/Users/StudioPC/Documents/Homeserver 2027 Workspace/artifacts/release_mvp_audit/20260328_004657/toolbox-portal-status-check.log",
+      "executor": "codex",
+      "command_or_action": "make toolbox-portal-status-check"
+    },
+    {
+      "id": "vaultwarden-smtp-check",
+      "status": "passed",
+      "critical": true,
+      "log": "/mnt/c/Users/StudioPC/Documents/Homeserver 2027 Workspace/artifacts/release_mvp_audit/20260328_004657/vaultwarden-smtp-check.log",
+      "executor": "codex",
+      "command_or_action": "make vaultwarden-smtp-check"
+    },
+    {
+      "id": "proxmox-local-backup-check",
+      "status": "passed",
+      "critical": true,
+      "log": "/mnt/c/Users/StudioPC/Documents/Homeserver 2027 Workspace/artifacts/release_mvp_audit/20260328_004657/proxmox-local-backup-check.log",
+      "executor": "codex",
+      "command_or_action": "make proxmox-local-backup-check"
+    },
+    {
+      "id": "security-baseline-check",
+      "status": "passed",
+      "critical": true,
+      "log": "/mnt/c/Users/StudioPC/Documents/Homeserver 2027 Workspace/artifacts/release_mvp_audit/20260328_004657/security-baseline-check.log",
+      "executor": "codex",
+      "command_or_action": "make security-baseline-check"
+    },
+    {
+      "id": "core-app-smtp-check",
+      "status": "passed",
+      "critical": true,
+      "log": "/mnt/c/Users/StudioPC/Documents/Homeserver 2027 Workspace/artifacts/release_mvp_audit/20260328_004657/core-app-smtp-check.log",
+      "executor": "codex",
+      "command_or_action": "bash ./scripts/app_smtp_check.sh"
+    }
+  ],
+  "manual_checks": [
+    {
+      "id": "frawo_access_verified",
+      "title": "Franz has productive access to FraWo and the required core collections",
+      "executor": "gemini_browser_ai",
+      "critical": true,
+      "status": "pending",
+      "last_verified": "",
+      "evidence": ""
+    },
+    {
+      "id": "vaultwarden_visible_spotcheck",
+      "title": "Imported Vaultwarden entries are visible and usable in the UI for the MVP scope",
+      "executor": "gemini_browser_ai",
+      "critical": true,
+      "status": "pending",
+      "last_verified": "",
+      "evidence": ""
+    },
+    {
+      "id": "wolf_login_walkthrough",
+      "title": "Wolf completed the productive login walkthrough for Vault, Nextcloud, Paperless and Odoo",
+      "executor": "gemini_browser_ai",
+      "critical": true,
+      "status": "pending",
+      "last_verified": "",
+      "evidence": ""
+    },
+    {
+      "id": "franz_login_walkthrough",
+      "title": "Franz completed the productive login walkthrough for Vault, Nextcloud, Paperless and Odoo",
+      "executor": "gemini_browser_ai",
+      "critical": true,
+      "status": "pending",
+      "last_verified": "",
+      "evidence": ""
+    },
+    {
+      "id": "strato_mail_model_verified",
+      "title": "STRATO sending and receiving are visibly verified for webmaster, franz and noreply",
+      "executor": "admin_only",
+      "critical": true,
+      "status": "pending",
+      "last_verified": "",
+      "evidence": ""
+    },
+    {
+      "id": "device_rollout_verified",
+      "title": "Franz Surface Laptop and iPhone have the required direct entrypoints and device-local rollout",
+      "executor": "admin_only",
+      "critical": true,
+      "status": "pending",
+      "last_verified": "",
+      "evidence": ""
+    },
+    {
+      "id": "core_app_smtp_functional_test_verified",
+      "title": "Visible SMTP test mails succeeded for Nextcloud, Paperless and Odoo",
+      "executor": "admin_only",
+      "critical": true,
+      "status": "pending",
+      "last_verified": "",
+      "evidence": ""
+    },
+    {
+      "id": "vaultwarden_recovery_material_verified",
+      "title": "Vaultwarden recovery material exists offline in two separate copies",
+      "executor": "admin_only",
+      "critical": true,
+      "status": "pending",
+      "last_verified": "",
+      "evidence": ""
+    }
+  ],
+  "blocked_reasons": [
+    "critical MVP manual evidence not green: frawo_access_verified=pending",
+    "critical MVP manual evidence not green: vaultwarden_visible_spotcheck=pending",
+    "critical MVP manual evidence not green: wolf_login_walkthrough=pending",
+    "critical MVP manual evidence not green: franz_login_walkthrough=pending",
+    "critical MVP manual evidence not green: strato_mail_model_verified=pending",
+    "critical MVP manual evidence not green: device_rollout_verified=pending",
+    "critical MVP manual evidence not green: core_app_smtp_functional_test_verified=pending",
+    "critical MVP manual evidence not green: vaultwarden_recovery_material_verified=pending"
+  ],
+  "scope_note": "This gate covers the current business MVP only. PBS, Radio/AzuraCast integration, shared frontend certification, and the full production seal remain outside this decision."
+}

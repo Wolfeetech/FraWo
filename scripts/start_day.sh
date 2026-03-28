@@ -5,6 +5,7 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 cd "${ROOT_DIR}"
 
+make document-ownership-check
 make inventory-check
 make ansible-ping
 make qga-check
@@ -28,6 +29,6 @@ bash ./scripts/refresh_live_context.sh
 echo "Day start validation complete."
 echo "Review these files before implementing changes:"
 echo "  - ${ROOT_DIR}/LIVE_CONTEXT.md"
-echo "  - ${ROOT_DIR}/MORNING_ROUTINE.md"
+echo "  - ${ROOT_DIR}/OPERATIONS/OPERATOR_ROUTINES.md"
 echo "  - ${ROOT_DIR}/SECURITY_BASELINE.md"
 echo "  - ${ROOT_DIR}/SESSION_CLOSEOUT.md"

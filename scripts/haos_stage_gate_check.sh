@@ -2,6 +2,8 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+source "${ROOT_DIR}/scripts/inventory_remote.sh"
+source "${ROOT_DIR}/scripts/toolbox_remote.sh"
 
 log() {
   printf '[haos-stage-gate] %s\n' "$*"
@@ -14,11 +16,11 @@ extract_value() {
 }
 
 get_vm210_status() {
-  ssh proxmox "qm status 210 2>/dev/null | awk '/^status:/ {print \$2}'" 2>/dev/null || echo "unknown"
+  run_proxmox_remote "qm status 210 2>/dev/null | awk '/^status:/ {print \$2}'" 2>/dev/null || echo "unknown"
 }
 
 get_vm210_ipv4() {
-  ssh proxmox "qm guest cmd 210 network-get-interfaces 2>/dev/null | python3 -c '
+  run_proxmox_remote "qm guest cmd 210 network-get-interfaces 2>/dev/null | python3 -c '
 import json, sys
 data = json.load(sys.stdin)
 for iface in data:
@@ -40,7 +42,7 @@ fi
 
 log "Reading Tailscale backend state from toolbox"
 tailscale_backend_state="$(
-  ssh toolbox "tailscale status --json 2>/dev/null | python3 -c 'import json,sys; print(json.load(sys.stdin).get(\"BackendState\", \"unknown\"))'" 2>/dev/null \
+  run_toolbox_remote "tailscale status --json 2>/dev/null | python3 -c 'import json,sys; print(json.load(sys.stdin).get(\"BackendState\", \"unknown\"))'" 2>/dev/null \
   || echo "unknown"
 )"
 
@@ -50,7 +52,7 @@ if [[ -n "$tailscale_backend_state" && "$tailscale_backend_state" != "NeedsLogin
 fi
 
 backup_timer_live="no"
-if ssh proxmox "systemctl is-enabled --quiet homeserver2027-local-business-backup.timer && systemctl is-active --quiet homeserver2027-local-business-backup.timer" >/dev/null 2>&1; then
+if run_proxmox_remote "systemctl is-enabled --quiet homeserver2027-local-business-backup.timer && systemctl is-active --quiet homeserver2027-local-business-backup.timer" >/dev/null 2>&1; then
   backup_timer_live="yes"
 fi
 

@@ -1,0 +1,105 @@
+# AI Bootstrap Context
+
+## Purpose
+
+- Read `INTRODUCTION_PROMPT.md` first.
+- Then read this file.
+- Then read `LIVE_CONTEXT.md`, `README.md`, `OPS_HOME.md`, and the relevant file in `OPERATIONS/`.
+- This file exists so a future AI can understand the server, pages, users, and current direction in one pass.
+
+## Estate In One Screen
+
+- Organization: `FraWo`
+- Primary operator/admin: `Wolf`
+- Primary business user rollout: `Franz`
+- Gateway/router: `192.168.2.1` `easy_box`
+- Proxmox host: `192.168.2.10` `proxmox`
+- Core toolbox/control node: `192.168.2.20` `toolbox`
+- Nextcloud VM: `192.168.2.21`
+- Odoo VM: `192.168.2.22`
+- Paperless VM: `192.168.2.23`
+- Home Assistant OS VM: `192.168.2.24`
+- PBS VM target: `192.168.2.25`, currently `degraded`
+- Vaultwarden CT: `192.168.2.26:8080`, productive entry via `https://vault.hs27.internal`
+- Radio node: `192.168.2.155` and Tailscale `100.64.23.77`
+- Shared frontend node: `surface-go-frontend` on `192.168.2.154`
+- Internal DNS zone: `hs27.internal`
+- Tailscale subnet router and internal reverse proxy live on `toolbox`
+
+## Service And Page Map
+
+- Root control portal: `http://portal.hs27.internal`
+- Franz start page: `http://portal.hs27.internal/franz/`
+- Nextcloud: `http://cloud.hs27.internal` and direct `http://192.168.2.21`
+- Paperless: `http://paperless.hs27.internal` and direct `http://192.168.2.23`
+- Odoo: `http://odoo.hs27.internal` and direct `http://192.168.2.22:8069`
+- Home Assistant: `http://ha.hs27.internal` and direct `http://192.168.2.24:8123`
+- Vaultwarden: `https://vault.hs27.internal`
+- Vaultwarden health/bootstrap path: `http://192.168.2.26:8080/alive`
+- Vaultwarden admin path: `https://vault.hs27.internal/admin`
+- Jellyfin browser path: `http://media.hs27.internal`
+- Jellyfin TV-safe path: `http://192.168.2.20:8096`
+- Jellyfin mobile Tailscale path: `http://100.99.206.128:8449`
+- Radio UI: `http://radio.hs27.internal`
+- Radio mobile Tailscale path: `http://100.99.206.128:8448`
+
+## User And Device Model
+
+- `Wolf` is the operator/admin path. His core tools are Nextcloud, Paperless, Odoo, Home Assistant, Radio Control, Vaultwarden, and the portal.
+- `Franz` is the normal business user path. The current MVP scope is Surface Laptop, iPhone, Nextcloud, Paperless, Odoo, and Vaultwarden.
+- Shared living-room usage is a separate path from admin usage.
+- Google TV now connects to Jellyfin again, but the successful test used the `Wolf` account.
+- The intended shared Jellyfin profile remains `TV Wohnzimmer`, but its password was not available during the last TV test.
+- `surface-go-frontend` is a shared kiosk-style frontend node and remains inside the certification scope.
+
+## Access And Secret Rules
+
+- Shared passwords and shared app credentials belong in the `FraWo` organization in Vaultwarden.
+- No plaintext credentials in markdown, ad hoc notes, or repo-tracked local files.
+- `wolf@frawo-tech.de` is the operator identity, but the technical base mailbox for app SMTP is `webmaster@frawo-tech.de`.
+- `franz@frawo-tech.de` is a real mailbox and was technically verified against STRATO IMAP/SMTP.
+- App SMTP authenticates with `webmaster@frawo-tech.de`.
+- The visible app sender is `noreply@frawo-tech.de`.
+- Vaultwarden is invite-only for productive use.
+
+## Current Verified Live Facts
+
+- The root portal UI at `portal.hs27.internal` was rebuilt and is live.
+- The root portal and the Franz page are now intentionally reduced to the current business MVP: Portal, Vault, Nextcloud, Paperless, and Odoo.
+- Vaultwarden SMTP is live, invitations are enabled, and the admin token is no longer stored as plaintext in the live container config.
+- The Vaultwarden invitation mail to `franz@frawo-tech.de` arrived successfully.
+- The `FraWo` invite for `franz@frawo-tech.de` was accepted.
+- Jellyfin now publishes the direct LAN address for clients, which fixed the TV connection path for devices without working `hs27.internal` DNS.
+- Franz mailbox authentication was verified.
+- `Nextcloud`, `Paperless`, and `Odoo` are SMTP-configured against the shared mail baseline.
+- `AzuraCast` remains the only app-SMTP holdout because the current blocker is SSH access to `raspberry_pi_radio`.
+- The next real end-to-end user test is the visible MVP walkthrough for Wolf and Franz across Vault, Nextcloud, Paperless, and Odoo.
+
+## Certification Reality
+
+- The estate is not yet allowed to claim a professional production seal.
+- `artifacts/release_mvp_gate/<latest>/release_mvp_gate.md` is the business-MVP decision source.
+- `artifacts/production_gate/<latest>/production_gate.md` is the only valid certification decision source.
+- `MVP_READY` means the current business core can be released internally.
+- `MVP_READY` does not mean `CERTIFIED`.
+- `PBS` remains the main technical blocker until `VM 240`, datastore, backup proof, and restore proof are green again.
+- Manual evidence for user rollout, shared devices, and frontend acceptance is still required.
+- Future AI must not call the platform "production-ready" unless the latest production gate says `CERTIFIED`.
+
+## Working Rule For Future AI
+
+1. Read `INTRODUCTION_PROMPT.md` first.
+2. Read `AI_BOOTSTRAP_CONTEXT.md`.
+3. Read `LIVE_CONTEXT.md` for the latest generated handoff state.
+4. Read `README.md` for the canonical read order and source-of-truth map.
+5. Open the relevant service runbook in `OPERATIONS/`.
+6. Use the latest stress test, release-MVP gate, and production gate artifacts as the deciding runtime evidence.
+7. If a task is blocked by hardware, browser login, physical device access, or provider account action, state it with `AKTION VON DIR ERFORDERLICH:`.
+
+## Immediate Do-Not-Regress Rules
+
+- Do not switch Jellyfin TV clients back to `http://media.hs27.internal`; TVs should use `http://192.168.2.20:8096`.
+- Do not recreate any plaintext access register inside the workspace; keep shared passwords out of markdown files.
+- Do not bloat the portal UI with Media, Radio, Home Assistant, or shared frontend controls before the current business MVP is visibly stable.
+- Do not mark PBS healthy until the guarded rebuild path is actually completed and proven.
+- Do not claim the shared frontend is certified just because the portal exists; it remains an explicit acceptance item.

@@ -10,24 +10,26 @@
 | Odoo | green | app works, login works, DB name clarified, named users exist | move final values into Vaultwarden and keep Studio out of the critical path |
 | Home Assistant | green | internal path works | keep stable |
 | Jellyfin | green | service is live, named users exist, and the active library is now the canonical SMB path | add first TV clients and optional PINs |
-| AzuraCast | green | service is live, station `frawo-funk` is online, SMB is complete, and a personal admin exists | keep playlists and station settings clean |
+| AzuraCast / Radio integration | yellow | internal proxy path answers, but the live audit still reports `rpi_radio_integrated=no` and media/layout readiness is not green | repair Pi integration and keep it out of the current MVP |
 | Shared media storage | yellow | `CT110` is live, SMB is canonical, Jellyfin is SMB-only, and the old local bootstrap copy is gone | keep stable and decide whether the 2-TB SSD should become the next storage tier |
-| Backups | yellow | interim PBS works, proof exists, but long-term storage is not final | enlarge storage strategy, continue restore drills, and keep offsite options secondary for now |
-| Surface Go frontend | yellow | kiosk baseline exists, but hardware/boot is blocking the live rollout | recover hardware first, then continue the `frontend` path |
+| Backups | yellow | local Proxmox backups are real and current, but `PBS` is not green and no restore-proof path is currently active there | keep local backups stable and rebuild `PBS` as a separate certification track |
+| Surface Go frontend | red | the live audit sees `SSH`, `HTTP`, and `HTTPS` closed on `192.168.2.154` | treat it as offline, then clean-rebuild and reaccept it later |
 | UCG Ultra | yellow | hardware is attached in test mode only | inventory, isolate, then controlled cutover |
 | Public edge | red | intentionally not exposed yet; `2026-04-01` is website-first only | hold the line until DNS, TLS, auth, monitoring and rollback are ready |
-| Identity and mail model | yellow | app identities are largely standardized, but the real FRAWO mailboxes do not exist yet | create STRATO mailboxes and then swap remaining temporary identities cleanly |
-| Secrets | yellow | a self-hosted Vaultwarden bootstrap is live on `CT120`, but internal `HTTPS`, first-user onboarding and markdown migration are not finished yet | front Vaultwarden with internal HTTPS, create the first real vault, then migrate the current logins |
+| Identity and mail model | yellow | `Franz` is in `FraWo`, Vaultwarden invite flow works, and `webmaster`/`franz` auth are technically verified, but visible send/receive and final `STRATO` verification are still open | finish visible send/receive for `webmaster`, `franz`, `noreply` and close the remaining app mail tests |
+| Secrets | yellow | Vaultwarden is live, Franz is in `FraWo`, but the visible spot-check and markdown cleanup are still open | verify the imported set visibly and then reduce markdown secrets to references |
+| Business MVP readiness | yellow | the current business core is technically close, but visible walkthroughs, device acceptance and visible app mail tests are still open | use the separate `release-mvp-gate` and close the remaining manual evidence |
+| Full internal certification | red | `production-gate` is correctly `BLOCKED` by `PBS`, `surface-go`, `Radio/AzuraCast`, and missing manual evidence | keep this separate from the business-MVP release |
 | Stockenweiler / Rentner OS | yellow | target model is now clear, but no operational remote-support onboarding exists yet | build the Tailscale-only support path and inventory the first managed devices |
 | 2-TB SSD | yellow | real extra space exists and is now used as interim cold archive relief, but not yet server-optimized | keep NTFS intact, then later shrink it from Windows and add a Linux partition |
-| Stress test readiness | yellow | core services are stable enough for a controlled internal stress test, but not for broad public rollout | run internal load and workflow tests before public release |
+| Website release readiness | yellow | website-first release is still valid, but DNS/redirect, TLS, target system and rollback are not yet fully closed | keep the public release website-only and finish the website edge work separately |
 
 ## Why Work Felt Slow
 
 - Media moved from an old USB/legacy path to a new SMB canonical path while services had to stay online.
 - Identity, credentials, and final ownership standards were not defined early enough.
 - `local-lvm` ran into a real thinpool saturation incident and caused follow-on storage errors on `CT110`.
-- There was no real secret-management home yet; `ACCESS_REGISTER.md` became an interim register instead of a final operating standard.
+- There was no real secret-management home yet; the old plaintext access register became an interim crutch instead of a final operating standard.
 
 ## Canonical Paths
 
@@ -37,12 +39,12 @@
 
 ## Immediate Priorities
 
-1. Create the STRATO mailboxes and document SPF, DKIM and DMARC.
-2. Front self-hosted Vaultwarden with internal HTTPS and migrate current production logins out of markdown files.
-3. Hold the public release scope to `www.frawo-tech.de` only.
-4. Stabilize `local` storage headroom now that `CT100` moved off `local-lvm` and old local dump archives were moved to the 2-TB SSD.
-5. Decide the final 2-TB SSD role and only then repartition it safely.
-6. Start the first Stockenweiler support path as a Tailscale-only managed service.
+1. Finish the visible MVP walkthrough for Wolf and Franz across `Vault`, `Nextcloud`, `Paperless`, and `Odoo`.
+2. Verify visible send/receive for `webmaster`, `franz`, and `noreply`, then close the visible test mails for `Nextcloud`, `Paperless`, and `Odoo`.
+3. Use `release-mvp-gate` for the business core and keep `production-gate` for the full certification scope.
+4. Hold the public release scope to `www.frawo-tech.de` only.
+5. Reopen `PBS`, shared frontend and radio only as their own certification track, not as part of the current MVP release.
+6. Decide the final 2-TB SSD role before any repartitioning.
 
 ## Current Operator Note
 
@@ -95,3 +97,19 @@
   - toolbox rootfs is writable again
   - Jellyfin auth is server-side healthy again
   - the previous browser-side Jellyfin connection error is no longer attributable to a dead auth backend
+
+## Incident Note 2026-03-26B
+
+- Symptom:
+  - `VM 200 nextcloud` showed a warning in the Proxmox UI and reported `status: io-error`.
+- Root cause:
+  - The earlier host storage pressure on `local` left `VM 200` in a stuck QEMU I/O error state even after host headroom had already been restored.
+- Resolution:
+  - verified host headroom on `local` and `local-lvm`
+  - stopped and started `VM 200` from Proxmox
+  - verified Proxmox status returned to `running`
+  - verified Nextcloud answered again on `http://192.168.2.21`
+- Result:
+  - `VM 200 nextcloud` is back in normal `running` state
+  - the acute Proxmox warning is no longer backed by a live guest outage
+  - Nextcloud HTTP is healthy again

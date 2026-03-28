@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+source "${ROOT_DIR}/scripts/inventory_remote.sh"
+
 if [[ $# -ne 1 ]]; then
   echo "Usage: $0 /dev/sdX" >&2
   exit 1
@@ -10,7 +13,7 @@ DEVICE="$1"
 LABEL="HS27_PORTABLEBK"
 MOUNT_PATH="/srv/portable-backup-usb"
 
-ssh proxmox "bash -s" <<EOF
+remote_cmd="$(cat <<EOF
 set -euo pipefail
 
 DEVICE="${DEVICE}"
@@ -47,3 +50,6 @@ TXT
 df -h "\${MOUNT_PATH}"
 lsblk -o NAME,SIZE,FSTYPE,LABEL,MOUNTPOINT "\${DEVICE}"
 EOF
+)"
+
+run_proxmox_remote "${remote_cmd}"

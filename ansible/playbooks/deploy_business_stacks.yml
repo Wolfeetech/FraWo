@@ -49,6 +49,27 @@
         mode: "0644"
       notify: restart compose stack
 
+    - name: Install Odoo SMTP config when mail baseline is enabled
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/stacks/odoo/odoo.conf.j2"
+        dest: "{{ compose_stack_dir }}/odoo.conf"
+        owner: root
+        group: root
+        mode: "0600"
+      when:
+        - compose_stack_name == "odoo"
+        - homeserver_mail_app_smtp_enabled | default(false)
+      notify: restart compose stack
+
+    - name: Remove Odoo SMTP config when mail baseline is disabled
+      ansible.builtin.file:
+        path: "{{ compose_stack_dir }}/odoo.conf"
+        state: absent
+      when:
+        - compose_stack_name == "odoo"
+        - not (homeserver_mail_app_smtp_enabled | default(false))
+      notify: restart compose stack
+
     - name: Install systemd service for stack
       ansible.builtin.template:
         src: "{{ playbook_dir }}/../templates/systemd/homeserver-compose-stack.service.j2"

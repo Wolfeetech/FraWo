@@ -1,21 +1,19 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-PROXMOX_HOST="${PROXMOX_HOST:-proxmox}"
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+source "${ROOT_DIR}/scripts/inventory_remote.sh"
+
 KEEP_LAST="${KEEP_LAST:-2}"
 VMIDS="${VMIDS:-200 210 220 230}"
 APPLY="${APPLY:-0}"
-SSH_OPTS=(
-  -o BatchMode=yes
-  -o StrictHostKeyChecking=accept-new
-)
 
 log() {
   printf '[backup-prune] %s\n' "$*"
 }
 
 remote() {
-  ssh "${SSH_OPTS[@]}" "${PROXMOX_HOST}" "$@"
+  run_proxmox_remote "$1"
 }
 
 log "Retention policy: keep latest ${KEEP_LAST} local qemu backups per VM"

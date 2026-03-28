@@ -1,12 +1,15 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+source "${ROOT_DIR}/scripts/inventory_remote.sh"
+
 log() {
   printf '[haos-vm-check] %s\n' "$*"
 }
 
 remote() {
-  ssh proxmox "$@"
+  run_proxmox_remote "$*"
 }
 
 RUNNER_PATH="/usr/local/sbin/homeserver2027-deploy-haos-vm.sh"

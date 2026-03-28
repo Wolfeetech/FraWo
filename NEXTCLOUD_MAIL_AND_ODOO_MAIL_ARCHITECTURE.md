@@ -1,11 +1,20 @@
 # Nextcloud Mail And Odoo Mail Architecture
 
+## Status
+
+Dieses Dokument bleibt als Architekturkontext bestehen.
+
+Der kanonische Betriebs- und Rolloutpfad liegt jetzt in:
+
+- `OPERATIONS/MAIL_OPERATIONS.md`
+
 Stand: `2026-03-26`
 
 ## Kurzentscheidung
 
 - `Outlook` war nur der pragmatische Testpfad fuer das `STRATO`-Postfach.
 - Produktiv soll Mail nicht ueber Outlook zentriert werden.
+- Produktiv soll Mail auch **nicht** ueber einen eigenen Homeserver-Mailserver laufen.
 - Der saubere Zielpfad ist:
   - `STRATO` als Mail-Provider
   - `Nextcloud Mail` als zentrale Web-Oberflaeche fuer Benutzer
@@ -19,7 +28,7 @@ Stand: `2026-03-26`
 
 - `webmaster@...` bleibt technisches Basis-Postfach
 - `wolf@frawo-tech.de` ist Alias und sichtbare Arbeitsidentitaet fuer Wolf
-- `franz@frawo-tech.de` soll eigenes echtes Postfach werden
+- `franz@frawo-tech.de` ist eigenes echtes Postfach
 
 ### Funktionsmail
 
@@ -27,6 +36,7 @@ Stand: `2026-03-26`
   - Kontakt und allgemeiner Eingang
 - `noreply@frawo-tech.de`
   - Systemmails
+- technischer Zielpfad fuer `info` und `noreply` ist noch gegen `STRATO` zu verifizieren
 - spaeter `documents@frawo-tech.de`
   - dedizierter Dokumenteneingang fuer `Paperless`
 
@@ -71,8 +81,8 @@ Richtiger Einsatz:
 
 ## Reihenfolge
 
-1. `STRATO`-Grundstruktur stabilisieren
-2. `Vaultwarden` sauber hinter internem `HTTPS`
+1. Alias-/Postfachmodell in `STRATO` stabilisieren
+2. Mail-Zugaenge in `Vaultwarden` sichtbar validieren
 3. `Nextcloud Mail` als zentrale Mail-Oberflaeche planen und aktivieren
 4. `noreply@frawo-tech.de` als SMTP-Absender in Apps setzen
 5. spaeter `documents@frawo-tech.de` fuer `Paperless`
@@ -83,6 +93,12 @@ Richtiger Einsatz:
 - `Outlook` war nur ein Testwerkzeug fuer das echte Postfach
 - damit prueft man `IMAP`/`SMTP`
 - es ist nicht die geplante zentrale FRAWO-Mailoberflaeche
+
+## Warum Kein Eigener Mailserver Jetzt
+
+- das aktuelle Ziel ist stabiler interner Betrieb, nicht MTA-Betrieb
+- `STRATO` loest Provider-, Zustell- und Reputationsthemen bereits
+- der naechste echte Schritt ist App-SMTP und Benutzeroberflaeche, nicht eigener MX-Betrieb
 
 ## Quellen
 

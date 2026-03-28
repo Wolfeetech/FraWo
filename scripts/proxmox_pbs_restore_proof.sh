@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 PROXMOX_HOST="${PROXMOX_HOST:-proxmox}"
-BACKUP_STORAGE="${BACKUP_STORAGE:-pbs-interim}"
 RESTORE_STORAGE="${RESTORE_STORAGE:-local-lvm}"
 RESTORE_SOURCE_VMID="${RESTORE_SOURCE_VMID:-220}"
 RESTORE_TEST_VMID="${RESTORE_TEST_VMID:-920}"
@@ -16,6 +16,22 @@ SSH_OPTS=(
 log() {
   printf '[pbs-restore-proof] %s\n' "$*"
 }
+
+read_pbs_hostvar() {
+  local key="$1"
+  python3 - <<'PY' "$ROOT_DIR/ansible/inventory/host_vars/pbs.yml" "$key"
+import sys
+import yaml
+
+path = sys.argv[1]
+key = sys.argv[2]
+with open(path, 'r', encoding='utf-8') as handle:
+    data = yaml.safe_load(handle)
+print(data[key])
+PY
+}
+
+BACKUP_STORAGE="${BACKUP_STORAGE:-$(read_pbs_hostvar pbs_proxmox_storage_id)}"
 
 remote() {
   ssh "${SSH_OPTS[@]}" "${PROXMOX_HOST}" "$@"

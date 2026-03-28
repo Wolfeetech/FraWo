@@ -11,6 +11,9 @@ services:
       - stack.env
     volumes:
       - odoo-data:/var/lib/odoo
+{% if homeserver_mail_app_smtp_enabled | default(false) %}
+      - ./odoo.conf:/etc/odoo/odoo.conf:ro
+{% endif %}
 
   db:
     image: postgres:15

@@ -1,0 +1,11 @@
+[options]
+db_host = db
+db_user = odoo
+db_password = {{ homeserver_vault_odoo_db_password }}
+smtp_server = {{ homeserver_mail_smtp_host }}
+smtp_port = {{ homeserver_mail_smtp_port }}
+smtp_user = {{ homeserver_mail_smtp_auth_username }}
+smtp_password = {{ homeserver_vault_mail_smtp_password }}
+smtp_ssl = {{ 'True' if homeserver_mail_smtp_secure in ['tls', 'ssl'] else 'False' }}
+email_from = {{ homeserver_mail_sender_email }}
+from_filter = {{ homeserver_mail_sender_email }}

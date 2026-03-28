@@ -1,0 +1,195 @@
+---
+- name: Configure Nextcloud SMTP baseline
+  hosts: nextcloud_vm
+  become: true
+  vars:
+    compose_stack_dir: "{{ homeserver_compose_root }}/{{ compose_stack_name }}"
+    nextcloud_mail_from_localpart: "{{ homeserver_mail_sender_email.split('@')[0] }}"
+    nextcloud_mail_from_domain: "{{ homeserver_mail_sender_email.split('@')[1] }}"
+
+  pre_tasks:
+    - name: Assert SMTP baseline inputs are complete
+      ansible.builtin.assert:
+        that:
+          - homeserver_mail_app_smtp_enabled | bool
+          - homeserver_mail_smtp_host | length > 0
+          - homeserver_mail_smtp_port | int > 0
+          - homeserver_mail_sender_email | length > 0
+          - homeserver_mail_smtp_auth_username | length > 0
+          - homeserver_vault_mail_smtp_password is defined
+        fail_msg: "SMTP baseline is not ready. Finalize mail model, username and vault secret first."
+
+  tasks:
+    - name: Apply Nextcloud SMTP configuration with occ
+      ansible.builtin.shell: |
+        set -euo pipefail
+        if docker compose version >/dev/null 2>&1; then
+          COMPOSE="docker compose"
+        else
+          COMPOSE="docker-compose"
+        fi
+        ${COMPOSE} exec -T -u www-data app php occ config:system:set mail_smtpmode --value=smtp
+        ${COMPOSE} exec -T -u www-data app php occ config:system:set mail_smtphost --value='{{ homeserver_mail_smtp_host }}'
+        ${COMPOSE} exec -T -u www-data app php occ config:system:set mail_smtpport --value='{{ homeserver_mail_smtp_port }}'
+        ${COMPOSE} exec -T -u www-data app php occ config:system:set mail_smtpauth --value='1'
+        ${COMPOSE} exec -T -u www-data app php occ config:system:set mail_smtpsecure --value='{{ homeserver_mail_smtp_secure }}'
+        ${COMPOSE} exec -T -u www-data app php occ config:system:set mail_smtpname --value='{{ homeserver_mail_smtp_auth_username }}'
+        ${COMPOSE} exec -T -u www-data app php occ config:system:set mail_smtppassword --value='{{ homeserver_vault_mail_smtp_password }}'
+        ${COMPOSE} exec -T -u www-data app php occ config:system:set mail_from_address --value='{{ nextcloud_mail_from_localpart }}'
+        ${COMPOSE} exec -T -u www-data app php occ config:system:set mail_domain --value='{{ nextcloud_mail_from_domain }}'
+      args:
+        chdir: "{{ compose_stack_dir }}"
+        executable: /bin/bash
+      when: not ansible_check_mode
+
+- name: Configure Paperless SMTP baseline
+  hosts: paperless_vm
+  become: true
+  vars:
+    compose_stack_dir: "{{ homeserver_compose_root }}/{{ compose_stack_name }}"
+
+  pre_tasks:
+    - name: Assert SMTP baseline inputs are complete
+      ansible.builtin.assert:
+        that:
+          - homeserver_mail_app_smtp_enabled | bool
+          - homeserver_mail_smtp_host | length > 0
+          - homeserver_mail_smtp_port | int > 0
+          - homeserver_mail_sender_email | length > 0
+          - homeserver_mail_smtp_auth_username | length > 0
+          - homeserver_vault_mail_smtp_password is defined
+        fail_msg: "SMTP baseline is not ready. Finalize mail model, username and vault secret first."
+
+  tasks:
+    - name: Ensure Paperless SMTP environment lines are present
+      ansible.builtin.lineinfile:
+        path: "{{ compose_stack_dir }}/stack.env"
+        regexp: "^{{ item.key }}="
+        line: "{{ item.key }}={{ item.value }}"
+        owner: root
+        group: root
+        mode: "0600"
+      loop:
+        - key: PAPERLESS_EMAIL_HOST
+          value: "{{ homeserver_mail_smtp_host }}"
+        - key: PAPERLESS_EMAIL_PORT
+          value: "{{ homeserver_mail_smtp_port }}"
+        - key: PAPERLESS_EMAIL_HOST_USER
+          value: "{{ homeserver_mail_smtp_auth_username }}"
+        - key: PAPERLESS_EMAIL_HOST_PASSWORD
+          value: "{{ homeserver_vault_mail_smtp_password }}"
+        - key: PAPERLESS_EMAIL_USE_TLS
+          value: "{{ 1 if homeserver_mail_smtp_secure == 'tls' else 0 }}"
+        - key: PAPERLESS_EMAIL_USE_SSL
+          value: "{{ 1 if homeserver_mail_smtp_secure == 'ssl' else 0 }}"
+        - key: PAPERLESS_EMAIL_FROM
+          value: "{{ homeserver_mail_sender_email }}"
+      notify: restart paperless stack
+
+    - name: Ensure Paperless stack service is started
+      ansible.builtin.systemd:
+        name: "{{ compose_service_name }}"
+        state: started
+        enabled: true
+        daemon_reload: true
+      when: not ansible_check_mode
+
+  handlers:
+    - name: restart paperless stack
+      ansible.builtin.systemd:
+        name: "{{ compose_service_name }}"
+        state: restarted
+      when: not ansible_check_mode
+
+- name: Configure Odoo SMTP baseline
+  hosts: odoo_vm
+  become: true
+  vars:
+    compose_stack_dir: "{{ homeserver_compose_root }}/{{ compose_stack_name }}"
+
+  pre_tasks:
+    - name: Assert SMTP baseline inputs are complete
+      ansible.builtin.assert:
+        that:
+          - homeserver_mail_app_smtp_enabled | bool
+          - homeserver_mail_smtp_host | length > 0
+          - homeserver_mail_smtp_port | int > 0
+          - homeserver_mail_sender_email | length > 0
+          - homeserver_mail_smtp_auth_username | length > 0
+          - homeserver_vault_mail_smtp_password is defined
+        fail_msg: "SMTP baseline is not ready. Finalize mail model, username and vault secret first."
+
+  tasks:
+    - name: Ensure Odoo compose mounts odoo.conf
+      ansible.builtin.lineinfile:
+        path: "{{ compose_stack_dir }}/docker-compose.yml"
+        regexp: '^\s+- \./odoo\.conf:/etc/odoo/odoo\.conf:ro$'
+        line: "      - ./odoo.conf:/etc/odoo/odoo.conf:ro"
+        insertafter: '^\s+- odoo-data:/var/lib/odoo$'
+      notify: restart odoo stack
+
+    - name: Install Odoo SMTP config
+      ansible.builtin.copy:
+        content: |
+          [options]
+          smtp_server = {{ homeserver_mail_smtp_host }}
+          smtp_port = {{ homeserver_mail_smtp_port }}
+          smtp_user = {{ homeserver_mail_smtp_auth_username }}
+          smtp_password = {{ homeserver_vault_mail_smtp_password }}
+          smtp_ssl = {{ 'True' if homeserver_mail_smtp_secure in ['tls', 'ssl'] else 'False' }}
+          email_from = {{ homeserver_mail_sender_email }}
+          from_filter = {{ homeserver_mail_sender_email }}
+        dest: "{{ compose_stack_dir }}/odoo.conf"
+        owner: root
+        group: root
+        mode: "0600"
+      notify: restart odoo stack
+
+    - name: Ensure Odoo stack service is started
+      ansible.builtin.systemd:
+        name: "{{ compose_service_name }}"
+        state: started
+        enabled: true
+        daemon_reload: true
+      when: not ansible_check_mode
+
+  handlers:
+    - name: restart odoo stack
+      ansible.builtin.systemd:
+        name: "{{ compose_service_name }}"
+        state: restarted
+      when: not ansible_check_mode
+
+- name: Configure AzuraCast SMTP baseline
+  hosts: raspberry_pi_radio
+  become: true
+
+  pre_tasks:
+    - name: Assert SMTP baseline inputs are complete
+      ansible.builtin.assert:
+        that:
+          - homeserver_mail_app_smtp_enabled | bool
+          - homeserver_mail_smtp_host | length > 0
+          - homeserver_mail_smtp_port | int > 0
+          - homeserver_mail_sender_email | length > 0
+          - homeserver_mail_smtp_auth_username | length > 0
+          - homeserver_vault_mail_smtp_password is defined
+        fail_msg: "SMTP baseline is not ready. Finalize mail model, username and vault secret first."
+
+  tasks:
+    - name: Apply AzuraCast SMTP settings via official CLI
+      ansible.builtin.shell: |
+        set -euo pipefail
+        docker exec azuracast azuracast_cli azuracast:settings:set mail_enabled 1
+        docker exec azuracast azuracast_cli azuracast:settings:set mail_sender_name '{{ homeserver_mail_sender_name }}'
+        docker exec azuracast azuracast_cli azuracast:settings:set mail_sender_email '{{ homeserver_mail_sender_email }}'
+        docker exec azuracast azuracast_cli azuracast:settings:set mail_smtp_host '{{ homeserver_mail_smtp_host }}'
+        docker exec azuracast azuracast_cli azuracast:settings:set mail_smtp_port '{{ homeserver_mail_smtp_port }}'
+        docker exec azuracast azuracast_cli azuracast:settings:set mail_smtp_username '{{ homeserver_mail_smtp_auth_username }}'
+        docker exec azuracast azuracast_cli azuracast:settings:set mail_smtp_password '{{ homeserver_vault_mail_smtp_password }}'
+        docker exec azuracast azuracast_cli azuracast:settings:set mail_smtp_secure '{{ homeserver_mail_smtp_secure }}'
+        docker exec azuracast azuracast_cli cache:clear
+      args:
+        chdir: /var/azuracast
+        executable: /bin/bash
+      when: not ansible_check_mode

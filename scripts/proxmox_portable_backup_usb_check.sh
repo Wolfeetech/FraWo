@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ssh proxmox "bash -s" <<'EOF'
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+source "${ROOT_DIR}/scripts/inventory_remote.sh"
+
+remote_cmd="$(cat <<'EOF'
 set -euo pipefail
 
 MOUNT_PATH="/srv/portable-backup-usb"
@@ -33,3 +36,6 @@ else
   echo "recommendation=attach_and_prepare_portable_backup_usb_on_proxmox"
 fi
 EOF
+)"
+
+run_proxmox_remote "${remote_cmd}"

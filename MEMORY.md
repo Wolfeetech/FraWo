@@ -662,10 +662,10 @@ Lokale Admin-Flaechen (nur localhost):
    - benoetigte Aktion: WLAN am Handy aus, Tailscale verbunden lassen und `http://portal.hs27.internal`, `http://ha.hs27.internal` sowie `http://odoo.hs27.internal/web/login` testen
    - warum: Route und restricted nameserver sind jetzt live, aber der echte mobile Akzeptanztest fuer den `hs27.internal`-Pfad ist noch nicht bestaetigt
    - danach uebernehmen Codex/Gemini wieder: mobilen Betriebsstandard finalisieren und den Frontdoor fuer Endgeraete sauber freigeben
-7. `AKTION VON DIR ERFORDERLICH:` Workspace auf `WOLFSTUDIOPC` lokal initialisieren
-   - benoetigte Aktion: den Repo-Ordner auf `WOLFSTUDIOPC` bereitstellen und dort `scripts\bootstrap_windows_workspace.cmd` starten
-   - warum: der Rechner ist jetzt als `192.168.2.162` / `WOLFSTUDIOPC.local` identifiziert, bietet aber derzeit keinen Remote-Admin-Pfad ueber SSH oder WinRM
-   - danach uebernehmen Codex/Gemini wieder: Tailscale-/Workspace-Erreichbarkeit pruefen und den Client weiter in den Managed-Pfad einordnen
+7. `AKTION VON DIR ERFORDERLICH:` Login-Credentials fuer MVP Browser Acceptance
+   - benoetigte Aktion: Bereitstellung der Master-Passwoerter (Vaultwarden fuer Franz und Wolf) oder Uebernahme des Login-Schritts.
+   - warum: Laut BUSINESS_MVP_PROMPT.md und ACCESS_REGISTER_VAULTWARDEN_REFERENCES.md liegen keine Klartextpasswoerter vor, der Login zur Verifikation muss aber zwingend sichtbar im Browser evaluiert werden.
+   - danach uebernehmen Codex/Gemini wieder: Pruefung der restlichen sichtbaren Realitaeten im Subagenten.
 
 ## IaC-Quellen fuer Business-Stacks
 

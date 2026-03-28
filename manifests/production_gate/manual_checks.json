@@ -1,0 +1,91 @@
+{
+  "version": 1,
+  "notes": [
+    "This file is the manual evidence register for production certification.",
+    "Set status to passed only after visible verification.",
+    "Allowed statuses: pending, passed, failed, waived."
+  ],
+  "checks": [
+    {
+      "id": "frawo_access_verified",
+      "title": "Franz has productive access to FraWo and the required collections",
+      "executor": "gemini_browser_ai",
+      "critical": true,
+      "status": "pending",
+      "last_verified": "",
+      "evidence": ""
+    },
+    {
+      "id": "vaultwarden_visible_spotcheck",
+      "title": "Imported Vaultwarden entries are visible and usable in the UI",
+      "executor": "gemini_browser_ai",
+      "critical": true,
+      "status": "pending",
+      "last_verified": "",
+      "evidence": ""
+    },
+    {
+      "id": "wolf_login_walkthrough",
+      "title": "Wolf completed the productive login walkthrough for the core internal apps",
+      "executor": "gemini_browser_ai",
+      "critical": true,
+      "status": "pending",
+      "last_verified": "",
+      "evidence": ""
+    },
+    {
+      "id": "franz_login_walkthrough",
+      "title": "Franz completed the productive login walkthrough for the core internal apps",
+      "executor": "gemini_browser_ai",
+      "critical": true,
+      "status": "pending",
+      "last_verified": "",
+      "evidence": ""
+    },
+    {
+      "id": "shared_frontend_acceptance_verified",
+      "title": "The shared surface-go-frontend and TV/Jellyfin shared path are visibly functional in the certified internal scope",
+      "executor": "gemini_browser_ai",
+      "critical": true,
+      "status": "pending",
+      "last_verified": "",
+      "evidence": ""
+    },
+    {
+      "id": "strato_mail_model_verified",
+      "title": "STRATO aliases, postboxes, sending and receiving are visibly verified",
+      "executor": "admin_only",
+      "critical": true,
+      "status": "pending",
+      "last_verified": "",
+      "evidence": ""
+    },
+    {
+      "id": "device_rollout_verified",
+      "title": "Franz Surface Laptop and iPhone have the required direct entrypoints and device-local rollout",
+      "executor": "admin_only",
+      "critical": true,
+      "status": "pending",
+      "last_verified": "",
+      "evidence": ""
+    },
+    {
+      "id": "app_smtp_functional_test_verified",
+      "title": "Visible SMTP test mails succeeded for Nextcloud, Paperless, Odoo and AzuraCast",
+      "executor": "admin_only",
+      "critical": true,
+      "status": "pending",
+      "last_verified": "",
+      "evidence": ""
+    },
+    {
+      "id": "vaultwarden_recovery_material_verified",
+      "title": "Vaultwarden recovery material exists offline in two separate copies",
+      "executor": "admin_only",
+      "critical": true,
+      "status": "pending",
+      "last_verified": "",
+      "evidence": ""
+    }
+  ]
+}

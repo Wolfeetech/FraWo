@@ -1,0 +1,28 @@
+{
+  "contract_path": "/mnt/c/Users/StudioPC/Documents/Homeserver 2027 Workspace/manifests/pbs_rebuild/device_contract.json",
+  "datastore_mount_path": "/srv/pbs-datastore",
+  "storage_id": "pbs-usb",
+  "boot_usb": {
+    "serial": "",
+    "allow_destroy": false,
+    "min_gib": 50.0,
+    "max_gib": 70.0,
+    "resolved_device": null
+  },
+  "datastore_device": {
+    "serial": "",
+    "allow_destroy": false,
+    "allow_reformat_existing_filesystem": false,
+    "min_gib": 200.0,
+    "resolved_device": null
+  },
+  "approved_by": "",
+  "approved_at": "",
+  "change_ticket": "",
+  "findings": [
+    "Boot USB serial is not approved in the device contract.",
+    "Datastore device serial is not approved in the device contract.",
+    "Device contract is missing operator approval metadata."
+  ],
+  "recommendation": "blocked_wait_for_explicit_device_contract"
+}

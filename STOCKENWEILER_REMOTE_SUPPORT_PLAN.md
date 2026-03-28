@@ -38,7 +38,7 @@ Ziel ist eine selbstaendig nutzbare Umgebung mit kontrolliertem Fernzugriff von 
 
 ## Identitaets- und Secret-Modell
 
-- eigener Bereich `Stockenweiler` in Bitwarden
+- eigener Bereich `Stockenweiler` in `Vaultwarden / FraWo`
 - getrennte Eintraege fuer Geraete, Tailscale, AnyDesk und Provider
 - keine Vermischung mit internen FRAWO-Adminlogins
 
@@ -58,5 +58,5 @@ Ziel ist eine selbstaendig nutzbare Umgebung mit kontrolliertem Fernzugriff von 
 1. Tailscale-Zugriff dokumentiert
 2. Fallback ueber AnyDesk dokumentiert
 3. Haupt-PC und Handy als betreute Endpunkte erfasst
-4. Passwort- und Providerdaten in Bitwarden abgelegt
+4. Passwort- und Providerdaten in `Vaultwarden / FraWo` abgelegt
 5. kein oeffentlich exponierter Adminpfad aktiv

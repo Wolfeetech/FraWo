@@ -7,7 +7,7 @@ Sie ersetzt keine Vaultwarden-Eintraege und ist nur fuer Betrieb, Audit und Mark
 
 ## Quelle
 
-- generiert aus `ACCESS_REGISTER.md`
+- historisch generiert aus dem inzwischen extern archivierten `ACCESS_REGISTER.md`
 - Organisation: `FraWo`
 - importierbare Eintraege: `17`
 - zusammengefuehrte Duplikate: `1`

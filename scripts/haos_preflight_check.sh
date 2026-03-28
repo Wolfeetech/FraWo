@@ -1,14 +1,15 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+source "${ROOT_DIR}/scripts/inventory_remote.sh"
+
 log() {
   printf '[haos-preflight] %s\n' "$*"
 }
 
-ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-
 remote() {
-  ssh proxmox "$@"
+  run_proxmox_remote "$1"
 }
 
 log "Checking whether VM 210 already exists"

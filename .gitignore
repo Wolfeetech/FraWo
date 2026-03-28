@@ -12,3 +12,4 @@ __pycache__/
 .coverage
 dist/
 build/
+ansible/inventory/group_vars/all/mail_runtime.local.yml

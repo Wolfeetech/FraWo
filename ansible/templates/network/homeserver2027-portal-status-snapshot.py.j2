@@ -72,28 +72,15 @@ def directory_size_human(path: Path) -> str:
 
 
 def sync_state() -> str:
-    state = command_output(["systemctl", "is-active", "homeserver2027-media-sync.service"])
-    if state == "activating":
-        return "running"
-    if state == "active":
-        return "active"
-    if state in {"inactive", "failed"}:
-        return state
-    return "unknown"
+    return "retired"
 
 
 def timer_state() -> str:
-    state = command_output(["systemctl", "is-active", "homeserver2027-media-sync.timer"])
-    return state or "unknown"
+    return "retired"
 
 
 def last_sync_line() -> str:
-    if not MEDIA_SYNC_LOG.exists():
-        return "No sync log yet"
-    lines = [line.strip() for line in MEDIA_SYNC_LOG.read_text(encoding="utf-8", errors="replace").splitlines() if line.strip()]
-    if not lines:
-        return "Sync log is empty"
-    return lines[-1]
+    return "Local bootstrap sync retired; central SMB library is canonical"
 
 
 services = []

@@ -63,6 +63,30 @@
         - "{{ toolbox_network_stack_dir }}/adguard/work"
         - "{{ toolbox_network_stack_dir }}/adguard/conf"
         - "{{ toolbox_network_stack_dir }}/portal"
+        - "{{ toolbox_network_stack_dir }}/portal/franz"
+
+    - name: Stop stale toolbox media sync units
+      ansible.builtin.systemd:
+        name: "{{ item }}"
+        state: stopped
+        enabled: false
+      loop:
+        - homeserver2027-media-sync.service
+        - homeserver2027-media-sync.timer
+      failed_when: false
+      when: not ansible_check_mode
+
+    - name: Remove stale toolbox media sync artifacts
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /etc/systemd/system/homeserver2027-media-sync.service
+        - /etc/systemd/system/homeserver2027-media-sync.timer
+        - /etc/systemd/system/timers.target.wants/homeserver2027-media-sync.timer
+        - /usr/local/sbin/homeserver2027-sync-radio-usb-to-toolbox-media.sh
+        - /var/log/homeserver2027-media-sync.log
+      notify: reload systemd
 
     - name: Install toolbox network compose file
       ansible.builtin.template:
@@ -95,6 +119,15 @@
       ansible.builtin.template:
         src: "{{ playbook_dir }}/../templates/stacks/toolbox-network/portal/index.html.j2"
         dest: "{{ toolbox_network_stack_dir }}/portal/index.html"
+        owner: root
+        group: root
+        mode: "0644"
+      notify: restart toolbox network stack
+
+    - name: Install Franz portal page
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/stacks/toolbox-network/portal/franz/index.html.j2"
+        dest: "{{ toolbox_network_stack_dir }}/portal/franz/index.html"
         owner: root
         group: root
         mode: "0644"

@@ -2,6 +2,7 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+source "${ROOT_DIR}/scripts/inventory_remote.sh"
 
 extract_value() {
   local key="$1"
@@ -9,9 +10,23 @@ extract_value() {
   printf '%s\n' "$data" | awk -F= -v key="$key" '$1 == key {print $2; exit}'
 }
 
+read_pbs_hostvar() {
+  local key="$1"
+  python3 - <<'PY' "$ROOT_DIR/ansible/inventory/host_vars/pbs.yml" "$key"
+import sys
+import yaml
+
+path = sys.argv[1]
+key = sys.argv[2]
+with open(path, 'r', encoding='utf-8') as handle:
+    data = yaml.safe_load(handle)
+print(data[key])
+PY
+}
+
 run_check() {
   local script="$1"
-  if output="$(timeout 25 "${ROOT_DIR}/scripts/${script}" 2>/dev/null)"; then
+if output="$(timeout 25 "${ROOT_DIR}/scripts/${script}" 2>/dev/null)"; then
     printf '%s\n' "$output"
     return 0
   fi
@@ -54,13 +69,13 @@ nextcloud_ok="no"
 odoo_ok="no"
 paperless_ok="no"
 
-if ssh -o BatchMode=yes wolf@192.168.2.21 "systemctl is-active --quiet homeserver-compose-nextcloud.service" >/dev/null 2>&1 && tcp_open 192.168.2.21 80 >/dev/null 2>&1; then
+if run_inventory_guest_remote nextcloud_vm "systemctl is-active --quiet homeserver-compose-nextcloud.service" "wolf" >/dev/null 2>&1 && tcp_open 192.168.2.21 80 >/dev/null 2>&1; then
   nextcloud_ok="yes"
 fi
-if ssh -o BatchMode=yes wolf@192.168.2.22 "systemctl is-active --quiet homeserver-compose-odoo.service" >/dev/null 2>&1 && tcp_open 192.168.2.22 8069 >/dev/null 2>&1; then
+if run_inventory_guest_remote odoo_vm "systemctl is-active --quiet homeserver-compose-odoo.service" "wolf" >/dev/null 2>&1 && tcp_open 192.168.2.22 8069 >/dev/null 2>&1; then
   odoo_ok="yes"
 fi
-if ssh -o BatchMode=yes wolf@192.168.2.23 "systemctl is-active --quiet homeserver-compose-paperless.service" >/dev/null 2>&1 && tcp_open 192.168.2.23 8000 >/dev/null 2>&1; then
+if run_inventory_guest_remote paperless_vm "systemctl is-active --quiet homeserver-compose-paperless.service" "wolf" >/dev/null 2>&1 && tcp_open 192.168.2.23 8000 >/dev/null 2>&1; then
   paperless_ok="yes"
 fi
 if [[ "${nextcloud_ok}" == "yes" && "${odoo_ok}" == "yes" && "${paperless_ok}" == "yes" ]]; then
@@ -75,8 +90,10 @@ if [[ "${portal_http}" == "200" && "${ha_http}" == "200" ]]; then
   toolbox_network_ok="yes"
 fi
 
+PBS_PROXMOX_STORAGE_ID="$(read_pbs_hostvar pbs_proxmox_storage_id)"
+
 pbs_storage_active="no"
-if ssh proxmox "pvesm status | awk '\$1 == \"pbs-interim\" && \$2 == \"pbs\" && \$3 == \"active\" {found=1} END {exit(found ? 0 : 1)}'" >/dev/null 2>&1; then
+if run_proxmox_remote "pvesm status | awk '\$1 == \"${PBS_PROXMOX_STORAGE_ID}\" && \$2 == \"pbs\" && \$3 == \"active\" {found=1} END {exit(found ? 0 : 1)}'" >/dev/null 2>&1; then
   pbs_storage_active="yes"
 fi
 

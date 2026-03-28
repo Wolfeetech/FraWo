@@ -1,114 +1,104 @@
 # PBS VM 240 Setup Plan
 
+Stand: `2026-03-27`
+
 ## Goal
 
-Prepare a controlled Proxmox Backup Server rollout path without weakening the current backup posture or pretending that same-host same-disk backups are enough.
+Rebuild `VM 240` as a clean, controlled PBS path without writing to the wrong removable device and without pretending that the current hardware state is already ready.
 
-## Target Shape
+## Current Verified State
 
-- VM ID: `240`
-- Planned hostname: `pbs`
-- Planned IP: `192.168.2.25`
-- Role: dedicated Proxmox Backup Server control plane
-- CPU / RAM: `2 vCPU`, `4096 MB`
-- System disk: `32 GB` on Proxmox `local-lvm`
-- Datastore: only on a separately mounted backup filesystem exposed to the PBS guest workflow
-- Exposure: internal only, never public
+- `CT100 toolbox` is repaired and no longer consuming Proxmox root through the obsolete local bootstrap media sync.
+- Proxmox root is healthy again with real working headroom.
+- The official PBS installer ISO is staged and checksum-verified on Proxmox:
+  - `/var/lib/vz/template/iso/proxmox-backup-server-current.iso`
+  - SHA256 `670f0a71ee25e00cc7839bebb3f399594f5257e49a224a91ce517460e7ab171e`
+- `VM 240` still exists, but its current config is drifted:
+  - `scsi0` points to `pbs-usb`
+  - `scsi1` points to `pbs-usb`
+  - this is not the intended runner contract
+- The intended runner contract remains:
+  - system disk `32G` on `local-lvm`
+  - data disk `40G` on Proxmox storage `pbs-usb`
+- The latest PBS storage audit is blocked:
+  - report: `artifacts/pbs_storage_audit/20260327_081910/report.md`
+  - no clean 64GB-class rebuild USB is currently visible
+  - the visible boot-stick candidate reports `No medium found`
+  - the visible `1.8T` USB SSD is data-bearing and must not be reformatted blindly
 
-## Current Verified State - 2026-03-21
+## Non-Negotiable Safety Rules
 
-- The interim local backup path on Proxmox is live and healthy:
-  - `homeserver2027-local-business-backup.timer` is enabled
-  - `VM 200`, `VM 220` and `VM 230` have fresh local archives
-- restore proof already succeeded for Odoo
-- The PBS VM runner path is now prepared on Proxmox:
-  - `ansible/playbooks/deploy_pbs_vm_runner.yml`
-  - `/usr/local/sbin/homeserver2027-deploy-pbs-vm.sh`
-  - `make pbs-preflight`
-  - `make pbs-stage-gate`
-  - `make pbs-vm-check`
-- The official PBS installer ISO is already staged and checksum-verified on Proxmox:
-  - source file: `/var/lib/vz/template/iso/proxmox-backup-server_4.1-1.iso`
-  - active alias: `/var/lib/vz/template/iso/proxmox-backup-server-current.iso`
-  - checksum: `670f0a71ee25e00cc7839bebb3f399594f5257e49a224a91ce517460e7ab171e`
-- Interim PBS USB mode is now live on Proxmox:
-  - the `64GB` USB stick `HS27_PORTABLEBK` is mounted on `/srv/portable-backup-usb`
-  - the same filesystem is bind-mounted to `/srv/pbs-datastore`
-  - Proxmox storage `pbs-usb` exists and is active
-  - `VM 240` now exists with:
-    - `32 GB` system disk on `local-lvm`
-    - `40 GB` USB-backed data disk on `pbs-usb`
-    - `3072 MB` RAM as a constrained interim fit for the current host
-  - the PBS guest is installed and reachable:
-    - hostname `pbs`
-    - IP `192.168.2.25`
-    - SSH and web UI on `8007` are reachable
-  - the USB-backed guest datastore is initialized:
-    - filesystem label `PBS_DATA`
-    - mountpoint `/mnt/datastore-interim`
-    - datastore name `hs27-interim`
-  - Proxmox storage `pbs-interim` is already registered and active against `hs27-interim`
-  - daily backup job `hs27-pbs-interim-daily` exists for `200,210,220,230`
-  - retention is intentionally constrained for the `64GB` stick:
-  - schedule `02:40`
-    - `keep-daily=2`
-    - `keep-weekly=1`
-    - `keep-monthly=1`
-  - first green proof-backup run is now verified:
-    - `VM 220`
-    - datastore snapshot path `vm/220/2026-03-21T10:04:30Z`
-    - Proxmox task `exitstatus: OK`
+- Never wipe a USB or SSD by path alone.
+- Every destructive PBS device step must be gated by:
+  - a visible serial number
+  - explicit approval in `manifests/pbs_rebuild/device_contract.json`
+  - a fresh contract check report
+- Boot USB and datastore device must be separate roles.
+- The PBS datastore device must not be reused from the portable backup shuttle path.
+- The current data-bearing `1.8T` USB SSD stays untouched until it is explicitly approved for reformat.
 
-## Why PBS Is Not Fully Done Yet
+## Guarded Rebuild Workflow
 
-The original blocker was lack of separate storage. That is now solved in an interim way with the attached `64GB` USB stick. The remaining blocker is now no longer installation, but proof quality:
+1. Run `make pbs-rebuild-storage-audit`.
+2. Run `make pbs-device-inventory` to capture the currently visible serials and device facts.
+3. Fill `manifests/pbs_rebuild/device_contract.json` with:
+   - approved boot USB serial
+   - approved datastore device serial
+   - explicit destructive approval flags
+   - operator approval metadata
+   - optional helper:
+   - `make pbs-contract-prefill BOOT_SERIAL=... DATASTORE_SERIAL=... APPROVED_BY=...`
+4. Attach only the intended PBS boot USB and the intended datastore device.
+5. Run `make pbs-rebuild-contract-check`.
+6. Only if the contract check says `ready_for_guarded_pbs_datastore_prepare`, run:
+   - `make pbs-datastore-prepare DEV=/dev/sdX`
+7. Re-deploy the PBS runner with `make pbs-runner-deploy`.
+8. Dry-run the guarded VM worker with:
+   - `make pbs-vm240-reconcile`
+   - or the combined guarded pipeline:
+   - `make pbs-guarded-rebuild`
+9. Reconcile or rebuild `VM 240` so it matches the runner contract:
+   - `scsi0` on `local-lvm`
+   - `scsi1` on `pbs-usb`
+   - real execution is only allowed with `PBS_VM240_EXECUTE=yes` and `PBS_VM240_ALLOW_DESTROY=yes`
+10. Continue with guest install, datastore initialization, proof backup and restore drill.
 
-- recurring restore drills on the PBS-v1 path still need to be repeated regularly after the first green proof
-- this `64GB` USB mode remains intentionally small and temporary compared with the later final PBS target
-- this `64GB` USB mode is useful and real, but intentionally smaller and less durable than the later final PBS target
+## What Is Already Automated
 
-## Controlled Build Path
+- `make pbs-iso-stage`
+  - stages and verifies the official PBS ISO
+- `make pbs-rebuild-storage-audit`
+  - checks live hardware visibility and obvious unsafe conditions
+- `make pbs-device-inventory`
+  - produces a non-destructive report of visible block devices, serials and obvious hazards on Proxmox
+- `make pbs-rebuild-contract-check`
+  - verifies approved serials, approval metadata and current device visibility
+- `make pbs-contract-prefill`
+  - writes approved serials into the contract while keeping destructive approvals explicitly false
+- `make pbs-datastore-prepare DEV=/dev/sdX`
+  - guarded destructive prepare for the approved PBS datastore device
+- `make pbs-vm240-reconcile`
+  - dry-runs the VM240 drift/rebuild decision and only executes behind explicit environment flags
+- `make pbs-guarded-rebuild`
+  - runs audit, contract check, runner deploy, preflight and the guarded VM path in one controlled entrypoint
+- `make pbs-preflight`
+  - checks memory, system-disk fit, ISO presence and datastore mount state
+- `make pbs-stage-gate`
+  - checks whether the overall PBS path is really green
 
-1. Keep the staged official PBS installer ISO at `/var/lib/vz/template/iso/proxmox-backup-server-current.iso`, or refresh it with `make pbs-iso-stage` when the version changes.
-2. Keep the interim USB-backed datastore mount live on Proxmox at `/srv/pbs-datastore`.
-3. Deploy or refresh the runner with `make pbs-runner-deploy`.
-4. Build or refresh the VM only through `/usr/local/sbin/homeserver2027-deploy-pbs-vm.sh`.
-5. Keep the datastore `hs27-interim` on `/mnt/datastore-interim` mounted and healthy.
-6. Keep Proxmox storage `pbs-interim` active.
-7. Keep regular restore drills on the PBS-v1 path.
-8. Replace this interim USB path later with larger dedicated PBS storage.
-9. Re-check host RAM comfort before treating PBS-v1 as long-term steady state.
+## Current Blocker
 
-## Stage-Gate Rules
+The rebuild is blocked by hardware, not by missing automation:
 
-Do not treat `VM 240` as production-ready until all of these are true:
+- the current boot-stick candidate is visible only as `USB Disk 3.0 / FC2604224284249D`
+- it currently reports `No medium found`
+- the visible `1.8T` USB SSD is not a safe automatic target because it contains existing data
 
-- `make proxmox-local-backup-check` is green
-- `make backup-list` shows current archives for `VM 200`, `VM 220` and `VM 230`
-- `make pbs-preflight` reports:
-  - `pbs_4gb_fit=yes`
-  - `pbs_system_disk_fit=yes`
-  - `pbs_iso_present=yes`
-  - `separate_backup_storage_ready=yes`
-- the PBS guest install is complete
-- the guest-side datastore is initialized and verified
-- at least one proof-backup run to `pbs-interim` finishes cleanly
+## Next Admin Action
 
-## Immediate Next Action
+Provide:
 
-Keep the green proof-backup and restore path on `pbs-interim` repeatable, then keep the `64GB` USB attached until a larger final PBS target exists.
+1. a real, readable PBS boot USB stick
+2. a dedicated datastore device or datastore partition that is explicitly approved for reformat
 
-## Recurring Restore Drills (Betriebsstandard)
-
-Ein verlässliches Backup ist nur so gut wie sein Restore-Test. Folgender Standard-Prozess wird monatlich empfohlen:
-
-1. **Drill-Start**: `make pbs-restore-proof`
-2. **Ausführung**:
-   - Das Skript stellt eine ausgewählte VM (z.B. Odoo oder Nextcloud) unter einer neuen Test-ID (z.B. 920) in einen isolierten Zustand wieder her.
-   - Proxmox holt die Daten vom PBS-Storage.
-3. **Prüfung**:
-   - Starte die Test-VM ohne Netzwerk / im isolierten Subnetz.
-   - Prüfe via Proxmox-Konsole, ob Services wie Datenbank und Webserver erfolgreich booten.
-4. **Clean-Up**:
-   - Nach erfolgreichem Boot und Login den Test dokumentieren.
-   - Die temporäre Test-VM (z.B. ID 920) sofort wieder löschen.
+After that, the guarded workflow above is the only approved rebuild path.

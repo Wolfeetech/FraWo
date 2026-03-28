@@ -12,17 +12,19 @@ Mails sollen direkt am richtigen Ort landen, ohne einen eigenen Mailserver zu be
 - Apps senden ueber `STRATO SMTP`
 - Eingehende Mails bleiben zuerst in `STRATO`
 - der Server holt nur die dafuer vorgesehenen Mails gezielt ab
+- ein eigener Mailserver auf dem Homeserver ist nicht Teil dieser Phase
 
 ## Mailboxen Und Rollen
 
 - `wolf@frawo-tech.de`
-  - persoenlicher Hauptaccount von Wolf
+  - sichtbare Arbeitsidentitaet von Wolf, technisch ueber `webmaster@...`
 - `franz@frawo-tech.de`
   - persoenlicher Hauptaccount von Franz
 - `info@frawo-tech.de`
   - Kontakt und normale Inbound-Kommunikation
 - `noreply@frawo-tech.de`
   - Systemmails aus Apps
+- der technische Zielpfad fuer `info` und `noreply` ist noch gegen `STRATO` zu verifizieren
 - spaeter `documents@frawo-tech.de`
   - dedizierter Dokumenteneingang fuer Paperless
 
@@ -81,7 +83,7 @@ Technisch:
 
 ## Reihenfolge
 
-1. STRATO-Mailboxen anlegen
+1. Alias-/Postfachmodell in `STRATO` verifizieren und bereinigen
 2. `noreply@frawo-tech.de` als SMTP-Absender in den Apps setzen
 3. spaeter `documents@frawo-tech.de` anlegen
 4. `Paperless` per `IMAP` an die Dokumenten-Mailbox binden

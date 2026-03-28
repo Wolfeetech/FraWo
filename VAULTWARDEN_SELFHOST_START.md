@@ -17,6 +17,11 @@ Wichtig:
 - sie ist aktuell **intern** live
 - produktiver Erstlogin ist erst nach internem `HTTPS` freigegeben
 - `vault.hs27.internal` ist die einzige produktive Login-URL
+- Stand `2026-03-27` zusaetzlich:
+  - `Vaultwarden`-SMTP fuer Einladungen ist live
+  - `SIGNUPS_ALLOWED=false`
+  - `INVITATIONS_ALLOWED=true`
+  - `ADMIN_TOKEN` liegt live nur noch als `Argon2id`-Hash vor
 
 ## Was bereits erledigt ist
 
@@ -46,6 +51,7 @@ Nur lokal auf dem StudioPC, nicht im Repo:
 
 Diese Dateien sind nur Break-Glass-Bootstrap-Artefakte.
 Sie sind nicht der produktive Login, nicht der normale Recovery-Pfad und nicht der Ersatz fuer das Master-Passwort.
+- der Klartext-Admin-Token liegt nur lokal in der Bootstrap-Datei; die Live-`.env` auf `CT120` enthaelt nur den gehashten Wert
 
 ## Master-Passwort-Regel
 
@@ -72,5 +78,5 @@ Siehe:
    - `Devices`
    - `Stockenweiler`
 2. zuerst `STRATO`- und Core-Infra-Zugaenge einpflegen
-3. danach App-Zugaenge aus `ACCESS_REGISTER.md` uebernehmen
+3. danach App-Zugaenge aus dem extern archivierten Altregister in `Vaultwarden` uebernehmen und nur noch das Referenzregister im Workspace behalten
 4. erst dann Klartext-Passwoerter in Markdown abbauen

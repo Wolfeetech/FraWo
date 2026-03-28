@@ -24,10 +24,9 @@ Stand `2026-03-26` ist der freigegebene Release-Scope fuer `2026-04-01` bewusst 
 
 Oeffentliche Freigaben starten erst, wenn:
 
-- Gateway-Cutover sauber abgeschlossen ist
-- PBS produktiv ist
-- Restore-Drills belastbar sind
-- Inventar und Zonen final sind
+- das interne Business-MVP sichtbar stabil ist
+- Zielsystem, DNS, TLS, Logging und Rollback definiert sind
+- der Website-Scope strikt klein gehalten wird
 - Domain, DNS, TLS, Auth, Logging und Rollback definiert sind
 - der Passwortmanager produktiv eingefuehrt ist
 
@@ -123,9 +122,11 @@ Bevorzugter Zielpfad dafuer:
 Vor dem ersten Public Rollout muessen gruen sein:
 
 - `RELEASE_READINESS_2026-04-01.md`
-- `make gateway-cutover-stage-gate`
-- `make pbs-stage-gate`
-- Inventar final ohne `unknown-review`
+- `make release-mvp-gate`
+- Zielsystem fuer `www.frawo-tech.de` ist bestimmt
+- DNS-/Redirect-Modell ist dokumentiert
+- TLS-Automation ist festgelegt
+- SPF, DKIM und DMARC sind sauber gesetzt
 - dokumentierter DNS-/TLS-/Rollback-Pfad
 - produktiver Passwortmanager mit den relevanten Logins
 

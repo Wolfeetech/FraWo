@@ -2,15 +2,55 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+source "${ROOT_DIR}/scripts/inventory_remote.sh"
+source "${ROOT_DIR}/scripts/toolbox_remote.sh"
 
 log() {
   printf '[security-check] %s\n' "$*"
 }
 
+search_workspace() {
+  local pattern="$1"
+
+  if command -v rg >/dev/null 2>&1; then
+    rg -l --hidden --glob '*.yml' --glob '*.yaml' --glob '*.md' --glob '*.env' --glob '!ansible/inventory/group_vars/all/vault.yml' "${pattern}" "${ROOT_DIR}" || true
+  else
+    grep -R -l -E --include='*.yml' --include='*.yaml' --include='*.md' --include='*.env' --exclude='vault.yml' "${pattern}" "${ROOT_DIR}" 2>/dev/null || true
+  fi
+}
+
+workspace_has_pattern() {
+  local pattern="$1"
+  local path="${2:-${ROOT_DIR}}"
+
+  if command -v rg >/dev/null 2>&1; then
+    rg -q "${pattern}" "${path}"
+  else
+    grep -q -E "${pattern}" "${path}" 2>/dev/null
+  fi
+}
+
+run_host_remote() {
+  local host_key="$1"
+  local remote_command="$2"
+
+  case "${host_key}" in
+    toolbox)
+      run_toolbox_remote "${remote_command}"
+      ;;
+    nextcloud_vm|odoo_vm|paperless_vm)
+      run_inventory_guest_remote "${host_key}" "${remote_command}" "wolf"
+      ;;
+    *)
+      run_inventory_remote "${host_key}" "${remote_command}"
+      ;;
+  esac
+}
+
 remote_tcp_ports_by_scope() {
-  local host="$1"
+  local host_key="$1"
   local scope="$2"
-  ssh "$host" "python3 - <<'PY'
+  run_host_remote "${host_key}" "python3 - <<'PY'
 import ipaddress
 import re
 import subprocess
@@ -55,13 +95,13 @@ PY"
 }
 
 remote_tcp_ports() {
-  local host="$1"
-  remote_tcp_ports_by_scope "$host" lan
+  local host_key="$1"
+  remote_tcp_ports_by_scope "${host_key}" lan
 }
 
 remote_unexpected_data_ports() {
-  local host="$1"
-  ssh "$host" "python3 - <<'PY'
+  local host_key="$1"
+  run_host_remote "${host_key}" "python3 - <<'PY'
 import re
 import subprocess
 
@@ -85,9 +125,9 @@ PY"
 }
 
 remote_port_surface() {
-  local host="$1"
+  local host_key="$1"
   local port="$2"
-  ssh "$host" "python3 - <<'PY'
+  run_host_remote "${host_key}" "python3 - <<'PY'
 import re
 import subprocess
 
@@ -131,8 +171,8 @@ PY
 }
 
 log "Checking workspace for plaintext secret leaks outside Vault"
-easybox_secret_hits="$(rg -l --hidden --glob '*.yml' --glob '*.yaml' --glob '*.md' --glob '*.env' --glob '!ansible/inventory/group_vars/all/vault.yml' 'homeserver_vault_easybox_password:[[:space:]]+[^[:space:]]' "${ROOT_DIR}" || true)"
-tailscale_secret_hits="$(rg -l --hidden --glob '*.yml' --glob '*.yaml' --glob '*.md' --glob '*.env' --glob '!ansible/inventory/group_vars/all/vault.yml' 'homeserver_vault_tailscale_authkey:[[:space:]]+[^[:space:]]' "${ROOT_DIR}" || true)"
+easybox_secret_hits="$(search_workspace 'homeserver_vault_easybox_password:[[:space:]]+[^[:space:]]')"
+tailscale_secret_hits="$(search_workspace 'homeserver_vault_tailscale_authkey:[[:space:]]+[^[:space:]]')"
 secret_hits="$(printf '%s\n%s\n' "${easybox_secret_hits}" "${tailscale_secret_hits}" | sed '/^$/d' | sort -u)"
 if [[ -n "${secret_hits}" ]]; then
   echo "plaintext_secret_leak=yes"
@@ -142,7 +182,7 @@ else
 fi
 
 log "Checking declared public exposure policy"
-if rg -q '^  public_exposure_enabled: false$' "${ROOT_DIR}/ansible/inventory/group_vars/all/main.yml"; then
+if workspace_has_pattern '^  public_exposure_enabled: false$' "${ROOT_DIR}/ansible/inventory/group_vars/all/main.yml"; then
   echo "public_exposure_enabled=false"
 else
   echo "public_exposure_enabled=true_or_unknown"
@@ -150,7 +190,7 @@ fi
 
 log "Checking Tailscale backend state"
 tailscale_backend_state="$(
-  ssh toolbox "tailscale status --json 2>/dev/null | python3 -c 'import json,sys; print(json.load(sys.stdin).get(\"BackendState\", \"unknown\"))'" 2>/dev/null \
+  run_toolbox_remote "tailscale status --json 2>/dev/null | python3 -c 'import json,sys; print(json.load(sys.stdin).get(\"BackendState\", \"unknown\"))'" 2>/dev/null \
   || echo "unknown"
 )"
 echo "tailscale_backend_state=${tailscale_backend_state}"
@@ -159,9 +199,9 @@ log "Checking externally reachable TCP ports"
 toolbox_lan_ports_raw="$(remote_tcp_ports_by_scope toolbox lan)"
 toolbox_lan_ports="$(filter_toolbox_effective_lan_ports "${toolbox_lan_ports_raw}")"
 toolbox_tailscale_only_ports="$(remote_tcp_ports_by_scope toolbox tailscale)"
-nextcloud_ports="$(remote_tcp_ports nextcloud)"
-odoo_ports="$(remote_tcp_ports odoo)"
-paperless_ports="$(remote_tcp_ports paperless)"
+nextcloud_ports="$(remote_tcp_ports nextcloud_vm)"
+odoo_ports="$(remote_tcp_ports odoo_vm)"
+paperless_ports="$(remote_tcp_ports paperless_vm)"
 echo "toolbox_lan_tcp_ports=${toolbox_lan_ports}"
 echo "toolbox_tailscale_only_tcp_ports=${toolbox_tailscale_only_ports:-none}"
 echo "nextcloud_tcp_ports=${nextcloud_ports}"
@@ -169,17 +209,17 @@ echo "odoo_tcp_ports=${odoo_ports}"
 echo "paperless_tcp_ports=${paperless_ports}"
 
 log "Checking for unexpected database or broker ports on business VMs"
-nextcloud_unexpected="$(remote_unexpected_data_ports nextcloud)"
-odoo_unexpected="$(remote_unexpected_data_ports odoo)"
-paperless_unexpected="$(remote_unexpected_data_ports paperless)"
+nextcloud_unexpected="$(remote_unexpected_data_ports nextcloud_vm)"
+odoo_unexpected="$(remote_unexpected_data_ports odoo_vm)"
+paperless_unexpected="$(remote_unexpected_data_ports paperless_vm)"
 echo "nextcloud_unexpected_data_ports=${nextcloud_unexpected:-none}"
 echo "odoo_unexpected_data_ports=${odoo_unexpected:-none}"
 echo "paperless_unexpected_data_ports=${paperless_unexpected:-none}"
 
 log "Checking whether LLMNR is still exposed on business VMs"
 llmnr_open="no"
-for host in nextcloud odoo paperless; do
-  if ssh "$host" "ss -tlnH | awk '{print \$4}' | grep -qE '(^|:)5355$'"; then
+for host in nextcloud_vm odoo_vm paperless_vm; do
+  if run_host_remote "$host" "ss -tlnH | grep -q ':5355'"; then
     printf 'llmnr_open_on=%s\n' "$host"
     llmnr_open="yes"
   fi
@@ -207,9 +247,9 @@ esac
 
 log "Checking whether mobile frontdoor ports are still reachable from the LAN"
 toolbox_mobile_lan_surface="no"
-toolbox_mobile_lan_probe_host="nextcloud"
+toolbox_mobile_lan_probe_host="nextcloud_vm"
 for port in 8443 8444 8445 8446 8447 8448 8449; do
-  if ssh "${toolbox_mobile_lan_probe_host}" "curl --silent --show-error --max-time 5 --output /dev/null http://192.168.2.20:${port}/"; then
+  if run_host_remote "${toolbox_mobile_lan_probe_host}" "curl --silent --max-time 5 --output /dev/null http://192.168.2.20:${port}/ 2>/dev/null"; then
     toolbox_mobile_lan_surface="yes"
     break
   fi
@@ -218,7 +258,7 @@ echo "toolbox_mobile_lan_surface=${toolbox_mobile_lan_surface}"
 echo "toolbox_mobile_lan_probe_host=${toolbox_mobile_lan_probe_host}"
 
 log "Checking toolbox mobile firewall service"
-toolbox_mobile_firewall_service="$(ssh toolbox 'systemctl is-active homeserver2027-toolbox-mobile-firewall.service 2>/dev/null || true')"
+toolbox_mobile_firewall_service="$(run_toolbox_remote 'systemctl is-active homeserver2027-toolbox-mobile-firewall.service 2>/dev/null || true')"
 echo "toolbox_mobile_firewall_service=${toolbox_mobile_firewall_service:-missing}"
 
 security_status="ok"

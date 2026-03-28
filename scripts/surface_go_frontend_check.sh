@@ -6,6 +6,16 @@ TARGET_IP="192.168.2.154"
 TARGET_HOSTNAME="surface-go-frontend"
 TAILSCALE_HOSTNAME="surface-go-frontend"
 
+inventory_host_present() {
+  local pattern="$1"
+  local file="$2"
+  if command -v rg >/dev/null 2>&1; then
+    rg -q "${pattern}" "${file}"
+  else
+    grep -Eq "${pattern}" "${file}"
+  fi
+}
+
 port_state() {
   local host="$1"
   local port="$2"
@@ -53,7 +63,7 @@ remote_probe() {
 http_body="$(timeout 3 curl -fsSL "http://${TARGET_IP}" 2>/dev/null || true)"
 http_title="$(printf '%s' "${http_body}" | tr '\n' ' ' | sed -n 's:.*<title>\\(.*\\)</title>.*:\\1:p' | head -n1 || true)"
 inventory_present="no"
-if rg -q '^        surface_go_frontend:$' "${ROOT_DIR}/ansible/inventory/hosts.yml"; then
+if inventory_host_present '^        surface_go_frontend:$' "${ROOT_DIR}/ansible/inventory/hosts.yml"; then
   inventory_present="yes"
 fi
 

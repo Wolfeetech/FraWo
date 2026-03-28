@@ -2,6 +2,7 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+source "${ROOT_DIR}/scripts/inventory_remote.sh"
 
 read_hostvar() {
   local key="$1"
@@ -27,14 +28,15 @@ PY
 
 PBS_DATASTORE_MOUNTPOINT="$(read_hostvar pbs_datastore_mountpoint)"
 PBS_DATASTORE_NAME="$(read_hostvar pbs_datastore_name)"
+PBS_PROXMOX_STORAGE_ID="$(read_hostvar pbs_proxmox_storage_id)"
 
 pbs_storage_active="no"
-if ssh proxmox "pvesm status | awk '\$1 == \"pbs-interim\" && \$2 == \"pbs\" && \$3 == \"active\" {found=1} END {exit(found ? 0 : 1)}'" >/dev/null 2>&1; then
+if run_proxmox_remote "pvesm status | awk '\$1 == \"${PBS_PROXMOX_STORAGE_ID}\" && \$2 == \"pbs\" && \$3 == \"active\" {found=1} END {exit(found ? 0 : 1)}'" >/dev/null 2>&1; then
   pbs_storage_active="yes"
 fi
 
 snapshot_path="$(
-  ssh "root@${PBS_HOST}" "find ${PBS_DATASTORE_MOUNTPOINT@Q}/vm/220 -mindepth 1 -maxdepth 1 -type d 2>/dev/null | sort | tail -n 1" 2>/dev/null || true
+  run_inventory_remote "pbs" "find ${PBS_DATASTORE_MOUNTPOINT@Q}/vm/220 -mindepth 1 -maxdepth 1 -type d 2>/dev/null | sort | tail -n 1" "root" 2>/dev/null || true
 )"
 
 proof_backup_exists="no"
@@ -44,10 +46,10 @@ snapshot_fidx_present="no"
 
 if [[ -n "${snapshot_path}" ]]; then
   snapshot_name="$(basename "${snapshot_path}")"
-  if ssh "root@${PBS_HOST}" "test -f ${snapshot_path@Q}/index.json.blob"; then
+  if run_inventory_remote "pbs" "test -f ${snapshot_path@Q}/index.json.blob" "root"; then
     snapshot_index_present="yes"
   fi
-  if ssh "root@${PBS_HOST}" "find ${snapshot_path@Q} -maxdepth 1 -name '*.fidx' | grep -q ."; then
+  if run_inventory_remote "pbs" "find ${snapshot_path@Q} -maxdepth 1 -name '*.fidx' | grep -q ." "root"; then
     snapshot_fidx_present="yes"
   fi
   if [[ "${snapshot_index_present}" == "yes" && "${snapshot_fidx_present}" == "yes" ]]; then
@@ -56,6 +58,7 @@ if [[ -n "${snapshot_path}" ]]; then
 fi
 
 echo "pbs_storage_active=${pbs_storage_active}"
+echo "pbs_proxmox_storage_id=${PBS_PROXMOX_STORAGE_ID}"
 echo "pbs_datastore_name=${PBS_DATASTORE_NAME}"
 echo "pbs_proof_vm220_snapshot=${snapshot_name}"
 echo "pbs_proof_index_present=${snapshot_index_present}"

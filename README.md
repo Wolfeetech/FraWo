@@ -15,38 +15,43 @@ This is the shared operational workspace for Homeserver 2027.
 
 ## Read Order
 
-1. `LIVE_CONTEXT.md`
-2. `MASTERPLAN.md`
-3. `MORNING_ROUTINE.md`
-4. `SECURITY_BASELINE.md`
-5. `SESSION_CLOSEOUT.md`
-6. `GEMINI.md`
-7. `MEMORY.md`
-8. `NETWORK_INVENTORY.md`
-9. `VM_AUDIT.md`
-10. `BACKUP_RESTORE_PROOF.md`
-11. `CAPACITY_REVIEW.md`
-12. `RIGHTSIZING_MAINTENANCE_PLAN.md`
-13. `SURFACE_GO_FRONTEND_SETUP_PLAN.md`
-14. `MEDIA_AND_REMOTE_PREP.md`
-15. `REMOTE_ACCESS_STANDARD.md`
-16. `REMOTE_ONLY_WORK_WINDOW.md`
-17. `ADGUARD_PILOT_ROLLOUT_PLAN.md`
-18. `TAILSCALE_SPLIT_DNS_PLAN.md`
-19. `ROUTER_LEASE_RECONCILIATION_RUNBOOK.md`
-20. `PUBLIC_EDGE_ARCHITECTURE_PLAN.md`
-21. `RASPBERRY_PI_RADIO_NODE_PLAN.md`
-22. `RPI_RESOURCE_ALLOCATION_PLAN.md`
-23. `MEDIA_SERVER_PLAN.md`
-24. `MEDIA_SERVER_CLIENT_SETUP.md`
-25. `OPERATOR_TODO_QUEUE.md`
-26. `PBS_VM_240_SETUP_PLAN.md`
-27. `HAOS_VM_210_SETUP_PLAN.md`
+Read only this short boot path first:
+
+1. `INTRODUCTION_PROMPT.md`
+2. `AI_BOOTSTRAP_CONTEXT.md`
+3. `LIVE_CONTEXT.md`
+4. `OPS_HOME.md`
+5. `OPERATOR_TODO_QUEUE.md`
+6. `OPERATIONS/TOOLS_OPERATIONS_INDEX.md`
+7. `OPERATIONS/PRODUCTION_READINESS_OPERATIONS.md`
+8. `MASTERPLAN.md`
+
+Only then open the service- or topic-specific canonical file you actually need.
+Do not treat the rest of the workspace as mandatory boot reading.
+After `INTRODUCTION_PROMPT.md`, choose the narrowest specialized prompt that fits the task:
+
+- `BUSINESS_MVP_PROMPT.md`
+- `WEBSITE_RELEASE_PROMPT.md`
+- `FULL_CERTIFICATION_PROMPT.md`
 
 ## Canonical Files
 
+- `INTRODUCTION_PROMPT.md`
+  - hard-facts-only research bootstrap based on the latest live audit and runtime checks
+- `BUSINESS_MVP_PROMPT.md`
+  - specialized research prompt for the current internal business MVP only
+- `WEBSITE_RELEASE_PROMPT.md`
+  - specialized research prompt for the first public website release only
+- `FULL_CERTIFICATION_PROMPT.md`
+  - specialized research prompt for the strict full internal certification track
+- `GEMINI_BROWSER_MVP_ACCEPTANCE_PROMPT.md`
+  - ready-to-run browser prompt for Gemini to execute the open MVP UI acceptance checks
+- `AI_BOOTSTRAP_CONTEXT.md`
+  - read-first AI bootstrap for server, page, user and rollout context
 - `LIVE_CONTEXT.md`
   - always-open handoff summary for Codex and Gemini
+- `OPS_HOME.md`
+  - canonical operator start page and navigation hub
 - `MASTERPLAN.md`
   - single-file strategic roadmap from current state to professionally finished target state
 - `GEMINI.md`
@@ -93,12 +98,16 @@ This is the shared operational workspace for Homeserver 2027.
   - canonical rollout and target state for Jellyfin V1 on toolbox
 - `MEDIA_SERVER_CLIENT_SETUP.md`
   - operator runbook for TV, browser and mobile client connection paths
+- `OPERATIONS/MAIL_OPERATIONS.md`
+  - canonical operator path for mailbox rollout and app SMTP
+- `OPERATIONS/OPERATOR_ROUTINES.md`
+  - canonical start-of-day, close-day and handoff control path
+- `OPERATIONS/USER_ONBOARDING_OPERATIONS.md`
+  - canonical operator path for Wolf, Franz and device onboarding
 - `OPERATOR_TODO_QUEUE.md`
   - short operator-facing queue for the next manual unblock steps
 - `PBS_VM_240_SETUP_PLAN.md`
   - controlled rollout path and stage gates for the planned PBS VM
-- `MORNING_ROUTINE.md`
-  - canonical start-of-day checklist and execution order
 - `SECURITY_BASELINE.md`
   - current repeatable security posture and daily security checks
 - `ansible/inventory/hosts.yml`
@@ -129,10 +138,11 @@ This is the shared operational workspace for Homeserver 2027.
 
 ## Shared Agent Workflow
 
-1. Read `LIVE_CONTEXT.md` before making changes.
+1. Read `INTRODUCTION_PROMPT.md`, `AI_BOOTSTRAP_CONTEXT.md`, and `LIVE_CONTEXT.md` before making changes.
 2. Update the canonical source file for the thing you changed.
 3. Do not create side notes in random scratch files.
 4. Let the auto-sync service refresh `LIVE_CONTEXT.md`, or run `make refresh-context`.
+5. Keep the root portal and Franz portal at MVP scope until the current business core is visibly stable.
 
 ## Operator Handoff Standard
 
@@ -149,6 +159,8 @@ This is the shared operational workspace for Homeserver 2027.
 ./scripts/start_day.sh
 ./scripts/close_day.sh
 make refresh-context
+make release-mvp-audit
+make release-mvp-gate
 make inventory-check
 make ansible-ping
 make qga-check
@@ -207,13 +219,23 @@ make easybox-browser-probe
 make pbs-preflight
 make pbs-stage-gate
 make pbs-proof-check
+make app-smtp-check
 make pbs-restore-proof
 make inventory-unknown-report
 make pbs-iso-stage
+make pbs-rebuild-storage-audit
+make pbs-rebuild-contract-check
+make pbs-device-inventory
+make pbs-contract-prefill BOOT_SERIAL=... DATASTORE_SERIAL=... APPROVED_BY=...
 make ansible-syntax-check-pbs
 make pbs-runner-deploy
 make pbs-vm-check
 make pbs-guest-check
+make pbs-datastore-prepare DEV=/dev/sdX
+make pbs-vm240-reconcile
+make pbs-guarded-rebuild
+make ansible-syntax-check-app-smtp
+make app-smtp-deploy
 make portable-backup-usb-prepare DEV=/dev/sdX
 make portable-backup-usb-autoprepare
 make portable-backup-usb-fill
@@ -248,3 +270,20 @@ make ansible-syntax-check
 make ansible-list-business
 make proxmox-storage-check
 ```
+
+## Local Runtime Overrides
+
+- keep live SMTP credentials out of committed repo files
+- use `ansible/inventory/group_vars/all/mail_runtime.local.yml.example` as the local template
+- real local file:
+  - `ansible/inventory/group_vars/all/mail_runtime.local.yml`
+- preferred password path:
+  - PowerShell: `$env:HOMESERVER_MAIL_SMTP_PASSWORD='...'`
+- Windows helper:
+  - `.\scripts\run_app_smtp_deploy.ps1`
+- productive app SMTP rollout:
+  1. create the local runtime file with `homeserver_mail_app_smtp_enabled: true`
+  2. set the SMTP username locally
+  3. export `HOMESERVER_MAIL_SMTP_PASSWORD`
+  4. run `make app-smtp-deploy`
+  5. run `make app-smtp-check`

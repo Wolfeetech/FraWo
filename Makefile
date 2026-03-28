@@ -1,17 +1,25 @@
-.PHONY: refresh-context inventory-check ansible-ping qga-check close-day start-day ansible-syntax-check ansible-syntax-check-toolbox ansible-syntax-check-toolbox-tailscale ansible-syntax-check-toolbox-mobile-firewall ansible-syntax-check-proxmox-backups ansible-syntax-check-haos ansible-syntax-check-business-hardening ansible-syntax-check-pbs ansible-syntax-check-surface-go ansible-syntax-check-rpi-radio ansible-syntax-check-rpi-radio-media ansible-syntax-check-rpi-radio-usb ansible-syntax-check-rpi-radio-network ansible-syntax-check-rpi-azuracast-host ansible-syntax-check-rpi-azuracast ansible-syntax-check-rpi-azuracast-tuning ansible-syntax-check-paperless-nextcloud-bridge ansible-list-business proxmox-storage-check backup-proof backup-list business-drift-check basics-check backup-prune-dry-run backup-prune toolbox-deploy toolbox-network-check toolbox-portal-status-check toolbox-tun-prep toolbox-tailscale-prep toolbox-tailscale-check toolbox-tailscale-login-url toolbox-tailscale-join-assist toolbox-tailscale-mobile-check toolbox-mobile-firewall-deploy toolbox-media-deploy toolbox-media-storage-integrate toolbox-media-check toolbox-jellyfin-ui-check toolbox-media-sync-deploy toolbox-media-sync-check toolbox-media-bootstrap-progress media-migration-status toolbox-music-library-report toolbox-music-scan-issues toolbox-music-curation-candidates toolbox-music-curated-layout toolbox-music-quarantine-candidates toolbox-music-selection-sync toolbox-music-selection-seed-report toolbox-music-selection-generate-starter toolbox-music-selection-promote-starter rightsize-stage-gate rightsize-plan rightsize-apply haos-preflight haos-usb-audit haos-stage-gate haos-runner-deploy haos-vm-check haos-reverse-proxy-enable haos-reverse-proxy-check gateway-cutover-stage-gate pbs-preflight pbs-stage-gate pbs-proof-check pbs-restore-proof pbs-runner-deploy pbs-vm-check pbs-guest-check pbs-iso-stage pbs-usb-interim-prepare proxmox-local-backup-deploy proxmox-local-backup-check portable-backup-usb-prepare portable-backup-usb-autoprepare portable-backup-usb-fill portable-backup-usb-check portable-backup-usb-run security-baseline-check business-hardening-deploy easybox-browser-probe easybox-authenticated-overview capacity-review plan-progress surface-go-check surface-go-bootstrap surface-go-root-sleep-harden media-fetch media-devices surface-iso-fetch surface-usb-prepare usb-stick-roles-prepare favorites-usb-prepare rpi-sd-flash rpi-firstboot-seed rpi-radio-bootstrap rpi-radio-media-prepare rpi-radio-media-check rpi-radio-usb-integrate rpi-radio-usb-check rpi-radio-network-integrate rpi-radio-network-check rpi-azuracast-host-prepare rpi-azuracast-deploy rpi-radio-check rpi-radio-integration-check rpi-azuracast-check rpi-azuracast-tune rpi-resource-check radio-ops-check anydesk-zenbook-install zenbook-remote-check remote-only-check operator-todos ops-brief adguard-pilot-check tailscale-split-dns-check inventory-resolution-check inventory-unknown-report paperless-nextcloud-bridge-deploy paperless-nextcloud-bridge-check
+.PHONY: refresh-context inventory-check ansible-ping qga-check close-day start-day stress-test release-mvp-audit release-mvp-gate production-gate document-ownership-check document-ownership-report ansible-syntax-check ansible-syntax-check-toolbox ansible-syntax-check-toolbox-tailscale ansible-syntax-check-toolbox-mobile-firewall ansible-syntax-check-proxmox-backups ansible-syntax-check-haos ansible-syntax-check-business-hardening ansible-syntax-check-pbs ansible-syntax-check-surface-go ansible-syntax-check-rpi-radio ansible-syntax-check-rpi-radio-media ansible-syntax-check-rpi-radio-usb ansible-syntax-check-rpi-radio-network ansible-syntax-check-rpi-azuracast-host ansible-syntax-check-rpi-azuracast ansible-syntax-check-rpi-azuracast-tuning ansible-syntax-check-paperless-nextcloud-bridge ansible-syntax-check-app-smtp ansible-list-business proxmox-storage-check backup-proof backup-list business-drift-check basics-check backup-prune-dry-run backup-prune toolbox-deploy toolbox-network-check toolbox-portal-status-check toolbox-tun-prep toolbox-tailscale-prep toolbox-tailscale-check toolbox-tailscale-login-url toolbox-tailscale-join-assist toolbox-tailscale-mobile-check toolbox-mobile-firewall-deploy toolbox-media-deploy toolbox-media-storage-integrate toolbox-media-check toolbox-jellyfin-ui-check toolbox-media-sync-deploy toolbox-media-sync-check toolbox-media-bootstrap-progress media-migration-status toolbox-music-library-report toolbox-music-scan-issues toolbox-music-curation-candidates toolbox-music-curated-layout toolbox-music-quarantine-candidates toolbox-music-selection-sync toolbox-music-selection-seed-report toolbox-music-selection-generate-starter toolbox-music-selection-promote-starter rightsize-stage-gate rightsize-plan rightsize-apply haos-preflight haos-usb-audit haos-stage-gate haos-runner-deploy haos-vm-check haos-reverse-proxy-enable haos-reverse-proxy-check gateway-cutover-stage-gate pbs-preflight pbs-stage-gate pbs-proof-check pbs-restore-proof pbs-runner-deploy pbs-vm-check pbs-guest-check pbs-iso-stage pbs-usb-interim-prepare pbs-rebuild-storage-audit pbs-rebuild-contract-check pbs-device-inventory pbs-contract-prefill pbs-datastore-prepare pbs-vm240-reconcile pbs-guarded-rebuild app-smtp-deploy app-smtp-check vaultwarden-smtp-deploy vaultwarden-smtp-check vaultwarden-admin-token-check proxmox-local-backup-deploy proxmox-local-backup-check portable-backup-usb-prepare portable-backup-usb-autoprepare portable-backup-usb-fill portable-backup-usb-check portable-backup-usb-run security-baseline-check business-hardening-deploy easybox-browser-probe easybox-authenticated-overview capacity-review plan-progress surface-go-check surface-go-bootstrap surface-go-root-sleep-harden media-fetch media-devices surface-iso-fetch surface-usb-prepare usb-stick-roles-prepare favorites-usb-prepare rpi-sd-flash rpi-firstboot-seed rpi-radio-bootstrap rpi-radio-media-prepare rpi-radio-media-check rpi-radio-usb-integrate rpi-radio-usb-check rpi-radio-network-integrate rpi-radio-network-check rpi-azuracast-host-prepare rpi-azuracast-deploy rpi-radio-check rpi-radio-integration-check rpi-azuracast-check rpi-azuracast-tune rpi-resource-check radio-ops-check anydesk-zenbook-install zenbook-remote-check remote-only-check operator-todos ops-brief adguard-pilot-check tailscale-split-dns-check inventory-resolution-check inventory-unknown-report paperless-nextcloud-bridge-deploy paperless-nextcloud-bridge-check
+
+ROOT_DIR := $(CURDIR)
+ANSIBLE_CONFIG_PATH := $(ROOT_DIR)/ansible.cfg
+ANSIBLE_INVENTORY_PATH := $(ROOT_DIR)/ansible/inventory/hosts.yml
+ANSIBLE_ENV = ANSIBLE_CONFIG="$(ANSIBLE_CONFIG_PATH)"
+ANSIBLE_CMD = $(ANSIBLE_ENV) ansible --inventory "$(ANSIBLE_INVENTORY_PATH)"
+ANSIBLE_PLAYBOOK_CMD = $(ANSIBLE_ENV) ansible-playbook --inventory "$(ANSIBLE_INVENTORY_PATH)"
+ANSIBLE_INVENTORY_CMD = $(ANSIBLE_ENV) ansible-inventory --inventory "$(ANSIBLE_INVENTORY_PATH)"
+PROXMOX_REMOTE = bash ./scripts/proxmox_remote_exec.sh
 
 refresh-context:
 	./scripts/refresh_live_context.sh
 
 inventory-check:
-	ansible-inventory --inventory ansible/inventory/hosts.yml --list >/tmp/homeserver2027_inventory.json
-	@echo "inventory ok: /tmp/homeserver2027_inventory.json"
+	bash ./scripts/inventory_check.sh
 
 ansible-ping:
-	ansible proxmox,toolbox,nextcloud_vm,odoo_vm,paperless_vm -m ping
+	$(ANSIBLE_CMD) proxmox,toolbox,nextcloud_vm,odoo_vm,paperless_vm -m ping
 
 qga-check:
-	ssh proxmox 'qm agent 200 ping && echo vm200_qga_ok; qm agent 210 ping && echo vm210_qga_ok; qm agent 220 ping && echo vm220_qga_ok; qm agent 230 ping && echo vm230_qga_ok'
+	$(PROXMOX_REMOTE) 'qm agent 200 ping && echo vm200_qga_ok; qm agent 210 ping && echo vm210_qga_ok; qm agent 220 ping && echo vm220_qga_ok; qm agent 230 ping && echo vm230_qga_ok'
 
 close-day:
 	./scripts/close_day.sh
@@ -19,74 +27,95 @@ close-day:
 start-day:
 	./scripts/start_day.sh
 
+stress-test:
+	bash ./scripts/run_internal_stress_test.sh
+
+release-mvp-audit:
+	bash ./scripts/run_release_mvp_audit.sh
+
+release-mvp-gate:
+	bash ./scripts/release_mvp_gate.sh
+
+production-gate:
+	bash ./scripts/production_readiness_gate.sh
+
+document-ownership-check:
+	python3 ./scripts/document_ownership_check.py
+
+document-ownership-report:
+	python3 ./scripts/document_ownership_check.py --report artifacts/document_ownership/report.md
+
 ansible-syntax-check:
-	ansible-playbook --syntax-check ansible/playbooks/deploy_business_stacks.yml
+	$(ANSIBLE_PLAYBOOK_CMD) --syntax-check ansible/playbooks/deploy_business_stacks.yml
 
 ansible-syntax-check-toolbox:
-	ansible-playbook --syntax-check ansible/playbooks/deploy_toolbox_foundation.yml
+	$(ANSIBLE_PLAYBOOK_CMD) --syntax-check ansible/playbooks/deploy_toolbox_foundation.yml
 
 ansible-syntax-check-toolbox-tailscale:
-	ansible-playbook --syntax-check ansible/playbooks/prepare_toolbox_tailscale.yml
+	$(ANSIBLE_PLAYBOOK_CMD) --syntax-check ansible/playbooks/prepare_toolbox_tailscale.yml
 
 ansible-syntax-check-toolbox-mobile-firewall:
-	ansible-playbook --syntax-check ansible/playbooks/deploy_toolbox_mobile_firewall.yml
+	$(ANSIBLE_PLAYBOOK_CMD) --syntax-check ansible/playbooks/deploy_toolbox_mobile_firewall.yml
 
 ansible-syntax-check-proxmox-backups:
-	ansible-playbook --syntax-check ansible/playbooks/deploy_proxmox_local_backup_ops.yml
+	$(ANSIBLE_PLAYBOOK_CMD) --syntax-check ansible/playbooks/deploy_proxmox_local_backup_ops.yml
 
 ansible-syntax-check-haos:
-	ansible-playbook --syntax-check ansible/playbooks/deploy_haos_vm_runner.yml
+	$(ANSIBLE_PLAYBOOK_CMD) --syntax-check ansible/playbooks/deploy_haos_vm_runner.yml
 
 ansible-syntax-check-business-hardening:
-	ansible-playbook --syntax-check ansible/playbooks/harden_business_network_baseline.yml
+	$(ANSIBLE_PLAYBOOK_CMD) --syntax-check ansible/playbooks/harden_business_network_baseline.yml
+
+ansible-syntax-check-app-smtp:
+	$(ANSIBLE_PLAYBOOK_CMD) --syntax-check ansible/playbooks/deploy_app_smtp_baseline.yml
 
 ansible-syntax-check-pbs:
-	ansible-playbook --syntax-check ansible/playbooks/deploy_pbs_vm_runner.yml
+	$(ANSIBLE_PLAYBOOK_CMD) --syntax-check ansible/playbooks/deploy_pbs_vm_runner.yml
 
 ansible-syntax-check-surface-go:
-	ansible-playbook --syntax-check ansible/playbooks/bootstrap_surface_go_frontend.yml
+	$(ANSIBLE_PLAYBOOK_CMD) --syntax-check ansible/playbooks/bootstrap_surface_go_frontend.yml
 
 ansible-syntax-check-rpi-radio:
-	ansible-playbook --syntax-check ansible/playbooks/bootstrap_raspberry_pi_radio.yml
+	$(ANSIBLE_PLAYBOOK_CMD) --syntax-check ansible/playbooks/bootstrap_raspberry_pi_radio.yml
 
 ansible-syntax-check-rpi-radio-media:
-	ansible-playbook --syntax-check ansible/playbooks/prepare_raspberry_pi_radio_media_layout.yml
+	$(ANSIBLE_PLAYBOOK_CMD) --syntax-check ansible/playbooks/prepare_raspberry_pi_radio_media_layout.yml
 
 ansible-syntax-check-rpi-radio-usb:
-	ansible-playbook --syntax-check ansible/playbooks/integrate_raspberry_pi_radio_usb_music.yml
+	$(ANSIBLE_PLAYBOOK_CMD) --syntax-check ansible/playbooks/integrate_raspberry_pi_radio_usb_music.yml
 
 ansible-syntax-check-rpi-radio-network:
-	ansible-playbook --syntax-check ansible/playbooks/integrate_raspberry_pi_radio_network_music.yml
+	$(ANSIBLE_PLAYBOOK_CMD) --syntax-check ansible/playbooks/integrate_raspberry_pi_radio_network_music.yml
 
 ansible-syntax-check-rpi-azuracast-host:
-	ansible-playbook --syntax-check ansible/playbooks/prepare_raspberry_pi_azuracast_host.yml
+	$(ANSIBLE_PLAYBOOK_CMD) --syntax-check ansible/playbooks/prepare_raspberry_pi_azuracast_host.yml
 
 ansible-syntax-check-rpi-azuracast:
-	ansible-playbook --syntax-check ansible/playbooks/deploy_raspberry_pi_azuracast.yml
+	$(ANSIBLE_PLAYBOOK_CMD) --syntax-check ansible/playbooks/deploy_raspberry_pi_azuracast.yml
 
 ansible-syntax-check-rpi-azuracast-tuning:
-	ansible-playbook --syntax-check ansible/playbooks/tune_raspberry_pi_azuracast_resources.yml
+	$(ANSIBLE_PLAYBOOK_CMD) --syntax-check ansible/playbooks/tune_raspberry_pi_azuracast_resources.yml
 
 ansible-syntax-check-paperless-nextcloud-bridge:
-	ansible-playbook --syntax-check ansible/playbooks/deploy_paperless_nextcloud_bridge.yml
+	$(ANSIBLE_PLAYBOOK_CMD) --syntax-check ansible/playbooks/deploy_paperless_nextcloud_bridge.yml
 
 ansible-list-business:
-	ansible-playbook ansible/playbooks/deploy_business_stacks.yml --list-hosts
+	$(ANSIBLE_PLAYBOOK_CMD) ansible/playbooks/deploy_business_stacks.yml --list-hosts
 
 toolbox-deploy:
-	ansible-playbook ansible/playbooks/deploy_toolbox_foundation.yml
+	$(ANSIBLE_PLAYBOOK_CMD) ansible/playbooks/deploy_toolbox_foundation.yml
 
 toolbox-tun-prep:
 	./scripts/proxmox_enable_toolbox_tun.sh
 
 toolbox-tailscale-prep:
-	ansible-playbook ansible/playbooks/prepare_toolbox_tailscale.yml
+	$(ANSIBLE_PLAYBOOK_CMD) ansible/playbooks/prepare_toolbox_tailscale.yml
 
 proxmox-storage-check:
-	ssh proxmox 'pvesm status; echo; vgs -o vg_name,vg_size,vg_free,pv_count,lv_count; echo; lvs -a -o vg_name,lv_name,lv_attr,lv_size,pool_lv,data_percent,metadata_percent,origin'
+	$(PROXMOX_REMOTE) 'pvesm status; echo; vgs -o vg_name,vg_size,vg_free,pv_count,lv_count; echo; lvs -a -o vg_name,lv_name,lv_attr,lv_size,pool_lv,data_percent,metadata_percent,origin'
 
 backup-list:
-	ssh proxmox 'ls -lah /var/lib/vz/dump/vzdump-qemu-*.vma.zst 2>/dev/null || echo "no qemu backups present in /var/lib/vz/dump"'
+	$(PROXMOX_REMOTE) 'ls -lah /var/lib/vz/dump/vzdump-qemu-*.vma.zst 2>/dev/null || echo "no qemu backups present in /var/lib/vz/dump"; echo'
 
 backup-proof:
 	./scripts/proxmox_business_backup_proof.sh
@@ -101,10 +130,10 @@ security-baseline-check:
 	./scripts/security_baseline_check.sh
 
 business-hardening-deploy:
-	ansible-playbook ansible/playbooks/harden_business_network_baseline.yml
+	$(ANSIBLE_PLAYBOOK_CMD) ansible/playbooks/harden_business_network_baseline.yml
 
 paperless-nextcloud-bridge-deploy:
-	ansible-playbook ansible/playbooks/deploy_paperless_nextcloud_bridge.yml
+	$(ANSIBLE_PLAYBOOK_CMD) ansible/playbooks/deploy_paperless_nextcloud_bridge.yml
 
 paperless-nextcloud-bridge-check:
 	./scripts/paperless_nextcloud_bridge_check.sh
@@ -128,13 +157,13 @@ toolbox-tailscale-mobile-check:
 	./scripts/toolbox_tailscale_mobile_check.sh
 
 toolbox-mobile-firewall-deploy:
-	ansible-playbook ansible/playbooks/deploy_toolbox_mobile_firewall.yml
+	$(ANSIBLE_PLAYBOOK_CMD) ansible/playbooks/deploy_toolbox_mobile_firewall.yml
 
 toolbox-media-deploy:
-	ansible-playbook ansible/playbooks/deploy_toolbox_media_server.yml
+	$(ANSIBLE_PLAYBOOK_CMD) ansible/playbooks/deploy_toolbox_media_server.yml
 
 toolbox-media-storage-integrate:
-	ansible-playbook ansible/playbooks/integrate_toolbox_media_storage.yml
+	$(ANSIBLE_PLAYBOOK_CMD) ansible/playbooks/integrate_toolbox_media_storage.yml
 
 toolbox-media-check:
 	./scripts/toolbox_media_server_check.sh
@@ -143,7 +172,7 @@ toolbox-jellyfin-ui-check:
 	./scripts/toolbox_jellyfin_ui_check.sh
 
 toolbox-media-sync-deploy:
-	ansible-playbook ansible/playbooks/deploy_toolbox_media_sync.yml
+	$(ANSIBLE_PLAYBOOK_CMD) ansible/playbooks/deploy_toolbox_media_sync.yml
 
 toolbox-media-sync-check:
 	./scripts/toolbox_media_sync_check.sh
@@ -206,7 +235,7 @@ surface-go-check:
 	./scripts/surface_go_frontend_check.sh
 
 surface-go-bootstrap:
-	ansible-playbook ansible/playbooks/bootstrap_surface_go_frontend.yml
+	$(ANSIBLE_PLAYBOOK_CMD) ansible/playbooks/bootstrap_surface_go_frontend.yml
 
 surface-go-root-sleep-harden:
 	./scripts/surface_go_root_sleep_hardening.sh
@@ -236,19 +265,19 @@ rpi-firstboot-seed:
 	./scripts/prepare_rpi_firstboot_seed.sh
 
 rpi-radio-bootstrap:
-	ansible-playbook ansible/playbooks/bootstrap_raspberry_pi_radio.yml
+	$(ANSIBLE_PLAYBOOK_CMD) ansible/playbooks/bootstrap_raspberry_pi_radio.yml
 
 rpi-radio-media-prepare:
-	ansible-playbook ansible/playbooks/prepare_raspberry_pi_radio_media_layout.yml
+	$(ANSIBLE_PLAYBOOK_CMD) ansible/playbooks/prepare_raspberry_pi_radio_media_layout.yml
 
 rpi-radio-media-check:
 	./scripts/rpi_radio_media_layout_check.sh
 
 rpi-radio-usb-integrate:
-	ansible-playbook ansible/playbooks/integrate_raspberry_pi_radio_usb_music.yml
+	$(ANSIBLE_PLAYBOOK_CMD) ansible/playbooks/integrate_raspberry_pi_radio_usb_music.yml
 
 rpi-radio-network-integrate:
-	ansible-playbook ansible/playbooks/integrate_raspberry_pi_radio_network_music.yml
+	$(ANSIBLE_PLAYBOOK_CMD) ansible/playbooks/integrate_raspberry_pi_radio_network_music.yml
 
 rpi-radio-usb-check:
 	./scripts/rpi_radio_usb_music_check.sh
@@ -257,13 +286,13 @@ rpi-radio-network-check:
 	./scripts/rpi_radio_network_music_check.sh
 
 rpi-azuracast-host-prepare:
-	ansible-playbook ansible/playbooks/prepare_raspberry_pi_azuracast_host.yml
+	$(ANSIBLE_PLAYBOOK_CMD) ansible/playbooks/prepare_raspberry_pi_azuracast_host.yml
 
 rpi-azuracast-deploy:
-	ansible-playbook ansible/playbooks/deploy_raspberry_pi_azuracast.yml
+	$(ANSIBLE_PLAYBOOK_CMD) ansible/playbooks/deploy_raspberry_pi_azuracast.yml
 
 rpi-azuracast-tune:
-	ansible-playbook ansible/playbooks/tune_raspberry_pi_azuracast_resources.yml
+	$(ANSIBLE_PLAYBOOK_CMD) ansible/playbooks/tune_raspberry_pi_azuracast_resources.yml
 
 rpi-radio-check:
 	./scripts/rpi_radio_readiness_check.sh
@@ -317,7 +346,7 @@ haos-stage-gate:
 	./scripts/haos_stage_gate_check.sh
 
 haos-runner-deploy:
-	ansible-playbook ansible/playbooks/deploy_haos_vm_runner.yml
+	$(ANSIBLE_PLAYBOOK_CMD) ansible/playbooks/deploy_haos_vm_runner.yml
 
 haos-vm-check:
 	./scripts/proxmox_haos_vm_check.sh
@@ -344,7 +373,7 @@ pbs-restore-proof:
 	./scripts/proxmox_pbs_restore_proof.sh
 
 pbs-runner-deploy:
-	ansible-playbook ansible/playbooks/deploy_pbs_vm_runner.yml
+	$(ANSIBLE_PLAYBOOK_CMD) ansible/playbooks/deploy_pbs_vm_runner.yml
 
 pbs-vm-check:
 	./scripts/proxmox_pbs_vm_check.sh
@@ -356,10 +385,46 @@ pbs-iso-stage:
 	./scripts/proxmox_stage_pbs_iso.sh
 
 pbs-usb-interim-prepare:
-	./scripts/proxmox_prepare_interim_pbs_usb_datastore.sh
+	./scripts/proxmox_prepare_interim_pbs_usb_datastore.sh $(DEV)
+
+pbs-rebuild-storage-audit:
+	./scripts/pbs_rebuild_storage_audit.sh
+
+pbs-rebuild-contract-check:
+	./scripts/pbs_rebuild_contract_check.sh
+
+pbs-device-inventory:
+	./scripts/pbs_device_inventory.sh
+
+pbs-contract-prefill:
+	python3 ./scripts/pbs_contract_prefill.py --boot-serial "$(BOOT_SERIAL)" --datastore-serial "$(DATASTORE_SERIAL)" --approved-by "$(APPROVED_BY)" --change-ticket "$(CHANGE_TICKET)" --write
+
+pbs-datastore-prepare:
+	./scripts/proxmox_prepare_pbs_datastore_device.sh $(DEV)
+
+pbs-vm240-reconcile:
+	./scripts/pbs_vm240_reconcile.sh
+
+pbs-guarded-rebuild:
+	./scripts/pbs_guarded_rebuild.sh
+
+app-smtp-deploy:
+	bash ./scripts/app_smtp_deploy.sh
+
+app-smtp-check:
+	bash ./scripts/app_smtp_check.sh
+
+vaultwarden-smtp-deploy:
+	bash ./scripts/vaultwarden_smtp_deploy.sh
+
+vaultwarden-smtp-check:
+	bash ./scripts/vaultwarden_smtp_check.sh
+
+vaultwarden-admin-token-check:
+	bash ./scripts/vaultwarden_admin_token_check.sh
 
 proxmox-local-backup-deploy:
-	ansible-playbook ansible/playbooks/deploy_proxmox_local_backup_ops.yml
+	$(ANSIBLE_PLAYBOOK_CMD) ansible/playbooks/deploy_proxmox_local_backup_ops.yml
 
 proxmox-local-backup-check:
 	./scripts/proxmox_local_backup_ops_check.sh

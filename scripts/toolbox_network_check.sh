@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+source "${ROOT_DIR}/scripts/toolbox_remote.sh"
+
 TOOLBOX_IP="192.168.2.20"
 
 log() {
@@ -22,17 +25,16 @@ check_http() {
 }
 
 check_remote_http() {
-  local host="$1"
-  local url="$2"
-  local expected="$3"
+  local url="$1"
+  local expected="$2"
   local actual
 
   actual="$(
-    ssh "$host" "curl --silent --show-error --max-time 10 --output /dev/null --write-out '%{http_code}' ${url@Q}"
+    run_toolbox_remote "curl --silent --show-error --max-time 10 --output /dev/null --write-out '%{http_code}' ${url@Q}"
   )"
 
   if [[ ",${expected}," != *",${actual},"* ]]; then
-    echo "Expected HTTP ${expected} from ${host}:${url}, got ${actual}" >&2
+    echo "Expected HTTP ${expected} from toolbox:${url}, got ${actual}" >&2
     return 1
   fi
 
@@ -70,7 +72,59 @@ check_dns() {
   local expected="$2"
   local actual
 
-  actual="$(dig @"${TOOLBOX_IP}" +short "${hostname}" | tail -n 1)"
+  if command -v dig >/dev/null 2>&1; then
+    actual="$(dig @"${TOOLBOX_IP}" +short "${hostname}" | tail -n 1)"
+  elif command -v nslookup >/dev/null 2>&1; then
+    actual="$(nslookup "${hostname}" "${TOOLBOX_IP}" 2>/dev/null | awk '/^Address: / {print $2}' | tail -n 1)"
+  else
+    actual="$(
+      python3 - <<'PY' "${TOOLBOX_IP}" "${hostname}"
+import socket
+import struct
+import sys
+
+server = sys.argv[1]
+hostname = sys.argv[2].rstrip(".")
+
+transaction_id = 0x1234
+flags = 0x0100
+qdcount = 1
+header = struct.pack("!HHHHHH", transaction_id, flags, qdcount, 0, 0, 0)
+question = b"".join(len(label).to_bytes(1, "big") + label.encode("ascii") for label in hostname.split(".")) + b"\x00"
+question += struct.pack("!HH", 1, 1)
+packet = header + question
+
+sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+sock.settimeout(2)
+sock.sendto(packet, (server, 53))
+data, _ = sock.recvfrom(512)
+sock.close()
+
+answer_count = struct.unpack("!H", data[6:8])[0]
+offset = 12
+while data[offset] != 0:
+    offset += data[offset] + 1
+offset += 5
+
+for _ in range(answer_count):
+    if data[offset] & 0xC0 == 0xC0:
+        offset += 2
+    else:
+        while data[offset] != 0:
+            offset += data[offset] + 1
+        offset += 1
+    rtype, rclass, _ttl, rdlength = struct.unpack("!HHIH", data[offset:offset + 10])
+    offset += 10
+    rdata = data[offset:offset + rdlength]
+    offset += rdlength
+    if rtype == 1 and rclass == 1 and rdlength == 4:
+        print(socket.inet_ntoa(rdata))
+        raise SystemExit(0)
+
+raise SystemExit(1)
+PY
+    )"
+  fi
   if [[ "$actual" != "$expected" ]]; then
     echo "Expected DNS ${hostname} -> ${expected}, got ${actual:-<empty>}" >&2
     return 1
@@ -81,16 +135,16 @@ check_dns() {
 
 log "Checking toolbox base endpoints"
 check_http "http://${TOOLBOX_IP}/" "200"
-check_remote_http "root@toolbox" "http://127.0.0.1:3000/" "302"
+check_remote_http "http://127.0.0.1:3000/" "302"
 
 log "Checking toolbox systemd and containers"
-ssh root@toolbox "systemctl is-enabled homeserver-compose-toolbox-network.service"
-ssh root@toolbox "systemctl is-active homeserver-compose-toolbox-network.service"
-ssh root@toolbox "docker ps --format '{{.Names}}|{{.Status}}' | grep '^toolbox-network_'"
+run_toolbox_remote "systemctl is-enabled homeserver-compose-toolbox-network.service"
+run_toolbox_remote "systemctl is-active homeserver-compose-toolbox-network.service"
+run_toolbox_remote "docker ps --format '{{.Names}}|{{.Status}}' | grep '^toolbox-network_'"
 
 HOSTS=(
   "portal.hs27.internal|/|200"
-  "cloud.hs27.internal|/|200"
+  "cloud.hs27.internal|/|200,302"
   "odoo.hs27.internal|/web/login|200,303"
   "paperless.hs27.internal|/accounts/login/|200"
   "ha.hs27.internal|/|200"

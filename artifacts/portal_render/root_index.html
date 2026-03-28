@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FRAWO MVP</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Manrope:wght@500;700;800&display=swap');
+
+    :root {
+      --bg-0: #f4efe4;
+      --bg-1: #e9dfcf;
+      --panel: rgba(255, 249, 239, 0.84);
+      --panel-strong: rgba(255, 250, 243, 0.96);
+      --border: rgba(57, 43, 29, 0.14);
+      --text: #21180f;
+      --muted: #665849;
+      --shadow: rgba(42, 26, 12, 0.12);
+      --amber: #d97706;
+      --teal: #0f766e;
+      --ok: #15803d;
+      --warn: #b45309;
+      --danger: #b91c1c;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Space Grotesk", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(15, 118, 110, 0.14), transparent 28%),
+        radial-gradient(circle at right center, rgba(217, 119, 6, 0.16), transparent 24%),
+        linear-gradient(180deg, var(--bg-0) 0%, var(--bg-1) 100%);
+    }
+
+    main {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 24px 18px 40px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .hero,
+    .panel {
+      border-radius: 28px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      box-shadow: 0 22px 60px var(--shadow);
+      backdrop-filter: blur(16px);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(300px, 0.85fr);
+      gap: 18px;
+      padding: 24px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      color: var(--amber);
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--amber);
+      box-shadow: 0 0 0 6px rgba(217, 119, 6, 0.12);
+    }
+
+    h1 {
+      margin: 0 0 14px;
+      font-family: "Manrope", sans-serif;
+      font-size: clamp(2.6rem, 6vw, 4.9rem);
+      line-height: 0.95;
+      letter-spacing: -0.055em;
+      max-width: 11ch;
+    }
+
+    .hero-copy p {
+      margin: 0;
+      max-width: 58ch;
+      color: var(--muted);
+      font-size: 1.03rem;
+      line-height: 1.65;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(57, 43, 29, 0.12);
+      background: rgba(255, 252, 246, 0.74);
+      color: var(--muted);
+      font-size: 0.88rem;
+      font-weight: 600;
+    }
+
+    .pill::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--ok);
+      box-shadow: 0 0 0 6px rgba(21, 128, 61, 0.1);
+    }
+
+    .status-box {
+      padding: 20px;
+      border-radius: 24px;
+      background: linear-gradient(180deg, rgba(255, 251, 245, 0.96), rgba(250, 243, 231, 0.88));
+      border: 1px solid rgba(57, 43, 29, 0.12);
+      display: grid;
+      gap: 14px;
+      align-content: start;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: baseline;
+      margin-bottom: 16px;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-family: "Manrope", sans-serif;
+      font-size: 1.18rem;
+      letter-spacing: -0.03em;
+    }
+
+    .section-head small {
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .metric {
+      padding: 16px;
+      border-radius: 22px;
+      background: var(--panel-strong);
+      border: 1px solid rgba(57, 43, 29, 0.1);
+    }
+
+    .metric-label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-weight: 700;
+    }
+
+    .metric-value {
+      display: block;
+      font-family: "Manrope", sans-serif;
+      font-size: 1.7rem;
+      font-weight: 800;
+      letter-spacing: -0.05em;
+    }
+
+    .metric-note {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.4;
+    }
+
+    .card-grid,
+    .service-grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .card-grid {
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+
+    .card {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      min-height: 280px;
+      background: linear-gradient(180deg, rgba(255, 251, 244, 0.92), rgba(250, 242, 229, 0.86));
+    }
+
+    .card[data-accent="amber"] {
+      border-color: rgba(217, 119, 6, 0.22);
+    }
+
+    .card[data-accent="teal"] {
+      border-color: rgba(15, 118, 110, 0.22);
+    }
+
+    .card-top {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+
+    .card-mark {
+      width: 52px;
+      height: 52px;
+      border-radius: 18px;
+      display: grid;
+      place-items: center;
+      font-family: "Manrope", sans-serif;
+      font-size: 1rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      color: #fffdf8;
+      flex: 0 0 auto;
+    }
+
+    .card[data-accent="amber"] .card-mark {
+      background: linear-gradient(135deg, #d97706, #f59e0b);
+    }
+
+    .card[data-accent="teal"] .card-mark {
+      background: linear-gradient(135deg, #0f766e, #14b8a6);
+    }
+
+    .card-label {
+      margin: 0 0 6px;
+      color: var(--muted);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-weight: 700;
+    }
+
+    .card h3 {
+      margin: 0;
+      font-family: "Manrope", sans-serif;
+      font-size: 1.5rem;
+      line-height: 1.05;
+      letter-spacing: -0.04em;
+    }
+
+    .card-summary {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.58;
+      font-size: 0.96rem;
+    }
+
+    .card-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 15px 18px;
+      border-radius: 18px;
+      text-decoration: none;
+      color: #fffdf8;
+      font-weight: 700;
+      box-shadow: 0 18px 35px rgba(42, 26, 12, 0.14);
+    }
+
+    .card-primary::after {
+      content: "Start";
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      opacity: 0.76;
+    }
+
+    .card[data-accent="amber"] .card-primary {
+      background: linear-gradient(135deg, #c96a05, #ea9a0d);
+    }
+
+    .card[data-accent="teal"] .card-primary {
+      background: linear-gradient(135deg, #0c6a62, #16a394);
+    }
+
+    .card-links {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: auto;
+    }
+
+    .card-link {
+      min-height: 72px;
+      padding: 12px 14px;
+      border-radius: 18px;
+      text-decoration: none;
+      background: rgba(255, 252, 246, 0.85);
+      border: 1px solid rgba(57, 43, 29, 0.1);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 8px;
+      transition: transform 0.18s ease, border-color 0.18s ease;
+    }
+
+    .card-link:hover,
+    .card-primary:hover {
+      transform: translateY(-2px);
+    }
+
+    .card-link strong {
+      font-size: 0.95rem;
+      line-height: 1.2;
+    }
+
+    .card-link span {
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.35;
+    }
+
+    .service-panel,
+    .note-panel {
+      padding: 22px;
+    }
+
+    .service-grid {
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+
+    .service-card {
+      padding: 16px;
+      border-radius: 22px;
+      background: var(--panel-strong);
+      border: 1px solid rgba(57, 43, 29, 0.12);
+    }
+
+    .service-card.is-ok {
+      border-color: rgba(21, 128, 61, 0.18);
+    }
+
+    .service-card.is-warn {
+      border-color: rgba(180, 83, 9, 0.22);
+    }
+
+    .service-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+
+    .service-head strong {
+      font-size: 1rem;
+      line-height: 1.2;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 0.74rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      white-space: nowrap;
+    }
+
+    .badge.is-ok {
+      background: rgba(21, 128, 61, 0.1);
+      color: var(--ok);
+    }
+
+    .badge.is-warn {
+      background: rgba(180, 83, 9, 0.12);
+      color: var(--warn);
+    }
+
+    .service-card p,
+    .note-panel p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .note-panel ul {
+      margin: 12px 0 0;
+      padding-left: 18px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    @media (max-width: 960px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 680px) {
+      main {
+        padding: 18px 14px 28px;
+      }
+
+      .hero,
+      .panel,
+      .service-panel,
+      .note-panel,
+      .card {
+        border-radius: 22px;
+        padding: 18px;
+      }
+
+      .metrics,
+      .card-links {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        font-size: 2.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="hero">
+      <article class="hero-copy">
+        <span class="eyebrow">FraWo Arbeitsportal</span>
+        <h1>Arbeitsportal</h1>
+        <p>
+          Zentraler Einstieg fuer Betrieb und Zusammenarbeit. Im aktuellen
+          Arbeitsstand sind <b>Vault</b>, <b>Nextcloud</b>, <b>Paperless</b> und
+          <b>Odoo</b> die aktiven Kernsysteme.
+        </p>
+        <div class="pill-row">
+          <span class="pill">Kernbetrieb aktiv</span>
+          <span class="pill">Franz freigeschaltet</span>
+          <span class="pill">Mail-Basis steht</span>
+        </div>
+      </article>
+
+      <aside class="status-box">
+        <div class="section-head">
+          <h2>Betriebsstatus</h2>
+          <small>Aktueller Arbeitskern</small>
+        </div>
+        <div class="metrics">
+          <div class="metric">
+            <span class="metric-label">MVP Zustand</span>
+            <span class="metric-value" id="platform-core">Laedt</span>
+            <span class="metric-note">Portal, Vault und Business-Apps</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">Kernpfade gesund</span>
+            <span class="metric-value" id="healthy-count">-</span>
+            <span class="metric-note">Nur die heutigen MVP-Ziele</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">Letztes Snapshot</span>
+            <span class="metric-value" id="snapshot-time">Warte</span>
+            <span class="metric-note">Zeitpunkt des letzten Statusbilds</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">Naechster Block</span>
+            <span class="metric-value">Erweiterung</span>
+            <span class="metric-note">Media, Radio, HA, Shared Frontend, PBS</span>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="card-grid" aria-label="MVP Startpfade">
+
+
+
+
+      <article class="panel card" data-accent="amber">
+        <div class="card-top">
+          <div class="card-mark">WO</div>
+          <div>
+            <p class="card-label">Ich bin Wolf</p>
+            <h3>Betrieb und Tagesarbeit</h3>
+          </div>
+        </div>
+        <p class="card-summary">Nur die heutigen Kernpfade fuer die GbR. Alles andere bleibt ausserhalb des MVP-Starts.</p>
+        <a class="card-primary" href="http://portal.hs27.internal">Arbeitsstart</a>
+        <div class="card-links">
+
+          <a class="card-link" href="http://cloud.hs27.internal">
+            <strong>Nextcloud</strong>
+            <span>cloud.hs27.internal</span>
+          </a>
+
+          <a class="card-link" href="http://paperless.hs27.internal">
+            <strong>Paperless</strong>
+            <span>paperless.hs27.internal</span>
+          </a>
+
+          <a class="card-link" href="http://odoo.hs27.internal/web/login">
+            <strong>Odoo</strong>
+            <span>odoo.hs27.internal/web/login</span>
+          </a>
+
+          <a class="card-link" href="https://vault.hs27.internal">
+            <strong>Vault</strong>
+            <span>vault.hs27.internal</span>
+          </a>
+
+        </div>
+      </article>
+
+
+
+
+      <article class="panel card" data-accent="teal">
+        <div class="card-top">
+          <div class="card-mark">FR</div>
+          <div>
+            <p class="card-label">Ich bin Franz</p>
+            <h3>Dokumente und Arbeit</h3>
+          </div>
+        </div>
+        <p class="card-summary">Ein persoenlicher Endnutzerpfad ohne Admin-Konfiguration. Alles startet ueber Franz Start.</p>
+        <a class="card-primary" href="http://portal.hs27.internal/franz/">Franz Start</a>
+        <div class="card-links">
+
+          <a class="card-link" href="http://cloud.hs27.internal">
+            <strong>Nextcloud</strong>
+            <span>cloud.hs27.internal</span>
+          </a>
+
+          <a class="card-link" href="http://paperless.hs27.internal">
+            <strong>Paperless</strong>
+            <span>paperless.hs27.internal</span>
+          </a>
+
+          <a class="card-link" href="http://odoo.hs27.internal/web/login">
+            <strong>Odoo</strong>
+            <span>odoo.hs27.internal/web/login</span>
+          </a>
+
+          <a class="card-link" href="https://vault.hs27.internal">
+            <strong>Vault</strong>
+            <span>vault.hs27.internal</span>
+          </a>
+
+        </div>
+      </article>
+
+    </section>
+
+    <section class="panel service-panel">
+      <div class="section-head">
+        <h2>Live-Status des MVP</h2>
+        <small>Warnungen bleiben sichtbar</small>
+      </div>
+      <div id="service-health" class="service-grid"></div>
+    </section>
+
+    <section class="panel note-panel">
+      <div class="section-head">
+        <h2>Nicht im aktuellen Arbeitsportal</h2>
+        <small>Naechste Ausbaustufe</small>
+      </div>
+      <p>
+        Erweiterungsthemen bleiben ausserhalb des Startbilds, bis der
+        aktuelle Arbeitskern sichtbar stabil laeuft.
+      </p>
+      <ul>
+        <li>Media, Radio und TV-spezifische Pfade</li>
+        <li>Home Assistant im taeglichen Startbild</li>
+        <li>Shared Frontend und Surface-Go-Kiosk</li>
+        <li>PBS und das spaetere Produktionssiegel</li>
+      </ul>
+    </section>
+  </main>
+
+  <script>
+    const allowedLabels = ["Portal", "Vault", "Nextcloud", "Paperless", "Odoo"];
+    const platformCore = document.getElementById("platform-core");
+    const healthyCount = document.getElementById("healthy-count");
+    const snapshotTime = document.getElementById("snapshot-time");
+    const serviceHealth = document.getElementById("service-health");
+
+    function toneClass(status) {
+      return status === "ok" ? "is-ok" : "is-warn";
+    }
+
+    function toneLabel(status) {
+      return status === "ok" ? "Online" : "Pruefen";
+    }
+
+    function renderMissingService(label) {
+      return `
+        <article class="service-card is-warn">
+          <div class="service-head">
+            <strong>${label}</strong>
+            <span class="badge is-warn">Fehlt</span>
+          </div>
+          <p>Der Kernpfad ist im aktuellen Snapshot nicht sichtbar und muss geprueft werden.</p>
+        </article>
+      `;
+    }
+
+    async function loadStatus() {
+      try {
+        const response = await fetch("./status.json", { cache: "no-store" });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+        const data = await response.json();
+        const serviceMap = new Map(
+          (Array.isArray(data.services) ? data.services : []).map((service) => [service.label, service])
+        );
+        const services = allowedLabels.map((label) => serviceMap.get(label) || null);
+        const healthy = services.filter((service) => service && service.status === "ok").length;
+
+        platformCore.textContent = healthy === allowedLabels.length ? "Bereit" : "Pruefen";
+        platformCore.style.color = healthy === allowedLabels.length ? "var(--ok)" : "var(--warn)";
+        healthyCount.textContent = `${healthy}/${allowedLabels.length}`;
+        snapshotTime.textContent = new Date(data.generated_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+
+        serviceHealth.innerHTML = services.map((service, index) => {
+          if (!service) return renderMissingService(allowedLabels[index]);
+          return `
+            <article class="service-card ${toneClass(service.status)}">
+              <div class="service-head">
+                <strong>${service.label}</strong>
+                <span class="badge ${toneClass(service.status)}">${toneLabel(service.status)}</span>
+              </div>
+              <p>${service.summary || "Interner Dienst ohne Zusatzbeschreibung."}</p>
+            </article>
+          `;
+        }).join("");
+      } catch (error) {
+        platformCore.textContent = "Offline";
+        platformCore.style.color = "var(--danger)";
+        healthyCount.textContent = "0/5";
+        snapshotTime.textContent = "Getrennt";
+        serviceHealth.innerHTML = `
+          <article class="service-card is-warn">
+            <div class="service-head">
+              <strong>Statusfeed nicht erreichbar</strong>
+              <span class="badge is-warn">Fehler</span>
+            </div>
+            <p>Das Portal konnte den MVP-Status nicht lesen. Toolbox oder Browser-Cache pruefen.</p>
+          </article>
+        `;
+      }
+    }
+
+    loadStatus();
+  </script>
+</body>
+</html>

@@ -25,6 +25,10 @@ homeserver_zone_definitions:
   unknown-review: "Unclassified endpoints pending review"
 
 homeserver_policy_defaults:
+  stack_standard: "open-source-first"
+  accepted_external_dependencies:
+    - "strato-domain-mail-v1"
+    - "tailscale-remote-access-v1-temporary"
   network_model: "flat-lan-now-vlan-ready-later"
   external_access: "tailscale-only"
   public_exposure_enabled: false
@@ -118,3 +122,13 @@ homeserver_storage_node:
       options: "rw,sync,no_subtree_check,root_squash"
 
 homeserver_compose_root: /opt/homeserver2027/stacks
+homeserver_mail_provider: strato
+homeserver_mail_imap_host: imap.strato.de
+homeserver_mail_pop3_host: pop3.strato.de
+homeserver_mail_smtp_host: smtp.strato.de
+homeserver_mail_smtp_port: 587
+homeserver_mail_smtp_secure: tls
+homeserver_mail_sender_name: FraWo
+homeserver_mail_sender_email: noreply@frawo-tech.de
+homeserver_mail_smtp_auth_username: ""
+homeserver_mail_app_smtp_enabled: false

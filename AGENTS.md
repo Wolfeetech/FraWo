@@ -4,6 +4,7 @@ This workspace is designed for shared operation between Codex, Gemini and human 
 
 ## Shared Truth
 
+- `AI_BOOTSTRAP_CONTEXT.md` is the read-first AI bootstrap file.
 - `LIVE_CONTEXT.md` is the first-stop handoff file.
 - `MEMORY.md` is the durable knowledge base.
 - `NETWORK_INVENTORY.md` is the network source of truth.
@@ -13,7 +14,7 @@ This workspace is designed for shared operation between Codex, Gemini and human 
 
 ## Required Behavior
 
-1. Read `LIVE_CONTEXT.md` before making decisions.
+1. Read `AI_BOOTSTRAP_CONTEXT.md` and `LIVE_CONTEXT.md` before making decisions.
 2. Read `SESSION_CLOSEOUT.md` when resuming after a pause or the next day.
 3. Update the canonical file instead of creating duplicate notes.
 4. After meaningful changes, refresh the live context:

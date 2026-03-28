@@ -4,29 +4,31 @@ Stand: `2026-03-26`
 
 ## Ziel
 
-`Vaultwarden` soll intern sauber unter:
+`Vaultwarden` soll intern sauber unter `https://vault.hs27.internal` laufen, ohne die Plattform oeffentlich freizugeben.
 
-- `https://vault.hs27.internal`
+## Status
 
-laufen, ohne die Plattform oeffentlich freizugeben.
+- Rollout ist intern aktiv.
+- Verifiziert am `2026-03-26`:
+  - `curl -kI https://vault.hs27.internal` -> `HTTP 200`
+  - `curl -fsS http://192.168.2.26:8080/alive` -> erfolgreiche Antwort
 
-## Was bereits vorbereitet ist
+## Ergebnis
 
-- Repo-Konfiguration fuer `vault.hs27.internal` ist angepasst
-- Ziel-Proxy:
-  - `192.168.2.20` -> `192.168.2.26:8080`
-- Zieltechnik:
-  - `Caddy` mit `tls internal`
-  - `AdGuard` Rewrite fuer `vault.hs27.internal`
+- `vault.hs27.internal` loest intern sauber auf die Toolbox-Frontdoor
+- `Caddy` liefert internes `HTTPS`
+- `Vaultwarden` ist produktiv ueber `HTTPS` erreichbar
+- der erste produktive Benutzer kann darueber arbeiten
 
-## Aktueller Blocker
+## Betriebsnotizen
 
-- Live-Deploy auf `CT100 toolbox` kann von diesem PC aus gerade nicht automatisch ausgefuehrt werden
-- deshalb braucht es einen kurzen manuellen Root-Run auf `toolbox`
+- Das Zertifikat ist intern ausgestellt.
+- Auf relevanten Clients muss die interne CA bewusst vertraut werden, wenn der Browser sonst warnt.
+- Der nackte HTTP-Pfad `http://192.168.2.26:8080` bleibt nur Bootstrap-/Health-Endpunkt.
 
-## Direkter manueller Rollout auf CT100
+## Wenn neu ausgerollt werden muss
 
-Auf `CT100 toolbox` als `root` ausfuehren:
+Auf `CT100 toolbox` als `root`:
 
 ```bash
 python3 - <<'PY'
@@ -62,25 +64,8 @@ curl -kI https://vault.hs27.internal
 curl -fsS http://192.168.2.26:8080/alive
 ```
 
-## Erwartetes Ergebnis
-
-- `curl -kI https://vault.hs27.internal` liefert `200`
-- `curl -fsS http://192.168.2.26:8080/alive` liefert `OK`
-
-## Danach
-
-### Browser-Test
-
-- `https://vault.hs27.internal`
-
-### Wichtig
-
-- Beim ersten Aufruf ist das Zertifikat intern ausgestellt
-- je nach Geraet muss die interne CA bewusst vertraut werden
-
 ## Definition Of Done
 
-- `vault.hs27.internal` loest intern auf `192.168.2.20`
-- `Caddy` proxyt intern per `HTTPS`
-- `Vaultwarden` ist ueber `https://vault.hs27.internal` erreichbar
-- danach kann der erste produktive Benutzer angelegt werden
+- `vault.hs27.internal` liefert intern `HTTPS`
+- `Vaultwarden` ist ueber `HTTPS` erreichbar
+- produktive Vaultwarden-Nutzung laeuft nicht mehr ueber den nackten HTTP-Pfad

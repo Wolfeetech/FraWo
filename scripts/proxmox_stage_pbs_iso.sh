@@ -2,6 +2,7 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+source "${ROOT_DIR}/scripts/inventory_remote.sh"
 
 read_hostvar() {
   local key="$1"
@@ -26,6 +27,22 @@ ISO_FILE="$(read_hostvar proxmox_pbs_iso_file)"
 ISO_SOURCE_FILE="$(read_hostvar proxmox_pbs_iso_source_file)"
 ISO_URL="$(read_hostvar proxmox_pbs_iso_url)"
 ISO_SHA256="$(read_hostvar proxmox_pbs_iso_sha256)"
+MIN_FREE_GIB="${PBS_ISO_MIN_FREE_GIB:-8}"
+
+free_root_gib="$(
+  run_proxmox_remote "df -BG / | awk 'NR==2 {gsub(/G/, \"\", \$4); print \$4}'"
+)"
+
+if ! python3 - <<'PY' "$free_root_gib" "$MIN_FREE_GIB"
+import sys
+free_gib = float(sys.argv[1])
+required_gib = float(sys.argv[2])
+raise SystemExit(0 if free_gib >= required_gib else 1)
+PY
+then
+  log "Refusing ISO stage on Proxmox root with only ${free_root_gib} GiB free; require at least ${MIN_FREE_GIB} GiB."
+  exit 1
+fi
 
 remote_cmd=$(cat <<EOF
 set -euo pipefail
@@ -43,4 +60,4 @@ EOF
 )
 
 log "Staging official PBS ISO on Proxmox"
-ssh proxmox "$remote_cmd"
+run_proxmox_remote "${remote_cmd}"

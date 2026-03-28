@@ -10,6 +10,7 @@ Establish a clean Jellyfin user model before broader TV and shared-device rollou
 - `Franz` exists, is visible on the login screen and has no admin rights.
 - `TV Wohnzimmer` exists, is visible on the login screen and has no admin rights.
 - All three interactive profiles have working passwords.
+- The productive credentials belong in `Vaultwarden / FraWo / Media`, not in this Markdown file.
 - On `2026-03-26`, a browser-side connection error was traced to `CT100 toolbox` running with rootfs flag `emergency_ro`; after `e2fsck` on `/var/lib/vz/images/100/vm-100-disk-0.raw`, the Jellyfin auth endpoint returned `200` again.
 - The active production library is `Musik Netzwerk` on `/media/music-network/yourparty_Libary`.
 - The obsolete local bootstrap library has been removed from `CT 100 toolbox`.
@@ -17,12 +18,12 @@ Establish a clean Jellyfin user model before broader TV and shared-device rollou
 
 ## Current Credentials
 
-| Profile | Role | Password | Status |
+| Profile | Role | Vaultwarden Reference | Status |
 | --- | --- | --- | --- |
-| `root` | hidden bootstrap admin | `JF-Frawo-2026!` | existing technical admin |
-| `Wolf` | personal admin profile | `JF-Wolf-2026!` | live and verified |
-| `Franz` | personal standard profile | `JF-Franz-2026!` | live and verified |
-| `TV Wohnzimmer` | shared device profile | `JF-TV-2026!` | live and verified |
+| `root` | hidden bootstrap admin | `FraWo / Media / Jellyfin Admin` | existing technical admin |
+| `Wolf` | personal admin profile | `FraWo / Media / Jellyfin - Wolf` | live and verified |
+| `Franz` | personal standard profile | `FraWo / Media / Jellyfin - Franz` | live and verified |
+| `TV Wohnzimmer` | shared device profile | `FraWo / Media / Jellyfin - TV Wohnzimmer` | live and verified |
 
 ## Required Users
 
@@ -45,7 +46,7 @@ Establish a clean Jellyfin user model before broader TV and shared-device rollou
 
 ## Remaining Operator Work
 
-1. Store all four Jellyfin credentials in the Bitwarden Cloud.
+1. Verify that all four Jellyfin credentials are present in `Vaultwarden / FraWo / Media`.
 2. Optionally set UI PINs for `Wolf` and `Franz` under `http://media.hs27.internal`.
 3. Configure client auto-login to `TV Wohnzimmer` on the first production TV.
 4. Keep `root` as break-glass only.

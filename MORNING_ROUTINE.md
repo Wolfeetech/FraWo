@@ -1,5 +1,13 @@
 # Morning Routine
 
+## Status
+
+Dieses Dokument ist jetzt ein Uebergangs- und Referenzdokument.
+
+Der kanonische Tagessteuerpfad liegt in:
+
+- `OPERATIONS/OPERATOR_ROUTINES.md`
+
 ## Goal
 
 Start the day with one repeatable control path that verifies runtime health, security baseline and the next execution order before any new change is made.
@@ -8,7 +16,7 @@ Start the day with one repeatable control path that verifies runtime health, sec
 
 1. Read:
    - `LIVE_CONTEXT.md`
-   - `MORNING_ROUTINE.md`
+   - `OPERATIONS/OPERATOR_ROUTINES.md`
    - `SESSION_CLOSEOUT.md`
 2. Run the operational start routine:
    - `make start-day`

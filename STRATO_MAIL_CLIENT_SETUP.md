@@ -1,64 +1,29 @@
 # STRATO Mail Client Setup
 
-Stand: `2026-03-26`
-
 ## Status
 
-- `imap.strato.de:993` erreichbar
-- `smtp.strato.de:465` erreichbar
-- Auf dem StudioPC ist `Outlook` vorhanden
+Dieses Dokument ist jetzt ein Uebergangs- und Referenzdokument.
 
-## Wichtige Regel
+Der kanonische Client- und SMTP-Standard liegt jetzt in:
 
-- Login immer mit dem **echten Postfach**
-- nicht mit Aliasen wie:
-  - `wolf@frawo-tech.de`
-  - `info@frawo-tech.de`
-  - `noreply@frawo-tech.de`
+- `OPERATIONS/MAIL_OPERATIONS.md`
+- `OPERATOR_TODO_QUEUE.md`
 
-Fuer den aktuellen Owner-Pfad ist das echte Postfach:
+Stand: `2026-03-27`
 
-- `webmaster@...`
+## Weiterhin Gueltig
 
-## Aktueller Mail-Standard
+- Login immer mit dem echten Postfach, nicht mit Aliasen
+- technischer Basis-Login fuer den Owner-Pfad ist `webmaster@frawo-tech.de`
+- `franz@frawo-tech.de` ist ein eigenes echtes Postfach
+- `franz@frawo-tech.de` wurde am `2026-03-27` erfolgreich per `IMAP` und `SMTP AUTH` verifiziert
+- bevorzugter Clientpfad:
+  - `imap.strato.de:993` mit `SSL/TLS`
+  - `smtp.strato.de:587` mit `STARTTLS`
+  - `465` mit `SSL/TLS` nur als Fallback fuer problematische Clients
 
-- echtes technisches Postfach:
-  - `webmaster@...`
-- Aliasse auf dieses Postfach:
-  - `wolf@frawo-tech.de`
-  - `info@frawo-tech.de`
-  - `noreply@frawo-tech.de`
-- zweites echtes Postfach als Ziel:
-  - `franz@frawo-tech.de`
+## Nicht Mehr Hier Pflegen
 
-## Manuelle IMAP-Daten
-
-- Kontotyp: `IMAP`
-- Eingangsserver: `imap.strato.de`
-- Port eingehend: `993`
-- Verschluesselung eingehend: `SSL/TLS`
-- Ausgangsserver: `smtp.strato.de`
-- Port ausgehend: `465`
-- Verschluesselung ausgehend: `SSL/TLS`
-- Benutzername eingehend: echtes Postfach
-- Benutzername ausgehend: echtes Postfach
-
-## Outlook Reihenfolge
-
-1. `Outlook` oeffnen
-2. `Konto hinzufuegen`
-3. echte Postfachadresse eingeben
-4. falls Auto-Setup scheitert:
-   - `IMAP` manuell waehlen
-   - Serverdaten aus dieser Datei eintragen
-5. nach erfolgreichem Login testen:
-   - Empfang an `wolf@frawo-tech.de`
-   - Empfang an `info@frawo-tech.de`
-   - spaeter Versand mit sichtbarer Absenderadresse pruefen
-
-## Definition Of Done
-
-- Login mit dem echten `webmaster`-Postfach klappt
-- Mail an `wolf@frawo-tech.de` kommt an
-- Mail an `info@frawo-tech.de` kommt an
-- SMTP-Versand ueber `smtp.strato.de` funktioniert
+- keine zweite manuelle Setup-Anleitung neben dem Mail-Kanon
+- keine offenen Providerentscheidungen
+- keine Passwort- oder Aliaslogik ausserhalb von `OPERATIONS/MAIL_OPERATIONS.md`

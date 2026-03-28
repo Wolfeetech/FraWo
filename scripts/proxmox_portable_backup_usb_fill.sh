@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+source "${ROOT_DIR}/scripts/inventory_remote.sh"
+
 MOUNT_PATH="/srv/portable-backup-usb"
 ARCHIVE_DIR="/var/lib/vz/dump"
 TARGET_DIR="${MOUNT_PATH}/archives"
@@ -9,7 +12,7 @@ RESERVE_GIB=4
 MAX_USAGE_PERCENT=94
 VMIDS=(200 210 220 230)
 
-ssh proxmox "bash -s" <<'EOF'
+remote_cmd="$(cat <<'EOF'
 set -euo pipefail
 
 MOUNT_PATH="/srv/portable-backup-usb"
@@ -100,3 +103,6 @@ find "${TARGET_DIR}" -type f -name 'vzdump-qemu-*.vma.zst' | sort > "${MOUNT_PAT
 du -sh "${TARGET_DIR}" || true
 df -h "${MOUNT_PATH}"
 EOF
+)"
+
+run_proxmox_remote "${remote_cmd}"
