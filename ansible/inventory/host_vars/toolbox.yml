@@ -55,24 +55,24 @@ toolbox_network_static_file_hosts:
 toolbox_network_placeholder_hosts: []
 toolbox_network_portal_links:
   - label: Nextcloud
-    group: Work
-    hint: Files, collaboration and shared documents
+    group: Arbeit
+    hint: Dateien, Zusammenarbeit und gemeinsame Dokumente
     url: http://cloud.hs27.internal
   - label: Paperless
-    group: Work
-    hint: Document archive and OCR workflow
+    group: Arbeit
+    hint: Dokumentenarchiv und OCR-Workflow
     url: http://paperless.hs27.internal
   - label: Odoo
-    group: Work
-    hint: ERP, CRM and operations login
+    group: Arbeit
+    hint: ERP, CRM und betriebliche Arbeitsflaeche
     url: http://odoo.hs27.internal/web/login
-  - label: Franz Mobil Start
-    group: Operations
-    hint: Tailscale-only MVP path for Franz on iPhone
-    url: http://100.99.206.128:8447/franz/
+  - label: Franz Start
+    group: Betrieb
+    hint: Vorbereiteter Einstieg fuer Franz auf Surface Laptop und iPhone
+    url: http://portal.hs27.internal/franz/
   - label: Vault
-    group: Operations
-    hint: Shared secret vault for the current MVP
+    group: Betrieb
+    hint: Gemeinsamer Passworttresor fuer den aktuellen MVP
     url: https://vault.hs27.internal
 toolbox_network_persona_cards:
   - label: Ich bin Wolf
@@ -132,10 +132,38 @@ toolbox_network_status_targets:
     success_codes: [200]
     summary: Self-hosted secret vault on CT120
 toolbox_network_tailscale_mobile_proxies:
+  - name: ha_mobile
+    listen_port: 8443
+    upstream: "{{ homeserver_haos_current_ip }}:8123"
+    host_header: ha.hs27.internal
+  - name: odoo_mobile
+    listen_port: 8444
+    upstream: 192.168.2.22:8069
+    host_header: odoo.hs27.internal
+  - name: nextcloud_mobile
+    listen_port: 8445
+    upstream: 192.168.2.21:80
+    host_header: cloud.hs27.internal
+  - name: paperless_mobile
+    listen_port: 8446
+    upstream: 192.168.2.23:8000
+    host_header: paperless.hs27.internal
   - name: portal_mobile
     listen_port: 8447
     upstream: 127.0.0.1:80
     host_header: portal.hs27.internal
+  - name: radio_mobile
+    listen_port: 8448
+    upstream: 100.64.23.77:80
+    host_header: radio.hs27.internal
+  - name: media_mobile
+    listen_port: 8449
+    upstream: 192.168.2.20:8096
+    host_header: media.hs27.internal
+  - name: vault_mobile
+    listen_port: 8442
+    upstream: 192.168.2.26:8080
+    host_header: vault.hs27.internal
 toolbox_tailscale_hostname: toolbox
 toolbox_tailscale_repo_key_url: https://pkgs.tailscale.com/stable/debian/bookworm.noarmor.gpg
 toolbox_tailscale_repo_list_url: https://pkgs.tailscale.com/stable/debian/bookworm.tailscale-keyring.list

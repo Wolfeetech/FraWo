@@ -5,76 +5,94 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="theme-color" content="#10223a">
-  <title>FRAWO Franz</title>
+  <meta name="theme-color" content="#0f172a">
+  <title>Arbeitsplatz Franz</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;800&display=swap');
-
     :root {
-      --bg-1: #07101c;
-      --bg-2: #0d1830;
-      --ink: #ecf4ff;
-      --muted: #9eb2cb;
-      --line: rgba(158, 178, 203, 0.16);
-      --panel: rgba(10, 21, 38, 0.84);
-      --panel-strong: rgba(14, 31, 53, 0.94);
-      --teal: #24c7aa;
+      --glass-bg: rgba(20, 25, 33, 0.7);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --base-text: #e2e8f0;
+      --muted-text: rgba(226, 232, 240, 0.72);
+      --accent: #2dd4bf;
+      --accent-soft: rgba(45, 212, 191, 0.18);
       --cyan: #67b9ff;
-      --amber: #f3bb52;
-      --shadow: rgba(4, 10, 20, 0.46);
+      --warn: #f59e0b;
+      --shadow: 0 18px 36px rgba(0, 0, 0, 0.28);
+      --panel-shadow: 0 20px 48px rgba(0, 0, 0, 0.24);
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
       min-height: 100vh;
-      font-family: 'Outfit', sans-serif;
-      color: var(--ink);
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      color: var(--base-text);
       background:
-        radial-gradient(circle at top left, rgba(36, 199, 170, 0.16), transparent 28%),
-        radial-gradient(circle at top right, rgba(103, 185, 255, 0.16), transparent 34%),
-        linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 100%);
+        radial-gradient(circle at top left, rgba(45, 212, 191, 0.16), transparent 28%),
+        radial-gradient(circle at top right, rgba(103, 185, 255, 0.14), transparent 26%),
+        linear-gradient(180deg, #07101c 0%, #0d1830 100%);
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        linear-gradient(180deg, rgba(6, 12, 24, 0.42), rgba(7, 12, 24, 0.12)),
+        repeating-linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0.018) 0,
+          rgba(255, 255, 255, 0.018) 1px,
+          transparent 1px,
+          transparent 120px
+        );
+      pointer-events: none;
+      z-index: -1;
     }
 
     main {
-      max-width: 1040px;
+      max-width: 1120px;
       margin: 0 auto;
-      padding: 24px 18px 40px;
+      padding: 2rem 1.4rem 2.6rem;
       display: grid;
-      gap: 18px;
+      gap: 1.4rem;
     }
 
     .hero,
-    .panel {
+    .panel,
+    .link-card {
       border-radius: 26px;
-      border: 1px solid var(--line);
-      background: var(--panel);
-      box-shadow: 0 18px 50px var(--shadow);
-      backdrop-filter: blur(14px);
+      border: 1px solid var(--glass-border);
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: var(--panel-shadow);
     }
 
     .hero {
-      padding: 24px;
-      background:
-        linear-gradient(135deg, rgba(12, 27, 45, 0.94), rgba(16, 34, 58, 0.9)),
-        linear-gradient(135deg, rgba(36, 199, 170, 0.1), rgba(103, 185, 255, 0.14));
+      padding: 2rem;
+      display: grid;
+      gap: 1rem;
     }
 
     .eyebrow {
       display: inline-block;
-      margin-bottom: 14px;
-      color: var(--teal);
+      color: var(--accent);
       text-transform: uppercase;
-      letter-spacing: 0.2em;
+      letter-spacing: 0.18em;
       font-size: 0.76rem;
       font-weight: 800;
     }
 
     h1 {
-      margin: 0 0 12px;
-      font-size: clamp(2.5rem, 6vw, 4.8rem);
-      line-height: 0.95;
+      margin: 0;
+      font-size: clamp(2.4rem, 6vw, 4.6rem);
+      line-height: 0.94;
       letter-spacing: -0.05em;
       max-width: 10ch;
     }
@@ -82,7 +100,7 @@
     .hero p {
       margin: 0;
       max-width: 58ch;
-      color: var(--muted);
+      color: var(--muted-text);
       line-height: 1.65;
       font-size: 1.02rem;
     }
@@ -90,20 +108,20 @@
     .badge-row {
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 18px;
+      gap: 0.75rem;
     }
 
     .badge {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      padding: 10px 14px;
+      gap: 0.55rem;
+      padding: 0.8rem 1rem;
       border-radius: 999px;
-      border: 1px solid var(--line);
-      background: rgba(8, 18, 31, 0.7);
-      color: var(--muted);
-      font-size: 0.9rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--muted-text);
+      font-size: 0.88rem;
+      font-weight: 600;
     }
 
     .badge::before {
@@ -111,127 +129,144 @@
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      background: var(--teal);
-      box-shadow: 0 0 14px rgba(36, 199, 170, 0.7);
+      background: var(--accent);
+      box-shadow: 0 0 0 6px rgba(45, 212, 191, 0.1);
     }
 
-    .grid {
+    .link-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 18px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.2rem;
     }
 
-    .panel {
-      padding: 22px;
-    }
-
-    .kicker {
-      display: block;
-      margin-bottom: 10px;
-      color: var(--cyan);
-      text-transform: uppercase;
-      letter-spacing: 0.18em;
-      font-size: 0.72rem;
-      font-weight: 800;
-    }
-
-    .panel h2 {
-      margin: 0 0 8px;
-      font-size: 1.42rem;
-      letter-spacing: -0.03em;
-    }
-
-    .panel p {
-      margin: 0 0 16px;
-      color: var(--muted);
-      line-height: 1.58;
-    }
-
-    .cta-stack,
-    .link-grid,
-    .step-list {
-      display: grid;
-      gap: 12px;
-    }
-
-    a.cta,
-    a.tile {
-      display: block;
+    .link-card {
+      min-height: 220px;
+      padding: 1.6rem 1.2rem;
       text-decoration: none;
-      color: var(--ink);
-      border-radius: 20px;
-      transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 0.9rem;
+      transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
     }
 
-    a.cta {
-      padding: 18px;
-      border: 1px solid rgba(103, 185, 255, 0.22);
-      background: var(--panel-strong);
+    .link-card:hover {
+      transform: translateY(-4px);
+      background: rgba(21, 34, 57, 0.88);
+      border-color: rgba(255, 255, 255, 0.18);
     }
 
-    a.cta.primary {
-      border-color: rgba(36, 199, 170, 0.32);
-      background:
-        linear-gradient(135deg, rgba(36, 199, 170, 0.18), rgba(103, 185, 255, 0.18)),
-        rgba(14, 31, 53, 0.96);
+    .link-card.primary:hover {
+      border-color: var(--accent);
     }
 
-    a.tile {
-      padding: 16px;
-      border: 1px solid rgba(158, 178, 203, 0.12);
-      background: rgba(9, 17, 30, 0.8);
+    .link-card.secondary:hover {
+      border-color: rgba(103, 185, 255, 0.28);
     }
 
-    a.cta:hover,
-    a.tile:hover {
-      transform: translateY(-2px);
-      border-color: rgba(103, 185, 255, 0.42);
-      background-color: rgba(15, 31, 54, 0.98);
+    .mark {
+      width: 58px;
+      height: 58px;
+      border-radius: 18px;
+      display: grid;
+      place-items: center;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 1rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
     }
 
-    .eyeline {
-      display: block;
-      margin-bottom: 6px;
-      color: var(--muted);
+    .secondary .mark {
+      background: rgba(103, 185, 255, 0.12);
+      color: var(--cyan);
+    }
+
+    .meta {
+      display: grid;
+      gap: 0.42rem;
+    }
+
+    .group {
+      color: var(--muted-text);
+      font-size: 0.78rem;
       text-transform: uppercase;
-      letter-spacing: 0.16em;
-      font-size: 0.72rem;
+      letter-spacing: 0.14em;
       font-weight: 700;
     }
 
     .title {
-      display: block;
-      margin-bottom: 5px;
-      font-size: 1.08rem;
+      font-size: 1.32rem;
       font-weight: 700;
+      line-height: 1.1;
     }
 
-    .body {
-      display: block;
-      color: var(--muted);
-      font-size: 0.95rem;
+    .hint {
+      color: var(--muted-text);
+      font-size: 0.94rem;
       line-height: 1.5;
+    }
+
+    .url {
+      color: rgba(226, 232, 240, 0.58);
+      font-size: 0.82rem;
+      line-height: 1.45;
+      word-break: break-word;
+    }
+
+    .panel {
+      padding: 1.4rem;
+      display: grid;
+      gap: 1rem;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 1rem;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: 1.18rem;
+      letter-spacing: -0.03em;
+    }
+
+    .section-head small {
+      color: var(--muted-text);
+      font-size: 0.84rem;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
     }
 
     .step {
-      padding: 14px 16px;
-      border-radius: 18px;
-      border: 1px solid rgba(158, 178, 203, 0.1);
-      background: rgba(8, 16, 29, 0.72);
-      color: var(--muted);
-      line-height: 1.5;
+      padding: 1rem;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--muted-text);
+      line-height: 1.55;
     }
 
-    .step b {
-      color: var(--ink);
+    .step strong {
+      display: block;
+      margin-bottom: 0.4rem;
+      color: var(--base-text);
+      font-size: 0.98rem;
     }
 
     .note {
-      padding: 16px 18px;
-      border-left: 4px solid var(--amber);
+      padding: 1rem 1.1rem;
       border-radius: 18px;
-      background: rgba(72, 46, 10, 0.22);
-      color: #f8d389;
+      border-left: 4px solid var(--warn);
+      background: rgba(89, 56, 10, 0.24);
+      color: #f7d48c;
       line-height: 1.55;
     }
 
@@ -240,15 +275,15 @@
       color: #cae7ff;
     }
 
-    @media (max-width: 640px) {
+    @media (max-width: 720px) {
       main {
-        padding: 18px 14px 34px;
+        padding: 1.3rem 1rem 2rem;
       }
 
       .hero,
-      .panel {
+      .panel,
+      .link-card {
         border-radius: 22px;
-        padding: 18px;
       }
     }
   </style>
@@ -259,88 +294,109 @@
       <span class="eyebrow">FraWo Arbeitsplatz</span>
       <h1>Arbeitsplatz Franz</h1>
       <p>
-        Zentraler Einstieg fuer Dokumente, Ablage und Vorgange. Im aktuellen
-        Arbeitsstand sind <b>Nextcloud</b>, <b>Paperless</b>, <b>Odoo</b> und
-        <b>Vault</b> direkt vorbereitet.
+        Ein vorbereiteter Endnutzerpfad fuer Dokumente, Ablage und taegliche Arbeit.
+        Die benoetigten Anwendungen sind direkt verlinkt. Wenn ein Passwort gefragt
+        wird, nur dann den Tresor oeffnen.
       </p>
       <div class="badge-row">
-        <span class="badge">Zugang aktiv</span>
-        <span class="badge">Vault bereit</span>
-        <span class="badge">Shortcuts bereit</span>
+        <span class="badge">Direkteinstieg aktiv</span>
+        <span class="badge">Vault nur bei Passwortabfrage</span>
+        <span class="badge">Surface und iPhone vorbereitet</span>
       </div>
     </section>
 
-    <section class="grid">
-      <article class="panel">
-        <span class="kicker">Start</span>
-        <h2>Startpunkt</h2>
-        <p>
-          Dieser Einstieg oeffnet die benoetigten Pfade fuer den aktuellen
-          Arbeitsstand ohne zusaetzliche Navigation.
-        </p>
-        <div class="cta-stack">
-          <a class="cta primary" href="http://portal.hs27.internal/franz/">
-            <span class="eyeline">Surface Laptop im Heimnetz</span>
-            <span class="title">Franz Start</span>
-            <span class="body">Der normale Startpunkt fuer den Arbeitstag.</span>
-          </a>
-          <a class="cta" href="http://100.99.206.128:8447/franz/">
-            <span class="eyeline">iPhone ausser Haus</span>
-            <span class="title">Franz Mobil Start</span>
-            <span class="body">Vorher Tailscale verbinden, dann als Homescreen sichern.</span>
-          </a>
-          <a class="cta" href="https://vault.hs27.internal/">
-            <span class="eyeline">Nur bei echter Passwortabfrage</span>
-            <span class="title">Vault</span>
-            <span class="body">Logins nachschlagen, nicht als Dauer-Arbeitsoberflaeche offen lassen.</span>
-          </a>
+    <section class="link-grid" aria-label="Franz Direktlinks">
+      <a class="link-card primary" href="http://cloud.hs27.internal/">
+        <div class="mark">NC</div>
+        <div class="meta">
+          <span class="group">Arbeit</span>
+          <span class="title">Nextcloud</span>
+          <span class="hint">Dateien, gemeinsame Ablagen und laufende Zusammenarbeit.</span>
         </div>
-      </article>
+        <div class="url">cloud.hs27.internal</div>
+      </a>
 
-      <article class="panel">
-        <span class="kicker">Kern-Apps</span>
-        <h2>Kernanwendungen</h2>
-        <p>Die direkt vorbereiteten Anwendungen fuer die taegliche Arbeit.</p>
-        <div class="link-grid">
-          <a class="tile" href="http://cloud.hs27.internal/">
-            <span class="title">Nextcloud</span>
-            <span class="body">Dateien, gemeinsame Ablagen und laufende Zusammenarbeit.</span>
-          </a>
-          <a class="tile" href="http://cloud.hs27.internal/apps/files/?dir=/Paperless/Eingang">
-            <span class="title">Nextcloud Eingang</span>
-            <span class="body">Der schnelle Dokumentenweg Richtung Paperless.</span>
-          </a>
-          <a class="tile" href="http://paperless.hs27.internal/accounts/login/">
-            <span class="title">Paperless</span>
-            <span class="body">Archiv, Suche und saubere Dokumentenablage.</span>
-          </a>
-          <a class="tile" href="http://odoo.hs27.internal/web/login">
-            <span class="title">Odoo</span>
-            <span class="body">Kernprozesse fuer Betrieb, Kunden und Arbeit.</span>
-          </a>
+      <a class="link-card primary" href="http://paperless.hs27.internal/accounts/login/">
+        <div class="mark">PL</div>
+        <div class="meta">
+          <span class="group">Arbeit</span>
+          <span class="title">Paperless</span>
+          <span class="hint">Archiv, Suche und saubere Dokumentenablage.</span>
         </div>
-      </article>
+        <div class="url">paperless.hs27.internal/accounts/login/</div>
+      </a>
+
+      <a class="link-card primary" href="http://odoo.hs27.internal/web/login">
+        <div class="mark">OD</div>
+        <div class="meta">
+          <span class="group">Arbeit</span>
+          <span class="title">Odoo</span>
+          <span class="hint">Kernprozesse fuer Betrieb, Kunden und Arbeit.</span>
+        </div>
+        <div class="url">odoo.hs27.internal/web/login</div>
+      </a>
+
+      <a class="link-card secondary" href="https://vault.hs27.internal/">
+        <div class="mark">VA</div>
+        <div class="meta">
+          <span class="group">Betrieb</span>
+          <span class="title">Vault</span>
+          <span class="hint">Nur oeffnen, wenn eine Anwendung wirklich ein Passwort verlangt.</span>
+        </div>
+        <div class="url">vault.hs27.internal</div>
+      </a>
+
+      <a class="link-card secondary" href="http://cloud.hs27.internal/apps/files/?dir=/Paperless/Eingang">
+        <div class="mark">IN</div>
+        <div class="meta">
+          <span class="group">Dokumente</span>
+          <span class="title">Nextcloud Eingang</span>
+          <span class="hint">Schneller Weg fuer neue Dokumente Richtung Paperless.</span>
+        </div>
+        <div class="url">cloud.hs27.internal/apps/files/?dir=/Paperless/Eingang</div>
+      </a>
+
+      <a class="link-card secondary" href="http://100.99.206.128:8447/franz/">
+        <div class="mark">MB</div>
+        <div class="meta">
+          <span class="group">Mobil</span>
+          <span class="title">Franz Mobil Start</span>
+          <span class="hint">Fuer iPhone und externe Nutzung ueber Tailscale.</span>
+        </div>
+        <div class="url">100.99.206.128:8447/franz/</div>
+      </a>
     </section>
 
-    <section class="grid">
-      <article class="panel">
-        <span class="kicker">Ohne Konfig</span>
-        <h2>Geraete vorbereiten</h2>
-        <div class="step-list">
-          <div class="step"><b>Surface Laptop:</b> den vorbereiteten Ordner <code>FRAWO Franz</code> kopieren und immer mit <code>00 - FRAWO Start</code> beginnen.</div>
-          <div class="step"><b>iPhone:</b> <code>Franz Mobil Start</code> in Safari oeffnen und als Homescreen-App sichern.</div>
-          <div class="step"><b>Logins:</b> wenn ein Passwort fehlt, nur <code>Vault</code> oeffnen. Keine zusaetzlichen Notizen oder Browser-Memos.</div>
+    <section class="panel">
+      <div class="section-head">
+        <h2>Ohne Konfig arbeiten</h2>
+        <small>Direkter Endnutzerpfad</small>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <strong>1. Immer hier starten</strong>
+          Surface Laptop und iPhone sollen ueber diese Seite oder den vorbereiteten Shortcut starten, nicht ueber gemerkte Einzel-URLs.
         </div>
-      </article>
+        <div class="step">
+          <strong>2. Vault nur bei Bedarf</strong>
+          Wenn kein Passwort gebraucht wird, bleibt <code>Vault</code> zu. Die Arbeitsapps sind die eigentlichen Zielsysteme.
+        </div>
+        <div class="step">
+          <strong>3. Keine Zusatznotizen</strong>
+          Keine Browser-Merkzettel, keine lokalen Passwortlisten und keine Nebenwege ausserhalb des vorbereiteten Pfads.
+        </div>
+      </div>
+    </section>
 
-      <article class="panel">
-        <span class="kicker">Erweiterung</span>
-        <h2>Nicht im aktuellen Startbild</h2>
-        <p class="note">
-          Media, Radio und weitere Komfortpfade sind nicht Teil des aktuellen
-          Startbilds. Sie kommen in einer spaeteren Ausbaustufe wieder dazu.
-        </p>
-      </article>
+    <section class="panel">
+      <div class="section-head">
+        <h2>Bewusst nicht im Startbild</h2>
+        <small>Naechste Ausbaustufe</small>
+      </div>
+      <div class="note">
+        Media, Radio und weitere Komfortpfade bleiben ausserhalb dieses Startpunkts,
+        bis der aktuelle Business-MVP sichtbar sauber abgenommen ist.
+      </div>
     </section>
   </main>
 </body>

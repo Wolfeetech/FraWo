@@ -3,177 +3,242 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>FRAWO MVP</title>
+  <title>FraWo Arbeitsstart</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Manrope:wght@500;700;800&display=swap');
-
     :root {
-      --bg-0: #f4efe4;
-      --bg-1: #e9dfcf;
-      --panel: rgba(255, 249, 239, 0.84);
-      --panel-strong: rgba(255, 250, 243, 0.96);
-      --border: rgba(57, 43, 29, 0.14);
-      --text: #21180f;
-      --muted: #665849;
-      --shadow: rgba(42, 26, 12, 0.12);
-      --amber: #d97706;
-      --teal: #0f766e;
-      --ok: #15803d;
-      --warn: #b45309;
-      --danger: #b91c1c;
+      --glass-bg: rgba(20, 25, 33, 0.68);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --base-text: #e2e8f0;
+      --muted-text: rgba(226, 232, 240, 0.72);
+      --accent: #38bdf8;
+      --accent-glow: rgba(56, 189, 248, 0.32);
+      --danger: #fb7185;
+      --ok: #34d399;
+      --warn: #f59e0b;
+      --shadow: 0 18px 36px rgba(0, 0, 0, 0.28);
+      --panel-shadow: 0 20px 48px rgba(0, 0, 0, 0.24);
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
       min-height: 100vh;
-      font-family: "Space Grotesk", sans-serif;
-      color: var(--text);
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      color: var(--base-text);
       background:
-        radial-gradient(circle at top left, rgba(15, 118, 110, 0.14), transparent 28%),
-        radial-gradient(circle at right center, rgba(217, 119, 6, 0.16), transparent 24%),
-        linear-gradient(180deg, var(--bg-0) 0%, var(--bg-1) 100%);
+        radial-gradient(circle at top left, rgba(56, 189, 248, 0.18), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(251, 113, 133, 0.14), transparent 24%),
+        linear-gradient(135deg, #0f172a 0%, #172033 42%, #111827 100%);
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        linear-gradient(135deg, rgba(15, 23, 42, 0.74) 0%, rgba(30, 41, 59, 0.54) 100%),
+        repeating-linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0.02) 0,
+          rgba(255, 255, 255, 0.02) 1px,
+          transparent 1px,
+          transparent 110px
+        );
+      pointer-events: none;
+      z-index: -1;
     }
 
     main {
-      max-width: 1180px;
+      max-width: 1240px;
       margin: 0 auto;
-      padding: 24px 18px 40px;
+      padding: 2.2rem;
       display: grid;
-      gap: 18px;
+      gap: 2rem;
     }
 
-    .hero,
-    .panel {
-      border-radius: 28px;
-      border: 1px solid var(--border);
-      background: var(--panel);
-      box-shadow: 0 22px 60px var(--shadow);
-      backdrop-filter: blur(16px);
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1.5rem;
+    }
+
+    .time-widget {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+      text-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    .time {
+      font-size: 5.2rem;
+      font-weight: 300;
+      line-height: 0.95;
+      letter-spacing: -0.06em;
+    }
+
+    .date {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .mode-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.7rem;
+      padding: 0.85rem 1.35rem;
+      border-radius: 999px;
+      background: rgba(56, 189, 248, 0.14);
+      border: 1px solid rgba(56, 189, 248, 0.26);
+      color: var(--accent);
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.12);
+    }
+
+    .mode-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 12px var(--accent);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.45); }
+      70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(56, 189, 248, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); }
     }
 
     .hero {
       display: grid;
-      grid-template-columns: minmax(0, 1.35fr) minmax(300px, 0.85fr);
-      gap: 18px;
-      padding: 24px;
+      grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+      gap: 1.5rem;
+      align-items: stretch;
     }
 
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 14px;
-      color: var(--amber);
+    .hero-card,
+    .panel,
+    .app-card,
+    .service-card {
+      border-radius: 26px;
+      border: 1px solid var(--glass-border);
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: var(--panel-shadow);
+    }
+
+    .hero-card {
+      padding: 2rem;
+    }
+
+    .hero-kicker {
+      display: inline-block;
+      margin-bottom: 1rem;
+      color: var(--accent);
       text-transform: uppercase;
-      letter-spacing: 0.16em;
-      font-size: 0.78rem;
-      font-weight: 700;
+      letter-spacing: 0.18em;
+      font-size: 0.76rem;
+      font-weight: 800;
     }
 
-    .eyebrow::before {
-      content: "";
-      width: 10px;
-      height: 10px;
-      border-radius: 999px;
-      background: var(--amber);
-      box-shadow: 0 0 0 6px rgba(217, 119, 6, 0.12);
-    }
-
-    h1 {
-      margin: 0 0 14px;
-      font-family: "Manrope", sans-serif;
-      font-size: clamp(2.6rem, 6vw, 4.9rem);
-      line-height: 0.95;
-      letter-spacing: -0.055em;
-      max-width: 11ch;
-    }
-
-    .hero-copy p {
+    .hero h1 {
       margin: 0;
-      max-width: 58ch;
-      color: var(--muted);
-      font-size: 1.03rem;
-      line-height: 1.65;
+      font-size: clamp(2.5rem, 6vw, 4.8rem);
+      line-height: 0.94;
+      letter-spacing: -0.05em;
+      max-width: 9ch;
     }
 
-    .pill-row {
+    .hero p {
+      margin: 0.9rem 0 0;
+      max-width: 58ch;
+      color: var(--muted-text);
+      line-height: 1.65;
+      font-size: 1.02rem;
+    }
+
+    .hero-note {
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 20px;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
     }
 
-    .pill {
+    .hero-pill {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      padding: 10px 14px;
+      gap: 0.6rem;
+      padding: 0.8rem 1rem;
       border-radius: 999px;
-      border: 1px solid rgba(57, 43, 29, 0.12);
-      background: rgba(255, 252, 246, 0.74);
-      color: var(--muted);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--muted-text);
       font-size: 0.88rem;
       font-weight: 600;
     }
 
-    .pill::before {
+    .hero-pill::before {
       content: "";
       width: 8px;
       height: 8px;
       border-radius: 50%;
       background: var(--ok);
-      box-shadow: 0 0 0 6px rgba(21, 128, 61, 0.1);
+      box-shadow: 0 0 0 6px rgba(52, 211, 153, 0.1);
     }
 
-    .status-box {
-      padding: 20px;
-      border-radius: 24px;
-      background: linear-gradient(180deg, rgba(255, 251, 245, 0.96), rgba(250, 243, 231, 0.88));
-      border: 1px solid rgba(57, 43, 29, 0.12);
+    .status-card {
+      padding: 1.6rem;
       display: grid;
-      gap: 14px;
-      align-content: start;
+      gap: 1rem;
+      background: linear-gradient(180deg, rgba(17, 24, 39, 0.82), rgba(15, 23, 42, 0.72));
     }
 
     .section-head {
       display: flex;
       justify-content: space-between;
-      gap: 16px;
       align-items: baseline;
-      margin-bottom: 16px;
+      gap: 1rem;
     }
 
     .section-head h2 {
       margin: 0;
-      font-family: "Manrope", sans-serif;
-      font-size: 1.18rem;
+      font-size: 1.2rem;
       letter-spacing: -0.03em;
     }
 
     .section-head small {
-      color: var(--muted);
-      font-size: 0.86rem;
+      color: var(--muted-text);
+      font-size: 0.84rem;
     }
 
     .metrics {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
+      gap: 0.9rem;
     }
 
     .metric {
-      padding: 16px;
-      border-radius: 22px;
-      background: var(--panel-strong);
-      border: 1px solid rgba(57, 43, 29, 0.1);
+      padding: 1rem;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
     }
 
     .metric-label {
       display: block;
-      margin-bottom: 8px;
-      color: var(--muted);
+      margin-bottom: 0.45rem;
+      color: var(--muted-text);
       font-size: 0.78rem;
       text-transform: uppercase;
       letter-spacing: 0.12em;
@@ -182,7 +247,6 @@
 
     .metric-value {
       display: block;
-      font-family: "Manrope", sans-serif;
       font-size: 1.7rem;
       font-weight: 800;
       letter-spacing: -0.05em;
@@ -190,188 +254,199 @@
 
     .metric-note {
       display: block;
-      margin-top: 8px;
-      color: var(--muted);
+      margin-top: 0.5rem;
+      color: var(--muted-text);
       font-size: 0.88rem;
-      line-height: 1.4;
+      line-height: 1.45;
     }
 
-    .card-grid,
-    .service-grid {
+    .search-wrap {
       display: grid;
-      gap: 18px;
+      gap: 0.7rem;
     }
 
-    .card-grid {
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    .search-form {
+      position: relative;
+      display: flex;
+      width: 100%;
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 999px;
+      padding: 0.7rem;
+      box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.08);
     }
 
-    .card {
-      padding: 24px;
+    .search-form:focus-within {
+      border-color: var(--accent);
+      box-shadow: var(--shadow), 0 0 20px var(--accent-glow);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 1.6rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 22px;
+      height: 22px;
+      fill: rgba(255, 255, 255, 0.56);
+    }
+
+    .search-input {
+      flex: 1;
+      min-width: 0;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: white;
+      font-size: 1.25rem;
+      padding: 0.95rem 1rem 0.95rem 3.3rem;
+    }
+
+    .search-input::placeholder {
+      color: rgba(255, 255, 255, 0.42);
+    }
+
+    .search-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 0 2rem;
+      background: var(--accent);
+      color: #0f172a;
+      font-size: 1.05rem;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 0 15px var(--accent-glow);
+      transition: transform 0.18s ease, filter 0.18s ease;
+    }
+
+    .search-btn:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.08);
+    }
+
+    .search-note {
+      color: var(--muted-text);
+      font-size: 0.9rem;
+    }
+
+    .app-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.3rem;
+    }
+
+    .app-card {
+      min-height: 220px;
+      padding: 1.7rem 1.3rem;
+      text-decoration: none;
+      color: white;
       display: flex;
       flex-direction: column;
-      gap: 18px;
-      min-height: 280px;
-      background: linear-gradient(180deg, rgba(255, 251, 244, 0.92), rgba(250, 242, 229, 0.86));
+      justify-content: space-between;
+      gap: 1rem;
+      transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
     }
 
-    .card[data-accent="amber"] {
-      border-color: rgba(217, 119, 6, 0.22);
+    .app-card:hover {
+      transform: translateY(-5px);
+      background: rgba(30, 41, 59, 0.8);
+      border-color: rgba(255, 255, 255, 0.16);
     }
 
-    .card[data-accent="teal"] {
-      border-color: rgba(15, 118, 110, 0.22);
+    .app-card.is-primary:hover {
+      border-color: var(--accent);
+      box-shadow: var(--panel-shadow), 0 0 18px var(--accent-glow);
     }
 
-    .card-top {
-      display: flex;
-      gap: 14px;
-      align-items: flex-start;
+    .app-card.is-secondary:hover {
+      border-color: rgba(255, 255, 255, 0.2);
     }
 
-    .card-mark {
-      width: 52px;
-      height: 52px;
+    .app-mark {
+      width: 60px;
+      height: 60px;
       border-radius: 18px;
       display: grid;
       place-items: center;
-      font-family: "Manrope", sans-serif;
       font-size: 1rem;
       font-weight: 800;
       letter-spacing: 0.06em;
-      color: #fffdf8;
-      flex: 0 0 auto;
+      background: rgba(56, 189, 248, 0.14);
+      color: var(--accent);
     }
 
-    .card[data-accent="amber"] .card-mark {
-      background: linear-gradient(135deg, #d97706, #f59e0b);
+    .app-card.is-secondary .app-mark {
+      background: rgba(255, 255, 255, 0.08);
+      color: #f8fafc;
     }
 
-    .card[data-accent="teal"] .card-mark {
-      background: linear-gradient(135deg, #0f766e, #14b8a6);
+    .app-meta {
+      display: grid;
+      gap: 0.4rem;
     }
 
-    .card-label {
-      margin: 0 0 6px;
-      color: var(--muted);
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      font-weight: 700;
-    }
-
-    .card h3 {
-      margin: 0;
-      font-family: "Manrope", sans-serif;
-      font-size: 1.5rem;
-      line-height: 1.05;
-      letter-spacing: -0.04em;
-    }
-
-    .card-summary {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.58;
-      font-size: 0.96rem;
-    }
-
-    .card-primary {
-      display: inline-flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 15px 18px;
-      border-radius: 18px;
-      text-decoration: none;
-      color: #fffdf8;
-      font-weight: 700;
-      box-shadow: 0 18px 35px rgba(42, 26, 12, 0.14);
-    }
-
-    .card-primary::after {
-      content: "Start";
-      font-size: 0.76rem;
+    .app-group {
+      color: var(--muted-text);
+      font-size: 0.78rem;
       text-transform: uppercase;
       letter-spacing: 0.14em;
-      opacity: 0.76;
+      font-weight: 700;
     }
 
-    .card[data-accent="amber"] .card-primary {
-      background: linear-gradient(135deg, #c96a05, #ea9a0d);
+    .app-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      line-height: 1.1;
     }
 
-    .card[data-accent="teal"] .card-primary {
-      background: linear-gradient(135deg, #0c6a62, #16a394);
+    .app-hint {
+      color: var(--muted-text);
+      font-size: 0.94rem;
+      line-height: 1.5;
     }
 
-    .card-links {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
-      margin-top: auto;
-    }
-
-    .card-link {
-      min-height: 72px;
-      padding: 12px 14px;
-      border-radius: 18px;
-      text-decoration: none;
-      background: rgba(255, 252, 246, 0.85);
-      border: 1px solid rgba(57, 43, 29, 0.1);
-      color: var(--text);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 8px;
-      transition: transform 0.18s ease, border-color 0.18s ease;
-    }
-
-    .card-link:hover,
-    .card-primary:hover {
-      transform: translateY(-2px);
-    }
-
-    .card-link strong {
-      font-size: 0.95rem;
-      line-height: 1.2;
-    }
-
-    .card-link span {
-      color: var(--muted);
+    .app-url {
+      color: rgba(226, 232, 240, 0.58);
       font-size: 0.82rem;
-      line-height: 1.35;
+      line-height: 1.45;
+      word-break: break-word;
     }
 
-    .service-panel,
-    .note-panel {
-      padding: 22px;
+    .panel {
+      padding: 1.5rem;
+      display: grid;
+      gap: 1rem;
     }
 
     .service-grid {
+      display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
     }
 
     .service-card {
-      padding: 16px;
-      border-radius: 22px;
-      background: var(--panel-strong);
-      border: 1px solid rgba(57, 43, 29, 0.12);
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.04);
+      border-color: rgba(255, 255, 255, 0.08);
+      box-shadow: none;
     }
 
     .service-card.is-ok {
-      border-color: rgba(21, 128, 61, 0.18);
+      border-color: rgba(52, 211, 153, 0.22);
     }
 
     .service-card.is-warn {
-      border-color: rgba(180, 83, 9, 0.22);
+      border-color: rgba(245, 158, 11, 0.22);
     }
 
     .service-head {
       display: flex;
       justify-content: space-between;
-      gap: 12px;
       align-items: flex-start;
-      margin-bottom: 10px;
+      gap: 0.8rem;
+      margin-bottom: 0.7rem;
     }
 
     .service-head strong {
@@ -383,8 +458,8 @@
       display: inline-flex;
       align-items: center;
       border-radius: 999px;
-      padding: 6px 10px;
-      font-size: 0.74rem;
+      padding: 0.4rem 0.65rem;
+      font-size: 0.72rem;
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.12em;
@@ -392,189 +467,229 @@
     }
 
     .badge.is-ok {
-      background: rgba(21, 128, 61, 0.1);
+      background: rgba(52, 211, 153, 0.12);
       color: var(--ok);
     }
 
     .badge.is-warn {
-      background: rgba(180, 83, 9, 0.12);
+      background: rgba(245, 158, 11, 0.12);
       color: var(--warn);
     }
 
     .service-card p,
-    .note-panel p {
+    .panel p,
+    .panel li {
       margin: 0;
-      color: var(--muted);
+      color: var(--muted-text);
       line-height: 1.55;
     }
 
-    .note-panel ul {
-      margin: 12px 0 0;
-      padding-left: 18px;
-      color: var(--muted);
-      line-height: 1.55;
+    .panel ul {
+      margin: 0;
+      padding-left: 1.2rem;
+      display: grid;
+      gap: 0.5rem;
     }
 
-    @media (max-width: 960px) {
+    @media (max-width: 1024px) {
       .hero {
         grid-template-columns: 1fr;
       }
     }
 
-    @media (max-width: 680px) {
+    @media (max-width: 720px) {
       main {
-        padding: 18px 14px 28px;
+        padding: 1.4rem;
       }
 
-      .hero,
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .time {
+        font-size: 3.7rem;
+      }
+
+      .hero-card,
+      .status-card,
       .panel,
-      .service-panel,
-      .note-panel,
-      .card {
+      .app-card {
         border-radius: 22px;
-        padding: 18px;
       }
 
-      .metrics,
-      .card-links {
+      .search-form {
+        flex-direction: column;
+        border-radius: 28px;
+        gap: 0.7rem;
+      }
+
+      .search-icon {
+        left: 1.35rem;
+        top: 1.55rem;
+        transform: none;
+      }
+
+      .search-input {
+        padding: 0.95rem 1rem 0.95rem 3rem;
+        font-size: 1.08rem;
+      }
+
+      .search-btn {
+        min-height: 50px;
+      }
+
+      .metrics {
         grid-template-columns: 1fr;
-      }
-
-      h1 {
-        font-size: 2.5rem;
       }
     }
   </style>
 </head>
 <body>
   <main>
+    <header class="header">
+      <div class="time-widget">
+        <div class="time" id="clock">00:00</div>
+        <div class="date" id="date">Laedt...</div>
+      </div>
+      <div class="mode-badge">
+        <div class="mode-dot"></div>
+        INTERNE DIREKTLINKS
+      </div>
+    </header>
+
     <section class="hero">
-      <article class="hero-copy">
-        <span class="eyebrow">FraWo Arbeitsportal</span>
+      <article class="hero-card">
+        <span class="hero-kicker">FraWo Arbeitsstart</span>
         <h1>Arbeitsportal</h1>
         <p>
-          Zentraler Einstieg fuer Betrieb und Zusammenarbeit. Im aktuellen
-          Arbeitsstand sind <b>Vault</b>, <b>Nextcloud</b>, <b>Paperless</b> und
-          <b>Odoo</b> die aktiven Kernsysteme.
+          Direkter Einstieg in die Werkzeuge, die heute wirklich genutzt werden.
+          Keine Status-Simulation und keine Linkwuste, sondern der reduzierte
+          MVP-Pfad fuer Betrieb und Zusammenarbeit.
         </p>
-        <div class="pill-row">
-          <span class="pill">Kernbetrieb aktiv</span>
-          <span class="pill">Franz freigeschaltet</span>
-          <span class="pill">Mail-Basis steht</span>
+        <div class="hero-note">
+          <span class="hero-pill">Vault, Nextcloud, Paperless, Odoo</span>
+          <span class="hero-pill">Franz ist freigeschaltet</span>
+          <span class="hero-pill">Login bleibt app-seitig</span>
         </div>
       </article>
 
-      <aside class="status-box">
+      <aside class="status-card">
         <div class="section-head">
-          <h2>Betriebsstatus</h2>
-          <small>Aktueller Arbeitskern</small>
+          <h2>MVP Snapshot</h2>
+          <small>Live aus status.json</small>
         </div>
         <div class="metrics">
           <div class="metric">
             <span class="metric-label">MVP Zustand</span>
             <span class="metric-value" id="platform-core">Laedt</span>
-            <span class="metric-note">Portal, Vault und Business-Apps</span>
+            <span class="metric-note">Nur Portal, Vault und Business-Apps</span>
           </div>
           <div class="metric">
             <span class="metric-label">Kernpfade gesund</span>
             <span class="metric-value" id="healthy-count">-</span>
-            <span class="metric-note">Nur die heutigen MVP-Ziele</span>
+            <span class="metric-note">Status der aktuellen MVP-Ziele</span>
           </div>
           <div class="metric">
             <span class="metric-label">Letztes Snapshot</span>
             <span class="metric-value" id="snapshot-time">Warte</span>
-            <span class="metric-note">Zeitpunkt des letzten Statusbilds</span>
+            <span class="metric-note">Zeitpunkt des zuletzt gelieferten Feeds</span>
           </div>
           <div class="metric">
             <span class="metric-label">Naechster Block</span>
             <span class="metric-value">Erweiterung</span>
-            <span class="metric-note">Media, Radio, HA, Shared Frontend, PBS</span>
+            <span class="metric-note">Media, Radio, HA, Surface, PBS</span>
           </div>
         </div>
       </aside>
     </section>
 
-    <section class="card-grid" aria-label="MVP Startpfade">
+    <section class="search-wrap">
+      <form class="search-form" action="http://paperless.hs27.internal/documents" method="GET">
+        <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
+        </svg>
+        <input class="search-input" type="text" name="query" placeholder="Suchen in Paperless, z. B. Gewerbeanmeldung" autocomplete="off" autofocus>
+        <button class="search-btn" type="submit">Suchen</button>
+      </form>
+      <div class="search-note">Direkte Aktion fuer bestehende Dokumente. Weitere Arbeitsaktionen folgen erst nach sauberem Auth-Pfad.</div>
+    </section>
+
+    <section class="app-grid" aria-label="Direktlinks">
 
 
 
 
-      <article class="panel card" data-accent="amber">
-        <div class="card-top">
-          <div class="card-mark">WO</div>
-          <div>
-            <p class="card-label">Ich bin Wolf</p>
-            <h3>Betrieb und Tagesarbeit</h3>
-          </div>
+
+      <a class="app-card is-primary hero-card" href="http://cloud.hs27.internal">
+        <div class="app-mark">NC</div>
+        <div class="app-meta">
+          <span class="app-group">Arbeit</span>
+          <span class="app-title">Nextcloud</span>
+          <span class="app-hint">Dateien, Zusammenarbeit und gemeinsame Dokumente</span>
         </div>
-        <p class="card-summary">Nur die heutigen Kernpfade fuer die GbR. Alles andere bleibt ausserhalb des MVP-Starts.</p>
-        <a class="card-primary" href="http://portal.hs27.internal">Arbeitsstart</a>
-        <div class="card-links">
+        <div class="app-url">cloud.hs27.internal</div>
+      </a>
 
-          <a class="card-link" href="http://cloud.hs27.internal">
-            <strong>Nextcloud</strong>
-            <span>cloud.hs27.internal</span>
-          </a>
 
-          <a class="card-link" href="http://paperless.hs27.internal">
-            <strong>Paperless</strong>
-            <span>paperless.hs27.internal</span>
-          </a>
 
-          <a class="card-link" href="http://odoo.hs27.internal/web/login">
-            <strong>Odoo</strong>
-            <span>odoo.hs27.internal/web/login</span>
-          </a>
 
-          <a class="card-link" href="https://vault.hs27.internal">
-            <strong>Vault</strong>
-            <span>vault.hs27.internal</span>
-          </a>
 
+      <a class="app-card is-primary hero-card" href="http://paperless.hs27.internal">
+        <div class="app-mark">PL</div>
+        <div class="app-meta">
+          <span class="app-group">Arbeit</span>
+          <span class="app-title">Paperless</span>
+          <span class="app-hint">Dokumentenarchiv und OCR-Workflow</span>
         </div>
-      </article>
+        <div class="app-url">paperless.hs27.internal</div>
+      </a>
 
 
 
 
-      <article class="panel card" data-accent="teal">
-        <div class="card-top">
-          <div class="card-mark">FR</div>
-          <div>
-            <p class="card-label">Ich bin Franz</p>
-            <h3>Dokumente und Arbeit</h3>
-          </div>
+
+      <a class="app-card is-primary hero-card" href="http://odoo.hs27.internal/web/login">
+        <div class="app-mark">OD</div>
+        <div class="app-meta">
+          <span class="app-group">Arbeit</span>
+          <span class="app-title">Odoo</span>
+          <span class="app-hint">ERP, CRM und betriebliche Arbeitsflaeche</span>
         </div>
-        <p class="card-summary">Ein persoenlicher Endnutzerpfad ohne Admin-Konfiguration. Alles startet ueber Franz Start.</p>
-        <a class="card-primary" href="http://portal.hs27.internal/franz/">Franz Start</a>
-        <div class="card-links">
+        <div class="app-url">odoo.hs27.internal/web/login</div>
+      </a>
 
-          <a class="card-link" href="http://cloud.hs27.internal">
-            <strong>Nextcloud</strong>
-            <span>cloud.hs27.internal</span>
-          </a>
 
-          <a class="card-link" href="http://paperless.hs27.internal">
-            <strong>Paperless</strong>
-            <span>paperless.hs27.internal</span>
-          </a>
 
-          <a class="card-link" href="http://odoo.hs27.internal/web/login">
-            <strong>Odoo</strong>
-            <span>odoo.hs27.internal/web/login</span>
-          </a>
 
-          <a class="card-link" href="https://vault.hs27.internal">
-            <strong>Vault</strong>
-            <span>vault.hs27.internal</span>
-          </a>
 
+      <a class="app-card is-secondary hero-card" href="http://portal.hs27.internal/franz/">
+        <div class="app-mark">FR</div>
+        <div class="app-meta">
+          <span class="app-group">Betrieb</span>
+          <span class="app-title">Franz Start</span>
+          <span class="app-hint">Vorbereiteter Einstieg fuer Franz auf Surface Laptop und iPhone</span>
         </div>
-      </article>
+        <div class="app-url">portal.hs27.internal/franz/</div>
+      </a>
+
+
+
+
+
+      <a class="app-card is-secondary hero-card" href="https://vault.hs27.internal">
+        <div class="app-mark">VA</div>
+        <div class="app-meta">
+          <span class="app-group">Betrieb</span>
+          <span class="app-title">Vault</span>
+          <span class="app-hint">Gemeinsamer Passworttresor fuer den aktuellen MVP</span>
+        </div>
+        <div class="app-url">vault.hs27.internal</div>
+      </a>
 
     </section>
 
-    <section class="panel service-panel">
+    <section class="panel">
       <div class="section-head">
         <h2>Live-Status des MVP</h2>
         <small>Warnungen bleiben sichtbar</small>
@@ -582,15 +697,12 @@
       <div id="service-health" class="service-grid"></div>
     </section>
 
-    <section class="panel note-panel">
+    <section class="panel">
       <div class="section-head">
-        <h2>Nicht im aktuellen Arbeitsportal</h2>
+        <h2>Bewusst ausserhalb des Startbilds</h2>
         <small>Naechste Ausbaustufe</small>
       </div>
-      <p>
-        Erweiterungsthemen bleiben ausserhalb des Startbilds, bis der
-        aktuelle Arbeitskern sichtbar stabil laeuft.
-      </p>
+      <p>Erweiterungsthemen bleiben draussen, bis der aktuelle Arbeitskern sichtbar stabil laeuft.</p>
       <ul>
         <li>Media, Radio und TV-spezifische Pfade</li>
         <li>Home Assistant im taeglichen Startbild</li>
@@ -601,11 +713,24 @@
   </main>
 
   <script>
-    const allowedLabels = ["Portal", "Vault", "Nextcloud", "Paperless", "Odoo"];
+    const allowedLabels = ["Nextcloud", "Paperless", "Odoo", "Portal", "Vault"];
     const platformCore = document.getElementById("platform-core");
     const healthyCount = document.getElementById("healthy-count");
     const snapshotTime = document.getElementById("snapshot-time");
     const serviceHealth = document.getElementById("service-health");
+
+    function updateClock() {
+      const now = new Date();
+      document.getElementById("clock").textContent = now.toLocaleTimeString("de-DE", {
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+      document.getElementById("date").textContent = now.toLocaleDateString("de-DE", {
+        weekday: "long",
+        day: "2-digit",
+        month: "long"
+      });
+    }
 
     function toneClass(status) {
       return status === "ok" ? "is-ok" : "is-warn";
@@ -642,7 +767,10 @@
         platformCore.textContent = healthy === allowedLabels.length ? "Bereit" : "Pruefen";
         platformCore.style.color = healthy === allowedLabels.length ? "var(--ok)" : "var(--warn)";
         healthyCount.textContent = `${healthy}/${allowedLabels.length}`;
-        snapshotTime.textContent = new Date(data.generated_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+        snapshotTime.textContent = new Date(data.generated_at).toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit"
+        });
 
         serviceHealth.innerHTML = services.map((service, index) => {
           if (!service) return renderMissingService(allowedLabels[index]);
@@ -659,7 +787,7 @@
       } catch (error) {
         platformCore.textContent = "Offline";
         platformCore.style.color = "var(--danger)";
-        healthyCount.textContent = "0/5";
+        healthyCount.textContent = `0/${allowedLabels.length}`;
         snapshotTime.textContent = "Getrennt";
         serviceHealth.innerHTML = `
           <article class="service-card is-warn">
@@ -673,6 +801,8 @@
       }
     }
 
+    setInterval(updateClock, 1000);
+    updateClock();
     loadStatus();
   </script>
 </body>

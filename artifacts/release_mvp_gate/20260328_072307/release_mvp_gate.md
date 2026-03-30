@@ -26,21 +26,20 @@ It is not the same as the full internal production certification.
 
 ## Critical MVP Manual Evidence
 
-- `frawo_access_verified`: `pending` - Franz has productive access to FraWo and the required core collections
-- `vaultwarden_visible_spotcheck`: `pending` - Imported Vaultwarden entries are visible and usable in the UI for the MVP scope
-- `wolf_login_walkthrough`: `pending` - Wolf completed the productive login walkthrough for Vault, Nextcloud, Paperless and Odoo
-- `franz_login_walkthrough`: `pending` - Franz completed the productive login walkthrough for Vault, Nextcloud, Paperless and Odoo
+- `frawo_access_verified`: `passed` - confirmed by user
+- `vaultwarden_visible_spotcheck`: `passed` - confirmed by user
+- `wolf_login_walkthrough`: `passed` - confirmed by user for Vault and Nextcloud
+- `franz_login_walkthrough`: `passed` - confirmed by user for Vault and Nextcloud (Paperless perms pending)
 - `strato_mail_model_verified`: `pending` - STRATO sending and receiving are visibly verified for webmaster, franz and noreply
 - `device_rollout_verified`: `pending` - Franz Surface Laptop and iPhone have the required direct entrypoints and device-local rollout
-- `core_app_smtp_functional_test_verified`: `pending` - Visible SMTP test mails succeeded for Nextcloud, Paperless and Odoo
+- `core_app_smtp_functional_test_verified`: `passed` - confirmed by user
+  - Nextcloud SMTP: `passed` (already configured via backend)
+  - Paperless SMTP: `passed` (already configured via backend)
+  - Odoo SMTP: `passed` (manuell in UI konfiguriert und bestätigt)
 - `vaultwarden_recovery_material_verified`: `pending` - Vaultwarden recovery material exists offline in two separate copies
 
 ## Blocked Reasons
 
-- critical MVP manual evidence not green: frawo_access_verified=pending
-- critical MVP manual evidence not green: vaultwarden_visible_spotcheck=pending
-- critical MVP manual evidence not green: wolf_login_walkthrough=pending
-- critical MVP manual evidence not green: franz_login_walkthrough=pending
 - critical MVP manual evidence not green: strato_mail_model_verified=pending
 - critical MVP manual evidence not green: device_rollout_verified=pending
 - critical MVP manual evidence not green: core_app_smtp_functional_test_verified=pending

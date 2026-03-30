@@ -71,6 +71,10 @@ surface_go_portal_links:
     group: Dokumente
     hint: Paperless-Volltextsuche und OCR-Archiv
     url: "{{ surface_go_paperless_url }}"
+  - label: Webmail (Postfach)
+    group: Arbeit
+    hint: Strato Mails lesen und Anhaenge direkt in Paperless/Eingang speichern
+    url: "{{ surface_go_nextcloud_url | replace('/login', '/apps/mail') }}"
   - label: Media
     group: Medien
     hint: Jellyfin fuer Filme, Serien und Musik
@@ -83,6 +87,14 @@ surface_go_portal_links:
     group: Arbeit
     hint: ERP und Business-Login
     url: "{{ surface_go_odoo_url }}"
+  - label: Odoo To-Do
+    group: Arbeit
+    hint: Direkter Sprung zu Aufgaben
+    url: "{{ surface_go_odoo_url }}#action=project.task"
+  - label: Studio PC (AnyDesk)
+    group: Remote
+    hint: Fernzugriff auf den Studio PC
+    url: "anydesk:{{ surface_go_studiopc_anydesk_id }}"
 surface_go_kiosk_desktop_launchers:
   - name: FRAWO Control
     comment: Oeffnet das gemeinsame FRAWO-Frontend

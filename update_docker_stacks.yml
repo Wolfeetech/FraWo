@@ -1,0 +1,35 @@
+---
+- name: Update business docker compose stacks
+  hosts: nextcloud_vm:odoo_vm:paperless_vm
+  become: true
+  tasks:
+    - name: Pull and recreate compose stack
+      ansible.builtin.shell: |
+        docker-compose pull
+        docker-compose up -d --remove-orphans
+      args:
+        chdir: "/opt/homeserver2027/stacks/{{ compose_stack_name }}"
+      register: compose_result
+      changed_when: "'Downloaded newer image' in compose_result.stdout or 'Recreating' in compose_result.stderr or 'Creating' in compose_result.stderr"
+
+- name: Update toolbox docker compose stacks
+  hosts: toolbox
+  become: true
+  tasks:
+    - name: Pull and recreate media stack
+      ansible.builtin.shell: |
+        docker-compose pull
+        docker-compose up -d --remove-orphans
+      args:
+        chdir: "/opt/homeserver2027/stacks/media"
+      register: media_result
+      changed_when: "'Downloaded newer image' in media_result.stdout or 'Recreating' in media_result.stderr or 'Creating' in media_result.stderr"
+
+    - name: Pull and recreate network stack
+      ansible.builtin.shell: |
+        docker-compose pull
+        docker-compose up -d --remove-orphans
+      args:
+        chdir: "/opt/homeserver2027/stacks/toolbox-network"
+      register: network_result
+      changed_when: "'Downloaded newer image' in network_result.stdout or 'Recreating' in network_result.stderr or 'Creating' in network_result.stderr"

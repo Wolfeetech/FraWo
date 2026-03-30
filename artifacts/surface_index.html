@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>FRAWO Control</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@200;400;600;800&display=swap');
+
+    :root {
+      --bg: linear-gradient(135deg, #0a0a1a 0%, #10102a 60%, #1a0a2a 100%);
+      --glass: rgba(255,255,255,0.05);
+      --border: rgba(255,255,255,0.1);
+      --text: #f1f5f9;
+      --muted: #8899aa;
+      --indigo: #6366f1;
+      --pink: #ec4899;
+      --green: #22c55e;
+      --red: #ef4444;
+      --amber: #f59e0b;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow: hidden;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* --- Ambient blobs --- */
+    .blob { position: fixed; border-radius: 50%; filter: blur(100px); z-index: 0; pointer-events: none; animation: drift 25s infinite ease-in-out alternate; }
+    .b1 { width: 500px; height: 500px; background: rgba(99,102,241,0.3); top: -150px; left: -150px; }
+    .b2 { width: 600px; height: 600px; background: rgba(236,72,153,0.25); bottom: -200px; right: -150px; animation-delay: -7s; }
+    @keyframes drift { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(40px,40px) scale(1.15); } }
+
+    /* --- Layout --- */
+    #app {
+      position: relative; z-index: 1;
+      height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 0;
+      padding: 1rem;
+    }
+
+    /* --- Header --- */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+      animation: fadeUp .7s ease both;
+    }
+
+    .brand { font-size: 1.6rem; font-weight: 800; letter-spacing: -1px;
+      background: linear-gradient(90deg, #fff 30%, #a5b4fc);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+
+    .header-right { display: flex; align-items: center; gap: 1.5rem; }
+
+    #clock { font-size: 1.8rem; font-weight: 200; color: var(--muted); letter-spacing: 1px; }
+
+    .sys-pill {
+      display: flex; align-items: center; gap: .5rem;
+      background: var(--glass); border: 1px solid var(--border);
+      border-radius: 999px; padding: .45rem 1rem;
+      font-size: .85rem; color: var(--muted);
+      backdrop-filter: blur(12px);
+    }
+    .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green); flex-shrink: 0; }
+    .dot.warn { background: var(--amber); box-shadow: 0 0 8px var(--amber); }
+    .dot.err  { background: var(--red);   box-shadow: 0 0 8px var(--red); }
+
+    /* --- Main grid --- */
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 0.8rem;
+      height: 100%;
+    }
+
+    /* --- Cards --- */
+    .card {
+      background: var(--glass);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 1rem;
+      display: flex; flex-direction: column;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      transition: transform .25s, border-color .25s, box-shadow .25s;
+      animation: fadeUp .8s ease both;
+      overflow: hidden;
+    }
+    .card:active { transform: scale(0.98); }
+    .card:active { transform: scale(0.98); }
+
+    .card-label {
+      font-size: .72rem; font-weight: 600; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: .5rem;
+    }
+
+    /* --- Radio card (spans 2 rows) --- */
+    #card-radio { grid-column: 1; grid-row: 1 / 3;
+      background: linear-gradient(160deg, rgba(99,102,241,.18) 0%, rgba(168,85,247,.18) 100%);
+      border-color: rgba(168,85,247,.3);
+    }
+
+    .now-playing-art {
+      width: 100%; max-height: 40vh; aspect-ratio: 1; border-radius: 14px; object-fit: contain;
+      background: rgba(255,255,255,.05); margin-bottom: .6rem;
+      box-shadow: 0 6px 16px rgba(0,0,0,.4);
+    }
+
+    .np-artist { font-size: .9rem; color: var(--muted); margin-bottom: .2rem; }
+    .np-title { font-size: 1.3rem; font-weight: 700; line-height: 1.2; margin-bottom: .3rem; word-break: break-word; }
+    .np-album { font-size: .8rem; color: var(--muted); margin-bottom: .8rem; }
+
+    .np-progress { height: 4px; border-radius: 2px; background: rgba(255,255,255,.12); margin-bottom: .9rem; }
+    .np-bar { height: 100%; border-radius: 2px; background: linear-gradient(90deg, var(--indigo), var(--pink)); transition: width 1s linear; }
+
+    .radio-controls { display: flex; gap: .75rem; justify-content: center; }
+    .ctrl-btn {
+      flex: 1; height: 50px; border-radius: 12px; border: 1px solid var(--border);
+      background: rgba(255,255,255,.08); color: var(--text);
+      font-size: 1.4rem; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: background .2s, transform .1s;
+    }
+    .ctrl-btn:active { transform: scale(.93); background: rgba(255,255,255,.18); }
+    .ctrl-btn.primary-btn {
+      background: linear-gradient(135deg, var(--indigo), var(--pink));
+      border-color: transparent; font-size: 1.8rem;
+    }
+    .ctrl-btn:active { transform: scale(.93); background: rgba(255,255,255,.18); }
+    .ctrl-btn.primary-btn {
+      background: linear-gradient(135deg, var(--indigo), var(--pink));
+      border-color: transparent; font-size: 2rem;
+    }
+
+    .np-next { font-size: .8rem; color: var(--muted); margin-top: .6rem; }
+    .np-next strong { color: var(--text); }
+
+    /* --- Presence card --- */
+    #card-presence { grid-column: 2; grid-row: 1; }
+
+    .presence-list { display: grid; gap: .6rem; margin-top: .5rem; }
+    .presence-item {
+      display: flex; align-items: center; gap: .75rem;
+      background: rgba(255,255,255,.04); border-radius: 12px; padding: .6rem .9rem;
+    }
+    .presence-avatar {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--indigo), var(--pink));
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 1rem; flex-shrink: 0;
+    }
+    .presence-info { flex: 1; }
+    .presence-name { font-weight: 600; font-size: .95rem; }
+    .presence-detail { font-size: .78rem; color: var(--muted); }
+    .presence-badge {
+      font-size: .72rem; font-weight: 600; padding: .2rem .55rem; border-radius: 999px;
+      background: rgba(34,197,94,.15); color: var(--green); border: 1px solid rgba(34,197,94,.3);
+    }
+    .presence-badge.away { background: rgba(245,158,11,.12); color: var(--amber); border-color: rgba(245,158,11,.3); }
+    .presence-badge.offline { background: rgba(100,100,120,.12); color: var(--muted); border-color: rgba(100,100,120,.3); }
+
+    /* --- System card --- */
+    #card-system { grid-column: 3; grid-row: 1; }
+
+    .service-row {
+      display: flex; align-items: center; gap: .65rem;
+      padding: .45rem 0; border-bottom: 1px solid var(--border);
+    }
+    .service-row:last-child { border-bottom: none; }
+    .service-name { flex: 1; font-size: .9rem; }
+    .service-status { font-size: .8rem; color: var(--muted); }
+
+    /* --- Voice card --- */
+    #card-voice { grid-column: 2; grid-row: 2; }
+
+    .voice-area {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 1rem; text-align: center;
+    }
+
+    #voice-btn {
+      width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--border);
+      background: var(--glass); cursor: pointer;
+      font-size: 2.2rem; display: flex; align-items: center; justify-content: center;
+      transition: all .2s; color: var(--text);
+    }
+    #voice-btn.active {
+      background: linear-gradient(135deg, var(--indigo), var(--pink));
+      border-color: transparent;
+      box-shadow: 0 0 30px rgba(99,102,241,.6);
+      animation: pulse 1s infinite;
+    }
+    @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+
+    #voice-transcript {
+      font-size: .9rem; color: var(--muted); min-height: 2.5rem;
+      line-height: 1.4; max-width: 220px;
+    }
+    #voice-result {
+      font-size: .82rem; color: var(--indigo); font-weight: 600; min-height: 1.2rem;
+    }
+
+    /* --- Actions card --- */
+    #card-actions { grid-column: 3; grid-row: 2; }
+
+    .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .7rem; flex: 1; }
+    .action-btn {
+      border-radius: 16px; border: 1px solid var(--border);
+      background: var(--glass); color: var(--text);
+      cursor: pointer; padding: 1rem .5rem;
+      display: flex; flex-direction: column; align-items: center; gap: .35rem;
+      font-family: 'Outfit', sans-serif;
+      font-size: .82rem; font-weight: 600;
+      transition: background .2s, transform .1s;
+      text-decoration: none;
+    }
+    .action-btn:active { transform: scale(.95); background: rgba(255,255,255,.12); }
+    .action-btn .icon { font-size: 1.8rem; }
+
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* --- Mobile Adapt --- */
+    @media (max-width: 900px) {
+      .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 0.8rem;
+      height: 100%;
+    }
+      #card-radio { grid-column: 1 / 3; grid-row: auto; }
+      #card-presence, #card-system, #card-voice, #card-actions { grid-column: auto; grid-row: auto; }
+    }
+    @media (max-width: 600px) {
+      .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 0.8rem;
+      height: 100%;
+    }
+      #card-radio { grid-column: 1; }
+      #app {
+      position: relative; z-index: 1;
+      height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 0;
+      padding: 1rem;
+    }
+      .brand { font-size: 1.6rem; font-weight: 800; letter-spacing: -1px;
+      background: linear-gradient(90deg, #fff 30%, #a5b4fc);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    }
+  </style>
+</head>
+<body>
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
+
+  <div id="app">
+    <header>
+      <span class="brand">FRAWO Control</span>
+      <div class="header-right">
+        <div id="clock">00:00</div>
+        <div class="sys-pill"><span class="dot" id="sys-dot"></span><span id="sys-text">System</span></div>
+      </div>
+    </header>
+
+    <div class="grid">
+
+      <!-- RADIO CARD -->
+      <div class="card" id="card-radio">
+        <div class="card-label">📻 Live Radio</div>
+        <img class="now-playing-art" id="np-art" src="" alt="Cover">
+        <div class="np-artist" id="np-artist">Wird geladen...</div>
+        <div class="np-title" id="np-title">–</div>
+        <div class="np-album" id="np-album"></div>
+        <div class="np-progress"><div class="np-bar" id="np-progress-bar" style="width:0%"></div></div>
+        <div class="radio-controls">
+          <button class="ctrl-btn" id="btn-listen" title="Play/Pause" onclick="toggleRadio()">▶️</button>
+          <button class="ctrl-btn primary-btn" id="btn-skip" title="Song überspringen">⏭</button>
+          <button class="ctrl-btn" title="Radio Control" onclick="window.location='http://radio.hs27.internal/login'">🎛️</button>
+        </div>
+        <div class="np-next" id="np-next"></div>
+      </div>
+
+      <!-- PRESENCE CARD -->
+      <div class="card" id="card-presence">
+        <div class="card-label">📡 Geräte & Personen</div>
+        <div class="presence-list" id="presence-list">
+          <div class="presence-item">
+            <div class="presence-avatar">W</div>
+            <div class="presence-info">
+              <div class="presence-name">Wolf</div>
+              <div class="presence-detail" id="wolf-detail">Wird abgefragt...</div>
+            </div>
+            <span class="presence-badge" id="wolf-badge">...</span>
+          </div>
+          <div class="presence-item">
+            <div class="presence-avatar" style="background: linear-gradient(135deg,#ec4899,#f43f5e)">F</div>
+            <div class="presence-info">
+              <div class="presence-name">Franz</div>
+              <div class="presence-detail" id="franz-detail">Unbekannt</div>
+            </div>
+            <span class="presence-badge offline" id="franz-badge">–</span>
+          </div>
+          <div class="presence-item">
+            <div class="presence-avatar" style="background: linear-gradient(135deg,#0ea5e9,#6366f1); font-size:.75rem">PI</div>
+            <div class="presence-info">
+              <div class="presence-name">Radio Node</div>
+              <div class="presence-detail" id="pi-detail">radio-node</div>
+            </div>
+            <span class="presence-badge" id="pi-badge">...</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SYSTEM STATUS CARD -->
+      <div class="card" id="card-system">
+        <div class="card-label">⚡ Dienste</div>
+        <div id="service-list" style="display:flex;flex-direction:column;flex:1;justify-content:center;">
+          <div class="service-row">
+            <span class="dot" id="d-ha"></span>
+            <span class="service-name">Home Assistant</span>
+            <span class="service-status" id="s-ha">...</span>
+          </div>
+          <div class="service-row">
+            <span class="dot" id="d-cloud"></span>
+            <span class="service-name">Nextcloud</span>
+            <span class="service-status" id="s-cloud">...</span>
+          </div>
+          <div class="service-row">
+            <span class="dot" id="d-media"></span>
+            <span class="service-name">Jellyfin</span>
+            <span class="service-status" id="s-media">...</span>
+          </div>
+          <div class="service-row">
+            <span class="dot" id="d-radio"></span>
+            <span class="service-name">Radio</span>
+            <span class="service-status" id="s-radio">...</span>
+          </div>
+          <div class="service-row">
+            <span class="dot" id="d-odoo"></span>
+            <span class="service-name">Odoo</span>
+            <span class="service-status" id="s-odoo">...</span>
+          </div>
+          <div class="service-row">
+            <span class="dot" id="d-paper"></span>
+            <span class="service-name">Paperless</span>
+            <span class="service-status" id="s-paper">...</span>
+          </div>
+        </div>
+      </div>
+
+      
+      <!-- NAVBAR / HELP CARD -->
+      <div class="card" id="card-voice">
+        <div class="card-label">🧭 Navigation</div>
+        <div class="voice-area" style="font-size: 0.95rem; color: var(--text);">
+          <p style="margin-bottom:0.8rem;"><b>Zurückgehen:</b> Wische vom <i>linken Bildschirmrand</i> zur Mitte, um zurückzukehren.</p>
+          <button onclick="window.location.reload()" style="padding: 0.6rem 1rem; border-radius: 12px; border: 1px solid var(--border); background: var(--glass); color: white; width: 100%; font-size: 1rem; cursor: pointer;">Dashboard Refresh 🔄</button>
+        </div>
+      </div>
+
+
+      <!-- ACTIONS CARD -->
+      <div class="card" id="card-actions">
+        <div class="card-label">⚡ Direktaktionen</div>
+        <div class="action-grid">
+                    <a href="http://ha.hs27.internal" class="action-btn" title="Automationen, Geraete und Haushalts-Dashboards">
+            <span class="icon">
+              🏠
+                          </span>
+            Home Assistant
+          </a>
+                    <a href="http://cloud.hs27.internal/login" class="action-btn" title="Dateien und Zusammenarbeit">
+            <span class="icon">
+              ☁️
+                          </span>
+            Nextcloud
+          </a>
+                    <a href="http://cloud.hs27.internal/apps/files/?dir=/Paperless/Eingang" class="action-btn" title="Scans und PDFs hier hochladen fuer automatisches Archiv">
+            <span class="icon">
+              📥
+                          </span>
+            Nextcloud (Eingang)
+          </a>
+                    <a href="http://cloud.hs27.internal/apps/files/?dir=/Paperless/Archiv" class="action-btn" title="Zugriff auf die im Archiv gespeicherten PDF-Originale">
+            <span class="icon">
+              📄
+                          </span>
+            Paperless (Archiv)
+          </a>
+                    <a href="http://paperless.hs27.internal/accounts/login/" class="action-btn" title="Paperless-Volltextsuche und OCR-Archiv">
+            <span class="icon">
+              📄
+                          </span>
+            Dokumenten-Suche
+          </a>
+                    <a href="http://cloud.hs27.internal/apps/mail" class="action-btn" title="Strato Mails lesen und Anhaenge direkt in Paperless/Eingang speichern">
+            <span class="icon">
+              🔗            </span>
+            Webmail (Postfach)
+          </a>
+                    <a href="http://media.hs27.internal" class="action-btn" title="Jellyfin fuer Filme, Serien und Musik">
+            <span class="icon">
+              🎬
+                          </span>
+            Media
+          </a>
+                    <a href="http://radio.hs27.internal/public/frawo-funk" class="action-btn" title="Touch-optimierte Ansicht fuer den Live-Sender">
+            <span class="icon">
+              📻
+                          </span>
+            Radio Player
+          </a>
+                    <a href="http://odoo.hs27.internal/web/login" class="action-btn" title="ERP und Business-Login">
+            <span class="icon">
+              💼
+                          </span>
+            Odoo
+          </a>
+                    <a href="http://odoo.hs27.internal/web/login#action=project.task" class="action-btn" title="Direkter Sprung zu Aufgaben">
+            <span class="icon">
+              💼
+                          </span>
+            Odoo To-Do
+          </a>
+                    <a href="anydesk:1559042020" class="action-btn" title="Fernzugriff auf den Studio PC">
+            <span class="icon">
+              🔗            </span>
+            Studio PC (AnyDesk)
+          </a>
+                  </div>
+      </div>
+
+      <!-- DOC FLOW INFO CARD -->
+      <div class="card" id="card-docflow">
+        <div class="card-label">ℹ️ Dokumenten-Flow</div>
+        <div style="font-size: 0.85rem; line-height: 1.4; color: var(--muted);">
+          <div style="margin-bottom: 0.6rem;">
+            <strong style="color: var(--text);">1. Upload:</strong> Scans oder PDFs nach <code style="color: var(--indigo);">Paperless/Eingang</code> hochladen.
+          </div>
+          <div style="margin-bottom: 0.6rem;">
+            <strong style="color: var(--text);">2. Verarbeitung:</strong> Das System erkennt Texte automatisch (OCR) und sortiert das Dokument ein.
+          </div>
+          <div>
+            <strong style="color: var(--text);">3. Archiv:</strong> Die digitale Kopie erscheint kurz darauf in <code style="color: var(--pink);">Paperless/Archiv</code>.
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /grid -->
+  </div><!-- /app -->
+  <script>
+    // System Clock
+    function updateClock() {
+      const now = new Date();
+      document.getElementById('clock').innerText = now.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // Radio State
+    let radioAudio = null;
+    let isPlaying = false;
+
+    window.toggleRadio = function() {
+      const btn = document.getElementById('btn-listen');
+      if (isPlaying && radioAudio) {
+        radioAudio.pause();
+        radioAudio.src = ''; // disconnect stream
+        isPlaying = false;
+        btn.innerText = '▶️';
+      } else {
+        if (!radioAudio) {
+            radioAudio = new Audio();
+        }
+        radioAudio.src = 'http://radio.hs27.internal/listen/frawo_funk/radio.mp3?' + new Date().getTime(); // prevent cache
+        radioAudio.play().catch(e => console.error(e));
+        isPlaying = true;
+        btn.innerText = '⏸';
+      }
+    };
+
+    // Proxy/CORS safe wrapper for internal API
+    async function fetchNowPlaying() {
+      try {
+        const res = await fetch('http://radio.hs27.internal/api/nowplaying');
+        if (!res.ok) return;
+        const data = await res.json();
+        const np = Array.isArray(data) ? data[0] : (data.now_playing ? data : null); 
+
+        if (np && np.now_playing && np.now_playing.song) {
+          document.getElementById('np-title').innerText = np.now_playing.song.title || 'FraWo Funk';
+          document.getElementById('np-artist').innerText = np.now_playing.song.artist || 'Live';
+          document.getElementById('np-album').innerText = np.now_playing.song.album || '';
+          
+          if (np.now_playing.song.art) {
+            document.getElementById('np-art').src = np.now_playing.song.art;
+          }
+
+          if (np.playing_next && np.playing_next.song) {
+             document.getElementById('np-next').innerHTML = `Als nächstes: <strong>${np.playing_next.song.title}</strong>`;
+          }
+
+          if (np.now_playing.duration > 0) {
+            const pct = (np.now_playing.elapsed / np.now_playing.duration) * 100;
+            document.getElementById('np-progress-bar').style.width = pct + '%';
+          } else {
+            document.getElementById('np-progress-bar').style.width = '100%';
+          }
+        }
+      } catch (err) {
+        console.error("Radio API error:", err);
+      }
+    }
+
+    setInterval(fetchNowPlaying, 10000);
+    fetchNowPlaying();
+
+    // Status fetcher (from central status.json if exists)
+    async function fetchStatus() {
+      try {
+        const res = await fetch('http://portal.hs27.internal/status.json');
+        if (!res.ok) return;
+        const data = await res.json();
+        
+        if (data && data.services) {
+            // update sys-pill
+            const okCount = Object.values(data.services).filter(v => v.status === 'ok').length;
+            const totalCount = Object.keys(data.services).length;
+            
+            if (document.getElementById('sys-text')) {
+                document.getElementById('sys-text').innerText = `System ${okCount}/${totalCount}`;
+            }
+            if (document.getElementById('sys-dot')) {
+                let allOk = okCount === totalCount;
+                document.getElementById('sys-dot').className = allOk ? 'dot' : 'dot warn';
+            }
+
+            const map = {
+                'homeassistant': ['s-ha', 'd-ha'],
+                'nextcloud': ['s-cloud', 'd-cloud'],
+                'jellyfin': ['s-media', 'd-media'],
+                'azuracast': ['s-radio', 'd-radio'],
+                'odoo': ['s-odoo', 'd-odoo'],
+                'paperless': ['s-paper', 'd-paper']
+            };
+
+            for (const [key, val] of Object.entries(data.services)) {
+                if (map[key]) {
+                    const statusElem = document.getElementById(map[key][0]);
+                    const dotElem = document.getElementById(map[key][1]);
+                    
+                    if (statusElem) statusElem.innerText = val.latency_ms ? `${val.latency_ms}ms` : val.status;
+                    if (dotElem) dotElem.className = val.status === 'ok' ? 'dot' : 'dot err';
+                }
+            }
+        }
+      } catch (err) {
+        console.error("Status check error", err);
+      }
+    }
+
+    setInterval(fetchStatus, 30000);
+    fetchStatus();
+  </script>
+</body>
+</html>

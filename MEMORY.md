@@ -660,8 +660,16 @@ Lokale Admin-Flaechen (nur localhost):
    - danach uebernehmen Codex/Gemini wieder: Feinjustierung, Surface-Shortcuts und spaetere Kuration
 6. `AKTION VON DIR ERFORDERLICH:` Handy einmal echt off-LAN ueber Tailscale pruefen
    - benoetigte Aktion: WLAN am Handy aus, Tailscale verbunden lassen und `http://portal.hs27.internal`, `http://ha.hs27.internal` sowie `http://odoo.hs27.internal/web/login` testen
-   - warum: Route und restricted nameserver sind jetzt live, aber der echte mobile Akzeptanztest fuer den `hs27.internal`-Pfad ist noch nicht bestaetigt
+   - warum: Pixel 8 (Wolf) ist als erste mobile Test-Einheit definiert; verifiziert den `hs27.internal` Pfad ueber Tailscale.
    - danach uebernehmen Codex/Gemini wieder: mobilen Betriebsstandard finalisieren und den Frontdoor fuer Endgeraete sauber freigeben
+7. `AKTION VON DIR ERFORDERLICH:` iPhone Onboarding fuer Franz
+   - benoetigte Aktion: Tailscale auf dem iPhone installieren, `DOCS/MOBILE_HTTPS_TRUST.md` (iOS) anwenden und dann `DOCS/FRANZ_IPHONE_ONBOARDING.md` abarbeiten.
+   - warum: Franz braucht mobilen Zugriff fuer den MVP-Abschluss; HTTPS-Vertrauen ist fuer iOS-Apps zwingend.
+   - danach uebernehmen Codex/Gemini wieder: Bestaetigung der mobilen Erreichbarkeit.
+8. Mobiler HTTPS-Vertrauensstandard (2026):
+   - die interne CA (`frawo-ca.crt`) wird ueber `http://portal.hs27.internal/frawo-ca.crt` bereitgestellt.
+   - die Installation ist fuer Bitwarden, Nextcloud und Odoo auf Android/iOS zwingend erforderlich, um untrusted-SSL-Fehler zu vermeiden.
+   - Leitfaden: `DOCS/MOBILE_HTTPS_TRUST.md`.
 7. `AKTION VON DIR ERFORDERLICH:` Login-Credentials fuer MVP Browser Acceptance
    - benoetigte Aktion: Bereitstellung der Master-Passwoerter (Vaultwarden fuer Franz und Wolf) oder Uebernahme des Login-Schritts.
    - warum: Laut BUSINESS_MVP_PROMPT.md und ACCESS_REGISTER_VAULTWARDEN_REFERENCES.md liegen keine Klartextpasswoerter vor, der Login zur Verifikation muss aber zwingend sichtbar im Browser evaluiert werden.
