@@ -1,0 +1,11 @@
+HTTP/1.1 200 OK
+Accept-Ranges: bytes
+Cache-Control: no-store, max-age=0
+Content-Length: 2363
+Content-Type: text/html; charset=utf-8
+Etag: "dhg6i8hby6891tn"
+Last-Modified: Mon, 30 Mar 2026 14:15:58 GMT
+Server: Caddy
+Vary: Accept-Encoding
+Date: Mon, 30 Mar 2026 14:16:38 GMT
+

@@ -50,7 +50,7 @@
 - Aeltere Aussagen wie "Toolbox nur Admin", "Home Assistant in CT 100" oder vertauschte IDs fuer Odoo und Nextcloud gelten als ueberholt.
 - Surface-Stand vom letzten echten Live-Lauf:
   - `surface-go-frontend` ist frisch installiert und basis-konfiguriert
-  - SSH-Key-Zugang steht
+  - SSH-Zugang steht; der lokale Admin-Pfad ist aktuell auch per Passwort wieder nutzbar
   - `frontend`-Kiosk-User und lokales Portal sind live
   - Tailnet-Zugang ist verifiziert, die Surface-Pruefroutine erkennt jetzt auch den Tailscale-Admin-Pfad
   - Akku- und AC-Schlafmodus stehen auf `nothing`
@@ -60,6 +60,22 @@
     - loopback-only HTTP auf `127.0.0.1:17827`
     - Launcher `FRAWO Control`
     - `epiphany-browser` als aktueller stabiler Browserpfad
+  - der naechste aktive Produktpfad ist jetzt keine Dashboard-Seite mehr, sondern `Surface Control V1` als Aktionskonsole
+  - `Surface Control V1` ist jetzt live auf dem Geraet installiert und lokal auf `127.0.0.1:17827` verifiziert
+  - sichtbarer V1-Scope:
+    - `Dokumente`
+    - `Odoo`
+    - `Radio`
+  - erste sichtbare Route-Matrix ist jetzt vorhanden:
+    - `Paperless`, `Odoo Aufgaben`, `Odoo Projekte`, `Radio Control` = `ready`
+    - `Nextcloud Eingang`, `Radio hoeren` = `verify`
+    - `Odoo Kalender` = `backlog`
+  - keine Persona-Karten
+  - kein grosser Statusblock
+  - keine sichtbaren `Stockenweiler`-Aktionen in V1
+  - Launcher-Minimalsatz live:
+    - kiosk: `FRAWO Control`, `Bildschirmtastatur`
+    - admin: `FRAWO Control`, `Bildschirmtastatur`, `Radio Control`, `AnyDesk`, `StudioPC Remote`
 - Radio-Stand vom letzten echten Live-Lauf:
   - `make radio-ops-check` ist gruen
   - `radio.hs27.internal` und `radio.hs27.internal/login` sind intern erreichbar
@@ -119,11 +135,11 @@
       - Test-VM danach wieder entfernt
   - aktueller Restblock sind nun wiederkehrende Restore-Drills und spaeter groesseres PBS-Storage, nicht mehr die PBS-Erstinbetriebnahme
 - Portal-Stand vom letzten echten Live-Lauf:
-  - `portal.hs27.internal` liefert jetzt die modernisierte gruppierte `FRAWO Control`-Frontdoor
-  - Radio, Radio Control, Media, Media Mobile und Portal Mobile sind dort direkt verlinkt
-  - `status.json` liefert dort jetzt einen Live-Snapshot; `make toolbox-portal-status-check` ist aktuell gruen mit `7/7` gesunden Kernservices
- - der Snapshot enthaelt jetzt auch `media_sync` fuer den laufenden Jellyfin-Bibliotheksimport
- - die Surface-Portal-Struktur ist analog vorbereitet und laedt den gemeinsamen Status-Snapshot; SSH, Tailscale und lokaler Portalservice sind fertig, waehrend Browser-/Touch-Tastatur-Polish als separater UX-Restblock bleibt
+  - `portal.hs27.internal` liefert jetzt das reduzierte Root-Portal fuer den Business-MVP
+  - direkt sichtbar sind nur noch `Nextcloud`, `Paperless`, `Odoo`, `Franz Start` und `Vault`
+  - `status.json` liefert dort weiter den Live-Snapshot; `make toolbox-portal-status-check` ist aktuell gruen mit `7/7` gesunden Kernservices
+  - `portal.hs27.internal/franz/` liefert den reduzierten Franz-Pfad fuer `Nextcloud`, `Paperless`, `Odoo`, `Vault`, `Nextcloud Eingang` und `Franz Mobil Start`
+  - die sichtbare Browser-Abnahme fuer Root-Portal und Franz-Seite ist gruen
 - Priorisierung fuer Restbudget:
   - zuerst Server-/Backup-Sicherheit, PBS-Restore-Drills und Inventar-Finalisierung
   - erst danach Surface-Browser-/Touch-Tastatur-Polish
@@ -248,7 +264,7 @@
    - Runner und Stage-Gate-Checks fuer `VM 240` sind vorbereitet
    - die offizielle PBS-ISO ist bereits auf Proxmox staged und checksum-verifiziert
    - der reale Blocker ist jetzt nur noch fehlendes separates Backup-Storage
-4. Die spaetere Public-Exposure-Architektur mit Domain, DNS, TLS, Auth, Monitoring und klarer Edge-Trennung festziehen, aber noch nicht live oeffnen.
+4. Die spaetere Public-Exposure-Architektur mit Domain, DNS, TLS, Auth, Monitoring und klarer Edge-Trennung festziehen, aber im Hold-Modus halten, bis CI und Content bewusst freigegeben sind.
 5. `VM 210` als HAOS-VM im abgesicherten Betriebsstandard halten.
    - Home Assistant antwortet stabil auf `http://192.168.2.24:8123`
    - `ha.hs27.internal` ist intern live ueber Caddy
@@ -257,4 +273,28 @@
 6. `UniFi Cloud Gateway Ultra` im Plan halten, aber erst nach abgeschlossener Service-Basis und validierten Backups in ein eigenes Netz-Cutover ziehen.
 7. Den dedizierten `Raspberry Pi 4`-Radio-Node vorbereiten und `radio.hs27.internal` erst danach produktiv schalten.
 8. `make start-day` ist der kanonische Tagesbeginn fuer Codex, Gemini und den Operator.
-9. Das Surface Go als `frontend-node` vorbereiten und erst nach Clean-Rebuild in den verwaltbaren SSH-/Tailscale-Standard ueberfuehren.
+9. Das Surface Go als `frontend-node` nicht weiter als Dashboard, sondern als kleine interne Aktionskonsole fuer `Dokumente`, `Odoo` und `Radio` ausbauen.
+
+## Aktuelle Gemini-Jobs
+
+- Browser-Job 1:
+  - pruefe fuer `Surface Control V1` die sichtbare Route-Matrix
+  - Zielmenge:
+    - `Nextcloud Eingang`
+    - `Paperless`
+    - `Odoo Aufgaben`
+    - `Odoo Projekte`
+    - `Odoo Kalender`
+    - `Radio hoeren`
+    - `Radio Control`
+  - Rueckgabeformat:
+    - `Aktion -> finale URL -> Login-Verhalten -> ready|verify|backlog`
+- Browser-Job 2:
+  - pruefe nach dem Deploy die Surface-Seite im Touch-Viewport
+  - bestaetige:
+    - nur drei Gruppen sichtbar
+    - keine Persona-Karten
+    - kein grosser Statusblock
+    - Bedienung schnell und klar
+- Browser-Job 3:
+  - oeffentliche Website nur dann wieder aufnehmen, wenn Codex den Hold-Modus bewusst aufhebt

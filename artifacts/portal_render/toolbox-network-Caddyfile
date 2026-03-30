@@ -1,0 +1,122 @@
+{
+  auto_https disable_redirects
+}
+
+:80 {
+  @health path /healthz
+  respond @health 200
+  respond "Homeserver 2027 toolbox network foundation active.\n" 200
+}
+
+
+http://media.hs27.internal {
+
+  reverse_proxy 192.168.2.20:8096
+}
+
+
+http://cloud.hs27.internal {
+
+  reverse_proxy 192.168.2.21:80
+}
+
+
+http://odoo.hs27.internal {
+
+  reverse_proxy 192.168.2.22:8069
+}
+
+
+http://paperless.hs27.internal {
+
+  reverse_proxy 192.168.2.23:8000
+}
+
+
+http://ha.hs27.internal {
+
+  reverse_proxy {{ homeserver_haos_current_ip }}:8123
+}
+
+
+http://radio.hs27.internal {
+
+  reverse_proxy 100.64.23.77:80
+}
+
+
+https://vault.hs27.internal {
+
+  tls internal
+
+  reverse_proxy 192.168.2.26:8080
+}
+
+
+
+http://portal.hs27.internal {
+  root * /srv/portal
+  header {
+    Cache-Control "no-store, max-age=0"
+  }
+  file_server
+}
+
+
+
+
+http://:8443 {
+  reverse_proxy {{ homeserver_haos_current_ip }}:8123 {
+    header_up Host ha.hs27.internal
+  }
+}
+
+
+http://:8444 {
+  reverse_proxy 192.168.2.22:8069 {
+    header_up Host odoo.hs27.internal
+  }
+}
+
+
+http://:8445 {
+  reverse_proxy 192.168.2.21:80 {
+    header_up Host cloud.hs27.internal
+  }
+}
+
+
+http://:8446 {
+  reverse_proxy 192.168.2.23:8000 {
+    header_up Host paperless.hs27.internal
+  }
+}
+
+
+http://:8447 {
+  reverse_proxy 127.0.0.1:80 {
+    header_up Host portal.hs27.internal
+  }
+}
+
+
+http://:8448 {
+  reverse_proxy 100.64.23.77:80 {
+    header_up Host radio.hs27.internal
+  }
+}
+
+
+http://:8449 {
+  reverse_proxy 192.168.2.20:8096 {
+    header_up Host media.hs27.internal
+  }
+}
+
+
+http://:8442 {
+  reverse_proxy 192.168.2.26:8080 {
+    header_up Host vault.hs27.internal
+  }
+}
+

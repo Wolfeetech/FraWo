@@ -46,6 +46,8 @@ After `INTRODUCTION_PROMPT.md`, choose the narrowest specialized prompt that fit
   - specialized research prompt for the strict full internal certification track
 - `GEMINI_BROWSER_MVP_ACCEPTANCE_PROMPT.md`
   - ready-to-run browser prompt for Gemini to execute the open MVP UI acceptance checks
+- `GEMINI_BROWSER_WEBSITE_RELEASE_PROMPT.md`
+  - ready-to-run browser prompt for Gemini to execute the public website browser acceptance
 - `AI_BOOTSTRAP_CONTEXT.md`
   - read-first AI bootstrap for server, page, user and rollout context
 - `LIVE_CONTEXT.md`
@@ -161,6 +163,11 @@ After `INTRODUCTION_PROMPT.md`, choose the narrowest specialized prompt that fit
 make refresh-context
 make release-mvp-audit
 make release-mvp-gate
+make website-release-audit
+make website-release-gate
+make stockenweiler-inventory-check
+make stockenweiler-inventory-report
+make stockenweiler-support-brief
 make inventory-check
 make ansible-ping
 make qga-check

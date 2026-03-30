@@ -47,6 +47,10 @@ Do not expand into:
 - Paperless: `http://paperless.hs27.internal`
 - Odoo: `http://odoo.hs27.internal`
 
+Portal and Franz portal are only entrypoints for navigation context.
+They are not pass/fail criteria for the four MVP evidence items in this prompt.
+If the portal UI looks stale, continue the actual Vault/App checks unless navigation is truly blocked.
+
 ## Vaultwarden Reference Targets
 
 Verify visible access to these imported entries where applicable:
@@ -62,6 +66,7 @@ Verify visible access to these imported entries where applicable:
 
 ### 1. FraWo access for Franz
 
+- You may start from `http://portal.hs27.internal/franz/`, but the evidence is about Vaultwarden and FraWo access, not about portal cosmetics.
 - Open `https://vault.hs27.internal`.
 - With operator takeover if needed, log in as `Franz`.
 - Verify that `Franz` can open the `FraWo` organization.
@@ -93,6 +98,7 @@ Pass condition for `vaultwarden_visible_spotcheck`:
 
 ### 3. Wolf walkthrough
 
+- You may use the root portal as the start page, but only the successful app landings count.
 - Using operator takeover for login if needed, verify this visible sequence for `Wolf`:
   - Vaultwarden opens
   - Nextcloud login succeeds and lands in the app
@@ -105,6 +111,7 @@ Pass condition for `wolf_login_walkthrough`:
 
 ### 4. Franz walkthrough
 
+- You may use the Franz portal as the start page, but only the successful app landings count.
 - Using operator takeover for login if needed, verify this visible sequence for `Franz`:
   - Vaultwarden opens
   - Nextcloud login succeeds and lands in the app

@@ -1,0 +1,127 @@
+{
+  "version": 1,
+  "render_ready_only": true,
+  "actions": [
+    {
+      "id": "nextcloud_inbox",
+      "label": "Nextcloud Eingang",
+      "group": "Dokumente",
+      "audience": "shared_surface",
+      "target_url": "http://cloud.hs27.internal/apps/mail/setup",
+      "target_kind": "mail_setup",
+      "requires_login": true,
+      "status": "verify",
+      "verified": true
+    },
+    {
+      "id": "paperless_archive",
+      "label": "Paperless",
+      "group": "Dokumente",
+      "audience": "shared_surface",
+      "target_url": "http://paperless.hs27.internal/dashboard",
+      "target_kind": "dashboard",
+      "requires_login": true,
+      "status": "ready",
+      "verified": true
+    },
+    {
+      "id": "odoo_tasks",
+      "label": "Odoo Aufgaben",
+      "group": "Odoo",
+      "audience": "shared_surface",
+      "target_url": "http://odoo.hs27.internal/web#action=118&active_id=8&model=project.task&view_type=kanban&menu_id=352",
+      "target_kind": "task_board",
+      "requires_login": true,
+      "status": "ready",
+      "verified": true
+    },
+    {
+      "id": "odoo_projects",
+      "label": "Odoo Projekte",
+      "group": "Odoo",
+      "audience": "shared_surface",
+      "target_url": "http://odoo.hs27.internal/web#action=252&model=project.project&view_type=kanban&menu_id=141",
+      "target_kind": "project_board",
+      "requires_login": true,
+      "status": "ready",
+      "verified": true
+    },
+    {
+      "id": "odoo_calendar",
+      "label": "Odoo Kalender",
+      "group": "Odoo",
+      "audience": "shared_surface",
+      "target_url": "",
+      "target_kind": "unknown_route",
+      "requires_login": true,
+      "status": "backlog",
+      "verified": false
+    },
+    {
+      "id": "radio_listen",
+      "label": "Radio hoeren",
+      "group": "Radio",
+      "audience": "shared_surface",
+      "target_url": "http://radio.hs27.internal/public/frawo-funk",
+      "target_kind": "player",
+      "requires_login": false,
+      "status": "verify",
+      "verified": false
+    },
+    {
+      "id": "radio_control",
+      "label": "Radio Control",
+      "group": "Radio",
+      "audience": "shared_surface",
+      "target_url": "http://radio.hs27.internal/login",
+      "target_kind": "control_login",
+      "requires_login": true,
+      "status": "ready",
+      "verified": true
+    },
+    {
+      "id": "document_scan",
+      "label": "Dokument scannen",
+      "group": "Dokumente",
+      "audience": "shared_surface",
+      "target_url": "",
+      "target_kind": "pending_workflow",
+      "requires_login": false,
+      "status": "backlog",
+      "verified": false
+    },
+    {
+      "id": "stockenweiler_tv_help",
+      "label": "TV / Magenta Hilfe",
+      "group": "Stockenweiler",
+      "audience": "stockenweiler",
+      "target_url": "",
+      "target_kind": "pending_workflow",
+      "requires_login": false,
+      "status": "backlog",
+      "verified": false
+    },
+    {
+      "id": "stockenweiler_remote_help",
+      "label": "Fernhilfe",
+      "group": "Stockenweiler",
+      "audience": "stockenweiler",
+      "target_url": "",
+      "target_kind": "pending_workflow",
+      "requires_login": false,
+      "status": "backlog",
+      "verified": false
+    },
+    {
+      "id": "stockenweiler_home_assistant",
+      "label": "Vater Home Assistant",
+      "group": "Stockenweiler",
+      "audience": "stockenweiler",
+      "target_url": "",
+      "target_kind": "pending_workflow",
+      "requires_login": false,
+      "status": "backlog",
+      "verified": false
+    }
+  ]
+}

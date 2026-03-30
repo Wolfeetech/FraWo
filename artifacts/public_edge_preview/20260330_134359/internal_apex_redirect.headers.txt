@@ -1,0 +1,6 @@
+HTTP/1.1 308 Permanent Redirect
+Location: https://www.frawo-tech.de/
+Server: Caddy
+Date: Mon, 30 Mar 2026 11:43:59 GMT
+Content-Length: 0
+

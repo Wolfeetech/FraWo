@@ -13,6 +13,7 @@ This document is the canonical rebuild and post-install runbook for the shared S
 - Current state after rebuild:
   - Ubuntu Desktop 24.04.4 LTS is installed
   - SSH baseline is active
+  - password-based SSH for the local admin path is currently usable again
   - local portal and kiosk baseline are applied
   - `nginx` is absent and `HTTP/80` / `HTTPS/443` are closed
   - the node is reachable again over Tailnet on `100.106.67.127`
@@ -23,6 +24,10 @@ This document is the canonical rebuild and post-install runbook for the shared S
   - the current working launcher is `FRAWO Control`
   - the browser fallback is currently `epiphany-browser`
   - visual acceptance has been reached in the live `frawo` desktop session
+  - `Surface Control V1` is now installed live as the local action console
+  - the kiosk desktop now exposes only `FRAWO Control` and `Bildschirmtastatur`
+  - the admin desktop now exposes only `FRAWO Control`, `Bildschirmtastatur`, `Radio Control`, `AnyDesk` and `StudioPC Remote`
+  - local user `frontend` is operational again with an explicitly set local password path
 
 ## Target Standard
 
@@ -101,15 +106,17 @@ Therefore the professional default is:
 
 ## Local Portal Contract
 
-The local portal content stays static, but it is now served over loopback HTTP instead of opening a raw `file://` path.
+The local portal is now a compact internal action console instead of a mixed dashboard.
 
 Why:
 - the original `file://` browser path was fragile on the rebuilt Surface
 - a tiny loopback-only HTTP service avoids the browser sandbox edge cases
 - the kiosk still keeps a controlled local landing page without a LAN-exposed webserver
 
-Default portal links:
-- `Home Assistant` -> `http://ha.hs27.internal`
+Portal source of truth:
+- `manifests/control_surface/actions.json`
+- only `ready` actions render
+- `verify` and `backlog` stay hidden until they are browser-proven
 
 ## Current Reality
 
@@ -118,21 +125,32 @@ Default portal links:
   - Tailscale admin works
   - root sleep hardening is complete
   - local portal service on `127.0.0.1:17827` is live
+  - the local portal service is currently verified as `active`
 - Remaining Surface work is now mostly UX polish:
   - browser launch behavior should stay on the local loopback portal path
   - touch keyboard behavior still needs pragmatic local refinement
   - current working hypothesis: the touch keyboard may be opening behind the browser window instead of in the visible foreground
   - treat these as frontend sidequests, not as blockers for the core server platform
-- `Nextcloud` -> `http://cloud.hs27.internal`
-- `Media` -> `http://media.hs27.internal`
-- `Radio` -> `http://radio.hs27.internal`
-- `Radio Control` -> `http://radio.hs27.internal/login`
-- `Paperless` -> `http://paperless.hs27.internal`
-- `Odoo` -> `http://odoo.hs27.internal/web/login`
-
-The current design direction mirrors the grouped `FRAWO Control` portal now live on `portal.hs27.internal`, so the Surface can present the same mental model once the device is reachable again.
-
-The Surface portal is now also prepared to load the shared live status snapshot from `http://portal.hs27.internal/status.json`, so the kiosk can expose a compact health overview instead of only static links.
+- Surface Control V1 now aims at exactly three visible groups:
+  - `Dokumente`
+  - `Odoo`
+  - `Radio`
+- the current browser-proven visible action set is now reduced to:
+  - `Paperless`
+  - `Odoo Aufgaben`
+  - `Odoo Projekte`
+  - `Radio Control`
+- the following actions stay hidden until they are really fixed:
+  - `Nextcloud Eingang` currently lands in Nextcloud Mail setup
+  - `Odoo Kalender` currently has no working route
+  - `Radio hoeren` currently falls back to login instead of a public player
+- no persona cards
+- no full service wall
+- no fake `Scannen` button until a real ingest path exists
+- `Stockenweiler` actions remain backlog-only and are not rendered in V1
+- launcher cleanup is now part of the operational baseline:
+  - kiosk desktop stays minimal
+  - admin desktop stays on the five verified launchers above
 
 ## Acceptance Criteria
 
@@ -150,5 +168,6 @@ The Surface portal is now also prepared to load the shared live status snapshot 
 ## Deferred Follow-Ups
 
 - add the final DHCP reservation on the active gateway
-- switch the kiosk landing page from the local portal file to `portal.hs27.internal` once the shared internal portal exists
 - evaluate `linux-surface` only if stock-kernel hardware support is insufficient
+- keep `Stockenweiler` support actions out of the visible kiosk until the remote paths are verified
+- keep the public website in hold mode; do not mix public website work into the Surface V1 action console

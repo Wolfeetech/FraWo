@@ -63,6 +63,7 @@ Der Server gilt erst dann als wirklich fertig, wenn alle folgenden Punkte erfuel
 - Tool-Betriebsanweisungen: `OPERATIONS/TOOLS_OPERATIONS_INDEX.md`
 - Vaultwarden-Referenzregister: `ACCESS_REGISTER_VAULTWARDEN_REFERENCES.md`
 - Business-MVP-Gate: `artifacts/release_mvp_gate/.../release_mvp_gate.md`
+- Website-Release-Gate: `artifacts/website_release_gate/.../website_release_gate.md`
 - Release-Akte: `RELEASE_READINESS_2026-04-01.md`
 - Mail-Rollout: `MAIL_SYSTEM_ROLLOUT.md`
 - Vaultwarden + STRATO Uebergang: `BITWARDEN_STRATO_EXECUTION_RUNBOOK.md`
@@ -113,10 +114,39 @@ Der Server gilt erst dann als wirklich fertig, wenn alle folgenden Punkte erfuel
 - USB-Dongles fuer HAOS sind noch nicht am Host sichtbar.
 - AdGuard ist noch nicht primaerer LAN-DNS.
 - UCG-Ultra ist noch nicht integriert.
+- der UCG-Pfad ist aktuell bewusst vom akuten Website-Cutover getrennt:
+  - Zielarchitektur bleibt `UCG-Ultra`
+  - operativ blockiert der Pfad derzeit am fehlenden Ubiquiti-2FA-Zugriff nach dem Verlust des Handys
+  - der aktuelle Public-Website-Cutover bleibt deshalb auf dem bestehenden Routerpfad plus `VM220` als Edge-Ziel
 - Public Edge ist bewusst noch nicht live.
-- Verbindlicher Release-Scope fuer `2026-04-01` bleibt die Website auf `www.frawo-tech.de`; interne Business-UIs bleiben intern oder Tailscale-only.
+- Public-Domain-Stand ist bereits real sichtbar, aber nicht release-faehig:
+  - `frawo-tech.de` und `www.frawo-tech.de` loesen oeffentlich jetzt auf `92.211.33.54` und `2a00:1e:ef80:7c01:be24:11ff:feaa:bbcc` auf
+  - `www.frawo-tech.de` folgt aktuell sauber auf `frawo-tech.de`
+  - HTTP ist jetzt fachlich richtig:
+    - Apex liefert `308` auf `https://www.frawo-tech.de/`
+    - `www` liefert die echte FraWo-Odoo-Website
+  - HTTPS ist im Live-Check aktuell nicht gruen
+  - `DMARC` ist sichtbar, `SPF` aktuell nicht
+  - letzter Website-Audit: `artifacts/website_release_audit/20260330_155726`
+  - letzter Website-Gate-Entscheid: `artifacts/website_release_gate/20260330_155801/website_release_gate.md` = `BLOCKED`
+  - letzter Zielpfad-Preview: `artifacts/public_edge_preview/20260330_134359/report.md` = `passed`
+  - der Website-Track ist jetzt nativ ohne WSL neu pruefbar
+  - sichtbare Browser-Abnahme bestaetigt den Ist-Stand:
+    - `www`-HTTP zeigt die echte FraWo-Seite
+    - Apex-HTTP redirectet korrekt
+    - HTTPS scheitert weiter mit `ERR_SSL_PROTOCOL_ERROR`
+  - der Website-Inhalt selbst ist auf `VM220` jetzt korrekt vorbereitet:
+    - Host `www.frawo-tech.de` auf `192.168.2.22` -> `Home | FraWo`
+    - Host `frawo-tech.de` auf `192.168.2.22` -> `308` auf `https://www.frawo-tech.de/`
+    - Host `www.frawo-tech.de` auf `/radio/public/frawo-funk` -> `FraWo - Funk - AzuraCast`
+  - `VM220` besitzt bereits eine globale IPv6 `2a00:1e:ef80:7c01:be24:11ff:feaa:bbcc`, die auf HTTP fuer `www.frawo-tech.de` antwortet
+  - `public-dualstack-edge-check` ist jetzt explizit rot:
+    - `curl -6` gegen Apex und `www` auf Port `80` ist gruen
+    - `curl -4` gegen Apex und `www` auf Port `80` ist weiter rot
+  - Caddy auf `VM220` ist auf `80/443` aktiv; ACME trifft jetzt den richtigen Zielpfad, scheitert aber aktuell mit `92.211.33.54: Connection refused`
+- Verbindlicher Release-Scope fuer `2026-04-01` bleibt die Website auf `www.frawo-tech.de`, getragen durch die Odoo-Website mit sichtbarer Radio-Praesenz; interne Business-UIs bleiben intern oder Tailscale-only.
 - `frawo-tech.de` bleibt die bevorzugte Hauptdomain fuer Website und spaetere Edge-Freigaben.
-- `yourparty.tech` bleibt Legacy-Kontext; `prinz-stockenweiler.de` bleibt ein getrennter Fernwartungs- und Familienbetriebspfad.
+- `yourparty.tech` bleibt Legacy-Kontext; `online-prinz.de` ist der aktuelle Zielname fuer den getrennten Fernwartungs- und Familienbetriebspfad in Stockenweiler.
 - internes `hs27.internal` bleibt bis zu einer bewusst geplanten DNS-Migration die aktive interne Betriebszone.
 - `Radio/AzuraCast` ist nicht als integriert verifiziert; die Frontdoor antwortet, der Node selbst ist im aktuellen Audit aber nicht sauber gruen.
 - `Jellyfin` bleibt technisch verfuegbar, gehoert aber nicht zum aktuellen Business-MVP-Freigabesignal.
@@ -145,7 +175,18 @@ Der Server gilt erst dann als wirklich fertig, wenn alle folgenden Punkte erfuel
 ### Strategischer Arbeitsmodus ab jetzt
 
 - `release-mvp-gate` bewertet nur den Business-Kern.
+- `website-release-gate` bewertet nur den oeffentlichen Website-Track.
 - `production-gate` bleibt unveraendert streng fuer den Vollscope.
+- der aktuelle Website-Track ist technisch ehrlich eingegrenzt:
+  - Public DNS gruen
+  - HTTP-Redirect gruen
+  - HTTPS rot
+  - Public-Mail-DNS rot
+- der aktuelle Website-Track ist fachlich nicht mehr am Odoo-Inhalt blockiert, sondern am externen Cutover:
+  - `VM220` ist als Public-Origin vorbereitet
+  - `STRATO` zeigt jetzt auf den echten Zielpfad
+  - IPv4-Forward ist noch nicht sichtbar
+  - Zertifikate koennen deshalb noch nicht erfolgreich ausgestellt werden
 - `PBS`, `surface-go` und `Radio/AzuraCast` werden weiterbearbeitet, blockieren aber nicht mehr den internen Business-MVP-Release.
 - Website-Release und Vollzertifizierung laufen ab jetzt bewusst auf getrennten Spuren.
 
@@ -402,6 +443,8 @@ Aktueller maschinenlesbarer Gate:
 Derzeitige Blocker:
 - `inventory_finalized=no`
 - `maintenance_window_ready=no`
+- `ubiquiti_2fa_access=no`
+- bis zur Wiederherstellung des Ubiquiti-Zugriffs bleibt der UCG-Cutover geplant, aber nicht operativ ausfuehrbar
 
 ## Phase 8 - Public Edge und professionelle Aussenanbindung
 
@@ -410,7 +453,7 @@ Ziel:
 
 Status:
 - parallel zum internen Business-MVP
-- erster geplanter externer Release am `2026-04-01` bleibt website-first
+- erster geplanter externer Release am `2026-04-01` bleibt website-first ueber die Odoo-Website mit sichtbarer Radio-Praesenz
 
 Vorbedingungen:
 - interner Business-MVP ueber `release-mvp-gate` technisch und sichtbar freigabefaehig
@@ -422,9 +465,9 @@ Vorbedingungen:
 - keine internen Business-UIs sind Teil des Public-Scope
 
 Bevorzugter Zielname:
-- `www.frawo-tech.de` fuer die Hauptseite
-- `radio.frawo-tech.de` spaeter fuer Radio/Player
-- `prinz-stockenweiler.de` als spaeterer externer Support-Kontext im Elternhaus
+- `www.frawo-tech.de` fuer die Hauptseite ueber die Odoo-Website
+- `radio.frawo-tech.de` spaeter fuer eine dedizierte Radio-/Player-Seite
+- `online-prinz.de` als spaeterer externer Support-Kontext im Elternhaus
 - internes `hs27.internal` bleibt bis zur bewussten internen DNS-Migration unveraendert
 - spaeterer professioneller interner Zielname ist `frawo.home.arpa`
 
@@ -488,12 +531,13 @@ Ziel:
 
 Verbindlicher Scope:
 - `frawo-tech.de` -> Redirect auf `www.frawo-tech.de`
-- `www.frawo-tech.de` -> oeffentliche FRAWO-Website
+- `www.frawo-tech.de` -> oeffentliche FRAWO-Website ueber die Odoo-Website
+- sichtbare Radio-Praesenz oder Player-Pfad auf der Website
 
 Explizit nicht im Scope:
 - Nextcloud
 - Paperless
-- Odoo
+- Odoo-Admin / ERP-UI
 - Home Assistant
 - Proxmox
 - PBS
@@ -504,13 +548,15 @@ Explizit nicht im Scope:
 Reihenfolge:
 1. `RELEASE_READINESS_2026-04-01.md` auf Gruen ziehen
 2. `frawo-tech.de` -> `www.frawo-tech.de` Redirect-Modell finalisieren
-3. Website-Zielsystem, TLS-Automation und Monitoring festziehen
-4. SPF, DKIM, DMARC und den externen Testlauf fuer DNS, TLS und Mail fahren
-5. Rollback fuer DNS-/TLS-/Hostwechsel dokumentiert pruefen
-6. erst dann `www.frawo-tech.de` freigeben
+3. Website-Zielsystem als Odoo-Website auf `VM220` festziehen, ohne oeffentlichen Adminpfad
+4. sichtbare Radio-Praesenz oder Player-Pfad in die Website einbauen
+5. TLS-Automation und Monitoring festziehen
+6. SPF, DKIM, DMARC und den externen Testlauf fuer DNS, TLS und Mail fahren
+7. Rollback fuer DNS-/TLS-/Hostwechsel dokumentiert pruefen
+8. erst dann `www.frawo-tech.de` freigeben
 
 Definition of done:
-- Website ist extern erreichbar
+- Website ist extern erreichbar und traegt die sichtbare Radio-Praesenz
 - keine Admin-UIs sind oeffentlich
 - Rollback ist dokumentiert
 - Release ist klein genug, um im Fehlerfall kontrolliert ruecknehmbar zu bleiben
@@ -552,7 +598,7 @@ Ziel:
 - erst nach stabilem Betriebs- und Release-Standard die Plattform verbreitern
 
 Dann folgen:
-1. `radio.frawo-tech.de` nur bei separatem Green Gate
+1. `radio.frawo-tech.de` nur spaeter als separater dedizierter Radio-Pfad bei eigenem Green Gate
 2. Surface-Recovery und `frontend`-Pfad
 3. UCG-Ultra-Cutover
 4. 2-TB-SSD-Endrolle festziehen
@@ -567,7 +613,7 @@ Dann folgen:
 5. **Mail- und Secret-Standard technisch etabliert**: [x] TEILWEISE DONE. `Vaultwarden`, Invite-SMTP, `webmaster` und `franz` sind technisch verifiziert; sichtbar abnehmen und `noreply` sauber abschliessen bleibt offen.
 6. **2-TB-SSD-Strategie festziehen**: die SSD dient aktuell als kontrollierter Archiv-/Entlastungspfad; die finale Linux-Serverpartition ist spaeter separat zu entscheiden.
 7. **Dokumenten-Workflow**: [x] DONE. Paperless-/Nextcloud-Pfad ist mit einem echten Dokumentenlauf abgenommen.
-8. **Website-first Release 2026-04-01 vorbereiten**: `www.frawo-tech.de` als einzigen oeffentlichen Scope bis zum ersten Website-Green-Gate festziehen.
+8. **Website-first Release 2026-04-01 vorbereiten**: `www.frawo-tech.de` als Odoo-Website mit sichtbarer Radio-Praesenz bis zum ersten Website-Green-Gate festziehen.
 9. **Stockenweiler / Rentner OS vorbereiten**: Tailscale-only Managed Support fuer den ersten externen Testkundenfall definieren und inventarisieren.
 10. **HAOS-USB-Pfad vorbereiten**: Sobald die Zigbee/Z-Wave Hardware steckt.
 11. **Surface**: erst nach Hardware-/Boot-Recovery wieder in den produktiven Pfad nehmen.

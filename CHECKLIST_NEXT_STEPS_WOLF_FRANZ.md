@@ -12,7 +12,7 @@ Die manuelle Operator-Queue liegt in:
 
 - `OPERATOR_TODO_QUEUE.md`
 
-Stand: `2026-03-26`
+Stand: `2026-03-30`
 
 ## Zweck
 
@@ -22,13 +22,13 @@ Keine Grundsatzentscheidungen hier pflegen. Detailregeln stehen im Wiki-Kanon.
 
 ## 1. FraWo Und Vaultwarden
 
-- [ x] `Franz` in die `FraWo`-Organisation einladen
-- [ x] Collections fuer `Franz` pruefen:
+- [x] `Franz` in die `FraWo`-Organisation einladen
+- [x] Collections fuer `Franz` pruefen:
   - `Business Apps`
   - `Core Infra`
   - `Media`
   - `Mail & Domains`
-- [ x] In `Vaultwarden` diese Eintraege sichtbar pruefen:
+- [x] In `Vaultwarden` diese Eintraege sichtbar pruefen:
   - `Nextcloud Admin`
   - `Paperless Admin`
   - `Odoo Admin`
@@ -41,12 +41,12 @@ Keine Grundsatzentscheidungen hier pflegen. Detailregeln stehen im Wiki-Kanon.
 
 ### Wolf
 
-- [x ] Login in `Vaultwarden`
-- [ ] Login in `Portal`
-- [ x] Login in `Nextcloud`
-- [ x] Login in `Paperless`
-- [ x] Login in `Odoo`
-- [ x] Login in `Home Assistant`
+- [x] Login in `Vaultwarden`
+- [x] Root-Portal `portal.hs27.internal` sichtbar gegen den neuen MVP-Stand pruefen
+- [x] Login in `Nextcloud`
+- [x] Login in `Paperless`
+- [x] Login in `Odoo`
+- [x] Login in `Home Assistant`
 - [ ] Login in `Jellyfin` -> noch nicht erfolgreich
 
 
@@ -57,7 +57,7 @@ Keine Grundsatzentscheidungen hier pflegen. Detailregeln stehen im Wiki-Kanon.
 - [ ] Login in `Paperless`
 - [ ] Login in `Odoo`
 - [ ] Login in `Jellyfin`
-- [ ] Franz-Startseite `portal.hs27.internal/franz/` pruefen ->noch eine absolute lachnummer.. komplett 0815
+- [x] Franz-Startseite `portal.hs27.internal/franz/` sichtbar gegen den neuen MVP-Stand pruefen
 - [ ] Surface-Laptop-Shortcuts mit `bootstrap_franz_surface_shortcuts.ps1` ausrollen
 - [ ] iPhone-Homescreen-Pfad `100.99.206.128:8447/franz/` pruefen
 
@@ -69,8 +69,8 @@ Keine Grundsatzentscheidungen hier pflegen. Detailregeln stehen im Wiki-Kanon.
 
 ## 3. Mail Und Identitaet
 
-- [ x] `wolf@frawo-tech.de` als Alias-/Loginpfad ueber `webmaster@...` pruefen
-- [x ] `franz@frawo-tech.de` als eigenes Postfach sichtbar pruefen
+- [x] `wolf@frawo-tech.de` als Alias-/Loginpfad ueber `webmaster@...` pruefen
+- [x] `franz@frawo-tech.de` als eigenes Postfach sichtbar pruefen
 - [ ] `info@frawo-tech.de` technisch pruefen
 - [ ] `noreply@frawo-tech.de` technisch pruefen
 - [ ] Produktive Mail-Zugaenge in `Vaultwarden / FraWo / Mail & Domains` ablegen

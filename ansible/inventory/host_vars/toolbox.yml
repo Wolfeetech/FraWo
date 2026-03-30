@@ -39,6 +39,14 @@ toolbox_network_internal_proxy_hosts:
     upstream: 192.168.2.21:80
   - hostname: odoo.hs27.internal
     upstream: 192.168.2.22:8069
+    path_redirects:
+      - source: /radio
+        target: /radio/public/frawo-funk
+      - source: /radio/
+        target: /radio/public/frawo-funk
+    path_proxies:
+      - path: /radio/*
+        upstream: 100.64.23.77:80
   - hostname: paperless.hs27.internal
     upstream: 192.168.2.23:8000
   - hostname: ha.hs27.internal
@@ -52,85 +60,69 @@ toolbox_network_internal_proxy_hosts:
 toolbox_network_static_file_hosts:
   - hostname: portal.hs27.internal
     root: /srv/portal
+toolbox_network_public_redirect_hosts:
+  - hostname: frawo-tech.de
+    target: https://www.frawo-tech.de{uri}
+toolbox_network_public_proxy_hosts:
+  - hostname: www.frawo-tech.de
+    upstream: 192.168.2.22:8069
+    path_redirects:
+      - source: /radio
+        target: /radio/public/frawo-funk
+      - source: /radio/
+        target: /radio/public/frawo-funk
+    path_proxies:
+      - path: /radio/*
+        upstream: 100.64.23.77:80
 toolbox_network_placeholder_hosts: []
 toolbox_network_portal_links:
   - label: Nextcloud
     group: Arbeit
-    hint: Dateien, Zusammenarbeit und gemeinsame Dokumente
+    hint: Dateien und Zusammenarbeit
     url: http://cloud.hs27.internal
   - label: Paperless
     group: Arbeit
-    hint: Dokumentenarchiv und OCR-Workflow
+    hint: Archiv und OCR
     url: http://paperless.hs27.internal
   - label: Odoo
     group: Arbeit
-    hint: ERP, CRM und betriebliche Arbeitsflaeche
+    hint: Betrieb und Kunden
     url: http://odoo.hs27.internal/web/login
   - label: Franz Start
     group: Betrieb
-    hint: Vorbereiteter Einstieg fuer Franz auf Surface Laptop und iPhone
+    hint: Einstieg fuer Franz
     url: http://portal.hs27.internal/franz/
   - label: Vault
     group: Betrieb
-    hint: Gemeinsamer Passworttresor fuer den aktuellen MVP
+    hint: Passworttresor
     url: https://vault.hs27.internal
-toolbox_network_persona_cards:
-  - label: Ich bin Wolf
-    role: Betrieb und Tagesarbeit
-    summary: Nur die heutigen Kernpfade fuer die GbR. Alles andere bleibt ausserhalb des MVP-Starts.
-    primary_label: Arbeitsstart
-    primary_url: http://portal.hs27.internal
-    accent: amber
-    secondary_links:
-      - label: Nextcloud
-        url: http://cloud.hs27.internal
-      - label: Paperless
-        url: http://paperless.hs27.internal
-      - label: Odoo
-        url: http://odoo.hs27.internal/web/login
-      - label: Vault
-        url: https://vault.hs27.internal
-  - label: Ich bin Franz
-    role: Dokumente und Arbeit
-    summary: Ein persoenlicher Endnutzerpfad ohne Admin-Konfiguration. Alles startet ueber Franz Start.
-    primary_label: Franz Start
-    primary_url: http://portal.hs27.internal/franz/
-    accent: teal
-    secondary_links:
-      - label: Nextcloud
-        url: http://cloud.hs27.internal
-      - label: Paperless
-        url: http://paperless.hs27.internal
-      - label: Odoo
-        url: http://odoo.hs27.internal/web/login
-      - label: Vault
-        url: https://vault.hs27.internal
+toolbox_network_persona_cards: []
 toolbox_network_status_targets:
   - key: nextcloud
     label: Nextcloud
     check_url: http://192.168.2.21
     success_codes: [200]
-    summary: Files, collaboration and shared storage
+    summary: Dateien und Zusammenarbeit
   - key: paperless
     label: Paperless
     check_url: http://192.168.2.23:8000
     success_codes: [200]
-    summary: Document archive and OCR workflows
+    summary: Dokumentenarchiv
   - key: odoo
     label: Odoo
     check_url: http://192.168.2.22:8069/web/login
     success_codes: [200]
-    summary: ERP, CRM and business workflows
+    summary: Betrieb und Kunden
   - key: portal
     label: Portal
     check_url: http://127.0.0.1
     success_codes: [200]
-    summary: Internal frontdoor and service navigation
+    summary: Startseite
   - key: vaultwarden
     label: Vault
     check_url: http://192.168.2.26:8080/alive
     success_codes: [200]
-    summary: Self-hosted secret vault on CT120
+    summary: Passworttresor
 toolbox_network_tailscale_mobile_proxies:
   - name: ha_mobile
     listen_port: 8443

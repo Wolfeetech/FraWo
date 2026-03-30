@@ -23,6 +23,7 @@
 - Vaultwarden CT: `192.168.2.26:8080`, productive entry via `https://vault.hs27.internal`
 - Radio node: `192.168.2.155` and Tailscale `100.64.23.77`
 - Shared frontend node: `surface-go-frontend` on `192.168.2.154`
+- Separate Stockenweiler legacy support LAN exists on `192.168.178.0/24`
 - Internal DNS zone: `hs27.internal`
 - Tailscale subnet router and internal reverse proxy live on `toolbox`
 
@@ -51,6 +52,7 @@
 - Google TV now connects to Jellyfin again, but the successful test used the `Wolf` account.
 - The intended shared Jellyfin profile remains `TV Wohnzimmer`, but its password was not available during the last TV test.
 - `surface-go-frontend` is a shared kiosk-style frontend node and remains inside the certification scope.
+- `Stockenweiler` is the next external managed-support track after the website release track, not a second integrated site.
 
 ## Access And Secret Rules
 
@@ -74,6 +76,13 @@
 - `Nextcloud`, `Paperless`, and `Odoo` are SMTP-configured against the shared mail baseline.
 - `AzuraCast` remains the only app-SMTP holdout because the current blocker is SSH access to `raspberry_pi_radio`.
 - The next real end-to-end user test is the visible MVP walkthrough for Wolf and Franz across Vault, Nextcloud, Paperless, and Odoo.
+- Stockenweiler local legacy facts were recovered from old StudioPC workspaces and a local router export:
+  - router `FRITZ!Box 5690 Pro` on `192.168.178.1`
+  - Proxmox host `192.168.178.25`
+  - Home Assistant `192.168.178.67`
+  - Brother printer `192.168.178.153`
+  - MagentaTV `192.168.178.120`
+  - canonical external target name now `online-prinz.de`
 
 ## Certification Reality
 

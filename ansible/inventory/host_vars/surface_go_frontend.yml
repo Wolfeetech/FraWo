@@ -50,51 +50,6 @@ surface_go_absent_packages:
   - nginx-core
   - nginx-full
   - nginx-light
-surface_go_portal_links:
-  - label: Home Assistant
-    group: Betrieb
-    hint: Automationen, Geraete und Haushalts-Dashboards
-    url: "{{ surface_go_home_assistant_url }}"
-  - label: Nextcloud
-    group: Arbeit
-    hint: Dateien und Zusammenarbeit
-    url: "{{ surface_go_nextcloud_url }}"
-  - label: Nextcloud (Eingang)
-    group: Dokumente
-    hint: Scans und PDFs hier hochladen fuer automatisches Archiv
-    url: "{{ surface_go_nextcloud_inbox_url }}"
-  - label: Paperless (Archiv)
-    group: Dokumente
-    hint: Zugriff auf die im Archiv gespeicherten PDF-Originale
-    url: "{{ surface_go_nextcloud_archive_url }}"
-  - label: Dokumenten-Suche
-    group: Dokumente
-    hint: Paperless-Volltextsuche und OCR-Archiv
-    url: "{{ surface_go_paperless_url }}"
-  - label: Webmail (Postfach)
-    group: Arbeit
-    hint: Strato Mails lesen und Anhaenge direkt in Paperless/Eingang speichern
-    url: "{{ surface_go_nextcloud_url | replace('/login', '/apps/mail') }}"
-  - label: Media
-    group: Medien
-    hint: Jellyfin fuer Filme, Serien und Musik
-    url: "{{ surface_go_media_url }}"
-  - label: Radio Player
-    group: Medien
-    hint: Touch-optimierte Ansicht fuer den Live-Sender
-    url: "{{ surface_go_radio_player_url }}"
-  - label: Odoo
-    group: Arbeit
-    hint: ERP und Business-Login
-    url: "{{ surface_go_odoo_url }}"
-  - label: Odoo To-Do
-    group: Arbeit
-    hint: Direkter Sprung zu Aufgaben
-    url: "{{ surface_go_odoo_url }}#action=project.task"
-  - label: Studio PC (AnyDesk)
-    group: Remote
-    hint: Fernzugriff auf den Studio PC
-    url: "anydesk:{{ surface_go_studiopc_anydesk_id }}"
 surface_go_kiosk_desktop_launchers:
   - name: FRAWO Control
     comment: Oeffnet das gemeinsame FRAWO-Frontend
@@ -106,36 +61,6 @@ surface_go_kiosk_desktop_launchers:
     exec: "{{ surface_go_keyboard_launcher_script }}"
     icon: input-keyboard
     categories: Utility;Accessibility;
-  - name: Nextcloud
-    comment: Dateien und Zusammenarbeit
-    exec: "{{ surface_go_launcher_script }} {{ surface_go_nextcloud_url }}"
-    icon: nextcloud
-    categories: Office;Network;WebBrowser;
-  - name: Nextcloud Eingang
-    comment: Dokumente in den Paperless-Eingang hochladen
-    exec: "{{ surface_go_launcher_script }} {{ surface_go_nextcloud_inbox_url }}"
-    icon: folder-download
-    categories: Office;Network;WebBrowser;
-  - name: Paperless Suche
-    comment: Dokumentensuche und Archiv
-    exec: "{{ surface_go_launcher_script }} {{ surface_go_paperless_url }}"
-    icon: document-viewer
-    categories: Office;Network;WebBrowser;
-  - name: Media
-    comment: Jellyfin fuer Filme, Serien und Musik
-    exec: "{{ surface_go_launcher_script }} {{ surface_go_media_url }}"
-    icon: multimedia-video-player
-    categories: AudioVideo;Network;WebBrowser;
-  - name: Radio Player
-    comment: Touch-optimierter FraWo-Funk Player
-    exec: "{{ surface_go_launcher_script }} {{ surface_go_radio_player_url }}"
-    icon: radio
-    categories: AudioVideo;Network;WebBrowser;
-  - name: Odoo
-    comment: Odoo Login fuer die produktive Nutzung
-    exec: "{{ surface_go_launcher_script }} {{ surface_go_odoo_url }}"
-    icon: applications-office
-    categories: Office;Network;WebBrowser;
 surface_go_admin_desktop_launchers:
   - name: FRAWO Control
     comment: Oeffnet das gemeinsame FRAWO-Frontend
@@ -147,41 +72,11 @@ surface_go_admin_desktop_launchers:
     exec: "{{ surface_go_keyboard_launcher_script }}"
     icon: input-keyboard
     categories: Utility;Accessibility;
-  - name: Nextcloud
-    comment: Dateien und Zusammenarbeit
-    exec: "{{ surface_go_launcher_script }} {{ surface_go_nextcloud_url }}"
-    icon: nextcloud
-    categories: Office;Network;WebBrowser;
-  - name: Nextcloud Eingang
-    comment: Dokumente in den Paperless-Eingang hochladen
-    exec: "{{ surface_go_launcher_script }} {{ surface_go_nextcloud_inbox_url }}"
-    icon: folder-download
-    categories: Office;Network;WebBrowser;
-  - name: Paperless Suche
-    comment: Dokumentensuche und Archiv
-    exec: "{{ surface_go_launcher_script }} {{ surface_go_paperless_url }}"
-    icon: document-viewer
-    categories: Office;Network;WebBrowser;
-  - name: Media
-    comment: Jellyfin fuer Filme, Serien und Musik
-    exec: "{{ surface_go_launcher_script }} {{ surface_go_media_url }}"
-    icon: multimedia-video-player
-    categories: AudioVideo;Network;WebBrowser;
-  - name: Radio Player
-    comment: Touch-optimierter FraWo-Funk Player
-    exec: "{{ surface_go_launcher_script }} {{ surface_go_radio_player_url }}"
-    icon: radio
-    categories: AudioVideo;Network;WebBrowser;
   - name: Radio Control
     comment: AzuraCast Steuerung
     exec: "{{ surface_go_launcher_script }} {{ surface_go_radio_control_url }}"
     icon: mixer
     categories: AudioVideo;Network;WebBrowser;
-  - name: Odoo Admin
-    comment: Oeffnet die Odoo-Anmeldung
-    exec: "{{ surface_go_launcher_script }} {{ surface_go_odoo_url }}"
-    icon: applications-office
-    categories: Office;Network;WebBrowser;
   - name: AnyDesk
     comment: Startet die Remote-Support-Anwendung
     exec: "{{ surface_go_anydesk_binary }}"

@@ -1,6 +1,6 @@
 # User Onboarding Operations
 
-Stand: `2026-03-27`
+Stand: `2026-03-30`
 
 ## Zweck
 
@@ -18,6 +18,7 @@ Diese Datei ist der kanonische Onboarding- und Benutzerbetriebsartikel fuer:
 - `Franz` hat die `FraWo`-Einladung in `Vaultwarden` angenommen
 - `portal.hs27.internal/franz/` ist live
 - das Root-Portal und der Franz-Pfad sind jetzt bewusst auf den Betriebs-MVP reduziert
+- Root-Portal und Franz-Seite sind sichtbar gegen den neuen MVP-Stand abgenommen (`2026-03-30`)
 - `Nextcloud`, `Paperless`, `Odoo`, `Jellyfin`, `Radio` und `Home Assistant` antworten intern
 - der TV-Pfad zu `Jellyfin` funktioniert wieder
 - der letzte TV-Test lief ueber `Wolf`, nicht ueber `TV Wohnzimmer`

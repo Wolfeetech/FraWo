@@ -1,6 +1,6 @@
 # Stress Test Readiness
 
-Stand: `2026-03-28`
+Stand: `2026-03-30`
 
 ## Zweck
 
@@ -20,6 +20,8 @@ Der operative Detailstand liegt in:
 - letzter Produktionsentscheid: `artifacts/production_gate/20260327_182022/production_gate.md`
 - letzter Business-MVP-Auditlauf: `artifacts/release_mvp_audit/20260328_004657`
 - letzter Business-MVP-Entscheid: `artifacts/release_mvp_gate/20260328_004741/release_mvp_gate.md`
+- letzter Website-Auditlauf: `artifacts/website_release_audit/20260330_063108`
+- letzter Website-Release-Entscheid: `artifacts/website_release_gate/20260330_063116/website_release_gate.md`
 
 ## Aktueller Befund
 
@@ -31,6 +33,12 @@ Der operative Detailstand liegt in:
 - der neue technische MVP-Gate-Stand ist jetzt sauber:
   - alle kritischen Codex-Pruefungen im `release-mvp-audit` sind gruen
   - `release-mvp-gate` blockiert nur noch an manueller Evidenz
+- der Website-Track ist jetzt ebenfalls getrennt pruefbar:
+  - `public-dns-check` gruen
+  - `public-http-redirect-check` rot
+  - `public-https-check` rot
+  - `public-mail-dns-check` rot
+  - `website-release-gate` bleibt damit aktuell korrekt `BLOCKED`
 - Der Arbeits-MVP ist aber noch nicht sichtbar abgenommen:
   - Wolf- und Franz-Durchlauf fehlen
   - sichtbare Vaultwarden-Stichprobe fehlt

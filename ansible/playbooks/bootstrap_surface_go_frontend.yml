@@ -116,6 +116,8 @@
         owner: "{{ surface_go_kiosk_user }}"
         group: "{{ surface_go_kiosk_user }}"
         mode: "0644"
+      vars:
+        surface_go_actions_manifest: "{{ lookup('file', playbook_dir + '/../../manifests/control_surface/actions.json') | from_json }}"
 
     - name: Install local portal service unit
       ansible.builtin.template:

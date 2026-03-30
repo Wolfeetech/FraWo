@@ -7,7 +7,7 @@ Diese Datei ist die kompakteste Fuehrungsansicht fuer den aktuellen Projektstand
 ## Zielbild
 
 - interner Business-MVP stabil und sichtbar freigabefaehig
-- Website-First-Release auf `www.frawo-tech.de` am `2026-04-01`
+- Website-First-Release auf `www.frawo-tech.de` am `2026-04-01`, getragen durch die Odoo-Website mit integrierter Radio-Praesenz
 - Vollzertifizierung fuer `PBS`, `surface-go-frontend` und `Radio/AzuraCast` getrennt vom MVP
 - technisch verifizierte FRAWO-Mailpfade bei `STRATO`
 - produktive Secret-Ablage in `Vaultwarden` innerhalb der Organisation `FraWo`
@@ -46,9 +46,10 @@ Diese Datei ist die kompakteste Fuehrungsansicht fuer den aktuellen Projektstand
 3. sichtbare App-Testmails fuer `Nextcloud`, `Paperless` und `Odoo` abschliessen
 4. `release-mvp-gate` auf Gruen ziehen
 5. parallel den Website-Release fuer `www.frawo-tech.de` vorbereiten:
-   - Zielsystem
+   - Zielsystem = Odoo-Website auf `VM220`
    - DNS/Redirect
    - TLS
+   - sichtbare Radio-Integration auf der Website
    - SPF/DKIM/DMARC
    - Rollback
 6. Vollzertifizierung getrennt weiterfuehren:
@@ -60,7 +61,7 @@ Diese Datei ist die kompakteste Fuehrungsansicht fuer den aktuellen Projektstand
 ## Nicht Jetzt
 
 - keine oeffentlichen Admin-UIs
-- kein `radio.frawo-tech.de` im ersten Release
+- kein separates `radio.frawo-tech.de` als Pflicht im ersten Release; Radio muss in die Website integriert sein
 - kein Site-to-Site-VPN nach Stockenweiler
 - kein Google-Workspace-Cutover
 - keine Google-Drive-Integration vor dem ersten stabilen Release
@@ -70,7 +71,7 @@ Diese Datei ist die kompakteste Fuehrungsansicht fuer den aktuellen Projektstand
 - Secrets liegen produktiv in Vaultwarden innerhalb der Organisation `FraWo`, nicht nur in Markdown
 - Mail funktioniert sichtbar fuer Wolf, Franz und die Systemabsender des MVP
 - `release-mvp-gate` meldet `MVP_READY`
-- `www.frawo-tech.de` ist klein, sauber und kontrolliert live
+- `www.frawo-tech.de` ist als Odoo-Website klein, sauber und kontrolliert live, inklusive sichtbarer Radio-Praesenz
 - interner Betrieb bleibt unangetastet stabil
 - `production-gate` darf getrennt weiter `BLOCKED` bleiben, solange `PBS`, `surface-go` und `Radio` offen sind
 

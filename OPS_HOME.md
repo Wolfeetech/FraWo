@@ -93,6 +93,7 @@ Diese Dateien bleiben nur so lange bestehen, bis ihr Inhalt sauber in den Wiki-K
 - Produktions-Freigabe: `OPERATIONS/PRODUCTION_READINESS_OPERATIONS.md`
 - Dokument-Ownership: `OPERATIONS/DOCUMENT_OWNERSHIP_OPERATIONS.md`
 - Stockenweiler / Rentner OS: `STOCKENWEILER_REMOTE_SUPPORT_PLAN.md`
+- Stockenweiler Inventar: `manifests/stockenweiler/site_inventory.json`
 - Medien / Radio Baseline: `AZURACAST_FIRST_STATION_BASELINE.md`
 - Jellyfin User Setup: `JELLYFIN_USER_SETUP_PLAN.md`
 

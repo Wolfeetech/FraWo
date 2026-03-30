@@ -1,0 +1,205 @@
+{
+  "version": 1,
+  "site_name": "Stockenweiler",
+  "support_label": "Rentner OS",
+  "status": "planned",
+  "external_domain": {
+    "canonical": "online-prinz.de",
+    "legacy": [
+      "prinz-stockenweiler.de"
+    ],
+    "notes": "Canonical target updated from operator input on 2026-03-30. Legacy domains remain historical only until explicitly reused."
+  },
+  "notes": [
+    "This is the single machine-readable starter inventory for the Stockenweiler support track.",
+    "Only store verified devices, providers and access paths here.",
+    "Do not use this file for plaintext credentials.",
+    "Recovered facts below come from local legacy workspaces and local router exports on StudioPC and should be revalidated during first live onboarding."
+  ],
+  "access_model": {
+    "primary_remote_access": "tailscale",
+    "fallback_remote_access": "anydesk",
+    "wan_admin_exposure_allowed": false,
+    "site_to_site_vpn_allowed": false
+  },
+  "current_known_facts": {
+    "lan_subnet": "192.168.178.0/24",
+    "router": {
+      "friendly_name": "FRITZ!Box 5690 Pro",
+      "ip": "192.168.178.1",
+      "provider_name": "Telekom",
+      "access_status": "legacy_verified_local_export"
+    },
+    "proxmox_host": {
+      "friendly_name": "proxmox Host",
+      "ip": "192.168.178.25",
+      "access_status": "legacy_verified_local_export"
+    },
+    "home_assistant": {
+      "friendly_name": "homeassistant",
+      "ip": "192.168.178.67",
+      "access_status": "legacy_verified_local_export",
+      "notes": "Older legacy docs also mentioned 192.168.178.68; treat .67 as the stronger current local signal until revalidated."
+    },
+    "printer_scanner": {
+      "friendly_name": "Brother - Drucker",
+      "ip": "192.168.178.153",
+      "access_status": "legacy_verified_local_export"
+    },
+    "magenta_tv": {
+      "friendly_name": "MagentaTV",
+      "ip": "192.168.178.120",
+      "access_status": "legacy_verified_local_export"
+    }
+  },
+  "legacy_service_map": [
+    {
+      "service": "nextcloud",
+      "local_url": "http://192.168.178.206",
+      "legacy_public_url": "https://files.alopri",
+      "source": "RadioWorkspace docs",
+      "status": "legacy_only"
+    },
+    {
+      "service": "paperless",
+      "local_url": "http://192.168.178.176",
+      "legacy_public_url": "https://paperless.alopri",
+      "source": "RadioWorkspace docs",
+      "status": "legacy_only"
+    },
+    {
+      "service": "vaultwarden",
+      "local_url": "http://192.168.178.188:8080",
+      "legacy_public_url": "https://vault.alopri",
+      "source": "RadioWorkspace docs",
+      "status": "legacy_only"
+    },
+    {
+      "service": "adguard",
+      "local_url": "http://192.168.178.173",
+      "legacy_public_url": "",
+      "source": "RadioWorkspace docs",
+      "status": "legacy_only"
+    },
+    {
+      "service": "wireguard",
+      "local_url": "192.168.178.186",
+      "legacy_public_url": "vpn.prinz-stockenweiler.de:51820",
+      "source": "RadioWorkspace docs",
+      "status": "legacy_only"
+    }
+  ],
+  "legacy_conflicts_to_revalidate": [
+    {
+      "topic": "proxmox_host_ip",
+      "current_best_guess": "192.168.178.25",
+      "conflicting_legacy_value": "192.168.178.172",
+      "source": "RadioWorkspace docs vs local router export"
+    },
+    {
+      "topic": "home_assistant_ip",
+      "current_best_guess": "192.168.178.67",
+      "conflicting_legacy_value": "192.168.178.68",
+      "source": "RadioWorkspace docs vs local router export"
+    }
+  ],
+  "support_goals": [
+    "Remote help for TV and Magenta problems",
+    "Managed support for the father desktop environment",
+    "Optional later dedicated Home Assistant home/site integration without exposing the Stockenweiler site directly to the internet"
+  ],
+  "first_support_targets": [
+    "MagentaTV / TV path",
+    "Father desktop remote help",
+    "Printer / scanner help",
+    "Existing local Home Assistant support"
+  ],
+  "endpoints": [
+    {
+      "id": "main_pc",
+      "type": "desktop_or_laptop",
+      "status": "pending_inventory",
+      "friendly_name": "",
+      "owner_or_user": "",
+      "os": "",
+      "local_network_name": "",
+      "tailscale_name": "",
+      "anydesk_id": "",
+      "notes": ""
+    },
+    {
+      "id": "phone",
+      "type": "mobile_phone",
+      "status": "pending_inventory",
+      "friendly_name": "",
+      "owner_or_user": "",
+      "os": "",
+      "tailscale_name": "",
+      "notes": ""
+    },
+    {
+      "id": "printer_scanner",
+      "type": "printer_or_scanner",
+      "status": "legacy_fact_needs_revalidation",
+      "friendly_name": "Brother - Drucker",
+      "owner_or_user": "Stockenweiler household",
+      "manufacturer": "Brother",
+      "model": "",
+      "connection_type": "wlan",
+      "local_ip": "192.168.178.153",
+      "notes": "Detected in local router export on 2026-03-30."
+    },
+    {
+      "id": "router_provider",
+      "type": "router_or_provider",
+      "status": "legacy_fact_needs_revalidation",
+      "provider_name": "Telekom",
+      "router_model": "FRITZ!Box 5690 Pro",
+      "management_path": "http://192.168.178.1",
+      "notes": "Detected in local router export on 2026-03-30."
+    },
+    {
+      "id": "proxmox_host",
+      "type": "server_host",
+      "status": "legacy_fact_needs_revalidation",
+      "friendly_name": "proxmox Host",
+      "owner_or_user": "Stockenweiler support stack",
+      "os": "Proxmox VE",
+      "local_network_name": "proxmox Host",
+      "local_ip": "192.168.178.25",
+      "tailscale_name": "",
+      "anydesk_id": "",
+      "notes": "Recovered from local router export; older RadioWorkspace docs also used this host as the main server."
+    },
+    {
+      "id": "home_assistant",
+      "type": "home_assistant_site",
+      "status": "legacy_fact_needs_revalidation",
+      "friendly_name": "homeassistant",
+      "owner_or_user": "Stockenweiler household",
+      "os": "Home Assistant",
+      "local_network_name": "homeasssistant",
+      "local_ip": "192.168.178.67",
+      "tailscale_name": "",
+      "anydesk_id": "",
+      "notes": "Recovered from local router export; old docs referenced this as the external Home Assistant path."
+    },
+    {
+      "id": "magenta_tv",
+      "type": "tv_or_streaming_box",
+      "status": "legacy_fact_needs_revalidation",
+      "friendly_name": "MagentaTV",
+      "owner_or_user": "Stockenweiler household",
+      "local_network_name": "MagentaTV",
+      "local_ip": "192.168.178.120",
+      "tailscale_name": "",
+      "anydesk_id": "",
+      "notes": "Useful as a first real support target for TV and receiver issues."
+    }
+  ],
+  "shared_services": {
+    "document_path": "reuse_frawo_nextcloud_paperless_standard",
+    "secret_area": "Vaultwarden / FraWo / Stockenweiler",
+    "home_assistant_integration_mode": "later_phase_separate_home_or_remote_support_only"
+  }
+}

@@ -153,9 +153,10 @@
   - shared frontend certification
   - full-scope app SMTP
 - Current public release scope:
-  - website only on `www.frawo-tech.de`
-  - no public business UIs
-  - no public radio path in the first release
+  - public website on `www.frawo-tech.de` through the Odoo Website frontend
+  - visible radio presence or player path integrated into the public website
+  - no public Odoo admin / ERP UI
+  - no other public business UIs
 
 ## Research Guardrails
 

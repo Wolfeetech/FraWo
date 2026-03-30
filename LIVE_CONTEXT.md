@@ -5,9 +5,9 @@
 - Name: `Homeserver 2027 Ops Workspace`
 - Alias: `/home/wolf/.gemini/antigravity/brain/Homeserver_2027_Ops_Workspace`
 - Desktop shortcut: `/home/wolf/Desktop/Homeserver 2027 Workspace`
-- Generated at: `2026-03-28 07:25:23 CET`
+- Generated at: `2026-03-30 07:42:58 CEST`
 - Git branch: `main`
-- Pending git changes: `340`
+- Pending git changes: `500`
 
 ## Shared Read Order
 
@@ -51,14 +51,14 @@
 - `BUSINESS_MVP_PROMPT.md` updated: `2026-03-28 07:18:15`
 - `WEBSITE_RELEASE_PROMPT.md` updated: `2026-03-28 07:18:15`
 - `FULL_CERTIFICATION_PROMPT.md` updated: `2026-03-28 07:18:15`
-- `AI_BOOTSTRAP_CONTEXT.md` updated: `2026-03-28 00:55:20`
-- `README.md` updated: `2026-03-28 07:24:31`
-- `MASTERPLAN.md` updated: `2026-03-28 00:52:26`
+- `AI_BOOTSTRAP_CONTEXT.md` updated: `2026-03-30 07:32:46`
+- `README.md` updated: `2026-03-30 07:42:21`
+- `MASTERPLAN.md` updated: `2026-03-30 07:31:50`
 - `OPERATIONS/OPERATOR_ROUTINES.md` updated: `2026-03-26 23:23:08`
 - `SECURITY_BASELINE.md` updated: `2026-03-24 11:50:08`
 - `SESSION_CLOSEOUT.md` updated: `2026-03-24 19:23:44`
-- `GEMINI.md` updated: `2026-03-27 21:29:19`
-- `MEMORY.md` updated: `2026-03-26 08:51:37`
+- `GEMINI.md` updated: `2026-03-30 06:19:37`
+- `MEMORY.md` updated: `2026-03-28 10:09:33`
 - `NETWORK_INVENTORY.md` updated: `2026-03-25 18:09:01`
 - `VM_AUDIT.md` updated: `2026-03-24 12:03:50`
 - `BACKUP_RESTORE_PROOF.md` updated: `2026-03-25 18:07:10`
@@ -71,14 +71,14 @@
 - `ADGUARD_PILOT_ROLLOUT_PLAN.md` updated: `2026-03-24 11:50:08`
 - `TAILSCALE_SPLIT_DNS_PLAN.md` updated: `2026-03-24 11:50:08`
 - `ROUTER_LEASE_RECONCILIATION_RUNBOOK.md` updated: `2026-03-24 11:50:08`
-- `PUBLIC_EDGE_ARCHITECTURE_PLAN.md` updated: `2026-03-28 00:37:57`
+- `PUBLIC_EDGE_ARCHITECTURE_PLAN.md` updated: `2026-03-30 06:33:46`
 - `RASPBERRY_PI_RADIO_NODE_PLAN.md` updated: `2026-03-24 11:50:08`
 - `RPI_RESOURCE_ALLOCATION_PLAN.md` updated: `2026-03-24 11:50:08`
 - `AZURACAST_FIRST_STATION_BASELINE.md` updated: `2026-03-26 08:51:37`
 - `RADIO_OPERATIONS_STANDARD.md` updated: `2026-03-24 11:50:08`
 - `MEDIA_SERVER_PLAN.md` updated: `2026-03-26 22:26:25`
 - `MEDIA_SERVER_CLIENT_SETUP.md` updated: `2026-03-25 13:44:07`
-- `OPERATOR_TODO_QUEUE.md` updated: `2026-03-28 00:49:02`
+- `OPERATOR_TODO_QUEUE.md` updated: `2026-03-30 07:32:46`
 - `PBS_VM_240_SETUP_PLAN.md` updated: `2026-03-27 08:57:47`
 - `HAOS_VM_210_SETUP_PLAN.md` updated: `2026-03-24 11:50:08`
 - `PORTABLE_BACKUP_USB_PLAN.md` updated: `2026-03-24 11:50:08`

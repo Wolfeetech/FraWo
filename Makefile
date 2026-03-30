@@ -1,4 +1,4 @@
-.PHONY: refresh-context inventory-check ansible-ping qga-check close-day start-day stress-test release-mvp-audit release-mvp-gate production-gate document-ownership-check document-ownership-report ansible-syntax-check ansible-syntax-check-toolbox ansible-syntax-check-toolbox-tailscale ansible-syntax-check-toolbox-mobile-firewall ansible-syntax-check-proxmox-backups ansible-syntax-check-haos ansible-syntax-check-business-hardening ansible-syntax-check-pbs ansible-syntax-check-surface-go ansible-syntax-check-rpi-radio ansible-syntax-check-rpi-radio-media ansible-syntax-check-rpi-radio-usb ansible-syntax-check-rpi-radio-network ansible-syntax-check-rpi-azuracast-host ansible-syntax-check-rpi-azuracast ansible-syntax-check-rpi-azuracast-tuning ansible-syntax-check-paperless-nextcloud-bridge ansible-syntax-check-app-smtp ansible-list-business proxmox-storage-check backup-proof backup-list business-drift-check basics-check backup-prune-dry-run backup-prune toolbox-deploy toolbox-network-check toolbox-portal-status-check toolbox-tun-prep toolbox-tailscale-prep toolbox-tailscale-check toolbox-tailscale-login-url toolbox-tailscale-join-assist toolbox-tailscale-mobile-check toolbox-mobile-firewall-deploy toolbox-media-deploy toolbox-media-storage-integrate toolbox-media-check toolbox-jellyfin-ui-check toolbox-media-sync-deploy toolbox-media-sync-check toolbox-media-bootstrap-progress media-migration-status toolbox-music-library-report toolbox-music-scan-issues toolbox-music-curation-candidates toolbox-music-curated-layout toolbox-music-quarantine-candidates toolbox-music-selection-sync toolbox-music-selection-seed-report toolbox-music-selection-generate-starter toolbox-music-selection-promote-starter rightsize-stage-gate rightsize-plan rightsize-apply haos-preflight haos-usb-audit haos-stage-gate haos-runner-deploy haos-vm-check haos-reverse-proxy-enable haos-reverse-proxy-check gateway-cutover-stage-gate pbs-preflight pbs-stage-gate pbs-proof-check pbs-restore-proof pbs-runner-deploy pbs-vm-check pbs-guest-check pbs-iso-stage pbs-usb-interim-prepare pbs-rebuild-storage-audit pbs-rebuild-contract-check pbs-device-inventory pbs-contract-prefill pbs-datastore-prepare pbs-vm240-reconcile pbs-guarded-rebuild app-smtp-deploy app-smtp-check vaultwarden-smtp-deploy vaultwarden-smtp-check vaultwarden-admin-token-check proxmox-local-backup-deploy proxmox-local-backup-check portable-backup-usb-prepare portable-backup-usb-autoprepare portable-backup-usb-fill portable-backup-usb-check portable-backup-usb-run security-baseline-check business-hardening-deploy easybox-browser-probe easybox-authenticated-overview capacity-review plan-progress surface-go-check surface-go-bootstrap surface-go-root-sleep-harden media-fetch media-devices surface-iso-fetch surface-usb-prepare usb-stick-roles-prepare favorites-usb-prepare rpi-sd-flash rpi-firstboot-seed rpi-radio-bootstrap rpi-radio-media-prepare rpi-radio-media-check rpi-radio-usb-integrate rpi-radio-usb-check rpi-radio-network-integrate rpi-radio-network-check rpi-azuracast-host-prepare rpi-azuracast-deploy rpi-radio-check rpi-radio-integration-check rpi-azuracast-check rpi-azuracast-tune rpi-resource-check radio-ops-check anydesk-zenbook-install zenbook-remote-check remote-only-check operator-todos ops-brief adguard-pilot-check tailscale-split-dns-check inventory-resolution-check inventory-unknown-report paperless-nextcloud-bridge-deploy paperless-nextcloud-bridge-check
+.PHONY: refresh-context inventory-check ansible-ping qga-check close-day start-day stress-test release-mvp-audit release-mvp-gate website-release-audit website-release-gate production-gate document-ownership-check document-ownership-report stockenweiler-inventory-check stockenweiler-inventory-report stockenweiler-support-brief control-surface-actions-check control-surface-actions-report ansible-syntax-check ansible-syntax-check-toolbox ansible-syntax-check-toolbox-tailscale ansible-syntax-check-toolbox-mobile-firewall ansible-syntax-check-proxmox-backups ansible-syntax-check-haos ansible-syntax-check-business-hardening ansible-syntax-check-pbs ansible-syntax-check-surface-go ansible-syntax-check-rpi-radio ansible-syntax-check-rpi-radio-media ansible-syntax-check-rpi-radio-usb ansible-syntax-check-rpi-radio-network ansible-syntax-check-rpi-azuracast-host ansible-syntax-check-rpi-azuracast ansible-syntax-check-rpi-azuracast-tuning ansible-syntax-check-paperless-nextcloud-bridge ansible-syntax-check-app-smtp ansible-list-business proxmox-storage-check backup-proof backup-list business-drift-check basics-check backup-prune-dry-run backup-prune toolbox-deploy toolbox-network-check toolbox-portal-status-check toolbox-tun-prep toolbox-tailscale-prep toolbox-tailscale-check toolbox-tailscale-login-url toolbox-tailscale-join-assist toolbox-tailscale-mobile-check toolbox-mobile-firewall-deploy toolbox-media-deploy toolbox-media-storage-integrate toolbox-media-check toolbox-jellyfin-ui-check toolbox-media-sync-deploy toolbox-media-sync-check toolbox-media-bootstrap-progress media-migration-status toolbox-music-library-report toolbox-music-scan-issues toolbox-music-curation-candidates toolbox-music-curated-layout toolbox-music-quarantine-candidates toolbox-music-selection-sync toolbox-music-selection-seed-report toolbox-music-selection-generate-starter toolbox-music-selection-promote-starter rightsize-stage-gate rightsize-plan rightsize-apply haos-preflight haos-usb-audit haos-stage-gate haos-runner-deploy haos-vm-check haos-reverse-proxy-enable haos-reverse-proxy-check gateway-cutover-stage-gate pbs-preflight pbs-stage-gate pbs-proof-check pbs-restore-proof pbs-runner-deploy pbs-vm-check pbs-guest-check pbs-iso-stage pbs-usb-interim-prepare pbs-rebuild-storage-audit pbs-rebuild-contract-check pbs-device-inventory pbs-contract-prefill pbs-datastore-prepare pbs-vm240-reconcile pbs-guarded-rebuild app-smtp-deploy app-smtp-check vaultwarden-smtp-deploy vaultwarden-smtp-check vaultwarden-admin-token-check proxmox-local-backup-deploy proxmox-local-backup-check portable-backup-usb-prepare portable-backup-usb-autoprepare portable-backup-usb-fill portable-backup-usb-check portable-backup-usb-run security-baseline-check business-hardening-deploy easybox-browser-probe easybox-authenticated-overview capacity-review plan-progress surface-go-check surface-go-bootstrap surface-go-root-sleep-harden media-fetch media-devices surface-iso-fetch surface-usb-prepare usb-stick-roles-prepare favorites-usb-prepare rpi-sd-flash rpi-firstboot-seed rpi-radio-bootstrap rpi-radio-media-prepare rpi-radio-media-check rpi-radio-usb-integrate rpi-radio-usb-check rpi-radio-network-integrate rpi-radio-network-check rpi-azuracast-host-prepare rpi-azuracast-deploy rpi-radio-check rpi-radio-integration-check rpi-azuracast-check rpi-azuracast-tune rpi-resource-check radio-ops-check anydesk-zenbook-install zenbook-remote-check remote-only-check operator-todos ops-brief adguard-pilot-check tailscale-split-dns-check inventory-resolution-check inventory-unknown-report paperless-nextcloud-bridge-deploy paperless-nextcloud-bridge-check public-dns-check public-http-redirect-check public-https-check public-mail-dns-check
 
 ROOT_DIR := $(CURDIR)
 ANSIBLE_CONFIG_PATH := $(ROOT_DIR)/ansible.cfg
@@ -36,6 +36,12 @@ release-mvp-audit:
 release-mvp-gate:
 	bash ./scripts/release_mvp_gate.sh
 
+website-release-audit:
+	python ./scripts/run_website_release_audit.py
+
+website-release-gate:
+	python ./scripts/website_release_gate.py
+
 production-gate:
 	bash ./scripts/production_readiness_gate.sh
 
@@ -44,6 +50,33 @@ document-ownership-check:
 
 document-ownership-report:
 	python3 ./scripts/document_ownership_check.py --report artifacts/document_ownership/report.md
+
+stockenweiler-inventory-check:
+	python3 ./scripts/stockenweiler_inventory_check.py
+
+stockenweiler-inventory-report:
+	python3 ./scripts/stockenweiler_inventory_check.py --report artifacts/stockenweiler_inventory/report.md
+
+stockenweiler-support-brief:
+	python3 ./scripts/stockenweiler_support_brief.py
+
+control-surface-actions-check:
+	python3 ./scripts/control_surface_actions_check.py
+
+control-surface-actions-report:
+	python3 ./scripts/control_surface_actions_check.py --report artifacts/control_surface/actions_report.md
+
+public-dns-check:
+	python3 ./scripts/public_dns_check.py
+
+public-http-redirect-check:
+	python3 ./scripts/public_http_redirect_check.py
+
+public-https-check:
+	python3 ./scripts/public_https_check.py
+
+public-mail-dns-check:
+	python3 ./scripts/public_mail_dns_check.py
 
 ansible-syntax-check:
 	$(ANSIBLE_PLAYBOOK_CMD) --syntax-check ansible/playbooks/deploy_business_stacks.yml

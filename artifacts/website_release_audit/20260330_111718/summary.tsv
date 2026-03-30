@@ -1,0 +1,13 @@
+id	executor	status	command_or_action	log
+document-ownership-check	codex	passed	C:\Python313\python.exe ./scripts/document_ownership_check.py	C:\Users\StudioPC\Documents\Homeserver 2027 Workspace\artifacts\website_release_audit\20260330_111718\document-ownership-check.log
+public-dns-check	codex	passed	C:\Python313\python.exe ./scripts/public_dns_check.py	C:\Users\StudioPC\Documents\Homeserver 2027 Workspace\artifacts\website_release_audit\20260330_111718\public-dns-check.log
+public-http-redirect-check	codex	failed	C:\Python313\python.exe ./scripts/public_http_redirect_check.py	C:\Users\StudioPC\Documents\Homeserver 2027 Workspace\artifacts\website_release_audit\20260330_111718\public-http-redirect-check.log
+public-https-check	codex	failed	C:\Python313\python.exe ./scripts/public_https_check.py	C:\Users\StudioPC\Documents\Homeserver 2027 Workspace\artifacts\website_release_audit\20260330_111718\public-https-check.log
+public-mail-dns-check	codex	failed	C:\Python313\python.exe ./scripts/public_mail_dns_check.py	C:\Users\StudioPC\Documents\Homeserver 2027 Workspace\artifacts\website_release_audit\20260330_111718\public-mail-dns-check.log
+website-target-system-verified	admin_only	pending_manual	Confirm the target system and hosting path for www.frawo-tech.de.	-
+website-content-verified	wolfi	pending_manual	Confirm the public website content is the intended GbR release content.	-
+public-browser-acceptance-verified	gemini_browser_ai	pending_manual	Visibly verify apex and www browser behavior for the website release scope.	-
+public-mail-model-verified	admin_only	pending_manual	Confirm webmaster, franz, info and noreply are correct for the public release.	-
+tls-automation-verified	admin_only	pending_manual	Confirm the chosen public TLS automation path is configured and documented.	-
+spf-dkim-dmarc-verified	admin_only	pending_manual	Confirm SPF, DKIM and DMARC are all intentionally configured for release.	-
+rollback-runbook-verified	admin_only	pending_manual	Confirm rollback for DNS, TLS and host-switch is complete and usable.	-

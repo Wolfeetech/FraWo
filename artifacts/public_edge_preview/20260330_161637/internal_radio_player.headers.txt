@@ -1,0 +1,6 @@
+HTTP/1.1 404 Not Found
+Cache-Control: no-store, max-age=0
+Server: Caddy
+Date: Mon, 30 Mar 2026 14:16:38 GMT
+Content-Length: 0
+

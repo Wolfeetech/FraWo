@@ -1,13 +1,24 @@
-import sys
+runtime_env = globals().get("env")
 
-try:
-    # Handle the Odoo Shell environment
-    task_model = env['project.task']
-    task = task_model.create({
-        'name': 'Endgeräte Franz onboarden',
-        'description': '<ul><li>[ ] Surface Go aushändigen und Passwörter testen</li><li>[ ] Nextcloud Mail-App Testnachricht senden</li><li>[ ] AnyDesk-ID verifizieren</li><li>[ ] Portal als Startseite in Kiosk-Mode fixieren</li></ul>',
-    })
-    env.cr.commit()
-    print(f"Task created successfully with ID {task.id}")
-except Exception as e:
-    print(f"Failed to create task: {e}")
+if runtime_env is None:
+    print("Failed to create task: this script must run inside Odoo shell where 'env' is available")
+else:
+    try:
+        task_model = runtime_env["project.task"]
+        task = task_model.create(
+            {
+                "name": "Endgeraete Franz onboarden",
+                "description": (
+                    "<ul>"
+                    "<li>[ ] Surface Go aushaendigen und Passwoerter testen</li>"
+                    "<li>[ ] Nextcloud Mail-App Testnachricht senden</li>"
+                    "<li>[ ] AnyDesk-ID verifizieren</li>"
+                    "<li>[ ] Portal als Startseite im Kiosk-Modus fixieren</li>"
+                    "</ul>"
+                ),
+            }
+        )
+        runtime_env.cr.commit()
+        print(f"Task created successfully with ID {task.id}")
+    except Exception as exc:
+        print(f"Failed to create task: {exc}")

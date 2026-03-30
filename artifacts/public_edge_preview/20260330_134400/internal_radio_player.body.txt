@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en"
+      data-bs-theme="">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>FraWo - Funk - AzuraCast</title>
+
+        <script type="module" src="/static/vite_dist/assets/Layout-DfqzoYy9.js"></script>
+    <script>
+    function ready(callback) {
+        if (document.readyState !== "loading") callback();
+        else document.addEventListener("DOMContentLoaded", callback);
+    }
+    </script>    <link rel="modulepreload" href="/static/vite_dist/bootstrap.esm-CX5R4MoQ.js" />    <link rel="stylesheet" href="/static/vite_dist/assets/Layout-BnjlKdFv.css" />
+<link rel="apple-touch-icon" sizes="180x180" href="/static/icons/production/180.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/static/icons/production/192.png">
+<meta name="theme-color" content="#2196F3">
+
+        <link rel="manifest" href="/public/frawo-funk/app.webmanifest">
+
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-status-bar-style" content="black">
+    <meta name="mobile-web-app-title" content="FraWo - Funk">
+
+    <meta property="og:title" content="FraWo - Funk">
+    <meta property="og:url" content="http://radio.hs27.internal">
+    <meta property="og:image" content="http://radio.hs27.internal/api/nowplaying/frawo-funk/art/1774871040.jpg">
+
+    <meta property="twitter:card" content="player">
+    <meta property="twitter:player" content="http://radio.hs27.internal/public/frawo-funk/social">
+    <meta property="twitter:player:width" content="400">
+    <meta property="twitter:player:height" content="200">
+
+    <link rel="alternate" type="application/json+oembed"
+          href="http://radio.hs27.internal/public/frawo-funk/oembed/json"/>
+    <link rel="alternate" type="text/xml+oembed"
+          href="http://radio.hs27.internal/public/frawo-funk/oembed/xml"/>
+    <link rel="stylesheet" href="/static/vite_dist/assets/SongHistory-Do-ksD99.css" />
+    <link rel="stylesheet" href="/static/vite_dist/assets/AlbumArt-CgFUTlVD.css" />
+    <link rel="stylesheet" href="/static/vite_dist/assets/Player-vOkdkvhB.css" />
+    <link rel="modulepreload" href="/static/vite_dist/vue-DdlNB9vm.js" />
+    <link rel="modulepreload" href="/static/vite_dist/SongHistory-Be4qiVvb.js" />
+    <link rel="modulepreload" href="/static/vite_dist/AlbumArt-D2xbHdLA.js" />
+    <link rel="modulepreload" href="/static/vite_dist/vendor-lightbox-syziJVtd.js" />
+    <link rel="modulepreload" href="/static/vite_dist/_plugin-vue_export-helper-DlAUqK2U.js" />
+    <link rel="modulepreload" href="/static/vite_dist/vendor-luxon-H8o3kg4f.js" />
+    <link rel="modulepreload" href="/static/vite_dist/luxon-F75Z0klY.js" />
+    <link rel="modulepreload" href="/static/vite_dist/layout-o44vqYVI.js" />
+    <link rel="modulepreload" href="/static/vite_dist/leaflet-CSudKlbU.js" />
+    <link rel="modulepreload" href="/static/vite_dist/estoolkit-Bnv2xKXY.js" />
+    <link rel="modulepreload" href="/static/vite_dist/hlsjs-Cp2x8l1r.js" />
+    <link rel="modulepreload" href="/static/vite_dist/bootstrap.esm-CX5R4MoQ.js" />
+    <link rel="modulepreload" href="/static/vite_dist/useHasModal-CbRiZckS.js" />
+    <link rel="modulepreload" href="/static/vite_dist/components-Common-Loading-ptsG8MYl.js" />
+    <link rel="modulepreload" href="/static/vite_dist/Requests-C7cUJKST.js" />
+    <link rel="modulepreload" href="/static/vite_dist/DataTable-COKDCIYw.js" />
+    <link rel="modulepreload" href="/static/vite_dist/FormMultiCheck-DmTTizRu.js" />
+    <link rel="modulepreload" href="/static/vite_dist/isArrayLike-Cv0OzazK.js" />
+    <link rel="modulepreload" href="/static/vite_dist/iteratee-pzdq9wmj.js" />
+    <link rel="modulepreload" href="/static/vite_dist/matchesProperty-DQycJOQg.js" />
+    <link rel="modulepreload" href="/static/vite_dist/cloneDeepWith-B5pUlmux.js" />
+    <link rel="modulepreload" href="/static/vite_dist/components-Form-FormCheckbox-BhUwDQPM.js" />
+    <link rel="modulepreload" href="/static/vite_dist/forEach-B0KA7hMc.js" />
+    <link rel="modulepreload" href="/static/vite_dist/isTypedArray-BoS9ubH-.js" />
+    <link rel="modulepreload" href="/static/vite_dist/some-Dllu7VoW.js" />
+    <link rel="modulepreload" href="/static/vite_dist/functions-dataTable-useApiItemProvider-DvVUsBAz.js" />
+    <link rel="modulepreload" href="/static/vite_dist/useApiRouter-BwxxqSP8.js" />
+    <link rel="modulepreload" href="/static/vite_dist/vue-router-DnNEj_Li.js" />
+    <link rel="modulepreload" href="/static/vite_dist/Player-F1DnhTM3.js" />
+    <link rel="modulepreload" href="/static/vite_dist/PlayButton-B0baCZwg.js" />
+    <link rel="modulepreload" href="/static/vite_dist/icon-ic-baseline-play-circle-Q3MIJjVj.js" />
+    <link rel="modulepreload" href="/static/vite_dist/useNowPlaying-DwlPe2iT.js" />
+    <link rel="modulepreload" href="/static/vite_dist/omitBy-DRSotVc9.js" />
+    <link rel="modulepreload" href="/static/vite_dist/getSymbolsIn-Do0Gv4t0.js" />
+    <link rel="modulepreload" href="/static/vite_dist/identity-DKeuBCMA.js" />
+    <link rel="modulepreload" href="/static/vite_dist/MuteButton-BEciV-rC.js" />
+    <link rel="modulepreload" href="/static/vite_dist/entities-PublicPlayer-DsulPVY8.js" />
+    <link rel="modulepreload" href="/static/vite_dist/Lightbox-DCv1tkRC.js" />
+    <link rel="modulepreload" href="/static/vite_dist/icon-ic-baseline-cloud-download-D10gM-lx.js" />
+    <link rel="modulepreload" href="/static/vite_dist/icon-ic-baseline-help-DUnyHXHi.js" />
+    <style>
+            </style>
+
+    <style></style></head>
+
+<body class="page-minimal page-station-public-player station-frawo-funk">
+
+    <script>
+        ready(() => {
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function () {
+                    navigator.serviceWorker.register('/public/sw.js');
+                });
+            }
+        });
+    </script>
+    <script type="module" src="/static/vite_dist/assets/PublicFullPlayer-MvmZhDZC.js"></script>
+    <script type="text/javascript">
+        let Vue_PublicFullPlayer;
+        ready(() => {
+            Vue_PublicFullPlayer = window.vueComponent('#public-radio-player', {"locale":"en_US","localeShort":"en","localeWithDashes":"en-US","timeConfig":{},"apiCsrf":null,"dashboardProps":null,"user":null,"notifications":[],"componentProps":{"stationName":"FraWo - Funk","enableRequests":true,"downloadPlaylistUri":"\/public\/frawo-funk\/playlist.pls","requests":{"requestListUri":"\/api\/station\/1\/requests","showAlbumArt":true,"customFields":[]},"player":{"nowPlayingProps":{"stationShortName":"frawo-funk","useStatic":false,"useSse":false},"offlineText":null,"showAlbumArt":true,"autoplay":false,"showHls":false,"widgetCustomization":{"primaryColor":null,"backgroundColor":null,"textColor":null,"showAlbumArt":true,"roundedCorners":false,"autoplay":false,"showVolumeControls":true,"showTrackProgress":true,"showStreamSelection":true,"showHistoryButton":true,"showRequestButton":true,"showPlaylistButton":true,"initialVolume":75,"layout":"horizontal","enablePopupPlayer":false,"continuousPlay":false,"customCss":null}}}});
+        });
+    </script>
+<script>
+    </script>
+
+<script></script>
+<div id="page-wrapper">
+    <main id="main">
+        
+<div id="public-radio-player" class="vue-component">Loading...</div>
+    </main>
+
+            <footer id="footer" class="footer-alt" role="contentinfo" aria-label="Footer">
+            Powered by <a href="https://azuracast.com/" target="_blank">AzuraCast</a>         </footer>
+    </div>
+</body>
+</html>

@@ -1,0 +1,82 @@
+{
+  "version": 1,
+  "notes": [
+    "This file is the manual evidence register for the public website release track.",
+    "Set status to passed only after visible or operator-verified release evidence exists.",
+    "Allowed statuses: pending, passed, failed, waived."
+  ],
+  "checks": [
+    {
+      "id": "website_target_system_verified",
+      "title": "The target system is explicitly decided as the public Odoo website frontend on VM220 and not a public Odoo admin path",
+      "executor": "admin_only",
+      "critical": true,
+      "status": "passed",
+      "last_verified": "2026-03-30",
+      "evidence": "VM220 serves the Odoo website on / with title Home | FraWo; direct Host-header preview on 192.168.2.22 returns apex redirect and www homepage; direct global IPv6 HTTP preview on 2a00:1e:ef80:7c01:be24:11ff:feaa:bbcc also returns the FraWo homepage."
+    },
+    {
+      "id": "website_content_verified",
+      "title": "The public Odoo-managed website content is the intended GbR release content",
+      "executor": "wolfi",
+      "critical": true,
+      "status": "pending",
+      "last_verified": "2026-03-30",
+      "evidence": "Public hold mode is active on frawo-tech.de and www.frawo-tech.de. The half-finished Odoo public page was deliberately replaced by a neutral maintenance page until CI, design, and final release content are approved."
+    },
+    {
+      "id": "public_browser_acceptance_verified",
+      "title": "Apex and www browser behavior are visibly verified for the website release scope",
+      "executor": "gemini_browser_ai",
+      "critical": true,
+      "status": "failed",
+      "last_verified": "2026-03-30",
+      "evidence": "Public hold mode is active. HTTP now serves a neutral maintenance page instead of the half-finished Odoo website. HTTPS is still not green. This is an intentional temporary public state, not a release-ready website acceptance."
+    },
+    {
+      "id": "public_radio_integration_verified",
+      "title": "The public website visibly includes the intended radio presence or player path",
+      "executor": "gemini_browser_ai",
+      "critical": true,
+      "status": "pending",
+      "last_verified": "2026-03-30",
+      "evidence": "Public hold mode is active. The radio block is intentionally not exposed on the temporary maintenance page; visible public radio integration remains pending until the real website release resumes."
+    },
+    {
+      "id": "public_mail_model_verified",
+      "title": "Public release mail model for webmaster, franz, info and noreply is verified",
+      "executor": "admin_only",
+      "critical": true,
+      "status": "pending",
+      "last_verified": "",
+      "evidence": "webmaster@frawo-tech.de and franz@frawo-tech.de are technically verified for IMAP and SMTP AUTH; public release decision for info@frawo-tech.de and noreply@frawo-tech.de is still open."
+    },
+    {
+      "id": "tls_automation_verified",
+      "title": "The chosen public TLS automation path is configured and documented",
+      "executor": "admin_only",
+      "critical": true,
+      "status": "pending",
+      "last_verified": "",
+      "evidence": "Caddy on VM220 is active on 80/443 and ACME now hits the cutover target, but certificate issuance still fails because the public IPv4 path 92.211.33.54:80/443 is not open. IPv6 HTTP is live; router forwarding for IPv4 remains the concrete blocker."
+    },
+    {
+      "id": "spf_dkim_dmarc_verified",
+      "title": "SPF, DKIM and DMARC are all intentionally configured for public release",
+      "executor": "admin_only",
+      "critical": true,
+      "status": "pending",
+      "last_verified": "",
+      "evidence": "MX and DMARC are visible in the live checks; SPF is currently not visible and DKIM is not yet documented as verified for release."
+    },
+    {
+      "id": "rollback_runbook_verified",
+      "title": "Rollback for DNS, TLS and host-switch is complete and usable",
+      "executor": "admin_only",
+      "critical": true,
+      "status": "pending",
+      "last_verified": "",
+      "evidence": ""
+    }
+  ]
+}

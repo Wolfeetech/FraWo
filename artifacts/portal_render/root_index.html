@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>FraWo Arbeitsstart</title>
+  <title>Arbeitsportal</title>
   <style>
     :root {
       --glass-bg: rgba(20, 25, 33, 0.68);
@@ -560,44 +560,41 @@
 
     <section class="hero">
       <article class="hero-card">
-        <span class="hero-kicker">FraWo Arbeitsstart</span>
+        <span class="hero-kicker">FraWo</span>
         <h1>Arbeitsportal</h1>
-        <p>
-          Direkter Einstieg in die Werkzeuge, die heute wirklich genutzt werden.
-          Keine Status-Simulation und keine Linkwuste, sondern der reduzierte
-          MVP-Pfad fuer Betrieb und Zusammenarbeit.
-        </p>
+        <p>Direktzugriff auf die Kernsysteme.</p>
         <div class="hero-note">
-          <span class="hero-pill">Vault, Nextcloud, Paperless, Odoo</span>
-          <span class="hero-pill">Franz ist freigeschaltet</span>
-          <span class="hero-pill">Login bleibt app-seitig</span>
+          <span class="hero-pill">Nextcloud</span>
+          <span class="hero-pill">Paperless</span>
+          <span class="hero-pill">Odoo</span>
+          <span class="hero-pill">Vault</span>
         </div>
       </article>
 
       <aside class="status-card">
         <div class="section-head">
-          <h2>MVP Snapshot</h2>
-          <small>Live aus status.json</small>
+          <h2>Status</h2>
+          <small>Live</small>
         </div>
         <div class="metrics">
           <div class="metric">
             <span class="metric-label">MVP Zustand</span>
             <span class="metric-value" id="platform-core">Laedt</span>
-            <span class="metric-note">Nur Portal, Vault und Business-Apps</span>
+            <span class="metric-note">Portal und Kernsysteme</span>
           </div>
           <div class="metric">
             <span class="metric-label">Kernpfade gesund</span>
             <span class="metric-value" id="healthy-count">-</span>
-            <span class="metric-note">Status der aktuellen MVP-Ziele</span>
+            <span class="metric-note">Aktive Kernsysteme</span>
           </div>
           <div class="metric">
-            <span class="metric-label">Letztes Snapshot</span>
+            <span class="metric-label">Letzter Feed</span>
             <span class="metric-value" id="snapshot-time">Warte</span>
-            <span class="metric-note">Zeitpunkt des zuletzt gelieferten Feeds</span>
+            <span class="metric-note">Statusfeed</span>
           </div>
           <div class="metric">
-            <span class="metric-label">Naechster Block</span>
-            <span class="metric-value">Erweiterung</span>
+            <span class="metric-label">Ausserhalb</span>
+            <span class="metric-value">Spaeter</span>
             <span class="metric-note">Media, Radio, HA, Surface, PBS</span>
           </div>
         </div>
@@ -612,7 +609,7 @@
         <input class="search-input" type="text" name="query" placeholder="Suchen in Paperless, z. B. Gewerbeanmeldung" autocomplete="off" autofocus>
         <button class="search-btn" type="submit">Suchen</button>
       </form>
-      <div class="search-note">Direkte Aktion fuer bestehende Dokumente. Weitere Arbeitsaktionen folgen erst nach sauberem Auth-Pfad.</div>
+      <div class="search-note">Paperless-Suche.</div>
     </section>
 
     <section class="app-grid" aria-label="Direktlinks">
@@ -626,7 +623,7 @@
         <div class="app-meta">
           <span class="app-group">Arbeit</span>
           <span class="app-title">Nextcloud</span>
-          <span class="app-hint">Dateien, Zusammenarbeit und gemeinsame Dokumente</span>
+          <span class="app-hint">Dateien und Zusammenarbeit</span>
         </div>
         <div class="app-url">cloud.hs27.internal</div>
       </a>
@@ -640,7 +637,7 @@
         <div class="app-meta">
           <span class="app-group">Arbeit</span>
           <span class="app-title">Paperless</span>
-          <span class="app-hint">Dokumentenarchiv und OCR-Workflow</span>
+          <span class="app-hint">Archiv und OCR</span>
         </div>
         <div class="app-url">paperless.hs27.internal</div>
       </a>
@@ -654,7 +651,7 @@
         <div class="app-meta">
           <span class="app-group">Arbeit</span>
           <span class="app-title">Odoo</span>
-          <span class="app-hint">ERP, CRM und betriebliche Arbeitsflaeche</span>
+          <span class="app-hint">Betrieb und Kunden</span>
         </div>
         <div class="app-url">odoo.hs27.internal/web/login</div>
       </a>
@@ -668,7 +665,7 @@
         <div class="app-meta">
           <span class="app-group">Betrieb</span>
           <span class="app-title">Franz Start</span>
-          <span class="app-hint">Vorbereiteter Einstieg fuer Franz auf Surface Laptop und iPhone</span>
+          <span class="app-hint">Einstieg fuer Franz</span>
         </div>
         <div class="app-url">portal.hs27.internal/franz/</div>
       </a>
@@ -682,7 +679,7 @@
         <div class="app-meta">
           <span class="app-group">Betrieb</span>
           <span class="app-title">Vault</span>
-          <span class="app-hint">Gemeinsamer Passworttresor fuer den aktuellen MVP</span>
+          <span class="app-hint">Passworttresor</span>
         </div>
         <div class="app-url">vault.hs27.internal</div>
       </a>
@@ -691,18 +688,17 @@
 
     <section class="panel">
       <div class="section-head">
-        <h2>Live-Status des MVP</h2>
-        <small>Warnungen bleiben sichtbar</small>
+        <h2>Status</h2>
+        <small>Kernsysteme</small>
       </div>
       <div id="service-health" class="service-grid"></div>
     </section>
 
     <section class="panel">
       <div class="section-head">
-        <h2>Bewusst ausserhalb des Startbilds</h2>
-        <small>Naechste Ausbaustufe</small>
+        <h2>Nicht Teil des MVP</h2>
+        <small>Spaeter</small>
       </div>
-      <p>Erweiterungsthemen bleiben draussen, bis der aktuelle Arbeitskern sichtbar stabil laeuft.</p>
       <ul>
         <li>Media, Radio und TV-spezifische Pfade</li>
         <li>Home Assistant im taeglichen Startbild</li>
