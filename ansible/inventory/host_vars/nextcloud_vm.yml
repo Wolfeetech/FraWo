@@ -3,6 +3,7 @@ compose_stack_name: nextcloud
 compose_service_name: homeserver-compose-nextcloud.service
 compose_template: stacks/nextcloud/docker-compose.yml.j2
 compose_env_template: stacks/nextcloud/stack.env.j2
+compose_http_bind: 192.168.2.21
 compose_http_port: 80
 nextcloud_php_memory_limit: 512M
 nextcloud_php_upload_limit: 10G

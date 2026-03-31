@@ -118,6 +118,16 @@
 
 - `release-mvp-gate` is currently `BLOCKED`, but only because manual evidence is still pending.
 - Full `production-gate` is `BLOCKED`.
+- The public website release is not currently safe to call live:
+  - on `2026-03-30`, `VM220` was found directly reachable over global IPv6 on `8069` (`Odoo /web/login`) and on `22` (`SSH`)
+  - both direct public paths were closed the same night
+  - on `2026-03-31`, additional direct global-IPv6 exposures were found and closed on:
+    - `VM200 nextcloud`: `22`, `80`
+    - `VM230 paperless`: `22`, `8000`
+    - `CT120 vaultwarden`: `22`, `8080`
+    - `CT110 storage-node`: `22`, `139`, `445`
+  - latest internal public-IPv6 exposure audit: `artifacts/public_ipv6_exposure_audit/latest_report.md`
+  - current public `80/443` on `VM220` are not serving the old hold path anymore, so the public website track is effectively paused rather than partially live
 - `PBS` is not operationally green:
   - `VM240` is stopped
   - datastore is not green

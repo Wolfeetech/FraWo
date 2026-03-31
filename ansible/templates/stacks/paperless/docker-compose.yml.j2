@@ -21,7 +21,7 @@ services:
       - gotenberg
       - tika
     ports:
-      - "{{ compose_http_port }}:8000"
+      - "{{ compose_http_bind | default('0.0.0.0') }}:{{ compose_http_port }}:8000"
     env_file:
       - stack.env
     volumes:

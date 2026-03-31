@@ -7,10 +7,10 @@
       "label": "Nextcloud Eingang",
       "group": "Dokumente",
       "audience": "shared_surface",
-      "target_url": "http://cloud.hs27.internal/apps/mail/setup",
-      "target_kind": "mail_setup",
+      "target_url": "http://cloud.hs27.internal/apps/files/files?dir=/Paperless/Eingang",
+      "target_kind": "folder_upload",
       "requires_login": true,
-      "status": "verify",
+      "status": "ready",
       "verified": true
     },
     {
@@ -51,11 +51,11 @@
       "label": "Odoo Kalender",
       "group": "Odoo",
       "audience": "shared_surface",
-      "target_url": "",
-      "target_kind": "unknown_route",
+      "target_url": "http://odoo.hs27.internal/web#action=517&model=project.task&view_type=calendar&menu_id=357",
+      "target_kind": "task_calendar_candidate",
       "requires_login": true,
-      "status": "backlog",
-      "verified": false
+      "status": "ready",
+      "verified": true
     },
     {
       "id": "radio_listen",
@@ -65,8 +65,8 @@
       "target_url": "http://radio.hs27.internal/public/frawo-funk",
       "target_kind": "player",
       "requires_login": false,
-      "status": "verify",
-      "verified": false
+      "status": "ready",
+      "verified": true
     },
     {
       "id": "radio_control",

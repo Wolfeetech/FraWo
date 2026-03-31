@@ -22,6 +22,10 @@ Wichtig:
   - `SIGNUPS_ALLOWED=false`
   - `INVITATIONS_ALLOWED=true`
   - `ADMIN_TOKEN` liegt live nur noch als `Argon2id`-Hash vor
+- Stand `2026-03-31` zusaetzlich:
+  - der HTTP-Bind ist bewusst auf `192.168.2.26:8080` begrenzt
+  - direkter `SSH`-Zugang in `CT120` ist bewusst deaktiviert
+  - der nachhaltige Reapply-Pfad liegt jetzt in `scripts/apply_vaultwarden_network_baseline.py`
 
 ## Was bereits erledigt ist
 
@@ -80,3 +84,15 @@ Siehe:
 2. zuerst `STRATO`- und Core-Infra-Zugaenge einpflegen
 3. danach App-Zugaenge aus dem extern archivierten Altregister in `Vaultwarden` uebernehmen und nur noch das Referenzregister im Workspace behalten
 4. erst dann Klartext-Passwoerter in Markdown abbauen
+
+## Netzwerk- und Rebuild-Standard
+
+- `Vaultwarden` ist intern nur ueber `https://vault.hs27.internal` produktiv
+- der Bootstrap-HTTP-Pfad `http://192.168.2.26:8080` bleibt nur interner Technikpfad
+- `CT120` soll nicht wieder mit offenem Direkt-`SSH` oder offenem Public-HTTP auftauchen
+- der Repo-Standard fuer Rebuild oder Drift-Korrektur ist:
+  - `python scripts/apply_vaultwarden_network_baseline.py`
+- der Health-Nachweis danach ist:
+  - `http://192.168.2.26:8080/alive`
+- der aktuelle Public-Re-Audit fuer diesen Host laeuft ueber:
+  - `python scripts/public_ipv6_exposure_audit.py`

@@ -6,7 +6,8 @@ Dieses Dokument ist die Schritt-fuer-Schritt-Anleitung fuer Franz, um sein iPhon
 
 - [ ] iPhone im WLAN oder LTE
 - [ ] Zugang zum Apple App Store
-- [ ] Franz-Passwort fuer `Vaultwarden` (falls bekannt) oder Zugang zur `frawo.home.arpa` DNS-Zone (falls spaeter verfuegbar).
+- [ ] Zugang zu `Tailscale`
+- [ ] Franz-Passwort fuer `Vaultwarden` falls beim ersten Login benoetigt
 
 ## 2. Tailscale einrichten (Mobil-Netzwerk)
 
@@ -17,21 +18,21 @@ Tailscale ist unser privates Tunnel-Netzwerk. Es macht den Homeserver von uebera
 3. [ ] Bestaetige die VPN-Konfiguration auf dem iPhone.
 4. [ ] Achte darauf, dass der Schalter oben links auf `Connected` steht.
 
-3. [ ] Zertifikat fuer HTTPS installieren (Voraussetzung fuer Apps)
-   - Oeffne `http://100.99.206.128:8447/frawo-ca.crt` in Safari.
-   - Befolge die Schritte in: `DOCS/MOBILE_HTTPS_TRUST.md` (iOS Sektion).
-   - *Wichtig:* Der Schalter unter Info -> Zertifikatsvertrauenseinstellungen muss umgelegt werden!
+Hinweis:
 
-## 4. Das Franz-Portal aufrufen
+- Der aktuelle MVP-Mobilpfad fuer `Franz` nutzt den direkten Tailscale-Start unter `http://100.99.206.128:8447/franz/`.
+- Fuer diesen aktuellen MVP-Pfad ist kein zusaetzlicher Zertifikatsschritt noetig.
+
+## 3. Das Franz-Portal aufrufen
 
 Unser zentraler Einstiegspunkt ist das Portal.
 
 1. [ ] Oeffne **Safari** auf dem iPhone.
 2. [ ] Gib die Adresse: `http://100.99.206.128:8447/franz/` ein.
-   - *Hinweis:* Dies ist die interne IP der Toolbox im Tailnet. Spaeter wird auch `portal.hs27.internal` funktionieren.
+   - *Hinweis:* Dies ist der aktuelle mobile MVP-Pfad ueber das Tailnet.
 3. [ ] Klicke in Safari auf das **Teilen-Icon** (das Quadrat mit dem Pfeil nach oben).
-4. [ ] Waehle **"Zum Home-Bildschirm"** (Add to Home Screen).
-5. [ ] Gib als Name **"FraWo Franz Connect"** ein und klicke auf `Hinzufuegen`.
+4. [ ] Waehle **"Zum Home-Bildschirm"**.
+5. [ ] Gib als Name **"Franz Mobil Start"** ein und klicke auf `Hinzufuegen`.
 
 ## 4. Apps nutzen
 
@@ -41,7 +42,15 @@ Du hast nun ein Icon auf deinem iPhone-Startbildschirm. Wenn du darauf klickst, 
 - **Paperless:** (GbR Beleg-Archiv) -> Logge dich ein, um Belege zu suchen.
 - **Odoo:** (Rechnungen und ERP) -> Odoo-Login unter `/web/login`.
 
-## 5. Wenn es nicht klappt
+## 5. Sichtbare Abnahme fuer den MVP
+
+- [ ] `Franz Mobil Start` laedt sichtbar auf dem iPhone
+- [ ] `Nextcloud` ist vom mobilen Startpfad sichtbar erreichbar
+- [ ] `Paperless` ist vom mobilen Startpfad sichtbar erreichbar
+- [ ] `Odoo` ist vom mobilen Startpfad sichtbar erreichbar
+- [ ] `Vaultwarden` ist vom mobilen Startpfad sichtbar erreichbar
+
+## 6. Wenn es nicht klappt
 
 1. [ ] Pruefe, ob die Tailscale App gruen (`Connected`) leuchtet.
 2. [ ] Pruefe, ob du WLAN oder eine gute LTE-Verbindung hast.

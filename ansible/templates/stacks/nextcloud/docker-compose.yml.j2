@@ -17,7 +17,7 @@ services:
     image: nextcloud:apache
     restart: always
     ports:
-      - "{{ compose_http_port }}:80"
+      - "{{ compose_http_bind | default('0.0.0.0') }}:{{ compose_http_port }}:80"
     env_file:
       - stack.env
     volumes:

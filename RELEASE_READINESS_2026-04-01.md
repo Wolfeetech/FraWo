@@ -66,18 +66,24 @@ Vor externem Release muessen gruen sein:
 - letzter Zielpfad-Preview: `artifacts/public_edge_preview/20260330_134359/report.md` = `passed`
 - `frawo-tech.de` loest aktuell oeffentlich auf `92.211.33.54` und `2a00:1e:ef80:7c01:be24:11ff:feaa:bbcc` auf.
 - `www.frawo-tech.de` folgt aktuell sauber auf `frawo-tech.de`.
-- HTTP auf Apex und `www` liefert aktuell bewusst die neutrale Hold-Seite.
-- HTTPS auf Apex und `www` faellt im aktuellen Live-Check mit `TLSV1_ALERT_INTERNAL_ERROR`.
-- sichtbare Browser-Abnahme bestaetigt: HTTPS auf Apex und `www` endet aktuell im Browser mit `ERR_SSL_PROTOCOL_ERROR`.
+- der bisherige Hold-Pfad auf `VM220` ist nach dem Odoo-Hardening aktuell nicht mehr live; der Public-Release ist damit gerade klar pausiert statt halb online.
+- HTTPS auf Apex und `www` ist damit weiterhin nicht releasefaehig und bleibt blockiert.
 - `DMARC` ist sichtbar (`p=reject`), ein `SPF`-Record ist im aktuellen Live-Check nicht sichtbar.
 - `VM220` liefert die gewuenschte Odoo-Website im Zielpfad jetzt bereits intern:
   - Host `www.frawo-tech.de` auf `192.168.2.22` -> `200 OK`, Titel `Home | FraWo`
   - Host `frawo-tech.de` auf `192.168.2.22` -> `308` auf `https://www.frawo-tech.de/`
   - Host `www.frawo-tech.de` auf `/radio/public/frawo-funk` -> `200 OK`, Titel `FraWo - Funk - AzuraCast`
-- die globale IPv6 von `VM220` (`2a00:1e:ef80:7c01:be24:11ff:feaa:bbcc`) liefert fuer Host `www.frawo-tech.de` bereits `200 OK` auf HTTP.
-- `public-dualstack-edge-check` ist jetzt explizit rot: `IPv6` auf Apex und `www` Port `80` ist gruen, `IPv4` auf Apex und `www` Port `80` ist weiterhin nicht erreichbar.
-- die halbfertige Odoo-Oeffentlichkeit ist bewusst wieder entfernt; intern bleibt `odoo.hs27.internal` unveraendert auf der echten Odoo-Seite.
-- Caddy auf `VM220` ist auf `80/443` live und ACME trifft jetzt den richtigen Zielpfad, scheitert aber aktuell mit `92.211.33.54: Connection refused`; der konkrete Restblocker ist damit der fehlende IPv4-Pfad fuer `80/443`.
+- die direkte Odoo-Exposition wurde am `2026-03-30` zusaetzlich gehaertet:
+  - `8069` bindet jetzt nur noch auf `192.168.2.22`
+  - direkter externer Zugriff auf `http://[2a00:1e:ef80:7c01:be24:11ff:feaa:bbcc]:8069/web/login` ist nicht mehr moeglich
+  - `SSH/22` ist ebenfalls nicht mehr ueber die globale IPv6 erreichbar
+- zusaetzliche direkte Public-IPv6-Expositionen wurden am `2026-03-31` ebenfalls geschlossen:
+  - `nextcloud`: `22`, `80`
+  - `paperless`: `22`, `8000`
+  - `vaultwarden`: `22`, `8080`
+  - `storage-node`: `22`, `139`, `445`
+- aktueller Nachweis dafuer: `artifacts/public_ipv6_exposure_audit/latest_report.md` = `open_checks=0`
+- der aktuelle Website-Track braucht vor Wiederaufnahme einen bewussten, gehaerteten Public-Edge-Pfad statt eines zufaelligen Mitlaufens auf `VM220`.
 - der Website-Cutover haengt aktuell nicht an `UCG-Ultra`; der geplante spaetere Gateway-Cutover bleibt wegen fehlendem Ubiquiti-2FA-Zugriff separat blockiert.
 - Website-Audit und -Gate laufen jetzt direkt ueber native Python-Skripte statt ueber den kaputten WSL-Bash-Pfad.
 

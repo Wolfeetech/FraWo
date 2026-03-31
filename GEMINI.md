@@ -13,6 +13,82 @@
 - Desktop-Shortcut: `~/Desktop/Homeserver 2027 Workspace`
 - Die UUID-basierte Antigravity-Ordnerstruktur bleibt technisch erhalten; der Alias ist die offizielle Arbeitsbezeichnung.
 
+## Aktuelles Lane-Modell
+
+Dieses Dokument beschreibt ab jetzt nur noch delegierbare Arbeit im aktuellen Lane-Modell:
+
+- `Lane A: MVP Closeout` -> `active`
+- `Lane B: Website/Public Hold` -> `watch`
+- `Lane C: Security/PBS/Infra` -> `watch`
+- `Lane D: Stockenweiler` -> `watch`
+- `Lane E: Radio/Media` -> `hold`
+
+Regeln:
+
+- Nur `Lane A` darf aktiv auf Abschluss gezogen werden.
+- `Lane B` bis `Lane E` bleiben sichtbar, aber nicht gleichrangig.
+- Keine neuen spezialisierten Prompt-Dateien fuer Einzelfaelle.
+- Keine zweite Parallelplanung in zufaelligen Markdown-Dateien.
+- Jede delegierte Aufgabe muss genau einer Lane zugeordnet sein.
+
+## Aktive Delegierbare Jobs
+
+### `device_rollout_verified`
+
+- `lane`: `Lane A: MVP Closeout`
+- `goal`: Sichtbare Endnutzerabnahme fuer Franz `Surface Laptop` und `iPhone`.
+- `done_when`: Beide Geraete sind mit den erforderlichen Direktpfaden und dem echten Alltagspfad sichtbar bestaetigt.
+- `blocked_by`: frischer sichtbarer Geraetenachweis fehlt
+- `next_operator_action`: Die Geraete im echten Alltagspfad pruefen oder vorfuehren.
+- `next_codex_action`: Nach dem Nachweis `scripts/prove_device_rollout.ps1` ausfuehren, damit MVP-Gate und AI-Handoff automatisch nachziehen.
+
+### `website_public_hold`
+
+- `lane`: `Lane B: Website/Public Hold`
+- `goal`: Wahrheitspfad und Blocker fuer die oeffentliche Website sichtbar halten, ohne aktiven Release.
+- `done_when`: `Lane A` ist geschlossen und ein expliziter Public-Edge-Resume beschlossen ist.
+- `blocked_by`: `Lane A` ist noch aktiv
+- `next_operator_action`: Keine neue Go-Live-Arbeit.
+- `next_codex_action`: Nur Wahrheitspfad, Blocker und Sicherheitslage aktuell halten.
+
+### `stockenweiler_watch`
+
+- `lane`: `Lane D: Stockenweiler`
+- `goal`: Inventar, Supportmodell und Remote-Zugriff sichtbar halten, aber keinen Live-Rollout starten.
+- `done_when`: `Lane A` ist geschlossen und Stockenweiler wird aktiv priorisiert.
+- `blocked_by`: `Lane A` ist noch aktiv; `UCG`-2FA weiter blockiert
+- `next_operator_action`: Nur neue echte Geraete- oder Providerfakten liefern.
+- `next_codex_action`: Inventar und Supportmodell pflegen, aber keinen Rollout starten.
+
+## Nicht Delegierbar Jetzt
+
+### `vaultwarden_recovery_material_verified`
+
+- `lane`: `Lane A: MVP Closeout`
+- `goal`: Zwei getrennte Offline-Kopien des Recovery-Materials.
+- `done_when`: Frischer physischer Nachweis liegt vor.
+- `blocked_by`: physischer Nachweis ist operatorgebunden
+- `next_operator_action`: Recovery-Material offline in zwei getrennten Kopien pruefen oder anlegen.
+- `next_codex_action`: Danach Gate und Handoff neu ziehen.
+
+### `security_pbs_infra_watch`
+
+- `lane`: `Lane C: Security/PBS/Infra`
+- `goal`: Hardening und Reapply-Pfade gruen halten, ohne einen neuen Zertifizierungsblock zu starten.
+- `done_when`: `Lane A` ist geschlossen und PBS/Infra bewusst wieder aktiv wird.
+- `blocked_by`: `Lane A` ist noch aktiv
+- `next_operator_action`: Nur bei echter Regression eingreifen.
+- `next_codex_action`: Nur Regressionen schliessen und Reapply-Pfade aktuell halten.
+
+### `radio_media_hold`
+
+- `lane`: `Lane E: Radio/Media`
+- `goal`: Betrieb erhalten, aber keinen Ausbau starten.
+- `done_when`: `Lane A` ist geschlossen und es gibt einen expliziten Ausbauentscheid.
+- `blocked_by`: `Lane A` ist noch aktiv
+- `next_operator_action`: Nur Breakage melden.
+- `next_codex_action`: Betriebsfaehigkeit halten, keine Scope-Erweiterung.
+
 ## Gemeinsame Zusammenarbeit mit Codex
 
 - Gemini und Codex arbeiten aus demselben Workspace und benutzen dieselben kanonischen Dateien.
@@ -67,15 +143,49 @@
     - `Odoo`
     - `Radio`
   - erste sichtbare Route-Matrix ist jetzt vorhanden:
-    - `Paperless`, `Odoo Aufgaben`, `Odoo Projekte`, `Radio Control` = `ready`
-    - `Nextcloud Eingang`, `Radio hoeren` = `verify`
-    - `Odoo Kalender` = `backlog`
+    - `Nextcloud Eingang`, `Paperless`, `Odoo Aufgaben`, `Odoo Projekte`, `Odoo Kalender`, `Radio hoeren`, `Radio Control` = `ready`
+  - die aktuelle Touch-Abnahme ist ebenfalls gruen:
+    - sichtbar `Nextcloud Eingang`, `Paperless`, `Odoo Aufgaben`, `Odoo Projekte`, `Odoo Kalender`, `Radio hoeren`, `Radio Control`
+    - keine Persona-Karten
+    - kein Dashboard-Rest
+    - die live servierte Datei auf der Surface entspricht dem aktuellen Render-Stand
   - keine Persona-Karten
   - kein grosser Statusblock
   - keine sichtbaren `Stockenweiler`-Aktionen in V1
   - Launcher-Minimalsatz live:
     - kiosk: `FRAWO Control`, `Bildschirmtastatur`
     - admin: `FRAWO Control`, `Bildschirmtastatur`, `Radio Control`, `AnyDesk`, `StudioPC Remote`
+- StudioPC-Operatorzugang vom letzten echten Live-Lauf:
+  - dedizierter lokaler Ops-Key: `~/.ssh/hs27_ops_ed25519`
+  - Windows-native Repair-Pfad: `scripts/repair_studiopc_operator_access.py`
+  - reale Alias-Zugaenge funktionieren jetzt:
+    - `hs27-proxmox`
+    - `hs27-toolbox`
+    - `hs27-nextcloud`
+    - `hs27-odoo`
+    - `hs27-paperless`
+    - `hs27-surface`
+  - live Browser-Zugriff auf das loopback-only Surface-Portal ist jetzt ebenfalls reproduzierbar:
+    - SSH-Alias `hs27-surface-portal`
+    - lokaler Zielpfad `http://127.0.0.1:27827/`
+    - Helper `scripts/open_surface_portal_tunnel.ps1`
+    - Verifikation `powershell -ExecutionPolicy Bypass -File .\\scripts\\open_surface_portal_tunnel.ps1 -Verify`
+    - letzter echte Check: `HTTP 200`, Titel `FraWo Control`
+  - die aktuelle Ursache fuer zaehe Surface-Ladevorgaenge ist ebenfalls beseitigt:
+    - vorher zwei aktive Uplinks mit konkurrierendem Default/DNS:
+      - Ethernet `192.168.1.194 -> 192.168.1.1`
+      - WLAN `192.168.2.x -> 192.168.2.1`
+    - jetzt:
+      - Ethernet nur noch Subnetzpfad ohne Default und ohne DNS
+      - WLAN `Frawo-Direkt` ist der einzige Default-Pfad
+    - letzter echte Live-Check danach:
+      - `portal` ~`0.015s`
+      - `cloud` ~`0.036s`
+      - `paperless` ~`0.017s`
+      - `odoo` ~`0.055s`
+      - `radio` ~`0.088s`
+      - `vault` ~`0.039s`
+  - `pbs` ist davon aktuell ausgenommen, weil `VM240` gestoppt ist
 - Radio-Stand vom letzten echten Live-Lauf:
   - `make radio-ops-check` ist gruen
   - `radio.hs27.internal` und `radio.hs27.internal/login` sind intern erreichbar
@@ -277,24 +387,11 @@
 
 ## Aktuelle Gemini-Jobs
 
-- Browser-Job 1:
-  - pruefe fuer `Surface Control V1` die sichtbare Route-Matrix
-  - Zielmenge:
-    - `Nextcloud Eingang`
-    - `Paperless`
-    - `Odoo Aufgaben`
-    - `Odoo Projekte`
-    - `Odoo Kalender`
-    - `Radio hoeren`
-    - `Radio Control`
-  - Rueckgabeformat:
-    - `Aktion -> finale URL -> Login-Verhalten -> ready|verify|backlog`
-- Browser-Job 2:
-  - pruefe nach dem Deploy die Surface-Seite im Touch-Viewport
-  - bestaetige:
-    - nur drei Gruppen sichtbar
-    - keine Persona-Karten
-    - kein grosser Statusblock
-    - Bedienung schnell und klar
-- Browser-Job 3:
-  - oeffentliche Website nur dann wieder aufnehmen, wenn Codex den Hold-Modus bewusst aufhebt
+- aktuell kein aktiver Pflicht-Gemini-Job im MVP-Kern
+- die sichtbare MVP-Abnahme fuer `wolf_login_walkthrough` und `franz_login_walkthrough` ist am `2026-03-30` abgeschlossen
+- verbleibende MVP-Blocker sind derzeit operator- oder physisch gebunden:
+  - `strato_mail_model_verified`
+  - `device_rollout_verified`
+  - `vaultwarden_recovery_material_verified`
+- oeffentliche Website bleibt im Hold-Modus
+- keinen weiteren Website-Browsertrack starten, bis Codex den Hold bewusst aufhebt

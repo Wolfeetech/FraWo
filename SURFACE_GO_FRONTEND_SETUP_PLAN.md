@@ -20,14 +20,22 @@ This document is the canonical rebuild and post-install runbook for the shared S
   - GNOME idle is `0` and both AC and battery sleep policy are now `nothing`
   - root-level sleep target masking is complete
   - a remote reboot came back cleanly over SSH
-  - the local portal is now served via `http://127.0.0.1:17827`
-  - the current working launcher is `FRAWO Control`
-  - the browser fallback is currently `epiphany-browser`
-  - visual acceptance has been reached in the live `frawo` desktop session
-  - `Surface Control V1` is now installed live as the local action console
-  - the kiosk desktop now exposes only `FRAWO Control` and `Bildschirmtastatur`
-  - the admin desktop now exposes only `FRAWO Control`, `Bildschirmtastatur`, `Radio Control`, `AnyDesk` and `StudioPC Remote`
-  - local user `frontend` is operational again with an explicitly set local password path
+- the local portal is now served via `http://127.0.0.1:17827`
+- the current working launcher is `FRAWO Control`
+- the browser fallback is currently `epiphany-browser`
+- visual acceptance has been reached in the live `frawo` desktop session
+- `Surface Control V1` is now installed live as the local action console
+- the kiosk desktop now exposes only `FRAWO Control` and `Bildschirmtastatur`
+- the admin desktop now exposes only `FRAWO Control`, `Bildschirmtastatur`, `Radio Control`, `AnyDesk` and `StudioPC Remote`
+- local user `frontend` is operational again with an explicitly set local password path
+- live browser verification from `StudioPC` is now also reproducible:
+  - SSH alias `hs27-surface-portal`
+  - local forward `127.0.0.1:27827 -> 127.0.0.1:17827`
+  - helper `scripts/open_surface_portal_tunnel.ps1 -Verify`
+- current load-path hardening is now also applied:
+  - `Kabelgebundene Verbindung 1` on `192.168.1.x` no longer provides default route or DNS
+  - `Frawo-Direkt` on `192.168.2.x` is now the primary default route with metric `100`
+  - this removed the mixed uplink/DNS condition that caused intermittent slow loading on the Surface
 
 ## Target Standard
 
@@ -136,14 +144,20 @@ Portal source of truth:
   - `Odoo`
   - `Radio`
 - the current browser-proven visible action set is now reduced to:
+  - `Nextcloud Eingang`
   - `Paperless`
   - `Odoo Aufgaben`
   - `Odoo Projekte`
+  - `Odoo Kalender`
+  - `Radio hoeren`
   - `Radio Control`
-- the following actions stay hidden until they are really fixed:
-  - `Nextcloud Eingang` currently lands in Nextcloud Mail setup
-  - `Odoo Kalender` currently has no working route
-  - `Radio hoeren` currently falls back to login instead of a public player
+- touch acceptance is now green for the current seven-action layout:
+  - `Nextcloud Eingang` is now promoted via the canonical `files/files?dir=/Paperless/Eingang` route
+  - `Odoo Kalender` is now promoted via the verified `action=517` calendar route
+  - no persona cards
+  - no old dashboard residue
+  - no visible `Stockenweiler` area
+  - the live file on the Surface matches the current rendered portal content
 - no persona cards
 - no full service wall
 - no fake `Scannen` button until a real ingest path exists

@@ -290,15 +290,15 @@
   {% set ready_actions = all_actions | selectattr('status', 'equalto', 'ready') | list %}
   {% set groups = [
     {'id': 'Dokumente', 'title': 'Dokumente', 'subtitle': 'Eingang und Archiv ohne Zusatzballast.'},
-    {'id': 'Odoo', 'title': 'Odoo', 'subtitle': 'Aufgaben, Projekte und Kalender auf einem Startpunkt.'},
+    {'id': 'Odoo', 'title': 'Odoo', 'subtitle': 'Aufgaben, Projekte und Kalender ohne Umwege.'},
     {'id': 'Radio', 'title': 'Radio', 'subtitle': 'Player und Steuerung fuer den internen Radiopfad.'}
   ] %}
   {% set action_meta = {
-    'nextcloud_inbox': {'code': 'NC', 'note': 'Mail-Setup noch offen'},
+    'nextcloud_inbox': {'code': 'NC', 'note': 'Eingangsordner direkt'},
     'paperless_archive': {'code': 'PL', 'note': 'Archiv direkt'},
     'odoo_tasks': {'code': 'OD', 'note': 'Taskboard direkt'},
     'odoo_projects': {'code': 'OD', 'note': 'Projektboard direkt'},
-    'odoo_calendar': {'code': 'OD', 'note': 'Kalenderpfad noch offen'},
+    'odoo_calendar': {'code': 'OD', 'note': 'Kalender direkt'},
     'radio_listen': {'code': 'RA', 'note': 'FraWo-Funk direkt hoeren'},
     'radio_control': {'code': 'RC', 'note': 'AzuraCast Bedienung'}
   } %}

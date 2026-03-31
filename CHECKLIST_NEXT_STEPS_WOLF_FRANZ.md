@@ -52,10 +52,10 @@ Keine Grundsatzentscheidungen hier pflegen. Detailregeln stehen im Wiki-Kanon.
 
 ### Franz
 
-- [ ] Zugriff auf `FraWo` erfolgreich
-- [ ] Login in `Nextcloud`
-- [ ] Login in `Paperless`
-- [ ] Login in `Odoo`
+- [x] Zugriff auf `FraWo` erfolgreich
+- [x] Login in `Nextcloud`
+- [x] Login in `Paperless`
+- [x] Login in `Odoo`
 - [ ] Login in `Jellyfin`
 - [x] Franz-Startseite `portal.hs27.internal/franz/` sichtbar gegen den neuen MVP-Stand pruefen
 - [ ] Surface-Laptop-Shortcuts mit `bootstrap_franz_surface_shortcuts.ps1` ausrollen
@@ -78,6 +78,7 @@ Keine Grundsatzentscheidungen hier pflegen. Detailregeln stehen im Wiki-Kanon.
 
 ## 4. Abschluss Fuer Diesen Block
 
+- [ ] `device_rollout_verified` sichtbar abschliessen
 - [ ] Offline-Recovery-Zettel fuer `Vaultwarden` wirklich ausfuellen
 - [ ] Zweite getrennte Offline-Kopie fuer das Master-Passwort anlegen
 - [ ] `ACCESS_REGISTER_VAULTWARDEN_REFERENCES.md` als neue Arbeitsreferenz bestaetigen

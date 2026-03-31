@@ -55,8 +55,9 @@ Diese Dateien bleiben nur so lange bestehen, bis ihr Inhalt sauber in den Wiki-K
 - `BUSINESS_MVP_PROMPT.md` oder `WEBSITE_RELEASE_PROMPT.md` oder `FULL_CERTIFICATION_PROMPT.md` je nach Arbeitsmodus
 - `GEMINI_BROWSER_MVP_ACCEPTANCE_PROMPT.md` fuer die offenen Browser-Abnahmen im MVP
 - `AI_BOOTSTRAP_CONTEXT.md`
+- `AI_SERVER_HANDOFF.md`
 - `OPERATOR_TODO_QUEUE.md`
-- Release-MVP-Gate: `artifacts/release_mvp_gate/...`
+- Release-MVP-Gate: `artifacts/release_mvp_gate/latest_release_mvp_gate.md`
 - Produktions-Gate: `OPERATIONS/PRODUCTION_READINESS_OPERATIONS.md`
 - Dokument-Ownership: `OPERATIONS/DOCUMENT_OWNERSHIP_OPERATIONS.md`
 - Benutzer-Onboarding: `OPERATIONS/USER_ONBOARDING_OPERATIONS.md`

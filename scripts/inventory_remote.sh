@@ -184,6 +184,19 @@ inventory_guest_vmid() {
   esac
 }
 
+inventory_guest_kind() {
+  local host_key="$1"
+  local configured
+
+  configured="$(inventory_host_field "${host_key}" proxmox_guest_kind)"
+  if [[ -n "${configured}" ]]; then
+    printf '%s\n' "${configured}"
+    return 0
+  fi
+
+  printf '%s\n' "qm"
+}
+
 run_inventory_remote() {
   local host_key="$1"
   local remote_command="$2"
@@ -209,6 +222,7 @@ run_inventory_guest_remote() {
   local remote_command="$2"
   local default_user="${3:-root}"
   local vmid
+  local guest_kind
   local payload
   local guest_output
   local direct_output=""
@@ -244,8 +258,17 @@ run_inventory_guest_remote() {
     echo "inventory_guest_remote_error=no_vmid_mapping_for_${host_key}" >&2
     return 1
   }
+  guest_kind="$(inventory_guest_kind "${host_key}")"
 
   payload="$(printf '%s' "${remote_command}" | base64 -w0)"
+  if [[ "${guest_kind}" == "pct" ]]; then
+    run_proxmox_remote "pct exec ${vmid} -- bash -lc \"echo ${payload} | base64 -d | bash\"" || {
+      echo "inventory_guest_remote_error=guest_exec_failed_for_${host_key}" >&2
+      return 1
+    }
+    return 0
+  fi
+
   guest_output="$(
     run_proxmox_remote "qm guest exec ${vmid} -- bash -lc \"echo ${payload} | base64 -d | bash\""
   )" || {

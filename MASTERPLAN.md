@@ -4,6 +4,47 @@
 
 Diese Datei ist die zentrale Gesamt-Roadmap bis zu einem fertig aufgebauten Homeserver, der den Anspruch an professionelle, nachvollziehbare und sicher betriebene IT erfuellt. Detailfragen bleiben in den Fachdokumenten, aber die strategische Linie steht hier an einer Stelle.
 
+## Aktuelles Lane-Modell
+
+Dieses Lane-Modell ist ab jetzt die verbindliche Arbeitsordnung. Aeltere breite Roadmap-Texte bleiben als Kontext erhalten, aber der aktive Takt folgt nur noch dieser Priorisierung:
+
+- `Lane A: MVP Closeout` -> `active`
+- `Lane B: Website/Public Hold` -> `watch`
+- `Lane C: Security/PBS/Infra` -> `watch`
+- `Lane D: Stockenweiler` -> `watch`
+- `Lane E: Radio/Media` -> `hold`
+
+Regeln:
+
+- Nur `Lane A: MVP Closeout` wird aktiv auf `done` gezogen.
+- Alle anderen Straenge bleiben sichtbar, duerfen `Lane A` aber nicht verdraengen.
+- `Lane A` ist erst fertig, wenn im aktuellen MVP-Gate nur noch `0` offene manuelle Blocker stehen.
+- Solange `Lane A` offen ist, gibt es kein neues Public-Go-Live, keinen PBS-Zertifizierungsblock, keinen Radio-Ausbau und keinen Stockenweiler-Live-Rollout.
+
+## Kanonische Steuerdateien
+
+Diese Rollen gelten ohne Ausnahmen:
+
+- `AI_SERVER_HANDOFF.md`
+  - externer KI-Handoff
+- `OPERATOR_TODO_QUEUE.md`
+  - nur manuelle Unblock-Punkte
+- `artifacts/release_mvp_gate/latest_release_mvp_gate.md`
+  - einzige Wahrheit fuer die MVP-Entscheidung
+- `GEMINI.md`
+  - nur delegierbare Browser- und Operator-Jobs
+- `manifests/work_lanes/current_plan.json`
+  - maschinenlesbare Lane-Quelle
+
+Jede neue Aufgabe wird ab jetzt mit genau diesen Feldern beschrieben:
+
+- `lane`
+- `goal`
+- `done_when`
+- `blocked_by`
+- `next_operator_action`
+- `next_codex_action`
+
 ## Zielbild
 
 Der Zielzustand ist eine hybride Proxmox-Infrastruktur mit klarer Rollentrennung:

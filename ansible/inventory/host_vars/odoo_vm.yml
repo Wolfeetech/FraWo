@@ -3,4 +3,5 @@ compose_stack_name: odoo
 compose_service_name: homeserver-compose-odoo.service
 compose_template: stacks/odoo/docker-compose.yml.j2
 compose_env_template: stacks/odoo/stack.env.j2
+compose_http_bind: 192.168.2.22
 compose_http_port: 8069

@@ -56,12 +56,14 @@ Fuer das erste professionelle interne Produktionssiegel gilt:
 ## Aktueller Uebergangsstand
 
 - `wolf@frawo-tech.de` ist aktuell Alias auf das technische Basis-Postfach `webmaster@...`
+- `info@frawo-tech.de` ist aktuell ebenfalls Alias auf das technische Basis-Postfach `webmaster@...`
 - `franz@frawo-tech.de` hat bereits ein eigenes echtes Postfach
 - `franz@frawo-tech.de` wurde am `2026-03-27` per `IMAP` und `SMTP AUTH` verifiziert
 - der aktuelle technische Stand von `info@frawo-tech.de` ist noch gegen das `STRATO`-Paket zu verifizieren
 - der aktuelle technische Stand von `noreply@frawo-tech.de` ist noch gegen das `STRATO`-Paket zu verifizieren
 - produktiver App-SMTP darf auf ein technisches Basis-Postfach authentifizieren, auch wenn der sichtbare Absender `noreply@frawo-tech.de` ist
 - `Vaultwarden`-Invite-Mail ueber `webmaster@frawo-tech.de` ist live
+- ein am `2026-03-31` bereitgestellter Passwortkandidat fuer `webmaster@frawo-tech.de` war **nicht** erfolgreich fuer direkten `IMAP`-/`SMTP AUTH`-Login; er darf daher nicht automatisch als echtes Mailbox-Passwort fuer `webmaster` angenommen werden
 
 ## STRATO Zugriff
 
@@ -125,6 +127,7 @@ Saubere Wege:
 
 1. `franz@frawo-tech.de` als eigenes echtes Postfach beibehalten
 2. `wolf@frawo-tech.de` bewusst als sichtbare Alias-Identitaet ueber `webmaster@...` dokumentieren und pruefen
+3. `info@frawo-tech.de` bewusst als Funktionsalias ueber `webmaster@...` dokumentieren und pruefen
 
 ## Sofortregeln Pro Mailbox
 
@@ -151,7 +154,23 @@ Saubere Wege:
 - `Odoo` SMTP ist konfiguriert und im Baseline-Check gruen
 - `Nextcloud` SMTP ist geschrieben und im Baseline-Check gruen
 - `AzuraCast` SMTP ist noch offen, weil der SSH-Zugang zum `raspberry_pi_radio` aktuell der Restblocker ist
-- sichtbare Testmails fuer `Nextcloud`, `Paperless` und `Odoo` stehen noch aus
+- `Nextcloud` nutzt live `mail_from_address=noreply`, `mail_domain=frawo-tech.de`, `smtp.strato.de:587`, Login `webmaster@frawo-tech.de`
+- `Paperless` nutzt live `PAPERLESS_EMAIL_FROM=noreply@frawo-tech.de`, `smtp.strato.de:587`, Login `webmaster@frawo-tech.de`
+- `Odoo`-Mailserver `Strato SMPT` ist live auf `smtp.strato.de` mit Login `webmaster@frawo-tech.de` und `from_filter=noreply@frawo-tech.de` ausgerichtet
+- `noreply@frawo-tech.de` wurde am `2026-03-30` als echter sichtbarer SMTP-Absender ueber den produktiven STRATO-Backbone an `franz@frawo-tech.de` gesendet
+- der sichtbare Inbox-Nachweis bei `Franz` ist am `2026-03-31` read-only per IMAP erbracht worden:
+  - `franz@frawo-tech.de` INBOX enthaelt den Betreff `HS27 noreply SMTP proof 2026-03-30 23:37`
+  - letzter Header-Nachweis: `From=noreply@frawo-tech.de`, `Date=Mon, 30 Mar 2026 23:42:14 +0200 (CEST)`
+- `strato_mail_model_verified` ist damit im aktuellen MVP-Gate auf `passed`
+- fuer den read-only Inbox-Nachweis liegt jetzt ein lokaler Helper bereit:
+  - `python scripts/check_strato_inbox_for_subject.py --username franz@frawo-tech.de --subject "HS27 noreply SMTP proof 2026-03-30 23:37"`
+  - benoetigt nur die Laufzeitvariable `HS27_MAILBOX_PASSWORD`
+- fuer den echten Ein-Schritt-Abschluss des MVP-Mail-Restpunkts liegt jetzt zusaetzlich ein Windows-Helfer bereit:
+  - `powershell -ExecutionPolicy Bypass -File .\scripts\prove_strato_mail_model.ps1`
+  - fragt das Franz-Mailbox-Passwort sicher ab
+  - prueft den Inbox-Nachweis read-only
+  - setzt `strato_mail_model_verified` bei Erfolg auf `passed`
+  - zieht danach den `release_mvp_gate` neu
 
 ## Vaultwarden Invite Mail
 
@@ -192,6 +211,18 @@ Alternativ unter Windows:
 1. `.\scripts\run_app_smtp_deploy.ps1`
 2. Passwort interaktiv eingeben
 3. Deploy und Check laufen in einem Zug
+
+Fuer den read-only Empfangsnachweis einer bereits gesendeten Testmail:
+
+1. `$env:HS27_MAILBOX_PASSWORD='...'`
+2. `python scripts/check_strato_inbox_for_subject.py --username franz@frawo-tech.de --subject "HS27 noreply SMTP proof 2026-03-30 23:37"`
+3. bei `inbox_proof=yes` die manuelle Gate-Evidenz aktualisieren
+
+Unter Windows geht derselbe Pfad jetzt in einem Schritt:
+
+1. `powershell -ExecutionPolicy Bypass -File .\scripts\prove_strato_mail_model.ps1`
+2. Passwort sicher eingeben
+3. bei Erfolg wird die Gate-Evidenz direkt aktualisiert und der MVP-Gate neu geschrieben
 
 Nicht akzeptabel:
 

@@ -23,6 +23,24 @@ Diese Datei ist der kanonische Onboarding- und Benutzerbetriebsartikel fuer:
 - der TV-Pfad zu `Jellyfin` funktioniert wieder
 - der letzte TV-Test lief ueber `Wolf`, nicht ueber `TV Wohnzimmer`
 
+## Aktueller Lane-A-Restpunkt
+
+Der offene Benutzerblock fuer den aktuellen Arbeits-MVP ist jetzt nur noch:
+
+- `device_rollout_verified`
+
+Pass-Bedingung dafuer:
+
+- `Franz Surface Laptop` nutzt sichtbar `http://portal.hs27.internal/franz/` als alltagstauglichen Startpfad
+- `Franz iPhone` nutzt sichtbar `http://100.99.206.128:8447/franz/` als mobilen Startpfad
+- auf beiden Pfaden sind `Nextcloud`, `Paperless`, `Odoo` und `Vaultwarden` sichtbar als direkte Kernziele erreichbar
+- es bleibt kein sichtbarer Blocker fuer den echten Alltagspfad uebrig
+
+Danach:
+
+- `powershell -ExecutionPolicy Bypass -File .\scripts\prove_device_rollout.ps1`
+- anschliessend zieht Codex `release_mvp_gate.py` und `generate_ai_server_handoff.py` automatisch nach
+
 ## Standard-Einstieg
 
 - Portal intern: `http://portal.hs27.internal`
@@ -130,6 +148,10 @@ Zusatz:
   - `scripts/bootstrap_franz_surface_shortcuts.ps1`
 - vorbereiteter Shortcut-Ordner lokal:
   - `C:\Users\StudioPC\Documents\FraWo Franz Deploy\Surface Shortcuts`
+- sichtbare Abnahme erst gruen, wenn:
+  - `Franz Start` als primaerer Einstieg funktioniert
+  - die Direktziele `Nextcloud`, `Paperless`, `Odoo` und `Vaultwarden` sichtbar vorhanden sind
+  - der Alltagspfad ohne Admin-Umweg funktioniert
 
 ### iPhone
 
@@ -139,6 +161,10 @@ Zusatz:
   - `http://100.99.206.128:8447/franz/`
 - Jellyfin mobil:
   - `http://100.99.206.128:8449`
+- sichtbare Abnahme erst gruen, wenn:
+  - `Franz Mobil Start` sichtbar laedt
+  - die Kernziele `Nextcloud`, `Paperless`, `Odoo` und `Vaultwarden` von dort sichtbar erreichbar sind
+  - kein mobiler Start-Blocker mehr uebrig bleibt
 
 ### Homescreen-Standard
 

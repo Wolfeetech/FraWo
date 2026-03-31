@@ -21,6 +21,23 @@
         mode: "0644"
       notify: restart resolved
 
+    - name: Ensure sshd drop-in directory exists
+      ansible.builtin.file:
+        path: /etc/ssh/sshd_config.d
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Install LAN-only SSH listen-address drop-in
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/network/90-homeserver2027-business-ssh-lan-only.conf.j2"
+        dest: /etc/ssh/sshd_config.d/90-homeserver2027-business-lan-only.conf
+        owner: root
+        group: root
+        mode: "0644"
+      notify: restart ssh
+
     - name: Ensure systemd-resolved is enabled
       ansible.builtin.systemd:
         name: systemd-resolved
@@ -32,5 +49,11 @@
     - name: restart resolved
       ansible.builtin.systemd:
         name: systemd-resolved
+        state: restarted
+      when: not ansible_check_mode
+
+    - name: restart ssh
+      ansible.builtin.systemd:
+        name: ssh
         state: restarted
       when: not ansible_check_mode

@@ -14,6 +14,8 @@
    load printers = no
    disable spoolss = yes
    unix extensions = no
+   interfaces = 127.0.0.1/8 {{ homeserver_storage_node.cidr }}
+   bind interfaces only = yes
 
 {% for share in storage_shares %}
 [{{ share.name }}]
