@@ -38,6 +38,7 @@ Pass-Bedingung dafuer:
 
 Danach:
 
+- `python scripts/device_rollout_preflight.py`
 - `powershell -ExecutionPolicy Bypass -File .\scripts\prove_device_rollout.ps1`
 - anschliessend zieht Codex `release_mvp_gate.py` und `generate_ai_server_handoff.py` automatisch nach
 

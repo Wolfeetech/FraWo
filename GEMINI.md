@@ -40,7 +40,7 @@ Regeln:
 - `done_when`: Beide Geraete sind mit den erforderlichen Direktpfaden und dem echten Alltagspfad sichtbar bestaetigt.
 - `blocked_by`: frischer sichtbarer Geraetenachweis fehlt
 - `next_operator_action`: Die Geraete im echten Alltagspfad pruefen oder vorfuehren.
-- `next_codex_action`: Nach dem Nachweis `scripts/prove_device_rollout.ps1` ausfuehren, damit MVP-Gate und AI-Handoff automatisch nachziehen.
+- `next_codex_action`: Vor dem Closure-Schritt `scripts/device_rollout_preflight.py` laufen lassen. Nach dem sichtbaren Nachweis `scripts/prove_device_rollout.ps1` ausfuehren, damit MVP-Gate und AI-Handoff automatisch nachziehen.
 
 ### `website_public_hold`
 

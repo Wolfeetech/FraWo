@@ -54,6 +54,41 @@
   },
   "legacy_service_map": [
     {
+      "service": "home_assistant_public",
+      "local_url": "http://192.168.178.67",
+      "legacy_public_url": "https://home.prinz-stockenweiler.de",
+      "source": "Operator statement plus local StudioPC probe on 2026-03-31",
+      "status": "legacy_probe_candidate"
+    },
+    {
+      "service": "proxmox_public",
+      "local_url": "https://192.168.178.25:8006",
+      "legacy_public_url": "https://pve.prinz-stockenweiler.de",
+      "source": "Operator statement plus local StudioPC probe on 2026-03-31",
+      "status": "legacy_probe_candidate"
+    },
+    {
+      "service": "paperless_public_bookmark",
+      "local_url": "http://192.168.178.176",
+      "legacy_public_url": "https://papierkram.prinz-stockenweiler.de/dashboard",
+      "source": "Edge bookmarks on StudioPC recovered 2026-03-31",
+      "status": "recovered_browser_hint"
+    },
+    {
+      "service": "nextcloud_public_bookmark",
+      "local_url": "http://192.168.178.206",
+      "legacy_public_url": "https://cloud.prinz-stockenweiler.de/apps/dashboard/",
+      "source": "Edge bookmarks on StudioPC recovered 2026-03-31",
+      "status": "recovered_browser_hint"
+    },
+    {
+      "service": "adguard_public_bookmark",
+      "local_url": "http://192.168.178.173",
+      "legacy_public_url": "http://adguard.alopri/",
+      "source": "Edge bookmarks on StudioPC recovered 2026-03-31",
+      "status": "recovered_browser_hint"
+    },
+    {
       "service": "nextcloud",
       "local_url": "http://192.168.178.206",
       "legacy_public_url": "https://files.alopri",
@@ -101,6 +136,12 @@
       "current_best_guess": "192.168.178.67",
       "conflicting_legacy_value": "192.168.178.68",
       "source": "RadioWorkspace docs vs local router export"
+    },
+    {
+      "topic": "ip_192.168.178.120_role",
+      "current_best_guess": "MagentaTV",
+      "conflicting_legacy_value": "\\\\192.168.178.120\\scans\\Familie Prinz",
+      "source": "Local router export vs C:/Users/StudioPC/AppData/Roaming/Microsoft/Windows/Recent/Familie Prinz.lnk"
     }
   ],
   "support_goals": [
@@ -114,18 +155,207 @@
     "Printer / scanner help",
     "Existing local Home Assistant support"
   ],
+  "current_blockers": [
+    "No first live remote onboarding has happened yet.",
+    "Current on-site main PC identity is still unresolved; operator stated on 2026-03-31 that the former main PC anchor was this StudioPC.",
+    "Phone identity is still unresolved.",
+    "Current StudioPC is not on the 192.168.178.0/24 LAN right now; direct SSH to 192.168.178.25 timed out during recovery on 2026-03-31.",
+    "UCG and broader gateway work stay deferred while the operator 2FA path remains blocked."
+  ],
+  "legacy_access_probe_summary": {
+    "source": "Local StudioPC probe on 2026-03-31",
+    "findings": [
+      {
+        "service": "home_assistant_public",
+        "host": "home.prinz-stockenweiler.de",
+        "dns_resolved": true,
+        "addresses": [
+          "91.14.44.20"
+        ],
+        "https_status": 200,
+        "title": "Home Assistant"
+      },
+      {
+        "service": "proxmox_public",
+        "host": "pve.prinz-stockenweiler.de",
+        "dns_resolved": false,
+        "notes": "getaddrinfo failed"
+      },
+      {
+        "service": "nextcloud_legacy_public",
+        "host": "files.alopri",
+        "dns_resolved": false,
+        "notes": "getaddrinfo failed"
+      },
+      {
+        "service": "paperless_legacy_public",
+        "host": "paperless.alopri",
+        "dns_resolved": false,
+        "notes": "getaddrinfo failed"
+      },
+      {
+        "service": "vaultwarden_legacy_public",
+        "host": "vault.alopri",
+        "dns_resolved": false,
+        "notes": "getaddrinfo failed"
+      },
+      {
+        "service": "wireguard_legacy_public",
+        "host": "vpn.prinz-stockenweiler.de",
+        "dns_resolved": false,
+        "notes": "getaddrinfo failed"
+      },
+      {
+        "service": "paperless_public_bookmark",
+        "host": "papierkram.prinz-stockenweiler.de",
+        "dns_resolved": true,
+        "addresses": [
+          "80.134.168.100"
+        ],
+        "notes": "Recovered from Edge bookmarks; HTTPS timed out during StudioPC probe on 2026-03-31."
+      },
+      {
+        "service": "nextcloud_public_bookmark",
+        "host": "cloud.prinz-stockenweiler.de",
+        "dns_resolved": true,
+        "addresses": [
+          "91.14.44.20"
+        ],
+        "notes": "Recovered from Edge bookmarks; HTTPS currently fails with TLSV1_UNRECOGNIZED_NAME during StudioPC probe on 2026-03-31."
+      }
+    ]
+  },
+  "recovered_browser_bookmarks": [
+    {
+      "service": "home_assistant_public",
+      "app": "chrome",
+      "bookmark_name": "Home Assistant",
+      "bookmark_url": "https://home.prinz-stockenweiler.de/dashboard-bereiche",
+      "source": "C:/Users/StudioPC/AppData/Local/Google/Chrome/User Data/Default/Bookmarks",
+      "status": "recovered_local_hint"
+    },
+    {
+      "service": "paperless_public",
+      "app": "edge",
+      "bookmark_name": "Startseite - Paperless-ngx",
+      "bookmark_url": "https://papierkram.prinz-stockenweiler.de/dashboard",
+      "source": "C:/Users/StudioPC/AppData/Local/Microsoft/Edge/User Data/Default/Bookmarks",
+      "status": "recovered_local_hint"
+    },
+    {
+      "service": "paperless_documents",
+      "app": "edge",
+      "bookmark_name": "Dokumente - Paperless-ngx",
+      "bookmark_url": "https://papierkram.prinz-stockenweiler.de/documents?correspondent__isnull=1&sort=added&reverse=1&page=1",
+      "source": "C:/Users/StudioPC/AppData/Local/Microsoft/Edge/User Data/Default/Bookmarks",
+      "status": "recovered_local_hint"
+    },
+    {
+      "service": "nextcloud_public",
+      "app": "edge",
+      "bookmark_name": "Dashboard - Nextcloud",
+      "bookmark_url": "https://cloud.prinz-stockenweiler.de/apps/dashboard/",
+      "source": "C:/Users/StudioPC/AppData/Local/Microsoft/Edge/User Data/Default/Bookmarks",
+      "status": "recovered_local_hint"
+    },
+    {
+      "service": "adguard_public",
+      "app": "edge",
+      "bookmark_name": "AdGuard Home",
+      "bookmark_url": "http://adguard.alopri/",
+      "source": "C:/Users/StudioPC/AppData/Local/Microsoft/Edge/User Data/Default/Bookmarks",
+      "status": "recovered_local_hint"
+    }
+  ],
+  "legacy_host_key_evidence": [
+    {
+      "subject": "proxmox_host_ip_continuity",
+      "hosts": [
+        "192.168.178.172",
+        "192.168.178.25"
+      ],
+      "same_host_key": true,
+      "source": "C:/Users/StudioPC/.ssh/known_hosts",
+      "notes": "Strong local signal that the legacy Proxmox host moved from .172 to .25 while keeping the same SSH host key."
+    }
+  ],
+  "recovered_local_access_hints": [
+    {
+      "service": "proxmox_host",
+      "method": "ssh_alias",
+      "value": "pve -> root@192.168.178.25",
+      "credential_hint": "~/.ssh/id_ed25519",
+      "source": "C:/Users/StudioPC/.ssh/config",
+      "status": "recovered_local_hint"
+    },
+    {
+      "service": "scan_share_or_main_pc_hint",
+      "method": "windows_recent_shortcut",
+      "value": "\\\\192.168.178.120\\scans\\Familie Prinz",
+      "credential_hint": "SMB share target only; no credentials recovered",
+      "source": "C:/Users/StudioPC/AppData/Roaming/Microsoft/Windows/Recent/Familie Prinz.lnk",
+      "status": "recovered_local_hint"
+    }
+  ],
+  "first_live_onboarding": {
+    "collect_fields": [
+      "main_pc friendly name",
+      "main_pc OS and local login model",
+      "main_pc tailscale name or AnyDesk ID",
+      "phone model and OS",
+      "phone tailscale name",
+      "router management contact path",
+      "printer/scanner exact model",
+      "MagentaTV box model and room context"
+    ],
+    "success_criteria": [
+      "Main PC is identified as a managed support endpoint.",
+      "Phone is identified as a managed support endpoint.",
+      "Primary remote path is Tailscale or the fallback is documented as AnyDesk.",
+      "First support target can be routed without WAN admin exposure."
+    ]
+  },
+  "first_support_playbooks": [
+    {
+      "id": "tv_magenta_triage",
+      "goal": "Restore basic TV or receiver usability without changing WAN exposure.",
+      "first_checks": [
+        "Confirm whether the issue is TV, receiver or network only.",
+        "Confirm MagentaTV box power and HDMI path.",
+        "Confirm local IP still matches the known legacy signal or record the new one.",
+        "Prefer guided household steps before remote-control tooling."
+      ]
+    },
+    {
+      "id": "father_desktop_remote_help",
+      "goal": "Reach the main PC safely and help with the actual user problem.",
+      "first_checks": [
+        "Identify the main PC host and OS first.",
+        "Prefer Tailscale if present; use AnyDesk only as documented fallback.",
+        "Do not create new WAN exposure for ad hoc support."
+      ]
+    },
+    {
+      "id": "printer_scanner_help",
+      "goal": "Unblock printing or scanning with the least invasive path.",
+      "first_checks": [
+        "Confirm Brother model and whether the issue is print, scan or connectivity.",
+        "Reuse the FraWo document path only if the household problem is really document ingest."
+      ]
+    }
+  ],
   "endpoints": [
     {
       "id": "main_pc",
       "type": "desktop_or_laptop",
       "status": "pending_inventory",
-      "friendly_name": "",
-      "owner_or_user": "",
-      "os": "",
-      "local_network_name": "",
+      "friendly_name": "StudioPC (legacy anchor)",
+      "owner_or_user": "legacy operator workstation",
+      "os": "Windows",
+      "local_network_name": "StudioPC",
       "tailscale_name": "",
       "anydesk_id": "",
-      "notes": ""
+      "notes": "Operator stated on 2026-03-31 that the former Stockenweiler main PC was this current StudioPC. Treat this workstation as the first place to recover old access paths, but do not assume it is still the active on-site endpoint."
     },
     {
       "id": "phone",

@@ -1,0 +1,123 @@
+{
+  "decision": "legacy_access_candidates_present",
+  "generated_at": "2026-03-31 10:10:32",
+  "inventory": "C:\\Users\\StudioPC\\Documents\\Homeserver 2027 Workspace\\manifests\\stockenweiler\\site_inventory.json",
+  "results": [
+    {
+      "service": "home_assistant_public",
+      "legacy_public_url": "https://home.prinz-stockenweiler.de",
+      "local_url": "http://192.168.178.67",
+      "source": "Operator statement plus local StudioPC probe on 2026-03-31",
+      "dns": {
+        "host": "home.prinz-stockenweiler.de",
+        "resolved": true,
+        "addresses": [
+          "91.14.44.20"
+        ],
+        "dns_error": ""
+      },
+      "http": {
+        "reachable": true,
+        "status": 200,
+        "final_url": "https://home.prinz-stockenweiler.de",
+        "title": "Home Assistant",
+        "error": ""
+      }
+    },
+    {
+      "service": "proxmox_public",
+      "legacy_public_url": "https://pve.prinz-stockenweiler.de",
+      "local_url": "https://192.168.178.25:8006",
+      "source": "Operator statement plus local StudioPC probe on 2026-03-31",
+      "dns": {
+        "host": "pve.prinz-stockenweiler.de",
+        "resolved": false,
+        "addresses": [],
+        "dns_error": "[Errno 11001] getaddrinfo failed"
+      },
+      "http": {
+        "reachable": false,
+        "status": "",
+        "final_url": "",
+        "title": "",
+        "error": "<urlopen error [Errno 11001] getaddrinfo failed>"
+      }
+    },
+    {
+      "service": "nextcloud",
+      "legacy_public_url": "https://files.alopri",
+      "local_url": "http://192.168.178.206",
+      "source": "RadioWorkspace docs",
+      "dns": {
+        "host": "files.alopri",
+        "resolved": false,
+        "addresses": [],
+        "dns_error": "[Errno 11001] getaddrinfo failed"
+      },
+      "http": {
+        "reachable": false,
+        "status": "",
+        "final_url": "",
+        "title": "",
+        "error": "<urlopen error [Errno 11001] getaddrinfo failed>"
+      }
+    },
+    {
+      "service": "paperless",
+      "legacy_public_url": "https://paperless.alopri",
+      "local_url": "http://192.168.178.176",
+      "source": "RadioWorkspace docs",
+      "dns": {
+        "host": "paperless.alopri",
+        "resolved": false,
+        "addresses": [],
+        "dns_error": "[Errno 11001] getaddrinfo failed"
+      },
+      "http": {
+        "reachable": false,
+        "status": "",
+        "final_url": "",
+        "title": "",
+        "error": "<urlopen error [Errno 11001] getaddrinfo failed>"
+      }
+    },
+    {
+      "service": "vaultwarden",
+      "legacy_public_url": "https://vault.alopri",
+      "local_url": "http://192.168.178.188:8080",
+      "source": "RadioWorkspace docs",
+      "dns": {
+        "host": "vault.alopri",
+        "resolved": false,
+        "addresses": [],
+        "dns_error": "[Errno 11001] getaddrinfo failed"
+      },
+      "http": {
+        "reachable": false,
+        "status": "",
+        "final_url": "",
+        "title": "",
+        "error": "<urlopen error [Errno 11001] getaddrinfo failed>"
+      }
+    },
+    {
+      "service": "wireguard",
+      "legacy_public_url": "vpn.prinz-stockenweiler.de:51820",
+      "local_url": "192.168.178.186",
+      "source": "RadioWorkspace docs",
+      "dns": {
+        "host": "vpn.prinz-stockenweiler.de",
+        "resolved": false,
+        "addresses": [],
+        "dns_error": "[Errno 11001] getaddrinfo failed"
+      },
+      "http": {
+        "reachable": false,
+        "status": "",
+        "final_url": "",
+        "title": "",
+        "error": ""
+      }
+    }
+  ]
+}

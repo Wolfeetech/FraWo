@@ -36,6 +36,13 @@ def main() -> int:
     facts = data.get("current_known_facts", {})
     targets = data.get("first_support_targets", [])
     conflicts = data.get("legacy_conflicts_to_revalidate", [])
+    blockers = data.get("current_blockers", [])
+    onboarding = data.get("first_live_onboarding", {})
+    playbooks = data.get("first_support_playbooks", [])
+    probe_summary = data.get("legacy_access_probe_summary", {})
+    browser_bookmarks = data.get("recovered_browser_bookmarks", [])
+    host_key_evidence = data.get("legacy_host_key_evidence", [])
+    local_access_hints = data.get("recovered_local_access_hints", [])
 
     lines = [
         "# Stockenweiler Support Brief",
@@ -63,6 +70,125 @@ def main() -> int:
             f"- Home Assistant: `{facts.get('home_assistant', {}).get('friendly_name', '-')}` @ `{facts.get('home_assistant', {}).get('ip', '-')}`",
             f"- Printer: `{facts.get('printer_scanner', {}).get('friendly_name', '-')}` @ `{facts.get('printer_scanner', {}).get('ip', '-')}`",
             f"- MagentaTV: `{facts.get('magenta_tv', {}).get('friendly_name', '-')}` @ `{facts.get('magenta_tv', {}).get('ip', '-')}`",
+            "",
+            "## Current Blockers",
+            "",
+        ]
+    )
+
+    if blockers:
+        for blocker in blockers:
+            lines.append(f"- {blocker}")
+    else:
+        lines.append("- none")
+
+    lines.extend(
+        [
+            "",
+            "## Legacy Access Probe",
+            "",
+        ]
+    )
+
+    if probe_summary.get("findings"):
+        lines.append(f"- source: `{probe_summary.get('source', '-')}`")
+        for finding in probe_summary.get("findings", []):
+            if finding.get("dns_resolved"):
+                addresses = ", ".join(finding.get("addresses", [])) or "-"
+                if "https_status" in finding or "title" in finding:
+                    lines.append(
+                        f"- `{finding.get('service', '-')}`: `{finding.get('host', '-')}` -> `{addresses}` / HTTPS `{finding.get('https_status', '-')}` / `{finding.get('title', '-')}`"
+                    )
+                else:
+                    lines.append(
+                        f"- `{finding.get('service', '-')}`: `{finding.get('host', '-')}` -> `{addresses}` (`{finding.get('notes', '-')}`)"
+                    )
+            else:
+                lines.append(
+                    f"- `{finding.get('service', '-')}`: `{finding.get('host', '-')}` unresolved (`{finding.get('notes', '-')}`)"
+                )
+    else:
+        lines.append("- none")
+
+    lines.extend(
+        [
+            "",
+            "## Recovered Browser Bookmarks",
+            "",
+        ]
+    )
+
+    if browser_bookmarks:
+        for item in browser_bookmarks:
+            lines.append(
+                f"- `{item.get('service', '-')}` via `{item.get('app', '-')}`: `{item.get('bookmark_name', '-')}` -> `{item.get('bookmark_url', '-')}`"
+            )
+    else:
+        lines.append("- none")
+
+    lines.extend(
+        [
+            "",
+            "## Recovered Local Access Hints",
+            "",
+        ]
+    )
+
+    if local_access_hints:
+        for item in local_access_hints:
+            lines.append(
+                f"- `{item.get('service', '-')}` via `{item.get('method', '-')}`: `{item.get('value', '-')}` using `{item.get('credential_hint', '-')}`"
+            )
+    else:
+        lines.append("- none")
+
+    lines.extend(
+        [
+            "",
+            "## Legacy Host Key Evidence",
+            "",
+        ]
+    )
+
+    if host_key_evidence:
+        for item in host_key_evidence:
+            hosts = ", ".join(item.get("hosts", [])) or "-"
+            lines.append(
+                f"- `{item.get('subject', '-')}`: `{hosts}` / same_host_key `{item.get('same_host_key', '-')}`"
+            )
+    else:
+        lines.append("- none")
+
+    lines.extend(
+        [
+            "",
+            "## First Live Onboarding",
+            "",
+        ]
+    )
+
+    for item in onboarding.get("collect_fields", []):
+        lines.append(f"- collect: `{item}`")
+
+    for item in onboarding.get("success_criteria", []):
+        lines.append(f"- done when: {item}")
+
+    lines.extend(
+        [
+            "",
+            "## First Support Playbooks",
+            "",
+        ]
+    )
+
+    if playbooks:
+        for playbook in playbooks:
+            lines.append(f"- `{playbook.get('id', '-')}`: {playbook.get('goal', '-')}")
+    else:
+        lines.append("- none")
+
+    lines.extend(
+        [
             "",
             "## Do Not Do",
             "",

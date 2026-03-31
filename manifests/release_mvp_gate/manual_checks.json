@@ -58,7 +58,7 @@
       "critical": true,
       "status": "pending",
       "last_verified": "2026-03-30",
-      "evidence": "Open rollout blocker 2026-03-31: Franz Surface Laptop still needs visible acceptance on http://portal.hs27.internal/franz/ and Franz iPhone still needs visible acceptance on http://100.99.206.128:8447/franz/. Both start paths must visibly expose the core direct targets for Nextcloud, Paperless, Odoo and Vaultwarden before this check can pass."
+      "evidence": "Open rollout blocker 2026-03-31: Franz Surface Laptop still needs visible acceptance on http://portal.hs27.internal/franz/ and Franz iPhone still needs visible acceptance on http://100.99.206.128:8447/franz/. Both start paths must visibly expose the core direct targets for Nextcloud, Paperless, Odoo and Vaultwarden before this check can pass. The rollout is currently additionally blocked by the missing 2FA path while the operator smartphone is still lost."
     },
     {
       "id": "core_app_smtp_functional_test_verified",

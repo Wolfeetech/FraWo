@@ -24,9 +24,9 @@ Der aktive Arbeitsfokus liegt in `Lane A: MVP Closeout`.
 - `lane`: `Lane A: MVP Closeout`
 - `goal`: Franz `Surface Laptop` und `iPhone` sind sichtbar als releasede MVP-Geraete abgenommen.
 - `done_when`: Beide Geraete haben die erforderlichen Direktpfade und der echte Alltagspfad ist sichtbar bestaetigt.
-- `blocked_by`: sichtbare Geraeteabnahme fehlt noch
-- `next_operator_action`: Franz `Surface Laptop` und `iPhone` im echten Alltagspfad pruefen und einen frischen sichtbaren Nachweis liefern.
-- `next_codex_action`: Danach `powershell -ExecutionPolicy Bypass -File .\scripts\prove_device_rollout.ps1` ausfuehren.
+- `blocked_by`: sichtbare Geraeteabnahme fehlt noch; aktuell zusaetzlich durch verlorenes Operator-Smartphone und den fehlenden `2FA`-Pfad blockiert
+- `next_operator_action`: Erst den blockierten `2FA`-Pfad nach dem verlorenen Smartphone wiederherstellen, dann Franz `Surface Laptop` und `iPhone` im echten Alltagspfad pruefen und einen frischen sichtbaren Nachweis liefern.
+- `next_codex_action`: Zuerst `python scripts/device_rollout_preflight.py`, danach `powershell -ExecutionPolicy Bypass -File .\scripts\prove_device_rollout.ps1` ausfuehren.
 
 ### `vaultwarden_recovery_material_verified`
 

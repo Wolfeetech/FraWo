@@ -21,6 +21,14 @@ Ziel ist eine selbstaendig nutzbare Umgebung mit kontrolliertem Fernzugriff von 
   - `2` noch komplett offen
   - `5` Legacy-Fakten warten auf echte Revalidierung
 
+## Aktuelle Blocker
+
+- erster Live-Onboarding-Lauf hat noch nicht stattgefunden
+- Haupt-PC ist noch nicht konkret identifiziert; der ehemalige Haupt-PC-Anker war laut Operator dieser `StudioPC`
+- Handy ist noch nicht konkret identifiziert
+- `StudioPC` haengt aktuell nicht im `192.168.178.0/24`-LAN; direkter `SSH`-Zugriff auf `192.168.178.25` lief am `2026-03-31` in Timeout
+- `UCG`- und groessere Gateway-Arbeit bleibt aufgeschoben, solange der Operator-`2FA`-Pfad wegen des verlorenen Smartphones blockiert ist
+
 ## V1 Scope
 
 - verwalteter Haupt-PC
@@ -80,6 +88,21 @@ Ziel ist eine selbstaendig nutzbare Umgebung mit kontrolliertem Fernzugriff von 
   - `MagentaTV` auf `192.168.178.120`
 - aeltere `RadioWorkspace`-Doku bestaetigt den vorhandenen externen Server-/Support-Kontext, ist aber nicht mehr kanonisch
 - alle diese Punkte gelten als `legacy_fact_needs_revalidation`, bis der erste echte Stockenweiler-Onboarding-Lauf sie sichtbar bestaetigt
+- lokaler Legacy-Probe-Lauf auf `StudioPC` am `2026-03-31` zeigt:
+  - `home.prinz-stockenweiler.de` loest auf `91.14.44.20` auf und liefert per `HTTPS` aktuell `Home Assistant`
+  - `pve.prinz-stockenweiler.de` ist aktuell nicht aufloesbar
+  - `papierkram.prinz-stockenweiler.de` loest auf `80.134.168.100` auf, antwortete aber bei `HTTPS` im aktuellen Probe-Lauf nicht rechtzeitig
+  - `cloud.prinz-stockenweiler.de` loest auf `91.14.44.20` auf, antwortet aktuell aber mit `TLSV1_UNRECOGNIZED_NAME`
+  - `files.alopri`, `paperless.alopri`, `vault.alopri` und `vpn.prinz-stockenweiler.de` sind aktuell nicht aufloesbar
+- lokale Browser-Spuren auf `StudioPC` bestaetigen alte Arbeitsziele:
+  - `Chrome`: `https://home.prinz-stockenweiler.de/dashboard-bereiche`
+  - `Edge`: `https://papierkram.prinz-stockenweiler.de/dashboard`
+  - `Edge`: `https://papierkram.prinz-stockenweiler.de/documents?...`
+  - `Edge`: `https://cloud.prinz-stockenweiler.de/apps/dashboard/`
+  - `Edge`: `http://adguard.alopri/`
+- `Windows Recent` auf `StudioPC` zeigt zusaetzlich den UNC-Pfad `\\\\192.168.178.120\\scans\\Familie Prinz`; das ist ein starker Alt-Hinweis auf einen SMB-/Scan-Pfad und kollidiert mit dem Router-Export, der `.120` aktuell als `MagentaTV` fuehrt
+- `.ssh/known_hosts` auf `StudioPC` zeigt fuer `192.168.178.172` und `192.168.178.25` denselben `SSH`-Hostkey; das ist ein starkes lokales Signal, dass der alte `Proxmox`-Host von `.172` auf `.25` umgezogen ist
+- der ehemalige Haupt-PC-Anker fuer diesen Altstand war laut Operator dieser `StudioPC`; alte Zugangspfade sollten daher zuerst hier gesucht und gesichtet werden
 
 ## Integrationsprinzip
 
@@ -112,3 +135,42 @@ Ziel ist eine selbstaendig nutzbare Umgebung mit kontrolliertem Fernzugriff von 
 3. getrennten Secret-Bereich `Stockenweiler` in `Vaultwarden / FraWo` nur mit echten Daten befuellen
 4. keinen Sonderpfad fuer Dokumente bauen, solange Nextcloud/Paperless-Standard reicht
 5. keine WAN-Freigabe und kein Site-to-Site-VPN in V1
+
+## Erster Live-Onboarding-Lauf
+
+Vor Ort oder im ersten echten Remote-Lauf sammeln:
+
+- Haupt-PC Friendly Name
+- Haupt-PC OS und Login-Modell
+- Haupt-PC `Tailscale`-Name oder `AnyDesk`-ID
+- Handy-Modell und OS
+- Handy-`Tailscale`-Name
+- Router-Management-Kontaktpfad
+- exaktes Brother-Modell
+- MagentaTV-Box-Modell und Raumkontext
+
+Der erste Lauf ist erst dann fachlich gruen, wenn:
+
+- Haupt-PC als betreuter Endpunkt identifiziert ist
+- Handy als betreuter Endpunkt identifiziert ist
+- primaerer Fernzugriff ueber `Tailscale` oder dokumentierter `AnyDesk`-Fallback steht
+- der erste Supportfall ohne WAN-Admin-Exposition routbar ist
+
+## Erste Support-Playbooks
+
+### TV / Magenta
+
+- zuerst klaeren, ob TV, Receiver oder Netzproblem
+- `MagentaTV`-Box, HDMI-Pfad und lokalen Netzpfad pruefen
+- gefuehrte Haushaltsschritte vor Remote-Control-Werkzeugen bevorzugen
+
+### Vater Desktop
+
+- zuerst den Haupt-PC eindeutig identifizieren
+- `Tailscale` bevorzugen, `AnyDesk` nur als dokumentierten Fallback
+- keine ad hoc WAN-Freigaben bauen
+
+### Drucker / Scanner
+
+- zuerst auf Druck-, Scan- oder Konnektivitaetsproblem eingrenzen
+- FraWo-Dokumentenpfad nur nutzen, wenn das Haushaltsproblem wirklich Dokumenten-Ingest ist

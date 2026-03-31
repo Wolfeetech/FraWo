@@ -11,19 +11,19 @@ Keine Secrets. Keine Passwoerter. Diese Datei ist dafuer gedacht, sie direkt an 
 
 ## Generierung
 
-- Generated at: `2026-03-31 08:42:49`
+- Generated at: `2026-03-31 09:57:09`
 - Workspace root: `C:\Users\StudioPC\Documents\Homeserver 2027 Workspace`
 - Git branch: `main`
-- Pending git changes: `57`
+- Pending git changes: `18`
 - Managed hosts in inventory: `30`
 
 ## Source Freshness
 
 - `AI_BOOTSTRAP_CONTEXT.md`: `2026-03-30 07:32:46`
 - `OPS_HOME.md`: `2026-03-31 06:53:07`
-- `OPERATOR_TODO_QUEUE.md`: `2026-03-31 08:41:37`
-- `manifests/work_lanes/current_plan.json`: `2026-03-31 08:41:32`
-- `artifacts/release_mvp_gate/latest_release_mvp_gate.json`: `2026-03-31 08:42:49`
+- `OPERATOR_TODO_QUEUE.md`: `2026-03-31 09:55:03`
+- `manifests/work_lanes/current_plan.json`: `2026-03-31 09:54:54`
+- `artifacts/release_mvp_gate/latest_release_mvp_gate.json`: `2026-03-31 09:57:09`
 - `artifacts/public_ipv6_exposure_audit/latest_report.md`: `2026-03-31 06:32:34`
 - `artifacts\website_release_gate\20260330_161648\website_release_gate.md`: `2026-03-30 16:16:48`
 - `artifacts\production_gate\20260328_072130\production_gate.md`: `2026-03-28 07:21:32`
@@ -92,7 +92,7 @@ Keine Secrets. Keine Passwoerter. Diese Datei ist dafuer gedacht, sie direkt an 
 ## Business MVP Blockers
 
 - `device_rollout_verified`: `pending`
-  - Surface Control V1 is live and the shared Surface path is stable, but Franz Surface Laptop and iPhone are not yet visibly accepted as released devices.
+  - Open rollout blocker 2026-03-31: Franz Surface Laptop still needs visible acceptance on http://portal.hs27.internal/franz/ and Franz iPhone still needs visible acceptance on http://100.99.206.128:8447/franz/. Both start paths must visibly expose the core direct targets for Nextcloud, Paperless, Odoo and Vaultwarden before this check can pass.
 - `vaultwarden_recovery_material_verified`: `pending`
   - No fresh proof yet that the Vaultwarden recovery material exists offline in two separate physical copies.
 
@@ -151,9 +151,9 @@ Keine Secrets. Keine Passwoerter. Diese Datei ist dafuer gedacht, sie direkt an 
 - `lane`: Lane A: MVP Closeout
 - `goal`: Franz Surface Laptop and iPhone are visibly accepted as released MVP devices with the required direct entry paths.
 - `done_when`: Franz Surface Laptop and Franz iPhone both have the required direct app entrypoints and the visible everyday path is confirmed.
-- `blocked_by`: `visible_device_acceptance_missing`
-- `next_operator_action`: Walk the Franz Surface Laptop and iPhone through the real direct entrypoints and capture a fresh visible acceptance result.
-- `next_codex_action`: Run scripts/prove_device_rollout.ps1 with the fresh visible Surface Laptop and iPhone evidence, then let it refresh the MVP gate and AI handoff automatically.
+- `blocked_by`: `visible_device_acceptance_missing`, `operator_smartphone_lost_2fa_block`
+- `next_operator_action`: Recover the missing 2FA path blocked by the lost operator smartphone, then walk the Franz Surface Laptop and iPhone through the real direct entrypoints and capture a fresh visible acceptance result.
+- `next_codex_action`: Run scripts/device_rollout_preflight.py first. If it stays ready_for_manual_device_acceptance, use scripts/prove_device_rollout.ps1 with the fresh visible Surface Laptop and iPhone evidence so the MVP gate and AI handoff refresh automatically.
 
 ### `vaultwarden_recovery_material_verified`
 
