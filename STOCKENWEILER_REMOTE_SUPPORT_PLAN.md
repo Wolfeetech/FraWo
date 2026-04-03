@@ -10,7 +10,7 @@ Ziel ist eine selbstaendig nutzbare Umgebung mit kontrolliertem Fernzugriff von 
 
 - noch nicht im aktiven Rollout
 - kein integrierter Zweitstandort
-- naechster externe Ausbaupfad nach stabilem Website-Track
+- waehrend `Lane A: MVP Closeout` offen ist nur als sichtbarer `watch`-Strang
 - Betriebsmodell bleibt bewusst klein: betreuter Endpunkt-Support statt Standortvernetzung
 - das erste kanonische Inventar lebt jetzt in `manifests/stockenweiler/site_inventory.json`
 - lokale Altquellen auf `StudioPC` sind gesichtet; erste belastbare Fakten wurden ins Inventar uebernommen
@@ -29,6 +29,31 @@ Ziel ist eine selbstaendig nutzbare Umgebung mit kontrolliertem Fernzugriff von 
 - `StudioPC` haengt aktuell nicht im `192.168.178.0/24`-LAN; direkter `SSH`-Zugriff auf `192.168.178.25` lief am `2026-03-31` in Timeout
 - `UCG`- und groessere Gateway-Arbeit bleibt aufgeschoben, solange der Operator-`2FA`-Pfad wegen des verlorenen Smartphones blockiert ist
 
+## Phasenmodell
+
+### Phase 1 - jetzt
+
+- getrennte Support-Baseline
+- `Tailscale-first`, `AnyDesk` nur Fallback
+- Access-Recovery, Inventar, Legacy-Wahrheit und Support-Playbooks
+- keine Standort-Vermischung
+- keine Service-Migration
+
+### Phase 2 - spaeter
+
+- Management-Plane-Kopplung erst nach geschlossenem `Lane A`
+- moeglicher Kandidat: `Tailscale Subnet Router`
+- Ziel nur gerouteter Management-Zugriff, nicht Standort-Verschmelzung
+- kein `Proxmox`-Cluster ueber WAN
+- kein `L2`-Stretch, keine Broadcast-/VLAN-Magie
+- keine sofortige Service-Zentralisierung nur wegen neuer Erreichbarkeit
+
+### Phase 3 - erst danach
+
+- selektive Service-Konsolidierung pro Einzelfall
+- jede Migration nur mit Abhaengigkeitsbild, Cutover, Rollback und sichtbarer Nachpruefung
+- keine pauschale `one instance only`-Regel
+
 ## V1 Scope
 
 - verwalteter Haupt-PC
@@ -42,6 +67,8 @@ Ziel ist eine selbstaendig nutzbare Umgebung mit kontrolliertem Fernzugriff von 
 - volles Smart Home
 - oeffentliche Adminflaechen im Elternhaus
 - Standort-zu-Standort-VPN
+- `Network Marriage`
+- sofortige Ein-Instanz-Konsolidierung fuer `HA`, `AzuraCast` oder `Odoo`
 - zweiter voll integrierter Unternehmensstandort
 
 ## Zugriffsmodell
@@ -108,6 +135,7 @@ Ziel ist eine selbstaendig nutzbare Umgebung mit kontrolliertem Fernzugriff von 
 
 - Stockenweiler bleibt erst einmal ein getrennter betreuter Support-Standort
 - kein direktes Vermischen der internen FRAWO-Infrastruktur mit dem Elternhaus-LAN
+- spaetere Kopplung nur `management-first`, nicht `service-merge-first`
 - Home Assistant fuer den Vater ist als spaetere, bewusst getrennte Erweiterung denkbar:
   - entweder als eigener externer Home-/Site-Kontext
   - oder zuerst nur als Remote-Support auf dem vorhandenen lokalen Home-Assistant-System
@@ -135,6 +163,47 @@ Ziel ist eine selbstaendig nutzbare Umgebung mit kontrolliertem Fernzugriff von 
 3. getrennten Secret-Bereich `Stockenweiler` in `Vaultwarden / FraWo` nur mit echten Daten befuellen
 4. keinen Sonderpfad fuer Dokumente bauen, solange Nextcloud/Paperless-Standard reicht
 5. keine WAN-Freigabe und kein Site-to-Site-VPN in V1
+
+## Phase-2-Backlog
+
+### Management Plane Bridge Candidate
+
+- spaeterer Kandidat: `Tailscale Subnet Router`
+- Ziel: gerouteter Management-Zugriff vom `StudioPC` auf Stockenweiler-Ziele
+- nicht gleichbedeutend mit Standort-Verschmelzung
+- kein `WireGuard`-Parallelstandard; hoechstens Recovery-/Notfallpfad
+
+Aktivierung erst wenn:
+
+- `Lane A` geschlossen ist
+- Stockenweiler bewusst von `watch` auf `active` gehoben wird
+- Haupt-PC und Handy verifiziert sind
+- mindestens ein echter Remote-Supportfall sauber gelaufen ist
+
+### Service Consolidation Candidates
+
+- `Home Assistant`: zuerst `management-only`, spaeter eventuell `migrate_later`
+- `Radio`: zuerst lokal halten, spaeter eventuell `migrate_later`
+- `WordPress / Website`: erst spaeterer Kandidat, wenn Bedarfs- und Inhaltsbild klar ist
+- `Paperless / Nextcloud`: zuerst Wahrheit und Zugriff pflegen, spaeter eventuell `migrate_later`
+- `SMB / Scan`: explizit lokal halten, bis `\\\\192.168.178.120\\scans\\Familie Prinz` fachlich aufgeloest ist
+
+### Migration Blockers
+
+- `Lane A` ist noch aktiv
+- Haupt-PC ist nicht verifiziert
+- Handy ist nicht verifiziert
+- primaerer Remote-Pfad ist noch nicht an einem echten Supportfall bewiesen
+- Rolle von `192.168.178.120` ist noch nicht aufgeloest
+- `FRITZ!Box`-/`Tailscale`-Faehigkeit fuer spaetere Management-Kopplung ist noch nicht sichtbar bestaetigt
+- Upload-/Latenzprofil ist noch nicht dokumentiert
+
+### Rollback Requirements
+
+- jede spaetere Standort-Kopplung muss vom `StudioPC` aus rueckbaubar sein
+- lokale Stockenweiler-Dienste muessen waehrend Phase-2-Tests lokal funktionsfaehig bleiben
+- jeder Bridge-Pfad braucht dokumentierte Disable-/Remove-Schritte vor Aktivierung
+- kein lokaler Dienst wird ohne sichtbaren Post-Check und Rollback-Pfad dekommissioniert
 
 ## Erster Live-Onboarding-Lauf
 

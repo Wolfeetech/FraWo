@@ -48,14 +48,14 @@
       "label": "Lane D: Stockenweiler",
       "status": "watch",
       "priority": 4,
-      "goal": "Keep the support concept, inventory baseline, and remote-access model visible without starting a live rollout.",
+      "goal": "Keep the support concept, inventory baseline, remote-access model, and deferred phase-2 backlog visible without starting a live rollout or network marriage.",
       "done_when": "Lane A is closed and Stockenweiler is explicitly promoted into an active support rollout.",
       "blocked_by": [
         "lane_a_mvp_closeout_active",
         "ucg_2fa_unavailable"
       ],
-      "next_operator_action": "No live rollout; only provide new facts if real devices or provider details are collected.",
-      "next_codex_action": "Maintain inventory and support-model documents only; do not start device migration or WAN admin work."
+      "next_operator_action": "No live rollout or network marriage; only provide new facts if real devices, provider details, or FRITZ/Tailscale observations are collected.",
+      "next_codex_action": "Maintain inventory, support-model documents, and the deferred phase-2 backlog; do not start site-to-site VPN, device migration, or WAN admin work."
     },
     {
       "id": "lane_e_radio_media",
@@ -140,14 +140,14 @@
       "status": "watch",
       "manual": false,
       "delegable": true,
-      "goal": "Stockenweiler stays visible as a prepared support track with inventory and remote-access concept only.",
+      "goal": "Stockenweiler stays visible as a prepared support track with inventory, remote-access concept, and a deferred management-first phase-2 backlog only.",
       "done_when": "Lane A is closed and Stockenweiler is explicitly promoted into an active rollout.",
       "blocked_by": [
         "lane_a_mvp_closeout_active",
         "ucg_2fa_unavailable"
       ],
-      "next_operator_action": "No live rollout or gateway work; only share new real device facts if available.",
-      "next_codex_action": "Keep inventory and support planning current, but do not start the rollout."
+      "next_operator_action": "No live rollout, gateway work, or site marriage; only share new real device facts, provider findings, or FRITZ/Tailscale observations if available.",
+      "next_codex_action": "Keep inventory, support planning, and the phase-2 backlog current, but do not start the rollout, site-to-site VPN, or service consolidation."
     },
     {
       "id": "radio_media_hold",

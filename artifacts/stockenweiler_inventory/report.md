@@ -74,6 +74,36 @@ Inventory source: `C:/Users/StudioPC/Documents/Homeserver 2027 Workspace/manifes
 
 - `proxmox_host_ip_continuity`: hosts `192.168.178.172`, `192.168.178.25`, same_host_key=`True`
 
+## Phase 2 Backlog
+
+- management_plane_bridge_candidate: status `deferred_until_lane_a_closed`, preferred path `tailscale_subnet_router_candidate`, fallback `wireguard_recovery_only`
+  - not before: Lane A is closed.
+  - not before: Stockenweiler is explicitly promoted from watch to active.
+  - not before: Main PC and phone are verified.
+  - not before: At least one real remote support case has been completed cleanly.
+  - must not do: Do not build a Proxmox cluster over WAN.
+  - must not do: Do not stretch Layer 2, VLANs or broadcasts between sites.
+  - must not do: Do not centralize services just because routed management access exists.
+- service_consolidation_candidates:
+  - `home_assistant`: phase_2=`management_only`, phase_3=`migrate_later`
+  - `radio`: phase_2=`keep_local`, phase_3=`migrate_later`
+  - `website_wordpress`: phase_2=`management_only`, phase_3=`migrate_later`
+  - `paperless_nextcloud`: phase_2=`management_only`, phase_3=`migrate_later`
+  - `smb_scan`: phase_2=`keep_local`, phase_3=`undecided`
+- migration_blockers:
+  - Lane A remains active and Stockenweiler is still watch-only.
+  - Main PC identity is still unresolved.
+  - Phone identity is still unresolved.
+  - Primary remote path is not yet proven on a live support case.
+  - Role of 192.168.178.120 is unresolved between MagentaTV and SMB scan path.
+  - FRITZ!Box/Tailscale NAT capability is not yet visibly verified.
+  - Upload and latency profile for cross-site operations are not documented.
+- rollback_requirements:
+  - Any future bridge must be reversible from the StudioPC without same-day physical rework at the site.
+  - Keep local Stockenweiler services reachable locally while phase 2 is being tested.
+  - Document exact disable/remove steps for any routed bridge before enabling it.
+  - Do not decommission any local service before a visible post-check and rollback path exist.
+
 ## First Live Onboarding
 
 - collect: `main_pc friendly name`

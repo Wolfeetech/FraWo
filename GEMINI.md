@@ -54,11 +54,11 @@ Regeln:
 ### `stockenweiler_watch`
 
 - `lane`: `Lane D: Stockenweiler`
-- `goal`: Inventar, Supportmodell und Remote-Zugriff sichtbar halten, aber keinen Live-Rollout starten.
+- `goal`: Inventar, Supportmodell, Remote-Zugriff und den spaeteren Phase-2-Backlog sichtbar halten, aber keinen Live-Rollout oder Network Marriage starten.
 - `done_when`: `Lane A` ist geschlossen und Stockenweiler wird aktiv priorisiert.
 - `blocked_by`: `Lane A` ist noch aktiv; `UCG`-2FA weiter blockiert
-- `next_operator_action`: Nur neue echte Geraete- oder Providerfakten liefern.
-- `next_codex_action`: Inventar und Supportmodell pflegen, aber keinen Rollout starten.
+- `next_operator_action`: Nur neue echte Geraete-, Provider- oder `FRITZ!`-/`Tailscale`-Fakten liefern; keine Live-Rollout- oder Marriage-Arbeit.
+- `next_codex_action`: Inventar, Supportmodell und den spaeteren Phase-2-Backlog pflegen, aber keinen Rollout, kein Site-to-Site-VPN und keine Service-Migration starten.
 
 ## Nicht Delegierbar Jetzt
 

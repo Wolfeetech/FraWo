@@ -344,6 +344,77 @@
       ]
     }
   ],
+  "phase_2_backlog": {
+    "management_plane_bridge_candidate": {
+      "status": "deferred_until_lane_a_closed",
+      "goal": "Prepare a management-first bridge between Anker and Stockenweiler without turning Stockenweiler into an integrated second site.",
+      "preferred_primary_path": "tailscale_subnet_router_candidate",
+      "recovery_fallback": "wireguard_recovery_only",
+      "not_before": [
+        "Lane A is closed.",
+        "Stockenweiler is explicitly promoted from watch to active.",
+        "Main PC and phone are verified.",
+        "At least one real remote support case has been completed cleanly."
+      ],
+      "must_not_do": [
+        "Do not build a Proxmox cluster over WAN.",
+        "Do not stretch Layer 2, VLANs or broadcasts between sites.",
+        "Do not centralize services just because routed management access exists."
+      ]
+    },
+    "service_consolidation_candidates": [
+      {
+        "service": "home_assistant",
+        "current_stockenweiler_role": "existing local smart-home site",
+        "phase_2_mode": "management_only",
+        "phase_3_candidate": "migrate_later",
+        "notes": "Keep the current local Home Assistant for remote-support-first operation until device dependencies are documented."
+      },
+      {
+        "service": "radio",
+        "current_stockenweiler_role": "legacy media/radio context",
+        "phase_2_mode": "keep_local",
+        "phase_3_candidate": "migrate_later",
+        "notes": "Do not rely on WAN-sensitive live media paths as the first merger step."
+      },
+      {
+        "service": "website_wordpress",
+        "current_stockenweiler_role": "legacy public/family web presence",
+        "phase_2_mode": "management_only",
+        "phase_3_candidate": "migrate_later",
+        "notes": "Only revisit a WordPress to Odoo move once the real family website need is visible and current content is mapped."
+      },
+      {
+        "service": "paperless_nextcloud",
+        "current_stockenweiler_role": "legacy document services",
+        "phase_2_mode": "management_only",
+        "phase_3_candidate": "migrate_later",
+        "notes": "Keep these as truth and access candidates first; do not decommission local document paths before workflow proof."
+      },
+      {
+        "service": "smb_scan",
+        "current_stockenweiler_role": "legacy local scan/share path",
+        "phase_2_mode": "keep_local",
+        "phase_3_candidate": "undecided",
+        "notes": "Explicitly keep local until the role of \\\\192.168.178.120\\scans\\Familie Prinz is resolved."
+      }
+    ],
+    "migration_blockers": [
+      "Lane A remains active and Stockenweiler is still watch-only.",
+      "Main PC identity is still unresolved.",
+      "Phone identity is still unresolved.",
+      "Primary remote path is not yet proven on a live support case.",
+      "Role of 192.168.178.120 is unresolved between MagentaTV and SMB scan path.",
+      "FRITZ!Box/Tailscale NAT capability is not yet visibly verified.",
+      "Upload and latency profile for cross-site operations are not documented."
+    ],
+    "rollback_requirements": [
+      "Any future bridge must be reversible from the StudioPC without same-day physical rework at the site.",
+      "Keep local Stockenweiler services reachable locally while phase 2 is being tested.",
+      "Document exact disable/remove steps for any routed bridge before enabling it.",
+      "Do not decommission any local service before a visible post-check and rollback path exist."
+    ]
+  },
   "endpoints": [
     {
       "id": "main_pc",

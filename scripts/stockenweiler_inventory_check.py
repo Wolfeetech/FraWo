@@ -21,6 +21,11 @@ def build_report(data: dict, inventory_path: Path, status_counts: Counter[str], 
     browser_bookmarks = data.get("recovered_browser_bookmarks", [])
     host_key_evidence = data.get("legacy_host_key_evidence", [])
     local_access_hints = data.get("recovered_local_access_hints", [])
+    phase_2_backlog = data.get("phase_2_backlog", {})
+    bridge_candidate = phase_2_backlog.get("management_plane_bridge_candidate", {})
+    service_candidates = phase_2_backlog.get("service_consolidation_candidates", [])
+    migration_blockers = phase_2_backlog.get("migration_blockers", [])
+    rollback_requirements = phase_2_backlog.get("rollback_requirements", [])
 
     lines = [
         "# Stockenweiler Inventory Report",
@@ -140,6 +145,41 @@ def build_report(data: dict, inventory_path: Path, status_counts: Counter[str], 
     else:
         lines.append("- none")
 
+    lines.extend(["", "## Phase 2 Backlog", ""])
+    if bridge_candidate:
+        lines.append(
+            f"- management_plane_bridge_candidate: status `{bridge_candidate.get('status', '-')}`, preferred path `{bridge_candidate.get('preferred_primary_path', '-')}`, fallback `{bridge_candidate.get('recovery_fallback', '-')}`"
+        )
+        for item in bridge_candidate.get("not_before", []):
+            lines.append(f"  - not before: {item}")
+        for item in bridge_candidate.get("must_not_do", []):
+            lines.append(f"  - must not do: {item}")
+    else:
+        lines.append("- management_plane_bridge_candidate missing")
+
+    if service_candidates:
+        lines.append("- service_consolidation_candidates:")
+        for item in service_candidates:
+            lines.append(
+                f"  - `{item.get('service', '-')}`: phase_2=`{item.get('phase_2_mode', '-')}`, phase_3=`{item.get('phase_3_candidate', '-')}`"
+            )
+    else:
+        lines.append("- service_consolidation_candidates missing")
+
+    if migration_blockers:
+        lines.append("- migration_blockers:")
+        for item in migration_blockers:
+            lines.append(f"  - {item}")
+    else:
+        lines.append("- migration_blockers missing")
+
+    if rollback_requirements:
+        lines.append("- rollback_requirements:")
+        for item in rollback_requirements:
+            lines.append(f"  - {item}")
+    else:
+        lines.append("- rollback_requirements missing")
+
     lines.extend(["", "## First Live Onboarding", ""])
     for item in onboarding.get("collect_fields", []):
         lines.append(f"- collect: `{item}`")
@@ -187,6 +227,11 @@ def main() -> int:
     browser_bookmarks = data.get("recovered_browser_bookmarks", [])
     host_key_evidence = data.get("legacy_host_key_evidence", [])
     local_access_hints = data.get("recovered_local_access_hints", [])
+    phase_2_backlog = data.get("phase_2_backlog", {})
+    bridge_candidate = phase_2_backlog.get("management_plane_bridge_candidate", {})
+    service_candidates = phase_2_backlog.get("service_consolidation_candidates", [])
+    migration_blockers = phase_2_backlog.get("migration_blockers", [])
+    rollback_requirements = phase_2_backlog.get("rollback_requirements", [])
     status_counts = Counter(item.get("status", "unknown") for item in endpoints)
 
     canonical_domain = external_domain.get("canonical", "")
@@ -210,6 +255,14 @@ def main() -> int:
         issues.append("first_live_onboarding.success_criteria is missing")
     if not playbooks:
         issues.append("first_support_playbooks is missing")
+    if not bridge_candidate:
+        issues.append("phase_2_backlog.management_plane_bridge_candidate is missing")
+    if not service_candidates:
+        issues.append("phase_2_backlog.service_consolidation_candidates is missing")
+    if not migration_blockers:
+        issues.append("phase_2_backlog.migration_blockers is missing")
+    if not rollback_requirements:
+        issues.append("phase_2_backlog.rollback_requirements is missing")
 
     pending_inventory_count = status_counts.get("pending_inventory", 0)
     needs_revalidation_count = status_counts.get("legacy_fact_needs_revalidation", 0)
@@ -219,6 +272,9 @@ def main() -> int:
     browser_bookmark_count = len(browser_bookmarks)
     host_key_evidence_count = len(host_key_evidence)
     local_access_hint_count = len(local_access_hints)
+    service_candidate_count = len(service_candidates)
+    migration_blocker_count = len(migration_blockers)
+    rollback_requirement_count = len(rollback_requirements)
     structural_status = "passed" if not issues else "failed"
 
     print(f"inventory_path={inventory_path.as_posix()}")
@@ -233,6 +289,9 @@ def main() -> int:
     print(f"stockenweiler_browser_bookmark_count={browser_bookmark_count}")
     print(f"stockenweiler_host_key_evidence_count={host_key_evidence_count}")
     print(f"stockenweiler_local_access_hint_count={local_access_hint_count}")
+    print(f"stockenweiler_service_candidate_count={service_candidate_count}")
+    print(f"stockenweiler_migration_blocker_count={migration_blocker_count}")
+    print(f"stockenweiler_rollback_requirement_count={rollback_requirement_count}")
     print(f"stockenweiler_inventory_check_status={structural_status}")
 
     if args.report:

@@ -43,6 +43,11 @@ def main() -> int:
     browser_bookmarks = data.get("recovered_browser_bookmarks", [])
     host_key_evidence = data.get("legacy_host_key_evidence", [])
     local_access_hints = data.get("recovered_local_access_hints", [])
+    phase_2_backlog = data.get("phase_2_backlog", {})
+    bridge_candidate = phase_2_backlog.get("management_plane_bridge_candidate", {})
+    service_candidates = phase_2_backlog.get("service_consolidation_candidates", [])
+    migration_blockers = phase_2_backlog.get("migration_blockers", [])
+    rollback_requirements = phase_2_backlog.get("rollback_requirements", [])
 
     lines = [
         "# Stockenweiler Support Brief",
@@ -186,6 +191,48 @@ def main() -> int:
             lines.append(f"- `{playbook.get('id', '-')}`: {playbook.get('goal', '-')}")
     else:
         lines.append("- none")
+
+    lines.extend(
+        [
+            "",
+            "## Phase 2 Backlog",
+            "",
+        ]
+    )
+
+    if bridge_candidate:
+        lines.append(
+            f"- management plane candidate: `{bridge_candidate.get('preferred_primary_path', '-')}` / fallback `{bridge_candidate.get('recovery_fallback', '-')}` / status `{bridge_candidate.get('status', '-')}`"
+        )
+        for item in bridge_candidate.get("not_before", []):
+            lines.append(f"- not before: {item}")
+        for item in bridge_candidate.get("must_not_do", []):
+            lines.append(f"- must not do: {item}")
+    else:
+        lines.append("- management plane candidate missing")
+
+    if service_candidates:
+        lines.append("- service candidates:")
+        for item in service_candidates:
+            lines.append(
+                f"  - `{item.get('service', '-')}` -> phase_2 `{item.get('phase_2_mode', '-')}`, phase_3 `{item.get('phase_3_candidate', '-')}`"
+            )
+    else:
+        lines.append("- service candidates missing")
+
+    if migration_blockers:
+        lines.append("- migration blockers:")
+        for item in migration_blockers:
+            lines.append(f"  - {item}")
+    else:
+        lines.append("- migration blockers missing")
+
+    if rollback_requirements:
+        lines.append("- rollback requirements:")
+        for item in rollback_requirements:
+            lines.append(f"  - {item}")
+    else:
+        lines.append("- rollback requirements missing")
 
     lines.extend(
         [

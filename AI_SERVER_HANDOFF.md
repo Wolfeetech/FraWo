@@ -11,10 +11,10 @@ Keine Secrets. Keine Passwoerter. Diese Datei ist dafuer gedacht, sie direkt an 
 
 ## Generierung
 
-- Generated at: `2026-03-31 09:57:09`
+- Generated at: `2026-03-31 11:26:09`
 - Workspace root: `C:\Users\StudioPC\Documents\Homeserver 2027 Workspace`
 - Git branch: `main`
-- Pending git changes: `18`
+- Pending git changes: `8`
 - Managed hosts in inventory: `30`
 
 ## Source Freshness
@@ -22,7 +22,7 @@ Keine Secrets. Keine Passwoerter. Diese Datei ist dafuer gedacht, sie direkt an 
 - `AI_BOOTSTRAP_CONTEXT.md`: `2026-03-30 07:32:46`
 - `OPS_HOME.md`: `2026-03-31 06:53:07`
 - `OPERATOR_TODO_QUEUE.md`: `2026-03-31 09:55:03`
-- `manifests/work_lanes/current_plan.json`: `2026-03-31 09:54:54`
+- `manifests/work_lanes/current_plan.json`: `2026-03-31 11:25:43`
 - `artifacts/release_mvp_gate/latest_release_mvp_gate.json`: `2026-03-31 09:57:09`
 - `artifacts/public_ipv6_exposure_audit/latest_report.md`: `2026-03-31 06:32:34`
 - `artifacts\website_release_gate\20260330_161648\website_release_gate.md`: `2026-03-30 16:16:48`
@@ -85,14 +85,14 @@ Keine Secrets. Keine Passwoerter. Diese Datei ist dafuer gedacht, sie direkt an 
 - `Lane C: Security/PBS/Infra` -> `watch`
   - goal: Keep hardening, reapply paths, and audits green without expanding the scope into a full infrastructure program.
 - `Lane D: Stockenweiler` -> `watch`
-  - goal: Keep the support concept, inventory baseline, and remote-access model visible without starting a live rollout.
+  - goal: Keep the support concept, inventory baseline, remote-access model, and deferred phase-2 backlog visible without starting a live rollout or network marriage.
 - `Lane E: Radio/Media` -> `hold`
   - goal: Keep radio and media operational without new feature work or UI expansion.
 
 ## Business MVP Blockers
 
 - `device_rollout_verified`: `pending`
-  - Open rollout blocker 2026-03-31: Franz Surface Laptop still needs visible acceptance on http://portal.hs27.internal/franz/ and Franz iPhone still needs visible acceptance on http://100.99.206.128:8447/franz/. Both start paths must visibly expose the core direct targets for Nextcloud, Paperless, Odoo and Vaultwarden before this check can pass.
+  - Open rollout blocker 2026-03-31: Franz Surface Laptop still needs visible acceptance on http://portal.hs27.internal/franz/ and Franz iPhone still needs visible acceptance on http://100.99.206.128:8447/franz/. Both start paths must visibly expose the core direct targets for Nextcloud, Paperless, Odoo and Vaultwarden before this check can pass. The rollout is currently additionally blocked by the missing 2FA path while the operator smartphone is still lost.
 - `vaultwarden_recovery_material_verified`: `pending`
   - No fresh proof yet that the Vaultwarden recovery material exists offline in two separate physical copies.
 
@@ -191,11 +191,11 @@ Keine Secrets. Keine Passwoerter. Diese Datei ist dafuer gedacht, sie direkt an 
 
 - `status`: `watch`
 - `lane`: Lane D: Stockenweiler
-- `goal`: Stockenweiler stays visible as a prepared support track with inventory and remote-access concept only.
+- `goal`: Stockenweiler stays visible as a prepared support track with inventory, remote-access concept, and a deferred management-first phase-2 backlog only.
 - `done_when`: Lane A is closed and Stockenweiler is explicitly promoted into an active rollout.
 - `blocked_by`: `lane_a_mvp_closeout_active`, `ucg_2fa_unavailable`
-- `next_operator_action`: No live rollout or gateway work; only share new real device facts if available.
-- `next_codex_action`: Keep inventory and support planning current, but do not start the rollout.
+- `next_operator_action`: No live rollout, gateway work, or site marriage; only share new real device facts, provider findings, or FRITZ/Tailscale observations if available.
+- `next_codex_action`: Keep inventory, support planning, and the phase-2 backlog current, but do not start the rollout, site-to-site VPN, or service consolidation.
 
 ### `radio_media_hold`
 
