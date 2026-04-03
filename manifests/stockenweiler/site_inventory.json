@@ -33,7 +33,8 @@
     "proxmox_host": {
       "friendly_name": "proxmox Host",
       "ip": "192.168.178.25",
-      "access_status": "legacy_verified_local_export"
+      "access_status": "legacy_verified_local_export",
+      "notes": "Local recovery on StudioPC also found a persisted mapped drive Z: -> \\\\192.168.178.25\\music with user wolf on 2026-03-31."
     },
     "home_assistant": {
       "friendly_name": "homeassistant",
@@ -49,7 +50,8 @@
     "magenta_tv": {
       "friendly_name": "MagentaTV",
       "ip": "192.168.178.120",
-      "access_status": "legacy_verified_local_export"
+      "access_status": "legacy_verified_local_export",
+      "notes": "Current router export says MagentaTV, but local StudioPC traces also reference \\\\192.168.178.120\\music and \\\\192.168.178.120\\scans\\Familie Prinz; revalidate on first live onboarding."
     }
   },
   "legacy_service_map": [
@@ -66,6 +68,27 @@
       "legacy_public_url": "https://pve.prinz-stockenweiler.de",
       "source": "Operator statement plus local StudioPC probe on 2026-03-31",
       "status": "legacy_probe_candidate"
+    },
+    {
+      "service": "music_share_current_hint",
+      "local_url": "\\\\192.168.178.25\\music",
+      "legacy_public_url": "",
+      "source": "HKCU:/Network/Z plus Windows Recent shortcut on StudioPC recovered 2026-03-31",
+      "status": "recovered_local_hint"
+    },
+    {
+      "service": "music_share_legacy_hint",
+      "local_url": "\\\\192.168.178.120\\music",
+      "legacy_public_url": "",
+      "source": "HKCU:/Software/Microsoft/Windows/CurrentVersion/Explorer/MountPoints2 on StudioPC recovered 2026-03-31",
+      "status": "recovered_local_hint"
+    },
+    {
+      "service": "scanner_share_hint",
+      "local_url": "\\\\192.168.178.187\\ScansDrucker",
+      "legacy_public_url": "",
+      "source": "MountPoints2 plus Windows Credential Manager on StudioPC recovered 2026-03-31",
+      "status": "recovered_local_hint"
     },
     {
       "service": "paperless_public_bookmark",
@@ -140,27 +163,50 @@
     {
       "topic": "ip_192.168.178.120_role",
       "current_best_guess": "MagentaTV",
-      "conflicting_legacy_value": "\\\\192.168.178.120\\scans\\Familie Prinz",
+      "conflicting_legacy_value": "\\\\192.168.178.120\\scans\\Familie Prinz and \\\\192.168.178.120\\music",
       "source": "Local router export vs C:/Users/StudioPC/AppData/Roaming/Microsoft/Windows/Recent/Familie Prinz.lnk"
+    },
+    {
+      "topic": "music_share_host_ip",
+      "current_best_guess": "\\\\192.168.178.25\\music",
+      "conflicting_legacy_value": "\\\\192.168.178.120\\music",
+      "source": "HKCU:/Network/Z vs HKCU:/Software/Microsoft/Windows/CurrentVersion/Explorer/MountPoints2 on StudioPC"
+    },
+    {
+      "topic": "scanner_share_host_ip",
+      "current_best_guess": "\\\\192.168.178.187\\ScansDrucker",
+      "conflicting_legacy_value": "\\\\192.168.178.120\\scans\\Familie Prinz",
+      "source": "Windows Credential Manager plus MountPoints2 vs older Recent shortcut on StudioPC"
     }
   ],
   "support_goals": [
     "Remote help for TV and Magenta problems",
     "Managed support for the father desktop environment",
-    "Optional later dedicated Home Assistant home/site integration without exposing the Stockenweiler site directly to the internet"
+    "Keep the parents' scan folders local and simple before any document automation is introduced.",
+    "Optional later dedicated Home Assistant home/site integration without exposing the Stockenweiler site directly to the internet",
+    "Treat the Stockenweiler Proxmox host and its local HDDs as a future complementary backup/storage candidate once management-first access is proven."
   ],
   "first_support_targets": [
     "MagentaTV / TV path",
     "Father desktop remote help",
     "Printer / scanner help",
-    "Existing local Home Assistant support"
+    "Existing local Home Assistant support",
+    "Local scan folder continuity"
   ],
   "current_blockers": [
     "No first live remote onboarding has happened yet.",
     "Current on-site main PC identity is still unresolved; operator stated on 2026-03-31 that the former main PC anchor was this StudioPC.",
     "Phone identity is still unresolved.",
-    "Current StudioPC is not on the 192.168.178.0/24 LAN right now; direct SSH to 192.168.178.25 timed out during recovery on 2026-03-31.",
-    "UCG and broader gateway work stay deferred while the operator 2FA path remains blocked."
+    "The Stockenweiler Tailscale bridge on stockenweiler-pve is prepared but still pending login approval; StudioPC still sees only 192.168.2.0/24 via toolbox and no visible 192.168.178.0/24 tailnet route yet.",
+    "Scan and media share lineage is unresolved across \\\\192.168.178.25\\music, \\\\192.168.178.120\\music, \\\\192.168.178.120\\scans\\Familie Prinz and \\\\192.168.178.187\\ScansDrucker.",
+    "AnyDesk fallback is present locally, but recovered remote IDs are not yet mapped to live Stockenweiler device names.",
+    "Public DNS / DynDNS is only partially coherent: home and cloud resolve via yourparty.tech to 91.14.44.20, Paperless points separately to 80.134.168.100, and pve.prinz-stockenweiler.de has no DNS record.",
+    "Visible legacy host health is degraded: Home Assistant frontend loads but backend is unavailable, Paperless times out, Nextcloud fails TLS/SNI, and pve.prinz-stockenweiler.de does not resolve.",
+    "UCG and broader gateway work stay deferred while the operator 2FA path remains blocked.",
+    "StudioPC already has a local Windows WireGuard route for 192.168.178.0/24 via 10.0.0.2, but direct TCP/22 to 192.168.178.25 still times out; treat that local tunnel as stale until it is re-applied with elevation.",
+    "Stockenweiler PVE storage baseline is now documented: /mnt/data_family on sdb1 (932G) and /mnt/music_hdd on sda2 (1.9T) are both at 100% usage, so any future PBS reuse needs cleanup or reallocation first.",
+    "Local WireGuard Tunnel VPN is still running on StudioPC and cannot be stopped or uninstalled without an elevated admin token.",
+    "Windows hosts file still pins yourparty.tech and www.yourparty.tech to 192.168.178.175; removing those stale lines needs an elevated admin token."
   ],
   "legacy_access_probe_summary": {
     "source": "Local StudioPC probe on 2026-03-31",
@@ -223,6 +269,140 @@
         ],
         "notes": "Recovered from Edge bookmarks; HTTPS currently fails with TLSV1_UNRECOGNIZED_NAME during StudioPC probe on 2026-03-31."
       }
+    ]
+  },
+  "browser_visible_host_check_summary": {
+    "source": "Gemini visible host check on 2026-03-31",
+    "currently_reachable_count": 1,
+    "currently_broken_count": 3,
+    "operator_relevant_observations": [
+      "Home Assistant is the only legacy host that still presents a frontend at HTTPS level.",
+      "Paperless currently times out on port 443.",
+      "Nextcloud currently fails with ERR_SSL_UNRECOGNIZED_NAME_ALERT, which points to a reverse-proxy or certificate SNI mismatch.",
+      "pve.prinz-stockenweiler.de currently fails DNS resolution."
+    ],
+    "findings": [
+      {
+        "host": "https://home.prinz-stockenweiler.de",
+        "final_url": "https://home.prinz-stockenweiler.de/",
+        "visible_state": "home_assistant",
+        "title": "Home Assistant",
+        "login_required": "unknown",
+        "note": "The Home Assistant frontend loads, but it immediately shows 'Unable to connect to Home Assistant. Retrying in ... seconds...', which means the web frontend answers while the backend service appears unavailable."
+      },
+      {
+        "host": "https://papierkram.prinz-stockenweiler.de/dashboard",
+        "final_url": "N/A",
+        "visible_state": "timeout",
+        "title": "N/A",
+        "login_required": "unknown",
+        "note": "Browser-visible state is ERR_CONNECTION_TIMED_OUT. The host does not currently answer on port 443."
+      },
+      {
+        "host": "https://cloud.prinz-stockenweiler.de/apps/dashboard/",
+        "final_url": "https://cloud.prinz-stockenweiler.de/apps/dashboard/",
+        "visible_state": "tls_error",
+        "title": "N/A",
+        "login_required": "unknown",
+        "note": "Browser-visible state is ERR_SSL_UNRECOGNIZED_NAME_ALERT, which indicates a missing or wrong certificate/SNI mapping at the reverse proxy."
+      },
+      {
+        "host": "https://pve.prinz-stockenweiler.de",
+        "final_url": "N/A",
+        "visible_state": "dns_fail",
+        "title": "N/A",
+        "login_required": "unknown",
+        "note": "Browser-visible state is ERR_NAME_NOT_RESOLVED. The hostname does not currently resolve."
+      }
+    ]
+  },
+  "public_truth_check_summary": {
+    "source": "Local public truth check on 2026-03-31",
+    "dyn_dns_like_count": 2,
+    "current_mapping_observations": [
+      "home.prinz-stockenweiler.de resolves via the canonical name yourparty.tech to 91.14.44.20 and returns HTTPS 200.",
+      "cloud.prinz-stockenweiler.de resolves via the canonical name yourparty.tech to 91.14.44.20 but currently fails TLS/SNI.",
+      "papierkram.prinz-stockenweiler.de resolves directly to 80.134.168.100 and currently times out on HTTPS.",
+      "pve.prinz-stockenweiler.de currently has no DNS record."
+    ],
+    "findings": [
+      {
+        "service": "home_assistant_public",
+        "host": "home.prinz-stockenweiler.de",
+        "public_url": "https://home.prinz-stockenweiler.de",
+        "dns_resolved": true,
+        "canonical_name": "yourparty.tech",
+        "addresses": [
+          "91.14.44.20"
+        ],
+        "https_reachable": true,
+        "https_status": 200,
+        "title": "Home Assistant",
+        "error_type": ""
+      },
+      {
+        "service": "proxmox_public",
+        "host": "pve.prinz-stockenweiler.de",
+        "public_url": "https://pve.prinz-stockenweiler.de",
+        "dns_resolved": false,
+        "canonical_name": "",
+        "addresses": [],
+        "https_reachable": false,
+        "https_status": "",
+        "title": "",
+        "error_type": "dns_fail"
+      },
+      {
+        "service": "paperless_public_bookmark",
+        "host": "papierkram.prinz-stockenweiler.de",
+        "public_url": "https://papierkram.prinz-stockenweiler.de/dashboard",
+        "dns_resolved": true,
+        "canonical_name": "papierkram.prinz-stockenweiler.de",
+        "addresses": [
+          "80.134.168.100"
+        ],
+        "https_reachable": false,
+        "https_status": "",
+        "title": "",
+        "error_type": "timeout"
+      },
+      {
+        "service": "nextcloud_public_bookmark",
+        "host": "cloud.prinz-stockenweiler.de",
+        "public_url": "https://cloud.prinz-stockenweiler.de/apps/dashboard/",
+        "dns_resolved": true,
+        "canonical_name": "yourparty.tech",
+        "addresses": [
+          "91.14.44.20"
+        ],
+        "https_reachable": false,
+        "https_status": "",
+        "title": "",
+        "error_type": "tls_error"
+      }
+    ]
+  },
+  "remote_path_probe_summary": {
+    "generated_at": "2026-04-03 18:47:10",
+    "tailscale_backend_state": "Running",
+    "tailscale_route_all": true,
+    "tailscale_health": [
+      "Tailscale can't reach the configured DNS servers. Internet connectivity may be affected."
+    ],
+    "visible_primary_routes": [
+      "192.168.2.0/24 via toolbox.tail150400.ts.net"
+    ],
+    "stockenweiler_subnet_route_present": false,
+    "ssh_pve_target": "stock-pve",
+    "ssh_pve_status": "reachable",
+    "anydesk_installed": true,
+    "anydesk_candidate_count": 7,
+    "observations": [
+      "Tailscale backend is `Running` on StudioPC.",
+      "Visible Tailscale primary routes are currently limited to: 192.168.2.0/24 via toolbox.tail150400.ts.net.",
+      "No Stockenweiler subnet route `192.168.178.0/24` is currently visible in local Tailscale status.",
+      "SSH to `stock-pve` is currently reachable from StudioPC.",
+      "AnyDesk is installed locally and exposes `9` recovered remote-ID candidates, but they are not yet mapped to live Stockenweiler device names."
     ]
   },
   "recovered_browser_bookmarks": [
@@ -295,6 +475,46 @@
       "credential_hint": "SMB share target only; no credentials recovered",
       "source": "C:/Users/StudioPC/AppData/Roaming/Microsoft/Windows/Recent/Familie Prinz.lnk",
       "status": "recovered_local_hint"
+    },
+    {
+      "service": "music_share_current_hint",
+      "method": "mapped_network_drive",
+      "value": "\\\\192.168.178.25\\music",
+      "credential_hint": "persisted Z: mapping for user wolf",
+      "source": "HKCU:/Network/Z plus C:/Users/StudioPC/AppData/Roaming/Microsoft/Windows/Recent/music (192.168.178.25) (Z).lnk",
+      "status": "recovered_local_hint"
+    },
+    {
+      "service": "music_share_legacy_hint",
+      "method": "mountpoints2",
+      "value": "\\\\192.168.178.120\\music",
+      "credential_hint": "historic Explorer mount only; no current credential recovered",
+      "source": "HKCU:/Software/Microsoft/Windows/CurrentVersion/Explorer/MountPoints2",
+      "status": "recovered_local_hint"
+    },
+    {
+      "service": "scanner_share_hint",
+      "method": "windows_credential_manager",
+      "value": "\\\\192.168.178.187\\ScansDrucker",
+      "credential_hint": "stored domain credential target 192.168.178.187 as user Scanner",
+      "source": "cmdkey /list plus HKCU:/Software/Microsoft/Windows/CurrentVersion/Explorer/MountPoints2",
+      "status": "recovered_local_hint"
+    },
+    {
+      "service": "stockenweiler_remote_path_truth",
+      "method": "tailscale_status",
+      "value": "BackendState=Running; RouteAll=true; visible primary routes currently only 192.168.2.0/24 via toolbox.tail150400.ts.net",
+      "credential_hint": "StudioPC is logged into Tailscale but no 192.168.178.0/24 subnet route is currently visible",
+      "source": "tailscale status --json plus tailscale debug prefs on StudioPC recovered 2026-04-03",
+      "status": "recovered_local_hint"
+    },
+    {
+      "service": "anydesk_fallback_candidates",
+      "method": "anydesk_local_history",
+      "value": "roster IDs 1580356160 and 1971554928; additional candidate remote IDs 1174136922, 1342642678, 1468499678, 859293713 and 1129124189",
+      "credential_hint": "AnyDesk is installed locally; IDs were recovered from user.conf and connection traces but are not yet mapped to live device names",
+      "source": "C:/Users/StudioPC/AppData/Roaming/AnyDesk/user.conf plus C:/ProgramData/AnyDesk/connection_trace.txt and local AnyDesk traces recovered 2026-03-31",
+      "status": "recovered_local_hint"
     }
   ],
   "first_live_onboarding": {
@@ -302,11 +522,16 @@
       "main_pc friendly name",
       "main_pc OS and local login model",
       "main_pc tailscale name or AnyDesk ID",
+      "AnyDesk ID to current device-name mapping",
       "phone model and OS",
       "phone tailscale name",
       "router management contact path",
       "printer/scanner exact model",
-      "MagentaTV box model and room context"
+      "MagentaTV box model and room context",
+      "music share host identity",
+      "scan share host identity",
+      "current local scan folder path used by the parents",
+      "PVE local HDD inventory for future PBS use"
     ],
     "success_criteria": [
       "Main PC is identified as a managed support endpoint.",
@@ -340,7 +565,9 @@
       "goal": "Unblock printing or scanning with the least invasive path.",
       "first_checks": [
         "Confirm Brother model and whether the issue is print, scan or connectivity.",
-        "Reuse the FraWo document path only if the household problem is really document ingest."
+        "Keep the first working path local: scans stay in local Stockenweiler folders before any automation exists.",
+        "Do not route parents' scans into the FraWo business document path by default.",
+        "Treat a separate Stockenweiler Paperless database as a future-only option."
       ]
     }
   ],
@@ -373,9 +600,9 @@
       {
         "service": "radio",
         "current_stockenweiler_role": "legacy media/radio context",
-        "phase_2_mode": "keep_local",
-        "phase_3_candidate": "migrate_later",
-        "notes": "Do not rely on WAN-sensitive live media paths as the first merger step."
+        "phase_2_mode": "management_only",
+        "phase_3_candidate": "migrate_to_best_host_later",
+        "notes": "Radio is not site-bound; host it later on whichever node has the more stable hardware and runtime characteristics, but do not migrate it now."
       },
       {
         "service": "website_wordpress",
@@ -387,9 +614,9 @@
       {
         "service": "paperless_nextcloud",
         "current_stockenweiler_role": "legacy document services",
-        "phase_2_mode": "management_only",
-        "phase_3_candidate": "migrate_later",
-        "notes": "Keep these as truth and access candidates first; do not decommission local document paths before workflow proof."
+        "phase_2_mode": "keep_local",
+        "phase_3_candidate": "separate_db_later",
+        "notes": "Keep the parents' scan folders local first; if document automation is introduced later, it should use a separate Stockenweiler Paperless database instead of the FraWo business path."
       },
       {
         "service": "smb_scan",
@@ -397,6 +624,13 @@
         "phase_2_mode": "keep_local",
         "phase_3_candidate": "undecided",
         "notes": "Explicitly keep local until the role of \\\\192.168.178.120\\scans\\Familie Prinz is resolved."
+      },
+      {
+        "service": "pbs_storage",
+        "current_stockenweiler_role": "future complementary backup/storage capacity on the Stockenweiler Proxmox host HDDs",
+        "phase_2_mode": "management_only",
+        "phase_3_candidate": "enable_as_pbs_target_later",
+        "notes": "Treat local HDDs on the Stockenweiler PVE host as a future PBS or backup-capacity candidate once disk truth, connectivity and rollback are documented."
       }
     ],
     "migration_blockers": [
@@ -406,7 +640,8 @@
       "Primary remote path is not yet proven on a live support case.",
       "Role of 192.168.178.120 is unresolved between MagentaTV and SMB scan path.",
       "FRITZ!Box/Tailscale NAT capability is not yet visibly verified.",
-      "Upload and latency profile for cross-site operations are not documented."
+      "Upload and latency profile for cross-site operations are not documented.",
+      "PVE disk inventory and PBS fitness on 192.168.178.25 are not documented."
     ],
     "rollback_requirements": [
       "Any future bridge must be reversible from the StudioPC without same-day physical rework at the site.",
@@ -449,6 +684,18 @@
       "connection_type": "wlan",
       "local_ip": "192.168.178.153",
       "notes": "Detected in local router export on 2026-03-30."
+    },
+    {
+      "id": "scan_share_host",
+      "type": "scanner_or_smb_host",
+      "status": "legacy_fact_needs_revalidation",
+      "friendly_name": "ScansDrucker",
+      "owner_or_user": "Stockenweiler household",
+      "local_network_name": "ScansDrucker",
+      "local_ip": "192.168.178.187",
+      "tailscale_name": "",
+      "anydesk_id": "",
+      "notes": "Recovered from Credential Manager target 192.168.178.187 with user Scanner and Explorer MountPoints2 share \\\\192.168.178.187\\ScansDrucker on 2026-03-31."
     },
     {
       "id": "router_provider",
@@ -495,12 +742,90 @@
       "local_ip": "192.168.178.120",
       "tailscale_name": "",
       "anydesk_id": "",
-      "notes": "Useful as a first real support target for TV and receiver issues."
+      "notes": "Useful as a first real support target for TV and receiver issues, but local StudioPC traces also reference SMB paths on 192.168.178.120; revalidate the actual current role."
     }
   ],
   "shared_services": {
-    "document_path": "reuse_frawo_nextcloud_paperless_standard",
+    "document_path": "stockenweiler_local_scan_folders_first",
+    "future_document_automation": "optional_separate_paperless_db_later",
+    "radio_hosting_policy": "host_on_the_most_stable_capable_hardware",
+    "backup_storage_mode": "future_stockenweiler_pve_hdds_can_complement_anker_pbs",
     "secret_area": "Vaultwarden / FraWo / Stockenweiler",
     "home_assistant_integration_mode": "later_phase_separate_home_or_remote_support_only"
+  },
+  "working_recovery_access": {
+    "verified_at": "2026-03-31 15:33:04",
+    "ssh_alias": "stock-pve",
+    "path": "StudioPC -> toolbox -> userspace WireGuard wgstkw -> 192.168.178.25",
+    "helper_script": "scripts/ensure_stockenweiler_toolbox_access.ps1",
+    "working_keys": [
+      "~/.ssh/id_ed25519",
+      "~/.ssh/pve_ed25519"
+    ],
+    "notes": "Verified after refreshing the canonical local WireGuard client profile to direct endpoint 91.14.44.20:51820 and removing the stale DNS line."
+  },
+  "pve_storage_probe_summary": {
+    "generated_at": "2026-03-31 13:03:34",
+    "target": "stock-pve",
+    "probe_status": "reachable",
+    "host": "pve",
+    "pveversion": "pve-manager/9.1.4/5ac30304265fbd8e (running kernel: 6.17.2-2-pve)",
+    "notable_filesystems": [
+      "/dev/sdb1 fuseblk 932G mounted at /mnt/data_family is 100% full",
+      "/dev/sda2 fuseblk 1.9T mounted at /mnt/music_hdd is 100% full",
+      "/dev/mapper/pve-root ext4 68G mounted at / is at 28% usage"
+    ],
+    "pvesm_rows": [
+      "hdd-backup dir active 976727036 KiB total / 0 KiB available / 100.00% used",
+      "local dir active 71017632 KiB total / 49134852 KiB available / 25.67% used",
+      "local-lvm lvmthin active 164864000 KiB total / 58361856 KiB available / 64.60% used"
+    ],
+    "notes": "Read-only probe reached stock-pve successfully on 2026-03-31. The future PBS/storage idea remains valid in principle, but both large local HDD-backed filesystems are currently full."
+  },
+  "wireguard_cleanup_summary": {
+    "verified_at": "2026-03-31 13:10:00",
+    "kept_local_profile": "C:/Users/StudioPC/wg-studiopc.conf",
+    "archived_profiles_dir": "C:/Users/StudioPC/WireGuard-legacy-archive/2026-03-31",
+    "archived_profiles": [
+      "wg-google-pixel.conf",
+      "wg-surface.conf",
+      "wg-zenbook.conf",
+      "wg0-client-aussenstation1.conf",
+      "wg0-server.conf",
+      "wg-studiopc-iptest.conf"
+    ],
+    "running_windows_tunnel_service": "WireGuardTunnel$VPN",
+    "running_windows_tunnel_ip": "10.0.0.2/32",
+    "running_windows_tunnel_routes": [
+      "10.0.0.0/24",
+      "192.168.178.0/24"
+    ],
+    "cleanup_blockers": [
+      "service stop/uninstall requires elevated admin token",
+      "hosts file cleanup requires elevated admin token"
+    ],
+    "notes": "Local WireGuard is now refreshed to one canonical Stockenweiler client profile with direct endpoint 91.14.44.20:51820 and no DNS override. The current practical path still uses stock-pve via toolbox-backed WireGuard until the local Windows tunnel service is cleaned and re-applied with elevation.",
+    "refreshed_at": "2026-03-31 15:33:04",
+    "canonical_endpoint": "91.14.44.20:51820",
+    "dns_line_removed": true,
+    "refresh_script": "scripts/refresh_stockenweiler_wireguard_profile.ps1",
+    "reapply_script": "scripts/reapply_stockenweiler_wireguard_service.ps1",
+    "toolbox_helper": "scripts/ensure_stockenweiler_toolbox_access.ps1"
+  },
+  "management_bridge_summary": {
+    "verified_at": "2026-04-03 18:47:10",
+    "goal": "Professional management-first bridge without site marriage.",
+    "current_state": "route_approval_pending",
+    "primary_candidate": "Tailscale subnet-router on stockenweiler-pve for 192.168.178.0/24",
+    "fallback_path": "StudioPC -> toolbox -> userspace WireGuard wgstkw -> 192.168.178.25",
+    "local_direct_wireguard_route_present": true,
+    "local_direct_wireguard_reachable": false,
+    "local_tailscale_route_visible": false,
+    "local_tailscale_route_all": true,
+    "pending_artifact": "artifacts/stockenweiler_inventory/latest_tailscale_bridge_check.md",
+    "prepare_artifact": "artifacts/stockenweiler_inventory/latest_tailscale_bridge_prepare.md",
+    "route_acceptance_strategy": "Do not enable blind RouteAll on StudioPC while it is directly attached to 192.168.2.0/24 and toolbox advertises the same subnet.",
+    "next_operator_action": "Approve the advertised subnet route 192.168.178.0/24 for stockenweiler-pve in Tailscale admin so the route becomes visible on StudioPC.",
+    "next_codex_action": "After subnet-route approval, re-run python scripts/check_stockenweiler_tailscale_bridge.py and python scripts/stockenweiler_remote_path_probe.py, then refresh the Stockenweiler reports and AI handoff."
   }
 }

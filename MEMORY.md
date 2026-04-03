@@ -638,6 +638,11 @@ Lokale Admin-Flaechen (nur localhost):
 
 ## Aktive Operator-Aktionen
 
+0. `AKTION VON DIR ERFORDERLICH:` UCG-Testsegment vs. Legacy-LAN entscheiden
+   - benoetigte Aktion: festlegen, ob das Estate auf `10.1.0.0/24` migriert wird oder ob der Proxmox-Port zurueck ins `192.168.2.0/24`-VLAN kommt
+   - warum: `proxmox-anker` ist aktuell auf `10.1.0.92/24`, dadurch sind Odoo/Nextcloud/Paperless/HA/Portal von `wolfstudiopc` nicht erreichbar
+   - danach uebernehmen Codex/Gemini wieder: Netzpfad umstellen, DNS/hs27.internal anpassen und Erreichbarkeit verifizieren
+
 1. `AKTION VON DIR ERFORDERLICH:` spaeter einen ersten Thomson-/Google-TV-Client mit Jellyfin verbinden
    - benoetigte Aktion: auf dem TV die Jellyfin-App installieren und den Server `http://192.168.2.20:8096` eintragen
    - warum: die Musikbibliothek ist bereits an Jellyfin angebunden; der naechste echte Nutzwert ist jetzt der erste Client-Rollout statt weiterer Server-Basisarbeit

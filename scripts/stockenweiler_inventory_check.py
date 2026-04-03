@@ -18,6 +18,10 @@ def build_report(data: dict, inventory_path: Path, status_counts: Counter[str], 
     onboarding = data.get("first_live_onboarding", {})
     playbooks = data.get("first_support_playbooks", [])
     probe_summary = data.get("legacy_access_probe_summary", {})
+    browser_visible_summary = data.get("browser_visible_host_check_summary", {})
+    public_truth_summary = data.get("public_truth_check_summary", {})
+    remote_path_summary = data.get("remote_path_probe_summary", {})
+    management_bridge_summary = data.get("management_bridge_summary", {})
     browser_bookmarks = data.get("recovered_browser_bookmarks", [])
     host_key_evidence = data.get("legacy_host_key_evidence", [])
     local_access_hints = data.get("recovered_local_access_hints", [])
@@ -114,6 +118,65 @@ def build_report(data: dict, inventory_path: Path, status_counts: Counter[str], 
                 lines.append(
                     f"- `{finding.get('service', '-')}`: host `{finding.get('host', '-')}` unresolved (`{finding.get('notes', '-')}`)"
                 )
+    else:
+        lines.append("- none")
+
+    lines.extend(["", "## Browser Visible Host Check", ""])
+    if browser_visible_summary.get("findings"):
+        lines.append(f"- source: `{browser_visible_summary.get('source', '-')}`")
+        lines.append(
+            f"- currently_reachable: `{browser_visible_summary.get('currently_reachable_count', 0)}` / currently_broken: `{browser_visible_summary.get('currently_broken_count', 0)}`"
+        )
+        for item in browser_visible_summary.get("operator_relevant_observations", []):
+            lines.append(f"- observation: {item}")
+        for finding in browser_visible_summary.get("findings", []):
+            lines.append(
+                f"- `{finding.get('host', '-')}` -> state `{finding.get('visible_state', '-')}`, title `{finding.get('title', '-')}`, login_required `{finding.get('login_required', '-')}`"
+            )
+            lines.append(f"  - note: {finding.get('note', '-')}")
+    else:
+        lines.append("- none")
+
+    lines.extend(["", "## Public Truth Check", ""])
+    if public_truth_summary.get("findings"):
+        lines.append(f"- source: `{public_truth_summary.get('source', '-')}`")
+        lines.append(f"- dyn_dns_like_count: `{public_truth_summary.get('dyn_dns_like_count', 0)}`")
+        for item in public_truth_summary.get("current_mapping_observations", []):
+            lines.append(f"- observation: {item}")
+        for finding in public_truth_summary.get("findings", []):
+            addresses = ", ".join(f"`{addr}`" for addr in finding.get("addresses", [])) or "`-`"
+            lines.append(
+                f"- `{finding.get('host', '-')}` -> canonical `{finding.get('canonical_name', '-') or '-'}` / addresses {addresses} / error `{finding.get('error_type', '-') or 'none'}`"
+            )
+    else:
+        lines.append("- none")
+
+    lines.extend(["", "## Remote Path Probe", ""])
+    if remote_path_summary:
+        lines.append(f"- source: `{remote_path_summary.get('source', '-')}`")
+        lines.append(f"- tailscale_backend_state: `{remote_path_summary.get('tailscale_backend_state', '-')}`")
+        lines.append(f"- tailscale_route_all: `{remote_path_summary.get('tailscale_route_all', '-')}`")
+        lines.append(
+            f"- stockenweiler_subnet_route_present: `{remote_path_summary.get('stockenweiler_subnet_route_present', '-')}`"
+        )
+        lines.append(f"- ssh_pve_status: `{remote_path_summary.get('ssh_pve_status', '-')}`")
+        lines.append(f"- anydesk_candidate_count: `{remote_path_summary.get('anydesk_candidate_count', 0)}`")
+        for item in remote_path_summary.get("observations", []):
+            lines.append(f"- observation: {item}")
+    else:
+        lines.append("- none")
+
+    lines.extend(["", "## Management Bridge", ""])
+    if management_bridge_summary:
+        lines.append(f"- state: `{management_bridge_summary.get('current_state', '-')}`")
+        lines.append(f"- target: `{management_bridge_summary.get('primary_candidate', '-')}`")
+        lines.append(f"- fallback: `{management_bridge_summary.get('fallback_path', '-')}`")
+        lines.append(
+            f"- local_direct_wireguard_route_present: `{management_bridge_summary.get('local_direct_wireguard_route_present', '-')}` / reachable `{management_bridge_summary.get('local_direct_wireguard_reachable', '-')}`"
+        )
+        lines.append(f"- route strategy: {management_bridge_summary.get('route_acceptance_strategy', '-')}")
+        lines.append(f"- next_operator_action: {management_bridge_summary.get('next_operator_action', '-')}")
+        lines.append(f"- next_codex_action: {management_bridge_summary.get('next_codex_action', '-')}")
     else:
         lines.append("- none")
 
@@ -225,6 +288,10 @@ def main() -> int:
     onboarding = data.get("first_live_onboarding", {})
     playbooks = data.get("first_support_playbooks", [])
     browser_bookmarks = data.get("recovered_browser_bookmarks", [])
+    browser_visible_summary = data.get("browser_visible_host_check_summary", {})
+    public_truth_summary = data.get("public_truth_check_summary", {})
+    remote_path_summary = data.get("remote_path_probe_summary", {})
+    management_bridge_summary = data.get("management_bridge_summary", {})
     host_key_evidence = data.get("legacy_host_key_evidence", [])
     local_access_hints = data.get("recovered_local_access_hints", [])
     phase_2_backlog = data.get("phase_2_backlog", {})
@@ -255,6 +322,14 @@ def main() -> int:
         issues.append("first_live_onboarding.success_criteria is missing")
     if not playbooks:
         issues.append("first_support_playbooks is missing")
+    if not browser_visible_summary:
+        issues.append("browser_visible_host_check_summary is missing")
+    if not public_truth_summary:
+        issues.append("public_truth_check_summary is missing")
+    if not remote_path_summary:
+        issues.append("remote_path_probe_summary is missing")
+    if not management_bridge_summary:
+        issues.append("management_bridge_summary is missing")
     if not bridge_candidate:
         issues.append("phase_2_backlog.management_plane_bridge_candidate is missing")
     if not service_candidates:
@@ -270,6 +345,9 @@ def main() -> int:
     current_blocker_count = len(current_blockers)
     playbook_count = len(playbooks)
     browser_bookmark_count = len(browser_bookmarks)
+    browser_visible_check_count = len(browser_visible_summary.get("findings", [])) if isinstance(browser_visible_summary, dict) else 0
+    public_truth_check_count = len(public_truth_summary.get("findings", [])) if isinstance(public_truth_summary, dict) else 0
+    remote_path_observation_count = len(remote_path_summary.get("observations", [])) if isinstance(remote_path_summary, dict) else 0
     host_key_evidence_count = len(host_key_evidence)
     local_access_hint_count = len(local_access_hints)
     service_candidate_count = len(service_candidates)
@@ -287,6 +365,9 @@ def main() -> int:
     print(f"stockenweiler_current_blocker_count={current_blocker_count}")
     print(f"stockenweiler_playbook_count={playbook_count}")
     print(f"stockenweiler_browser_bookmark_count={browser_bookmark_count}")
+    print(f"stockenweiler_browser_visible_check_count={browser_visible_check_count}")
+    print(f"stockenweiler_public_truth_check_count={public_truth_check_count}")
+    print(f"stockenweiler_remote_path_probe_observation_count={remote_path_observation_count}")
     print(f"stockenweiler_host_key_evidence_count={host_key_evidence_count}")
     print(f"stockenweiler_local_access_hint_count={local_access_hint_count}")
     print(f"stockenweiler_service_candidate_count={service_candidate_count}")

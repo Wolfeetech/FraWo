@@ -47,6 +47,7 @@
 ## User And Device Model
 
 - `Wolf` is the operator/admin path. His core tools are Nextcloud, Paperless, Odoo, Home Assistant, Radio Control, Vaultwarden, and the portal.
+- `Wolf Arbeitssurface` is a separate trusted client from `Franz Surface Laptop`: default local work device, internal access on-demand via Tailscale, no permanent full-tunnel by default.
 - `Franz` is the normal business user path. The current MVP scope is Surface Laptop, iPhone, Nextcloud, Paperless, Odoo, and Vaultwarden.
 - Shared living-room usage is a separate path from admin usage.
 - Google TV now connects to Jellyfin again, but the successful test used the `Wolf` account.
@@ -71,6 +72,7 @@
 - Vaultwarden SMTP is live, invitations are enabled, and the admin token is no longer stored as plaintext in the live container config.
 - The Vaultwarden invitation mail to `franz@frawo-tech.de` arrived successfully.
 - The `FraWo` invite for `franz@frawo-tech.de` was accepted.
+- UCG test segment is active: `proxmox-anker` now reports `vmbr0` on `10.1.0.92/24` (GW `10.1.0.1`) and `192.168.2.0/24` app paths are currently unreachable from `wolfstudiopc`.
 - Jellyfin now publishes the direct LAN address for clients, which fixed the TV connection path for devices without working `hs27.internal` DNS.
 - Franz mailbox authentication was verified.
 - `Nextcloud`, `Paperless`, and `Odoo` are SMTP-configured against the shared mail baseline.

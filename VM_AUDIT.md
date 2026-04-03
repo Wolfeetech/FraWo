@@ -6,6 +6,15 @@
 - Follow-up audit date: `2026-03-24`
 - Audit scope: `CT 100 toolbox`, `VM 200 nextcloud`, `VM 220 odoo`, `VM 230 paperless`, `VM 320 restore-test`
 
+## Network State Change - 2026-04-03 (UCG Test Segment)
+
+- Proxmox host `proxmox-anker` now reports `vmbr0` on `10.1.0.92/24` via DHCP with gateway `10.1.0.1`.
+- `192.168.2.0/24` services are currently unreachable from `wolfstudiopc` (HTTP probes return `000`).
+- From Proxmox, pings to `192.168.2.20-24` fail, so the business VMs are effectively isolated from the old LAN.
+- VMs still run (`200/210/220/230` running), so the issue is network reachability, not VM power state.
+- Required decision: either move the Proxmox port back to the legacy LAN/VLAN or migrate the full stack (VMs + DNS + routes) into `10.1.0.0/24`.
+- `/etc/network/interfaces` is now staged for static `192.168.2.10/24` on `vmbr0` but not applied yet; it will only take effect after the Proxmox port is moved back to the legacy LAN and the network is reloaded.
+
 ## CT 100 - Toolbox
 
 - Proxmox metadata:

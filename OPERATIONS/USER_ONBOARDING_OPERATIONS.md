@@ -10,6 +10,7 @@ Diese Datei ist der kanonische Onboarding- und Benutzerbetriebsartikel fuer:
 - `Franz`
 - gemeinsame Geraete
 - Franzs `Surface Laptop` und `iPhone`
+- Wolfs `Arbeitssurface`
 
 ## Aktueller Betriebsstand
 
@@ -72,6 +73,30 @@ Danach:
   - `Vaultwarden`
   - weitere Admin-UIs erst nach stabilem MVP
 
+### Wolfs Arbeitssurface
+
+- ist **nicht** dasselbe Geraet wie `Franz Surface Laptop`
+- Router-/WLAN-Signal derzeit: `Surface_Laptop` auf `192.168.2.118`
+- Rolle:
+  - primaeres Arbeitsgeraet fuer Wolf
+  - muss fuer `VT`- und Hauptarbeitskontext auch ohne dauerhaften VPN-Zwang brauchbar bleiben
+- Zugriffsmodell:
+  - Standardmodus:
+    - normales WLAN-/Arbeitsgeraet
+    - kein permanenter Volltunnel
+    - keine blinde `RouteAll`-/Exit-Node-Pflicht
+  - interner App-Modus:
+    - `Tailscale` bei Bedarf aktiv
+    - Zugriff auf `portal.hs27.internal`, `Nextcloud`, `Paperless`, `Odoo`, `Vaultwarden`, `Home Assistant`, `Radio`
+  - Admin-/Vollzugriffsmodus:
+    - nur bewusst bei Bedarf
+    - fuer interne Adminpfade und spaetere Support-/Bridge-Arbeit
+    - nicht als Dauerzustand fuer die Hauptarbeit
+- Betriebsregel:
+  - `Tailscale-first`, aber nur on-demand
+  - das Geraet bleibt ein `trusted-client`, kein Kiosk und kein Sonder-Fernwartungsgeraet
+  - keine Verwechslung mit dem Franz-Deploypfad oder dem `surface-go-frontend`
+
 ### Franz
 
 - Alltag:
@@ -99,6 +124,7 @@ Danach:
 4. Franz-Geraete ohne Sonderkonfig abnehmen
 5. erst danach Stresstest fuer den Arbeitskern
 6. spaetere Shared-Geraete erst nach stabilem MVP wieder aufmachen
+7. Wolfs `Arbeitssurface` nur als separates Split-Access-Geraet behandeln, nicht in den Franz- oder Kioskpfad hineinziehen
 
 ## Sichtpruefung In Vaultwarden
 
@@ -183,6 +209,25 @@ Zusatz:
 - wenn ein Link sauber funktioniert, wird kein zusaetzlicher Client-Setup-Zwang eingefuehrt
 - Media-, Radio- und Wohnzimmerpfade bleiben bis nach dem MVP ausserhalb des Hauptstarts
 
+## Wolf Arbeitssurface Standard
+
+- Standardpfad:
+  - lokales Arbeiten zuerst
+  - `Tailscale` nur einschalten, wenn interner Zugriff wirklich gebraucht wird
+- interne Kernziele bei Bedarf:
+  - `http://portal.hs27.internal`
+  - `http://cloud.hs27.internal`
+  - `http://paperless.hs27.internal`
+  - `http://odoo.hs27.internal/web/login`
+  - `https://vault.hs27.internal`
+- keine Dauerregel:
+  - kein permanenter Volltunnel
+  - keine pauschale Exit-Node-Pflicht
+  - kein erzwungenes Umpolen des gesamten Arbeitsgeraets in einen reinen Admin-Client
+- falls spaeter echter Vollzugriff fuer Support-/Bridge-Arbeit gebraucht wird:
+  - bewusst aktivieren
+  - danach wieder in den normalen Arbeitsmodus zurueck
+
 ## Shared Jellyfin Regeln
 
 - TV-Clients im Zweifel direkt mit `http://192.168.2.20:8096` verbinden
@@ -225,6 +270,8 @@ Dann dienstspezifisch:
 - keine neuen produktiven Passwoerter in Markdown pflegen
 - keine Admin-UIs oeffentlich freigeben
 - Franz nicht in den `Surface Go`-Kioskpfad pressen
+- Wolfs `Arbeitssurface` nicht mit `Franz Surface Laptop` oder `surface-go-frontend` verwechseln
+- Wolfs `Arbeitssurface` nicht dauerhaft in einen Volltunnel zwingen
 - `Odoo` nicht als persoenlichen Mailclient verwenden
 - den Arbeits-MVP nicht wieder mit spaeteren Komfortpfaden ueberladen
 

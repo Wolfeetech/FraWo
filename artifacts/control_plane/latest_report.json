@@ -1,0 +1,64 @@
+{
+  "generated_at": "2026-04-03 18:44:38",
+  "workspace_pyrefly_disabled": true,
+  "pyrefly_process_present": false,
+  "process_counts": {
+    "powershell.exe": 17
+  },
+  "stale_ssh_count": 0,
+  "stale_mail_powershell_count": 0,
+  "tailscale": {
+    "cli_ok": true,
+    "stderr": "",
+    "backend_state": "Running",
+    "self_dns_name": "wolfstudiopc.tail150400.ts.net.",
+    "self_ips": [
+      "100.98.31.60",
+      "fd7a:115c:a1e0::7b3a:1f3c"
+    ],
+    "stockenweiler_route_present": false,
+    "peer_count": 9,
+    "route_warning_present": false
+  },
+  "services": [
+    {
+      "Status": "Running",
+      "Name": "Tailscale",
+      "DisplayName": "Tailscale"
+    },
+    {
+      "Status": "Running",
+      "Name": "WireGuardManager",
+      "DisplayName": "WireGuard Manager"
+    },
+    {
+      "Status": "Running",
+      "Name": "WireGuardTunnel$VPN",
+      "DisplayName": "WireGuard Tunnel: VPN"
+    },
+    {
+      "Status": "Stopped",
+      "Name": "WireGuardTunnel$wg-studiopc",
+      "DisplayName": "WireGuard Tunnel: wg-studiopc"
+    }
+  ],
+  "wireguard_vpn_running": true,
+  "ssh_stock_pve": {
+    "status": "reachable",
+    "stdout": [
+      "pve",
+      "pve-manager/9.1.4/5ac30304265fbd8e (running kernel: 6.17.2-2-pve)"
+    ],
+    "stderr": "Warning: Permanently added '100.91.20.116' (ED25519) to the list of known hosts."
+  },
+  "primary_paths": {
+    "anker_admin_path": "LAN + SSH aliases via ~/.ssh/hs27_ops_ed25519",
+    "stockenweiler_admin_path": "ssh stock-pve via toolbox-backed userspace WireGuard",
+    "stockenweiler_target_path": "Tailscale subnet-router on stockenweiler-pve for 192.168.178.0/24"
+  },
+  "observations": [
+    "Primary Stockenweiler admin path is currently ssh stock-pve via toolbox-backed userspace WireGuard.",
+    "Target professional bridge remains Tailscale subnet routing, not permanent dependence on the local stale Windows WireGuard tunnel.",
+    "Workspace disables Pyrefly language services to avoid editor-side notify-file spam from a dead client."
+  ]
+}

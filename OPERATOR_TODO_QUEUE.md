@@ -9,6 +9,33 @@ Diese Datei ist ab jetzt nur noch die kurze manuelle Unblock-Queue.
 Keine zweite Projektplanung, keine erledigte Historie, keine Nebenstrang-Roadmaps.
 Der aktive Arbeitsfokus liegt in `Lane A: MVP Closeout`.
 
+## Professional-Autopilot Regeln
+
+- Default-Modell: `Aggressive Autopilot`
+- `Codex` fuehrt
+- `Gemini` prueft sichtbar
+- der Operator entscheidet nur an echten Pflicht-Stopps
+
+Pflicht-Stopp vor:
+
+- `Infra/Public`
+- `Netzwerk`
+- `Datenmigration`
+- `Storage/PBS`
+- `Router`
+- `HA/PVE`
+- `Security-Boundary`
+- lokalen Windows-Admin-Token-Eingriffen
+
+Alles andere laeuft standardmaessig im Loop:
+
+1. Truth sammeln
+2. professionell beurteilen
+3. Aenderung klassifizieren
+4. ausfuehren oder eskalieren
+5. verifizieren
+6. SSOT aktualisieren
+
 ## Lane Status
 
 - `Lane A: MVP Closeout` -> `active`
@@ -18,6 +45,15 @@ Der aktive Arbeitsfokus liegt in `Lane A: MVP Closeout`.
 - `Lane E: Radio/Media` -> `hold`
 
 ## Manuelle Unblock-Punkte
+
+### `ucg_vlan_decision`
+
+- `lane`: `Lane C: Security/PBS/Infra`
+- `goal`: Netzpfad konsolidieren, damit Odoo/Nextcloud/Paperless/HA/Portal wieder erreichbar sind.
+- `done_when`: Proxmox-Port ist entweder wieder im `192.168.2.0/24`-VLAN **oder** das gesamte Estate wurde nach `10.1.0.0/24` migriert (inkl. DNS/hs27.internal).
+- `blocked_by`: fehlende Entscheidung, ob UCG-Testsegment beibehalten oder Legacy-LAN wiederherstellen
+- `next_operator_action`: Entscheide: UCG-Testsegment behalten (Migration nach `10.1.0.0/24`) **oder** Proxmox-Port zurueck auf `192.168.2.0/24`.
+- `next_codex_action`: Nach der Entscheidung Netzwerkpfad umstellen, DNS/hs27.internal aktualisieren und Erreichbarkeit pruefen.
 
 ### `device_rollout_verified`
 
@@ -46,6 +82,7 @@ Der aktive Arbeitsfokus liegt in `Lane A: MVP Closeout`.
 
 ## Kanonische Steuerdateien
 
+- `AI_OPERATING_MODEL.md` fuer das verbindliche AI-Arbeitsmodell
 - `AI_SERVER_HANDOFF.md` fuer externen KI-Handoff
 - `MASTERPLAN.md` fuer die strategische Lane-Reihenfolge
 - `artifacts/release_mvp_gate/latest_release_mvp_gate.md` als einzige Wahrheit fuer die MVP-Entscheidung

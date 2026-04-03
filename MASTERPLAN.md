@@ -111,6 +111,8 @@ Der Server gilt erst dann als wirklich fertig, wenn alle folgenden Punkte erfuel
 - Mobile-Scan-Workflow: `MOBILE_SCAN_WORKFLOW.md`
 - Stress-Test-Readiness: `STRESS_TEST_READINESS.md`
 - Stockenweiler / Rentner OS: `STOCKENWEILER_REMOTE_SUPPORT_PLAN.md`
+- Anker + Stockenweiler Gesamtpfad: `ANKER_STOCKENWEILER_MARRIAGE_PLAN.md`
+- AI-Arbeitsmodell: `AI_OPERATING_MODEL.md`
 - Hosting-Optionen: `ONLINE_HOSTING_OPTIONS.md`
 - Google-Drive-Plan: `GOOGLE_DRIVE_INTEGRATION_PLAN.md`
 - Odoo-Studio-Entscheidung: `ODOO_STUDIO_DECISION.md`

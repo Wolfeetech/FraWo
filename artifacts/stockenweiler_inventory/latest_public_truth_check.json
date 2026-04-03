@@ -1,0 +1,151 @@
+{
+  "generated_at": "2026-03-31 12:14:28",
+  "results": [
+    {
+      "service": "home_assistant_public",
+      "host": "home.prinz-stockenweiler.de",
+      "public_url": "https://home.prinz-stockenweiler.de",
+      "dns": {
+        "host": "home.prinz-stockenweiler.de",
+        "resolved": true,
+        "canonical_name": "yourparty.tech",
+        "addresses": [
+          "91.14.44.20"
+        ],
+        "error": ""
+      },
+      "https": {
+        "reachable": true,
+        "status": 200,
+        "final_url": "https://home.prinz-stockenweiler.de",
+        "title": "Home Assistant",
+        "error_type": "",
+        "error": ""
+      }
+    },
+    {
+      "service": "proxmox_public",
+      "host": "pve.prinz-stockenweiler.de",
+      "public_url": "https://pve.prinz-stockenweiler.de",
+      "dns": {
+        "host": "pve.prinz-stockenweiler.de",
+        "resolved": false,
+        "canonical_name": "",
+        "addresses": [],
+        "error": "[Errno 11001] getaddrinfo failed"
+      },
+      "https": {
+        "reachable": false,
+        "status": "",
+        "final_url": "",
+        "title": "",
+        "error_type": "dns_fail",
+        "error": "<urlopen error [Errno 11001] getaddrinfo failed>"
+      }
+    },
+    {
+      "service": "paperless_public_bookmark",
+      "host": "papierkram.prinz-stockenweiler.de",
+      "public_url": "https://papierkram.prinz-stockenweiler.de/dashboard",
+      "dns": {
+        "host": "papierkram.prinz-stockenweiler.de",
+        "resolved": true,
+        "canonical_name": "papierkram.prinz-stockenweiler.de",
+        "addresses": [
+          "80.134.168.100"
+        ],
+        "error": ""
+      },
+      "https": {
+        "reachable": false,
+        "status": "",
+        "final_url": "",
+        "title": "",
+        "error_type": "timeout",
+        "error": "<urlopen error timed out>"
+      }
+    },
+    {
+      "service": "nextcloud_public_bookmark",
+      "host": "cloud.prinz-stockenweiler.de",
+      "public_url": "https://cloud.prinz-stockenweiler.de/apps/dashboard/",
+      "dns": {
+        "host": "cloud.prinz-stockenweiler.de",
+        "resolved": true,
+        "canonical_name": "yourparty.tech",
+        "addresses": [
+          "91.14.44.20"
+        ],
+        "error": ""
+      },
+      "https": {
+        "reachable": false,
+        "status": "",
+        "final_url": "",
+        "title": "",
+        "error_type": "tls_error",
+        "error": "<urlopen error [SSL: TLSV1_UNRECOGNIZED_NAME] tlsv1 unrecognized name (_ssl.c:1032)>"
+      }
+    },
+    {
+      "service": "nextcloud",
+      "host": "files.alopri",
+      "public_url": "https://files.alopri",
+      "dns": {
+        "host": "files.alopri",
+        "resolved": false,
+        "canonical_name": "",
+        "addresses": [],
+        "error": "[Errno 11001] getaddrinfo failed"
+      },
+      "https": {
+        "reachable": false,
+        "status": "",
+        "final_url": "",
+        "title": "",
+        "error_type": "dns_fail",
+        "error": "<urlopen error [Errno 11001] getaddrinfo failed>"
+      }
+    },
+    {
+      "service": "paperless",
+      "host": "paperless.alopri",
+      "public_url": "https://paperless.alopri",
+      "dns": {
+        "host": "paperless.alopri",
+        "resolved": false,
+        "canonical_name": "",
+        "addresses": [],
+        "error": "[Errno 11001] getaddrinfo failed"
+      },
+      "https": {
+        "reachable": false,
+        "status": "",
+        "final_url": "",
+        "title": "",
+        "error_type": "dns_fail",
+        "error": "<urlopen error [Errno 11001] getaddrinfo failed>"
+      }
+    },
+    {
+      "service": "vaultwarden",
+      "host": "vault.alopri",
+      "public_url": "https://vault.alopri",
+      "dns": {
+        "host": "vault.alopri",
+        "resolved": false,
+        "canonical_name": "",
+        "addresses": [],
+        "error": "[Errno 11001] getaddrinfo failed"
+      },
+      "https": {
+        "reachable": false,
+        "status": "",
+        "final_url": "",
+        "title": "",
+        "error_type": "dns_fail",
+        "error": "<urlopen error [Errno 11001] getaddrinfo failed>"
+      }
+    }
+  ]
+}

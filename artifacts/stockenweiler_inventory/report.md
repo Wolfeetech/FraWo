@@ -1,6 +1,6 @@
 # Stockenweiler Inventory Report
 
-Inventory source: `C:/Users/StudioPC/Documents/Homeserver 2027 Workspace/manifests/stockenweiler/site_inventory.json`
+Inventory source: `manifests/stockenweiler/site_inventory.json`
 
 ## Canonical Domain
 
@@ -24,7 +24,7 @@ Inventory source: `C:/Users/StudioPC/Documents/Homeserver 2027 Workspace/manifes
 
 ## Endpoint Status Counts
 
-- `legacy_fact_needs_revalidation`: `5`
+- `legacy_fact_needs_revalidation`: `6`
 - `pending_inventory`: `2`
 
 ## Current Blockers
@@ -32,8 +32,16 @@ Inventory source: `C:/Users/StudioPC/Documents/Homeserver 2027 Workspace/manifes
 - No first live remote onboarding has happened yet.
 - Current on-site main PC identity is still unresolved; operator stated on 2026-03-31 that the former main PC anchor was this StudioPC.
 - Phone identity is still unresolved.
-- Current StudioPC is not on the 192.168.178.0/24 LAN right now; direct SSH to 192.168.178.25 timed out during recovery on 2026-03-31.
+- The Stockenweiler Tailscale bridge on stockenweiler-pve is prepared but still pending login approval; StudioPC still sees only 192.168.2.0/24 via toolbox and no visible 192.168.178.0/24 tailnet route yet.
+- Scan and media share lineage is unresolved across \\192.168.178.25\music, \\192.168.178.120\music, \\192.168.178.120\scans\Familie Prinz and \\192.168.178.187\ScansDrucker.
+- AnyDesk fallback is present locally, but recovered remote IDs are not yet mapped to live Stockenweiler device names.
+- Public DNS / DynDNS is only partially coherent: home and cloud resolve via yourparty.tech to 91.14.44.20, Paperless points separately to 80.134.168.100, and pve.prinz-stockenweiler.de has no DNS record.
+- Visible legacy host health is degraded: Home Assistant frontend loads but backend is unavailable, Paperless times out, Nextcloud fails TLS/SNI, and pve.prinz-stockenweiler.de does not resolve.
 - UCG and broader gateway work stay deferred while the operator 2FA path remains blocked.
+- StudioPC already has a local Windows WireGuard route for 192.168.178.0/24 via 10.0.0.2, but direct TCP/22 to 192.168.178.25 still times out; treat that local tunnel as stale until it is re-applied with elevation.
+- Stockenweiler PVE storage baseline is now documented: /mnt/data_family on sdb1 (932G) and /mnt/music_hdd on sda2 (1.9T) are both at 100% usage, so any future PBS reuse needs cleanup or reallocation first.
+- Local WireGuard Tunnel VPN is still running on StudioPC and cannot be stopped or uninstalled without an elevated admin token.
+- Windows hosts file still pins yourparty.tech and www.yourparty.tech to 192.168.178.175; removing those stale lines needs an elevated admin token.
 
 ## Issues
 
@@ -43,7 +51,9 @@ Inventory source: `C:/Users/StudioPC/Documents/Homeserver 2027 Workspace/manifes
 
 - `proxmox_host_ip`: best guess `192.168.178.25`, conflicting legacy `192.168.178.172`
 - `home_assistant_ip`: best guess `192.168.178.67`, conflicting legacy `192.168.178.68`
-- `ip_192.168.178.120_role`: best guess `MagentaTV`, conflicting legacy `\\192.168.178.120\scans\Familie Prinz`
+- `ip_192.168.178.120_role`: best guess `MagentaTV`, conflicting legacy `\\192.168.178.120\scans\Familie Prinz and \\192.168.178.120\music`
+- `music_share_host_ip`: best guess `\\192.168.178.25\music`, conflicting legacy `\\192.168.178.120\music`
+- `scanner_share_host_ip`: best guess `\\192.168.178.187\ScansDrucker`, conflicting legacy `\\192.168.178.120\scans\Familie Prinz`
 
 ## Legacy Access Probe Summary
 
@@ -57,6 +67,61 @@ Inventory source: `C:/Users/StudioPC/Documents/Homeserver 2027 Workspace/manifes
 - `paperless_public_bookmark`: host `papierkram.prinz-stockenweiler.de` resolved to `80.134.168.100` (`Recovered from Edge bookmarks; HTTPS timed out during StudioPC probe on 2026-03-31.`)
 - `nextcloud_public_bookmark`: host `cloud.prinz-stockenweiler.de` resolved to `91.14.44.20` (`Recovered from Edge bookmarks; HTTPS currently fails with TLSV1_UNRECOGNIZED_NAME during StudioPC probe on 2026-03-31.`)
 
+## Browser Visible Host Check
+
+- source: `Gemini visible host check on 2026-03-31`
+- currently_reachable: `1` / currently_broken: `3`
+- observation: Home Assistant is the only legacy host that still presents a frontend at HTTPS level.
+- observation: Paperless currently times out on port 443.
+- observation: Nextcloud currently fails with ERR_SSL_UNRECOGNIZED_NAME_ALERT, which points to a reverse-proxy or certificate SNI mismatch.
+- observation: pve.prinz-stockenweiler.de currently fails DNS resolution.
+- `https://home.prinz-stockenweiler.de` -> state `home_assistant`, title `Home Assistant`, login_required `unknown`
+  - note: The Home Assistant frontend loads, but it immediately shows 'Unable to connect to Home Assistant. Retrying in ... seconds...', which means the web frontend answers while the backend service appears unavailable.
+- `https://papierkram.prinz-stockenweiler.de/dashboard` -> state `timeout`, title `N/A`, login_required `unknown`
+  - note: Browser-visible state is ERR_CONNECTION_TIMED_OUT. The host does not currently answer on port 443.
+- `https://cloud.prinz-stockenweiler.de/apps/dashboard/` -> state `tls_error`, title `N/A`, login_required `unknown`
+  - note: Browser-visible state is ERR_SSL_UNRECOGNIZED_NAME_ALERT, which indicates a missing or wrong certificate/SNI mapping at the reverse proxy.
+- `https://pve.prinz-stockenweiler.de` -> state `dns_fail`, title `N/A`, login_required `unknown`
+  - note: Browser-visible state is ERR_NAME_NOT_RESOLVED. The hostname does not currently resolve.
+
+## Public Truth Check
+
+- source: `Local public truth check on 2026-03-31`
+- dyn_dns_like_count: `2`
+- observation: home.prinz-stockenweiler.de resolves via the canonical name yourparty.tech to 91.14.44.20 and returns HTTPS 200.
+- observation: cloud.prinz-stockenweiler.de resolves via the canonical name yourparty.tech to 91.14.44.20 but currently fails TLS/SNI.
+- observation: papierkram.prinz-stockenweiler.de resolves directly to 80.134.168.100 and currently times out on HTTPS.
+- observation: pve.prinz-stockenweiler.de currently has no DNS record.
+- `home.prinz-stockenweiler.de` -> canonical `yourparty.tech` / addresses `91.14.44.20` / error `none`
+- `pve.prinz-stockenweiler.de` -> canonical `-` / addresses `-` / error `dns_fail`
+- `papierkram.prinz-stockenweiler.de` -> canonical `papierkram.prinz-stockenweiler.de` / addresses `80.134.168.100` / error `timeout`
+- `cloud.prinz-stockenweiler.de` -> canonical `yourparty.tech` / addresses `91.14.44.20` / error `tls_error`
+
+## Remote Path Probe
+
+- source: `-`
+- tailscale_backend_state: `Running`
+- tailscale_route_all: `False`
+- stockenweiler_subnet_route_present: `False`
+- ssh_pve_status: `reachable`
+- anydesk_candidate_count: `7`
+- observation: Tailscale backend is `Running` on StudioPC.
+- observation: StudioPC currently has `RouteAll=false`, so advertised subnet routes are not automatically accepted.
+- observation: Visible Tailscale primary routes are currently limited to: 192.168.2.0/24 via toolbox.tail150400.ts.net.
+- observation: No Stockenweiler subnet route `192.168.178.0/24` is currently visible in local Tailscale status.
+- observation: SSH to `stock-pve` is currently reachable from StudioPC.
+- observation: AnyDesk is installed locally and exposes `7` recovered remote-ID candidates, but they are not yet mapped to live Stockenweiler device names.
+
+## Management Bridge
+
+- state: `prepared_pending_login`
+- target: `Tailscale subnet-router on stockenweiler-pve for 192.168.178.0/24`
+- fallback: `StudioPC -> toolbox -> userspace WireGuard wgstkw -> 192.168.178.25`
+- local_direct_wireguard_route_present: `True` / reachable `False`
+- route strategy: Do not enable blind RouteAll on StudioPC while it is directly attached to 192.168.2.0/24 and toolbox advertises the same subnet.
+- next_operator_action: Open the current login URL from artifacts/stockenweiler_inventory/latest_tailscale_bridge_check.md and authorize stockenweiler-pve into the active tail150400 tailnet.
+- next_codex_action: After Tailscale login approval, re-run python scripts/check_stockenweiler_tailscale_bridge.py and then refresh the Stockenweiler reports and AI handoff.
+
 ## Recovered Browser Bookmarks
 
 - `home_assistant_public` via `chrome`: `Home Assistant` -> `https://home.prinz-stockenweiler.de/dashboard-bereiche`
@@ -69,6 +134,11 @@ Inventory source: `C:/Users/StudioPC/Documents/Homeserver 2027 Workspace/manifes
 
 - `proxmox_host` via `ssh_alias`: `pve -> root@192.168.178.25` using `~/.ssh/id_ed25519`
 - `scan_share_or_main_pc_hint` via `windows_recent_shortcut`: `\\192.168.178.120\scans\Familie Prinz` using `SMB share target only; no credentials recovered`
+- `music_share_current_hint` via `mapped_network_drive`: `\\192.168.178.25\music` using `persisted Z: mapping for user wolf`
+- `music_share_legacy_hint` via `mountpoints2`: `\\192.168.178.120\music` using `historic Explorer mount only; no current credential recovered`
+- `scanner_share_hint` via `windows_credential_manager`: `\\192.168.178.187\ScansDrucker` using `stored domain credential target 192.168.178.187 as user Scanner`
+- `stockenweiler_remote_path_truth` via `tailscale_status`: `BackendState=Running; RouteAll=false; visible primary routes currently only 192.168.2.0/24 via toolbox.tail150400.ts.net` using `StudioPC is logged into Tailscale but no 192.168.178.0/24 subnet route is currently visible`
+- `anydesk_fallback_candidates` via `anydesk_local_history`: `roster IDs 1580356160 and 1971554928; additional candidate remote IDs 1174136922, 1342642678, 1468499678, 859293713 and 1129124189` using `AnyDesk is installed locally; IDs were recovered from user.conf and connection traces but are not yet mapped to live device names`
 
 ## Legacy Host Key Evidence
 
@@ -86,10 +156,11 @@ Inventory source: `C:/Users/StudioPC/Documents/Homeserver 2027 Workspace/manifes
   - must not do: Do not centralize services just because routed management access exists.
 - service_consolidation_candidates:
   - `home_assistant`: phase_2=`management_only`, phase_3=`migrate_later`
-  - `radio`: phase_2=`keep_local`, phase_3=`migrate_later`
+  - `radio`: phase_2=`management_only`, phase_3=`migrate_to_best_host_later`
   - `website_wordpress`: phase_2=`management_only`, phase_3=`migrate_later`
-  - `paperless_nextcloud`: phase_2=`management_only`, phase_3=`migrate_later`
+  - `paperless_nextcloud`: phase_2=`keep_local`, phase_3=`separate_db_later`
   - `smb_scan`: phase_2=`keep_local`, phase_3=`undecided`
+  - `pbs_storage`: phase_2=`management_only`, phase_3=`enable_as_pbs_target_later`
 - migration_blockers:
   - Lane A remains active and Stockenweiler is still watch-only.
   - Main PC identity is still unresolved.
@@ -98,6 +169,7 @@ Inventory source: `C:/Users/StudioPC/Documents/Homeserver 2027 Workspace/manifes
   - Role of 192.168.178.120 is unresolved between MagentaTV and SMB scan path.
   - FRITZ!Box/Tailscale NAT capability is not yet visibly verified.
   - Upload and latency profile for cross-site operations are not documented.
+  - PVE disk inventory and PBS fitness on 192.168.178.25 are not documented.
 - rollback_requirements:
   - Any future bridge must be reversible from the StudioPC without same-day physical rework at the site.
   - Keep local Stockenweiler services reachable locally while phase 2 is being tested.
@@ -109,11 +181,16 @@ Inventory source: `C:/Users/StudioPC/Documents/Homeserver 2027 Workspace/manifes
 - collect: `main_pc friendly name`
 - collect: `main_pc OS and local login model`
 - collect: `main_pc tailscale name or AnyDesk ID`
+- collect: `AnyDesk ID to current device-name mapping`
 - collect: `phone model and OS`
 - collect: `phone tailscale name`
 - collect: `router management contact path`
 - collect: `printer/scanner exact model`
 - collect: `MagentaTV box model and room context`
+- collect: `music share host identity`
+- collect: `scan share host identity`
+- collect: `current local scan folder path used by the parents`
+- collect: `PVE local HDD inventory for future PBS use`
 - done when: Main PC is identified as a managed support endpoint.
 - done when: Phone is identified as a managed support endpoint.
 - done when: Primary remote path is Tailscale or the fallback is documented as AnyDesk.

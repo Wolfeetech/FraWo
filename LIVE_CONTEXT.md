@@ -89,13 +89,14 @@
 
 - Managed hosts in Ansible inventory: `29`
 - Router baseline: `192.168.2.1` Vodafone Easy Box
-- Planned future gateway: `UniFi Cloud Gateway Ultra (UCG-Ultra)`, not yet active
-- Core business nodes: `192.168.2.20` toolbox, `192.168.2.21` nextcloud, `192.168.2.22` odoo, `192.168.2.23` paperless, `192.168.2.24` haos
+- Planned future gateway: `UniFi Cloud Gateway Ultra (UCG-Ultra)` is now active in a test segment; `proxmox-anker` moved to `10.1.0.92/24` (GW `10.1.0.1`)
+- Core business nodes are still on `192.168.2.0/24` (toolbox/nextcloud/odoo/paperless/haos), but are currently unreachable from `wolfstudiopc` while the UCG segment is active
+- Proxmox network config is staged back to static `192.168.2.10/24` on `vmbr0`, pending physical port move + network reload
 - Latest stress summary: `/mnt/c/Users/StudioPC/Documents/Homeserver 2027 Workspace/artifacts/stress_tests/20260327_234807/summary.tsv`
 - Latest release-MVP gate: `/mnt/c/Users/StudioPC/Documents/Homeserver 2027 Workspace/artifacts/release_mvp_gate/20260328_072307/release_mvp_gate.md` -> `BLOCKED`
 - Latest production gate: `/mnt/c/Users/StudioPC/Documents/Homeserver 2027 Workspace/artifacts/production_gate/20260328_072130/production_gate.md` -> `BLOCKED`
-- Toolbox network base: Caddy on `192.168.2.20:80`, AdGuard Home on `192.168.2.20:53` and localhost-only admin on `127.0.0.1:3000`, `hs27.internal` rewrites verified in opt-in mode
-- Toolbox mobile Tailscale frontdoor: `100.99.206.128:8443` HA, `:8444` Odoo, `:8445` Nextcloud, `:8446` Paperless, `:8447` Portal, `:8448` Radio, `:8449` Media
+- Toolbox network base: Caddy on `192.168.2.20:80`, AdGuard Home on `192.168.2.20:53` and localhost-only admin on `127.0.0.1:3000`, `hs27.internal` rewrites verified in opt-in mode (currently unreachable from `wolfstudiopc`)
+- Toolbox mobile Tailscale frontdoor: `100.99.206.128:8443` HA, `:8444` Odoo, `:8445` Nextcloud, `:8446` Paperless, `:8447` Portal, `:8448` Radio, `:8449` Media (currently unreachable from `wolfstudiopc`)
 - Toolbox Tailscale state: `/dev/net/tun` mapped, `tailscaled` active, backend `Running`, subnet route `192.168.2.0/24` is active in the Tailnet and Split-DNS for `hs27.internal` is operational
 - VM 200, VM 210, VM 220 and VM 230: QEMU Guest Agent verified from Proxmox during latest audit
 - Business stacks are running from `/opt/homeserver2027/stacks` under systemd-managed local IaC

@@ -19,6 +19,8 @@ OUTPUT_PATH = ROOT_DIR / "AI_SERVER_HANDOFF.md"
 AI_BOOTSTRAP_CONTEXT_PATH = ROOT_DIR / "AI_BOOTSTRAP_CONTEXT.md"
 OPS_HOME_PATH = ROOT_DIR / "OPS_HOME.md"
 OPERATOR_TODO_QUEUE_PATH = ROOT_DIR / "OPERATOR_TODO_QUEUE.md"
+MARRIAGE_PLAN_PATH = ROOT_DIR / "ANKER_STOCKENWEILER_MARRIAGE_PLAN.md"
+AI_OPERATING_MODEL_PATH = ROOT_DIR / "AI_OPERATING_MODEL.md"
 WORK_LANES_PATH = ROOT_DIR / "manifests" / "work_lanes" / "current_plan.json"
 RELEASE_MVP_GATE_JSON_PATH = ROOT_DIR / "artifacts" / "release_mvp_gate" / "latest_release_mvp_gate.json"
 PUBLIC_IPV6_REPORT_PATH = ROOT_DIR / "artifacts" / "public_ipv6_exposure_audit" / "latest_report.md"
@@ -26,6 +28,9 @@ WEBSITE_RELEASE_GATE_DIR = ROOT_DIR / "artifacts" / "website_release_gate"
 PRODUCTION_GATE_DIR = ROOT_DIR / "artifacts" / "production_gate"
 CONTROL_SURFACE_ACTIONS_PATH = ROOT_DIR / "manifests" / "control_surface" / "actions.json"
 HOSTS_PATH = ROOT_DIR / "ansible" / "inventory" / "hosts.yml"
+STOCKENWEILER_INVENTORY_PATH = ROOT_DIR / "manifests" / "stockenweiler" / "site_inventory.json"
+STOCKENWEILER_PVE_PROBE_PATH = ROOT_DIR / "artifacts" / "stockenweiler_inventory" / "latest_pve_storage_probe.json"
+CONTROL_PLANE_REPORT_PATH = ROOT_DIR / "artifacts" / "control_plane" / "latest_report.json"
 
 
 def read_text(path: Path) -> str:
@@ -144,6 +149,12 @@ def load_inventory_host_count() -> int:
     return collect_hosts(inventory)
 
 
+def load_json(path: Path) -> dict[str, object]:
+    if not path.exists():
+        return {}
+    return json.loads(read_text(path))
+
+
 def parse_public_ipv6_report(path: Path) -> dict[str, object]:
     text = read_text(path)
     timestamp_match = re.search(r"- timestamp: `([^`]+)`", text)
@@ -205,9 +216,19 @@ def render_task_card(task: dict[str, object]) -> list[str]:
     lines = [f"### `{task['id']}`", ""]
     lines.append(f"- `status`: `{task.get('status', 'unknown')}`")
     lines.append(f"- `lane`: {format_task_value(task.get('lane'))}")
+    if task.get("change_class") is not None:
+        lines.append(f"- `change_class`: {format_task_value(task.get('change_class'))}")
     lines.append(f"- `goal`: {format_task_value(task.get('goal'))}")
     lines.append(f"- `done_when`: {format_task_value(task.get('done_when'))}")
     lines.append(f"- `blocked_by`: {format_task_value(task.get('blocked_by'))}")
+    if task.get("preflight_checks") is not None:
+        lines.append(f"- `preflight_checks`: {format_task_value(task.get('preflight_checks'))}")
+    if task.get("rollback_plan") is not None:
+        lines.append(f"- `rollback_plan`: {format_task_value(task.get('rollback_plan'))}")
+    if task.get("verification_commands") is not None:
+        lines.append(f"- `verification_commands`: {format_task_value(task.get('verification_commands'))}")
+    if task.get("last_verified_at") is not None:
+        lines.append(f"- `last_verified_at`: {format_task_value(task.get('last_verified_at'))}")
     lines.append(f"- `next_operator_action`: {format_task_value(task.get('next_operator_action'))}")
     lines.append(f"- `next_codex_action`: {format_task_value(task.get('next_codex_action'))}")
     return lines
@@ -222,9 +243,13 @@ def main() -> int:
     production_gate = parse_gate_markdown(latest_gate_file(PRODUCTION_GATE_DIR, "production_gate.md"))
     ipv6_report = parse_public_ipv6_report(PUBLIC_IPV6_REPORT_PATH)
     control_surface = load_control_surface()
+    stockenweiler_inventory = load_json(STOCKENWEILER_INVENTORY_PATH)
+    stockenweiler_pve_probe = load_json(STOCKENWEILER_PVE_PROBE_PATH)
+    control_plane_report = load_json(CONTROL_PLANE_REPORT_PATH)
 
     lanes = sorted(work_lanes.get("lanes", []), key=lambda item: int(item.get("priority", 999)))
     tasks = sorted(work_lanes.get("tasks", []), key=lambda item: int(item.get("order", 999)))
+    operating_model = work_lanes.get("operating_model", {})
     active_lane = next((lane for lane in lanes if lane.get("status") == "active"), None)
     manual_tasks = [task for task in tasks if task.get("manual")]
     side_tasks = [task for task in tasks if not task.get("manual")]
@@ -233,6 +258,15 @@ def main() -> int:
     ready_groups = sorted({str(action["group"]) for action in ready_actions})
     passed_manual, pending_manual = summarize_manual_checks(release_gate)
     codex_status_counter = count_codex_check_statuses(release_gate)
+    stock_endpoints = stockenweiler_inventory.get("endpoints", [])
+    stock_blockers = stockenweiler_inventory.get("current_blockers", [])
+    stock_access = stockenweiler_inventory.get("access_model", {})
+    stock_visible_summary = stockenweiler_inventory.get("browser_visible_host_check_summary", {})
+    stock_public_truth = stockenweiler_inventory.get("public_truth_check_summary", {})
+    stock_remote_path = stockenweiler_inventory.get("remote_path_probe_summary", {})
+    stock_management_bridge = stockenweiler_inventory.get("management_bridge_summary", {})
+    stock_probe_status = stockenweiler_pve_probe.get("probe_status", "unknown")
+    stock_probe_target = stockenweiler_pve_probe.get("target", "unknown")
 
     branch = run_git("rev-parse", "--abbrev-ref", "HEAD") or "unknown"
     dirty_count = count_git_dirty_files()
@@ -300,6 +334,47 @@ def main() -> int:
     lines.append(f"- Production certification gate: `{production_gate['decision']}`")
     lines.append(f"- Public IPv6 exposure audit: `open_checks={ipv6_report['open_checks']}` / `total_checks={ipv6_report['total_checks']}`")
     lines.append("")
+    lines.append("## AI Operating Model")
+    lines.append("")
+    if operating_model:
+        lines.append(f"- Model: `{operating_model.get('name', 'unknown')}`")
+        lines.append(f"- Autonomy: `{operating_model.get('autonomy', 'unknown')}`")
+        lines.append(f"- Primary end state: `{operating_model.get('primary_end_state', 'unknown')}`")
+        agent_split = operating_model.get("agent_split", {})
+        if isinstance(agent_split, dict):
+            lines.append(
+                f"- Roles: `codex={agent_split.get('codex', '-')}` / `gemini={agent_split.get('gemini', '-')}` / `operator={agent_split.get('operator', '-')}`"
+            )
+        execution_loop = operating_model.get("execution_loop", [])
+        if execution_loop:
+            lines.append(f"- Execution loop: `{', '.join(str(item) for item in execution_loop)}`")
+        stop_categories = operating_model.get("mandatory_stop_categories", [])
+        if stop_categories:
+            lines.append("- Mandatory stop categories:")
+            for item in stop_categories:
+                lines.append(f"  - `{item}`")
+    else:
+        lines.append("- none")
+    lines.append("")
+    lines.append("## Control Plane Snapshot")
+    lines.append("")
+    if control_plane_report:
+        lines.append(f"- Workspace Pyrefly disabled: `{str(control_plane_report.get('workspace_pyrefly_disabled', False)).lower()}`")
+        lines.append(f"- Pyrefly process present: `{str(control_plane_report.get('pyrefly_process_present', False)).lower()}`")
+        lines.append(f"- Stale ssh helpers: `{control_plane_report.get('stale_ssh_count', 0)}`")
+        lines.append(f"- Stale mail powershell: `{control_plane_report.get('stale_mail_powershell_count', 0)}`")
+        tailscale_report = control_plane_report.get("tailscale", {})
+        if isinstance(tailscale_report, dict):
+            lines.append(
+                f"- Tailscale backend: `{tailscale_report.get('backend_state', 'unknown')}` / stockenweiler route visible `{tailscale_report.get('stockenweiler_route_present', False)}`"
+            )
+        lines.append(f"- ssh stock-pve: `{control_plane_report.get('ssh_stock_pve', {}).get('status', 'unknown')}`")
+        lines.append(f"- Local WireGuard VPN service running: `{str(control_plane_report.get('wireguard_vpn_running', False)).lower()}`")
+        for item in control_plane_report.get("observations", [])[:3]:
+            lines.append(f"- {item}")
+    else:
+        lines.append("- No control-plane audit artifact yet.")
+    lines.append("")
     lines.append("## Current Lane Model")
     lines.append("")
     for lane in lanes:
@@ -338,6 +413,50 @@ def main() -> int:
         lines.append("- Verified closed in the current audit: direct public IPv6 checks for `nextcloud`, `odoo`, `paperless`, `vaultwarden`, `storage-node`, `homeassistant`.")
     lines.append("- Important limitation: this is risk reduction, not a promise of zero risk.")
     lines.append("- Public edge and TLS are still not in a final green release state.")
+    lines.append("")
+    lines.append("## Stockenweiler Snapshot")
+    lines.append("")
+    lines.append("- Lane state remains `watch`; no live rollout, no site marriage, no site-to-site VPN.")
+    lines.append(f"- Primary remote access model: `{stock_access.get('primary_remote_access', '-')}` / fallback `{stock_access.get('fallback_remote_access', '-')}`")
+    lines.append(f"- Stockenweiler endpoints currently modeled: `{len(stock_endpoints)}`")
+    lines.append(f"- Current Stockenweiler blockers: `{len(stock_blockers)}`")
+    lines.append("- Current direction:")
+    lines.append("  - parents' scan folders stay local first")
+    lines.append("  - later document automation should use a separate Stockenweiler Paperless DB")
+    lines.append("  - radio is later hosted on the most stable hardware, not by ideology of site")
+    lines.append("  - Stockenweiler PVE HDDs are only a future PBS/storage complement candidate")
+    if isinstance(stock_public_truth, dict) and stock_public_truth.get("findings"):
+        lines.append(f"- Public truth / DynDNS split: dyn-dns-like `{stock_public_truth.get('dyn_dns_like_count', 0)}`")
+        for item in stock_public_truth.get("current_mapping_observations", [])[:3]:
+            lines.append(f"  - {item}")
+    if isinstance(stock_remote_path, dict) and stock_remote_path:
+        lines.append(
+            f"- Remote path truth: tailscale `{stock_remote_path.get('tailscale_backend_state', '-')}`, route_all `{stock_remote_path.get('tailscale_route_all', '-')}`, stockenweiler route visible `{stock_remote_path.get('stockenweiler_subnet_route_present', '-')}`"
+        )
+        lines.append(
+            f"  - ssh `{stock_remote_path.get('ssh_pve_target', '-')}` is `{stock_remote_path.get('ssh_pve_status', '-')}`; AnyDesk candidates `{stock_remote_path.get('anydesk_candidate_count', 0)}`"
+        )
+        for item in stock_remote_path.get("observations", [])[:2]:
+            lines.append(f"  - {item}")
+    if isinstance(stock_management_bridge, dict) and stock_management_bridge:
+        lines.append(
+            f"- Management bridge: state `{stock_management_bridge.get('current_state', '-')}`, target `{stock_management_bridge.get('primary_candidate', '-')}`"
+        )
+        lines.append(
+            f"  - fallback `{stock_management_bridge.get('fallback_path', '-')}` / direct local WG reachable `{stock_management_bridge.get('local_direct_wireguard_reachable', '-')}`"
+        )
+        lines.append(f"  - next operator action: {stock_management_bridge.get('next_operator_action', '-')}")
+    if isinstance(stock_visible_summary, dict) and stock_visible_summary.get("findings"):
+        lines.append(
+            f"- Visible legacy host check: reachable `{stock_visible_summary.get('currently_reachable_count', 0)}` / broken `{stock_visible_summary.get('currently_broken_count', 0)}`"
+        )
+        for item in stock_visible_summary.get("operator_relevant_observations", [])[:3]:
+            lines.append(f"  - {item}")
+    lines.append(f"- Latest Stockenweiler PVE read-only probe: `{stock_probe_status}` on target `{stock_probe_target}`")
+    if stock_probe_status != "reachable":
+        stderr = str(stockenweiler_pve_probe.get("stderr", "")).strip()
+        if stderr:
+            lines.append(f"- Latest probe failure: `{stderr}`")
     lines.append("")
     lines.append("## Surface Control V1")
     lines.append("")
@@ -381,6 +500,10 @@ def main() -> int:
     lines.append("")
     lines.append("## Canonical Files To Read Next")
     lines.append("")
+    if AI_OPERATING_MODEL_PATH.exists():
+        lines.append("- `AI_OPERATING_MODEL.md`")
+    if MARRIAGE_PLAN_PATH.exists():
+        lines.append("- `ANKER_STOCKENWEILER_MARRIAGE_PLAN.md`")
     lines.append(render_bullets(next_reads[:12]))
     lines.append("")
     lines.append("## Generator Notes")

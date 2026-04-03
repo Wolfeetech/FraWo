@@ -1,0 +1,15 @@
+{
+  "generated_at": "2026-04-03 18:49:09",
+  "local_stockenweiler_route_present": false,
+  "local_visible_primary_routes": [
+    "192.168.2.0/24 via toolbox.tail150400.ts.net"
+  ],
+  "local_accept_routes_enabled": true,
+  "remote_backend_state": "Running",
+  "remote_current_tailnet": "tail150400.ts.net",
+  "remote_auth_url": "",
+  "remote_route_configured": true,
+  "remote_advertised_routes": [],
+  "bridge_state": "route_approval_pending",
+  "route_health": "approval_pending"
+}

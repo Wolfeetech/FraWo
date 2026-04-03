@@ -44,6 +44,17 @@ Das ist der entscheidende Unterschied:
   - Tailscale-Login ist erfolgreich bestaetigt
   - der eigentliche Off-LAN-Funktionstest bleibt noch als Operator-Test offen
 
+## Aktuelle kanonische Adminpfade 2026-03-31
+
+- `Anker`
+  - primaer ueber direkte SSH-Aliase mit `~/.ssh/hs27_ops_ed25519`
+- `Stockenweiler`
+  - aktuell primaer ueber `ssh stock-pve`
+  - realer Pfad: `StudioPC -> toolbox -> userspace WireGuard -> 192.168.178.25`
+  - professioneller Zielpfad bleibt `Tailscale subnet routing`, nicht dauerhafte Abhaengigkeit vom lokalen stale Windows-WireGuard-Tunnel
+- `StudioPC`
+  - `Pyrefly`-Workspace-Language-Services sind fuer diesen Workspace deaktiviert, damit Editor-Spam nicht als Infrastrukturproblem verwechselt wird
+
 ## Standards
 
 1. Server- und Admin-Zugriffe laufen primaer ueber Tailscale.

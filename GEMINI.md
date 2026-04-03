@@ -31,6 +31,27 @@ Regeln:
 - Keine zweite Parallelplanung in zufaelligen Markdown-Dateien.
 - Jede delegierte Aufgabe muss genau einer Lane zugeordnet sein.
 
+## Professional-Autopilot Boundary
+
+- `Codex` ist `lead`
+- `Gemini` ist `visible_verification_only`
+- `Gemini` macht keine Architekturentscheidung
+- `Gemini` macht keine Repo-Mutation
+- `Gemini` macht keine Runtime-/Infra-Aenderung
+- `Gemini` liefert nur sichtbaren Ist-Zustand, Browser-/UI-Abnahmen und manuelle Sichtpruefungen
+
+Falls eine Aufgabe nach:
+
+- Netzwerk
+- Public Edge
+- Router
+- Storage/PBS
+- HA/PVE
+- Datenmigration
+- Security-Boundary
+
+riecht, bleibt sie bei `Codex` oder geht als `AKTION VON DIR ERFORDERLICH:` an den Operator.
+
 ## Aktive Delegierbare Jobs
 
 ### `device_rollout_verified`
@@ -58,7 +79,7 @@ Regeln:
 - `done_when`: `Lane A` ist geschlossen und Stockenweiler wird aktiv priorisiert.
 - `blocked_by`: `Lane A` ist noch aktiv; `UCG`-2FA weiter blockiert
 - `next_operator_action`: Nur neue echte Geraete-, Provider- oder `FRITZ!`-/`Tailscale`-Fakten liefern; keine Live-Rollout- oder Marriage-Arbeit.
-- `next_codex_action`: Inventar, Supportmodell und den spaeteren Phase-2-Backlog pflegen, aber keinen Rollout, kein Site-to-Site-VPN und keine Service-Migration starten.
+- `next_codex_action`: Inventar, Supportmodell und den spaeteren Phase-2-Backlog pflegen; read-only Wahrheitschecks wie `scripts/stockenweiler_public_truth_check.py`, `scripts/stockenweiler_remote_path_probe.py` und `scripts/stockenweiler_pve_storage_probe.py` sind erlaubt, aber kein Rollout, kein Site-to-Site-VPN und keine Service-Migration.
 
 ## Nicht Delegierbar Jetzt
 

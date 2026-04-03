@@ -9,6 +9,10 @@
   - direct SSH checks on `toolbox`, `nextcloud`, `odoo`, `paperless`
   - Easy Box device list reviewed on `2026-03-18`
 - Router baseline: Vodafone Easy Box on `192.168.2.1`
+- UCG test segment observation (2026-04-03):
+  - Proxmox `vmbr0` now DHCPs as `10.1.0.92/24` with gateway `10.1.0.1`
+  - legacy `192.168.2.0/24` services are currently unreachable from `wolfstudiopc`
+  - `/etc/network/interfaces` is staged back to static `192.168.2.10/24` and will be applied after the Proxmox port is moved back to the legacy LAN
 - Lease validation status:
   - Router credential is now stored in Ansible Vault
   - `user_lang.json` can now be fetched headlessly through a real browser-context probe against `https://192.168.2.1`
@@ -33,7 +37,7 @@
     - none
 
   - the authenticated overview also shows additional current router labels worth keeping as soft aliases:
-    - `Surface_Laptop` had appeared separately on `192.168.2.118`
+    - `Surface_Laptop` had appeared separately on `192.168.2.118`; operator clarified on `2026-03-31` that this is Wolfs `Arbeitssurface` and must stay separate from `Franz Surface Laptop`
     - `yourparty-Surface-Go` is visible on `192.168.2.154`
     - `RE355` is visible on `192.168.2.126`
     - `iPhone-3-Pro` is visible on `192.168.2.129`
@@ -42,7 +46,7 @@
     - local portal path and sleep hardening are live
     - remaining work is touch/browser UX polish, not baseline rebuild
 - Planned edge replacement:
-  - `UniFi Cloud Gateway Ultra (UCG-Ultra)` is available in hardware but not yet part of the active network inventory
+  - `UniFi Cloud Gateway Ultra (UCG-Ultra)` is now active in a test segment; Proxmox has moved to `10.1.0.92/24` and legacy `192.168.2.0/24` reachability is broken until a cutover decision is made
   - `AdGuard Home` is active in opt-in mode on `CT 100` and currently serves `hs27.internal` plus external DNS for test clients
   - AdGuard admin on `CT 100` is now localhost-only on `127.0.0.1:3000`
   - Caddy is active on `CT 100` as the internal HTTP frontdoor for `portal.hs27.internal`, `cloud.hs27.internal`, `odoo.hs27.internal`, `paperless.hs27.internal`, `ha.hs27.internal` and `radio.hs27.internal`
@@ -67,7 +71,8 @@
 | IP | Hostname | MAC / Vendor | Device Class | Zone | Owner | Mgmt | DHCP/Static | Criticality | Status | Source | Next Action |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | `192.168.2.1` | `easy.box` | `78:B3:9F:08:F5:60` / unknown | router | `core` | shared-network | web | dhcp-router | critical | active | nmap + browser audit | finish headless login path; `user_lang.json` works, full lease extraction still pending |
-| `192.168.2.10` | `proxmox-anker.local` | not captured in scan | hypervisor | `management` | homeserver-gbr | ssh | static | critical | active | ssh config + nmap | confirm lease reservation on router |
+| `10.1.0.92` | `proxmox-anker` | not captured in scan | hypervisor | `management` | homeserver-gbr | ssh + tailscale | dhcp | critical | active | ssh + live ip route | UCG test segment active; decide whether to migrate the estate to 10.1.0.0/24 or roll back to 192.168.2.0/24 |
+| `192.168.2.10` | `proxmox-anker.local` | not captured in scan | hypervisor | `management` | homeserver-gbr | ssh | static | critical | stale | ssh config + nmap | host is currently on `10.1.0.92/24`; restore legacy IP only if rolling back the UCG test |
 | `192.168.2.20` | `toolbox` | `BC:24:11:AC:BD:44` / Proxmox | lxc admin toolbox | `infra-services` | homeserver-gbr | ssh + http + dns + vpn | static | high | active | pct + nmap + ansible + toolbox network check + tailscale | keep tailnet route approval and DNS pilot aligned; Caddy and AdGuard are live, admin UI is localhost-only |
 | `192.168.2.21` | `nextcloud` | `BC:24:11:D2:A4:3C` / Proxmox | vm app host | `business` | homeserver-gbr | ssh + http | static | high | active | qm + ssh + http + local backup proof | move from local proof backups to scheduled PBS jobs and proxy naming |
 | `192.168.2.22` | `odoo` | `BC:24:11:AA:BB:CC` / Proxmox | vm app host | `business` | homeserver-gbr | ssh + http | static | high | active | qm + ssh + http + local restore proof | keep restore proof documented and fold into PBS plus proxy naming |
@@ -87,6 +92,7 @@
 | `192.168.2.112` | `Wolf_Pixel` | `22:93:66:09:A7:48` / private | mobile phone | `trusted-clients` | wolf | local-device | dhcp | medium | active | nmap + router page | confirmed resident device; keep as admin-capable Tailscale client |
 | `192.168.2.113` | `android-dhcp-14.local` | `44:F5:3E:E4:71:74` / unknown | mobile client | `trusted-clients` | resident-review | local-device | dhcp | low | active | nmap + router page + authenticated router overview | keep as separate resident mobile client; no longer a candidate for `Franz_iphone` |
 | `192.168.2.114` | `shellyplugsg3-b08184a5ea08.local` | `C0:25:06:0A:80:74` / AVM seen via repeater | shelly plug via repeater | `smart-home-iot` | growbox | web | dhcp | medium | active | prior nmap + partial router decoding | earlier observation only; the newer authenticated overview instead shows `Shelly_plug_repeater` on `192.168.2.117`, so verify current live lease before reserving |
+| `192.168.2.118` | `Surface_Laptop` | not yet captured | work laptop | `trusted-clients` | wolf | local-device + tailscale | dhcp | medium | active-operator-clarified | authenticated router overview + operator clarification | Wolfs `Arbeitssurface`; keep separate from `Franz Surface Laptop`, use split-access model: default local independent work on WLAN, internal apps/admin on-demand via Tailscale, no permanent full-tunnel and no blind `RouteAll` |
 | `192.168.2.122` | `Franz_iphone` | `56:26:8F:F1:F7:94` / private | mobile phone | `trusted-clients` | franz | local-device | dhcp | medium | active | authenticated router overview | confirmed resident device; Tailscale candidate after phone validation |
 | `192.168.2.126` | `SonRoku.local` | `EC:08:6B:31:19:56` / TP-Link | Roku TV addon | `media-private` | private-household | app | dhcp | low | active | nmap + router page + user note | confirmed as Roku TV addon |
 | `192.168.2.132` | `wolf-ZenBook-UX325EA-UX325EA.local` | `00:42:38:B2:66:82` / Intel | laptop | `trusted-clients` | wolf | ssh/local-device + tailscale + anydesk | dhcp | medium | active | nmap + local verification | primary admin client; Tailscale joined and AnyDesk active |
@@ -133,8 +139,12 @@
 3. Keep unmanaged household and IoT devices explicitly separated in inventory even before VLAN-capable hardware exists.
 4. Treat `unknown-review` devices as temporary exceptions and close them out before exposing any services over Tailscale.
 5. Only promote devices into `trusted-clients` after owner and management posture are known.
-6. Treat the UCG-Ultra as a dedicated later-phase network cutover, not as a side-task during current LXC/VM rollout work.
-7. Keep router-only names that are not yet tied to a live IP explicit in the notes instead of guessing their mapping.
-8. Introduce AdGuard Home first as an opt-in internal DNS service, not as immediate default DNS for the whole LAN.
-9. Treat public exposure as its own hardening phase with edge separation, not as an extension of the current flat-LAN toolbox phase.
-10. Treat shared frontend devices as kiosk-first endpoints, not as ad hoc desktop-server hybrids.
+6. Treat Wolfs `Arbeitssurface` as a split-access trusted client:
+   - default mode is local independent work on WLAN
+   - internal app and admin reachability is on-demand via Tailscale
+   - no permanent full-tunnel and no blind `RouteAll`
+7. Treat the UCG-Ultra as a dedicated later-phase network cutover, not as a side-task during current LXC/VM rollout work.
+8. Keep router-only names that are not yet tied to a live IP explicit in the notes instead of guessing their mapping.
+9. Introduce AdGuard Home first as an opt-in internal DNS service, not as immediate default DNS for the whole LAN.
+10. Treat public exposure as its own hardening phase with edge separation, not as an extension of the current flat-LAN toolbox phase.
+11. Treat shared frontend devices as kiosk-first endpoints, not as ad hoc desktop-server hybrids.
