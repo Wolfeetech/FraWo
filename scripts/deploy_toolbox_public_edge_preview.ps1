@@ -5,7 +5,12 @@ param(
     [string]$VaultIp = "192.168.2.26:8080"
 )
 
-$ErrorActionPreference = "Stop"`r`n`r`nif ([string]::IsNullOrWhiteSpace($HaIp)) { throw "HaIp must not be empty." }`r`nif ([string]::IsNullOrWhiteSpace($OdooIp)) { throw "OdooIp must not be empty." }`r`nif ([string]::IsNullOrWhiteSpace($RadioIp)) { throw "RadioIp must not be empty." }`r`nif ([string]::IsNullOrWhiteSpace($VaultIp)) { throw "VaultIp must not be empty." }
+$ErrorActionPreference = "Stop"
+
+if ([string]::IsNullOrWhiteSpace($HaIp)) { throw "HaIp must not be empty." }
+if ([string]::IsNullOrWhiteSpace($OdooIp)) { throw "OdooIp must not be empty." }
+if ([string]::IsNullOrWhiteSpace($RadioIp)) { throw "RadioIp must not be empty." }
+if ([string]::IsNullOrWhiteSpace($VaultIp)) { throw "VaultIp must not be empty." }
 
 $proxmoxExec = Join-Path $PSScriptRoot "proxmox_windows_ssh_exec.ps1"
 
