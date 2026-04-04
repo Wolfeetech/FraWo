@@ -1,6 +1,6 @@
 param(
-  [string]$ComputerName = "toolbox",
-  [string]$FallbackIp = "100.99.206.128",
+  [string]$ComputerName = "proxmox-anker",
+  [string]$FallbackIp = "100.69.179.87",
   [string]$Username = "root"
 )
 
@@ -22,7 +22,7 @@ if (-not (Test-SshPort -Target $target)) {
   if (Test-SshPort -Target $FallbackIp) {
     $target = $FallbackIp
   } else {
-    Write-Host "Toolbox ist aktuell nicht per SSH erreichbar." -ForegroundColor Yellow
+    Write-Host "Proxmox-Anker ist aktuell nicht per SSH erreichbar." -ForegroundColor Yellow
     exit 2
   }
 }

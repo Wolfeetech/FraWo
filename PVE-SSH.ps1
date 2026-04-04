@@ -1,10 +1,13 @@
-$tailscaleHost = "100.91.20.116"
+$tailscaleHost = "pve"
+$tailscaleFallback = "100.91.20.116"
 $tailscaleUser = "root"
 $legacyHost = "192.168.178.172"
 $legacyUser = "mobile"
 $cfg = "C:\ProgramData\WireGuard\Configurations\PVE-Surface.conf"
 $svc = "WireGuardTunnel`$PVE-Surface"
 $wg  = "C:\Program Files\WireGuard\wireguard.exe"
+$ssh = "C:\Windows\System32\OpenSSH\ssh.exe"
+$sshConfig = Join-Path $PSScriptRoot "Codex\ssh_config"
 
 function Wait-ForSsh {
   param(
@@ -23,11 +26,18 @@ function Wait-ForSsh {
 }
 
 if (Wait-ForSsh -HostName $tailscaleHost) {
-  ssh -o "StrictHostKeyChecking=accept-new" "$tailscaleUser@$tailscaleHost"
+  Write-Host "Verbinde zu $tailscaleHost via Tailscale-SSH/OpenSSH-Pfad..." -ForegroundColor Cyan
+  & $ssh -F $sshConfig "$tailscaleUser@$tailscaleHost"
   exit $LASTEXITCODE
 }
 
-Write-Host "Tailscale-SSH auf $tailscaleHost ist aktuell nicht erreichbar, pruefe Legacy-WireGuard..." -ForegroundColor Yellow
+if (Wait-ForSsh -HostName $tailscaleFallback) {
+  Write-Host "Verbinde zu $tailscaleFallback via Tailscale-SSH/OpenSSH-Pfad..." -ForegroundColor Cyan
+  & $ssh -F $sshConfig "$tailscaleUser@$tailscaleFallback"
+  exit $LASTEXITCODE
+}
+
+Write-Host "Tailscale-SSH auf $tailscaleHost ist aktuell nicht erreichbar oder verlangt Sonderauth, pruefe Legacy-WireGuard..." -ForegroundColor Yellow
 
 if (-not (Test-Path $cfg)) {
   Write-Error "Weder Tailscale-SSH noch WireGuard-Config verfuegbar."
@@ -52,5 +62,5 @@ if (-not (Wait-ForSsh -HostName $legacyHost -Seconds 20)) {
   exit 1
 }
 
-ssh -o "StrictHostKeyChecking=accept-new" "$legacyUser@$legacyHost"
+& $ssh -o "StrictHostKeyChecking=accept-new" "$legacyUser@$legacyHost"
 Stop-Service $svc -ErrorAction SilentlyContinue

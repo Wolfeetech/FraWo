@@ -1,0 +1,8 @@
+Host proxmox-anker anker-pve toolbox pve stockenweiler-pve
+  User root
+  IdentityFile C:/Users/Admin/.ssh/id_ed25519
+  IdentitiesOnly yes
+  PreferredAuthentications publickey,password
+  StrictHostKeyChecking accept-new
+  UserKnownHostsFile c:/Users/Admin/Documents/Private_Networking/Codex/known_hosts
+  ConnectTimeout 5
