@@ -123,12 +123,13 @@ Wir bauen in dieser Reihenfolge:
   - `pve-manager/9.1.4`
 - `Tailscale` laeuft auf `StudioPC`
 - `WireGuard`-Recovery-Pfad ueber `toolbox` funktioniert
+- neue Klarstellung: der lokale `StudioPC`-`WireGuard` ist nicht die spaetere Zielarchitektur; wenn die Standortbruecke professionell gebaut wird, dann als eigenes `Site-to-Site WireGuard` zwischen `UCG` und `Stockenweiler`
 - die alte Stockenweiler-DNS-/Host-Wahrheit ist weitgehend geborgen und dokumentiert
 
 ### Gelb
 
 - `stockenweiler-pve` ist als `Tailscale subnet-router` vorbereitet, aber noch nicht freigeschaltet
-- `StudioPC` hat noch stale lokales `WireGuard`
+- `StudioPC` hat noch stale lokales `WireGuard`; das ist Altlast/Recovery, nicht das spaetere Standort-VPN
 - `AnyDesk` ist lokal da, aber die IDs sind nicht den heutigen Geraeten zugeordnet
 - `Surface_Laptop` fuer Wolf ist separat modelliert, aber live noch zu bestaetigen
 - `PBS`-Rolle in Stockenweiler ist nur ein spaeterer Kandidat
@@ -155,7 +156,8 @@ Wir bauen in dieser Reihenfolge:
 
 - `StudioPC` bleibt primarer Admin- und Brueckenknoten
 - `toolbox` bleibt Anker-Kontrollknoten
-- `stock-pve` wird professionell ueber `Tailscale` erreichbar
+- `stock-pve` wird fuer den aktuellen Adminbetrieb professionell ueber `Tailscale` erreichbar
+- die spaetere Standortbruecke wird getrennt davon als `Site-to-Site WireGuard` bewertet, sobald das bestehende `WireGuard`-Setup in `Stockenweiler` read-only inventarisiert ist
 - spaeter gemeinsame Uebersicht ueber getrennte Sites
 - bevorzugt nicht als WAN-Proxmox-Cluster, sondern als getrennte Management-Domaenen mit gemeinsamer Sicht
 

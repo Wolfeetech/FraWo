@@ -1,0 +1,127 @@
+{
+  "generated_at": "2026-04-03 23:26:52",
+  "pilot": "portal",
+  "change_class": "read_only",
+  "ready_for_gated_runtime_change": true,
+  "runtime_alias_active": true,
+  "checks": [
+    {
+      "id": "portal_frontdoor_http",
+      "ok": true,
+      "evidence": "HTTP 200 via http://100.99.206.128:8447/"
+    },
+    {
+      "id": "portal_frontdoor_status_json",
+      "ok": true,
+      "evidence": "HTTP 200, platform_core=ok, healthy=7/7"
+    },
+    {
+      "id": "portal_internal_hostname",
+      "ok": true,
+      "evidence": "HTTP 200 via http://portal.hs27.internal/"
+    },
+    {
+      "id": "portal_internal_status_json",
+      "ok": true,
+      "evidence": "HTTP 200 via http://portal.hs27.internal/status.json"
+    },
+    {
+      "id": "anker_management_ssh",
+      "ok": true,
+      "evidence": "proxmox-anker; pve-manager/9.1.6/71482d1833ded40a (running kernel: 6.17.13-2-pve)"
+    },
+    {
+      "id": "stock_management_ssh",
+      "ok": true,
+      "evidence": "pve; pve-manager/9.1.4/5ac30304265fbd8e (running kernel: 6.17.2-2-pve)"
+    },
+    {
+      "id": "pilot_documentation_present",
+      "ok": true,
+      "evidence": "pilot_section=True snapshot_rule=True verify_rule=True"
+    },
+    {
+      "id": "toolbox_target_ip_alias_active",
+      "ok": true,
+      "evidence": "inet 10.1.0.20/24 scope global eth0"
+    },
+    {
+      "id": "portal_target_ip_vhost_status_json",
+      "ok": true,
+      "evidence": "platform_core=ok, healthy=7/7"
+    }
+  ],
+  "portal_frontdoor": {
+    "root": {
+      "ok": true,
+      "url": "http://100.99.206.128:8447/",
+      "http_code": 200,
+      "error": ""
+    },
+    "status_json": {
+      "ok": true,
+      "url": "http://100.99.206.128:8447/status.json",
+      "http_code": 200,
+      "error": ""
+    },
+    "status_payload_summary": {
+      "platform_core": "ok",
+      "healthy_services": 7,
+      "total_services": 7
+    }
+  },
+  "portal_internal": {
+    "root": {
+      "ok": true,
+      "url": "http://portal.hs27.internal/",
+      "http_code": 200,
+      "error": ""
+    },
+    "status_json": {
+      "ok": true,
+      "url": "http://portal.hs27.internal/status.json",
+      "http_code": 200,
+      "error": ""
+    }
+  },
+  "portal_target_ip": {
+    "target_ip": "10.1.0.20",
+    "alias_probe": {
+      "ok": true,
+      "stdout": "inet 10.1.0.20/24 scope global eth0",
+      "stderr": ""
+    },
+    "status_payload_summary": {
+      "platform_core": "ok",
+      "healthy_services": 7,
+      "total_services": 7
+    }
+  },
+  "management_paths": {
+    "anker": {
+      "target": "root@100.69.179.87",
+      "ok": true,
+      "stdout_lines": [
+        "proxmox-anker",
+        "pve-manager/9.1.6/71482d1833ded40a (running kernel: 6.17.13-2-pve)"
+      ],
+      "stderr": ""
+    },
+    "stockenweiler": {
+      "target": "stock-pve",
+      "ok": true,
+      "stdout_lines": [
+        "pve",
+        "pve-manager/9.1.4/5ac30304265fbd8e (running kernel: 6.17.2-2-pve)"
+      ],
+      "stderr": "Warning: Permanently added '100.91.20.116' (ED25519) to the list of known hosts."
+    }
+  },
+  "documentation": {
+    "ok": true,
+    "has_pilot_section": true,
+    "has_snapshot_rule": true,
+    "has_verify_rule": true
+  },
+  "recommendation": "portal_pilot_runtime_green"
+}

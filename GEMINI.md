@@ -298,9 +298,9 @@ riecht, bleibt sie bei `Codex` oder geht als `AKTION VON DIR ERFORDERLICH:` an d
 ## Infrastruktur-Kanon
 
 - Host: ThinkCentre M920q, Proxmox VE auf NVMe
-- LAN: `192.168.2.0/24`
-- Aktueller Gateway: Vodafone Easy Box auf `192.168.2.1`
-- Geplanter Gateway-Nachfolger: `UniFi Cloud Gateway Ultra (UCG-Ultra)`, Hardware vorhanden, aber noch nicht aktiv
+- Primar-LAN am StudioPC: `192.168.2.0/24` hinter der Vodafone Easy Box auf `192.168.2.1`
+- Aktiver Gateway-Uebergang fuer den Serverpfad: `UniFi Cloud Gateway Ultra (UCG-Ultra)`
+- Proxmox-Host laeuft im Uebergang aktuell auf `10.1.0.92/24` mit `10.1.0.1` als Gateway; die Legacy-Gaeste bleiben intern noch auf `192.168.2.0/24`
 - Toolbox: `CT 100` auf `192.168.2.20`
 - Overlay-Zugriff: Tailscale Mesh-VPN
 - Reverse Proxy: Caddy auf `CT 100`
@@ -327,12 +327,11 @@ riecht, bleibt sie bei `Codex` oder geht als `AKTION VON DIR ERFORDERLICH:` an d
    - `radio.hs27.internal`
    - Live bleibt diese Zone zunaechst unveraendert; eine spaetere bewusste Migration auf `frawo.home.arpa` ist erlaubt, aber kein Parallelbetrieb mit `frawo.internal` oder `frawo.lan`.
 10. Backup-Planung geht auf eine dedizierte PBS-Instanz. Solange keine eigene Hardware bereitsteht, ist eine dedizierte PBS-VM der Standardpfad.
-11. Der Gateway-Wechsel auf den `UniFi Cloud Gateway Ultra` ist ein eigener Netz-Cutover und darf nicht waehrend laufender LXC-/VM-Grundaufbauarbeiten erfolgen.
-12. Der richtige Zeitpunkt fuer den UCG-Ultra-Cutover ist erst erreicht, wenn:
-    - alle Ziel-LXCs und VMs gebaut und stabil sind
-    - Backup und Restore fuer die Business-VMs praktisch nachgewiesen sind
-    - Inventar, IP-Plan und Reservierungsstrategie feststehen
-    - ein klares Rollback auf die Easy Box vorbereitet ist
+11. Der `UCG-Ultra` ist jetzt Teil des aktiven Uebergangsnetzes; Gemini soll das bindende VLAN-Zielbild nicht neu entwerfen, sondern nur sichtbaren Ist-Zustand, Cutover-Folgen und offene Verifikationen beschreiben.
+12. Der offene UCG-Track ist jetzt kein allgemeiner Gateway-Cutover mehr, sondern ein geordneter Service-Uebergang:
+    - vorhandenes Zielbild aus `UCG_NETWORK_ARCHITECTURE.md` bleibt bindend
+    - offene Runtime-Themen sind Firewall-Politik, Proxmox-VLAN-Trunk-Adoption und die Service-Migrationsreihenfolge
+    - keine Netz-/Router-/Firewall-Aenderungen ohne expliziten Operator-Gate
 13. AdGuard Home ist ein interner Infrastrukturdienst. Er wird zuerst nur als opt-in DNS fuer Trusted Clients und Admin-Systeme getestet und erst nach kontrollierter DHCP-/Gateway-Steuerung zum primaeren LAN-DNS.
 14. Oeffentliche Exposition ist ein spaeter eigener Edge-Block:
     - keine oeffentliche Freigabe, solange Easy Box plus flaches LAN der aktive Netzrand sind
@@ -363,7 +362,8 @@ riecht, bleibt sie bei `Codex` oder geht als `AKTION VON DIR ERFORDERLICH:` an d
   - LAN bleibt das Primarnetz.
   - Tailscale auf `CT 100` annonciert nur `192.168.2.0/24`.
   - `--accept-routes` ist kein Default fuer den Router selbst.
-  - Der UCG-Ultra ist Planungsgegenstand fuer die spaetere DHCP-/Firewall-/VLAN-Zentralisierung, aber noch nicht Teil des Live-Netzes.
+  - Der UCG-Ultra ist inzwischen Teil des Live-Uebergangsnetzes; offene Punkte sind jetzt nicht mehr das VLAN-Zielbild selbst, sondern Firewall-Politik, Proxmox-VLAN-Trunk-Adoption und die geordnete Service-Migration.
+  - Das bindende Zielbild fuer VLANs/Subnetze steht in `UCG_NETWORK_ARCHITECTURE.md`; Gemini soll dieses Zielbild nicht neu entwerfen, sondern hoechstens sichtbar pruefen oder gegen den Ist-Zustand beschreiben.
   - AdGuard Home wird konzeptionell auf `CT 100` mitgefuehrt:
     - Phase 1: interner Testbetrieb fuer Trusted Clients und `hs27.internal`
     - Phase 2: primaerer DNS erst nach kontrollierter DHCP-Fuehrung

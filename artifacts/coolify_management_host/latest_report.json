@@ -1,0 +1,34 @@
+{
+  "generated_at": "2026-04-04T01:55:32+02:00",
+  "target": "root@100.69.179.87",
+  "hostname": "proxmox-anker",
+  "pveversion": "pve-manager/9.1.6/71482d1833ded40a (running kernel: 6.17.13-2-pve)",
+  "memory_available_bytes": 5514121216,
+  "local_lvm_avail_bytes": 65406513447,
+  "local_dir_avail_bytes": 18669879296,
+  "toolbox_running": true,
+  "toolbox_temporary_fallback_ok": true,
+  "recommended_management_node": {
+    "kind": "lxc",
+    "suggested_vmid": 130,
+    "name": "coolify-mgmt",
+    "vcpus": 2,
+    "memory_mb": 2048,
+    "rootfs_gb": 24,
+    "storage": "local-lvm",
+    "network": "internal_management_non_dmz"
+  },
+  "fit_checks": {
+    "memory_ok": true,
+    "local_lvm_ok": true,
+    "local_dir_ok": false
+  },
+  "recommendation": "dedicated_internal_anker_management_node",
+  "rejected_targets": [
+    "proxmox_anker_host_itself",
+    "stock_pve",
+    "dmz_nodes",
+    "surface_go_frontend_while_unstable"
+  ],
+  "next_gated_step": "create_dedicated_internal_management_ct_or_vm_on_anker"
+}

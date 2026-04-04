@@ -187,6 +187,40 @@
       "next_codex_action": "Keep the website gate, blockers, and security notes current; do not resume public release implementation."
     },
     {
+      "id": "platform_agnostic_delivery_factory",
+      "order": 3,
+      "lane": "Lane B: Website/Public Hold",
+      "status": "watch",
+      "manual": false,
+      "delegable": false,
+      "change_class": "repo_only",
+      "preflight_checks": [
+        "UCG VLAN target model is already canonical and does not need redesign",
+        "Public Edge remains a watch lane, not an active rollout lane",
+        "No runtime DMZ, DNS, router, or Coolify deployment change is attempted in this step",
+        "python scripts/cicd_delivery_factory_preflight.py confirms repo_side_factory_only",
+        "GHCR contract and env examples exist for the first stateless reference app",
+        "scripts/coolify_management_host_audit.py can prove a real Anker management-node candidate",
+        "Secret distribution model stays repo-only and does not activate live runtime secrets yet"
+      ],
+      "rollback_plan": "Repo-side step only; revert the factory plan, manifest, app catalog, workflow, and reports if the target architecture or first-wave app choice changes.",
+      "verification_commands": [
+        "python scripts/cicd_delivery_factory_preflight.py",
+        "python scripts/cicd_delivery_factory_report.py",
+        "python scripts/generate_ai_server_handoff.py",
+        "python scripts/coolify_management_host_audit.py"
+      ],
+      "last_verified_at": "2026-04-04",
+      "goal": "Keep one platform-agnostic CI/CD and DMZ delivery model visible so future public deployment work stops mixing build, registry, runtime, and HA concepts.",
+      "done_when": "The repo has one canonical delivery-factory plan, one machine-readable manifest, one app catalog, one preflight, one report, and one thin CI validation workflow that define dev, prod, promotion, DMZ nodes, controller boundaries, and current non-ready prerequisites.",
+      "blocked_by": [
+        "lane_a_mvp_closeout_active",
+        "public_edge_still_watch_only"
+      ],
+      "next_operator_action": "Later decide which OCI registry and which internal host should run Coolify management once Lane B is intentionally activated.",
+      "next_codex_action": "Use the Anker host audit to carry the next gated decision: create a dedicated internal management node first, then wire GHCR and Coolify live paths on top of it."
+    },
+    {
       "id": "control_plane_clean",
       "order": 4,
       "lane": "Lane C: Security/PBS/Infra",
@@ -217,8 +251,63 @@
       "next_codex_action": "Run the control-plane audit, keep the workspace-level Pyrefly suppression in place, remove only clearly stale helper processes, and keep Tailscale-first with ssh stock-pve as the current Stockenweiler admin path until the bridge is approved."
     },
     {
-      "id": "security_pbs_infra_watch",
+      "id": "anker_ucg_transition_sequence",
       "order": 5,
+      "lane": "Lane C: Security/PBS/Infra",
+      "status": "watch",
+      "manual": false,
+      "delegable": false,
+      "change_class": "repo_only",
+      "preflight_checks": [
+        "Estate census is current and shows all Anker toolbox frontdoors green",
+        "Proxmox transition router state is documented in VM_AUDIT.md and NETWORK_INVENTORY.md",
+        "No runtime renumbering or UCG firewall change is attempted in this step"
+      ],
+      "rollback_plan": "Documentation-only step; revert SSOT changes if the runtime truth changes.",
+      "verification_commands": [
+        "python scripts/portal_ucg_pilot_preflight.py",
+        "python scripts/estate_census_audit.py",
+        "python scripts/generate_ai_server_handoff.py"
+      ],
+      "last_verified_at": "2026-04-03",
+      "goal": "Keep one canonical Anker transition sequence visible so the UCG migration stops jumping between unrelated subproblems.",
+      "done_when": "The next runtime step is always taken from the same published service order instead of ad hoc troubleshooting.",
+      "blocked_by": [
+        "ucg_vlan_schema_exists_but_runtime_adoption_not_started"
+      ],
+      "next_operator_action": "Confirm that the published VLAN target in UCG_NETWORK_ARCHITECTURE.md remains the binding target model for the runtime migration.",
+      "next_codex_action": "Keep the canonical order visible in the estate census, VM_AUDIT.md, LIVE_CONTEXT.md, and AI_SERVER_HANDOFF.md; do not reopen subnet design, focus only on service-to-VLAN adoption and runtime cutover order."
+    },
+    {
+      "id": "anker_ucg_portal_pilot_preflight",
+      "order": 6,
+      "lane": "Lane C: Security/PBS/Infra",
+      "status": "watch",
+      "manual": false,
+      "delegable": false,
+      "change_class": "repo_only",
+      "preflight_checks": [
+        "Estate census is current and shows all Anker toolbox frontdoors green",
+        "Portal frontdoor 8447 remains green from wolfstudiopc",
+        "No runtime firewall, DNS, router, or VLAN mutation is attempted in this step"
+      ],
+      "rollback_plan": "Documentation-only preflight step; revert the pilot checklist if the runtime target or order changes.",
+      "verification_commands": [
+        "python scripts/estate_census_audit.py",
+        "python scripts/generate_ai_server_handoff.py"
+      ],
+      "last_verified_at": "2026-04-03",
+      "goal": "Keep the first low-risk UCG portal pilot live and verified so the transition now has one proven runtime success before core business services move.",
+      "done_when": "Toolbox carries the additive `10.1.0.20/24` pilot alias, the portal vhost answers on the target IP, and toolbox frontdoors remain green.",
+      "blocked_by": [
+        "next_low_risk_pilot_not_yet_selected"
+      ],
+      "next_operator_action": "Confirm whether `media` should become the second low-risk pilot before the first core business move.",
+      "next_codex_action": "Keep the live portal pilot verified in scripts/portal_ucg_pilot_preflight.py and SSOT, then prepare the next low-risk pilot without touching core business services yet."
+    },
+    {
+      "id": "security_pbs_infra_watch",
+      "order": 6,
       "lane": "Lane C: Security/PBS/Infra",
       "status": "watch",
       "manual": false,
@@ -284,6 +373,7 @@
       "verification_commands": [
         "python scripts/stockenweiler_public_truth_check.py",
         "python scripts/stockenweiler_remote_path_probe.py",
+        "python scripts/stockenweiler_wireguard_inventory.py",
         "python scripts/stockenweiler_pve_storage_probe.py",
         "python scripts/generate_ai_server_handoff.py"
       ],
@@ -294,8 +384,8 @@
         "lane_a_mvp_closeout_active",
         "ucg_2fa_unavailable"
       ],
-      "next_operator_action": "No live rollout, gateway work, or site marriage; only share new real device facts, provider findings, or FRITZ/Tailscale observations if available.",
-      "next_codex_action": "Keep inventory, support planning, and the phase-2 backlog current; prefer read-only truth collection such as scripts/stockenweiler_pve_storage_probe.py, but do not start the rollout, site-to-site VPN, or service consolidation."
+      "next_operator_action": "No live rollout or cutover yet; share real gateway, FRITZ, UCG, Tailscale, or existing Stockenweiler WireGuard facts if available.",
+      "next_codex_action": "Keep inventory and planning current; stay read-only, but explicitly inventory the existing Stockenweiler WireGuard setup so a later professional UCG<->Stockenweiler site-to-site decision can be made without guesswork."
     },
     {
       "id": "radio_media_hold",
@@ -320,6 +410,34 @@
       ],
       "next_operator_action": "Only report breakage that impacts current operation.",
       "next_codex_action": "Hold the current operating state; no new features, no new public surface."
+    },
+    {
+      "id": "storage_optimization_watch",
+      "order": 6,
+      "lane": "Lane C: Security/PBS/Infra",
+      "status": "watch",
+      "manual": false,
+      "delegable": false,
+      "change_class": "read_only",
+      "preflight_checks": [
+        "Review latest platform health audit",
+        "Review latest stockenweiler storage probe",
+        "Confirm no storage delete or PBS mutation is attempted in this step"
+      ],
+      "rollback_plan": "Audit-and-plan step only; no runtime storage mutation in watch mode.",
+      "verification_commands": [
+        "python scripts/storage_optimization_audit.py",
+        "python scripts/generate_ai_server_handoff.py"
+      ],
+      "last_verified_at": "2026-04-04",
+      "goal": "Keep one factual storage-pressure and reclaim plan visible so backup, media, and PBS decisions stop mixing together.",
+      "done_when": "A dedicated storage optimization block is intentionally activated and the kept-set plus reclaim sequence are explicitly approved.",
+      "blocked_by": [
+        "storage_pbs_changes",
+        "lane_a_mvp_closeout_active"
+      ],
+      "next_operator_action": "Approve the kept-set policy for stockenweiler backup pruning and the classification rule for music_hdd payload before any deletes happen.",
+      "next_codex_action": "Keep the storage audit current and do not delete or retarget storage until the kept-set and PBS direction are explicitly chosen."
     }
   ]
 }

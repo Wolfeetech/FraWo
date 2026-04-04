@@ -357,3 +357,56 @@
   - thin-pool data usage is about `13%`
   - one older non-Codex snapshot remains on `VM 100` as legacy state outside this audit scope
   - `local` directory storage is after the proof and PBS ISO staging at about `31.85%` usage
+
+## Network Transition Recovery - 2026-04-03
+
+- Root cause for `Odoo`/`Nextcloud`/`Paperless`/`Portal` loss from `wolfstudiopc` was not an app outage.
+- `proxmox-anker` had already moved to the new UCG segment as `10.1.0.92/24`, while the business guests stayed on an isolated internal `192.168.2.0/24`.
+- Because `wolfstudiopc` itself is still on the old EasyBox-connected `192.168.2.0/24`, the same subnet existed on two different L2 domains and direct client access to the guests stopped working.
+- Remediation applied:
+  - kept `vmbr0` on DHCP in `10.1.0.0/24`
+  - kept helper alias `192.168.2.10/24` on Proxmox
+  - restored temporary internal legacy gateway `192.168.2.1/24` on Proxmox
+  - enabled a persistent transition router/NAT on Proxmox for the isolated guest segment
+  - started `CT 110 storage-node`, which restored the media bind-mount required by `CT 100 toolbox`
+  - started `CT 100 toolbox` and recovered its Tailscale/mobile frontdoors
+- Verified from `wolfstudiopc` over Tailscale:
+  - `http://100.99.206.128:8444/web/login` -> `200` Odoo
+  - `http://100.99.206.128:8445/` -> `302` Nextcloud
+  - `http://100.99.206.128:8446/accounts/login/` -> `200` Paperless
+  - `http://100.99.206.128:8447/` -> `200` Portal
+  - `http://100.99.206.128:8442/alive` -> `200` Vaultwarden
+  - `http://100.99.206.128:8448/` -> `302` Radio
+  - `http://100.99.206.128:8449/` -> `302` Media
+- Remaining follow-up:
+  - `Home Assistant` frontdoor is now green again on `http://100.99.206.128:8443/` after extending HA trusted proxies to include the Proxmox transition-router path.
+  - If classic `hs27.internal` hostnames should work directly on `wolfstudiopc` before the full migration, that needs a separate Windows hosts/DNS decision because local admin access is gated.
+
+### Canonical Next Sequence
+
+- Freeze the current working transition state: Proxmox stays on `10.1.0.92/24`, the guests stay isolated on the internal `192.168.2.0/24`, and operators use `Tailscale` plus toolbox frontdoors.
+- Use the already published UCG VLAN/subnet target from `UCG_NETWORK_ARCHITECTURE.md` before any VM/CT renumbering; do not reopen subnet design unless the SSOT itself changes.
+- Keep service entrypoints stable through toolbox frontdoors and `hs27.internal` names rather than re-teaching users direct guest IPs.
+- First low-risk runtime success is now live on `CT 100 toolbox`: additive alias `10.1.0.20/24` is active and persistent, the `portal` vhost answers on the target IP, and the toolbox frontdoors remain `8/8` green.
+- Use one low-risk pilot move first, then migrate the core business services in this order:
+  - `Odoo`
+  - `Nextcloud`
+  - `Paperless`
+- Move `Home Assistant` only after the business trio is stable on the new network model.
+- Revisit `Vaultwarden` only with explicit rollback discipline because it is security-critical.
+- Handle `PBS` and any storage redesign last.
+
+## Platform Health Baseline - 2026-04-04
+
+- Repeatable audit path now lives in `scripts/platform_health_audit.py` and writes to `artifacts/platform_health/latest_report.md`.
+- Current hard facts:
+  - `proxmox-anker` is operational and not the hottest capacity problem.
+  - `stock-pve` is the current runtime pressure point: host swap `6.3 / 8.0 GiB`, storage `hdd-backup` at `84%`.
+  - `Odoo` is runtime-green: direct `192.168.2.22:8069/web/login` returns `200` from Anker and the Tailscale frontdoor `100.99.206.128:8444/web/login` also returns `200`.
+  - `VM 240 PBS` remains stopped and the PBS storages on Anker are still not the green consolidated backup target.
+- Optimization hints from the same audit:
+  - later rightsizing candidates on Anker are `CT 100 toolbox`, `CT 110 storage-node`, and `CT 120 vaultwarden`.
+  - immediate pressure guests in Stockenweiler are `VM 360 homeassistant-eltern` and `VM 210 azuracast-vm`.
+- Strategic consequence:
+  - do not call `Odoo` production-ready only because the runtime is healthy; first freeze the intended module/profile rollout and customer portal scope.
+  - do not thin Stockenweiler blindly; first secure the legacy `yourparty` payload across `VM 210`, `CT 207`, `CT 208`, and `CT 211`.

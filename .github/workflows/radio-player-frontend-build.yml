@@ -1,0 +1,35 @@
+name: radio-player-frontend-build
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'apps/radio-player-frontend/**'
+      - '.github/workflows/radio-player-frontend-build.yml'
+  pull_request:
+    paths:
+      - 'apps/radio-player-frontend/**'
+      - '.github/workflows/radio-player-frontend-build.yml'
+
+jobs:
+  build-oci-artifact:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/build-push-action@v6
+        with:
+          context: ./apps/radio-player-frontend
+          file: ./apps/radio-player-frontend/Dockerfile
+          push: false
+          tags: local/radio-player-frontend:${{ github.sha }}
+          outputs: type=oci,dest=/tmp/radio-player-frontend.oci.tar
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: radio-player-frontend-oci
+          path: /tmp/radio-player-frontend.oci.tar

@@ -165,9 +165,10 @@
   - lokales Tailscale-Prefs-Set annonciert `192.168.2.0/24`
   - die Tailnet-Netzsicht bestaetigt diese Route jetzt als aktiv
   - daraus folgt: Toolbox-seitig ist der Subnet-Router produktiv aktiv und Split-DNS fuer `hs27.internal` kann sauber genutzt werden
-- Geplante Edge-Hardware:
-  - `UniFi Cloud Gateway Ultra (UCG-Ultra)` ist vorhanden, aber noch nicht aktiv
-  - Zielrolle spaeter: zentraler Gateway fuer DHCP-Reservierungen, Firewall-Policies und VLAN-faehige Segmentierung
+- Geplante Edge-Hardware / UCG-Stand:
+  - `UniFi Cloud Gateway Ultra (UCG-Ultra)` ist jetzt live fuer `proxmox-anker`
+  - der direkte StudioPC-Pfad in die isolierten Legacy-Gaeste laeuft waehrend der Migration nicht ueber lokale `192.168.2.x`, sondern `Tailscale first` ueber `toolbox`
+  - Proxmox stellt dafuer einen temporaeren Transition-Router fuer die isolierte interne `192.168.2.0/24`-Gastwelt bereit
 - Router-Zugang:
   - Login-Benutzer `vodafone`
   - Passwort liegt verschluesselt in `ansible/inventory/group_vars/all/vault.yml`
@@ -638,9 +639,9 @@ Lokale Admin-Flaechen (nur localhost):
 
 ## Aktive Operator-Aktionen
 
-0. `AKTION VON DIR ERFORDERLICH:` UCG-Testsegment vs. Legacy-LAN entscheiden
-   - benoetigte Aktion: festlegen, ob das Estate auf `10.1.0.0/24` migriert wird oder ob der Proxmox-Port zurueck ins `192.168.2.0/24`-VLAN kommt
-   - warum: `proxmox-anker` ist aktuell auf `10.1.0.92/24`, dadurch sind Odoo/Nextcloud/Paperless/HA/Portal von `wolfstudiopc` nicht erreichbar
+0. `AKTION VON DIR ERFORDERLICH:` Falls du die klassischen `hs27.internal`-Hostnamen schon vor der Vollmigration direkt auf `wolfstudiopc` im Browser willst, braucht es einen bewussten Windows-Hosts-/DNS-Schritt mit Admin-Token.
+   - benoetigte Aktion: nur entscheiden, ob der StudioPC bis zur Vollmigration per Tailscale-Frontdoors arbeiten soll oder ob zusaetzlich lokale Hostnamen per Admin-Override wiederhergestellt werden sollen
+   - warum: der aktuelle professionelle Arbeitsweg steht bereits (`Tailscale first`), aber das alte direkte `192.168.2.x`-Namensmodell kollidiert mit der UCG-Uebergangsphase
    - danach uebernehmen Codex/Gemini wieder: Netzpfad umstellen, DNS/hs27.internal anpassen und Erreichbarkeit verifizieren
 
 1. `AKTION VON DIR ERFORDERLICH:` spaeter einen ersten Thomson-/Google-TV-Client mit Jellyfin verbinden

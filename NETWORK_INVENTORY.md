@@ -12,7 +12,8 @@
 - UCG test segment observation (2026-04-03):
   - Proxmox `vmbr0` now DHCPs as `10.1.0.92/24` with gateway `10.1.0.1`
   - legacy `192.168.2.0/24` services are currently unreachable from `wolfstudiopc`
-  - `/etc/network/interfaces` is staged back to static `192.168.2.10/24` and will be applied after the Proxmox port is moved back to the legacy LAN
+  - `vmbr0` stays on DHCP in the new UCG segment as `10.1.0.92/24`; Proxmox also carries `192.168.2.10/24` plus a temporary internal gateway alias `192.168.2.1/24` for the isolated legacy guest segment
+  - Proxmox now acts as the temporary transition router/NAT for the internal legacy `192.168.2.0/24` guests while the estate is migrated toward the new infrastructure
 - Lease validation status:
   - Router credential is now stored in Ansible Vault
   - `user_lang.json` can now be fetched headlessly through a real browser-context probe against `https://192.168.2.1`
@@ -71,9 +72,9 @@
 | IP | Hostname | MAC / Vendor | Device Class | Zone | Owner | Mgmt | DHCP/Static | Criticality | Status | Source | Next Action |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | `192.168.2.1` | `easy.box` | `78:B3:9F:08:F5:60` / unknown | router | `core` | shared-network | web | dhcp-router | critical | active | nmap + browser audit | finish headless login path; `user_lang.json` works, full lease extraction still pending |
-| `10.1.0.92` | `proxmox-anker` | not captured in scan | hypervisor | `management` | homeserver-gbr | ssh + tailscale | dhcp | critical | active | ssh + live ip route | UCG test segment active; decide whether to migrate the estate to 10.1.0.0/24 or roll back to 192.168.2.0/24 |
+| `10.1.0.92` | `proxmox-anker` | not captured in scan | hypervisor | `management` | homeserver-gbr | ssh + tailscale | dhcp | critical | active | ssh + live ip route | UCG segment active and kept; Proxmox now bridges the migration with helper aliases `192.168.2.10/24` + `192.168.2.1/24` and a temporary transition router for the isolated legacy guests |
 | `192.168.2.10` | `proxmox-anker.local` | not captured in scan | hypervisor | `management` | homeserver-gbr | ssh | static | critical | stale | ssh config + nmap | host is currently on `10.1.0.92/24`; restore legacy IP only if rolling back the UCG test |
-| `192.168.2.20` | `toolbox` | `BC:24:11:AC:BD:44` / Proxmox | lxc admin toolbox | `infra-services` | homeserver-gbr | ssh + http + dns + vpn | static | high | active | pct + nmap + ansible + toolbox network check + tailscale | keep tailnet route approval and DNS pilot aligned; Caddy and AdGuard are live, admin UI is localhost-only |
+| `192.168.2.20` / `10.1.0.20` | `toolbox` | `BC:24:11:AC:BD:44` / Proxmox | lxc admin toolbox | `infra-services` | homeserver-gbr | ssh + http + dns + vpn | static + additive pilot alias | high | active | pct + nmap + ansible + toolbox network check + tailscale + portal pilot preflight | Caddy and AdGuard are live, admin UI is localhost-only; the first UCG pilot is active as an additive `10.1.0.20/24` alias on `eth0`, with portal vhost proof green and Tailscale frontdoors still stable |
 | `192.168.2.21` | `nextcloud` | `BC:24:11:D2:A4:3C` / Proxmox | vm app host | `business` | homeserver-gbr | ssh + http | static | high | active | qm + ssh + http + local backup proof | move from local proof backups to scheduled PBS jobs and proxy naming |
 | `192.168.2.22` | `odoo` | `BC:24:11:AA:BB:CC` / Proxmox | vm app host | `business` | homeserver-gbr | ssh + http | static | high | active | qm + ssh + http + local restore proof | keep restore proof documented and fold into PBS plus proxy naming |
 | `192.168.2.23` | `paperless` | `BC:24:11:E0:C3:01` / Proxmox | vm app host | `business` | homeserver-gbr | ssh + http | static | high | active | qm + ssh + http + local backup proof | move from local proof backups to scheduled PBS jobs and proxy naming |
@@ -118,7 +119,7 @@
 
 | Device | Planned Role | Current State | Integration Gate |
 | --- | --- | --- | --- |
-| `UniFi Cloud Gateway Ultra (UCG-Ultra)` | future primary gateway, DHCP reservation plane, firewall policy anchor, VLAN-ready network edge | hardware available, not active, not part of live host count | activate only after all target LXCs/VMs are stable, backup/restore is proven, IP plan is fixed, and a rollback to the Easy Box is documented |
+| `UniFi Cloud Gateway Ultra (UCG-Ultra)` | active gateway transition plane, DHCP reservation plane, firewall policy anchor, VLAN-ready network edge | active in transition mode; Proxmox currently lives on `10.1.0.92` in VLAN 101 while the legacy guest segment remains isolated behind the transition router | keep the published VLAN schema in `UCG_NETWORK_ARCHITECTURE.md` as the target model; next gates are firewall policy, Proxmox VLAN trunk adoption, and controlled service cutover |
 
 ## Planned Infrastructure Services
 
@@ -148,3 +149,9 @@
 9. Introduce AdGuard Home first as an opt-in internal DNS service, not as immediate default DNS for the whole LAN.
 10. Treat public exposure as its own hardening phase with edge separation, not as an extension of the current flat-LAN toolbox phase.
 11. Treat shared frontend devices as kiosk-first endpoints, not as ad hoc desktop-server hybrids.
+
+## 2026-04-03 Transition Note
+
+- `wolfstudiopc` still sits on the old EasyBox-connected `192.168.2.0/24`, but the legacy business guests now live on a different isolated `192.168.2.0/24` behind Proxmox.
+- Because the same subnet now exists on two different L2 domains, direct StudioPC-to-guest `192.168.2.x` access is not the professional working path during migration.
+- The current working operator path is `Tailscale first` through `toolbox` on `100.99.206.128` and direct Proxmox management on `100.69.179.87`.

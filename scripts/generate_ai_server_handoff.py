@@ -30,7 +30,15 @@ CONTROL_SURFACE_ACTIONS_PATH = ROOT_DIR / "manifests" / "control_surface" / "act
 HOSTS_PATH = ROOT_DIR / "ansible" / "inventory" / "hosts.yml"
 STOCKENWEILER_INVENTORY_PATH = ROOT_DIR / "manifests" / "stockenweiler" / "site_inventory.json"
 STOCKENWEILER_PVE_PROBE_PATH = ROOT_DIR / "artifacts" / "stockenweiler_inventory" / "latest_pve_storage_probe.json"
+STOCKENWEILER_WG_INVENTORY_PATH = ROOT_DIR / "artifacts" / "stockenweiler_inventory" / "latest_wireguard_inventory.json"
 CONTROL_PLANE_REPORT_PATH = ROOT_DIR / "artifacts" / "control_plane" / "latest_report.json"
+ESTATE_CENSUS_REPORT_PATH = ROOT_DIR / "artifacts" / "estate_census" / "latest_report.json"
+PLATFORM_HEALTH_REPORT_PATH = ROOT_DIR / "artifacts" / "platform_health" / "latest_report.json"
+CICD_DELIVERY_FACTORY_REPORT_PATH = ROOT_DIR / "artifacts" / "cicd_delivery_factory" / "latest_report.md"
+CICD_DELIVERY_FACTORY_PREFLIGHT_PATH = ROOT_DIR / "artifacts" / "cicd_delivery_factory" / "latest_preflight.json"
+PORTAL_UCG_PILOT_PREFLIGHT_PATH = ROOT_DIR / "artifacts" / "ucg_portal_pilot_preflight" / "latest_report.json"
+COOLIFY_MANAGEMENT_HOST_AUDIT_PATH = ROOT_DIR / "artifacts" / "coolify_management_host" / "latest_report.json"
+STORAGE_OPTIMIZATION_REPORT_PATH = ROOT_DIR / "artifacts" / "storage_optimization" / "latest_report.json"
 
 
 def read_text(path: Path) -> str:
@@ -245,7 +253,14 @@ def main() -> int:
     control_surface = load_control_surface()
     stockenweiler_inventory = load_json(STOCKENWEILER_INVENTORY_PATH)
     stockenweiler_pve_probe = load_json(STOCKENWEILER_PVE_PROBE_PATH)
+    stockenweiler_wg_inventory = load_json(STOCKENWEILER_WG_INVENTORY_PATH)
     control_plane_report = load_json(CONTROL_PLANE_REPORT_PATH)
+    estate_census_report = load_json(ESTATE_CENSUS_REPORT_PATH)
+    platform_health_report = load_json(PLATFORM_HEALTH_REPORT_PATH)
+    cicd_preflight = load_json(CICD_DELIVERY_FACTORY_PREFLIGHT_PATH)
+    portal_pilot_preflight = load_json(PORTAL_UCG_PILOT_PREFLIGHT_PATH)
+    coolify_mgmt_audit = load_json(COOLIFY_MANAGEMENT_HOST_AUDIT_PATH)
+    storage_optimization_report = load_json(STORAGE_OPTIMIZATION_REPORT_PATH)
 
     lanes = sorted(work_lanes.get("lanes", []), key=lambda item: int(item.get("priority", 999)))
     tasks = sorted(work_lanes.get("tasks", []), key=lambda item: int(item.get("order", 999)))
@@ -267,6 +282,13 @@ def main() -> int:
     stock_management_bridge = stockenweiler_inventory.get("management_bridge_summary", {})
     stock_probe_status = stockenweiler_pve_probe.get("probe_status", "unknown")
     stock_probe_target = stockenweiler_pve_probe.get("target", "unknown")
+    stock_wg_reachable = stockenweiler_wg_inventory.get("reachable", False)
+    estate_summary = estate_census_report.get("summary", {})
+    platform_summary = platform_health_report.get("summary", {})
+    estate_frontdoors = estate_census_report.get("frontdoors", [])
+    estate_blockers = estate_census_report.get("blockers", [])
+    estate_recommended_next = estate_census_report.get("recommended_next_order", [])
+    estate_transition_sequence = estate_census_report.get("transition_sequence", [])
 
     branch = run_git("rev-parse", "--abbrev-ref", "HEAD") or "unknown"
     dirty_count = count_git_dirty_files()
@@ -309,6 +331,10 @@ def main() -> int:
     lines.append(f"- `manifests/work_lanes/current_plan.json`: `{format_mtime(WORK_LANES_PATH)}`")
     lines.append(f"- `artifacts/release_mvp_gate/latest_release_mvp_gate.json`: `{format_mtime(RELEASE_MVP_GATE_JSON_PATH)}`")
     lines.append(f"- `artifacts/public_ipv6_exposure_audit/latest_report.md`: `{format_mtime(PUBLIC_IPV6_REPORT_PATH)}`")
+    if ESTATE_CENSUS_REPORT_PATH.exists():
+        lines.append(f"- `artifacts/estate_census/latest_report.json`: `{format_mtime(ESTATE_CENSUS_REPORT_PATH)}`")
+    if PORTAL_UCG_PILOT_PREFLIGHT_PATH.exists():
+        lines.append(f"- `artifacts/ucg_portal_pilot_preflight/latest_report.json`: `{format_mtime(PORTAL_UCG_PILOT_PREFLIGHT_PATH)}`")
     if website_source_path:
         lines.append(f"- `{website_source_path.relative_to(ROOT_DIR)}`: `{format_mtime(website_source_path)}`")
     if production_source_path:
@@ -370,10 +396,128 @@ def main() -> int:
             )
         lines.append(f"- ssh stock-pve: `{control_plane_report.get('ssh_stock_pve', {}).get('status', 'unknown')}`")
         lines.append(f"- Local WireGuard VPN service running: `{str(control_plane_report.get('wireguard_vpn_running', False)).lower()}`")
+        lines.append("- Important split: local StudioPC WireGuard is legacy/recovery only; it is not the same thing as a later professional site-to-site WireGuard between UCG and Stockenweiler.")
         for item in control_plane_report.get("observations", [])[:3]:
             lines.append(f"- {item}")
     else:
         lines.append("- No control-plane audit artifact yet.")
+    lines.append("")
+    lines.append("## Estate Census Snapshot")
+    lines.append("")
+    if estate_census_report:
+        lines.append(f"- Generated at: `{estate_census_report.get('generated_at', 'unknown')}`")
+        lines.append(
+            f"- Tailscale peers: online `{estate_summary.get('online_tailscale_peers', 0)}` / offline `{estate_summary.get('offline_tailscale_peers', 0)}` / routed `{estate_summary.get('routed_tailscale_peers', 0)}`"
+        )
+        lines.append(
+            f"- Running estate nodes: anker containers `{estate_summary.get('anker_running_containers', 0)}`, anker VMs `{estate_summary.get('anker_running_vms', 0)}`, stock containers `{estate_summary.get('stock_running_containers', 0)}`, stock VMs `{estate_summary.get('stock_running_vms', 0)}`"
+        )
+        lines.append(
+            f"- Working toolbox frontdoors: `{estate_summary.get('frontdoors_ok', 0)}` / `{estate_summary.get('frontdoors_total', 0)}`; Stockenweiler public legacy hosts green `{estate_summary.get('stock_public_ok', 0)}` / `{estate_summary.get('stock_public_total', 0)}`"
+        )
+        local_network = estate_census_report.get("local_network", {})
+        if isinstance(local_network, dict):
+            local_ips = local_network.get("ip_addresses", [])
+            if local_ips:
+                lines.append(
+                    f"- Local active IPv4 interfaces: `{', '.join(f"{item.get('InterfaceAlias', '-')}: {item.get('IPAddress', '-')}/{item.get('PrefixLength', '-')}`".strip('`') for item in local_ips[:4])}`"
+                )
+        degraded_frontdoors = [item for item in estate_frontdoors if item.get("status") != "ok"]
+        if degraded_frontdoors:
+            lines.append("- Degraded frontdoors:")
+            for item in degraded_frontdoors[:3]:
+                lines.append(f"  - `{item.get('name', '-')}` -> HTTP `{item.get('http_code', '000')}` via `{item.get('url', '-')}`")
+        if estate_blockers:
+            lines.append("- Current estate blockers:")
+            for item in estate_blockers[:5]:
+                lines.append(f"  - {item}")
+        if estate_recommended_next:
+            lines.append("- Current working order:")
+            for item in estate_recommended_next[:3]:
+                lines.append(f"  - {item}")
+        if estate_transition_sequence:
+            lines.append("- Canonical Anker transition sequence:")
+            for item in estate_transition_sequence[:5]:
+                lines.append(f"  - {item}")
+    else:
+        lines.append("- No estate census artifact yet.")
+    lines.append("")
+    lines.append("## Platform Health Snapshot")
+    lines.append("")
+    if platform_health_report:
+        lines.append(f"- Generated at: `{platform_health_report.get('generated_at', 'unknown')}`")
+        lines.append(f"- Top priority issue: {platform_summary.get('top_priority_issue', 'none')}")
+        lines.append(
+            f"- Frontdoors green: `{platform_summary.get('frontdoors_ok', 0)}` / `{platform_summary.get('frontdoors_total', 0)}`; Odoo runtime green `{str(platform_summary.get('odoo_runtime_green', False)).lower()}`"
+        )
+        anker_host = platform_health_report.get('anker', {}).get('host', {})
+        stock_host = platform_health_report.get('stockenweiler', {}).get('host', {})
+        if isinstance(anker_host, dict):
+            lines.append(
+                f"- Anker host: RAM `{anker_host.get('memory_used_gib', 0)} / {anker_host.get('memory_total_gib', 0)} GiB`, rootfs `{anker_host.get('rootfs_used_pct', 0)}%`, swap `{anker_host.get('swap_used_pct', 0)}%`"
+            )
+        if isinstance(stock_host, dict):
+            lines.append(
+                f"- Stockenweiler host: RAM `{stock_host.get('memory_used_gib', 0)} / {stock_host.get('memory_total_gib', 0)} GiB`, rootfs `{stock_host.get('rootfs_used_pct', 0)}%`, swap `{stock_host.get('swap_used_pct', 0)}%`"
+            )
+        blockers = platform_health_report.get('blockers', [])
+        if blockers:
+            lines.append("- Current blockers:")
+            for item in blockers[:4]:
+                lines.append(f"  - {item}")
+        recommendations = platform_health_report.get('recommended_next_order', [])
+        if recommendations:
+            lines.append("- Recommended next order:")
+            for item in recommendations[:4]:
+                lines.append(f"  - {item}")
+    else:
+        lines.append("- No platform health artifact yet.")
+    lines.append("")
+    lines.append("## CI/CD Snapshot")
+    lines.append("")
+    if CICD_DELIVERY_FACTORY_REPORT_PATH.exists():
+        lines.append("- Delivery factory status: `defined_not_deployed`")
+        if cicd_preflight:
+            summary = cicd_preflight.get("summary", {})
+            lines.append(f"- Safe scope now: `{summary.get('safe_scope_now', 'unknown')}`")
+            lines.append(
+                f"- Verified start state: workflows `{cicd_preflight.get('workflow_file_count', 0)}`, Dockerfiles `{cicd_preflight.get('dockerfile_count', 0)}`, ready apps `{summary.get('factory_ready_app_count', 0)}`"
+            )
+            open_prereq = cicd_preflight.get("open_prerequisites", [])
+            if open_prereq:
+                lines.append(f"- Open factory prerequisites: `{len(open_prereq)}`")
+        lines.append("- CD controller role: `Coolify as delivery-only layer`")
+        lines.append("- Registry contract: `GHCR v1` for `ghcr.io/wolfeetech/frawo/radio-player-frontend`")
+        lines.append("- Env/secret contract: `dev/prod env examples plus future Coolify webhook secret names`")
+        lines.append("- Coolify host contract: `dedicated internal Anker management node preferred; toolbox only temporary fallback`")
+        lines.append("- First deploy bundle: `deployment/factory/apps/radio-player-frontend/compose.yaml`")
+        if coolify_mgmt_audit:
+            lines.append(f"- Management-node recommendation: `{coolify_mgmt_audit.get('recommendation', '-')}`")
+        if storage_optimization_report:
+            lines.append("- Storage pressure snapshot: `artifacts/storage_optimization/latest_report.md`")
+        lines.append("- Dev/Prod model: `develop -> dev`, `main/tag -> prod`")
+        lines.append("- Backup/Restore rule: `stateless public = redeploy`, `stateful internal = PBS/VM restore plus app-native data restore`")
+        lines.append("- Factory report: `artifacts/cicd_delivery_factory/latest_report.md`")
+    else:
+        lines.append("- No CI/CD delivery factory report yet.")
+    lines.append("")
+    lines.append("## UCG Pilot Snapshot")
+    lines.append("")
+    if portal_pilot_preflight:
+        lines.append(f"- Pilot: `{portal_pilot_preflight.get('pilot', 'portal')}`")
+        lines.append(
+            f"- Ready for gated runtime change: `{str(portal_pilot_preflight.get('ready_for_gated_runtime_change', False)).lower()}`"
+        )
+        lines.append(f"- Recommendation: `{portal_pilot_preflight.get('recommendation', '-')}`")
+        lines.append("- Runtime runbook: `UCG_PORTAL_PILOT_RUNBOOK.md`")
+        summary = portal_pilot_preflight.get('portal_frontdoor', {}).get('status_payload_summary', {})
+        lines.append(
+            f"- Portal status snapshot: platform_core `{summary.get('platform_core', '-')}`, healthy `{summary.get('healthy_services', 0)}` / `{summary.get('total_services', 0)}`"
+        )
+        for item in portal_pilot_preflight.get('checks', [])[:4]:
+            lines.append(f"  - `{item.get('id', '-')}` -> `{'ok' if item.get('ok') else 'fail'}` / {item.get('evidence', '-')}")
+    else:
+        lines.append("- No portal pilot preflight artifact yet.")
     lines.append("")
     lines.append("## Current Lane Model")
     lines.append("")
@@ -445,7 +589,14 @@ def main() -> int:
         lines.append(
             f"  - fallback `{stock_management_bridge.get('fallback_path', '-')}` / direct local WG reachable `{stock_management_bridge.get('local_direct_wireguard_reachable', '-')}`"
         )
+        lines.append("  - architecture note: current admin bridge is Tailscale-first, but the later permanent site bridge may become native WireGuard between UCG and Stockenweiler after read-only inventory of the existing Stockenweiler WG topology")
         lines.append(f"  - next operator action: {stock_management_bridge.get('next_operator_action', '-')}")
+    if stockenweiler_wg_inventory:
+        lines.append(
+            f"- Existing WireGuard truth: reachable `{str(stock_wg_reachable).lower()}`, server `{stockenweiler_wg_inventory.get('server_profile', {}).get('address', '-')}` on port `{stockenweiler_wg_inventory.get('server_profile', {}).get('listen_port', '-')}`, client profiles `{len(stockenweiler_wg_inventory.get('client_profiles', []))}`"
+        )
+        for item in stockenweiler_wg_inventory.get("conclusions", [])[:2]:
+            lines.append(f"  - {item}")
     if isinstance(stock_visible_summary, dict) and stock_visible_summary.get("findings"):
         lines.append(
             f"- Visible legacy host check: reachable `{stock_visible_summary.get('currently_reachable_count', 0)}` / broken `{stock_visible_summary.get('currently_broken_count', 0)}`"

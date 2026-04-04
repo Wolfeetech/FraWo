@@ -46,15 +46,6 @@ Alles andere laeuft standardmaessig im Loop:
 
 ## Manuelle Unblock-Punkte
 
-### `ucg_vlan_decision`
-
-- `lane`: `Lane C: Security/PBS/Infra`
-- `goal`: Netzpfad konsolidieren, damit Odoo/Nextcloud/Paperless/HA/Portal wieder erreichbar sind.
-- `done_when`: Proxmox-Port ist entweder wieder im `192.168.2.0/24`-VLAN **oder** das gesamte Estate wurde nach `10.1.0.0/24` migriert (inkl. DNS/hs27.internal).
-- `blocked_by`: fehlende Entscheidung, ob UCG-Testsegment beibehalten oder Legacy-LAN wiederherstellen
-- `next_operator_action`: Entscheide: UCG-Testsegment behalten (Migration nach `10.1.0.0/24`) **oder** Proxmox-Port zurueck auf `192.168.2.0/24`.
-- `next_codex_action`: Nach der Entscheidung Netzwerkpfad umstellen, DNS/hs27.internal aktualisieren und Erreichbarkeit pruefen.
-
 ### `device_rollout_verified`
 
 - `lane`: `Lane A: MVP Closeout`

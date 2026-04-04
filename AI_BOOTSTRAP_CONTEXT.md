@@ -12,9 +12,10 @@
 - Organization: `FraWo`
 - Primary operator/admin: `Wolf`
 - Primary business user rollout: `Franz`
-- Gateway/router: `192.168.2.1` `easy_box`
-- Proxmox host: `192.168.2.10` `proxmox`
-- Core toolbox/control node: `192.168.2.20` `toolbox`
+- StudioPC local LAN gateway/router: `192.168.2.1` `easy_box`
+- UCG transition gateway for `proxmox-anker`: `10.1.0.1`
+- Proxmox host professional management path: `100.69.179.87` Tailscale, runtime `10.1.0.92`, transition aliases `192.168.2.10` and temporary `192.168.2.1`
+- Core toolbox/control node: internal `192.168.2.20`, additive UCG pilot alias `10.1.0.20`, Tailscale/frontdoor `100.99.206.128`
 - Nextcloud VM: `192.168.2.21`
 - Odoo VM: `192.168.2.22`
 - Paperless VM: `192.168.2.23`
@@ -26,6 +27,12 @@
 - Separate Stockenweiler legacy support LAN exists on `192.168.178.0/24`
 - Internal DNS zone: `hs27.internal`
 - Tailscale subnet router and internal reverse proxy live on `toolbox`
+- Latest whole-estate census: `artifacts/estate_census/latest_report.md`
+- Latest platform health audit: `artifacts/platform_health/latest_report.md`
+- Latest storage optimization audit: `artifacts/storage_optimization/latest_report.md`
+- Latest CI/CD delivery factory report: `artifacts/cicd_delivery_factory/latest_report.md`
+- Latest CI/CD delivery factory preflight: `artifacts/cicd_delivery_factory/latest_preflight.md` with current hard limit `repo_side_factory_only`
+- Transition note `2026-04-03`: `wolfstudiopc` currently reaches the core services professionally via `toolbox` Tailscale frontdoors on `100.99.206.128:*`; direct StudioPC access to the legacy guest `192.168.2.x` range is not the working path while the UCG migration bridge is active
 
 ## Service And Page Map
 
@@ -72,12 +79,17 @@
 - Vaultwarden SMTP is live, invitations are enabled, and the admin token is no longer stored as plaintext in the live container config.
 - The Vaultwarden invitation mail to `franz@frawo-tech.de` arrived successfully.
 - The `FraWo` invite for `franz@frawo-tech.de` was accepted.
-- UCG test segment is active: `proxmox-anker` now reports `vmbr0` on `10.1.0.92/24` (GW `10.1.0.1`) and `192.168.2.0/24` app paths are currently unreachable from `wolfstudiopc`.
+- UCG transition segment is active: `proxmox-anker` now reports `vmbr0` on `10.1.0.92/24` (GW `10.1.0.1`) plus transition aliases `192.168.2.10/24` and `192.168.2.1/24`.
+- `wolfstudiopc` currently reaches `Home Assistant`, `Odoo`, `Nextcloud`, `Paperless`, `Portal`, `Vault`, `Radio`, and `Media` professionally through the `toolbox` Tailscale frontdoors on `100.99.206.128`.
+- Platform health snapshot `2026-04-04`: Anker is operational and not capacity-critical; the hottest runtime pressure is Stockenweiler host swap plus `hdd-backup` pressure, while `Odoo` itself is runtime-green.
+- Stockenweiler still carries a fragmented legacy `yourparty` payload across `VM 210 azuracast-vm`, `CT 207 radio-wordpress-prod`, `CT 208 mariadb-server`, and `CT 211 radio-api`; capture this payload before thinning the site.
+- First UCG service pilot is live on `toolbox`: additive alias `10.1.0.20/24` is active and persistent, and the `portal` vhost answers on the target IP while the existing frontdoors remain green.
 - Jellyfin now publishes the direct LAN address for clients, which fixed the TV connection path for devices without working `hs27.internal` DNS.
 - Franz mailbox authentication was verified.
 - `Nextcloud`, `Paperless`, and `Odoo` are SMTP-configured against the shared mail baseline.
 - `AzuraCast` remains the only app-SMTP holdout because the current blocker is SSH access to `raspberry_pi_radio`.
 - The next real end-to-end user test is the visible MVP walkthrough for Wolf and Franz across Vault, Nextcloud, Paperless, and Odoo.
+- Strategic default for the next product phase: keep `Odoo` as CRM/portal/business shell and keep `AzuraCast` as the media engine instead of trying to make listener accounts the master identity path.
 - Stockenweiler local legacy facts were recovered from old StudioPC workspaces and a local router export:
   - router `FRITZ!Box 5690 Pro` on `192.168.178.1`
   - Proxmox host `192.168.178.25`

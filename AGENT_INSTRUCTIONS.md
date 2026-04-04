@@ -6,7 +6,7 @@
 
 Du arbeitest in der Infrastrukturumgebung **Homeserver 2027**, welche die Netzwerke und Server von **FraWo** (Hauptstandort Anker) und **Stockenweiler** (Zweitstandort) umfasst. Das Projekt zielt auf einen professionellen, stabilen und fernwartbaren Betrieb ab.
 
-## 2. Die Goldene Regel: Tailscale First!
+## 2. Die Goldene Regel: Tailscale First
 
 Tailscale ist der primäre und verbindliche Zugriffsweg für alle Systeme.
 - **Nutze immer die Tailscale IPs (100.x.x.x)** für Management, SSH und API-Zugriffe.

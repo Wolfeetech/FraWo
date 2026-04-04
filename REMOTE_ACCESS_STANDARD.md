@@ -7,6 +7,7 @@ Der Remote-Zugriff fuer Homeserver 2027 folgt einem klaren professionellen Stand
 - `Tailscale` ist der primaere administrative Fernzugang
 - `AnyDesk` ist der GUI-Fallback auf dem `ZenBook`
 - alte manuelle VPN-Profile wie `WireGuard` bleiben getrennt und werden nicht parallel aktiv betrieben
+- wichtig: das lokale alte `StudioPC`-`WireGuard` ist nicht dasselbe wie ein spaeteres professionelles `Site-to-Site WireGuard` zwischen `UCG` und `Stockenweiler`
 
 ## Was "voll remote steuerbar" konkret heisst
 
@@ -51,7 +52,9 @@ Das ist der entscheidende Unterschied:
 - `Stockenweiler`
   - aktuell primaer ueber `ssh stock-pve`
   - realer Pfad: `StudioPC -> toolbox -> userspace WireGuard -> 192.168.178.25`
-  - professioneller Zielpfad bleibt `Tailscale subnet routing`, nicht dauerhafte Abhaengigkeit vom lokalen stale Windows-WireGuard-Tunnel
+  - professioneller Tagesbetrieb bleibt aktuell `Tailscale first`
+  - das lokale stale Windows-`WireGuard` auf `StudioPC` ist nur Altlast/Recovery, nicht Zielarchitektur
+  - ein spaeteres professionelles `Site-to-Site WireGuard` zwischen `UCG` und `Stockenweiler` ist davon getrennt und bleibt ein eigener Infrastrukturpfad
 - `StudioPC`
   - `Pyrefly`-Workspace-Language-Services sind fuer diesen Workspace deaktiviert, damit Editor-Spam nicht als Infrastrukturproblem verwechselt wird
 

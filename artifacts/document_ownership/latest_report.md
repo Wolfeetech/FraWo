@@ -1,17 +1,17 @@
 # Document Ownership Report
 
-Scanned markdown files: `221`
-All green: `false`
+Scanned markdown files: `244`
+All green: `true`
 
 ## Counts
 
-- `codex`: `187`
+- `codex`: `210`
 - `gemini`: `20`
-- `wolfi`: `13`
+- `wolfi`: `14`
 
 ## Missing Ownership
 
-- `ANKER_STOCKENWEILER_MARRIAGE_PLAN.md`
+- none
 
 ## Ambiguous Ownership
 
@@ -32,12 +32,15 @@ All green: `false`
 - `ACCESS_REGISTER_VAULTWARDEN_REFERENCES.md`
 - `ADGUARD_PILOT_ROLLOUT_PLAN.md`
 - `AGENTS.md`
+- `AGENT_INSTRUCTIONS.md`
 - `AI_BOOTSTRAP_CONTEXT.md`
+- `AI_OPERATING_MODEL.md`
 - `AI_SERVER_HANDOFF.md`
 - `AZURACAST_FIRST_STATION_BASELINE.md`
 - `BACKUP_RESTORE_PROOF.md`
 - `BUSINESS_MVP_PROMPT.md`
 - `CAPACITY_REVIEW.md`
+- `CI_CD_DELIVERY_FACTORY_PLAN.md`
 - `FULL_CERTIFICATION_PROMPT.md`
 - `HAOS_VM_210_SETUP_PLAN.md`
 - `INTRODUCTION_PROMPT.md`
@@ -80,19 +83,28 @@ All green: `false`
 - `SESSION_CLOSEOUT.md`
 - `SHARED_STORAGE_ARCHITECTURE_PLAN.md`
 - `STABILIZATION_GAP_REVIEW_2026-03-26.md`
+- `STORAGE_OPTIMIZATION_PLAN.md`
 - `STRESS_TEST_READINESS.md`
 - `SURFACE_GO_FRONTEND_SETUP_PLAN.md`
 - `TAILSCALE_SPLIT_DNS_PLAN.md`
 - `TB_SSD_ASSESSMENT.md`
+- `UCG_NETWORK_ARCHITECTURE.md`
+- `UCG_PORTAL_PILOT_RUNBOOK.md`
 - `VAULTWARDEN_INTERNAL_HTTPS_ROLLOUT.md`
 - `VAULTWARDEN_SELFHOST_START.md`
 - `VM_AUDIT.md`
 - `WEBSITE_RELEASE_PROMPT.md`
+- `artifacts/cicd_delivery_factory/latest_preflight.md`
+- `artifacts/cicd_delivery_factory/latest_report.md`
+- `artifacts/control_plane/latest_report.md`
 - `artifacts/control_surface/actions_report.md`
+- `artifacts/coolify_management_host/latest_report.md`
 - `artifacts/device_rollout_preflight/20260331_084526/report.md`
 - `artifacts/device_rollout_preflight/latest_report.md`
 - `artifacts/document_ownership/current_report.md`
+- `artifacts/document_ownership/latest_report.md`
 - `artifacts/document_ownership/report.md`
+- `artifacts/estate_census/latest_report.md`
 - `artifacts/network/unknown_review_2026-03-21.md`
 - `artifacts/pbs_device_inventory/20260327_085756/report.md`
 - `artifacts/pbs_device_inventory/20260327_172859/report.md`
@@ -116,6 +128,7 @@ All green: `false`
 - `artifacts/pbs_vm240_reconcile/20260327_085156/report.md`
 - `artifacts/pbs_vm240_reconcile/20260327_085315/report.md`
 - `artifacts/pbs_vm240_reconcile/20260327_172859/report.md`
+- `artifacts/platform_health/latest_report.md`
 - `artifacts/production_gate/20260326_231526/production_gate.md`
 - `artifacts/production_gate/20260326_232313/production_gate.md`
 - `artifacts/production_gate/20260326_232353/production_gate.md`
@@ -168,9 +181,11 @@ All green: `false`
 - `artifacts/stockenweiler_inventory/latest_remote_path_probe.md`
 - `artifacts/stockenweiler_inventory/latest_tailscale_bridge_check.md`
 - `artifacts/stockenweiler_inventory/latest_tailscale_bridge_prepare.md`
+- `artifacts/stockenweiler_inventory/latest_wireguard_inventory.md`
 - `artifacts/stockenweiler_inventory/legacy_access_probe.md`
 - `artifacts/stockenweiler_inventory/report.md`
 - `artifacts/stockenweiler_inventory/support_brief.md`
+- `artifacts/storage_optimization/latest_report.md`
 - `artifacts/stress_tests/20260326_230624/report.md`
 - `artifacts/stress_tests/20260326_230855/report.md`
 - `artifacts/stress_tests/20260326_231027/report.md`
@@ -191,6 +206,7 @@ All green: `false`
 - `artifacts/stress_tests/20260327_181859/report.md`
 - `artifacts/stress_tests/20260327_234033/report.md`
 - `artifacts/stress_tests/20260327_234807/report.md`
+- `artifacts/ucg_portal_pilot_preflight/latest_report.md`
 - `artifacts/website_release_audit/20260330_063108/report.md`
 - `artifacts/website_release_audit/20260330_111718/report.md`
 - `artifacts/website_release_audit/20260330_111945/report.md`
@@ -215,6 +231,13 @@ All green: `false`
 - `artifacts/website_release_gate/20260330_154459/website_release_gate.md`
 - `artifacts/website_release_gate/20260330_155801/website_release_gate.md`
 - `artifacts/website_release_gate/20260330_161648/website_release_gate.md`
+- `deployment/coolify/COOLIFY_HOST_SELECTION.md`
+- `deployment/coolify/COOLIFY_MANAGEMENT_NODE_SPEC.md`
+- `deployment/coolify/README.md`
+- `deployment/factory/apps/radio-player-frontend/README.md`
+- `deployment/factory/contracts/GHCR_CONTRACT.md`
+- `deployment/factory/contracts/SECRET_DISTRIBUTION_MODEL.md`
+- `deployment/factory/contracts/SECRET_ENV_CONTRACT.md`
 - `manifests/release_mvp_gate/test_mails.md`
 
 ### gemini
@@ -242,6 +265,7 @@ All green: `false`
 
 ### wolfi
 
+- `ANKER_STOCKENWEILER_MARRIAGE_PLAN.md`
 - `EXECUTIVE_ROADMAP.md`
 - `GOOGLE_DRIVE_INTEGRATION_PLAN.md`
 - `IDENTITY_STANDARD.md`

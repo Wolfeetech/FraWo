@@ -156,11 +156,11 @@ Der Server gilt erst dann als wirklich fertig, wenn alle folgenden Punkte erfuel
   - der guarded Rebuild-Pfad ist vorbereitet, der produktive Betrieb aber blockiert
 - USB-Dongles fuer HAOS sind noch nicht am Host sichtbar.
 - AdGuard ist noch nicht primaerer LAN-DNS.
-- UCG-Ultra ist noch nicht integriert.
+- UCG-Ultra ist inzwischen Teil des aktiven Uebergangsnetzes.
 - der UCG-Pfad ist aktuell bewusst vom akuten Website-Cutover getrennt:
-  - Zielarchitektur bleibt `UCG-Ultra`
-  - operativ blockiert der Pfad derzeit am fehlenden Ubiquiti-2FA-Zugriff nach dem Verlust des Handys
-  - der aktuelle Public-Website-Cutover bleibt deshalb auf dem bestehenden Routerpfad plus `VM220` als Edge-Ziel
+  - das VLAN-/Subnetz-Zielbild bleibt `UCG-Ultra` und ist bereits veroeffentlicht
+  - offen sind jetzt Firewall-Politik, Proxmox-VLAN-Trunk-Adoption und die geordnete Service-Migration
+  - der aktuelle Public-Website-Cutover bleibt deshalb ein eigener Edge-Block und nicht Teil des laufenden UCG-Service-Uebergangs
 - Public Edge ist bewusst noch nicht live.
 - Public-Domain-Stand ist bereits real sichtbar, aber nicht release-faehig:
   - `frawo-tech.de` und `www.frawo-tech.de` loesen oeffentlich jetzt auf `92.211.33.54` und `2a00:1e:ef80:7c01:be24:11ff:feaa:bbcc` auf
@@ -471,23 +471,28 @@ Ziel:
 - professioneller Netzrand mit DHCP-, Firewall- und Segmentierungs-Kontrolle
 
 Status:
-- geplant, noch nicht freigegeben
+- **AKTIV** - UCG laeuft, VLAN-Schema deployed (2026-04-03)
 
-Stage Gate:
-- alle Ziel-LXCs/VMs stabil
-- Backup/Restore praktisch bewiesen
-- Inventar und IP-Plan final
-- Wartungsfenster geplant
-- Rueckfall auf Easy Box dokumentiert
+Erreicht (2026-04-03):
+- UCG-Ultra am Anker-Standort aktiv
+- Dual-WAN konfiguriert (WAN1 primaer, WAN2 Failover)
+- VLAN-Schema via UniFi-API deployed:
+  - VLAN 100: Anker-Lan (`10.0.0.0/24`)
+  - VLAN 101: Anker-Server (`10.1.0.0/24`) — Proxmox aktiv hier
+  - VLAN 102: Anker-DMZ (`10.2.0.0/24`)
+  - VLAN 103: Anker-DMZ-Radio (`10.3.0.0/24`)
+  - VLAN 104: Anker-IoT (`10.4.0.0/24`) — isoliert
+  - VLAN 105: Anker-Guest (`10.5.0.0/24`) — internet-only
+  - VLAN 110: Stock-Lan (`10.10.0.0/24`) — VPN-Endpunkt
+  - VLAN 111: Stock-Server (`10.11.0.0/24`) — VPN-Endpunkt
+- SSOT: `UCG_NETWORK_ARCHITECTURE.md`
+- API-Key: Vaultwarden FraWo / Core Infra / UCG Anker API Key
 
-Aktueller maschinenlesbarer Gate:
-- `make gateway-cutover-stage-gate`
-
-Derzeitige Blocker:
-- `inventory_finalized=no`
-- `maintenance_window_ready=no`
-- `ubiquiti_2fa_access=no`
-- bis zur Wiederherstellung des Ubiquiti-Zugriffs bleibt der UCG-Cutover geplant, aber nicht operativ ausfuehrbar
+Ausstehend:
+- Firewall-Regeln zwischen VLANs setzen
+- Proxmox VLAN-Trunk-Migration (VMs von 192.168.2.x → 10.1.0.x)
+- WireGuard VPN zu Stockenweiler (UCG-Ultra ↔ FritzBox 5690 Pro)
+- StudioPC in VLAN 100 (Anker-Lan) migrieren
 
 ## Phase 8 - Public Edge und professionelle Aussenanbindung
 
@@ -517,6 +522,7 @@ Bevorzugter Zielname:
 Runbook:
 - `PUBLIC_EDGE_ARCHITECTURE_PLAN.md`
 - `RELEASE_READINESS_2026-04-01.md`
+- `CI_CD_DELIVERY_FACTORY_PLAN.md`
 
 Nie direkt oeffentlich:
 - Proxmox
@@ -527,6 +533,17 @@ Nie direkt oeffentlich:
 - Nextcloud-Admin
 - Paperless-Admin
 - Odoo-Admin
+
+### Delivery-Fabrik fuer Public-Workloads
+
+- Public Delivery wird als `build once, deploy anywhere`-Modell aufgebaut.
+- `Coolify` ist dafuer die bevorzugte Open-Source-CD-Schicht, aber nicht die eigentliche CI-Wahrheit.
+- Build-/Test-Standard bleibt repo- und registry-basiert, damit Deployments spaeter nicht an einen einzelnen Controller gebunden sind.
+- `dev` und `prod` werden als getrennte Umgebungen geplant.
+- zwei spaetere DMZ-Webnodes bleiben das Zielbild:
+  - `Anker / Rothkreuz` als primaerer Public-Webnode in `VLAN 102`
+  - `Stockenweiler` als spaeterer zweiter Public-Webnode fuer Failover/Ergaenzung
+- echter dualer Betrieb ueber beide Standorte gilt in `V1` nur fuer stateless public apps; stateful Business-Dienste bleiben zunaechst intern `primary + DR`.
 
 ## Phase 9 - Optional / Wishlist
 

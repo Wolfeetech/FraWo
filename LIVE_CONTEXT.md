@@ -89,14 +89,33 @@
 
 - Managed hosts in Ansible inventory: `29`
 - Router baseline: `192.168.2.1` Vodafone Easy Box
-- Planned future gateway: `UniFi Cloud Gateway Ultra (UCG-Ultra)` is now active in a test segment; `proxmox-anker` moved to `10.1.0.92/24` (GW `10.1.0.1`)
-- Core business nodes are still on `192.168.2.0/24` (toolbox/nextcloud/odoo/paperless/haos), but are currently unreachable from `wolfstudiopc` while the UCG segment is active
-- Proxmox network config is staged back to static `192.168.2.10/24` on `vmbr0`, pending physical port move + network reload
+- Active gateway transition: `UCG-Ultra` segment stays active for `proxmox-anker`; `vmbr0` runs on `10.1.0.92/24` (GW `10.1.0.1`) with legacy helper aliases `192.168.2.10/24` and temporary transition gateway `192.168.2.1/24`
+- Legacy business guests still live on an isolated internal `192.168.2.0/24`; because this overlaps with the old EasyBox LAN on `wolfstudiopc`, direct `192.168.2.x` access from the StudioPC is intentionally not the working path
+- Current working StudioPC access path is `Tailscale first` via `toolbox` frontdoors: `100.99.206.128:8443` Home Assistant, `:8444` Odoo, `:8445` Nextcloud, `:8446` Paperless, `:8447` Portal, `:8442` Vault, `:8448` Radio, `:8449` Media; all current Anker frontdoors now answer from `wolfstudiopc`
+- Latest whole-estate census: `/mnt/c/Users/StudioPC/Documents/Homeserver 2027 Workspace/artifacts/estate_census/latest_report.md` -> `frontdoors_ok=8/8`, `stock_public_ok=0/4`, `ssh root@100.69.179.87` and `ssh root@100.91.20.116` are the current professional management paths
+- Latest platform health audit: `/mnt/c/Users/StudioPC/Documents/Homeserver 2027 Workspace/artifacts/platform_health/latest_report.md` -> top issue is Stockenweiler host swap pressure plus `hdd-backup=84%`; Anker itself is operational and `Odoo` is runtime-green
+- Latest storage optimization audit: `artifacts/storage_optimization/latest_report.md` -> first reclaim target is Stockenweiler backups and media payload, not Anker root storage
+- CI/CD delivery factory is now defined in `CI_CD_DELIVERY_FACTORY_PLAN.md` plus `manifests/cicd/delivery_factory.json`; current state is `defined_not_deployed`
+- Critical factory preflight: `artifacts/cicd_delivery_factory/latest_preflight.md` remains authoritative; safe scope is still `repo_side_factory_only`, so real Coolify/DMZ rollout is still not honest yet
+- Factory control plane now includes `GHCR` contract, env/secret contract, host-selection contract, and the first neutral deploy bundle for `radio-player-frontend`
+- Coolify management-node audit path now exists: `artifacts/coolify_management_host/latest_report.md` with the dedicated internal `Anker` node as the preferred next gated step
+- First UCG low-risk runtime pilot is now live: `CT 100 toolbox` carries additive alias `10.1.0.20/24`, and `artifacts/ucg_portal_pilot_preflight/latest_report.md` is green with `recommendation=portal_pilot_runtime_green`
 - Latest stress summary: `/mnt/c/Users/StudioPC/Documents/Homeserver 2027 Workspace/artifacts/stress_tests/20260327_234807/summary.tsv`
 - Latest release-MVP gate: `/mnt/c/Users/StudioPC/Documents/Homeserver 2027 Workspace/artifacts/release_mvp_gate/20260328_072307/release_mvp_gate.md` -> `BLOCKED`
 - Latest production gate: `/mnt/c/Users/StudioPC/Documents/Homeserver 2027 Workspace/artifacts/production_gate/20260328_072130/production_gate.md` -> `BLOCKED`
-- Toolbox network base: Caddy on `192.168.2.20:80`, AdGuard Home on `192.168.2.20:53` and localhost-only admin on `127.0.0.1:3000`, `hs27.internal` rewrites verified in opt-in mode (currently unreachable from `wolfstudiopc`)
-- Toolbox mobile Tailscale frontdoor: `100.99.206.128:8443` HA, `:8444` Odoo, `:8445` Nextcloud, `:8446` Paperless, `:8447` Portal, `:8448` Radio, `:8449` Media (currently unreachable from `wolfstudiopc`)
+- Toolbox network base: Caddy on `192.168.2.20:80`, AdGuard Home on `192.168.2.20:53` and localhost-only admin on `127.0.0.1:3000`; `hs27.internal` rewrites remain valid internally, while StudioPC should prefer the Tailscale frontdoors or explicit temporary host overrides during the transition
+- Toolbox UCG pilot alias: `10.1.0.20/24` is active on `eth0`; the first live proof is limited to the `portal` vhost and does not yet change the business-app migration order
+- Toolbox mobile Tailscale frontdoor: `100.99.206.128:8443` HA, `:8444` Odoo, `:8445` Nextcloud, `:8446` Paperless, `:8447` Portal, `:8448` Radio, `:8449` Media; from `wolfstudiopc` all are currently reachable
+- Canonical next order for Anker transition:
+  - current state einfrieren: `Tailscale first`, frontdoors gruen, legacy guests weiter isoliert
+  - vorhandenes UCG-VLAN-Zielbild aus `UCG_NETWORK_ARCHITECTURE.md` als bindend behandeln
+  - danach erst ein Low-Risk-Pilot, dann `Odoo -> Nextcloud -> Paperless`, dann `Home Assistant`, `Vaultwarden` nur mit explizitem Rollback, `PBS` zuletzt
+- Canonical next order for the broader platform:
+  - Anker stabil halten und keine breite Migration starten, solange `PBS` nicht gruen und Stockenweiler unter Druck ist
+  - zuerst Odoo-Produktprofil und Customer-Portal-Scope festziehen
+  - dann die essenzielle `yourparty`-Payload aus Stockenweiler nach Rothkreuz sichern
+  - erst danach Stockenweiler Radio/Web/API ausduennen
+  - `Home Assistant` beider Haushalte vorerst getrennt halten
 - Toolbox Tailscale state: `/dev/net/tun` mapped, `tailscaled` active, backend `Running`, subnet route `192.168.2.0/24` is active in the Tailnet and Split-DNS for `hs27.internal` is operational
 - VM 200, VM 210, VM 220 and VM 230: QEMU Guest Agent verified from Proxmox during latest audit
 - Business stacks are running from `/opt/homeserver2027/stacks` under systemd-managed local IaC

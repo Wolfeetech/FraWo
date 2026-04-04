@@ -33,6 +33,10 @@ Fuer die uebergeordnete Reihenfolge, Integrationslogik und den spaeteren Marriag
 - `StudioPC` haengt aktuell nicht direkt im `192.168.178.0/24`-LAN; der direkte LAN-/Tailscale-Pfad fehlt weiter
 - ein funktionierender Recovery-Pfad existiert jetzt aber: `stock-pve` auf `StudioPC` nutzt `ProxyJump toolbox`, waehrend `toolbox` den alten Stockenweiler-`WireGuard`-Backbone im Userspace aufspannt
 - lokaler `Tailscale`-Status auf `StudioPC` ist `Running`, akzeptiert Routen jetzt wieder (`RouteAll=true`), zeigt aber aktuell trotzdem nur die sichtbare Route `192.168.2.0/24` via `toolbox`; `192.168.178.0/24` ist weiter nicht sichtbar
+- neue Architekturklarstellung `2026-04-03`:
+  - das lokale alte `WireGuard` auf `StudioPC` ist nicht die Zielarchitektur
+  - gewuenscht ist spaeter ein echtes `Site-to-Site WireGuard` zwischen `UCG` und `Stockenweiler`
+  - `Tailscale` bleibt bis dahin der Management-/Operator-Pfad; `WireGuard` auf dem `StudioPC` bleibt nur Recovery/Altlast
 - der professionelle Management-Bridge-Pfad ist jetzt vorbereitet, aber noch nicht fertig:
   - Zielpfad: `Tailscale`-Subnet-Router auf `stockenweiler-pve` fuer `192.168.178.0/24`
   - Zustand aktuell: `route_approval_pending`
@@ -47,6 +51,41 @@ Fuer die uebergeordnete Reihenfolge, Integrationslogik und den spaeteren Marriag
     - keine lokale `DNS = ...`-Zeile mehr
   - sichtbar ist sogar schon eine lokale Route `192.168.178.0/24` ueber `10.0.0.2`, aber direkter TCP/22-Zugriff auf `192.168.178.25` scheitert weiterhin; dieser Windows-Tunnel gilt also weiter als stale, bis er mit Admin-Token sauber reapplied ist
 - `AnyDesk` ist lokal vorhanden, aber die geborgenen Remote-IDs sind noch nicht auf heutige Stockenweiler-Geraete gemappt
+
+## Aktueller Runtime-Druck und Konsolidierungshinweis
+
+- der aktuelle Plattformaudit `artifacts/platform_health/latest_report.md` zeigt Stockenweiler nicht als leeren Reserve-Standort, sondern als unter Last stehenden Legacy-Standort
+- harter Befund `2026-04-04`:
+  - Host-Swap-Nutzung `6.3 / 8.0 GiB`
+  - Storage `hdd-backup` bei `84%`
+  - `anker-music` aktuell inaktiv
+  - `VM 360 homeassistant-eltern` und `VM 210 azuracast-vm` laufen bereits mit hoher RAM-Auslastung
+- daraus folgt:
+  - keine neuen Zusatzlasten nach Stockenweiler kippen, bevor Payload bereinigt und Speicherpfade geklaert sind
+  - Stockenweiler zuerst als Legacy-/Support-Standort stabilisieren, dann erst Ressourcenbeitrag bewerten
+  - vor jedem Ausduennen der Site zuerst die essenzielle `yourparty`-Payload nach Rothkreuz sichern
+
+## Essenzielle yourparty-Payload vor Ausduennen sichern
+
+- `VM 210 azuracast-vm`
+- `CT 207 radio-wordpress-prod`
+- `CT 208 mariadb-server`
+- `CT 211 radio-api`
+
+Diese vier Bausteine sind aktuell die kanonische Minimalmenge, die vor einem Rueckbau oder einer Rollenverschiebung aus Stockenweiler gesichert werden muss.
+
+## Neue Leitentscheidung: spaeteres S2S-WireGuard statt lokaler Dauerbastelei
+
+- `Tailscale` ist weiter der aktuelle Managementpfad fuer Codex/Gemini und den professionellen Tagesbetrieb.
+- Das gewuenschte Infrastrukturziel fuer die Standortbruecke ist aber **nicht** der lokale Windows-`WireGuard` auf `StudioPC`.
+- Das gewuenschte Infrastrukturziel ist ein echtes `Site-to-Site WireGuard` zwischen `UCG-Ultra` am Anker-Standort und dem bestehenden oder neu definierten `WireGuard`-Endpunkt in `Stockenweiler`.
+- Dafuer gibt es zwei saubere Varianten, die erst read-only inventarisiert und dann gegeneinander entschieden werden:
+  - `Variante A`: bestehender `WireGuard`-Server in `Stockenweiler` bleibt Server, `UCG-Ultra` wird Client.
+  - `Variante B`: `UCG-Ultra` hostet den neuen Server, `Stockenweiler` wird Client.
+- Vor dieser Entscheidung gilt:
+  - keine weitere mentale Vermischung von lokalem `StudioPC`-VPN und spaeterem Standort-VPN
+  - `Tailscale` bleibt fuer Adminzugriffe aktiv
+  - der naechste fachlich saubere Schritt ist die read-only Inventarisierung des heutigen `WireGuard`-Setups in `Stockenweiler`
 - Scan-/Musikpfade sind noch nicht sauber aufgeloest; lokale Spuren zeigen aktuell `\\\\192.168.178.25\\music`, `\\\\192.168.178.120\\music`, `\\\\192.168.178.120\\scans\\Familie Prinz` und `\\\\192.168.178.187\\ScansDrucker`
 - Disk-/Filesystem-Wahrheit auf `192.168.178.25` ist jetzt read-only dokumentiert; beide grossen HDD-Pfade sind aber aktuell voll und damit noch kein sofort nutzbarer PBS-Zielpfad
 - `UCG`- und groessere Gateway-Arbeit bleibt aufgeschoben, solange der Operator-`2FA`-Pfad wegen des verlorenen Smartphones blockiert ist

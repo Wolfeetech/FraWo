@@ -1,0 +1,37 @@
+name: delivery-factory-validate
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Run delivery factory preflight
+        run: python scripts/cicd_delivery_factory_preflight.py
+
+      - name: Build delivery factory report
+        run: python scripts/cicd_delivery_factory_report.py
+
+      - name: Check markdown ownership
+        run: python scripts/document_ownership_check.py
+
+      - name: Upload delivery factory artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: delivery-factory-artifacts
+          path: |
+            artifacts/cicd_delivery_factory/latest_preflight.md
+            artifacts/cicd_delivery_factory/latest_report.md

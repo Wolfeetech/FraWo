@@ -2,7 +2,9 @@
 
 ## Zweck
 
-AzuraCast ist der interne Radio-Betrieb auf dem Raspberry Pi.
+AzuraCast ist der Radio- und Streaming-Betrieb.
+
+Strategisch ist AzuraCast die Medien-Engine, nicht das zentrale Business-Identitaetssystem.
 
 ## Zugriff
 
@@ -16,12 +18,14 @@ AzuraCast ist der interne Radio-Betrieb auf dem Raspberry Pi.
 - `nowplaying` liefert Daten
 - SMTP ist fuer AzuraCast noch nicht fertig, weil der aktuelle Restblocker der SSH-Zugang zu `raspberry_pi_radio` ist
 - Mailstandard dafuer bleibt trotzdem derselbe App-SMTP-Pfad wie fuer `Vaultwarden`, `Nextcloud`, `Paperless` und `Odoo`
+- die eigentliche Legacy-`yourparty`-Last liegt derzeit noch teilweise in Stockenweiler und muss vor einem Abbau dort bewusst gesichert werden
 
 ## Normalbetrieb
 
 - SMB-Musikpfad bleibt die produktive Quelle
 - genau eine stabile Station zuerst sauber betreiben
 - Radio-Assets und Musikpfade klar getrennt halten
+- Odoo kann spaeter Website, CRM, Sponsor-/Partnerkontakte, Newsletter und eventuelle Supporter-Flows liefern; AzuraCast bleibt Stream-, Schedule- und Metadaten-Engine
 
 ## Taegliche Checks
 
@@ -35,6 +39,16 @@ AzuraCast ist der interne Radio-Betrieb auf dem Raspberry Pi.
 
 - keine zweite Station vor sauberem Stabilitaetsnachweis
 - keine Root-Disk als Hauptmedienquelle nutzen
+- keine Listener- oder Community-Logik zuerst an AzuraCast festtackern, wenn Odoo dieselbe Rolle als Business-/Portal-Schale sauberer abbildet
+
+## Stockenweiler Legacy-Payload vor Abbau sichern
+
+- `VM 210 azuracast-vm`
+- `CT 207 radio-wordpress-prod`
+- `CT 208 mariadb-server`
+- `CT 211 radio-api`
+
+Diese Payload zuerst nach Rothkreuz inventarisieren und sichern, erst danach duerfen Komponenten in Stockenweiler ausgeduennt werden.
 
 ## Eskalation
 
