@@ -269,6 +269,9 @@ Lokale Admin-Flaechen (nur localhost):
     - der Stack wurde auf `/opt/homeserver2027/stacks/nextcloud/docker-compose.yml` mit `stack.env`, `mariadb:10.11`, `redis:alpine` und `nextcloud:latest` zurueckgefuehrt und per `docker-compose up -d --force-recreate --remove-orphans` bereinigt
     - der Standardpfad fuer App-Reparatur lief ueber `php occ upgrade`, `php occ maintenance:repair --include-expensive` und das bewusste Deaktivieren des Maintenance-Modus; direkte DB-Schreibfixes wurden dabei vermieden
     - danach liefern `cloud.hs27.internal/` und `/status.php` wieder `HTTP 200`, `maintenance=false`, `needsDbUpgrade=false`, und `homeserver-compose-nextcloud.service` ist wieder `active`
+    - separater Mail-Abruf-Fix am selben Tag: Cloud-Init-DNS der VM zeigte noch auf Tailscale (`100.100.100.100`, `tail150400.ts.net`), obwohl `tailscaled` dort gar nicht lief
+    - persistenter Fix lief ueber Proxmox-Cloud-Init auf `nameserver 10.1.0.20` und `searchdomain hs27.internal`
+    - danach loesen VM und Container `imap.strato.de` wieder auf; der TLS-Handshake auf `993` ist verifiziert gruen
   - `VM 220 odoo` wurde bereinigt, antwortet wieder auf Port `8069`, ist QGA-verifiziert und wird jetzt ueber `homeserver-compose-odoo.service` aus `/opt/homeserver2027/stacks/odoo` betrieben.
   - Odoo-Remediation vom `2026-04-07`:
     - Compose-Drift in `VM 220` wurde bereinigt; `web` nutzt wieder `stack.env` und `./odoo.conf:/etc/odoo/odoo.conf:ro`

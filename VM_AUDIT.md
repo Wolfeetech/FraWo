@@ -151,6 +151,12 @@
     - der App-native Repair-Pfad lief ueber `php occ upgrade`, `php occ maintenance:repair --include-expensive` und anschliessend `php occ maintenance:mode --off`; direkte DB-Schreibfixes wurden bewusst nicht verwendet
     - anschliessend wurde `homeserver-compose-nextcloud.service` erfolgreich neu gestartet und meldet wieder `active`
     - Laufzeitverifikation `2026-04-07`: `cloud.hs27.internal/` -> `200`, `cloud.hs27.internal/status.php` -> `200`, `maintenance=false`, `needsDbUpgrade=false`, Container `nextcloud_app_1`, `nextcloud_db_1` und `nextcloud_redis_1` laufen
+  - Mail-/DNS-Remediation `2026-04-07`:
+    - Ursache fuer ausbleibenden Mail-Abruf in der Nextcloud-Mail-App war DNS-Drift auf der VM selbst, nicht die App-Logik
+    - `VM 200` nutzte per Cloud-Init noch Tailscale-DNS `100.100.100.100` und Suchdomaint `tail150400.ts.net`, obwohl `tailscaled` dort `inactive` war
+    - Persistenz wurde auf Proxmox-Ebene korrigiert: `qm set 200 --nameserver 10.1.0.20 --searchdomain hs27.internal`
+    - nach kontrolliertem Reboot zeigte `/etc/resolv.conf` wieder `nameserver 10.1.0.20` und `search hs27.internal`
+    - Verifikation: `getent hosts imap.strato.de` in der VM wieder gruen, Docker-Container loest ebenfalls auf, `openssl s_client -connect imap.strato.de:993 -servername imap.strato.de -brief` liefert wieder erfolgreichen TLS-Handshake
 
 ## VM 220 - Odoo
 
