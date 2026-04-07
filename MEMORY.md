@@ -679,7 +679,15 @@ Lokale Admin-Flaechen (nur localhost):
    - benoetigte Aktion: Bereitstellung der Master-Passwoerter (Vaultwarden fuer Franz und Wolf) oder Uebernahme des Login-Schritts.
    - warum: Laut BUSINESS_MVP_PROMPT.md und ACCESS_REGISTER_VAULTWARDEN_REFERENCES.md liegen keine Klartextpasswoerter vor, der Login zur Verifikation muss aber zwingend sichtbar im Browser evaluiert werden.
    - danach uebernehmen Codex/Gemini wieder: Pruefung der restlichen sichtbaren Realitaeten im Subagenten.
-10. Hinweis: Mobiler HTTPS-Vertrauensstandard (2026)
+10. `AKTION VON DIR ERFORDERLICH:` fehlenden 2FA-Pfad fuer den MVP-Abschluss wiederherstellen
+   - benoetigte Aktion: den verlorenen Smartphone-/2FA-Pfad fuer den Operator wiederherstellen oder einen bewusst freigegebenen Ersatzpfad festlegen und danach die sichtbare Franz-Geraeteabnahme auf Surface Laptop und iPhone durchziehen
+   - warum: `device_rollout_verified` bleibt im aktuellen MVP-Gate offen; ohne 2FA-/Login-Pfad kann die sichtbare Endgeraeteabnahme nicht sauber geschlossen werden
+   - danach uebernehmen Codex/Gemini wieder: reale Franz-Entry-Paths pruefen, Evidenz einsammeln und den Gate-Status aktualisieren
+11. `AKTION VON DIR ERFORDERLICH:` Vaultwarden-Recovery-Material in zwei getrennten Offline-Kopien bestaetigen
+   - benoetigte Aktion: zwei physisch getrennte Offline-Kopien des Vaultwarden-Recovery-Materials erzeugen oder frisch bestaetigen und die sichtbare Existenz nachweisen
+   - warum: `vaultwarden_recovery_material_verified` ist im aktuellen MVP-Gate noch offen und bleibt rein operator-/physisch gebunden
+   - danach uebernehmen Codex/Gemini wieder: Manual-Check im Gate auf Gruen ziehen und den Handoff aktualisieren
+12. Hinweis: Mobiler HTTPS-Vertrauensstandard (2026)
    - die interne CA (`frawo-ca.crt`) wird ueber `http://portal.hs27.internal/frawo-ca.crt` bereitgestellt.
    - die Installation ist fuer Bitwarden, Nextcloud und Odoo auf Android/iOS zwingend erforderlich, um untrusted-SSL-Fehler zu vermeiden.
    - Leitfaden: `DOCS/MOBILE_HTTPS_TRUST.md`.

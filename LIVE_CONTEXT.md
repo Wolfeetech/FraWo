@@ -118,9 +118,16 @@
 
 ## Active Work Queue
 
+- `Lane A: MVP Closeout` bleibt die aktive Delivery-Lane; die realen Freigabe-Blocker sind weiter `device_rollout_verified` und `vaultwarden_recovery_material_verified`.
+- Root-level Odoo-Helper vom `2026-04-07` sind der aktuelle Implementierungshotspot: `test_odoo_smtp.py`, `debug_odoo_mail.py`, `check_odoo_dashboards.py`, `fix_odoo_dashboards.py`, `final_fix_dashboards.py`, `list_odoo_projects.py`, `odoo_masterplan_sync.py`, `fix_odoo_dns.sh`, `final_dns_fix.sh`, `harden_smtp.sh`.
+- Diese Odoo-Helper derzeit als gemeinsame Scratch-Zone behandeln und keine parallelen Edits hineinziehen, solange SMTP-/Dashboard-Triage noch laeuft.
+- Konfliktarme Repo-only-Arbeit liegt aktuell bei Wahrheitspflege und Drift-Abgleich zwischen `LIVE_CONTEXT.md`, `AI_SERVER_HANDOFF.md`, `MASTERPLAN.md` und `MEMORY.md`; erst danach die Odoo-Helfer in einen credentiallosen Standard konsolidieren.
+- In diesem Checkout gibt es sichtbare Quellen-Drift: `README.md`, `SESSION_CLOSEOUT.md`, `OPERATOR_TODO_QUEUE.md`, `manifests/work_lanes/current_plan.json` und `scripts/` werden von Handoff-Dateien referenziert, fehlen hier aber real und muessen deshalb als `missing-in-checkout` behandelt werden.
 
 ## Operator Actions Needed
 
+- `AKTION VON DIR ERFORDERLICH:` Den fehlenden 2FA-Pfad rund um das verlorene Operator-Smartphone wiederherstellen oder bewusst ersetzen und danach die sichtbare Franz-Geraeteabnahme fuer Surface Laptop und iPhone abschliessen.
+- `AKTION VON DIR ERFORDERLICH:` Zwei getrennte Offline-Kopien des Vaultwarden-Recovery-Materials frisch verifizieren und die sichtbare Evidenz dafuer liefern.
 
 
 ## Current Readiness Findings
