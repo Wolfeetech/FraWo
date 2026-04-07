@@ -1,0 +1,49 @@
+VMID       Status     Lock         Name                
+101        running                 adguard             
+103        running                 npm                 
+106        running                 wireguard           
+108        running                 vaultwarden         
+109        running                 pbs                 
+110        running                 n8n                 
+120        running                 fileserver          
+130        running                 mail-relay          
+150        running                 monitoring-stack    
+202        running                 mongodb-primary     
+207        running                 radio-wordpress-prod
+208        running                 mariadb-server      
+211        running                 radio-api           
+212        running                 jellyfin            
+=====
+      VMID NAME                 STATUS     MEM(MB)    BOOTDISK(GB) PID       
+       210 azuracast-vm         running    4096              64.00 2102302   
+       360 homeassistant-eltern running    4096              42.00 365052    
+=====
+               total        used        free      shared  buff/cache   available
+Mem:           15868       11980        1260         163        3260        3887
+Swap:           8191        7258         933
+=====
+top - 20:18:42 up 127 days,  7:38,  3 users,  load average: 4.13, 4.40, 4.53
+Tasks: 670 total,   4 running, 666 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  5.6 us,  8.4 sy,  0.0 ni, 86.0 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st 
+MiB Mem :  15868.2 total,   1259.8 free,  11981.1 used,   3260.3 buff/cache     
+MiB Swap:   8192.0 total,    933.3 free,   7258.7 used.   3887.1 avail Mem 
+
+    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+2102302 root      20   0 6003924   3.3g   6448 S  41.7  21.1     95,18 kvm
+ 365052 root      20   0 8739472   3.1g   3524 S   0.0  19.7 305:53.25 kvm
+ 375602 100103    20   0 4196644   1.1g  78932 S   0.0   7.2     11,28 influxd
+ 574730 100103    20   0  261.4g 220208  64428 S   0.0   1.4     10,58 jellyfin
+2865582 _rpc      20   0 1570388 211800   6332 S   0.0   1.3 200:48.36 mariadbd
+3192084 101000    20   0   21.4g 196828  19068 S   0.0   1.2  76:55.18 node
+3332643 100000    20   0  262344 164188 163800 S   0.0   1.0  59:00.07 systemd+
+3332246 100000    20   0  274488 159564   2696 R  58.3   1.0     7w+3d unatten+
+3332751 100000    20   0  273556 158592   2612 R  58.3   1.0     7w+1d unatten+
+ 260576 100000    20   0  273568 157556   1608 R  58.3   1.0     7w+5d unatten+
+2036996 100000    20   0  201252 114884 114556 S   0.0   0.7   3:07.16 systemd+
+ 495622 100000    20   0 1404940 102648   8272 S   0.0   0.6 235:28.54 AdGuard+
+ 544458 100104    20   0 1754620 100136  35820 S   0.0   0.6      6,24 grafana
+ 359135 100000    20   0  160004  85988  85596 S   0.0   0.5  12:45.07 systemd+
+3192071 100000    20   0 1022064  84824   9076 S   0.0   0.5      8,27 node
+1860056 100000    20   0  274576  81948  81584 S   0.0   0.5  32:19.15 systemd+
+2037100 100000    20   0  187348  77128   2332 S   0.0   0.5  49:49.91 unatten+
+ 587551 100000    20   0 1345856  74900  14888 S   0.0   0.5  16:49.12 node

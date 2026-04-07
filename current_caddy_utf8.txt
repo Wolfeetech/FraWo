@@ -1,0 +1,70 @@
+﻿{
+  auto_https disable_redirects
+}
+
+:80 {
+  respond "FraWo Homeserver 2027 Dashboard Active." 200
+}
+
+# --- PUBLIC MAPPINGS (.frawo-tech.de) ---
+
+http://safe.frawo-tech.de, https://safe.frawo-tech.de {
+  tls internal
+  reverse_proxy 10.1.0.26:8080
+}
+
+http://home.frawo-tech.de, https://home.frawo-tech.de {
+  tls internal
+  reverse_proxy 10.1.0.24:8123
+}
+
+http://funk.frawo-tech.de, https://funk.frawo-tech.de {
+  tls internal
+  reverse_proxy 10.1.0.22:8069 {
+    header_up Host odoo.hs27.internal
+  }
+}
+
+http://media.frawo-tech.de, https://media.frawo-tech.de {
+  tls internal
+  reverse_proxy 10.1.0.20:8096
+}
+
+http://agent.frawo-tech.de, https://agent.frawo-tech.de {
+  tls internal
+  reverse_proxy 10.1.0.22:8069 {
+    header_up Host odoo.hs27.internal
+  }
+}
+
+# --- INTERNAL MAPPINGS (.hs27.internal) ---
+
+http://vault.hs27.internal, https://vault.hs27.internal {
+  tls internal
+  reverse_proxy 10.1.0.26:8080
+}
+
+http://ha.hs27.internal, https://ha.hs27.internal {
+  tls internal
+  reverse_proxy 10.1.0.24:8123
+}
+
+http://odoo.hs27.internal, https://odoo.hs27.internal {
+  tls internal
+  reverse_proxy 10.1.0.22:8069
+}
+
+http://cloud.hs27.internal, https://cloud.hs27.internal {
+  tls internal
+  reverse_proxy 10.1.0.21:80
+}
+
+http://dns.hs27.internal, https://dns.hs27.internal {
+  tls internal
+  reverse_proxy 127.0.0.1:3000
+}
+
+:8447 {
+  root * /srv/portal
+  file_server
+}
