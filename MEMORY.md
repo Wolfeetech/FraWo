@@ -295,8 +295,14 @@ Lokale Admin-Flaechen (nur localhost):
     - `MulticastDNS=no`
     - keine oeffentlich gebundenen DB-Ports auf den Business-VMs beobachtet
   - Odoo-Board-Readout vom `2026-04-07`:
-    - `#217 Service Reachability Audit` ist technisch gruen und kann im Projektboard abgehakt werden
-    - `#225 Nextcloud Stabilization` ist als akuter Incident weitgehend abgearbeitet; sinnvoller Restpunkt ist jetzt ein eigener Follow-up fuer `Nextcloud Runtime Hardening / Version Pinning`
+    - das Masterprojekt `🚀 Homeserver 2027: Masterplan` (`id=21`) ist jetzt als operativer `task SSOT` normalisiert
+    - genau sechs kanonische Projektphasen sind im Projekt verknuepft: `Backlog`, `Planung & Vorbereitung`, `In Arbeit`, `Automatisierung`, `Blockiert`, `Erledigt`
+    - `#217 Service Reachability Audit` steht auf `✅ Erledigt`
+    - `#225 Nextcloud Stabilization` steht auf `✅ Erledigt`
+    - der Folge-Task `Nextcloud Runtime Hardening / Version Pinning` ist sichtbar offen
+    - `rootflo2525@gmail.com` ist nicht mehr als Owner im Masterprojekt verknuepft
+    - `ownerless_open=0` ist fuer das Masterprojekt DB-seitig verifiziert
+    - `agent@frawo-tech.de` ist auf Server-/Ops-/Automation-Tasks gezielt als Co-Owner verlinkt; API-Key, Alias-Intake und n8n bleiben vorbereitete Folgepunkte
 
 ### Smart Home
 

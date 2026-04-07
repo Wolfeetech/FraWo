@@ -19,14 +19,15 @@ Diese Datei ist die kompakteste Fuehrungsansicht fuer den aktuellen Projektstand
 - Business-Kern intern laeuft: `Portal`, `Vaultwarden`, `Nextcloud`, `Paperless`, `Odoo`.
 - `Vaultwarden` ist intern ueber `HTTPS` erreichbar.
 - `webmaster@frawo-tech.de` und `franz@frawo-tech.de` sind technisch gegen `IMAP` und `SMTP AUTH` verifiziert.
-- **Blockiert:** Odoo Reachability-Drift. Spot-Check `2026-04-07`: `http://100.99.206.128:8447/` ist gruen, aber `http://100.99.206.128:8444/web/login` ist nicht erreichbar und `http://odoo.hs27.internal/web/login` liefert `502`.
+- Odoo- und Nextcloud-Reachability-Drift vom `2026-04-07` sind behoben; die internen und mobilen Frontdoors antworten wieder, und das Odoo-Masterprojekt ist jetzt auf den kanonischen SSOT-Stand normalisiert.
+- Die echten Restblocker liegen jetzt nicht mehr bei Odoo-Reachability, sondern bei sichtbarer Operator-Abnahme und den offenen MVP-Gates `device_rollout_verified` sowie `vaultwarden_recovery_material_verified`.
 
 ## Operative Reihenfolge (MVP Ready Path)
 
-1. **Odoo Reachability Fix:** internen Odoo-Upstream (`10.1.0.22:8069`) und danach die Caddy-Proxy-Kette verifizieren, bevor weitere Odoo-Automation aktiviert wird.
-2. **Website-Branding:** Logo-Upload und CI-Farben (Deep Forest/UV Power) in Odoo anwenden.
-3. **App-Testmails:** Abschluss der SMTP-Integration in Odoo (`test_odoo_smtp.py`).
-4. **Release Gates:** `release-mvp-gate` auf GRUEN ziehen.
+1. **MVP-Abnahme:** sichtbare Geraete-/2FA-Abnahme und Vaultwarden-Recovery-Evidenz abschliessen.
+2. **Odoo-SSOT fortfuehren:** API-Key-Hardening fuer `agent@`, Incoming-Alias vorbereiten und Board-Governance im Alltag bestaetigen.
+3. **Website-Branding:** Logo-Upload und CI-Farben (Deep Forest/UV Power) in Odoo anwenden.
+4. **App-Testmails und Release Gates:** SMTP-Restpfade in Odoo pruefen und `release-mvp-gate` auf GRUEN ziehen.
 
 ## Verweise
 

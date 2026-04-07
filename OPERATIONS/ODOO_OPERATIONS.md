@@ -79,8 +79,8 @@ Der professionelle Zielzustand ist nicht nur `HTTP 200`, sondern ein bewusst def
 
 ## Offen bleibt aktuell
 
-- Das zentrale Homeserver-Masterprojekt in Odoo ist als Zielbild festgelegt, aber noch nicht als verbindlich ausgerollter Alltagsstandard abgeschlossen.
-- Stages, Lane-Tags, Review-/Abnahme-Logik und Verantwortungsmodell muessen noch final gegen die reale Odoo-Instanz validiert werden.
+- Das zentrale Homeserver-Masterprojekt in Odoo ist jetzt live als operativer Board-Standard normalisiert, muss aber noch im Alltag durch menschliche Nutzung bestaetigt werden.
+- Die sechs kanonischen Projektphasen, Lane-Tags und die Owner-Regeln sind gegen die reale Odoo-Instanz validiert; offen bleibt die sichtbare Team-Abnahme im laufenden Betrieb.
 - `agent@frawo-tech.de` ist als Rollenbild dokumentiert, aber API-Key, Minimalrechte und produktiver Automationspfad sind noch nicht verifiziert.
 - Der eingehende Automationspfad ist noch bewusst offen:
   - zuerst Odoo-internes Alias-/Nachrichtenmodell pruefen
@@ -94,16 +94,26 @@ Der professionelle Zielzustand ist nicht nur `HTTP 200`, sondern ein bewusst def
 
 ## Board-Check 2026-04-07
 
-- `#217 Service Reachability Audit` ist technisch gruen:
-  - `cloud.hs27.internal`, `odoo.hs27.internal`, `ha.hs27.internal` und `vault.hs27.internal` antworten wieder
-  - in der aktuellen Shell lag kein Odoo-RPC-Credential fuer einen sauberen API-Write vor; deshalb wurde der Board-Status bewusst nicht ueber SQL erzwungen
-- `#225 Nextcloud Stabilization` ist als akuter Incident technisch behoben:
-  - `cloud.hs27.internal/` und `/status.php` liefern wieder `HTTP 200`
-  - `status.php` meldet `maintenance=false` und `needsDbUpgrade=false`
-  - `homeserver-compose-nextcloud.service` ist wieder `active`
-- Empfohlener Folgepunkt statt Blindschluss:
-  - eigener Server-/Ops-Task fuer `Nextcloud Runtime Hardening / Version Pinning`
-  - Ziel: `nextcloud:latest` nach dem Incident bewusst einhegen, Compose-Guardrails dokumentieren und kuenftige Version-/Container-Drift frueher sichtbar machen
+- Das Masterprojekt `🚀 Homeserver 2027: Masterplan` (`id=21`) ist jetzt auf genau sechs kanonische Projektphasen normalisiert:
+  - `📝 Backlog`
+  - `⚙️ Planung & Vorbereitung`
+  - `🚀 In Arbeit`
+  - `🤖 Automatisierung`
+  - `🛑 Blockiert`
+  - `✅ Erledigt`
+- Der operative Board-Write wurde bewusst nicht per direkter SQL-Schreiboperation ausgefuehrt, sondern ueber Odoo-ORM mit stillerem Mail-/Chatter-Context.
+- Verifiziert nach Apply:
+  - `#217 Service Reachability Audit` steht auf `✅ Erledigt`
+  - `#225 Nextcloud Stabilization` steht auf `✅ Erledigt`
+  - der Folge-Task `Nextcloud Runtime Hardening / Version Pinning` ist sichtbar offen
+  - keine offene Task im Masterprojekt ist ownerlos
+  - `rootflo2525@gmail.com` ist im Masterprojekt nicht mehr als Owner verknuepft
+  - `agent@frawo-tech.de` ist auf Server-/Ops-/Automation-Tasks als Co-Owner verlinkt, aber nicht als Ersatz fuer menschliche Freigabeaufgaben
+- Neue sichtbare Folge-Tasks im Board:
+  - `Odoo SSOT Rollout & Board Governance`
+  - `agent@ Least-Privilege / API-Key Hardening`
+  - `Odoo Incoming Alias / agent@ Intake`
+  - `n8n Handoff Contract (disabled)`
 
 ## Firewall- und Reachability-Stand
 
