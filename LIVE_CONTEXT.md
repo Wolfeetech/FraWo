@@ -2,7 +2,7 @@
 
 ## Workspace
 - Status: **Audit-Operation A-E Vollständig** (2026-04-07)
-- Odoo-Sync: **Erfolgreich** (IDs 273-276)
+- Odoo-Sync: **Erfolgreich** (Masterprojekt `21` auf kanonischen SSOT-Stand gezogen)
 
 - Name: `Homeserver 2027 Ops Workspace`
 - Alias: `/home/wolf/.gemini/antigravity/brain/Homeserver_2027_Ops_Workspace`
@@ -135,7 +135,9 @@
 - Neue Odoo-Leitentscheidung: Das Homeserver-Masterprojekt in Odoo wird als operativer `task SSOT` aufgebaut; Repo-Dateien bleiben weiter `runtime SSOT`. `agent@frawo-tech.de` ist dafuer die kuenftige least-privilege Automationsidentitaet, waehrend n8n nur spaetere Orchestrierung und nicht die eigentliche Wahrheit sein darf.
 - Odoo-Reachability-Incident vom `2026-04-07` ist end-to-end behoben: Root Causes waren Compose-Drift, fehlender `:8444`-Block in der aktiven Toolbox-Caddyfile, Versionsdrift `Odoo 17 DB` gegen `odoo:16.0` sowie gesplittete Filestore-Pfade; Odoo antwortet jetzt wieder ueber direkt, intern und mobil mit `HTTP 200`.
 - Nextcloud-Incident vom `2026-04-07` ist technisch behoben: `VM 200` laeuft wieder ueber den vorgesehenen Stackpfad, `cloud.hs27.internal` ist gruen und der Standardpfad `occ upgrade` plus `maintenance:repair` wurde ohne direkte DB-Schreibfixes abgeschlossen.
-- Odoo-Board-Check vom `2026-04-07`: `#217 Service Reachability Audit` ist technisch gruen und bereit zum Abhaken; `#225 Nextcloud Stabilization` ist als Incident weitgehend erledigt, sollte aber nur dann geschlossen werden, wenn ein eigener Follow-up fuer `Nextcloud Runtime Hardening / Version Pinning` sichtbar offen bleibt.
+- Odoo-Board-Apply vom `2026-04-07`: Masterprojekt `21` ist jetzt operativer `task SSOT`; die sechs kanonischen Projektphasen sind verknuepft, `#217` und `#225` stehen auf `Erledigt`, `Nextcloud Runtime Hardening / Version Pinning` ist als Folge-Task offen, `rootflo2525@gmail.com` ist aus dem Masterprojekt entfernt und `ownerless_open=0` ist DB-seitig verifiziert.
+- Odoo-Automationsidentitaet vom `2026-04-07`: `agent@frawo-tech.de` ist aktiv, ohne nachweisbare Admin-/Settings-/Studio-Gruppen, und jetzt gezielt an Server-/Ops-/Automation-Tasks verlinkt; API-Key, Incoming-Alias und n8n bleiben bewusst vorbereitete, aber noch nicht live geschaltete Restpunkte.
+- Odoo-Alias-/API-Key-Audit vom `2026-04-08`: Projekt `21` hat bereits die Domain `frawo-tech.de`, aber noch keinen aktiven Aliasnamen; `agent@frawo-tech.de` ist aktiv und least-privilege-aehnlich, jedoch noch ohne TOTP und ohne API-Key (`api_key_count=0`).
 
 ## Operator Actions Needed
 

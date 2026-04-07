@@ -60,6 +60,26 @@ Der professionelle Zielzustand ist nicht nur `HTTP 200`, sondern ein bewusst def
   - Odoo bleibt das sichtbare Arbeitsboard
   - Repo-Handoff bleibt die technische Wahrheit fuer alles, was ueber reine Tasksteuerung hinausgeht
 
+## Agent- und Alias-Audit 2026-04-08
+
+- Read-only-Audit liegt jetzt reproduzierbar in `odoo_agent_readiness_audit.py`.
+- Live gelesen gegen `FraWo_GbR`:
+  - Projekt `21` hat bereits die Alias-Domain `frawo-tech.de`, aber noch **keinen** aktiven Aliasnamen und damit keinen scharf geschalteten Intake-Pfad.
+  - Alias-Felder stehen aktuell auf:
+    - `alias_name = false`
+    - `alias_email = false`
+    - `alias_status = not_tested`
+    - `alias_contact = everyone`
+    - `alias_model = project.task`
+    - `alias_defaults = {'project_id': 21}`
+  - `agent@frawo-tech.de` ist aktiv, `share=false`, `notification_type=email`, `totp_enabled=false`, `api_key_count=0`.
+  - Heuristisch wurden am `agent@`-User keine erkennbaren `Admin`-/`Settings`-/`Studio`-Gruppen gefunden.
+  - Es existiert genau ein SMTP-Server in Odoo; der Mailpfad ist also vorbereitet, aber der Intake-Pfad noch nicht live.
+- Arbeitsbewertung:
+  - Der Alias-/Mailpfad ist vorbereitet, aber bewusst noch **nicht** aktiviert.
+  - Vor einem Livegang zuerst `agent@`-API-Key erzeugen, sicher ausserhalb des Repos ablegen und danach den Alias-Scope pruefen.
+  - Weil `alias_contact` aktuell auf `everyone` steht, sollte dieser Scope vor einer echten Alias-Aktivierung bewusst ueberprueft und gegebenenfalls verengt werden.
+
 ## Taegliche Checks
 
 - Login funktioniert
@@ -169,6 +189,7 @@ Der professionelle Zielzustand ist nicht nur `HTTP 200`, sondern ein bewusst def
 - externe Kunden erst nach bewusstem Rollen-/Portalmodell freigeben
 - Homeserver-Masterprojekt in Odoo als einziges operatives Board festziehen
 - `agent@frawo-tech.de` als least-privilege Botrolle dokumentieren und spaeter mit separatem API-Key anbinden
+- `odoo_agent_readiness_audit.py --json` als Read-only-Check vor jedem Alias-/API-Key-Schritt verwenden
 - lokale Odoo-Helferskripte auf secret-sicheren Zugriff standardisieren, bevor Mail- oder n8n-Automation live geht
 
 ## Nie tun

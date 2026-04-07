@@ -303,6 +303,12 @@ Lokale Admin-Flaechen (nur localhost):
     - `rootflo2525@gmail.com` ist nicht mehr als Owner im Masterprojekt verknuepft
     - `ownerless_open=0` ist fuer das Masterprojekt DB-seitig verifiziert
     - `agent@frawo-tech.de` ist auf Server-/Ops-/Automation-Tasks gezielt als Co-Owner verlinkt; API-Key, Alias-Intake und n8n bleiben vorbereitete Folgepunkte
+  - Odoo-Agent-/Alias-Audit vom `2026-04-08`:
+    - Projekt `21` hat die Alias-Domain `frawo-tech.de`, aber `alias_name=false` und damit noch keinen live geschalteten Intake-Pfad
+    - Alias-Status aktuell `not_tested`, `alias_contact=everyone`, `alias_model=project.task`, `alias_defaults={'project_id': 21}`
+    - `agent@frawo-tech.de` ist aktiv, `share=false`, `totp_enabled=false`, `api_key_count=0`
+    - heuristisch keine erkennbaren Admin-/Settings-/Studio-Gruppen am `agent@`-User gefunden
+    - Read-only-Check dafuer liegt jetzt in `odoo_agent_readiness_audit.py`
 
 ### Smart Home
 
