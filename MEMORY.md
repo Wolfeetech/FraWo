@@ -536,6 +536,7 @@ Lokale Admin-Flaechen (nur localhost):
    - Verhalten nach Host- und VM-Reboot pruefen
 8. Lokale Proof-Backups bis PBS live ist mit `make backup-prune-dry-run` und `make backup-prune` sauber halten
    - Standard bis PBS: letzte `2` lokale qemu-Backups pro Business-VM behalten
+   - Runtime-Korrektur vom `2026-04-07`: `pve-root` lief voll, weil in `/var/lib/vz/dump` wieder `3` Archive pro Business-VM lagen; der aelteste Satz vom `2026-04-06` fuer `VM 200`, `210`, `220` und `230` wurde entfernt, danach fiel `pve-root` auf ca. `83%` und `apt update` lief wieder erfolgreich
 9. `make business-drift-check` als Standard-Post-Change-Kontrolle fuer die IaC-gesteuerten Business-Stacks nutzen
    - Basislauf vom `2026-03-18` ist gruen fuer Nextcloud, Odoo und Paperless
 10. `make start-day` und `make security-baseline-check` als verbindlichen Tagesstart verwenden

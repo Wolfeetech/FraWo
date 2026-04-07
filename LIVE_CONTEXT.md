@@ -109,6 +109,7 @@
 - Home Assistant OS is stable on `10.1.0.24:8123` and `ha.hs27.internal` now returns `HTTP 200` through Caddy
 - Direct Ansible management status: `ansible-ping=passed`
 - Local Proxmox backup status: `backup-list=passed`, `proxmox-local-backup-check=passed`; the latest stress run is the deciding source for whether real archives under `/var/lib/vz/dump` are currently proven
+- Proxmox rootfs remediation `2026-04-07`: `apt update` scheiterte kurzzeitig an `No space left on device`, Ursache war lokale Backup-Retention-Drift in `/var/lib/vz/dump`; nach Rueckschnitt auf den dokumentierten Zwischenstandard `2` Archive pro Business-VM steht `pve-root` wieder bei ca. `83%` und `apt update` ist wieder gruen
 - PBS status from latest gate: `pbs-stage-gate=failed`, `pbs-proof-check=failed`; `VM 240` existiert, ist aber gestoppt und der verifizierte Datastore-/Proof-Pfad ist aktuell nicht gruen
 - Security baseline from latest gate: `security-baseline-check=passed`
 - Capacity review says the host is memory-overcommitted on paper; immediate right-sizing candidates are `VM 200` and `VM 220`, while `VM 210` should not be reduced
