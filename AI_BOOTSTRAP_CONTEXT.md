@@ -9,7 +9,7 @@
 
 ## Estate In One Screen
 
-- Organization: `FraWo`
+- Organization: `FraWo GbR`
 - Primary operator/admin: `Wolf`
 - Primary business user rollout: `Franz`
 - StudioPC local LAN gateway/router: `192.168.2.1` `easy_box`
@@ -71,6 +71,7 @@
 - App SMTP authenticates with `webmaster@frawo-tech.de`.
 - The visible app sender is `noreply@frawo-tech.de`.
 - Vaultwarden is invite-only for productive use.
+- The `FraWo GbR` organization is the master identity for all business collections.
 
 ## Current Verified Live Facts
 

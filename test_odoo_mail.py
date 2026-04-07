@@ -1,26 +1,32 @@
-import xmlrpc.client
-URL = "http://10.1.0.22:8069"
-DB = "FraWo_GbR"
-USER = "wolf@frawo-tech.de"
-PASS = "OD-Wolf-2026!"
+from odoo_rpc_client import connect
 
-common = xmlrpc.client.ServerProxy(f"{URL}/xmlrpc/2/common")
-uid = common.authenticate(DB, USER, PASS, {})
-models = xmlrpc.client.ServerProxy(f"{URL}/xmlrpc/2/object")
 
-# 1. Odoo Mail Server Check
-servers = models.execute_kw(DB, uid, PASS, 'ir.mail_server', 'search_read', [[('smtp_user', '=', 'noreply@frawo-tech.de')]], {'fields': ['name', 'smtp_host', 'smtp_port']})
+session = connect(default_user="wolf@frawo-tech.de")
+
+servers = session.models.execute_kw(
+    session.db,
+    session.uid,
+    session.secret,
+    "ir.mail_server",
+    "search_read",
+    [[("smtp_user", "=", "noreply@frawo-tech.de")]],
+    {"fields": ["name", "smtp_host", "smtp_port"]},
+)
+
 if not servers:
-    print("❌ Kein Mailserver für noreply@frawo-tech.de gefunden.")
+    print("Kein Mailserver fuer noreply@frawo-tech.de gefunden.")
 else:
-    for s in servers:
-        print(f"✅ Mailserver gefunden: {s['name']} ({s['smtp_host']})")
-        # Test (Odoo 17 method)
+    for server in servers:
+        print(f"Mailserver gefunden: {server['name']} ({server['smtp_host']})")
         try:
-            res = models.execute_kw(DB, uid, PASS, 'ir.mail_server', 'test_smtp_connection', [s['id']])
-            print(f"🚀 Odoo SMTP Test Result: {res}")
-        except Exception as e:
-            print(f"❌ Odoo SMTP Test fehlgeschlagen: {e}")
-
-# 2. Nextcloud Check (Versuch via SSH/OCC auf der Nextcloud VM)
-# Die Nextcloud VM hat die IP 10.1.0.21.
+            result = session.models.execute_kw(
+                session.db,
+                session.uid,
+                session.secret,
+                "ir.mail_server",
+                "test_smtp_connection",
+                [server["id"]],
+            )
+            print(f"Odoo SMTP Test Result: {result}")
+        except Exception as exc:
+            print(f"Odoo SMTP Test fehlgeschlagen: {exc}")

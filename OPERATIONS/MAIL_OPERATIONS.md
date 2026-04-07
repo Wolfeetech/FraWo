@@ -25,6 +25,7 @@ Diese Datei ist die kanonische Betriebsanweisung fuer Mail, Mailbox-Aufbau und A
   - spaetere Benutzeroberflaeche ueber `Nextcloud Mail`
 - `Odoo`, `Paperless`, `AzuraCast` und `Vaultwarden` sind SMTP-Clients, keine eigenen Mailserver
 - fuer diesen Block wird bewusst kein eigener Mailserver auf dem Homeserver aufgebaut
+- falls `agent@frawo-tech.de` spaeter als echte Mailbox aktiviert wird, dient sie nur als Automations-Inbox fuer Odoo/n8n und nicht als persoenlicher Kommunikationskanal
 
 ## Zertifizierungsstandard
 
@@ -50,6 +51,7 @@ Fuer das erste professionelle interne Produktionssiegel gilt:
 ### Spaeter
 
 - `documents@frawo-tech.de`
+- optional `agent@frawo-tech.de` fuer Odoo-/Workflow-Intake
 - optional `frontend@frawo-tech.de`
 - optional `admin@frawo-tech.de` als Alias
 

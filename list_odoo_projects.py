@@ -1,13 +1,16 @@
-import xmlrpc.client
-URL = "http://10.1.0.22:8069"
-DB = "FraWo_GbR"
-USER = "wolf@frawo-tech.de"
-PASS = "OD-Wolf-2026!"
+from odoo_rpc_client import connect
 
-common = xmlrpc.client.ServerProxy(f"{URL}/xmlrpc/2/common")
-uid = common.authenticate(DB, USER, PASS, {})
-models = xmlrpc.client.ServerProxy(f"{URL}/xmlrpc/2/object")
 
-projects = models.execute_kw(DB, uid, PASS, 'project.project', 'search_read', [[]], {'fields': ['name']})
-for p in projects:
-    print(f"Project: {p['name']} (ID: {p['id']})")
+session = connect(default_user="wolf@frawo-tech.de")
+projects = session.models.execute_kw(
+    session.db,
+    session.uid,
+    session.secret,
+    "project.project",
+    "search_read",
+    [[]],
+    {"fields": ["name"]},
+)
+
+for project in projects:
+    print(f"Project: {project['name']} (ID: {project['id']})")

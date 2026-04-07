@@ -123,6 +123,7 @@
 - Diese Odoo-Helper derzeit als gemeinsame Scratch-Zone behandeln und keine parallelen Edits hineinziehen, solange SMTP-/Dashboard-Triage noch laeuft.
 - Konfliktarme Repo-only-Arbeit liegt aktuell bei Wahrheitspflege und Drift-Abgleich zwischen `LIVE_CONTEXT.md`, `AI_SERVER_HANDOFF.md`, `MASTERPLAN.md` und `MEMORY.md`; erst danach die Odoo-Helfer in einen credentiallosen Standard konsolidieren.
 - In diesem Checkout gibt es sichtbare Quellen-Drift: `README.md`, `SESSION_CLOSEOUT.md`, `OPERATOR_TODO_QUEUE.md`, `manifests/work_lanes/current_plan.json` und `scripts/` werden von Handoff-Dateien referenziert, fehlen hier aber real und muessen deshalb als `missing-in-checkout` behandelt werden.
+- Neue Odoo-Leitentscheidung: Das Homeserver-Masterprojekt in Odoo wird als operativer `task SSOT` aufgebaut; Repo-Dateien bleiben weiter `runtime SSOT`. `agent@frawo-tech.de` ist dafuer die kuenftige least-privilege Automationsidentitaet, waehrend n8n nur spaetere Orchestrierung und nicht die eigentliche Wahrheit sein darf.
 
 ## Operator Actions Needed
 
