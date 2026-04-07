@@ -66,8 +66,8 @@ Der professionelle Zielzustand ist nicht nur `HTTP 200`, sondern ein bewusst def
 - Datenbank `FraWo_GbR` erreichbar
 - Basis-Workflows laufen ohne UI-Fehler
 - Systemmail laeuft ueber `noreply@frawo-tech.de`
-- Tailscale-Frontdoor `http://100.99.206.128:8444/web/login` liefert `200`
-- direkter Infrastrukturnachweis ueber `http://192.168.2.22:8069/web/login` liefert `200` vom Proxmox-Host aus
+- Tailscale-Frontdoor `http://100.99.206.128:8444/web/login` liefert `HTTP 200`
+- direkter Infrastrukturnachweis ueber `http://10.1.0.22:8069/web/login` liefert `HTTP 200`
 
 ## Production-Ready bedeutet hier
 
@@ -76,6 +76,81 @@ Der professionelle Zielzustand ist nicht nur `HTTP 200`, sondern ein bewusst def
 - dokumentierter Mail- und Benachrichtigungspfad
 - sichtbarer Restore-/Backup-Pfad bleibt im SSOT gruen
 - keine Vermischung mit `Familie Prinz` oder Stockenweiler-Datenwelten
+
+## Offen bleibt aktuell
+
+- Das zentrale Homeserver-Masterprojekt in Odoo ist als Zielbild festgelegt, aber noch nicht als verbindlich ausgerollter Alltagsstandard abgeschlossen.
+- Stages, Lane-Tags, Review-/Abnahme-Logik und Verantwortungsmodell muessen noch final gegen die reale Odoo-Instanz validiert werden.
+- `agent@frawo-tech.de` ist als Rollenbild dokumentiert, aber API-Key, Minimalrechte und produktiver Automationspfad sind noch nicht verifiziert.
+- Der eingehende Automationspfad ist noch bewusst offen:
+  - zuerst Odoo-internes Alias-/Nachrichtenmodell pruefen
+  - erst danach optional `n8n` als Orchestrierung davorschalten
+- Odoo-Task-SSOT ist bewusst nur fuer Aufgaben gedacht; technische Wahrheit fuer Netzwerk, Sicherheitsregeln, Audits, IPs und Gates bleibt weiter im Repo-SSOT.
+- Vor produktiver Automationsfreigabe fehlt noch die sichtbare End-to-End-Pruefung fuer:
+  - Odoo-Projektboard
+  - Mail-/Benachrichtigungspfad
+  - Bot-Identitaet `agent@...`
+  - Rueckkopplung in den Repo-Handoff
+
+## Board-Check 2026-04-07
+
+- `#217 Service Reachability Audit` ist technisch gruen:
+  - `cloud.hs27.internal`, `odoo.hs27.internal`, `ha.hs27.internal` und `vault.hs27.internal` antworten wieder
+  - in der aktuellen Shell lag kein Odoo-RPC-Credential fuer einen sauberen API-Write vor; deshalb wurde der Board-Status bewusst nicht ueber SQL erzwungen
+- `#225 Nextcloud Stabilization` ist als akuter Incident technisch behoben:
+  - `cloud.hs27.internal/` und `/status.php` liefern wieder `HTTP 200`
+  - `status.php` meldet `maintenance=false` und `needsDbUpgrade=false`
+  - `homeserver-compose-nextcloud.service` ist wieder `active`
+- Empfohlener Folgepunkt statt Blindschluss:
+  - eigener Server-/Ops-Task fuer `Nextcloud Runtime Hardening / Version Pinning`
+  - Ziel: `nextcloud:latest` nach dem Incident bewusst einhegen, Compose-Guardrails dokumentieren und kuenftige Version-/Container-Drift frueher sichtbar machen
+
+## Firewall- und Reachability-Stand
+
+- Repo-/SSOT-Stand:
+  - die Toolbox-Mobile-Frontdoor-Ports `8443-8448` sollen per `homeserver2027-toolbox-mobile-firewall.service` nur ueber `Tailscale` offen und vom LAN aus blockiert sein
+  - die groessere `UCG`-Firewall-Politik ist laut `UCG_NETWORK_ARCHITECTURE.md` noch **nicht** final ausgerollt
+- Vertiefter Live-Check und Remediation vom `2026-04-07`:
+  - `toolbox`: `homeserver2027-toolbox-mobile-firewall.service` ist `active`
+  - `toolbox`: der Host-Dienst `caddy.service` ist `inactive`, aber die reale Frontdoor laeuft containerisiert als `toolbox-network_caddy_1`
+  - `toolbox`: `iptables` enthaelt die erwartete `HOMESERVER2027_MOBILE`-Kette; `8443-8449` werden nur fuer `lo` und `tailscale0` zugelassen und sonst per `tcp-reset` abgewiesen
+  - `odoo`-VM: Host-Firewall ist nicht pauschal "deaktiviert", sondern arbeitet auf Docker-/iptables-Basis; `8069/tcp` ist veroeffentlicht und lauscht wieder
+  - Root Cause in `VM 220`: Compose-/Runtime-Drift
+    - historischer Fehlstart wegen altem Bind auf `192.168.2.22:8069`
+    - aktuelle Compose-Datei war zusaetzlich kaputt gedriftet: `web` ohne `env_file`, falscher `/etc/odoo`-Mount auf leeres `./config`, dadurch Passwortfehler gegen PostgreSQL und fehlende `odoo.conf`
+    - danach zeigte sich zusaetzlich Versions-Drift: die Business-Datenbank ist `Odoo 17`, waehrend der Web-Container auf `odoo:16.0` zurueckgefallen war
+  - Remediation in `VM 220`:
+    - Compose wieder auf `stack.env` plus `./odoo.conf:/etc/odoo/odoo.conf:ro` gezogen
+    - `docker-compose up -d --force-recreate --remove-orphans` ausgefuehrt
+    - Web-Container wieder auf `odoo:17` gezogen, passend zum DB-Stand `17.0.x`
+  - Root Cause auf `toolbox` fuer `8444`:
+    - der Port war zwar im Docker-Caddy publiziert, aber die aktive Caddyfile enthielt keinen `:8444`-Site-Block
+    - der fehlende `:8444`-Reverse-Proxy auf `10.1.0.22:8069` wurde nachgezogen und Caddy neu geladen
+  - Filestore-Reconciliation in `VM 220`:
+    - Odoo erwartete Dateien unter `.local/share/Odoo/filestore/FraWo_GbR`, waehrend ein grosser Teil noch im alternativen Baum `filestore/FraWo_GbR` lag
+    - die fehlenden Dateien wurden nur lesend-abgleichend in den erwarteten Pfad uebernommen, ohne bestehende Dateien zu ueberschreiben
+- Aktueller Laufzeitstand nach Remediation vom `2026-04-07`:
+  - `http://10.1.0.22:8069/web/login` -> `HTTP 200`
+  - `http://odoo.hs27.internal/web/login` -> `HTTP 200`
+  - `http://100.99.206.128:8444/web/login` -> `HTTP 200`
+  - der Web-Container laeuft jetzt als `odoo:17`
+  - die zuvor fehlenden Filestore-Referenzen sind auf `0` gesunken
+- Arbeitsbewertung:
+  - der Toolbox-Firewall-Standard ist aktuell **aktiv** und nicht pauschal deaktiviert
+  - die fruehere Reachability-Stoerung war primaer Compose-/Frontdoor-/Versionsdrift, nicht "Firewall aus"
+  - der fruehere `base_cache_signaling`-Rest ist mit dem Versions-Fix verschwunden
+  - Odoo ist wieder benutzbar; kuenftige Restarbeiten sollten jetzt eher fachliche Validierung und nicht mehr Runtime-Notfall sein
+
+## DB-Guardrail
+
+- keine direkten SQL-Schreiboperationen auf `FraWo_GbR`, solange kein frischer Rueckweg dokumentiert ist
+- vor jedem kuenftigen DB-Fix zuerst einen aktuellen VM-Backup-/Snapshot-Stand verifizieren
+- verifizierte lokale Rueckwege fuer `VM 220` existieren bereits unter `/var/lib/vz/dump`, zuletzt auch mit frischem Lauf vom `2026-04-07 19:40:44`
+- bevorzugt zuerst nicht-destruktive Pfade nutzen:
+  - Laufzeit-/Compose-/Proxy-Pruefung
+  - filestore- und volume-basierte Reconciliation
+  - Odoo-eigene Upgrade-/Repair-Pfade
+- erst wenn diese nicht reichen, einen echten DB-Eingriff planen und vorher explizit begrenzen
 
 ## Naechste sinnvolle Schritte
 

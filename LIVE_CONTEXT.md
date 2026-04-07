@@ -98,8 +98,13 @@
 - Toolbox network base: Caddy on `10.1.0.20:80`, AdGuard Home on `10.1.0.20:53` and localhost-only admin on `127.0.0.1:3000`, `hs27.internal` rewrites verified in opt-in mode
 - Toolbox mobile Tailscale frontdoor: `100.99.206.128:8443` HA, `:8444` Odoo, `:8445` Nextcloud, `:8446` Paperless, `:8447` Portal, `:8448` Radio (502: node `100.64.23.77` offline), `:8449` Media
 - Toolbox Tailscale state: `/dev/net/tun` mapped, `tailscaled` active, backend `Running`, subnet route `10.1.0.0/24` is advertised (Tailnet approval pending), Split-DNS still needs to be updated to `10.1.0.20`
+- Toolbox runtime nuance `2026-04-07`: der produktive Frontdoor laeuft containerisiert als `toolbox-network_caddy_1`; `homeserver2027-toolbox-mobile-firewall.service` ist `active`, waehrend der Host-Dienst `caddy.service` selbst `inactive` ist
 - VM 200, VM 210, VM 220 and VM 230: QEMU Guest Agent verified from Proxmox during latest audit
 - Business stacks are running from `/opt/homeserver2027/stacks` under systemd-managed local IaC
+- Odoo runtime remediation `2026-04-07`: Compose-Drift in `VM 220`, fehlender `:8444`-Caddy-Block auf `toolbox` und Versionsdrift `DB=Odoo 17` vs. `Container=odoo:16.0` wurden bereinigt; `10.1.0.22:8069`, `odoo.hs27.internal` und `100.99.206.128:8444` liefern jetzt `HTTP 200`
+- Odoo filestore remediation `2026-04-07`: Fehlende Attachment-Dateien wurden aus dem alternativen Baum `filestore/FraWo_GbR` in den von Odoo 17 erwarteten Pfad `.local/share/Odoo/filestore/FraWo_GbR` reconciliert; die zuvor fehlenden Referenzen sind auf `0` gesunken
+- Odoo DB-Guardrail `2026-04-07`: Ab hier keine direkten SQL-Schreibfixes ohne frischen VM-Backup-/Snapshot-Nachweis; die Runtime ist wieder gruen, also kuenftige DB-Arbeit nur bewusst und mit Rueckweg
+- Nextcloud runtime remediation `2026-04-07`: Compose-Drift in `VM 200` wurde bereinigt; Root Causes waren MariaDB-Drift `Redo-Logs=10.11` gegen gedriftetes `10.6`, ein verwaister `nextcloud:latest`-Altcontainer und App-Version-Drift. `cloud.hs27.internal/` und `/status.php` liefern wieder `HTTP 200`, `maintenance=false`, `needsDbUpgrade=false`, und `homeserver-compose-nextcloud.service` ist wieder `active`
 - Home Assistant OS is stable on `10.1.0.24:8123` and `ha.hs27.internal` now returns `HTTP 200` through Caddy
 - Direct Ansible management status: `ansible-ping=passed`
 - Local Proxmox backup status: `backup-list=passed`, `proxmox-local-backup-check=passed`; the latest stress run is the deciding source for whether real archives under `/var/lib/vz/dump` are currently proven
@@ -124,6 +129,9 @@
 - Konfliktarme Repo-only-Arbeit liegt aktuell bei Wahrheitspflege und Drift-Abgleich zwischen `LIVE_CONTEXT.md`, `AI_SERVER_HANDOFF.md`, `MASTERPLAN.md` und `MEMORY.md`; erst danach die Odoo-Helfer in einen credentiallosen Standard konsolidieren.
 - In diesem Checkout gibt es sichtbare Quellen-Drift: `README.md`, `SESSION_CLOSEOUT.md`, `OPERATOR_TODO_QUEUE.md`, `manifests/work_lanes/current_plan.json` und `scripts/` werden von Handoff-Dateien referenziert, fehlen hier aber real und muessen deshalb als `missing-in-checkout` behandelt werden.
 - Neue Odoo-Leitentscheidung: Das Homeserver-Masterprojekt in Odoo wird als operativer `task SSOT` aufgebaut; Repo-Dateien bleiben weiter `runtime SSOT`. `agent@frawo-tech.de` ist dafuer die kuenftige least-privilege Automationsidentitaet, waehrend n8n nur spaetere Orchestrierung und nicht die eigentliche Wahrheit sein darf.
+- Odoo-Reachability-Incident vom `2026-04-07` ist end-to-end behoben: Root Causes waren Compose-Drift, fehlender `:8444`-Block in der aktiven Toolbox-Caddyfile, Versionsdrift `Odoo 17 DB` gegen `odoo:16.0` sowie gesplittete Filestore-Pfade; Odoo antwortet jetzt wieder ueber direkt, intern und mobil mit `HTTP 200`.
+- Nextcloud-Incident vom `2026-04-07` ist technisch behoben: `VM 200` laeuft wieder ueber den vorgesehenen Stackpfad, `cloud.hs27.internal` ist gruen und der Standardpfad `occ upgrade` plus `maintenance:repair` wurde ohne direkte DB-Schreibfixes abgeschlossen.
+- Odoo-Board-Check vom `2026-04-07`: `#217 Service Reachability Audit` ist technisch gruen und bereit zum Abhaken; `#225 Nextcloud Stabilization` ist als Incident weitgehend erledigt, sollte aber nur dann geschlossen werden, wenn ein eigener Follow-up fuer `Nextcloud Runtime Hardening / Version Pinning` sichtbar offen bleibt.
 
 ## Operator Actions Needed
 

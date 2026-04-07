@@ -144,6 +144,13 @@
   - Docker stack came back automatically and HTTP still returned `200 OK`
   - stack was moved under local IaC control with `ansible/playbooks/deploy_business_stacks.yml`
   - Compose project labels now point to `/opt/homeserver2027/stacks/nextcloud`
+  - Drift-Remediation `2026-04-07`:
+    - Compose war auf `db=mariadb:10.6` und einen verwaisten `nextcloud:latest`-Altcontainer gedriftet; dadurch brach MariaDB an `10.11`-Redo-Logs und der App-Pfad fiel aus
+    - Compose wurde auf dem vorgesehenen Pfad `/opt/homeserver2027/stacks/nextcloud/docker-compose.yml` mit `stack.env`, `db=mariadb:10.11`, `redis=redis:alpine` und `app=nextcloud:latest` neu ausgerichtet
+    - `docker-compose up -d --force-recreate --remove-orphans` entfernte den Altcontainer und brachte `db`, `redis` und `app` wieder in den erwarteten Stack
+    - der App-native Repair-Pfad lief ueber `php occ upgrade`, `php occ maintenance:repair --include-expensive` und anschliessend `php occ maintenance:mode --off`; direkte DB-Schreibfixes wurden bewusst nicht verwendet
+    - anschliessend wurde `homeserver-compose-nextcloud.service` erfolgreich neu gestartet und meldet wieder `active`
+    - Laufzeitverifikation `2026-04-07`: `cloud.hs27.internal/` -> `200`, `cloud.hs27.internal/status.php` -> `200`, `maintenance=false`, `needsDbUpgrade=false`, Container `nextcloud_app_1`, `nextcloud_db_1` und `nextcloud_redis_1` laufen
 
 ## VM 220 - Odoo
 

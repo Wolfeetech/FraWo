@@ -141,7 +141,7 @@
 ## Netzwerk-Basisstand
 
 - Router: Vodafone Easy Box auf `192.168.2.1`
-- `CT 100` Netzwerk-Basis ist seit `2026-03-18` live verifiziert:
+  - `CT 100` Netzwerk-Basis ist seit `2026-03-18` live verifiziert:
   - Docker laeuft in der CT
   - Stack `toolbox-network` laeuft ueber `homeserver-compose-toolbox-network.service`
   - Caddy beantwortet intern `portal.hs27.internal`, `cloud.hs27.internal`, `odoo.hs27.internal`, `paperless.hs27.internal`, `ha.hs27.internal`
@@ -165,6 +165,10 @@
   - lokales Tailscale-Prefs-Set annonciert `192.168.2.0/24`
   - die Tailnet-Netzsicht bestaetigt diese Route jetzt als aktiv
   - daraus folgt: Toolbox-seitig ist der Subnet-Router produktiv aktiv und Split-DNS fuer `hs27.internal` kann sauber genutzt werden
+  - verifizierter Runtime-Stand vom `2026-04-07`:
+    - der produktive Frontdoor laeuft containerisiert als `toolbox-network_caddy_1`
+    - `homeserver2027-toolbox-mobile-firewall.service` ist aktiv und die `HOMESERVER2027_MOBILE`-iptables-Kette begrenzt `8443-8449` weiterhin auf `lo` und `tailscale0`
+    - der Host-Dienst `caddy.service` kann dabei trotzdem `inactive` sein; entscheidend ist der Docker-Caddy-Stack
 - Geplante Edge-Hardware / UCG-Stand:
   - `UniFi Cloud Gateway Ultra (UCG-Ultra)` ist jetzt live fuer `proxmox-anker`
   - der direkte StudioPC-Pfad in die isolierten Legacy-Gaeste laeuft waehrend der Migration nicht ueber lokale `192.168.2.x`, sondern `Tailscale first` ueber `toolbox`
@@ -259,7 +263,22 @@ Lokale Admin-Flaechen (nur localhost):
     - der Stack wurde kontrolliert auf leere Nutzdatenbasis zurueckgesetzt und aus IaC neu initialisiert
     - Admin-User `frawoadmin` und Frontend-User `frontend` sind jetzt vorhanden
     - die verwendeten Passwoerter liegen ausschliesslich verschluesselt in `ansible/inventory/group_vars/all/vault.yml`
+  - Nextcloud-Remediation vom `2026-04-07`:
+    - Compose-Drift in `VM 200` hatte `db` auf `mariadb:10.6` zurueckfallen lassen, obwohl die vorhandenen Redo-Logs bereits von `10.11` stammten
+    - zusaetzlich lief ein verwaister `nextcloud:latest`-Altcontainer ausserhalb des beabsichtigten Stackzustands; parallel lag App-Version-Drift gegen die vorhandenen Nutzdaten vor
+    - der Stack wurde auf `/opt/homeserver2027/stacks/nextcloud/docker-compose.yml` mit `stack.env`, `mariadb:10.11`, `redis:alpine` und `nextcloud:latest` zurueckgefuehrt und per `docker-compose up -d --force-recreate --remove-orphans` bereinigt
+    - der Standardpfad fuer App-Reparatur lief ueber `php occ upgrade`, `php occ maintenance:repair --include-expensive` und das bewusste Deaktivieren des Maintenance-Modus; direkte DB-Schreibfixes wurden dabei vermieden
+    - danach liefern `cloud.hs27.internal/` und `/status.php` wieder `HTTP 200`, `maintenance=false`, `needsDbUpgrade=false`, und `homeserver-compose-nextcloud.service` ist wieder `active`
   - `VM 220 odoo` wurde bereinigt, antwortet wieder auf Port `8069`, ist QGA-verifiziert und wird jetzt ueber `homeserver-compose-odoo.service` aus `/opt/homeserver2027/stacks/odoo` betrieben.
+  - Odoo-Remediation vom `2026-04-07`:
+    - Compose-Drift in `VM 220` wurde bereinigt; `web` nutzt wieder `stack.env` und `./odoo.conf:/etc/odoo/odoo.conf:ro`
+    - ein `docker-compose up -d --force-recreate --remove-orphans` hat den kaputten Alt-Container ersetzt
+    - die mobile Toolbox-Frontdoor `100.99.206.128:8444` hatte keinen aktiven `:8444`-Caddy-Block; dieser wurde nachgezogen
+    - danach zeigte sich Versions-Drift: Datenbank `FraWo_GbR` ist `Odoo 17`, waehrend der Web-Container auf `odoo:16.0` zurueckgefallen war
+    - der Web-Container wurde wieder auf `odoo:17` gezogen; danach liefern direkter Odoo-Pfad, `odoo.hs27.internal` und `100.99.206.128:8444` `HTTP 200`
+    - zusaetzlicher Drift lag im Filestore: Odoo 17 las aus `.local/share/Odoo/filestore/FraWo_GbR`, waehrend viele Dateien noch unter `filestore/FraWo_GbR` lagen
+    - die fehlenden Filestore-Dateien wurden nicht-destruktiv in den erwarteten Pfad uebernommen; die Fehlmenge sank von `498` auf `0`
+    - Guardrail ab hier: keine direkten SQL-Schreibfixes ohne frischen VM-Backup-/Snapshot-Nachweis; verifizierte lokale Rueckwege fuer `VM 220` liegen unter `/var/lib/vz/dump`, zuletzt auch vom `2026-04-07 19:40:44`
   - `VM 230 paperless` ist gesund, QGA-verifiziert und wird jetzt ueber `homeserver-compose-paperless.service` aus `/opt/homeserver2027/stacks/paperless` betrieben.
   - fuer `VM 230 paperless` sind jetzt ebenfalls ein Admin-User `frawoadmin` und ein Frontend-User `frontend` vorhanden
     - die verwendeten Passwoerter liegen ausschliesslich verschluesselt in `ansible/inventory/group_vars/all/vault.yml`
@@ -272,6 +291,9 @@ Lokale Admin-Flaechen (nur localhost):
     - `LLMNR=no`
     - `MulticastDNS=no`
     - keine oeffentlich gebundenen DB-Ports auf den Business-VMs beobachtet
+  - Odoo-Board-Readout vom `2026-04-07`:
+    - `#217 Service Reachability Audit` ist technisch gruen und kann im Projektboard abgehakt werden
+    - `#225 Nextcloud Stabilization` ist als akuter Incident weitgehend abgearbeitet; sinnvoller Restpunkt ist jetzt ein eigener Follow-up fuer `Nextcloud Runtime Hardening / Version Pinning`
 
 ### Smart Home
 
