@@ -25,7 +25,8 @@ Diese Datei ist die kanonische Betriebsanweisung fuer Mail, Mailbox-Aufbau und A
   - spaetere Benutzeroberflaeche ueber `Nextcloud Mail`
 - `Odoo`, `Paperless`, `AzuraCast` und `Vaultwarden` sind SMTP-Clients, keine eigenen Mailserver
 - fuer diesen Block wird bewusst kein eigener Mailserver auf dem Homeserver aufgebaut
-- falls `agent@frawo-tech.de` spaeter als echte Mailbox aktiviert wird, dient sie nur als Automations-Inbox fuer Odoo/n8n und nicht als persoenlicher Kommunikationskanal
+- `agent@frawo-tech.de` ist in diesem Block bewusst kein eigenes Postfach, sondern ein Alias auf das technische Basis-Postfach `webmaster@frawo-tech.de`
+- `agent@frawo-tech.de` dient nur als Automations-/Intake-Adresse fuer Odoo und nicht als persoenlicher Kommunikationskanal
 
 ## Zertifizierungsstandard
 
@@ -51,7 +52,7 @@ Fuer das erste professionelle interne Produktionssiegel gilt:
 ### Spaeter
 
 - `documents@frawo-tech.de`
-- optional `agent@frawo-tech.de` fuer Odoo-/Workflow-Intake
+- `agent@frawo-tech.de` fuer Odoo-/Workflow-Intake ueber `webmaster@frawo-tech.de`
 - optional `frontend@frawo-tech.de`
 - optional `admin@frawo-tech.de` als Alias
 
@@ -59,6 +60,7 @@ Fuer das erste professionelle interne Produktionssiegel gilt:
 
 - `wolf@frawo-tech.de` ist aktuell Alias auf das technische Basis-Postfach `webmaster@...`
 - `info@frawo-tech.de` ist aktuell ebenfalls Alias auf das technische Basis-Postfach `webmaster@...`
+- `agent@frawo-tech.de` ist seit `2026-04-08` ebenfalls als Alias auf das technische Basis-Postfach `webmaster@...` uebernommen worden, weil keine weitere Mailbox-Kapazitaet verbraucht werden soll
 - `franz@frawo-tech.de` hat bereits ein eigenes echtes Postfach
 - `franz@frawo-tech.de` wurde am `2026-03-27` per `IMAP` und `SMTP AUTH` verifiziert
 - der aktuelle technische Stand von `info@frawo-tech.de` ist noch gegen das `STRATO`-Paket zu verifizieren
@@ -90,6 +92,7 @@ Wichtig:
 
 - Mailclients authentifizieren immer mit dem echten Postfach, nicht mit Aliasen
 - technischer Basis-Login fuer den Owner-Pfad ist aktuell `webmaster@frawo-tech.de`
+- `agent@frawo-tech.de` hat deshalb keinen getrennten Mail-Login; Empfang und Versand laufen technisch weiter ueber `webmaster@frawo-tech.de`, solange kein separater Provider-Pfad bewusst geschaffen wird
 - `franz@frawo-tech.de` bleibt ein getrenntes echtes Postfach
 - `franz@frawo-tech.de` wurde am `2026-03-27` erfolgreich gegen `imap.strato.de:993` und `smtp.strato.de:587` authentifiziert
 - bevorzugte Client-Werte:
@@ -109,9 +112,9 @@ Wichtig:
 ## Rollout-Reihenfolge
 
 1. `frawo-tech.de` im STRATO-Paket pruefen
-2. Alias-/Postfachmodell fuer `wolf`, `franz`, `info`, `noreply` im `STRATO`-Paket verifizieren und bereinigen
+2. Alias-/Postfachmodell fuer `wolf`, `franz`, `info`, `noreply` und `agent` im `STRATO`-Paket verifizieren und bereinigen
 3. Zugangsdaten sofort in `Vaultwarden / FraWo / Mail & Domains` speichern
-4. Testversand und Testempfang je Mailbox pruefen
+4. Testversand und Testempfang je Mailbox bzw. Alias-Zustellpfad pruefen
 5. `noreply@frawo-tech.de` als SMTP-Absender fuer Apps standardisieren
 6. sichtbare App-SMTP-Testmails fuer `Nextcloud`, `Paperless`, `Odoo`, `AzuraCast` pruefen
 7. SPF, DKIM und DMARC dokumentieren
@@ -245,6 +248,7 @@ Nicht akzeptabel:
 ## Definition Of Done
 
 - `wolf@frawo-tech.de` ist als Alias auf das technische Basis-Postfach sauber dokumentiert und getestet
+- `agent@frawo-tech.de` ist als Alias auf `webmaster@frawo-tech.de` dokumentiert, und die echte Zustellung an den technischen Basispfad ist sichtbar geprueft
 - `franz@frawo-tech.de` ist als echtes Postfach nutzbar
 - `info@frawo-tech.de` und `noreply@frawo-tech.de` sind technisch klar definiert
 - alle produktiven Mailzugriffe liegen in `Vaultwarden`
@@ -257,6 +261,7 @@ Nicht akzeptabel:
 ## Was Jetzt Nicht Mehr In Extra Checklisten Gehoert
 
 - Alias-/Postfachmodell fuer `wolf` und `franz`
+- Alias-/Zustellmodell fuer `agent`
 - `Vaultwarden`-Invite-Mailpfad
 - SMTP-Runtime-Deploy-Standard
 - sichtbare Mail-Resttests

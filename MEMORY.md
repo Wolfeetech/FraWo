@@ -304,20 +304,31 @@ Lokale Admin-Flaechen (nur localhost):
     - `ownerless_open=0` ist fuer das Masterprojekt DB-seitig verifiziert
     - `agent@frawo-tech.de` ist auf Server-/Ops-/Automation-Tasks gezielt als Co-Owner verlinkt; API-Key, Alias-Intake und n8n bleiben vorbereitete Folgepunkte
   - Odoo-Agent-/Alias-Audit vom `2026-04-08`:
-    - Projekt `21` hat die Alias-Domain `frawo-tech.de`, aber `alias_name=false` und damit noch keinen live geschalteten Intake-Pfad
+    - Projekt `21` hat jetzt den Alias `agent@frawo-tech.de`
     - Alias-Status aktuell `not_tested`, `alias_contact=employees`, `alias_model=project.task`, `alias_defaults={'project_id': 21}`
     - `agent@frawo-tech.de` ist aktiv, `share=false`, `totp_enabled=false`, `api_key_count=1`
     - heuristisch keine erkennbaren Admin-/Settings-/Studio-Gruppen am `agent@`-User gefunden
     - erlaubte Alias-Scope-Werte in der Instanz: `everyone`, `partners`, `followers`, `employees`
-    - fuer einen internen Pilot ist `employees` jetzt bereits gesetzt; ein Aliasname fehlt bewusst noch, damit der Intake-Pfad nicht unkontrolliert live geht
+    - fuer einen internen Pilot ist `employees` gesetzt und der Aliasname `agent` vorbereitet
+    - echter Mail-Intake ist noch nicht end-to-end live, weil aktuell `fetchmail_count=0`
     - serverseitig erzeugter RPC-Key fuer `agent@` liegt als root-only Staging-Secret ausserhalb des Repos unter `/root/.config/homeserver2027/odoo_agent_rpc.env`
     - Read-only-Check dafuer liegt jetzt in `odoo_agent_readiness_audit.py`
+    - Mail-Intake-Probe `2026-04-08`: eine echte Testmail an `agent@frawo-tech.de` lief zunaechst in einen STRATO-Ruecklaeufer `Returned Mail ...`; damit war der Alias zu diesem Zeitpunkt providerseitig noch nicht sauber erreichbar
+    - Betreiberentscheidung `2026-04-08`: `agent@frawo-tech.de` wird aus Mailbox-Kapazitaetsgruenden bewusst als Alias auf `webmaster@frawo-tech.de` gefuehrt und nicht als eigenes STRATO-Postfach angelegt
+    - Live-Probe 2026-04-08: direkter SMTP-Zustellversuch an agent@frawo-tech.de ueber den produktiven Odoo-Mailpfad wurde von STRATO weiter mit 550 5.1.2 No such mailbox [MSG0031] abgewiesen; der Alias ist providerseitig also noch nicht wirksam
+    - `CT 100 toolbox` war gleichzeitig auf `nameserver 127.0.0.1` gedriftet, obwohl der Hostpfad `127.0.0.1:53` lokal nicht antwortete; `/etc/resolv.conf` wurde wieder auf `nameserver 10.1.0.20` plus `search hs27.internal` gezogen
+    - Architekturentscheidung danach: in diesem Block kein `n8n` auf dem Homeserver; wegen Kapazitaet und Betriebsruhe bleibt der Zielpfad zuerst Odoo-nativ plus providerseitig sauber zugestelltes `agent@` ueber den Alias auf `webmaster@`
   - Odoo-Runtime-Drift vom `2026-04-08`:
     - Webcontainer fiel erneut mit `password authentication failed for user "odoo"` aus
     - lokaler PostgreSQL-Container hatte zwar eigene Env-Werte, aber der echte Docker-Netzpfad akzeptierte weiter nur das frueher etablierte Secret aus dem bestehenden Volume
     - zusaetzlich blockierten `600`-Rechte auf `odoo.conf` und `stack.env` den gemounteten Startpfad
     - Remediation: `docker-compose.yml` zurueck auf `env_file` plus `odoo.conf`-Mount, Stack wieder auf das echte DB-Secret gezogen, Dateirechte lesbar gestellt
     - danach wieder verifiziert: direkt `127.0.0.1:8069`, intern `odoo.hs27.internal` und mobil `100.99.206.128:8444` jeweils `HTTP 200`
+  - Odoo-Frontdoor-Regression vom `2026-04-08` mittags:
+    - Odoo selbst blieb direkt auf `10.1.0.22:8069` gesund, aber `toolbox-network_caddy_1` fiel in eine Restart-Schleife
+    - Root Cause war eine kaputt edierte Caddyfile: `tls internal` stand innerhalb von `reverse_proxy`-Bloecken fuer `funk.frawo-tech.de` und `agent.frawo-tech.de`
+    - zusaetzlich war `:8444` versehentlich wieder auf TLS gezogen, obwohl der dokumentierte Tailscale-Frontdoor dort `http` nutzt
+    - nach Bereinigung der Caddyfile und sauberem Recreate des Caddy-Containers liefern `odoo.hs27.internal` und `100.99.206.128:8444/web/login` wieder `HTTP 200`
 
 ### Smart Home
 
@@ -564,7 +575,7 @@ Lokale Admin-Flaechen (nur localhost):
    - Sicherheits-Baseline prueft Secrets, Port-Flaechen, Tailscale-Zustand und AdGuard-Admin-Flaeche mit
    - `make start-day` prueft jetzt zusaetzlich den PBS-Stage-Gate-Pfad und den Medienserver-V1
 11. Legacy-Snapshot auf `VM 100` nur dann entfernen, wenn der Tailscale-/Toolbox-Pfad dafuer ersetzt oder abgeschlossen ist
-12. EasyBox-805-Weboberflaeche weiter automatisieren, weil `user_lang.json`, Login und `overview.json` jetzt reproduzierbar funktionieren, aber tieferer Lease-/DHCP-Abgleich und Owner-Mapping noch nicht vollstaendig headless abgedeckt sind
+12. EasyBox-805-Weboberflaeche weiter automatisieren, weil user_lang.json, Login und overview.json jetzt reproduzierbar funktionieren, aber tieferer Lease-/DHCP-Abgleich und Owner-Mapping noch nicht vollstaendig headless abgedeckt sind
 13. `UniFi Cloud Gateway Ultra` als spaetere Netzrand-Migration vorbereiten, aber erst nach abgeschlossenem LXC-/VM-Basisaufbau, validierten Backups und finalem IP-Plan aktivieren
 14. Capacity-Rightsizing in ein Wartungsfenster aufnehmen
    - `VM 200 nextcloud`: Ziel `2048 MB` RAM
@@ -734,7 +745,11 @@ Lokale Admin-Flaechen (nur localhost):
    - benoetigte Aktion: zwei physisch getrennte Offline-Kopien des Vaultwarden-Recovery-Materials erzeugen oder frisch bestaetigen und die sichtbare Existenz nachweisen
    - warum: `vaultwarden_recovery_material_verified` ist im aktuellen MVP-Gate noch offen und bleibt rein operator-/physisch gebunden
    - danach uebernehmen Codex/Gemini wieder: Manual-Check im Gate auf Gruen ziehen und den Handoff aktualisieren
-12. Hinweis: Mobiler HTTPS-Vertrauensstandard (2026)
+12. AKTION VON DIR ERFORDERLICH: STRATO-Alias fuer agent@frawo-tech.de wirksam machen und sichtbare Zustellung auf webmaster@frawo-tech.de bestaetigen
+   - benoetigte Aktion: in STRATO pruefen, warum agent@frawo-tech.de Stand 2026-04-08 noch mit `550 No such mailbox` abgewiesen wird, Alias-/Postfach-Ziel korrigieren und danach die echte Zustellung im technischen Basis-Postfach webmaster@frawo-tech.de bestaetigen
+   - warum: Odoo-seitig sind Alias und API-Key vorbereitet, aber der produktive Intake bleibt ohne sichtbaren Zustellnachweis am Shared-Mailpfad unvollstaendig
+   - danach uebernehmen Codex/Gemini wieder: Odoo-Intake-End-to-End erneut pruefen und den Mailpfad fachlich einhaengen
+13. Hinweis: Mobiler HTTPS-Vertrauensstandard (2026)
    - die interne CA (`frawo-ca.crt`) wird ueber `http://portal.hs27.internal/frawo-ca.crt` bereitgestellt.
    - die Installation ist fuer Bitwarden, Nextcloud und Odoo auf Android/iOS zwingend erforderlich, um untrusted-SSL-Fehler zu vermeiden.
    - Leitfaden: `DOCS/MOBILE_HTTPS_TRUST.md`.

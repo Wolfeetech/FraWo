@@ -148,6 +148,16 @@ def fetch_mail_servers(session: OdooSession) -> list[dict[str, Any]]:
     )
 
 
+def fetch_fetchmail_servers(session: OdooSession) -> list[dict[str, Any]]:
+    return xmlrpc_call(
+        session,
+        "fetchmail.server",
+        "search_read",
+        [[]],
+        {"fields": ["name", "server", "port", "is_ssl"], "order": "id asc"},
+    )
+
+
 def fetch_alias_contact_options(session: OdooSession) -> list[dict[str, str]]:
     fields_meta = xmlrpc_call(
         session,
@@ -181,6 +191,7 @@ def build_report(session: OdooSession, project_id: int) -> dict[str, Any]:
 
     group_names = fetch_group_names(session, agent.get("groups_id", []))
     mail_servers = fetch_mail_servers(session)
+    fetchmail_servers = fetch_fetchmail_servers(session)
     alias_contact_options = fetch_alias_contact_options(session)
     open_agent_tasks = fetch_open_agent_tasks(session, int(project["id"]), int(agent["id"]))
 
@@ -221,6 +232,10 @@ def build_report(session: OdooSession, project_id: int) -> dict[str, Any]:
             "count": len(mail_servers),
             "names": [server.get("name") for server in mail_servers],
         },
+        "incoming_mail_transport": {
+            "fetchmail_count": len(fetchmail_servers),
+            "fetchmail_names": [server.get("name") for server in fetchmail_servers],
+        },
         "alias_policy": {
             "current_contact_scope": project.get("alias_contact"),
             "options": alias_contact_options,
@@ -239,11 +254,13 @@ def build_report(session: OdooSession, project_id: int) -> dict[str, Any]:
             "api_key_present": len(agent.get("api_key_ids", [])) > 0,
             "incoming_alias_live": bool(project.get("alias_name")) or bool(project.get("alias_email")),
             "incoming_alias_prepared_only": not bool(project.get("alias_name")) and bool(project.get("alias_domain_id")),
+            "incoming_mail_transport_present": len(fetchmail_servers) > 0,
         },
         "next_actions": [
             "API-Key fuer agent@ bewusst erzeugen und ausserhalb des Repos speichern",
             "Projekt-Alias erst nach Review des alias_contact-Scopes und des Mailpfads aktivieren",
             "Fuer einen internen Pilot zuerst alias_contact=employees oder bewusst enger waehlen",
+            "Incoming-Mail-Transport ergaenzen, sonst bleibt agent@ nur alias-seitig vorbereitet",
             "Nach API-Key-Setup erneut pruefen, ob api_key_count > 0 und elevated_groups leer bleiben",
         ],
     }
@@ -260,6 +277,9 @@ def print_human_summary(report: dict[str, Any]) -> None:
         f"domain={report['project']['alias_domain'] or '-'} | "
         f"status={report['project']['alias_status'] or '-'} | "
         f"contact={report['project']['alias_contact'] or '-'}"
+    )
+    print(
+        f"Incoming-Mail-Transport: fetchmail_count={report['incoming_mail_transport']['fetchmail_count']}"
     )
     print(
         "Alias-Scope-Optionen: "

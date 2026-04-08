@@ -51,10 +51,10 @@ Der professionelle Zielzustand ist nicht nur `HTTP 200`, sondern ein bewusst def
 - Phase 1: Odoo zuerst nativ sauberziehen
   - Projektboard, Stages, Tags, Rollen, Mailpfad und Bot-Identitaet stabilisieren
   - einfache Intake-Wege bevorzugt Odoo-nativ ueber Alias-/Nachrichtenmodell abbilden
-- Phase 2: n8n spaeter als Orchestrierung ergaenzen
-  - Eingang ueber dedizierte Mailbox oder Webhook
-  - Normalisierung, Routing, Tagging und Task-Anlage oder Task-Update in Odoo
-  - Trigger laufen unter `agent@frawo-tech.de`, nicht unter einem menschlichen Hauptkonto
+- Phase 2: nur falls spaeter wirklich noetig eine externe Orchestrierung ergaenzen
+  - in diesem Block **kein n8n auf dem Homeserver**; Kapazitaet und Betriebsruhe haben Vorrang
+  - ein spaeterer Orchestrator waere nur eine optionale Off-Box-/Spaeter-Phase
+  - Trigger laufen auch dann unter `agent@frawo-tech.de`, nicht unter einem menschlichen Hauptkonto
 - Phase 3: geschlossene Rueckkopplung
   - eingehende Mail an `agent@...` erzeugt oder aktualisiert Odoo-Tasks
   - Odoo bleibt das sichtbare Arbeitsboard
@@ -64,9 +64,10 @@ Der professionelle Zielzustand ist nicht nur `HTTP 200`, sondern ein bewusst def
 
 - Read-only-Audit liegt jetzt reproduzierbar in `odoo_agent_readiness_audit.py`.
 - Live gelesen gegen `FraWo_GbR`:
-  - Projekt `21` hat bereits die Alias-Domain `frawo-tech.de`, aber noch **keinen** aktiven Aliasnamen und damit keinen scharf geschalteten Intake-Pfad.
+  - Projekt `21` hat jetzt den internen Pilot-Alias `agent@frawo-tech.de`.
   - Alias-Felder stehen aktuell auf:
-    - `alias_name = false`
+    - `alias_name = agent`
+    - `alias_full_name = agent@frawo-tech.de`
     - `alias_email = false`
     - `alias_status = not_tested`
     - `alias_contact = employees`
@@ -74,17 +75,35 @@ Der professionelle Zielzustand ist nicht nur `HTTP 200`, sondern ein bewusst def
     - `alias_defaults = {'project_id': 21}`
   - `agent@frawo-tech.de` ist aktiv, `share=false`, `notification_type=email`, `totp_enabled=false`, `api_key_count=1`.
   - Heuristisch wurden am `agent@`-User keine erkennbaren `Admin`-/`Settings`-/`Studio`-Gruppen gefunden.
-  - Es existiert genau ein SMTP-Server in Odoo; der Mailpfad ist also vorbereitet, aber der Intake-Pfad noch nicht live.
+  - Es existiert genau ein SMTP-Server in Odoo, aber aktuell `fetchmail_count=0`; der Alias ist damit vorbereitet, der echte Mail-Intake aber noch nicht end-to-end live.
   - erlaubte `alias_contact`-Scopes in dieser Instanz:
     - `everyone`
     - `partners`
     - `followers`
     - `employees`
 - Arbeitsbewertung:
-  - Der Alias-/Mailpfad ist vorbereitet, aber bewusst noch **nicht** aktiviert.
+  - Der Aliasname ist jetzt gesetzt, aber wegen fehlendem Incoming-Mail-Transport bewusst noch nicht als echter End-to-End-Intake bewiesen.
   - Fuer `agent@` existiert jetzt ein serverseitig erzeugter RPC-API-Key; er liegt bewusst nur als root-only Staging-Secret ausserhalb des Repos unter `/root/.config/homeserver2027/odoo_agent_rpc.env`.
   - Der Alias-Scope wurde defensiv auf `employees` gezogen; damit bleibt der Pfad fuer einen internen Pilot vorbereitet, ohne schon durch einen Aliasnamen live zu sein.
   - Auf dem Modell `res.users.apikeys` war im Read-only-Probe kein offensichtlicher oeffentlicher Create-/Reveal-Pfad sichtbar; die echte API-Key-Erzeugung bleibt daher ein bewusster UI- oder dedizierter Server-Side-Schritt.
+
+## Mail-Intake-Probe und Orchestrierungsbewertung 2026-04-08
+
+- Eine echte Probe-Mail an `agent@frawo-tech.de` wurde ueber den produktiven STRATO-SMTP-Pfad ausgesendet und danach read-only im technischen Postfach geprueft.
+- Ergebnis:
+  - die Nachricht wurde **nicht** als regulaere `agent@`-Mail zugestellt
+  - stattdessen kam ein Ruecklaeufer `Returned Mail: HS27 agent intake probe ...`
+  - Header-Readout zeigte `From = Strato Mail <MAILER-DAEMON@smtp.strato.de>`
+  - eine erneute Live-Probe nach der Alias-Entscheidung wurde direkt ueber den produktiven Odoo-SMTP-Pfad ausgelost und von STRATO weiter mit 550 5.1.2 No such mailbox [MSG0031] fuer agent@frawo-tech.de abgewiesen
+- Arbeitsbewertung:
+  - der Odoo-Alias `agent@frawo-tech.de` ist inzwischen bewusst als Alias auf `webmaster@frawo-tech.de` uebernommen worden; damit ist der providerseitige Zielpfad logisch festgelegt, aber noch nicht sichtbar end-to-end bestaetigt
+  - der Restblocker fuer echten Mail-Intake ist damit nicht mehr die Anlage eines eigenen Postfachs, sondern die verifizierte Zustellung von `agent@` in den technischen Basispfad `webmaster@...`
+  - ein direktes Odoo-Fetchmail auf dem Shared-Postfach `webmaster@frawo-tech.de` bleibt bewusst aus, solange kein dedizierter und sauber filterbarer Empfangspfad verifiziert ist
+- Orchestrierungsbewertung:
+  - `n8n` wird in diesem Block bewusst **nicht** auf dem Homeserver weiterverfolgt
+  - Grund: aktuelle Serverkapazitaet und Betriebsruhe sind wichtiger als eine zusaetzliche lokale Orchestrierungsschicht
+  - Konsequenz: der naechste sinnvolle Pfad ist **ohne** `n8n`: zuerst sichtbare Alias-Zustellung `agent@ -> webmaster`, danach Odoo-nativer Alias-/Nachrichtenpfad
+  - spaetere Orchestrierung bleibt nur eine optionale Off-Box-/Spaeter-Phase und ist aktuell kein technischer Sollpfad
 
 ## Runtime-Drift 2026-04-08
 
@@ -103,6 +122,26 @@ Der professionelle Zielzustand ist nicht nur `HTTP 200`, sondern ein bewusst def
   - `http://100.99.206.128:8444/web/login` -> `HTTP 200`
 - Guardrail:
   - kuenftige Odoo-Stack-Arbeit immer gegen den **echten** DB-Netzpfad testen, nicht nur gegen lokale `trust`-Verbindungen innerhalb des PostgreSQL-Containers
+
+## Frontdoor-Regression 2026-04-08 mittags
+
+- Odoo selbst war weiter gesund, aber der `toolbox`-Frontdoor fiel erneut aus.
+- Live-Befund:
+  - direkter Odoo-Pfad `http://10.1.0.22:8069/web/login` blieb `HTTP 200`
+  - `odoo.hs27.internal` zeigte auf `10.1.0.20`, dort wurde `:80` jedoch zunaechst verweigert
+  - `100.99.206.128:8444/web/login` war zunaechst ebenfalls nicht erreichbar
+- Root Cause:
+  - `toolbox-network_caddy_1` hing in einer Restart-Schleife
+  - Ursache war eine kaputt edierte Caddyfile mit `tls internal` innerhalb von `reverse_proxy`-Bloecken fuer `funk.frawo-tech.de` und `agent.frawo-tech.de`
+  - zusaetzlich war im `:8444`-Block wieder versehentlich `tls internal` gesetzt, wodurch der dokumentierte `http`-Frontdoor auf `8444` nur noch `400 Bad Request` lieferte
+- Remediation:
+  - Caddyfile-Syntax fuer die Odoo-nahen Public-Mappings bereinigt
+  - `tls internal` aus dem `:8444`-Block entfernt, damit der mobile Tailscale-Frontdoor wieder dem dokumentierten `http`-Pfad folgt
+  - Caddy-Container sauber neu erzeugt
+- Verifiziert nach Fix:
+  - `toolbox-network_caddy_1` laeuft wieder stabil
+  - `http://odoo.hs27.internal/web/login` -> `HTTP 200`
+  - `http://100.99.206.128:8444/web/login` -> `HTTP 200`
 
 ## Taegliche Checks
 
@@ -125,10 +164,11 @@ Der professionelle Zielzustand ist nicht nur `HTTP 200`, sondern ein bewusst def
 
 - Das zentrale Homeserver-Masterprojekt in Odoo ist jetzt live als operativer Board-Standard normalisiert, muss aber noch im Alltag durch menschliche Nutzung bestaetigt werden.
 - Die sechs kanonischen Projektphasen, Lane-Tags und die Owner-Regeln sind gegen die reale Odoo-Instanz validiert; offen bleibt die sichtbare Team-Abnahme im laufenden Betrieb.
-- `agent@frawo-tech.de` ist als Rollenbild dokumentiert, aber API-Key, Minimalrechte und produktiver Automationspfad sind noch nicht verifiziert.
+- `agent@frawo-tech.de` ist als Rollenbild dokumentiert und der RPC-API-Key ist verifiziert; offen bleibt der produktive Automationspfad mit echter Mail-Zustellbarkeit und spaeterem Trigger-Rueckweg.
 - Der eingehende Automationspfad ist noch bewusst offen:
-  - zuerst Odoo-internes Alias-/Nachrichtenmodell pruefen
-  - erst danach optional `n8n` als Orchestrierung davorschalten
+  - zuerst die sichtbare Alias-Zustellung `agent@frawo-tech.de` -> `webmaster@frawo-tech.de` providerseitig bestaetigen
+  - danach Odoo-internes Alias-/Nachrichtenmodell end-to-end pruefen
+  - aktuell **kein** serverseitiges `n8n` einplanen; nur wenn spaeter wirklich noetig, eine externe Orchestrierung bewerten
 - Odoo-Task-SSOT ist bewusst nur fuer Aufgaben gedacht; technische Wahrheit fuer Netzwerk, Sicherheitsregeln, Audits, IPs und Gates bleibt weiter im Repo-SSOT.
 - Vor produktiver Automationsfreigabe fehlt noch die sichtbare End-to-End-Pruefung fuer:
   - Odoo-Projektboard
@@ -214,6 +254,8 @@ Der professionelle Zielzustand ist nicht nur `HTTP 200`, sondern ein bewusst def
 - Homeserver-Masterprojekt in Odoo als einziges operatives Board festziehen
 - `agent@frawo-tech.de` als least-privilege Botrolle dokumentieren und spaeter mit separatem API-Key anbinden
 - `odoo_agent_readiness_audit.py --json` als Read-only-Check vor jedem Alias-/API-Key-Schritt verwenden
+- STRATO-seitig die echte Alias-Zustellung `agent@frawo-tech.de` -> `webmaster@frawo-tech.de` bestaetigen und danach denselben Probe-Pfad erneut fahren
+- danach den Odoo-nativen Alias-/Nachrichtenpfad pruefen, **ohne** neue Server-Orchestrierungsschicht
 - lokale Odoo-Helferskripte auf secret-sicheren Zugriff standardisieren, bevor Mail- oder n8n-Automation live geht
 
 ## Nie tun

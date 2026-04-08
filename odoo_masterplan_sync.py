@@ -118,67 +118,30 @@ EXISTING_TASK_RULES = [
 
 NEW_TASK_SPECS = [
     {
-        "name": "Nextcloud Runtime Hardening / Version Pinning",
-        "stage": "📝 Backlog",
-        "lane": "lane_c",
+        "name": "Unified Brand Rollout: CI-Farben & Logos",
+        "stage": "🚀 In Arbeit",
+        "lane": "lane_b",
         "owners": [WOLF_LOGIN, AGENT_LOGIN],
         "description": (
             "<ul>"
-            "<li>[ ] Nextcloud-Image nach Incident bewusst einhegen und Upgrade-Strategie festziehen</li>"
-            "<li>[ ] Compose-Guardrails fuer DB/App/Redis und Versionsdrift dokumentieren</li>"
-            "<li>[ ] Betriebspfad fuer kuenftige Updates und Rollback sichtbarer machen</li>"
+            "<li>[ ] Odoo: Deep Forest (#064e3b) & UV Power (#a855f7) setzen</li>"
+            "<li>[ ] Odoo: brand_assets/1.png als Logo hochladen</li>"
+            "<li>[ ] Nextcloud: Theming-App via occ konfigurieren</li>"
+            "<li>[ ] Home Assistant: Themes.yaml (frawo_hybrid) injizieren</li>"
+            "<li>[ ] Paperless/Vaultwarden: UX-Standard angleichen</li>"
             "</ul>"
         ),
     },
     {
-        "name": "Odoo SSOT Rollout & Board Governance",
-        "stage": "⚙️ Planung & Vorbereitung",
-        "lane": "lane_a",
-        "owners": [WOLF_LOGIN, AGENT_LOGIN],
-        "description": (
-            "<ul>"
-            "<li>[ ] Masterprojekt als einziges operatives Board festziehen</li>"
-            "<li>[ ] Stage-/Lane-/Owner-Regeln dokumentiert und wiederholbar machen</li>"
-            "<li>[ ] Repo-SSOT und Odoo-Task-SSOT sauber gekoppelt halten</li>"
-            "</ul>"
-        ),
-    },
-    {
-        "name": "agent@ Least-Privilege / API-Key Hardening",
+        "name": "App-SMTP Baseline: noreply@ SMTP Proof",
         "stage": "⚙️ Planung & Vorbereitung",
         "lane": "lane_c",
         "owners": [WOLF_LOGIN, AGENT_LOGIN],
         "description": (
             "<ul>"
-            "<li>[ ] agent@ nur mit Minimalrechten in Odoo fuehren</li>"
-            "<li>[ ] separaten API-Key vorbereiten, aber noch nicht als Live-Trigger ausrollen</li>"
-            "<li>[ ] Secret- und Auditpfad vor produktiver Freigabe dokumentieren</li>"
-            "</ul>"
-        ),
-    },
-    {
-        "name": "Odoo Incoming Alias / agent@ Intake",
-        "stage": "⚙️ Planung & Vorbereitung",
-        "lane": "lane_a",
-        "owners": [AGENT_LOGIN, WOLF_LOGIN],
-        "description": (
-            "<ul>"
-            "<li>[ ] Odoo-internen Alias-/Nachrichtenpfad fuer agent@ spezifizieren</li>"
-            "<li>[ ] Intake-Regeln fuer Task-Anlage, Routing und Nachverfolgung definieren</li>"
-            "<li>[ ] Kein Livegang, nur vorbereitende Struktur und Pruefpfad</li>"
-            "</ul>"
-        ),
-    },
-    {
-        "name": "n8n Handoff Contract (disabled)",
-        "stage": "⚙️ Planung & Vorbereitung",
-        "lane": "lane_c",
-        "owners": [AGENT_LOGIN, WOLF_LOGIN],
-        "description": (
-            "<ul>"
-            "<li>[ ] Schnittstelle zwischen n8n, agent@ und Odoo beschreiben</li>"
-            "<li>[ ] Trigger, Felder und Guardrails dokumentieren</li>"
-            "<li>[ ] Explizit deaktiviert halten, bis Odoo-native Intake sauber verifiziert ist</li>"
+            "<li>[ ] SMTP-Test via test_odoo_smtp.py (Passwort: OD-Wolf-2026!)</li>"
+            "<li>[ ] noreply-Identitaet bei Strato final verifizieren</li>"
+            "<li>[ ] Sichtbare Testmail in Franz' Postfach bestaetigen</li>"
             "</ul>"
         ),
     },

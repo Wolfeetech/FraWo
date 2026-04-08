@@ -47,6 +47,12 @@
 - Remaining follow-up:
   - approve advertised route `192.168.2.0/24` in the Tailnet admin
   - keep AdGuard Home in opt-in mode until DHCP ownership and rollback are documented
+- DNS-/n8n-Drift-Check `2026-04-08`:
+  - `CT 100 toolbox` war auf `nameserver 127.0.0.1` gedriftet, obwohl der Hostpfad `127.0.0.1:53` lokal nicht antwortete
+  - Verifikation: `nslookup google.com 127.0.0.1` und `nslookup registry-1.docker.io 127.0.0.1` liefen in Timeouts, waehrend dieselben Queries gegen `10.1.0.20:53` sofort erfolgreich waren
+  - Remediation: `/etc/resolv.conf` auf `nameserver 10.1.0.20` plus `search hs27.internal` zurueckgezogen
+  - Folgeprobe: ein vorbereiteter interner `toolbox-n8n`-Stack konnte danach DNS-seitig aufloesen, scheiterte beim Image-Pull aber reproduzierbar an `archive/tar: invalid tar header`
+  - Betriebsentscheidung: `homeserver-compose-toolbox-n8n.service` wieder `disabled`; Stackpfad bleibt nur vorbereitet, kein halbaktiver Live-Dienst
 
 ## Toolbox Tailscale Join - 2026-03-18
 
