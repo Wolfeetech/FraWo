@@ -41,10 +41,12 @@ Der professionelle Zielzustand ist nicht nur `HTTP 200`, sondern ein bewusst def
 ## Hardening vor Automation
 
 - keine Klartext-Credentials in lokalen Odoo-Helferskripten, Markdown-Dateien oder Commits
+- auch Runtime-Konfiguration auf `VM 220` darf keine dauerhaft liegenbleibenden Klartext-Secrets behalten; SMTP-/App-Secrets gehoeren konsequent in den Secret-/Vault-Pfad
 - fuer API-/Bot-Zugriffe `agent@frawo-tech.de` mit Minimalrechten und separatem Secret/API-Key statt menschlicher Owner-Credentials nutzen
 - eingehende Mail oder Automations-Trigger erst aktivieren, wenn SMTP, Rollenmodell und Auditpfad stabil sind
 - keine oeffentlichen Webhooks als Primarweg; interne Pfade bleiben `LAN`/`Tailscale first`
 - n8n oder aehnliche Orchestrierung ist nur Transport-/Logikschicht, nicht selbst die SSOT
+- Odoo-Filestore bleibt app-exklusiv; wenn Anhaenge in `Nextcloud` sichtbar werden sollen, dann nur ueber einen kontrollierten Export-/Mirror-Pfad gemaess `OPERATIONS/STORAGE_INTEGRATION_OPERATIONS.md`
 
 ## Automationspfad fuer agent@
 
@@ -91,19 +93,20 @@ Der professionelle Zielzustand ist nicht nur `HTTP 200`, sondern ein bewusst def
 
 - Eine echte Probe-Mail an `agent@frawo-tech.de` wurde ueber den produktiven STRATO-SMTP-Pfad ausgesendet und danach read-only im technischen Postfach geprueft.
 - Ergebnis:
-  - die Nachricht wurde **nicht** als regulaere `agent@`-Mail zugestellt
-  - stattdessen kam ein Ruecklaeufer `Returned Mail: HS27 agent intake probe ...`
+  - eine fruehe Probe lief noch nicht als regulaere `agent@`-Mail durch
+  - dabei kam zunaechst ein Ruecklaeufer `Returned Mail: HS27 agent intake probe ...`
   - Header-Readout zeigte `From = Strato Mail <MAILER-DAEMON@smtp.strato.de>`
-  - eine erneute Live-Probe nach der Alias-Entscheidung wurde direkt ueber den produktiven Odoo-SMTP-Pfad ausgelost und von STRATO weiter mit 550 5.1.2 No such mailbox [MSG0031] fuer agent@frawo-tech.de abgewiesen
+  - eine spaetere Live-Probe nach der Alias-Entscheidung ist jetzt gruen: MX-RCPT auf `smtpin.rzone.de` akzeptiert `agent@frawo-tech.de`, und der Volltest ueber `smtp.strato.de` lieferte sichtbaren IMAP-Treffer im technischen Basis-Postfach mit `To: agent@frawo-tech.de`
 - Arbeitsbewertung:
-  - der Odoo-Alias `agent@frawo-tech.de` ist inzwischen bewusst als Alias auf `webmaster@frawo-tech.de` uebernommen worden; damit ist der providerseitige Zielpfad logisch festgelegt, aber noch nicht sichtbar end-to-end bestaetigt
-  - der Restblocker fuer echten Mail-Intake ist damit nicht mehr die Anlage eines eigenen Postfachs, sondern die verifizierte Zustellung von `agent@` in den technischen Basispfad `webmaster@...`
+  - der Odoo-Alias `agent@frawo-tech.de` ist inzwischen bewusst als Alias auf `webmaster@frawo-tech.de` uebernommen worden; die providerseitige Zustellung ist jetzt sichtbar end-to-end bestaetigt
+  - der Restblocker fuer echten Mail-Intake ist damit nicht mehr die Provider-Zustellung, sondern nur noch die bewusste Incoming-Strategie fuer die Shared-Mailbox `webmaster@...`
   - ein direktes Odoo-Fetchmail auf dem Shared-Postfach `webmaster@frawo-tech.de` bleibt bewusst aus, solange kein dedizierter und sauber filterbarer Empfangspfad verifiziert ist
 - Orchestrierungsbewertung:
   - `n8n` wird in diesem Block bewusst **nicht** auf dem Homeserver weiterverfolgt
   - Grund: aktuelle Serverkapazitaet und Betriebsruhe sind wichtiger als eine zusaetzliche lokale Orchestrierungsschicht
-  - Konsequenz: der naechste sinnvolle Pfad ist **ohne** `n8n`: zuerst sichtbare Alias-Zustellung `agent@ -> webmaster`, danach Odoo-nativer Alias-/Nachrichtenpfad
+  - Konsequenz: der naechste sinnvolle Pfad ist **ohne** `n8n`: jetzt die Odoo-Incoming-Strategie fuer `agent@ -> webmaster` sauber festziehen und danach den Odoo-nativen Alias-/Nachrichtenpfad aktiv pruefen
   - spaetere Orchestrierung bleibt nur eine optionale Off-Box-/Spaeter-Phase und ist aktuell kein technischer Sollpfad
+  - Storage-Integrationen werden davon getrennt betrachtet: kein gemeinsames Live-Dateisystem mit `Nextcloud` oder `Paperless`, sondern nur definierte Exportpfade
 
 ## Runtime-Drift 2026-04-08
 
@@ -166,7 +169,7 @@ Der professionelle Zielzustand ist nicht nur `HTTP 200`, sondern ein bewusst def
 - Die sechs kanonischen Projektphasen, Lane-Tags und die Owner-Regeln sind gegen die reale Odoo-Instanz validiert; offen bleibt die sichtbare Team-Abnahme im laufenden Betrieb.
 - `agent@frawo-tech.de` ist als Rollenbild dokumentiert und der RPC-API-Key ist verifiziert; offen bleibt der produktive Automationspfad mit echter Mail-Zustellbarkeit und spaeterem Trigger-Rueckweg.
 - Der eingehende Automationspfad ist noch bewusst offen:
-  - zuerst die sichtbare Alias-Zustellung `agent@frawo-tech.de` -> `webmaster@frawo-tech.de` providerseitig bestaetigen
+  - zuerst die Incoming-Strategie fuer die Shared-Mailbox `webmaster@frawo-tech.de` bewusst festziehen
   - danach Odoo-internes Alias-/Nachrichtenmodell end-to-end pruefen
   - aktuell **kein** serverseitiges `n8n` einplanen; nur wenn spaeter wirklich noetig, eine externe Orchestrierung bewerten
 - Odoo-Task-SSOT ist bewusst nur fuer Aufgaben gedacht; technische Wahrheit fuer Netzwerk, Sicherheitsregeln, Audits, IPs und Gates bleibt weiter im Repo-SSOT.
@@ -254,7 +257,7 @@ Der professionelle Zielzustand ist nicht nur `HTTP 200`, sondern ein bewusst def
 - Homeserver-Masterprojekt in Odoo als einziges operatives Board festziehen
 - `agent@frawo-tech.de` als least-privilege Botrolle dokumentieren und spaeter mit separatem API-Key anbinden
 - `odoo_agent_readiness_audit.py --json` als Read-only-Check vor jedem Alias-/API-Key-Schritt verwenden
-- STRATO-seitig die echte Alias-Zustellung `agent@frawo-tech.de` -> `webmaster@frawo-tech.de` bestaetigen und danach denselben Probe-Pfad erneut fahren
+- Shared-Mailbox-Strategie fuer `agent@frawo-tech.de` auf `webmaster@frawo-tech.de` festziehen und danach den Odoo-Incoming-Pfad erneut fahren
 - danach den Odoo-nativen Alias-/Nachrichtenpfad pruefen, **ohne** neue Server-Orchestrierungsschicht
 - lokale Odoo-Helferskripte auf secret-sicheren Zugriff standardisieren, bevor Mail- oder n8n-Automation live geht
 

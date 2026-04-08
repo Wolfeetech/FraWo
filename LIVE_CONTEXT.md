@@ -109,6 +109,8 @@
 - Odoo DB-Guardrail `2026-04-07`: Ab hier keine direkten SQL-Schreibfixes ohne frischen VM-Backup-/Snapshot-Nachweis; die Runtime ist wieder gruen, also kuenftige DB-Arbeit nur bewusst und mit Rueckweg
 - Nextcloud runtime remediation `2026-04-07`: Compose-Drift in `VM 200` wurde bereinigt; Root Causes waren MariaDB-Drift `Redo-Logs=10.11` gegen gedriftetes `10.6`, ein verwaister `nextcloud:latest`-Altcontainer und App-Version-Drift. `cloud.hs27.internal/` und `/status.php` liefern wieder `HTTP 200`, `maintenance=false`, `needsDbUpgrade=false`, und `homeserver-compose-nextcloud.service` ist wieder `active`
 - Nextcloud Mail remediation `2026-04-07`: Mail-Abruf scheiterte nicht an der App selbst, sondern an DNS-Drift in `VM 200`; Cloud-Init zeigte noch Tailscale-DNS `100.100.100.100` plus `tail150400.ts.net`, obwohl dort kein `tailscaled` lief. Persistenter Fix ueber Proxmox: `nameserver=10.1.0.20`, `searchdomain=hs27.internal`; danach loesen VM und Container `imap.strato.de` wieder auf und der TLS-Handshake auf `993` ist gruen
+- Nextcloud Alias-Routing 2026-04-08: Der Shared-Posteingang webmaster@frawo-tech.de trennt Alias-Mails jetzt praktisch ueber VM 200; `agent@` und `info@` werden in `Aliases.Agent` bzw. `Aliases.Info` geroutet, waehrend `wolf@` bewusst in der Haupt-`INBOX` bleibt. `hs27-nextcloud-alias-router.timer` ist enabled/active, und die End-to-End-Proben fuer `info@` und `wolf@` verhalten sich entsprechend.
+- Storage-Integrationsaudit 2026-04-08: `Nextcloud`, `Odoo` und `Paperless` bleiben auf getrennten VM-/Docker-Volumes; der sichere gemeinsame Dokumentenpfad bleibt die bestehende `Nextcloud <-> Paperless`-Bridge, waehrend der zentrale Medienpfad aktuell hostseitig als `/mnt/hs27-media/yourparty_Libary` von `//10.1.0.30/Media` verifiziert ist. `Nextcloud` hat `files_external` sichtbar an Bord; `Odoo`-Anhaenge sollen spaeter nur ueber Export/Mirror nach `Nextcloud` sichtbar werden, nicht ueber einen gemeinsamen Live-Filestore. Eine direkte `Stockenweiler`-Musikquelle ist von diesem Arbeitsplatz heute noch nicht belastbar live verifiziert.
 - Home Assistant OS is stable on `10.1.0.24:8123` and `ha.hs27.internal` now returns `HTTP 200` through Caddy
 - Direct Ansible management status: `ansible-ping=passed`
 - Local Proxmox backup status: `backup-list=passed`, `proxmox-local-backup-check=passed`; the latest stress run is the deciding source for whether real archives under `/var/lib/vz/dump` are currently proven
@@ -140,8 +142,8 @@
 - Odoo-Automationsidentitaet vom `2026-04-07`: `agent@frawo-tech.de` ist aktiv, ohne nachweisbare Admin-/Settings-/Studio-Gruppen, und jetzt gezielt an Server-/Ops-/Automation-Tasks verlinkt; API-Key und Incoming-Pfad bleiben die echten Restpunkte, waehrend serverseitiges `n8n` in diesem Block bewusst nicht verfolgt wird.
 - Odoo-Alias-/API-Key-Audit vom `2026-04-08`: Projekt `21` hat jetzt den Alias `agent@frawo-tech.de`; `alias_contact` bleibt defensiv auf `employees`, fuer `agent@frawo-tech.de` existiert ein serverseitig erzeugter RPC-Key (`api_key_count=1`) als root-only Staging-Secret ausserhalb des Repos, aber der echte Mail-Intake ist mit `fetchmail_count=0` noch nicht end-to-end live.
 - Mail-/Alias-Entscheidung `2026-04-08`: `agent@frawo-tech.de` wird aus Kapazitaetsgruenden nicht als eigenes STRATO-Postfach gefuehrt, sondern ist jetzt bewusst Alias auf `webmaster@frawo-tech.de`.
-- Mail-Intake-Probe `2026-04-08`: Eine echte Testmail an `agent@frawo-tech.de` lief zunaechst in einen STRATO-Ruecklaeufer `Returned Mail ...`; nach der Alias-Entscheidung ist der naechste Restpunkt deshalb nicht mehr Mailbox-Anlage, sondern sichtbare Provider-Zustellung von `agent@` nach `webmaster@`.
-- Live-Probe 2026-04-08: Ein erneuter SMTP-Zustellversuch an agent@frawo-tech.de wurde direkt ueber den produktiven Odoo-Mailpfad ausgelost und von STRATO weiterhin mit 550 5.1.2 No such mailbox [MSG0031] abgewiesen; der Alias ist providerseitig also Stand 2026-04-08 noch nicht wirksam.
+- Mail-Intake-Probe `2026-04-08`: Eine erste Testmail an `agent@frawo-tech.de` lief zunaechst in einen STRATO-Ruecklaeufer `Returned Mail ...`, aber die spaetere Live-Probe ueber den produktiven Odoo-Mailpfad ist gruen: STRATO hat die Zustellung angenommen und die Nachricht wurde sichtbar im technischen Basis-Postfach mit `To: agent@frawo-tech.de` gefunden.
+- Live-Probe `2026-04-08` abends: Direkter SMTP-Zustellversuch ueber den produktiven Odoo-Mailpfad ist jetzt gruen; MX-Pruefung auf `smtpin.rzone.de` akzeptiert `webmaster@frawo-tech.de` und `agent@frawo-tech.de`, und der Volltest `smtp.strato.de` -> `agent@frawo-tech.de` -> IMAP-INBOX `webmaster@frawo-tech.de` lieferte sichtbaren Inbox-Treffer mit passendem `To:`-Header.
 - Architekturentscheidung `2026-04-08`: kein `n8n` auf dem Homeserver in diesem Block; wegen Kapazitaet und Betriebsruhe bleibt der Zielpfad zuerst Odoo-nativ plus providerseitig empfangsfaehiges `agent@`.
 - Odoo-Runtime-Drift vom `2026-04-08`: Webcontainer fiel erneut auf dem Docker-Netzpfad mit DB-Auth-Fehler aus; Root Causes waren Compose-/Secret-Drift gegen das echte Volume-Passwort sowie zu enge `600`-Rechte auf den gemounteten Dateien. Nach Rueckzug auf den echten DB-Netzpfad und lesbare Mount-Rechte liefern direkt, intern und mobil wieder `HTTP 200`.
 - Odoo-Frontdoor-Regression `2026-04-08` mittags: Odoo selbst blieb auf `10.1.0.22:8069` gesund, aber `toolbox-network_caddy_1` fiel wegen einer kaputt edierten Caddyfile in eine Restart-Schleife; nach Syntax-Fix und Rueckzug des versehentlichen TLS auf `:8444` liefern `odoo.hs27.internal` und `100.99.206.128:8444/web/login` wieder `HTTP 200`.
@@ -150,7 +152,7 @@
 
 - `AKTION VON DIR ERFORDERLICH:` Den fehlenden 2FA-Pfad rund um das verlorene Operator-Smartphone wiederherstellen oder bewusst ersetzen und danach die sichtbare Franz-Geraeteabnahme fuer Surface Laptop und iPhone abschliessen.
 - `AKTION VON DIR ERFORDERLICH:` Zwei getrennte Offline-Kopien des Vaultwarden-Recovery-Materials frisch verifizieren und die sichtbare Evidenz dafuer liefern.
-- `AKTION VON DIR ERFORDERLICH:` In STRATO pruefen, warum `agent@frawo-tech.de` trotz Alias-Entscheidung Stand `2026-04-08` noch mit `550 No such mailbox` abgewiesen wird, und die wirksame Alias-Zustellung auf `webmaster@frawo-tech.de` sichtbar bestaetigen; danach koennen wir den Odoo-Intake-End-to-End erneut pruefen.
+- `AKTION VON DIR ERFORDERLICH:` Bewusst entscheiden, ob Odoo den Shared-Posteingang `webmaster@frawo-tech.de` fuer `agent@`-Intake direkt per Fetchmail lesen darf oder ob vorher ein engerer Provider-/Ordner-Filterpfad geschaffen werden soll.
 
 
 ## Current Readiness Findings
@@ -173,3 +175,5 @@
 - Gemini and Codex should use the same shared files listed above.
 - The user systemd path unit should refresh this file automatically after source-file changes.
 - Manual fallback: `make refresh-context`
+
+

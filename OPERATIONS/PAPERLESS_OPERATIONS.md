@@ -3,6 +3,7 @@
 ## Zweck
 
 Paperless ist das Dokumentenarchiv mit OCR- und Ablageworkflow.
+Die uebergeordnete Storage-Trennung steht in `OPERATIONS/STORAGE_INTEGRATION_OPERATIONS.md`.
 
 ## Zugriff
 
@@ -13,6 +14,7 @@ Paperless ist das Dokumentenarchiv mit OCR- und Ablageworkflow.
 - persoenliche Konten fuer `wolf` und `franz`
 - Scans kommen standardisiert ueber Nextcloud `Paperless/Eingang`
 - Archivpfad bleibt nachvollziehbar und reproduzierbar
+- Paperless bleibt ein eigenes Archivsystem und schreibt nicht in das Nextcloud-Datadir
 
 ## T?gliche Checks
 
@@ -25,6 +27,7 @@ Paperless ist das Dokumentenarchiv mit OCR- und Ablageworkflow.
 
 - keine parallelen manuellen Importpfade ohne Dokumentation aufbauen
 - kein Shared-Admin als Normalbetrieb
+- keinen Paperless-Media- oder Consume-Pfad direkt als allgemeines Shared-Filesystem fuer andere Apps zweckentfremden
 
 ## Eskalation
 

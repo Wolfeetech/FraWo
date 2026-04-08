@@ -163,6 +163,16 @@
     - Persistenz wurde auf Proxmox-Ebene korrigiert: `qm set 200 --nameserver 10.1.0.20 --searchdomain hs27.internal`
     - nach kontrolliertem Reboot zeigte `/etc/resolv.conf` wieder `nameserver 10.1.0.20` und `search hs27.internal`
     - Verifikation: `getent hosts imap.strato.de` in der VM wieder gruen, Docker-Container loest ebenfalls auf, `openssl s_client -connect imap.strato.de:993 -servername imap.strato.de -brief` liefert wieder erfolgreichen TLS-Handshake
+  - Alias-Routing `2026-04-08`:
+    - `Nextcloud Mail` laeuft auf `Nextcloud 33.0.2` mit Mail-App `5.7.5`
+    - der Shared-Posteingang `webmaster@frawo-tech.de` wurde read-only und dann live gegen die Alias-Adressen `wolf@`, `info@` und `agent@` ausgewertet
+    - IMAP-Delimiter auf STRATO ist `.`; neue Ordner wurden daher als `Aliases.Agent` und `Aliases.Info` angelegt, waehrend `wolf@` bewusst in `INBOX` bleibt
+    - lokal auf `VM 200` wurden `/opt/homeserver2027/tools/nextcloud_imap_alias_router.py`, `/usr/local/sbin/nextcloud_alias_router_runner.sh`, `hs27-nextcloud-alias-router.service` und `hs27-nextcloud-alias-router.timer` eingerichtet
+    - Timer-Frequenz: `OnBootSec=2min`, `OnUnitActiveSec=5min`
+    - erste Live-Trennung verschob `9` bestehende Alias-Mails aus `INBOX` in die zugehoerigen Alias-Ordner
+    - End-to-End-Probe: neue Testmail an `info@frawo-tech.de` wurde nach Service-Lauf von `INBOX` nach `Aliases.Info` verschoben
+    - Rueckzug `2026-04-08` spaet: `wolf@`-Mails wurden wieder aus `Aliases.Wolf` in `INBOX` geholt; neue `wolf@`-Probe blieb danach in `INBOX`
+    - Laufzeitverifikation danach: `INBOX=6`, `Aliases.Agent=1`, `Aliases.Info=5`, `Aliases.Wolf=0`
 
 ## VM 220 - Odoo
 

@@ -313,11 +313,24 @@ Lokale Admin-Flaechen (nur localhost):
     - echter Mail-Intake ist noch nicht end-to-end live, weil aktuell `fetchmail_count=0`
     - serverseitig erzeugter RPC-Key fuer `agent@` liegt als root-only Staging-Secret ausserhalb des Repos unter `/root/.config/homeserver2027/odoo_agent_rpc.env`
     - Read-only-Check dafuer liegt jetzt in `odoo_agent_readiness_audit.py`
-    - Mail-Intake-Probe `2026-04-08`: eine echte Testmail an `agent@frawo-tech.de` lief zunaechst in einen STRATO-Ruecklaeufer `Returned Mail ...`; damit war der Alias zu diesem Zeitpunkt providerseitig noch nicht sauber erreichbar
+    - Mail-Intake-Probe `2026-04-08`: eine erste Testmail an `agent@frawo-tech.de` lief zunaechst in einen STRATO-Ruecklaeufer `Returned Mail ...`, aber die spaetere Live-Probe ueber den produktiven Odoo-Mailpfad ist sichtbar gruen
     - Betreiberentscheidung `2026-04-08`: `agent@frawo-tech.de` wird aus Mailbox-Kapazitaetsgruenden bewusst als Alias auf `webmaster@frawo-tech.de` gefuehrt und nicht als eigenes STRATO-Postfach angelegt
-    - Live-Probe 2026-04-08: direkter SMTP-Zustellversuch an agent@frawo-tech.de ueber den produktiven Odoo-Mailpfad wurde von STRATO weiter mit 550 5.1.2 No such mailbox [MSG0031] abgewiesen; der Alias ist providerseitig also noch nicht wirksam
+    - Live-Probe `2026-04-08` abends: MX-RCPT auf `smtpin.rzone.de` akzeptiert `agent@frawo-tech.de`, und der Volltest `smtp.strato.de` -> `agent@frawo-tech.de` -> IMAP-INBOX `webmaster@frawo-tech.de` lieferte sichtbaren Inbox-Treffer mit passendem `To:`-Header
     - `CT 100 toolbox` war gleichzeitig auf `nameserver 127.0.0.1` gedriftet, obwohl der Hostpfad `127.0.0.1:53` lokal nicht antwortete; `/etc/resolv.conf` wurde wieder auf `nameserver 10.1.0.20` plus `search hs27.internal` gezogen
     - Architekturentscheidung danach: in diesem Block kein `n8n` auf dem Homeserver; wegen Kapazitaet und Betriebsruhe bleibt der Zielpfad zuerst Odoo-nativ plus providerseitig sauber zugestelltes `agent@` ueber den Alias auf `webmaster@`
+  - Nextcloud-Mail-/Alias-Trennung 2026-04-08:
+    - auf VM 200 laeuft jetzt der leichte Timer hs27-nextcloud-alias-router.timer fuer die Shared-Mailbox webmaster@frawo-tech.de
+    - Alias-Ordner Aliases.Agent und Aliases.Info wurden auf STRATO per IMAP angelegt; wolf@ bleibt bewusst in der Haupt-INBOX
+    - bestehende info@- und agent@-Mails wurden aus INBOX in die passenden Alias-Ordner verschoben; wolf@-Mails wurden wieder zurueck in INBOX gezogen
+    - die End-to-End-Probe an info@frawo-tech.de wurde nach Service-Lauf sichtbar nach Aliases.Info geroutet, waehrend die spaetere wolf@-Probe in INBOX blieb
+    - die Odoo-Incoming-Strategie fuer dieselbe Shared-Mailbox bleibt davon getrennt und weiter bewusst offen
+  - Storage-Integrationsaudit 2026-04-08:
+    - `Nextcloud`, `Odoo` und `Paperless` nutzen weiter getrennte App-Volumes; kein gemeinsames Live-Dateisystem zwischen den drei Business-Apps
+    - der bestehende sichere Dokumentenpfad bleibt `Nextcloud/Paperless/Eingang` -> Paperless-Bridge -> `Nextcloud/Paperless/Archiv`
+    - der zentrale Medienpfad ist hostseitig verifiziert als `/mnt/hs27-media/yourparty_Libary` aus `//10.1.0.30/Media`
+    - `Nextcloud` hat `files_external` sichtbar an Bord und ist damit der richtige Sichtbarkeitspfad fuer Medien, falls der Bestand read-only gezeigt werden soll
+    - `Odoo`-Anhaenge sollen spaeter nur ueber einen kontrollierten Export-/Mirror-Pfad nach `Nextcloud` sichtbar werden, nicht ueber direkten Filestore-Share
+    - eine direkte `Stockenweiler`-Musikquelle ist vom aktuellen Arbeitsplatz heute noch nicht belastbar live verifiziert; deshalb kein Blind-Mount in `Nextcloud`
   - Odoo-Runtime-Drift vom `2026-04-08`:
     - Webcontainer fiel erneut mit `password authentication failed for user "odoo"` aus
     - lokaler PostgreSQL-Container hatte zwar eigene Env-Werte, aber der echte Docker-Netzpfad akzeptierte weiter nur das frueher etablierte Secret aus dem bestehenden Volume
@@ -745,9 +758,9 @@ Lokale Admin-Flaechen (nur localhost):
    - benoetigte Aktion: zwei physisch getrennte Offline-Kopien des Vaultwarden-Recovery-Materials erzeugen oder frisch bestaetigen und die sichtbare Existenz nachweisen
    - warum: `vaultwarden_recovery_material_verified` ist im aktuellen MVP-Gate noch offen und bleibt rein operator-/physisch gebunden
    - danach uebernehmen Codex/Gemini wieder: Manual-Check im Gate auf Gruen ziehen und den Handoff aktualisieren
-12. AKTION VON DIR ERFORDERLICH: STRATO-Alias fuer agent@frawo-tech.de wirksam machen und sichtbare Zustellung auf webmaster@frawo-tech.de bestaetigen
-   - benoetigte Aktion: in STRATO pruefen, warum agent@frawo-tech.de Stand 2026-04-08 noch mit `550 No such mailbox` abgewiesen wird, Alias-/Postfach-Ziel korrigieren und danach die echte Zustellung im technischen Basis-Postfach webmaster@frawo-tech.de bestaetigen
-   - warum: Odoo-seitig sind Alias und API-Key vorbereitet, aber der produktive Intake bleibt ohne sichtbaren Zustellnachweis am Shared-Mailpfad unvollstaendig
+12. AKTION VON DIR ERFORDERLICH: Incoming-Strategie fuer agent@frawo-tech.de auf webmaster@frawo-tech.de bewusst festziehen
+   - benoetigte Aktion: entscheiden, ob Odoo den Shared-Posteingang `webmaster@frawo-tech.de` fuer `agent@` direkt per Fetchmail lesen darf oder ob vorher ein engerer Provider-/Ordner-Filterpfad geschaffen werden soll
+   - warum: Alias, API-Key und sichtbare Zustellung sind jetzt gruen; offen bleibt nur noch die betriebssichere Incoming-Strategie fuer den Shared-Mailpfad
    - danach uebernehmen Codex/Gemini wieder: Odoo-Intake-End-to-End erneut pruefen und den Mailpfad fachlich einhaengen
 13. Hinweis: Mobiler HTTPS-Vertrauensstandard (2026)
    - die interne CA (`frawo-ca.crt`) wird ueber `http://portal.hs27.internal/frawo-ca.crt` bereitgestellt.
@@ -776,3 +789,5 @@ Lokale Admin-Flaechen (nur localhost):
 - Der mobile Toolbox-Tailscale-Frontdoor liefert aktuell `100.99.206.128:8443-8449`, inklusive Radio auf `:8448` und Media auf `:8449`.
 - Zugriff per `ha.hs27.internal`, `odoo.hs27.internal` oder `radio.hs27.internal` ist jetzt ueber die verifizierte Split-DNS-Integration fuer `hs27.internal` vorbereitet.
 - Ein lokaler Backup-/Restore-Proof fuer `VM 200`, `VM 220` und `VM 230` ist dokumentiert; der naechste Meilenstein sind taegliche PBS-Jobs.
+
+

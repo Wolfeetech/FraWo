@@ -68,6 +68,11 @@ Fuer das erste professionelle interne Produktionssiegel gilt:
 - produktiver App-SMTP darf auf ein technisches Basis-Postfach authentifizieren, auch wenn der sichtbare Absender `noreply@frawo-tech.de` ist
 - `Vaultwarden`-Invite-Mail ueber `webmaster@frawo-tech.de` ist live
 - ein am `2026-03-31` bereitgestellter Passwortkandidat fuer `webmaster@frawo-tech.de` war **nicht** erfolgreich fuer direkten `IMAP`-/`SMTP AUTH`-Login; er darf daher nicht automatisch als echtes Mailbox-Passwort fuer `webmaster` angenommen werden
+- Alias-Trennung in `Nextcloud Mail` ist seit `2026-04-08` praktisch nachgezogen:
+  - `Aliases.Agent`
+  - `Aliases.Info`
+  - `wolf@frawo-tech.de` bleibt bewusst in der Haupt-`INBOX`
+  - ein lokaler Timer auf `VM 200` verschiebt neue Alias-Mails aus der Shared-INBOX anhand des `To:`-Headers in die Funktionsordner
 
 ## STRATO Zugriff
 
@@ -248,7 +253,8 @@ Nicht akzeptabel:
 ## Definition Of Done
 
 - `wolf@frawo-tech.de` ist als Alias auf das technische Basis-Postfach sauber dokumentiert und getestet
-- `agent@frawo-tech.de` ist als Alias auf `webmaster@frawo-tech.de` dokumentiert, und die echte Zustellung an den technischen Basispfad ist sichtbar geprueft
+- `agent@frawo-tech.de` ist als Alias auf `webmaster@frawo-tech.de` dokumentiert, und die echte Zustellung an den technischen Basispfad wurde am `2026-04-08` sichtbar geprueft
+- Alias-Mails im Shared-Postfach sind fuer `Nextcloud Mail` sichtbar getrennt: `wolf@` bleibt in `INBOX`, `info@` und `agent@` landen nicht mehr dauerhaft flach in `INBOX`
 - `franz@frawo-tech.de` ist als echtes Postfach nutzbar
 - `info@frawo-tech.de` und `noreply@frawo-tech.de` sind technisch klar definiert
 - alle produktiven Mailzugriffe liegen in `Vaultwarden`
