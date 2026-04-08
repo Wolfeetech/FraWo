@@ -1,0 +1,34 @@
+services:
+  db:
+    image: mariadb:10.11
+    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
+    volumes:
+      - db:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=nextcloud
+      - MYSQL_PASSWORD=nextcloud
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+  redis:
+    image: redis:alpine
+  nextcloud:
+    image: nextcloud:latest
+    depends_on:
+      - db
+      - redis
+    ports:
+      - "8080:80"
+    environment:
+      - MYSQL_PASSWORD=nextcloud
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+      - MYSQL_HOST=db
+      - REDIS_HOST=redis
+    volumes:
+      - nextcloud:/var/www/html
+    extra_hosts:
+      - "smtp.strato.de:81.169.145.133"
+
+volumes:
+  nextcloud:
+  db:

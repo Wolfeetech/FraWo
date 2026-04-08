@@ -138,6 +138,7 @@
 - Odoo-Board-Apply vom `2026-04-07`: Masterprojekt `21` ist jetzt operativer `task SSOT`; die sechs kanonischen Projektphasen sind verknuepft, `#217` und `#225` stehen auf `Erledigt`, `Nextcloud Runtime Hardening / Version Pinning` ist als Folge-Task offen, `rootflo2525@gmail.com` ist aus dem Masterprojekt entfernt und `ownerless_open=0` ist DB-seitig verifiziert.
 - Odoo-Automationsidentitaet vom `2026-04-07`: `agent@frawo-tech.de` ist aktiv, ohne nachweisbare Admin-/Settings-/Studio-Gruppen, und jetzt gezielt an Server-/Ops-/Automation-Tasks verlinkt; API-Key, Incoming-Alias und n8n bleiben bewusst vorbereitete, aber noch nicht live geschaltete Restpunkte.
 - Odoo-Alias-/API-Key-Audit vom `2026-04-08`: Projekt `21` hat bereits die Domain `frawo-tech.de`, aber noch keinen aktiven Aliasnamen; `agent@frawo-tech.de` ist aktiv und least-privilege-aehnlich, jedoch noch ohne TOTP und ohne API-Key (`api_key_count=0`).
+- Odoo-Runtime-Drift vom `2026-04-08`: Webcontainer fiel erneut auf dem Docker-Netzpfad mit DB-Auth-Fehler aus; Root Causes waren Compose-/Secret-Drift gegen das echte Volume-Passwort sowie zu enge `600`-Rechte auf den gemounteten Dateien. Nach Rueckzug auf den echten DB-Netzpfad und lesbare Mount-Rechte liefern direkt, intern und mobil wieder `HTTP 200`.
 
 ## Operator Actions Needed
 

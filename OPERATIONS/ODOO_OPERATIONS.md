@@ -69,16 +69,40 @@ Der professionelle Zielzustand ist nicht nur `HTTP 200`, sondern ein bewusst def
     - `alias_name = false`
     - `alias_email = false`
     - `alias_status = not_tested`
-    - `alias_contact = everyone`
+    - `alias_contact = employees`
     - `alias_model = project.task`
     - `alias_defaults = {'project_id': 21}`
-  - `agent@frawo-tech.de` ist aktiv, `share=false`, `notification_type=email`, `totp_enabled=false`, `api_key_count=0`.
+  - `agent@frawo-tech.de` ist aktiv, `share=false`, `notification_type=email`, `totp_enabled=false`, `api_key_count=1`.
   - Heuristisch wurden am `agent@`-User keine erkennbaren `Admin`-/`Settings`-/`Studio`-Gruppen gefunden.
   - Es existiert genau ein SMTP-Server in Odoo; der Mailpfad ist also vorbereitet, aber der Intake-Pfad noch nicht live.
+  - erlaubte `alias_contact`-Scopes in dieser Instanz:
+    - `everyone`
+    - `partners`
+    - `followers`
+    - `employees`
 - Arbeitsbewertung:
   - Der Alias-/Mailpfad ist vorbereitet, aber bewusst noch **nicht** aktiviert.
-  - Vor einem Livegang zuerst `agent@`-API-Key erzeugen, sicher ausserhalb des Repos ablegen und danach den Alias-Scope pruefen.
-  - Weil `alias_contact` aktuell auf `everyone` steht, sollte dieser Scope vor einer echten Alias-Aktivierung bewusst ueberprueft und gegebenenfalls verengt werden.
+  - Fuer `agent@` existiert jetzt ein serverseitig erzeugter RPC-API-Key; er liegt bewusst nur als root-only Staging-Secret ausserhalb des Repos unter `/root/.config/homeserver2027/odoo_agent_rpc.env`.
+  - Der Alias-Scope wurde defensiv auf `employees` gezogen; damit bleibt der Pfad fuer einen internen Pilot vorbereitet, ohne schon durch einen Aliasnamen live zu sein.
+  - Auf dem Modell `res.users.apikeys` war im Read-only-Probe kein offensichtlicher oeffentlicher Create-/Reveal-Pfad sichtbar; die echte API-Key-Erzeugung bleibt daher ein bewusster UI- oder dedizierter Server-Side-Schritt.
+
+## Runtime-Drift 2026-04-08
+
+- Odoo fiel am Morgen des `2026-04-08` erneut aus, obwohl Projekt-/Task-SSOT bereits gruen war.
+- Echte Root Cause Chain:
+  - Compose-/Stack-Drift hatte `docker-compose.yml` erneut auf einen harten `PASSWORD=odoo`-Pfad zurueckgesetzt.
+  - Die eigentliche Datenbank akzeptierte auf dem Docker-Netz aber weiter nur das zuvor etablierte Secret aus dem bestehenden Volume.
+  - Nach Rueckkehr des `odoo.conf`-Mounts blockierten zusaetzlich Dateirechte `600` auf `odoo.conf` und `stack.env` den Container-Startpfad.
+- Remediation:
+  - `stack.env` wieder auf das tatsaechlich gueltige DB-Secret gezogen
+  - `docker-compose.yml` wieder auf `env_file` plus `./odoo.conf:/etc/odoo/odoo.conf:ro` gezogen
+  - Dateirechte fuer den gemounteten Startpfad auf lesbar gestellt
+- Verifiziert nach Remediation:
+  - `http://127.0.0.1:8069/web/login` -> `HTTP 200`
+  - `http://odoo.hs27.internal/web/login` -> `HTTP 200`
+  - `http://100.99.206.128:8444/web/login` -> `HTTP 200`
+- Guardrail:
+  - kuenftige Odoo-Stack-Arbeit immer gegen den **echten** DB-Netzpfad testen, nicht nur gegen lokale `trust`-Verbindungen innerhalb des PostgreSQL-Containers
 
 ## Taegliche Checks
 

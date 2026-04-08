@@ -148,6 +148,18 @@ def fetch_mail_servers(session: OdooSession) -> list[dict[str, Any]]:
     )
 
 
+def fetch_alias_contact_options(session: OdooSession) -> list[dict[str, str]]:
+    fields_meta = xmlrpc_call(
+        session,
+        "project.project",
+        "fields_get",
+        [["alias_contact"]],
+        {"attributes": ["selection"]},
+    )
+    selection = fields_meta.get("alias_contact", {}).get("selection", [])
+    return [{"value": value, "label": label} for value, label in selection]
+
+
 def fetch_open_agent_tasks(session: OdooSession, project_id: int, agent_user_id: int) -> list[dict[str, Any]]:
     return xmlrpc_call(
         session,
@@ -169,6 +181,7 @@ def build_report(session: OdooSession, project_id: int) -> dict[str, Any]:
 
     group_names = fetch_group_names(session, agent.get("groups_id", []))
     mail_servers = fetch_mail_servers(session)
+    alias_contact_options = fetch_alias_contact_options(session)
     open_agent_tasks = fetch_open_agent_tasks(session, int(project["id"]), int(agent["id"]))
 
     elevated_groups = [
@@ -208,6 +221,11 @@ def build_report(session: OdooSession, project_id: int) -> dict[str, Any]:
             "count": len(mail_servers),
             "names": [server.get("name") for server in mail_servers],
         },
+        "alias_policy": {
+            "current_contact_scope": project.get("alias_contact"),
+            "options": alias_contact_options,
+            "recommended_scope_for_internal_pilot": "employees",
+        },
         "open_agent_tasks": [
             {
                 "name": task.get("name"),
@@ -225,6 +243,7 @@ def build_report(session: OdooSession, project_id: int) -> dict[str, Any]:
         "next_actions": [
             "API-Key fuer agent@ bewusst erzeugen und ausserhalb des Repos speichern",
             "Projekt-Alias erst nach Review des alias_contact-Scopes und des Mailpfads aktivieren",
+            "Fuer einen internen Pilot zuerst alias_contact=employees oder bewusst enger waehlen",
             "Nach API-Key-Setup erneut pruefen, ob api_key_count > 0 und elevated_groups leer bleiben",
         ],
     }
@@ -241,6 +260,12 @@ def print_human_summary(report: dict[str, Any]) -> None:
         f"domain={report['project']['alias_domain'] or '-'} | "
         f"status={report['project']['alias_status'] or '-'} | "
         f"contact={report['project']['alias_contact'] or '-'}"
+    )
+    print(
+        "Alias-Scope-Optionen: "
+        + ", ".join(
+            f"{option['value']}={option['label']}" for option in report["alias_policy"]["options"]
+        )
     )
     if report["agent"]["elevated_groups"]:
         print("Erhoehte Gruppen gefunden:")

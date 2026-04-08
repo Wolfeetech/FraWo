@@ -305,10 +305,19 @@ Lokale Admin-Flaechen (nur localhost):
     - `agent@frawo-tech.de` ist auf Server-/Ops-/Automation-Tasks gezielt als Co-Owner verlinkt; API-Key, Alias-Intake und n8n bleiben vorbereitete Folgepunkte
   - Odoo-Agent-/Alias-Audit vom `2026-04-08`:
     - Projekt `21` hat die Alias-Domain `frawo-tech.de`, aber `alias_name=false` und damit noch keinen live geschalteten Intake-Pfad
-    - Alias-Status aktuell `not_tested`, `alias_contact=everyone`, `alias_model=project.task`, `alias_defaults={'project_id': 21}`
-    - `agent@frawo-tech.de` ist aktiv, `share=false`, `totp_enabled=false`, `api_key_count=0`
+    - Alias-Status aktuell `not_tested`, `alias_contact=employees`, `alias_model=project.task`, `alias_defaults={'project_id': 21}`
+    - `agent@frawo-tech.de` ist aktiv, `share=false`, `totp_enabled=false`, `api_key_count=1`
     - heuristisch keine erkennbaren Admin-/Settings-/Studio-Gruppen am `agent@`-User gefunden
+    - erlaubte Alias-Scope-Werte in der Instanz: `everyone`, `partners`, `followers`, `employees`
+    - fuer einen internen Pilot ist `employees` jetzt bereits gesetzt; ein Aliasname fehlt bewusst noch, damit der Intake-Pfad nicht unkontrolliert live geht
+    - serverseitig erzeugter RPC-Key fuer `agent@` liegt als root-only Staging-Secret ausserhalb des Repos unter `/root/.config/homeserver2027/odoo_agent_rpc.env`
     - Read-only-Check dafuer liegt jetzt in `odoo_agent_readiness_audit.py`
+  - Odoo-Runtime-Drift vom `2026-04-08`:
+    - Webcontainer fiel erneut mit `password authentication failed for user "odoo"` aus
+    - lokaler PostgreSQL-Container hatte zwar eigene Env-Werte, aber der echte Docker-Netzpfad akzeptierte weiter nur das frueher etablierte Secret aus dem bestehenden Volume
+    - zusaetzlich blockierten `600`-Rechte auf `odoo.conf` und `stack.env` den gemounteten Startpfad
+    - Remediation: `docker-compose.yml` zurueck auf `env_file` plus `odoo.conf`-Mount, Stack wieder auf das echte DB-Secret gezogen, Dateirechte lesbar gestellt
+    - danach wieder verifiziert: direkt `127.0.0.1:8069`, intern `odoo.hs27.internal` und mobil `100.99.206.128:8444` jeweils `HTTP 200`
 
 ### Smart Home
 
