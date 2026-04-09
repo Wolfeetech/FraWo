@@ -516,10 +516,11 @@
   - Peer: `stockenweiler-pve`
   - Tailscale-IP: `100.91.20.116`
   - `tailscale ping stockenweiler-pve` von `CT 100 toolbox` liefert `pong`
-- Der produktiv relevante Medienpfad nach `Stockenweiler` ist trotzdem nicht vorhanden:
-  - auf `CT 100 toolbox` existiert aktuell keine Route fuer `192.168.178.0/24`
-  - `tailscale status` meldet weiter `Some peers are advertising routes but --accept-routes is false`
-  - daraus folgt: Peer erreichbar, Stockenweiler-LAN fuer Import aber nicht angebunden
+- Der produktiv relevante Medienpfad nach `Stockenweiler` wurde im selben Block wieder geoeffnet:
+  - `stockenweiler-pve` advertised `192.168.178.0/24`
+  - auf `CT 100 toolbox` wurde `tailscale set --accept-routes=true` gesetzt
+  - danach liefert `ping 192.168.178.25` von `CT 100 toolbox` wieder Antwort
+  - daraus folgt: Peer und Stockenweiler-LAN sind fuer Sichtung/Read-only-Zugriff wieder angebunden
 - Die geplante Entlastungs-SSD auf `proxmox-anker` ist aktuell nicht schreibbar:
   - Mount: `/mnt/music_ssd`
   - Device: `/dev/sdb1`
@@ -527,7 +528,16 @@
   - Mount-Optionen: `ro,...,errors=remount-ro`
   - `touch /mnt/music_ssd/.hs27_write_probe` scheitert mit `Read-only file system`
   - `dmesg` meldet `exFAT-fs (sdb1) ... Filesystem has been set read-only`
+- Reparaturversuch `2026-04-09`:
+  - `exfatprogs` auf `proxmox-anker` installiert
+  - `fsck.exfat -p /dev/sdb1` ausgefuehrt
+  - danach kurzfristig wieder `rw` und Schreibprobe gruen
+  - unter realer Schreiblast jedoch erneuter Kernel-Fallback auf `ro`
 - Einordnung:
   - `proxmox-anker` selbst ist nicht das akute Kapazitaetsproblem (`/` ca. `84%`)
   - der aktuelle Druckpunkt ist `CT 110 storage-node` mit ca. `91%` nach dem `Wolf.EE`-Reviewimport
   - weitere grosse Medienimporte bleiben bis zu einer sicheren Entlastung bewusst gestoppt
+- Zusatzaudit `Stockenweiler`:
+  - `/mnt/music_hdd/yourparty_Libary` ca. `283G`
+  - `/mnt/data_family` ca. `830G` belegt, rund `102G` frei
+  - `/mnt/music_hdd` selbst ist praktisch voll

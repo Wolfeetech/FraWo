@@ -101,7 +101,8 @@ Diese Datei beschreibt den sichere Zielpfad fuer gemeinsame Daten zwischen `Next
   - Filesystem: `exfat`
   - Status: vom Kernel wegen Dateisystemfehler read-only gesetzt
   - Nachweis: `exFAT-fs (sdb1) ... Filesystem has been set read-only`
-  - Folge: vor einer Reparatur kein Schreibziel fuer Review- oder Auslagerungsdaten
+  - Reparaturlauf `2026-04-09` hat die Platte kurzfristig wieder auf `rw` gebracht, sie ist unter Schreiblast aber erneut auf `ro` gekippt
+  - Folge: aktuell kein verlaesslicher Schreibpfad fuer Review- oder Auslagerungsdaten
 
 ## Naechster technische Ausbau
 
@@ -119,11 +120,45 @@ Diese Datei beschreibt den sichere Zielpfad fuer gemeinsame Daten zwischen `Next
 - Der `Stockenweiler`-Quellpfad fuer eine moegliche Musikuebernahme ist heute nicht als live-verifiziert gruen anzusehen.
 - `Stockenweiler` ist nicht pauschal "offline", aber der fuer Medienimporte noetige LAN-Pfad fehlt aktuell:
   - Tailscale-Peer `stockenweiler-pve` antwortet
-  - auf `toolbox` fehlt jedoch die Route fuer `192.168.178.0/24`
-  - `tailscale status` meldet zudem weiter `Some peers are advertising routes but --accept-routes is false`
+  - seit `2026-04-09` nimmt `toolbox` Routen an (`tailscale set --accept-routes=true`)
+  - `ping 192.168.178.25` von `CT 100 toolbox` ist danach gruen
+  - damit ist `Stockenweiler` wieder als read-only Quellpfad inventarisierbar
 - Die Storage-Optimierung ist aktuell nicht durch Rohkapazitaet der USB-Geraete blockiert, sondern durch:
   - `storage-node` bei ca. `91%`
-  - `music_ssd` als read-only statt schreibbar
+  - `music_ssd` als unter Last instabiler exFAT-Pfad
+  - fehlenden belastbaren Offload-Pfad fuer reine Review-Importe
+
+## Stockenweiler Snapshot 2026-04-09
+
+- Host `stockenweiler-pve` ist ueber Tailscale und den LAN-Pfad wieder sichtbar.
+- Relevante verifizierte Bestandszahlen:
+  - `/mnt/music_hdd/yourparty_Libary` ca. `283G`
+  - `/mnt/data_family` ca. `830G` belegt, rund `102G` frei
+  - `/mnt/music_hdd` selbst steht praktisch voll (`ca. 13G frei`)
+- Wichtige Folgerung:
+  - `Stockenweiler` ist jetzt gute Sichtungs-/Migrationsquelle
+  - aber kein grosszuegiger Zielpfad auf `music_hdd`; wenn Offload dorthin, dann eher nach `data_family` und nur bewusst
+
+## Cleanup-Reihenfolge 2026-04-09
+
+- Der `storage-node`-Reviewbereich ist jetzt klar priorisiert:
+  - `studiopc-import-2026-03-25` ist fast vollstaendig Recording-/Cache-Ballast und damit zuerst fachlich zu entscheiden
+  - `Wolf_EE_20260409` ist strukturierter Reviewbestand und fuer spaetere kuratierte Uebernahme besser geeignet
+- Konkrete Grobstruktur:
+  - `studiopc-import-2026-03-25`
+    - `studio-one-cache-audio` ca. `2.5G`
+    - `onedrive-mixxx-recordings` ca. `1.5G`
+    - `mixxx-recordings` ca. `258M`
+    - `studio-one-media` ca. `157M`
+  - `Wolf_EE_20260409`
+    - `MUSIK` ca. `6.5G`
+    - `Sets` ca. `3.7G`
+    - `The_TraXx` ca. `2.7G`
+    - `Job Jobse` ca. `438M`
+- Praktische Reihenfolge:
+  1. `studiopc-import-2026-03-25` als Review-/Archivfrage klaeren
+  2. danach `Wolf_EE_20260409` in kleinen kuratierten Paketen weiterverteilen
+  3. `Stockenweiler` erst dann in grossen Bloecken ziehen, wenn wieder ein wirklich belastbarer Offload-/Sortierpfad existiert
 
 ## Eskalation
 
