@@ -6,8 +6,10 @@ Write-Host "   FRAWO WORKSPACE SYNC (STUDIOPC)" -ForegroundColor Cyan
 Write-Host "=========================================" -ForegroundColor Cyan
 Write-Host ""
 
-Write-Host "[1/3] Pruefe auf neue Aenderungen von anderen Geraeten..." -ForegroundColor Yellow
-git pull origin main
+Write-Host "[1/3] Pruefe auf neue Aenderungen von anderen Geraeten (Auto-Merge)..." -ForegroundColor Yellow
+# Erzwinge den automatischen Merge-Commit ohne Texteditor
+git config pull.rebase false
+git pull origin main --no-edit
 
 Write-Host "`n[2/3] Fasse lokale Aenderungen auf diesem PC zusammen..." -ForegroundColor Yellow
 git add .
