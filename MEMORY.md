@@ -324,6 +324,25 @@ Lokale Admin-Flaechen (nur localhost):
     - bestehende info@- und agent@-Mails wurden aus INBOX in die passenden Alias-Ordner verschoben; wolf@-Mails wurden wieder zurueck in INBOX gezogen
     - die End-to-End-Probe an info@frawo-tech.de wurde nach Service-Lauf sichtbar nach Aliases.Info geroutet, waehrend die spaetere wolf@-Probe in INBOX blieb
     - die Odoo-Incoming-Strategie fuer dieselbe Shared-Mailbox bleibt davon getrennt und weiter bewusst offen
+  - Toolbox Mobile-Frontdoor Remediation 2026-04-08:
+    - aktive Caddyfile auf CT 100 toolbox hatte praktisch nur noch :8444 und :8447; die fehlenden Mobile-Site-Bloecke fuer :8443, :8445, :8446, :8448 und :8449 wurden wieder eingezogen
+    - verifiziert vom Admin-Client: 8443=200, 8444=200, 8445=302, 8446=200, 8447=200, 8449=302`r
+    - :8445 benoetigte zusaetzlich wieder den sauberen Host cloud.hs27.internal-Proxyheader, damit Nextcloud die Tailscale-Frontdoor nicht als untrusted domain abweist
+    - :8448 bleibt vom bekannten Radio-Node-Zustand abhaengig und ist nicht Teil des aktuellen Business-Core-Gruenpfads
+  - Public-Website-Realitaet 2026-04-08:
+    - der interne Business-Core auf Anker ist gruen, aber rawo-tech.de / www.frawo-tech.de sind heute noch nicht als oeffentlicher Releasepfad verifiziert
+    - Public DNS auf 92.211.33.54 ist sichtbar, und 	oolbox hat die FraWo-Caddy-Bloecke auf 80/443, aber der IPv4-Pfad lieferte von proxmox-anker weiter  00`r
+    - daraus folgt: Website-/Public-Edge bleibt ein getrennter Restblock und ist nicht einfach ein Odoo-App-Defekt
+  - Website-Event-Rebuild 2026-04-09:
+    - die Odoo-Website ist jetzt sichtbar als Eventdienstleister-Auftritt gezogen: `Eventbetrieb mit technischer Praezision.`, klare Servicekarten, Kontaktseite `Projektstart ohne Umwege.`
+    - keine `Handwerk`-/`HWK`-Sprache mehr im publizierten Website-Pfad; stattdessen Eventdienstleister, Technikfachkraefte und Macher
+    - die zuvor vermissten Odoo-Testfotos waren nicht weg, sondern nur aus den publizierten Views gefallen; sie sind jetzt wieder kontrolliert referenziert ueber `/web/image/1803`, `/web/image/1798`, `/web/image/1801`, `/web/image/1797`, `/web/image/1805` und `/web/image/1806`
+    - Rueckweg vor dem Rebuild liegt in `Codex/website_backups/frawo_event_site_pre_rebuild_20260409.sql`
+  - Website-Design-Remediation 2026-04-08:
+    - die Odoo-Website auf `VM 220` ist sichtbar auf FraWo gezogen: gebrandete Homepage, saubere Kontaktseite, Mailto-CTA auf `info@frawo-tech.de`, alter Platzhalter-Footer nicht mehr im gerenderten HTML
+    - `web.base.url` steht jetzt auf `https://www.frawo-tech.de`, `web.base.url.freeze=True`, und `website.domain` wurde in der Ein-Website-Instanz bewusst wieder auf `NULL` gesetzt
+    - Host-Preview mit `Host: www.frawo-tech.de` liefert jetzt korrekte `canonical`-/`og:url`-Werte fuer Start- und Kontaktseite
+    - scoped Rollback liegt in `Codex/website_backups/frawo_public_website_prepolish_20260408.sql`, der angewandte Sollzustand in `Codex/website_backups/frawo_public_website_polish_20260408.sql`
   - Storage-Integrationsaudit 2026-04-08:
     - `Nextcloud`, `Odoo` und `Paperless` nutzen weiter getrennte App-Volumes; kein gemeinsames Live-Dateisystem zwischen den drei Business-Apps
     - der bestehende sichere Dokumentenpfad bleibt `Nextcloud/Paperless/Eingang` -> Paperless-Bridge -> `Nextcloud/Paperless/Archiv`
@@ -791,3 +810,8 @@ Lokale Admin-Flaechen (nur localhost):
 - Ein lokaler Backup-/Restore-Proof fuer `VM 200`, `VM 220` und `VM 230` ist dokumentiert; der naechste Meilenstein sind taegliche PBS-Jobs.
 
 
+
+
+- Website-Layout-Restore 2026-04-09: Die aktuell freigegebene FraWo-Startseite nutzt wieder den frueheren gefaelligen Aufbau als Hybrid mit den vorhandenen Odoo-Bildassets. Smart Media & Event ist als Hero zurueck, die Bildgruppe bleibt live sichtbar, und Handwerk-/HWK-Sprache ist weiterhin entfernt.
+
+- Website-Content-Fix 2026-04-09: Der gefaellige FraWo-Bild-/Layoutstand blieb erhalten, aber die Inhalte wurden in Odoo auf einen belastbaren Eventdienstleister-Text korrigiert: technische Setups, Livebetrieb, Besucherinfo, klare Anfragepfade. Kein Handwerk, kein Agentursprech.

@@ -12,7 +12,7 @@ Diese Datei ist die kompakteste Fuehrungsansicht fuer den aktuellen Projektstand
 - Vollzertifizierung fuer `PBS`, `surface-go-frontend` und `Radio/AzuraCast` getrennt vom MVP
 - technisch verifizierte FRAWO-Mailpfade bei `STRATO`
 
-## Stand Heute (Audit 2026-04-07)
+## Stand Heute (Audit 2026-04-08)
 
 - **Status:** Konsistent mit lokalem `NETWORK_STATE.md` und Dashboard-Audit.
 - **Brand Kit:** Assets lokal unter `brand_assets/` verfuegbar; `IDENTITY_STANDARD.md` aktualisiert.
@@ -20,13 +20,16 @@ Diese Datei ist die kompakteste Fuehrungsansicht fuer den aktuellen Projektstand
 - `Vaultwarden` ist intern ueber `HTTPS` erreichbar.
 - `webmaster@frawo-tech.de` und `franz@frawo-tech.de` sind technisch gegen `IMAP` und `SMTP AUTH` verifiziert.
 - Odoo- und Nextcloud-Reachability-Drift vom `2026-04-07` sind behoben; die internen und mobilen Frontdoors antworten wieder, und das Odoo-Masterprojekt ist jetzt auf den kanonischen SSOT-Stand normalisiert.
+- Die Odoo-Website auf `VM 220` ist inhaltlich jetzt sichtbar auf FraWo gezogen: gebrandete Homepage, saubere Kontaktseite, Mailto-CTA auf `info@frawo-tech.de`, alter Platzhalter-Footer entfernt.
+- Der semantische Website-Pfad ist ebenfalls bereinigt: `web.base.url=https://www.frawo-tech.de`, `website.domain=NULL`, dadurch rendern `canonical` und `og:url` im Host-Preview wieder korrekt fuer `www.frawo-tech.de`.
 - Die echten Restblocker liegen jetzt nicht mehr bei Odoo-Reachability, sondern bei sichtbarer Operator-Abnahme und den offenen MVP-Gates `device_rollout_verified` sowie `vaultwarden_recovery_material_verified`.
+- Der Website-Track ist damit nicht mehr primaer am Odoo-Inhalt blockiert, sondern weiter am getrennten Public-Edge-/Forwarding-Nachweis.
 
 ## Operative Reihenfolge (MVP Ready Path)
 
 1. **MVP-Abnahme:** sichtbare Geraete-/2FA-Abnahme und Vaultwarden-Recovery-Evidenz abschliessen.
 2. **Odoo-SSOT fortfuehren:** API-Key-Hardening fuer `agent@`, Incoming-Alias vorbereiten und Board-Governance im Alltag bestaetigen.
-3. **Website-Branding:** Logo-Upload und CI-Farben (Deep Forest/UV Power) in Odoo anwenden.
+3. **Website-Public-Edge:** externen Pfad fuer `www.frawo-tech.de` sauber verifizieren, nachdem der Odoo-Inhalt jetzt gruen ist.
 4. **App-Testmails und Release Gates:** SMTP-Restpfade in Odoo pruefen und `release-mvp-gate` auf GRUEN ziehen.
 
 ## Verweise

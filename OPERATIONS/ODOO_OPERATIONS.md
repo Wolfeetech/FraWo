@@ -146,6 +146,45 @@ Der professionelle Zielzustand ist nicht nur `HTTP 200`, sondern ein bewusst def
   - `http://odoo.hs27.internal/web/login` -> `HTTP 200`
   - `http://100.99.206.128:8444/web/login` -> `HTTP 200`
 
+## Website-Remediation 2026-04-08 abends
+
+- Die sichtbare FraWo-Website auf `VM 220` wurde auf den aktuellen Markenpfad gezogen, ohne den Runtime-SSOT ins Board zu verlagern.
+- Live umgesetzt:
+  - gebrandete Homepage mit `Smart Media & Event`, Deep-Forest-/UV-Power-Linie und direktem Radio-Pfad
+  - neue Kontaktseite ohne Odoo-Placeholder-Inhalt
+  - Top-Menue und Header-/Mobile-CTA zeigen jetzt auf `mailto:info@frawo-tech.de` statt auf den alten generischen `/contactus`-Pfad
+  - alter Platzhalter-Footer mit `info@frawo-event.de` und `+1 555-555-5556` ist aus dem gerenderten HTML entfernt
+- Semantik-/SEO-Basis:
+  - `web.base.url` steht jetzt auf `https://www.frawo-tech.de`
+  - `web.base.url.freeze` bleibt `True`
+  - `website.domain` wurde bewusst wieder auf `NULL` zurueckgezogen, weil ein gesetzter Hostwert in dieser Ein-Website-Instanz den fehlerhaften Canonical-Pfad `"/www.frawo-tech.de/..."` erzeugte
+  - Host-Preview mit `Host: www.frawo-tech.de` liefert jetzt wieder korrekte `canonical`-/`og:url`-Werte fuer Startseite und Kontaktseite
+- Rueckweg:
+  - scoped Rollback fuer die betroffenen Odoo-Website-Records liegt lokal in `Codex/website_backups/frawo_public_website_prepolish_20260408.sql`
+  - der angewandte Sollzustand liegt in `Codex/website_backups/frawo_public_website_polish_20260408.sql`
+- Wichtige Einordnung:
+  - der Odoo-Inhaltspfad ist damit fuer die Website heute sichtbar gruen
+  - der echte Restblock fuer den oeffentlichen Release bleibt der getrennte Public-Edge-/Forwarding-Nachweis ausserhalb von Odoo selbst
+
+## Website-Event-Rebuild 2026-04-09
+
+- Die FraWo-Website wurde in Odoo inhaltlich von der allgemeinen Business-/Medienmischung auf einen klaren Eventdienstleister-Auftritt umgebaut.
+- Neue Leitlinie im sichtbaren Frontend:
+  - `Eventdienstleister`
+  - `Technikfachkraefte und Macher`
+  - keine `Handwerk`-/`HWK`-Sprache im publizierten Website-Pfad
+- Sichtbar live:
+  - Hero `Eventbetrieb mit technischer Praezision.`
+  - Services fuer `Technische Umsetzung`, `Event-Webseite & Kommunikation` und belastbaren Hintergrund
+  - Kontaktseite `Projektstart ohne Umwege.`
+  - Top-Menue wieder sauber auf `Kontakt`
+  - Header-CTA bleibt `Projekt anfragen` per Mail
+- Bildpfad:
+  - die frueher vermissten Odoo-Testfotos waren nicht geloescht, sondern nur aus den aktuellen Website-Views herausgefallen
+  - sie sind jetzt kontrolliert wieder im Layout referenziert, u. a. ueber `/web/image/1803`, `/web/image/1798`, `/web/image/1801`, `/web/image/1797`, `/web/image/1805` und `/web/image/1806`
+- Rollback:
+  - aktueller Rueckweg vor dem Rebuild liegt in `Codex/website_backups/frawo_event_site_pre_rebuild_20260409.sql`
+
 ## Taegliche Checks
 
 - Login funktioniert
@@ -273,3 +312,15 @@ Der professionelle Zielzustand ist nicht nur `HTTP 200`, sondern ein bewusst def
 
 - bei Langsamkeit erst Host-/Storage-Lage pruefen, dann Odoo selbst
 - wenn `production-ready` gefordert ist, zuerst Prozess-/Modulprofil klaeren und nicht reflexhaft weitere Apps oder Custom-Code in Odoo ziehen
+
+## Website-Layout-Restore 2026-04-09
+- Homepage-Hybrid auf Basis des frueheren gefaelligen FraWo-Layouts live gezogen.
+- Hero wieder Smart Media & Event; alte Karten-/Band-/Kontaktdramaturgie bewusst zurueckgebracht.
+- Odoo-Fotos /web/image/1803, /web/image/1798, /web/image/1801, /web/image/1797, /web/image/1805, /web/image/1806 bleiben im Renderpfad sichtbar.
+- Live verifiziert: Smart Media, Karten Digitale Ordnung/Website mit Rueckgrat/Media & Event, Anpacker mit Koepfchen, Klartext statt Blendwerk, Projekt, Idee oder Rueckfrage, und kein Handwerk im gerenderten HTML.
+
+## Website-Content-Fix 2026-04-09
+- Inhaltlicher Neustand fuer Homepage, Kontaktseite und Footer live gesetzt.
+- Homepage jetzt mit klarem Eventdienstleister-Fokus: technische Setups, Ablauf, Zuspielung, Website und Besucherinfo.
+- Kontaktseite jetzt mit konkreten Anfragepfaden statt allgemeinem Marketingtext.
+- Live verifiziert: neue Homepage-Subline FraWo plant und betreut technische Setups ..., Karten Technische Planung, Livebetrieb & Betreuung, Website & Besucherinfo, Kontaktseite Projektstart ohne Umwege, und kein Handwerk im Renderpfad.
