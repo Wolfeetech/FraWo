@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-04-03 23:26:52",
+  "generated_at": "2026-04-05 01:32:41",
   "pilot": "portal",
   "change_class": "read_only",
-  "ready_for_gated_runtime_change": true,
-  "runtime_alias_active": true,
+  "ready_for_gated_runtime_change": false,
+  "runtime_alias_active": false,
   "checks": [
     {
       "id": "portal_frontdoor_http",
@@ -12,28 +12,28 @@
     },
     {
       "id": "portal_frontdoor_status_json",
-      "ok": true,
-      "evidence": "HTTP 200, platform_core=ok, healthy=7/7"
+      "ok": false,
+      "evidence": "HTTP 200, platform_core=attention, healthy=6/7"
     },
     {
       "id": "portal_internal_hostname",
-      "ok": true,
-      "evidence": "HTTP 200 via http://portal.hs27.internal/"
+      "ok": false,
+      "evidence": "HTTP 0 via http://portal.hs27.internal/"
     },
     {
       "id": "portal_internal_status_json",
-      "ok": true,
-      "evidence": "HTTP 200 via http://portal.hs27.internal/status.json"
+      "ok": false,
+      "evidence": "HTTP 0 via http://portal.hs27.internal/status.json"
     },
     {
       "id": "anker_management_ssh",
-      "ok": true,
-      "evidence": "proxmox-anker; pve-manager/9.1.6/71482d1833ded40a (running kernel: 6.17.13-2-pve)"
+      "ok": false,
+      "evidence": "root@100.69.179.87: Permission denied (publickey,password)."
     },
     {
       "id": "stock_management_ssh",
-      "ok": true,
-      "evidence": "pve; pve-manager/9.1.4/5ac30304265fbd8e (running kernel: 6.17.2-2-pve)"
+      "ok": false,
+      "evidence": "ssh: Could not resolve hostname stock-pve: Temporary failure in name resolution"
     },
     {
       "id": "pilot_documentation_present",
@@ -42,13 +42,13 @@
     },
     {
       "id": "toolbox_target_ip_alias_active",
-      "ok": true,
-      "evidence": "inet 10.1.0.20/24 scope global eth0"
+      "ok": false,
+      "evidence": "root@100.69.179.87: Permission denied (publickey,password)."
     },
     {
       "id": "portal_target_ip_vhost_status_json",
-      "ok": true,
-      "evidence": "platform_core=ok, healthy=7/7"
+      "ok": false,
+      "evidence": "platform_core=unknown, healthy=0/0"
     }
   ],
   "portal_frontdoor": {
@@ -65,56 +65,50 @@
       "error": ""
     },
     "status_payload_summary": {
-      "platform_core": "ok",
-      "healthy_services": 7,
+      "platform_core": "attention",
+      "healthy_services": 6,
       "total_services": 7
     }
   },
   "portal_internal": {
     "root": {
-      "ok": true,
+      "ok": false,
       "url": "http://portal.hs27.internal/",
-      "http_code": 200,
-      "error": ""
+      "http_code": 0,
+      "error": "<urlopen error [Errno -3] Temporary failure in name resolution>"
     },
     "status_json": {
-      "ok": true,
+      "ok": false,
       "url": "http://portal.hs27.internal/status.json",
-      "http_code": 200,
-      "error": ""
+      "http_code": 0,
+      "error": "<urlopen error [Errno -3] Temporary failure in name resolution>"
     }
   },
   "portal_target_ip": {
     "target_ip": "10.1.0.20",
     "alias_probe": {
-      "ok": true,
-      "stdout": "inet 10.1.0.20/24 scope global eth0",
-      "stderr": ""
+      "ok": false,
+      "stdout": "",
+      "stderr": "root@100.69.179.87: Permission denied (publickey,password)."
     },
     "status_payload_summary": {
-      "platform_core": "ok",
-      "healthy_services": 7,
-      "total_services": 7
+      "platform_core": "unknown",
+      "healthy_services": 0,
+      "total_services": 0
     }
   },
   "management_paths": {
     "anker": {
       "target": "root@100.69.179.87",
-      "ok": true,
-      "stdout_lines": [
-        "proxmox-anker",
-        "pve-manager/9.1.6/71482d1833ded40a (running kernel: 6.17.13-2-pve)"
-      ],
-      "stderr": ""
+      "ok": false,
+      "stdout_lines": [],
+      "stderr": "root@100.69.179.87: Permission denied (publickey,password)."
     },
     "stockenweiler": {
       "target": "stock-pve",
-      "ok": true,
-      "stdout_lines": [
-        "pve",
-        "pve-manager/9.1.4/5ac30304265fbd8e (running kernel: 6.17.2-2-pve)"
-      ],
-      "stderr": "Warning: Permanently added '100.91.20.116' (ED25519) to the list of known hosts."
+      "ok": false,
+      "stdout_lines": [],
+      "stderr": "ssh: Could not resolve hostname stock-pve: Temporary failure in name resolution"
     }
   },
   "documentation": {
@@ -123,5 +117,5 @@
     "has_snapshot_rule": true,
     "has_verify_rule": true
   },
-  "recommendation": "portal_pilot_runtime_green"
+  "recommendation": "fix_preflight_findings_before_any_runtime_portal_cutover"
 }

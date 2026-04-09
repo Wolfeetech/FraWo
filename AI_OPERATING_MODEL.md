@@ -20,8 +20,10 @@ Es gilt als Default-Arbeitsmodell fuer:
 
 - Autonomie: `Aggressive Autopilot`
 - Fuehrung: `Codex Lead`
-- Gemini-Rolle: `visible_verification_only`
-- Prioritaet: `Internal Ops First`
+- Gemini-Rolle: UCG test segment observation (2026-04-03/04):
+  - Proxmox `vmbr0` now DHCPs as `10.1.0.92/24` with gateway `10.1.0.1`
+  - UniFi UI reports the host as `10.1.0.20` in VLAN 101 (Anker-Server)
+  - Potential MAC/IP overlap with `toolbox` detected in UniFi UI; track for cleanup
 
 Das Ziel ist ein einziger kontrollierter Loop:
 
@@ -127,9 +129,9 @@ Kein neuer Schritt startet, solange:
 
 ## Kanonische Dateien
 
-- `AGENT_INSTRUCTIONS.md`
+- `AGENT_INSTRUCTIONS.md` -> MUST READ FIRST for every agent.
 - `AI_OPERATING_MODEL.md`
-- `AI_SERVER_HANDOFF.md`
+- `AI_SERVER_HANDOFF.md` -> Automated state summary for another AI.
 - `manifests/work_lanes/current_plan.json`
 - `OPERATOR_TODO_QUEUE.md`
 - `GEMINI.md`

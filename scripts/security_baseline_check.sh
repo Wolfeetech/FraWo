@@ -249,7 +249,7 @@ log "Checking whether mobile frontdoor ports are still reachable from the LAN"
 toolbox_mobile_lan_surface="no"
 toolbox_mobile_lan_probe_host="nextcloud_vm"
 for port in 8443 8444 8445 8446 8447 8448 8449; do
-  if run_host_remote "${toolbox_mobile_lan_probe_host}" "curl --silent --max-time 5 --output /dev/null http://192.168.2.20:${port}/ 2>/dev/null"; then
+  if run_host_remote "${toolbox_mobile_lan_probe_host}" "curl --silent --max-time 5 --output /dev/null http://10.1.0.20:${port}/ 2>/dev/null"; then
     toolbox_mobile_lan_surface="yes"
     break
   fi

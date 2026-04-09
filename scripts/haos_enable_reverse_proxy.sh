@@ -6,7 +6,8 @@ HAOS_VMID="210"
 HAOS_CONFIG_DIR="/mnt/data/supervisor/homeassistant"
 HAOS_MAIN_CONFIG="${HAOS_CONFIG_DIR}/configuration.yaml"
 HAOS_HTTP_CONFIG="${HAOS_CONFIG_DIR}/http.yaml"
-TRUSTED_PROXY_IP="192.168.2.20"
+TRUSTED_PROXY_PRIMARY="10.1.0.20"
+TRUSTED_PROXY_FALLBACK="192.168.2.20"
 
 log() {
   printf '[haos-reverse-proxy] %s\n' "$*"
@@ -31,7 +32,8 @@ fi
 cat > '${HAOS_HTTP_CONFIG}' <<'EOF'
 use_x_forwarded_for: true
 trusted_proxies:
-  - ${TRUSTED_PROXY_IP}
+  - ${TRUSTED_PROXY_PRIMARY}
+  - ${TRUSTED_PROXY_FALLBACK}
 EOF
 "
 

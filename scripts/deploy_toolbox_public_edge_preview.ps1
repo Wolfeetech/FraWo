@@ -1,8 +1,8 @@
 param(
-    [string]$HaIp = "192.168.2.24",
-    [string]$OdooIp = "192.168.2.22:8069",
+    [string]$HaIp = "10.1.0.24",
+    [string]$OdooIp = "10.1.0.22:8069",
     [string]$RadioIp = "100.64.23.77:80",
-    [string]$VaultIp = "192.168.2.26:8080"
+    [string]$VaultIp = "10.1.0.26:8080"
 )
 
 $ErrorActionPreference = "Stop"
@@ -26,11 +26,11 @@ $caddyfile = @"
 }
 
 http://media.hs27.internal {
-  reverse_proxy 192.168.2.20:8096
+  reverse_proxy 10.1.0.20:8096
 }
 
 http://cloud.hs27.internal {
-  reverse_proxy 192.168.2.21:80
+  reverse_proxy 10.1.0.21:80
 }
 
 http://odoo.hs27.internal {
@@ -43,7 +43,7 @@ http://odoo.hs27.internal {
 }
 
 http://paperless.hs27.internal {
-  reverse_proxy 192.168.2.23:8000
+  reverse_proxy 10.1.0.23:8000
 }
 
 http://ha.hs27.internal {
@@ -93,13 +93,13 @@ http://:8444 {
 }
 
 http://:8445 {
-  reverse_proxy 192.168.2.21:80 {
+  reverse_proxy 10.1.0.21:80 {
     header_up Host cloud.hs27.internal
   }
 }
 
 http://:8446 {
-  reverse_proxy 192.168.2.23:8000 {
+  reverse_proxy 10.1.0.23:8000 {
     header_up Host paperless.hs27.internal
   }
 }
@@ -117,7 +117,7 @@ http://:8448 {
 }
 
 http://:8449 {
-  reverse_proxy 192.168.2.20:8096 {
+  reverse_proxy 10.1.0.20:8096 {
     header_up Host media.hs27.internal
   }
 }

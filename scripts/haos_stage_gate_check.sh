@@ -90,7 +90,7 @@ if [[ "$vm210_exists" == "yes" && "$haos_vm_status" != "running" ]]; then
   echo "recommendation=start_vm210_and_finish_post_build_validation"
 elif [[ "$vm210_exists" == "yes" && "$haos_current_ipv4" == "unknown" ]]; then
   echo "recommendation=vm210_running_confirm_network_identity_and_then_stabilize_addressing"
-elif [[ "$vm210_exists" == "yes" && "$haos_current_ipv4" != "192.168.2.24" ]]; then
+elif [[ "$vm210_exists" == "yes" && "$haos_current_ipv4" != "10.1.0.24" ]]; then
   echo "recommendation=stabilize_vm210_address_then_switch_ha_internal_dns"
 elif [[ "$vm210_exists" == "yes" && "$usb_passthrough_ready" == "no" ]]; then
   echo "recommendation=vm210_online_stable_wait_for_real_usb_dongles_not_storage_only_usb"

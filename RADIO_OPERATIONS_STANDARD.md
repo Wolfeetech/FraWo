@@ -81,6 +81,17 @@ Verbindliche Unterstruktur:
    - `Radio` = Hoeren / oeffentliche Stationsseite
    - `Radio Control` = AzuraCast-Login / Bedienoberflaeche
 
+## Erweiterte Metadaten & Suche
+
+Um den Musikbestand professionell zu kuratieren, wird ein semantisches Indexing-Verfahren auf Basis von Pinecone eingesetzt.
+
+- **Vektor-Store**: Pinecone Index `homelab`
+- **Namespace**: `radio-metadata`
+- **Ziel**: 
+  - Automatisches Tagging von Songs (Stimmung, Energie, Genre).
+  - Semantische Suche ("Suche Musik für einen entspannten Grillabend").
+  - Identifikation von Dubletten im `incoming` Ordner.
+
 ## Naechste professionelle Schritte
 
 1. USB-Musikbestand fachlich sichten.

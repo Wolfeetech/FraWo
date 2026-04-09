@@ -1,14 +1,14 @@
 # Control Plane Audit
 
-- generated_at: `2026-04-03 18:44:38`
+- generated_at: `2026-04-09 17:19:47`
 - workspace_pyrefly_disabled: `true`
 - pyrefly_process_present: `false`
 - stale_ssh_count: `0`
 - stale_mail_powershell_count: `0`
 - tailscale_backend_state: `Running`
-- tailscale_stockenweiler_route_present: `False`
-- ssh_stock_pve: `reachable`
-- wireguard_vpn_running: `true`
+- tailscale_stockenweiler_route_present: `True`
+- ssh_stock_pve: `unreachable`
+- wireguard_vpn_running: `false`
 
 ## Primary Paths
 

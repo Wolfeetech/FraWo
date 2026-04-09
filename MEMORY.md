@@ -172,6 +172,12 @@
 - Router-Zugang:
   - Login-Benutzer `vodafone`
   - Passwort liegt verschluesselt in `ansible/inventory/group_vars/all/vault.yml`
+  - **Architektonischer Befund (2026-03-30):** Die Vodafone EasyBox 805 arbeitet im **DS-Lite-Modus** (Dual-Stack Lite).
+    - keine eigene öffentliche IPv4-Adresse am Router
+    - IPv4-Anbindung erfolgt über Carrier-NAT (AFTR-Gateway)
+    - IPv4-Port-Mapping/NAT ist technisch nicht möglich (Menüpunkte in der UI ausgeblendet)
+    - Externer Zugriff auf Odoo/Business-Dienste via IPv4 ist nur über einen Proxy/Relay (z.B. Cloudflare) oder echtes Dual-Stack möglich
+    - IPv6 ist der primäre Pfad für direkte Port-Exposition (geplant für Lane B)
 - Vollscan vom `2026-03-17` ergab 23 aktive Hosts im LAN.
 - Zonenmodell:
   - `core`
@@ -643,43 +649,46 @@ Lokale Admin-Flaechen (nur localhost):
    - benoetigte Aktion: nur entscheiden, ob der StudioPC bis zur Vollmigration per Tailscale-Frontdoors arbeiten soll oder ob zusaetzlich lokale Hostnamen per Admin-Override wiederhergestellt werden sollen
    - warum: der aktuelle professionelle Arbeitsweg steht bereits (`Tailscale first`), aber das alte direkte `192.168.2.x`-Namensmodell kollidiert mit der UCG-Uebergangsphase
    - danach uebernehmen Codex/Gemini wieder: Netzpfad umstellen, DNS/hs27.internal anpassen und Erreichbarkeit verifizieren
-
-1. `AKTION VON DIR ERFORDERLICH:` spaeter einen ersten Thomson-/Google-TV-Client mit Jellyfin verbinden
+1. `AKTION VON DIR ERFORDERLICH:` Proxmox-Root-SSH-Key hinterlegen
+   - benoetigte Aktion: im Proxmox-UI (Node -> System -> Users -> root -> SSH Keys oder Node -> Shell) den Public Key aus `C:\\Users\\StudioPC\\.ssh\\hs27_ops_ed25519.pub` eintragen
+   - warum: aktuell nimmt `root@10.1.0.92` keinen der vorhandenen Keys an, dadurch kann ich die Netzwerkfixes nicht remote ausfuehren
+   - danach uebernehmen Codex/Gemini wieder: Netzwerk-Status verifizieren, Alias-IPs wiederherstellen und Tailscale-Frontdoors pruefen
+2. `AKTION VON DIR ERFORDERLICH:` spaeter einen ersten Thomson-/Google-TV-Client mit Jellyfin verbinden
    - benoetigte Aktion: auf dem TV die Jellyfin-App installieren und den Server `http://192.168.2.20:8096` eintragen
    - warum: die Musikbibliothek ist bereits an Jellyfin angebunden; der naechste echte Nutzwert ist jetzt der erste Client-Rollout statt weiterer Server-Basisarbeit
    - danach uebernehmen Codex/Gemini wieder: Client-Fit, spaetere Bibliothekserweiterung und Medienkuration
-2. `AKTION VON DIR ERFORDERLICH:` den `64GB`-USB-Stick an Proxmox nicht abziehen
+3. `AKTION VON DIR ERFORDERLICH:` den `64GB`-USB-Stick an Proxmox nicht abziehen
    - benoetigte Aktion: den aktuell an Proxmox haengenden Stick eingesteckt lassen
    - warum: der Stick traegt jetzt den aktiven Interim-PBS-Datastore `hs27-interim`
    - danach uebernehmen Codex/Gemini weiter: Proof-Backups gruener machen und spaeter die finale groessere PBS-Zielarchitektur vorbereiten
-3. `AKTION VON DIR ERFORDERLICH:` restliche Easy-Box-Geraete autoritativ zuordnen
+4. `AKTION VON DIR ERFORDERLICH:` restliche Easy-Box-Geraete autoritativ zuordnen
    - benoetigte Aktion: die verbliebenen Unknown-Clients `.141-.144` sowie zusaetzliche aktuelle Router-Labels wie `Surface_Laptop`, `RE355` und `iPhone-3-Pro` fachlich bestaetigen oder benennen
    - warum: `inventory_unknown_review_count=4` und damit `inventory_finalized=no`
    - danach uebernehmen Codex/Gemini wieder: DHCP-/Reservierungsplan finalisieren und den Gateway-Cutover freigabefaehig machen
-4. `AKTION VON DIR ERFORDERLICH:` HAOS-USB-Hardware am Proxmox-Host anstecken, sobald verfuegbar
+5. `AKTION VON DIR ERFORDERLICH:` HAOS-USB-Hardware am Proxmox-Host anstecken, sobald verfuegbar
    - benoetigte Aktion: Zigbee-/Bluetooth-/SkyConnect-Adapter physisch am Proxmox-Host anschliessen
    - warum: aktueller Audit zeigt nur Root-Hubs und kein `/dev/serial/by-id`
    - danach uebernehmen Codex/Gemini wieder: Vendor-/Product-ID-Audit, USB-Passthrough und Reboot-Stabilitaet testen
-5. `AKTION VON DIR ERFORDERLICH:` spaeter einmal einen echten Dokumentenlauf ueber Nextcloud testen
+6. `AKTION VON DIR ERFORDERLICH:` spaeter einmal einen echten Dokumentenlauf ueber Nextcloud testen
    - benoetigte Aktion: eine unkritische Beispiel-PDF oder ein Scan in `Paperless/Eingang` in Nextcloud hochladen und spaeter pruefen, ob die digitale Kopie in `Paperless/Archiv` erscheint
    - warum: der technische Brueckenpfad ist jetzt live, der naechste Mehrwert ist die echte Nutzerakzeptanz mit einem realen Dokument
    - danach uebernehmen Codex/Gemini wieder: Feinjustierung, Surface-Shortcuts und spaetere Kuration
-6. `AKTION VON DIR ERFORDERLICH:` Handy einmal echt off-LAN ueber Tailscale pruefen
+7. `AKTION VON DIR ERFORDERLICH:` Handy einmal echt off-LAN ueber Tailscale pruefen
    - benoetigte Aktion: WLAN am Handy aus, Tailscale verbunden lassen und `http://portal.hs27.internal`, `http://ha.hs27.internal` sowie `http://odoo.hs27.internal/web/login` testen
    - warum: Pixel 8 (Wolf) ist als erste mobile Test-Einheit definiert; verifiziert den `hs27.internal` Pfad ueber Tailscale.
    - danach uebernehmen Codex/Gemini wieder: mobilen Betriebsstandard finalisieren und den Frontdoor fuer Endgeraete sauber freigeben
-7. `AKTION VON DIR ERFORDERLICH:` iPhone Onboarding fuer Franz
+8. `AKTION VON DIR ERFORDERLICH:` iPhone Onboarding fuer Franz
    - benoetigte Aktion: Tailscale auf dem iPhone installieren, `DOCS/MOBILE_HTTPS_TRUST.md` (iOS) anwenden und dann `DOCS/FRANZ_IPHONE_ONBOARDING.md` abarbeiten.
    - warum: Franz braucht mobilen Zugriff fuer den MVP-Abschluss; HTTPS-Vertrauen ist fuer iOS-Apps zwingend.
    - danach uebernehmen Codex/Gemini wieder: Bestaetigung der mobilen Erreichbarkeit.
-8. Mobiler HTTPS-Vertrauensstandard (2026):
-   - die interne CA (`frawo-ca.crt`) wird ueber `http://portal.hs27.internal/frawo-ca.crt` bereitgestellt.
-   - die Installation ist fuer Bitwarden, Nextcloud und Odoo auf Android/iOS zwingend erforderlich, um untrusted-SSL-Fehler zu vermeiden.
-   - Leitfaden: `DOCS/MOBILE_HTTPS_TRUST.md`.
-7. `AKTION VON DIR ERFORDERLICH:` Login-Credentials fuer MVP Browser Acceptance
+9. `AKTION VON DIR ERFORDERLICH:` Login-Credentials fuer MVP Browser Acceptance
    - benoetigte Aktion: Bereitstellung der Master-Passwoerter (Vaultwarden fuer Franz und Wolf) oder Uebernahme des Login-Schritts.
    - warum: Laut BUSINESS_MVP_PROMPT.md und ACCESS_REGISTER_VAULTWARDEN_REFERENCES.md liegen keine Klartextpasswoerter vor, der Login zur Verifikation muss aber zwingend sichtbar im Browser evaluiert werden.
    - danach uebernehmen Codex/Gemini wieder: Pruefung der restlichen sichtbaren Realitaeten im Subagenten.
+10. Hinweis: Mobiler HTTPS-Vertrauensstandard (2026)
+   - die interne CA (`frawo-ca.crt`) wird ueber `http://portal.hs27.internal/frawo-ca.crt` bereitgestellt.
+   - die Installation ist fuer Bitwarden, Nextcloud und Odoo auf Android/iOS zwingend erforderlich, um untrusted-SSL-Fehler zu vermeiden.
+   - Leitfaden: `DOCS/MOBILE_HTTPS_TRUST.md`.
 
 ## IaC-Quellen fuer Business-Stacks
 

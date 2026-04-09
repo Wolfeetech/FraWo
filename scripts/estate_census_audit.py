@@ -220,11 +220,11 @@ storage_cfg, _, _ = sh('pct config 110')
 
 http_checks = {}
 for name, url in {
-    'nextcloud': 'http://192.168.2.21/',
-    'odoo': 'http://192.168.2.22:8069/web/login',
-    'paperless': 'http://192.168.2.23/accounts/login/',
-    'haos': 'http://192.168.2.24:8123/',
-    'vaultwarden': 'http://192.168.2.26:8080/alive',
+    'nextcloud': 'http://10.1.0.21/',
+    'odoo': 'http://10.1.0.22:8069/web/login',
+    'paperless': 'http://10.1.0.23/accounts/login/',
+    'haos': 'http://10.1.0.24:8123/',
+    'vaultwarden': 'http://10.1.0.26:8080/alive',
 }.items():
     out, _, _ = sh(f"curl -s -o /dev/null -w '%{{http_code}}' --max-time 4 {url}")
     http_checks[name] = out or '000'

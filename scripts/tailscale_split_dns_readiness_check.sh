@@ -34,14 +34,14 @@ else
 fi
 
 magicdns_ha_answer="$(dig +time=2 +tries=1 +short @100.100.100.100 ha.hs27.internal 2>/dev/null | head -n1)"
-if [[ "${magicdns_ha_answer}" == "192.168.2.20" ]]; then
+if [[ "${magicdns_ha_answer}" == "10.1.0.20" ]]; then
   magicdns_split_ha_resolves="yes"
 else
   magicdns_split_ha_resolves="no"
 fi
 
-adguard_hs27_answer="$(dig +time=2 +tries=1 +short @192.168.2.20 ha.hs27.internal 2>/dev/null | head -n1)"
-if [[ "${adguard_hs27_answer}" == "192.168.2.20" ]]; then
+adguard_hs27_answer="$(dig +time=2 +tries=1 +short @10.1.0.20 ha.hs27.internal 2>/dev/null | head -n1)"
+if [[ "${adguard_hs27_answer}" == "10.1.0.20" ]]; then
   adguard_hs27_resolves="yes"
 else
   adguard_hs27_resolves="no"
@@ -77,7 +77,7 @@ echo "split_dns_prereqs_ready=${split_dns_prereqs_ready}"
 if [[ "${split_dns_prereqs_ready}" == "yes" && "${magicdns_split_ha_resolves}" == "yes" ]]; then
   echo "recommendation=split_dns_active_validate_phone_clients_and_keep_restricted_nameserver"
 elif [[ "${split_dns_prereqs_ready}" == "yes" ]]; then
-  echo "recommendation=add_restricted_nameserver_192.168.2.20_for_hs27.internal_in_tailscale_admin"
+  echo "recommendation=add_restricted_nameserver_10.1.0.20_for_hs27.internal_in_tailscale_admin"
 else
   echo "recommendation=approve_subnet_route_then_apply_split_dns_for_hs27.internal"
 fi

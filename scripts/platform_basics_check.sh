@@ -69,13 +69,13 @@ nextcloud_ok="no"
 odoo_ok="no"
 paperless_ok="no"
 
-if run_inventory_guest_remote nextcloud_vm "systemctl is-active --quiet homeserver-compose-nextcloud.service" "wolf" >/dev/null 2>&1 && tcp_open 192.168.2.21 80 >/dev/null 2>&1; then
+if run_inventory_guest_remote nextcloud_vm "systemctl is-active --quiet homeserver-compose-nextcloud.service" "wolf" >/dev/null 2>&1 && tcp_open 10.1.0.21 80 >/dev/null 2>&1; then
   nextcloud_ok="yes"
 fi
-if run_inventory_guest_remote odoo_vm "systemctl is-active --quiet homeserver-compose-odoo.service" "wolf" >/dev/null 2>&1 && tcp_open 192.168.2.22 8069 >/dev/null 2>&1; then
+if run_inventory_guest_remote odoo_vm "systemctl is-active --quiet homeserver-compose-odoo.service" "wolf" >/dev/null 2>&1 && tcp_open 10.1.0.22 8069 >/dev/null 2>&1; then
   odoo_ok="yes"
 fi
-if run_inventory_guest_remote paperless_vm "systemctl is-active --quiet homeserver-compose-paperless.service" "wolf" >/dev/null 2>&1 && tcp_open 192.168.2.23 8000 >/dev/null 2>&1; then
+if run_inventory_guest_remote paperless_vm "systemctl is-active --quiet homeserver-compose-paperless.service" "wolf" >/dev/null 2>&1 && tcp_open 10.1.0.23 8000 >/dev/null 2>&1; then
   paperless_ok="yes"
 fi
 if [[ "${nextcloud_ok}" == "yes" && "${odoo_ok}" == "yes" && "${paperless_ok}" == "yes" ]]; then
@@ -83,7 +83,7 @@ if [[ "${nextcloud_ok}" == "yes" && "${odoo_ok}" == "yes" && "${paperless_ok}" =
 fi
 
 toolbox_network_ok="no"
-toolbox_ip="192.168.2.20"
+toolbox_ip="10.1.0.20"
 portal_http="$(curl --silent --show-error --max-time 8 --noproxy '*' --resolve "portal.hs27.internal:80:${toolbox_ip}" --output /dev/null --write-out '%{http_code}' "http://portal.hs27.internal/" 2>/dev/null || true)"
 ha_http="$(curl --silent --show-error --max-time 8 --noproxy '*' --resolve "ha.hs27.internal:80:${toolbox_ip}" --output /dev/null --write-out '%{http_code}' "http://ha.hs27.internal/" 2>/dev/null || true)"
 if [[ "${portal_http}" == "200" && "${ha_http}" == "200" ]]; then

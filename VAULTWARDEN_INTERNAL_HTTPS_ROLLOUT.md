@@ -22,9 +22,11 @@ Stand: `2026-03-26`
 
 ## Betriebsnotizen
 
-- Das Zertifikat ist intern ausgestellt.
-- Auf relevanten Clients muss die interne CA bewusst vertraut werden, wenn der Browser sonst warnt.
-- Der nackte HTTP-Pfad `http://192.168.2.26:8080` bleibt nur Bootstrap-/Health-Endpunkt.
+- Das Zertifikat ist intern ausgestellt (`tls internal`).
+- Auf PCs/Laptops muss die interne Caddy Root-CA dem Trust-Store hinzugefügt werden, oder der Browser warnt.
+- **Mobile App Blocker**: Die iOS/Android Vaultwarden-App erlaubt *keine* unsicheren Verbindungen und *keine* self-signed Zertifikate (Fehler: "Zertifikat des Servers nicht verifizierbar"). 
+- **Lösungspfad**: Um Mobile Apps nutzbar zu machen, muss Vaultwarden final von `vault.hs27.internal` auf das offizielle, öffentliche `safe.frawo-tech.de` umziehen und Caddy muss mittels Strato/IONOS API Keys ein offizielles "Let's Encrypt" Zertifikat ausstellen.
+- Der nackte HTTP-Pfad `http://192.168.2.26:8080` (bzw. nun `10.1.0.26`) bleibt nur Bootstrap-/Health-Endpunkt.
 
 ## Wenn neu ausgerollt werden muss
 

@@ -12,7 +12,7 @@ ROOT_DIR = Path(__file__).resolve().parents[1]
 REPORT_DIR = ROOT_DIR / "artifacts" / "public_edge_preview" / datetime.now().strftime("%Y%m%d_%H%M%S")
 REPORT_MD = REPORT_DIR / "report.md"
 
-ODDO_IP = "192.168.2.22"
+ODDO_IP = "10.1.0.22"
 ODDO_IPV6 = "2a00:1e:ef80:7c01:be24:11ff:feaa:bbcc"
 PUBLIC_IPV4 = "92.211.33.54"
 
@@ -119,19 +119,19 @@ def main() -> int:
             "internal_www_root",
             probes["internal_www_root"]["status"] == "200"
             and contains_all(probes["internal_www_root"]["body"], ["Home | FraWo", "Radio hoeren"]),
-            "Host www.frawo-tech.de on 192.168.2.22 should return 200 and the FraWo homepage with radio CTA.",
+            "Host www.frawo-tech.de on 10.1.0.22 should return 200 and the FraWo homepage with radio CTA.",
         ),
         (
             "internal_apex_redirect",
             probes["internal_apex_redirect"]["status"] == "308"
             and "Location: https://www.frawo-tech.de/" in probes["internal_apex_redirect"]["headers"],
-            "Host frawo-tech.de on 192.168.2.22 should redirect to https://www.frawo-tech.de/.",
+            "Host frawo-tech.de on 10.1.0.22 should redirect to https://www.frawo-tech.de/.",
         ),
         (
             "internal_radio_player",
             probes["internal_radio_player"]["status"] == "200"
             and "FraWo - Funk - AzuraCast" in probes["internal_radio_player"]["body"],
-            "Host www.frawo-tech.de on 192.168.2.22 /radio/public/frawo-funk should return the AzuraCast player.",
+            "Host www.frawo-tech.de on 10.1.0.22 /radio/public/frawo-funk should return the AzuraCast player.",
         ),
         (
             "global_ipv6_www_root",

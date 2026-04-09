@@ -6,7 +6,7 @@ rpi_radio_compose_root: /opt/homeserver2027/radio-node
 rpi_radio_station_shortcode: frawo-funk
 rpi_radio_library_root: /srv/radio-library
 rpi_radio_assets_root: /srv/radio-assets
-rpi_radio_media_share: //192.168.2.30/Media
+rpi_radio_media_share: //10.1.0.30/Media
 rpi_radio_media_mountpoint: /srv/radio-library/music-network
 rpi_radio_media_subdir: yourparty_Libary
 rpi_radio_media_credentials_file: /etc/hs27/storage-node-media.credentials

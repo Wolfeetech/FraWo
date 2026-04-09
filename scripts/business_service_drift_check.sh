@@ -34,9 +34,9 @@ check_http() {
 }
 
 CHECKS=(
-  "nextcloud|nextcloud_vm|homeserver-compose-nextcloud.service|/opt/homeserver2027/stacks/nextcloud/docker-compose.yml|nextcloud_|http://192.168.2.21/|200"
-  "odoo|odoo_vm|homeserver-compose-odoo.service|/opt/homeserver2027/stacks/odoo/docker-compose.yml|odoo_|http://192.168.2.22:8069/web/login|200,303"
-  "paperless|paperless_vm|homeserver-compose-paperless.service|/opt/homeserver2027/stacks/paperless/docker-compose.yml|paperless_|http://192.168.2.23:8000/accounts/login/|200"
+  "nextcloud|nextcloud_vm|homeserver-compose-nextcloud.service|/opt/homeserver2027/stacks/nextcloud/docker-compose.yml|nextcloud_|http://10.1.0.21/|200"
+  "odoo|odoo_vm|homeserver-compose-odoo.service|/opt/homeserver2027/stacks/odoo/docker-compose.yml|odoo_|http://10.1.0.22:8069/web/login|200,303"
+  "paperless|paperless_vm|homeserver-compose-paperless.service|/opt/homeserver2027/stacks/paperless/docker-compose.yml|paperless_|http://10.1.0.23:8000/accounts/login/|200"
 )
 
 for entry in "${CHECKS[@]}"; do

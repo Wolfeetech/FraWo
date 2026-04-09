@@ -1,7 +1,7 @@
 param(
     [string]$ApexHost = "frawo-tech.de",
     [string]$WwwHost = "www.frawo-tech.de",
-    [string]$RadioUpstream = "192.168.2.20:80",
+    [string]$RadioUpstream = "10.1.0.20:80",
     [string]$InternalRadioHost = "radio.hs27.internal"
 )
 

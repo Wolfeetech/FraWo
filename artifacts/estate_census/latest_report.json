@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-03 23:27:25",
+  "generated_at": "2026-04-09 17:23:24",
   "local_network": {
     "ok": true,
     "ip_addresses": [
@@ -14,42 +14,43 @@
         "PrefixLength": 32
       },
       {
-        "InterfaceAlias": "VPN",
+        "InterfaceAlias": "WLAN",
+        "IPAddress": "192.168.2.161",
+        "PrefixLength": 24
+      },
+      {
+        "InterfaceAlias": "wg-studiopc",
         "IPAddress": "10.0.0.2",
         "PrefixLength": 32
       },
       {
         "InterfaceAlias": "Ethernet",
-        "IPAddress": "192.168.2.162",
+        "IPAddress": "10.1.0.254",
         "PrefixLength": 24
       }
     ],
     "dns_servers": [
       {
-        "InterfaceAlias": "VPN",
+        "InterfaceAlias": "Ethernet",
         "ServerAddresses": [
-          "192.168.178.174"
+          "10.1.0.1"
         ]
+      },
+      {
+        "InterfaceAlias": "wg-studiopc",
+        "ServerAddresses": []
       },
       {
         "InterfaceAlias": "Tailscale",
         "ServerAddresses": []
       },
       {
-        "InterfaceAlias": "Ethernet",
-        "ServerAddresses": [
-          "192.168.2.1"
-        ]
+        "InterfaceAlias": "vEthernet (WSL (Hyper-V firewall))",
+        "ServerAddresses": []
       },
       {
         "InterfaceAlias": "Ethernet 2",
         "ServerAddresses": []
-      },
-      {
-        "InterfaceAlias": "WLAN",
-        "ServerAddresses": [
-          "192.168.178.1"
-        ]
       },
       {
         "InterfaceAlias": "LAN-Verbindung* 8",
@@ -60,15 +61,17 @@
         "ServerAddresses": []
       },
       {
+        "InterfaceAlias": "WLAN",
+        "ServerAddresses": [
+          "192.168.2.1"
+        ]
+      },
+      {
         "InterfaceAlias": "Bluetooth-Netzwerkverbindung",
         "ServerAddresses": []
       },
       {
         "InterfaceAlias": "Loopback Pseudo-Interface 1",
-        "ServerAddresses": []
-      },
-      {
-        "InterfaceAlias": "vEthernet (WSL (Hyper-V firewall))",
         "ServerAddresses": []
       }
     ]
@@ -83,7 +86,7 @@
         "fd7a:115c:a1e0::7b3a:1f3c"
       ]
     },
-    "peer_count": 9,
+    "peer_count": 11,
     "peers": [
       {
         "dns_name": "desktop-7lmp02s.tail150400.ts.net",
@@ -91,6 +94,15 @@
         "tailscale_ips": [
           "100.79.103.59",
           "fd7a:115c:a1e0::b3a:673b"
+        ],
+        "primary_routes": []
+      },
+      {
+        "dns_name": "iphone-15.tail150400.ts.net",
+        "online": false,
+        "tailscale_ips": [
+          "100.106.111.38",
+          "fd7a:115c:a1e0::243a:6f26"
         ],
         "primary_routes": []
       },
@@ -104,17 +116,28 @@
         "primary_routes": []
       },
       {
+        "dns_name": "pixel-9-pro.tail150400.ts.net",
+        "online": true,
+        "tailscale_ips": [
+          "100.83.213.17",
+          "fd7a:115c:a1e0::683a:d511"
+        ],
+        "primary_routes": []
+      },
+      {
         "dns_name": "proxmox-anker.tail150400.ts.net",
         "online": true,
         "tailscale_ips": [
           "100.69.179.87",
           "fd7a:115c:a1e0::c63a:b357"
         ],
-        "primary_routes": []
+        "primary_routes": [
+          "10.1.0.0/24"
+        ]
       },
       {
         "dns_name": "radio-node.tail150400.ts.net",
-        "online": true,
+        "online": false,
         "tailscale_ips": [
           "100.64.23.77",
           "fd7a:115c:a1e0::243a:174d"
@@ -128,7 +151,9 @@
           "100.91.20.116",
           "fd7a:115c:a1e0::ed3a:1474"
         ],
-        "primary_routes": []
+        "primary_routes": [
+          "192.168.178.0/24"
+        ]
       },
       {
         "dns_name": "surface-go-frontend.tail150400.ts.net",
@@ -146,9 +171,7 @@
           "100.99.206.128",
           "fd7a:115c:a1e0::af01:cea1"
         ],
-        "primary_routes": [
-          "192.168.2.0/24"
-        ]
+        "primary_routes": []
       },
       {
         "dns_name": "wohnzimmertv.tail150400.ts.net",
@@ -169,7 +192,10 @@
         "primary_routes": []
       }
     ],
-    "health": []
+    "health": [
+      "Tailscale could not establish an encrypted connection with '\"derp4i.tailscale.com\"': likely intercepted connection; certificate is self-signed by CN=easy.box,O=EasyBox,L=Frankfurt,ST=Hessen,C=DE",
+      "Some peers are advertising routes but --accept-routes is false"
+    ]
   },
   "anker": {
     "reachable": true,
@@ -239,7 +265,7 @@
       "nextcloud": "302",
       "odoo": "200",
       "paperless": "000",
-      "haos": "000",
+      "haos": "200",
       "vaultwarden": "200"
     }
   },
@@ -281,7 +307,7 @@
       },
       {
         "vmid": 110,
-        "status": "running",
+        "status": "stopped",
         "name": "n8n"
       },
       {
@@ -291,37 +317,37 @@
       },
       {
         "vmid": 130,
-        "status": "running",
+        "status": "stopped",
         "name": "mail-relay"
       },
       {
         "vmid": 150,
-        "status": "running",
+        "status": "stopped",
         "name": "monitoring-stack"
       },
       {
         "vmid": 202,
-        "status": "running",
+        "status": "stopped",
         "name": "mongodb-primary"
       },
       {
         "vmid": 207,
-        "status": "running",
+        "status": "stopped",
         "name": "radio-wordpress-prod"
       },
       {
         "vmid": 208,
-        "status": "running",
+        "status": "stopped",
         "name": "mariadb-server"
       },
       {
         "vmid": 211,
-        "status": "running",
+        "status": "stopped",
         "name": "radio-api"
       },
       {
         "vmid": 212,
-        "status": "running",
+        "status": "stopped",
         "name": "jellyfin"
       }
     ],
@@ -329,7 +355,7 @@
       {
         "vmid": 210,
         "name": "azuracast-vm",
-        "status": "running"
+        "status": "stopped"
       },
       {
         "vmid": 360,
@@ -348,7 +374,7 @@
         "name": "hdd-backup",
         "type": "dir",
         "status": "active",
-        "used_percent": "83.98%"
+        "used_percent": "89.11%"
       },
       {
         "name": "local",
@@ -360,45 +386,45 @@
         "name": "local-lvm",
         "type": "lvmthin",
         "status": "active",
-        "used_percent": "64.61%"
+        "used_percent": "64.71%"
       }
     ]
   },
   "frontdoors": [
     {
       "url": "http://100.99.206.128:8442/alive",
-      "curl_exit_code": 0,
-      "http_code": "200",
-      "remote_ip": "100.99.206.128",
-      "time_total": "0.059835",
-      "stderr": "",
+      "curl_exit_code": 7,
+      "http_code": "000",
+      "remote_ip": "2.067288",
+      "time_total": "",
+      "stderr": "curl: (7) Failed to connect to 100.99.206.128 port 8442 after 2067 ms: Could not connect to server",
       "name": "vaultwarden",
       "ok_codes": [
         "200"
       ],
       "note": "Vaultwarden mobile/frontdoor health",
-      "status": "ok"
+      "status": "down"
     },
     {
       "url": "http://100.99.206.128:8443/",
       "curl_exit_code": 0,
-      "http_code": "200",
+      "http_code": "400",
       "remote_ip": "100.99.206.128",
-      "time_total": "0.053104",
+      "time_total": "0.014970",
       "stderr": "",
       "name": "home_assistant",
       "ok_codes": [
         "200"
       ],
       "note": "Home Assistant mobile/frontdoor",
-      "status": "ok"
+      "status": "degraded"
     },
     {
       "url": "http://100.99.206.128:8444/web/login",
       "curl_exit_code": 0,
       "http_code": "200",
       "remote_ip": "100.99.206.128",
-      "time_total": "0.137264",
+      "time_total": "0.070399",
       "stderr": "",
       "name": "odoo",
       "ok_codes": [
@@ -412,7 +438,7 @@
       "curl_exit_code": 0,
       "http_code": "302",
       "remote_ip": "100.99.206.128",
-      "time_total": "0.075242",
+      "time_total": "0.036791",
       "stderr": "",
       "name": "nextcloud",
       "ok_codes": [
@@ -427,7 +453,7 @@
       "curl_exit_code": 0,
       "http_code": "200",
       "remote_ip": "100.99.206.128",
-      "time_total": "0.096838",
+      "time_total": "0.032126",
       "stderr": "",
       "name": "paperless",
       "ok_codes": [
@@ -441,7 +467,7 @@
       "curl_exit_code": 0,
       "http_code": "200",
       "remote_ip": "100.99.206.128",
-      "time_total": "0.104274",
+      "time_total": "0.008883",
       "stderr": "",
       "name": "portal",
       "ok_codes": [
@@ -453,9 +479,9 @@
     {
       "url": "http://100.99.206.128:8448/",
       "curl_exit_code": 0,
-      "http_code": "302",
+      "http_code": "502",
       "remote_ip": "100.99.206.128",
-      "time_total": "0.090552",
+      "time_total": "3.014287",
       "stderr": "",
       "name": "radio",
       "ok_codes": [
@@ -463,14 +489,14 @@
         "302"
       ],
       "note": "Radio mobile/frontdoor",
-      "status": "ok"
+      "status": "degraded"
     },
     {
       "url": "http://100.99.206.128:8449/",
       "curl_exit_code": 0,
       "http_code": "302",
       "remote_ip": "100.99.206.128",
-      "time_total": "0.065188",
+      "time_total": "0.023172",
       "stderr": "",
       "name": "media",
       "ok_codes": [
@@ -486,7 +512,7 @@
       "url": "https://home.prinz-stockenweiler.de",
       "curl_exit_code": 35,
       "http_code": "000",
-      "remote_ip": "0.047775",
+      "remote_ip": "0.070184",
       "time_total": "",
       "stderr": "curl: (35) schannel: next InitializeSecurityContext failed: SEC_E_CERT_EXPIRED (0x80090328) - Das empfangene Zertifikat ist abgelaufen.",
       "status": "broken"
@@ -495,27 +521,27 @@
       "url": "https://papierkram.prinz-stockenweiler.de/dashboard",
       "curl_exit_code": 28,
       "http_code": "000",
-      "remote_ip": "8.016205",
+      "remote_ip": "8.004263",
       "time_total": "",
-      "stderr": "curl: (28) Connection timed out after 8016 milliseconds",
+      "stderr": "curl: (28) Connection timed out after 8004 milliseconds",
       "status": "broken"
     },
     {
       "url": "https://cloud.prinz-stockenweiler.de/apps/dashboard/",
       "curl_exit_code": 35,
       "http_code": "000",
-      "remote_ip": "0.044677",
+      "remote_ip": "0.069108",
       "time_total": "",
       "stderr": "curl: (35) schannel: next InitializeSecurityContext failed: SEC_E_ILLEGAL_MESSAGE (0x80090326) - This error usually occurs when a fatal SSL/TLS alert is received (e.g. handshake failed). More detail may be available in the Windows System event log.",
       "status": "broken"
     },
     {
       "url": "https://pve.prinz-stockenweiler.de",
-      "curl_exit_code": 28,
+      "curl_exit_code": 6,
       "http_code": "000",
-      "remote_ip": "8.008010",
+      "remote_ip": "0.026242",
       "time_total": "",
-      "stderr": "curl: (28) Resolving timed out after 8007 milliseconds",
+      "stderr": "curl: (6) Could not resolve host: pve.prinz-stockenweiler.de",
       "status": "broken"
     }
   ],
@@ -526,22 +552,19 @@
       "Tailscale peer toolbox.tail150400.ts.net / 100.99.206.128"
     ],
     "service_paths": [
-      "http://100.99.206.128:8442/alive",
-      "http://100.99.206.128:8443/",
       "http://100.99.206.128:8444/web/login",
       "http://100.99.206.128:8445/",
       "http://100.99.206.128:8446/accounts/login/",
       "http://100.99.206.128:8447/",
-      "http://100.99.206.128:8448/",
       "http://100.99.206.128:8449/"
     ]
   },
   "blockers": [
+    "Home Assistant mobile/frontdoor is still degraded and returns HTTP 400 through toolbox.",
     "StudioPC direct access to legacy guest 192.168.2.x is not the working path during the UCG transition because the same subnet exists on two different L2 domains.",
-    "StudioPC still has a legacy local WireGuard VPN interface active (`VPN` / `10.0.0.2`), which keeps old Stockenweiler assumptions alive and adds operator confusion.",
     "Stockenweiler has inactive storage targets: anker-music.",
     "Stockenweiler public legacy endpoints are still broken: https://home.prinz-stockenweiler.de, https://papierkram.prinz-stockenweiler.de/dashboard, https://cloud.prinz-stockenweiler.de/apps/dashboard/, https://pve.prinz-stockenweiler.de.",
-    "Some expected Tailscale peers are offline: pixel-8a.tail150400.ts.net, surface-go-frontend.tail150400.ts.net, wohnzimmertv.tail150400.ts.net, wolf-zenbook-ux325ea-ux325ea.tail150400.ts.net."
+    "Some expected Tailscale peers are offline: iphone-15.tail150400.ts.net, pixel-8a.tail150400.ts.net, radio-node.tail150400.ts.net, surface-go-frontend.tail150400.ts.net, wohnzimmertv.tail150400.ts.net, wolf-zenbook-ux325ea-ux325ea.tail150400.ts.net."
   ],
   "recommended_next_order": [
     "Treat Tailscale as the only professional operator path; stop depending on direct StudioPC-to-legacy 192.168.2.x reachability during migration.",
@@ -561,16 +584,16 @@
     "Handle PBS and any storage redesign last, after networking and service naming are stable."
   ],
   "summary": {
-    "local_ipv4_interfaces": 4,
-    "local_active_dns_sets": 3,
+    "local_ipv4_interfaces": 5,
+    "local_active_dns_sets": 2,
     "online_tailscale_peers": 5,
-    "offline_tailscale_peers": 4,
-    "routed_tailscale_peers": 1,
+    "offline_tailscale_peers": 6,
+    "routed_tailscale_peers": 2,
     "anker_running_containers": 3,
     "anker_running_vms": 4,
-    "stock_running_containers": 14,
-    "stock_running_vms": 2,
-    "frontdoors_ok": 8,
+    "stock_running_containers": 6,
+    "stock_running_vms": 1,
+    "frontdoors_ok": 5,
     "frontdoors_total": 8,
     "stock_public_ok": 0,
     "stock_public_total": 4

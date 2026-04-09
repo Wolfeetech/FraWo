@@ -2,7 +2,7 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-ADGUARD_IP="192.168.2.20"
+ADGUARD_IP="10.1.0.20"
 
 bool_from_grep() {
   local needle="$1"
@@ -53,7 +53,7 @@ else
   adguard_rewrite_cloud="no"
 fi
 
-allowed_lan_clients="$(bool_from_grep '  - "192.168.2.0/24"' "${ROOT_DIR}/ansible/inventory/host_vars/toolbox.yml")"
+allowed_lan_clients="$(bool_from_grep '  - "10.1.0.0/24"' "${ROOT_DIR}/ansible/inventory/host_vars/toolbox.yml")"
 allowed_tailscale_clients="$(bool_from_grep '  - "100.64.0.0/10"' "${ROOT_DIR}/ansible/inventory/host_vars/toolbox.yml")"
 
 pilot_client_primary="wolf-ZenBook-UX325EA-UX325EA"

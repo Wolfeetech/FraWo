@@ -1,4 +1,49 @@
-# Session Closeout - 2026-03-18
+# Session Closeout - 2026-04-09
+Generated at: `2026-04-09 17:21:00 CEST`
+
+## Day Status
+
+- **Lane A & C Completed:** Der Business-MVP-Kern und die basale Infrastruktur (VLAN/Security/PBS) sind technisch abgeschlossen.
+- **VLAN Migration:** Die Infrastruktur ist erfolgreich auf den `UniFi Cloud Gateway Ultra` (10.1.0.x) migriert.
+- **Website/Public (Lane B):** DNS-Cutover für `frawo-tech.de` auf VM220 (Odoo) ist erfolgt.
+  - A/AAAA Records bei STRATO auf 92.211.33.54 / 2a00:1e:ef80:7c01:be24:11ff:feaa:bbcc gesetzt.
+  - Erreichbarkeit via HTTP (www) ist verifiziert.
+- **DS-Lite Blocker:** Die EasyBox 805 verhindert IPv4-Portforwards (DS-Lite). HTTPS für IPv4-Clients benötigt daher Cloudflare-Terminierung oder Dual-Stack Upgrade.
+
+## What Was Finished Since 2026-03-30
+
+1. **DNS Cutover STRATO:** Die Domain `frawo-tech.de` zeigt nun auf das Homeserver-System (VM220).
+2. **Website-Status-Check:** Verifiziert, dass Odoo öffentlich erreichbar ist (via `http://www.frawo-tech.de`).
+3. **Router-Analyse:** Identifiziert, dass die EasyBox 805 im DS-Lite Modus läuft, was Lane B (Public IPv4) blockiert.
+4. **VLAN Transition:** Unterstützung beim Übergang von `192.168.2.x` auf `10.1.0.x` (Toolbox jetzt auf `10.1.0.20`).
+5. **Architectural Handoff:** Alle Erkenntnisse zum DS-Lite-Anschluss wurden in die `MEMORY.md` überführt.
+6. **Task Clean-Up:** Lane A und Lane C sind offiziell als `completed` im System hinterlegt.
+7. **Workspace Sanitization:** Entfernung temporärer Logdateien und Beendigung verwaister Hintergrundprozesse (SSH).
+
+## Final Cleanup (2026-04-09)
+
+- **Konnektivitäts-Check:** Die Route über das UCG (10.1.0.1) ist stabil; Internet-Latenzen liegen im Normalbereich (~15ms).
+- **Prozess-Hygiene:** Alle Hintergrund-Prozesse der aktuellen Entwicklungs-Session wurden beendet.
+- **Verbindlichkeit:** Die `MEMORY.md` und `PLATFORM_STATUS.md` wurden synchronisiert und dienen als Handoff-Basis.
+
+## What's Next (Forward Focus)
+
+- **Odoo Sync:** Fertigstellung der Lane-C-zu-Odoo Synchronisationsskripte.
+- **Public Design:** Optimierung der Odoo-Website für professionelle Standards (Bilder/Content).
+- **HTTPS/TLS:** Aktivierung der TLS-Terminierung (Caddy/Cloudflare) sobald DNS-Propagierung und Port-Accessibility (Gateway) harmonisiert sind.
+
+## Resume Commands
+
+```bash
+cd ~/.gemini/antigravity/brain/Homeserver_2027_Ops_Workspace
+make refresh-context
+make plan-progress
+```
+
+---
+
+# Session Closeout - 2026-04-04
+Generated at: `2026-04-04 15:25:00 CEST`
 
 ## Day Status
 

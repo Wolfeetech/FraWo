@@ -15,4 +15,4 @@ test -d /var/lib/docker/volumes/paperless_media/_data/documents/archive && echo 
 rclone --config /root/.config/rclone/rclone.conf lsd nextcloud_frontend:Paperless | sed "s/^/remote_dir /"
 '
 
-ssh -o BatchMode=yes wolf@192.168.2.23 "sudo -n bash -lc ${remote_cmd@Q}"
+ssh -o BatchMode=yes wolf@10.1.0.23 "sudo -n bash -lc ${remote_cmd@Q}"

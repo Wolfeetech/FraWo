@@ -219,17 +219,18 @@ cat > "${OUTPUT_FILE}" <<EOF
 
 - Managed hosts in Ansible inventory: \`${inventory_count}\`
 - Router baseline: \`192.168.2.1\` Vodafone Easy Box
-- Planned future gateway: \`UniFi Cloud Gateway Ultra (UCG-Ultra)\`, not yet active
-- Core business nodes: \`192.168.2.20\` toolbox, \`192.168.2.21\` nextcloud, \`192.168.2.22\` odoo, \`192.168.2.23\` paperless, \`192.168.2.24\` haos
+- UCG transition gateway: \`UniFi Cloud Gateway Ultra (UCG-Ultra)\` active for \`proxmox-anker\` on VLAN 101 (\`10.1.0.92/24\`), with legacy aliases \`192.168.2.10/24\` + temporary \`192.168.2.1/24\`
+- UCG static route \`Anker-Legacy-Bridge\` set: \`192.168.2.0/24 -> 10.1.0.92\`; WAN overlap keeps it shadowed and it now serves only as an emergency fallback
+- Core business nodes: \`10.1.0.20\` toolbox, \`10.1.0.21\` nextcloud, \`10.1.0.22\` odoo, \`10.1.0.23\` paperless, \`10.1.0.24\` haos, \`10.1.0.26\` vaultwarden, \`10.1.0.30\` storage-node
 - Latest stress summary: \`${latest_stress_summary:-missing}\`
 - Latest release-MVP gate: \`${latest_release_mvp_gate:-missing}\` -> \`${release_mvp_decision}\`
 - Latest production gate: \`${latest_production_gate:-missing}\` -> \`${production_decision}\`
-- Toolbox network base: Caddy on \`192.168.2.20:80\`, AdGuard Home on \`192.168.2.20:53\` and localhost-only admin on \`127.0.0.1:3000\`, \`hs27.internal\` rewrites verified in opt-in mode
-- Toolbox mobile Tailscale frontdoor: \`100.99.206.128:8443\` HA, \`:8444\` Odoo, \`:8445\` Nextcloud, \`:8446\` Paperless, \`:8447\` Portal, \`:8448\` Radio, \`:8449\` Media
-- Toolbox Tailscale state: \`/dev/net/tun\` mapped, \`tailscaled\` active, backend \`Running\`, subnet route \`192.168.2.0/24\` is active in the Tailnet and Split-DNS for \`hs27.internal\` is operational
+- Toolbox network base: Caddy on \`10.1.0.20:80\`, AdGuard Home on \`10.1.0.20:53\` and localhost-only admin on \`127.0.0.1:3000\`, \`hs27.internal\` rewrites verified in opt-in mode
+- Toolbox mobile Tailscale frontdoor: \`100.99.206.128:8443\` HA, \`:8444\` Odoo, \`:8445\` Nextcloud, \`:8446\` Paperless, \`:8447\` Portal, \`:8448\` Radio (502: node \`100.64.23.77\` offline), \`:8449\` Media
+- Toolbox Tailscale state: \`/dev/net/tun\` mapped, \`tailscaled\` active, backend \`Running\`, subnet route \`10.1.0.0/24\` is advertised (Tailnet approval pending), Split-DNS still needs to be updated to \`10.1.0.20\`
 - VM 200, VM 210, VM 220 and VM 230: QEMU Guest Agent verified from Proxmox during latest audit
 - Business stacks are running from \`/opt/homeserver2027/stacks\` under systemd-managed local IaC
-- Home Assistant OS is stable on \`192.168.2.24:8123\` and \`ha.hs27.internal\` now returns \`HTTP 200\` through Caddy
+- Home Assistant OS is stable on \`10.1.0.24:8123\` and \`ha.hs27.internal\` now returns \`HTTP 200\` through Caddy
 - Direct Ansible management status: \`ansible-ping=${ansible_ping_status}\`
 - Local Proxmox backup status: \`backup-list=${backup_list_status}\`, \`proxmox-local-backup-check=${proxmox_backup_status}\`; the latest stress run is the deciding source for whether real archives under \`/var/lib/vz/dump\` are currently proven
 - PBS status from latest gate: \`pbs-stage-gate=${pbs_stage_gate_status}\`, \`pbs-proof-check=${pbs_proof_status}\`; \`VM 240\` existiert, ist aber gestoppt und der verifizierte Datastore-/Proof-Pfad ist aktuell nicht gruen
@@ -241,7 +242,7 @@ cat > "${OUTPUT_FILE}" <<EOF
 - Portable backup / PBS datastore path is currently not verified green in the latest PBS checks; der sichtbare USB-Stick meldet derzeit \`No medium found\`, und die datentragende USB-SSD bleibt bis zu einer expliziten Freigabe unangetastet
 - Raspberry-Pi radio node remains only partially green: \`radio.hs27.internal\` and the mobile radio frontdoor answer through the toolbox, but the live audit still shows \`rpi_radio_integrated=no\` und \`rpi_radio_usb_music_ready=no\`
 - Radio/AzuraCast is therefore not part of the current business-MVP release decision
-- Media server V1 is now live on \`CT 100 toolbox\`: Jellyfin is reachable internally on \`http://media.hs27.internal\`, directly on \`http://192.168.2.20:8096\`, and through the mobile Tailscale frontdoor on \`:8449\`; the obsolete local bootstrap sync is retired and Jellyfin reads from the central SMB-backed media path
+- Media server V1 is now live on \`CT 100 toolbox\`: Jellyfin is reachable internally on \`http://media.hs27.internal\`, directly on \`http://10.1.0.20:8096\`, and through the mobile Tailscale frontdoor on \`:8449\`; the obsolete local bootstrap sync is retired and Jellyfin reads from the central SMB-backed media path
 - ZenBook remote posture is now stronger: Tailscale joined on \`100.76.249.126\` and AnyDesk is installed and active as a GUI fallback
 - Remote-only work windows are now codified through \`REMOTE_ONLY_WORK_WINDOW.md\` and \`make remote-only-check\`
 

@@ -472,6 +472,7 @@ Ziel:
 
 Status:
 - **AKTIV** - UCG laeuft, VLAN-Schema deployed (2026-04-03)
+- **BLOCKIERT** - Bridge-Route zu 192.168.2.0/24 wird durch UCG-WAN-Overlap (EasyBox) überschattet (Shadowed)
 
 Erreicht (2026-04-03):
 - UCG-Ultra am Anker-Standort aktiv

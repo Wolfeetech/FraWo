@@ -13,11 +13,11 @@ Der Schwerpunkt ist bewusst:
 
 ## Aktueller Ist-Stand
 
-- `AdGuard Home` laeuft auf `192.168.2.20:53`
+- `AdGuard Home` laeuft auf `10.1.0.20:53`
 - die Admin-Oberflaeche ist nur lokal auf `127.0.0.1:3000` verfuegbar
-- `hs27.internal`-Rewrites liefern auf `192.168.2.20`
+- `hs27.internal`-Rewrites liefern auf `10.1.0.20`
 - erlaubte Clientbereiche enthalten bereits:
-  - `192.168.2.0/24`
+  - `10.1.0.0/24`
   - `100.64.0.0/10`
   - `fd7a:115c:a1e0::/48`
 - `toolbox` ist damit DNS-seitig bereit fuer LAN-Piloten und spaeter fuer Tailnet-Split-DNS
@@ -88,14 +88,14 @@ Erwartung:
 ### 2. Direkte DNS-Queries ohne Client-Umstellung
 
 ```bash
-dig +short @192.168.2.20 portal.hs27.internal
-dig +short @192.168.2.20 ha.hs27.internal
-dig +short @192.168.2.20 cloud.hs27.internal
+dig +short @10.1.0.20 portal.hs27.internal
+dig +short @10.1.0.20 ha.hs27.internal
+dig +short @10.1.0.20 cloud.hs27.internal
 ```
 
 Erwartung:
 
-- jeweils `192.168.2.20`
+- jeweils `10.1.0.20`
 
 ### 3. HTTP-Pfad weiter pruefen
 
@@ -120,7 +120,7 @@ Beispielhaft nennen wir sie hier `${ACTIVE_CONN}`.
 
 ```bash
 ACTIVE_CONN="HIER-DEN-AKTIVEN-NAMEN-EINTRAGEN"
-nmcli connection modify "${ACTIVE_CONN}" ipv4.ignore-auto-dns yes ipv4.dns "192.168.2.20 1.1.1.1" ipv4.dns-search "hs27.internal"
+nmcli connection modify "${ACTIVE_CONN}" ipv4.ignore-auto-dns yes ipv4.dns "10.1.0.20 1.1.1.1" ipv4.dns-search "hs27.internal"
 nmcli connection up "${ACTIVE_CONN}"
 ```
 

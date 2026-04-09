@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-HAOS_IP="192.168.2.24"
-TOOLBOX_IP="192.168.2.20"
+HAOS_IP="10.1.0.24"
+TOOLBOX_IP="10.1.0.20"
 HAOS_HOSTNAME="ha.hs27.internal"
 
 log() {

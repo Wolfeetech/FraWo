@@ -3,16 +3,16 @@ homeserver_project: homeserver-2027
 homeserver_inventory_observed_at: "2026-03-17"
 homeserver_router_model: "Vodafone Easy Box"
 homeserver_future_gateway_model: "UniFi Cloud Gateway Ultra (UCG-Ultra)"
-homeserver_future_gateway_status: "planned-not-active"
+homeserver_future_gateway_status: "active-transition"
 homeserver_router_login_username: "vodafone"
 homeserver_router_hostnames:
   - "easy.box"
   - "easy.box.local"
-homeserver_lan_cidr: "192.168.2.0/24"
-homeserver_gateway: "192.168.2.1"
+homeserver_lan_cidr: "10.1.0.0/24"
+homeserver_gateway: "10.1.0.1"
 homeserver_internal_domain: "hs27.internal"
-homeserver_haos_target_ip: "192.168.2.24"
-homeserver_haos_current_ip: "192.168.2.24"
+homeserver_haos_target_ip: "10.1.0.24"
+homeserver_haos_current_ip: "10.1.0.24"
 
 homeserver_zone_definitions:
   core: "Router and core network control plane"
@@ -59,14 +59,14 @@ homeserver_planned_services:
     status: "active_joined_route_pending_tailnet_approval"
     target_host: "toolbox"
     advertise_routes:
-      - "192.168.2.0/24"
+      - "10.1.0.0/24"
     join_gate: "joined"
   haos_vm:
     status: "active_baseline_stable_ip_ready_for_internal_proxy"
     target_host: "proxmox"
     vmid: 210
-    target_ip: "192.168.2.24"
-    current_ip: "192.168.2.24"
+    target_ip: "10.1.0.24"
+    current_ip: "10.1.0.24"
     activation_gate: "satisfied"
   public_edge:
     status: "planned"
@@ -92,9 +92,9 @@ homeserver_planned_services:
 homeserver_storage_node:
   vmid: 110
   hostname: storage-node
-  ip: "192.168.2.30"
-  cidr: "192.168.2.30/24"
-  gateway: "192.168.2.1"
+  ip: "10.1.0.30"
+  cidr: "10.1.0.30/24"
+  gateway: "10.1.0.1"
   disk_size: "100G"
   disk_storage: "local-lvm"
   ostemplate: "local:vztmpl/debian-12-standard_12.12-1_amd64.tar.zst"
@@ -112,12 +112,12 @@ homeserver_storage_node:
   nfs_exports:
     - path: /mnt/data/documents
       clients:
-        - "192.168.2.0/24"
+        - "10.1.0.0/24"
         - "100.64.0.0/10"
       options: "rw,sync,no_subtree_check,root_squash"
     - path: /mnt/data/media
       clients:
-        - "192.168.2.0/24"
+        - "10.1.0.0/24"
         - "100.64.0.0/10"
       options: "rw,sync,no_subtree_check,root_squash"
 

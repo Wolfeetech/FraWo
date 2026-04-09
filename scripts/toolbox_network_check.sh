@@ -4,7 +4,7 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 source "${ROOT_DIR}/scripts/toolbox_remote.sh"
 
-TOOLBOX_IP="192.168.2.20"
+TOOLBOX_IP="10.1.0.20"
 
 log() {
   printf '[toolbox-check] %s\n' "$*"

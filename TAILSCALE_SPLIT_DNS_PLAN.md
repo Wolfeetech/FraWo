@@ -15,7 +15,7 @@ Zielbild:
 
 - `MagicDNS` bleibt fuer Tailnet-Nodes aktiv
 - `hs27.internal` wird als `restricted nameserver` bzw. `split DNS` ueber Tailscale eingefuehrt
-- `AdGuard Home` auf `192.168.2.20` wird Nameserver nur fuer `hs27.internal`
+- `AdGuard Home` auf `10.1.0.20` wird Nameserver nur fuer `hs27.internal`
 - andere DNS-Anfragen bleiben ausserhalb dieses Splits unberuehrt
 
 ## Aktueller Ist-Stand
@@ -23,22 +23,21 @@ Zielbild:
 - `MagicDNS` ist im Tailnet aktiv
 - der ZenBook akzeptiert Tailscale-DNS (`CorpDNS=true`)
 - `toolbox.tail150400.ts.net` ist ueber `100.100.100.100` aufloesbar
-- `hs27.internal` ist direkt ueber AdGuard auf `192.168.2.20` korrekt aufloesbar
-- die Toolbox annonciert lokal `192.168.2.0/24`
-- die Tailnet-Seite zeigt die Subnet-Route jetzt als aktiv
-- der restricted nameserver fuer `hs27.internal` ist gesetzt
-- `ha.hs27.internal`, `portal.hs27.internal` und `odoo.hs27.internal` liefern ueber `100.100.100.100` sauber `192.168.2.20`
+- `hs27.internal` ist direkt ueber AdGuard auf `10.1.0.20` korrekt aufloesbar
+- die Toolbox annonciert lokal `10.1.0.0/24` (Tailnet-Approval steht noch aus)
+- der restricted nameserver fuer `hs27.internal` ist noch auf `192.168.2.20` gesetzt und muss auf `10.1.0.20` aktualisiert werden
+- `ha.hs27.internal`, `portal.hs27.internal` und `odoo.hs27.internal` liefern ueber `100.100.100.100` korrekt, sobald Split-DNS auf `10.1.0.20` umgestellt ist
 
 ## Wichtige Regel
 
-Solange der Nameserver fuer `hs27.internal` die private LAN-IP `192.168.2.20` ist, braucht Tailscale fuer entfernte Clients den funktionierenden Subnet-Router.
+Solange der Nameserver fuer `hs27.internal` die private LAN-IP `10.1.0.20` ist, braucht Tailscale fuer entfernte Clients den funktionierenden Subnet-Router.
 
 Praktisch hiess das fuer die Umsetzung:
 
-- erst Route `192.168.2.0/24` approven
+- erst Route `10.1.0.0/24` approven
 - dann Split-DNS in der Tailscale-Adminseite setzen
 
-Dieser Pfad ist jetzt fuer den ZenBook erfolgreich umgesetzt.
+Der vorherige `192.168.2.0/24`-Pfad war erfolgreich; der neue `10.1.0.0/24`-Pfad wartet noch auf Tailnet-Approval und DNS-Update.
 
 ## Readiness Check
 
@@ -58,14 +57,14 @@ Erwartung fuer echte Umstellung:
 
 ## Exakte Admin-Schritte
 
-Status: erledigt fuer den ZenBook/Tailnet-Testpfad.
+Status: Update auf `10.1.0.20` steht noch aus (Route/DNS-Approval).
 
 ### 1. Route zuerst
 
 1. `https://login.tailscale.com/admin/machines`
 2. Tailnet `w.prinz1101@gmail.com`
 3. Node `toolbox`
-4. Route `192.168.2.0/24` approven
+4. Route `10.1.0.0/24` approven
 
 ### 2. DNS-Seite oeffnen
 
@@ -75,7 +74,7 @@ Status: erledigt fuer den ZenBook/Tailnet-Testpfad.
 ### 3. Restricted Nameserver fuer `hs27.internal` anlegen
 
 1. `Add nameserver`
-2. Custom nameserver `192.168.2.20`
+2. Custom nameserver `10.1.0.20`
 3. Restrict to domain `hs27.internal`
 4. Speichern
 
@@ -83,14 +82,14 @@ Status: erledigt fuer den ZenBook/Tailnet-Testpfad.
 
 Noch nicht tun:
 
-- keinen globalen Nameserver fuer alles auf `192.168.2.20` setzen
+- keinen globalen Nameserver fuer alles auf `10.1.0.20` setzen
 - `Override DNS servers` nicht als blanket change einschalten, wenn nur `hs27.internal` gebraucht wird
 
 Der saubere erste Schritt ist wirklich nur:
 
 - `restricted nameserver`
 - Domain `hs27.internal`
-- Server `192.168.2.20`
+- Server `10.1.0.20`
 
 ## Validierung nach dem Admin-Schritt
 

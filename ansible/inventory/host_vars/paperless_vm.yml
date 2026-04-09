@@ -3,7 +3,7 @@ compose_stack_name: paperless
 compose_service_name: homeserver-compose-paperless.service
 compose_template: stacks/paperless/docker-compose.yml.j2
 compose_env_template: stacks/paperless/stack.env.j2
-compose_http_bind: 192.168.2.23
+compose_http_bind: 10.1.0.23
 compose_http_port: 8000
 paperless_time_zone: Europe/Berlin
 paperless_ocr_language: deu
@@ -11,7 +11,7 @@ paperless_admin_user: frawoadmin
 paperless_frontend_user: frontend
 paperless_consume_host_dir: /var/lib/docker/volumes/paperless_consume/_data
 paperless_archive_host_dir: /var/lib/docker/volumes/paperless_media/_data/documents/archive
-paperless_nextcloud_base_url: http://192.168.2.21
+paperless_nextcloud_base_url: http://10.1.0.21
 paperless_nextcloud_rclone_remote: nextcloud_frontend
 paperless_nextcloud_remote_root: Paperless
 paperless_nextcloud_inbox_dir: Eingang

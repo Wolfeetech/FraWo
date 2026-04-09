@@ -14,7 +14,7 @@ cfg = caddy.read_text()
 block = """
 https://vault.hs27.internal {
   tls internal
-  reverse_proxy 192.168.2.26:8080
+  reverse_proxy 10.1.0.26:8080
 }
 """
 if 'https://vault.hs27.internal' not in cfg:
@@ -25,9 +25,9 @@ if 'https://vault.hs27.internal' not in cfg:
 
 adguard = Path('/opt/homeserver2027/stacks/toolbox-network/adguard/conf/AdGuardHome.yaml')
 text = adguard.read_text()
-needle = "  - domain: vault.hs27.internal\n    answer: 192.168.2.20\n"
+needle = "  - domain: vault.hs27.internal\n    answer: 10.1.0.20\n"
 if 'domain: vault.hs27.internal' not in text:
-    marker = "  - domain: radio.hs27.internal\n    answer: 192.168.2.20\n"
+    marker = "  - domain: radio.hs27.internal\n    answer: 10.1.0.20\n"
     if marker in text:
         text = text.replace(marker, marker + needle)
         adguard.write_text(text)
@@ -44,4 +44,4 @@ PY
 systemctl restart homeserver-compose-toolbox-network.service
 sleep 5
 curl -kI --resolve vault.hs27.internal:443:127.0.0.1 https://vault.hs27.internal
-curl -fsS http://192.168.2.26:8080/alive
+curl -fsS http://10.1.0.26:8080/alive

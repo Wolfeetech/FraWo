@@ -11,22 +11,22 @@ Keine Secrets. Keine Passwoerter. Diese Datei ist dafuer gedacht, sie direkt an 
 
 ## Generierung
 
-- Generated at: `2026-04-04 02:04:25`
+- Generated at: `2026-04-09 17:22:47`
 - Workspace root: `C:\Users\StudioPC\Documents\Homeserver 2027 Workspace`
 - Git branch: `main`
-- Pending git changes: `44`
+- Pending git changes: `66`
 - Managed hosts in inventory: `30`
 
 ## Source Freshness
 
 - `AI_BOOTSTRAP_CONTEXT.md`: `2026-04-04 02:03:02`
 - `OPS_HOME.md`: `2026-03-31 06:53:07`
-- `OPERATOR_TODO_QUEUE.md`: `2026-04-03 20:49:37`
+- `OPERATOR_TODO_QUEUE.md`: `2026-04-09 15:01:40`
 - `manifests/work_lanes/current_plan.json`: `2026-04-04 02:03:02`
-- `artifacts/release_mvp_gate/latest_release_mvp_gate.json`: `2026-03-31 09:57:09`
+- `artifacts/release_mvp_gate/latest_release_mvp_gate.json`: `2026-04-09 17:13:09`
 - `artifacts/public_ipv6_exposure_audit/latest_report.md`: `2026-03-31 06:32:34`
 - `artifacts/estate_census/latest_report.json`: `2026-04-03 23:27:25`
-- `artifacts/ucg_portal_pilot_preflight/latest_report.json`: `2026-04-03 23:26:52`
+- `artifacts/ucg_portal_pilot_preflight/latest_report.json`: `2026-04-05 01:32:41`
 - `artifacts\website_release_gate\20260330_161648\website_release_gate.md`: `2026-03-30 16:16:48`
 - `artifacts\production_gate\20260328_072130\production_gate.md`: `2026-03-28 07:21:32`
 - `manifests/control_surface/actions.json`: `2026-03-30 21:53:25`
@@ -56,6 +56,7 @@ Keine Secrets. Keine Passwoerter. Diese Datei ist dafuer gedacht, sie direkt an 
 - Latest storage optimization audit: `artifacts/storage_optimization/latest_report.md`
 - Latest CI/CD delivery factory report: `artifacts/cicd_delivery_factory/latest_report.md`
 - Latest CI/CD delivery factory preflight: `artifacts/cicd_delivery_factory/latest_preflight.md` with current hard limit `repo_side_factory_only`
+- Vector Store Index: `homelab` (Pinecone Cloud, AWS us-east-1, dimension 1024)
 - Transition note `2026-04-03`: `wolfstudiopc` currently reaches the core services professionally via `toolbox` Tailscale frontdoors on `100.99.206.128:*`; direct StudioPC access to the legacy guest `192.168.2.x` range is not the working path while the UCG migration bridge is active
 
 ## Core Service Map
@@ -78,9 +79,9 @@ Keine Secrets. Keine Passwoerter. Diese Datei ist dafuer gedacht, sie direkt an 
 ## Current Release State
 
 - Active delivery lane: `Lane A: MVP Closeout`
-- Business MVP gate: `BLOCKED`
+- Business MVP gate: `MVP_READY`
 - Business MVP critical Codex checks: `passed=11` / `non-passed=0`
-- Business MVP manual checks: `passed=6` / `pending_or_failed=2`
+- Business MVP manual checks: `passed=8` / `pending_or_failed=0`
 - Public website gate: `BLOCKED`
 - Production certification gate: `BLOCKED`
 - Public IPv6 exposure audit: `open_checks=0` / `total_checks=13`
@@ -109,9 +110,9 @@ Keine Secrets. Keine Passwoerter. Diese Datei ist dafuer gedacht, sie direkt an 
 - Pyrefly process present: `false`
 - Stale ssh helpers: `0`
 - Stale mail powershell: `0`
-- Tailscale backend: `Running` / stockenweiler route visible `False`
-- ssh stock-pve: `reachable`
-- Local WireGuard VPN service running: `true`
+- Tailscale backend: `Running` / stockenweiler route visible `True`
+- ssh stock-pve: `unreachable`
+- Local WireGuard VPN service running: `false`
 - Important split: local StudioPC WireGuard is legacy/recovery only; it is not the same thing as a later professional site-to-site WireGuard between UCG and Stockenweiler.
 - Primary Stockenweiler admin path is currently ssh stock-pve via toolbox-backed userspace WireGuard.
 - Target professional bridge remains Tailscale subnet routing, not permanent dependence on the local stale Windows WireGuard tunnel.
@@ -179,14 +180,14 @@ Keine Secrets. Keine Passwoerter. Diese Datei ist dafuer gedacht, sie direkt an 
 ## UCG Pilot Snapshot
 
 - Pilot: `portal`
-- Ready for gated runtime change: `true`
-- Recommendation: `portal_pilot_runtime_green`
+- Ready for gated runtime change: `false`
+- Recommendation: `fix_preflight_findings_before_any_runtime_portal_cutover`
 - Runtime runbook: `UCG_PORTAL_PILOT_RUNBOOK.md`
-- Portal status snapshot: platform_core `ok`, healthy `7` / `7`
+- Portal status snapshot: platform_core `attention`, healthy `6` / `7`
   - `portal_frontdoor_http` -> `ok` / HTTP 200 via http://100.99.206.128:8447/
-  - `portal_frontdoor_status_json` -> `ok` / HTTP 200, platform_core=ok, healthy=7/7
-  - `portal_internal_hostname` -> `ok` / HTTP 200 via http://portal.hs27.internal/
-  - `portal_internal_status_json` -> `ok` / HTTP 200 via http://portal.hs27.internal/status.json
+  - `portal_frontdoor_status_json` -> `fail` / HTTP 200, platform_core=attention, healthy=6/7
+  - `portal_internal_hostname` -> `fail` / HTTP 0 via http://portal.hs27.internal/
+  - `portal_internal_status_json` -> `fail` / HTTP 0 via http://portal.hs27.internal/status.json
 
 ## Current Lane Model
 
@@ -203,10 +204,7 @@ Keine Secrets. Keine Passwoerter. Diese Datei ist dafuer gedacht, sie direkt an 
 
 ## Business MVP Blockers
 
-- `device_rollout_verified`: `pending`
-  - Open rollout blocker 2026-03-31: Franz Surface Laptop still needs visible acceptance on http://portal.hs27.internal/franz/ and Franz iPhone still needs visible acceptance on http://100.99.206.128:8447/franz/. Both start paths must visibly expose the core direct targets for Nextcloud, Paperless, Odoo and Vaultwarden before this check can pass. The rollout is currently additionally blocked by the missing 2FA path while the operator smartphone is still lost.
-- `vaultwarden_recovery_material_verified`: `pending`
-  - No fresh proof yet that the Vaultwarden recovery material exists offline in two separate physical copies.
+- none
 
 ## Public Website Release State
 
