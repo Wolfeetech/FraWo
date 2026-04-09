@@ -633,12 +633,37 @@ Lokale Admin-Flaechen (nur localhost):
    - der `14.4G`-Stick `/dev/sdc` ist jetzt fertig als exFAT-Favorites-Stick `FRAWO_FAVS`
    - AnyDesk auf dem ZenBook ist inzwischen installiert und aktiv
 17. Remote-Zugriff professionell absichern und dokumentieren
+13. `UniFi Cloud Gateway Ultra` als spaetere Netzrand-Migration vorbereiten, aber erst nach abgeschlossenem LXC-/VM-Basisaufbau, validierten Backups und finalem IP-Plan aktivieren
+14. Capacity-Rightsizing in ein Wartungsfenster aufnehmen
+   - `VM 200 nextcloud`: Ziel `2048 MB` RAM
+   - `VM 220 odoo`: Ziel `2048 MB` RAM
+   - `VM 210` und `VM 230` vorerst bewusst unveraendert lassen
+   - vor spaeteren zusaetzlichen Frontdoor-/Public-Edge-Diensten den Rootfs- und RAM-Bedarf von `CT 100` neu bewerten
+15. Shared Frontend Node `Surface Go` in den finalen Managed-Frontend-Standard ueberfuehren
+   - Clean Rebuild und Basis-Bootstrap sind abgeschlossen
+   - SSH-Key-Zugang, Tailnet-Admin-Pfad, Kiosk-User `frontend`, lokales Portal und GDM-Autologin sind live
+   - Root-Sleep-Haertung ist abgeschlossen; die Sleep-Targets sind maskiert
+    - das Surface-Frontend nutzt jetzt einen robusteren lokalen Pfad mit dynamischen Shortcuts (Nextcloud Eingang, Archiv, Paperless Suche) und einer Dokumentenflow-Hilfe.
+     - lokaler Portalservice auf `127.0.0.1:17827`
+     - sichtbarer Launcher `FRAWO Control`
+     - `epiphany-browser` ueber lokalen Wrapper als aktuelle Browser-Instanz
+   - das Surface-Portal soll jetzt `Radio` und `Radio Control` nativ fuer AzuraCast anbieten
+   - die lokale Surface-Portal-Vorlage ist jetzt auch fuer den gemeinsamen Live-Status-Snapshot aus `portal.hs27.internal/status.json` vorbereitet
+   - der technische Kern ist gruen; offener Restblock ist jetzt lokaler Browser-/Touch-Tastatur-Polish
+16. Installationsmedien und Remote-Zugriff fuer die naechste Hardwarewelle vorbereiten
+   - `MEDIA_AND_REMOTE_PREP.md` ist die kanonische Anleitung
+   - Raspberry Pi 4 Zielimage: `Ubuntu Server 22.04.5 LTS ARM64`
+   - Surface-Zielimage: `Ubuntu Desktop 24.04.4 LTS`
+   - der `7.7G`-Stick `/dev/sdd` ist jetzt fertig als dedizierter Ventoy-Install-/Image-Stick
+   - der `14.4G`-Stick `/dev/sdc` ist jetzt fertig als exFAT-Favorites-Stick `FRAWO_FAVS`
+   - AnyDesk auf dem ZenBook ist inzwischen installiert und aktiv
+17. Remote-Zugriff professionell absichern und dokumentieren
    - `REMOTE_ACCESS_STANDARD.md` ist die kanonische Anleitung
    - Tailscale ist der primaere Remote-Pfad
    - AnyDesk ist der GUI-Fallback auf dem ZenBook
 18. Raspberry-Pi-Radio-Node in den nutzbaren internen Betriebsstandard ueberfuehren
    - `RASPBERRY_PI_RADIO_NODE_PLAN.md` ist die kanonische Anleitung
-   - `RADIO_OPERATIONS_STANDARD.md` ist jetzt der operative Betriebsstandard
+   - `RADIO_OPERATIONS_STANDARD.md` ist der operative Betriebsstandard
    - `make radio-ops-check` ist der schnelle Live-Check fuer Radio, Radio Control und `nowplaying`
    - `radio.hs27.internal` zeigt jetzt intern auf den Pi und liefert die AzuraCast-Login-Seite
    - die erste Station `FraWo - Funk` spielt bereits aus der direkt angeschlossenen USB-Bibliothek
@@ -728,6 +753,11 @@ Lokale Admin-Flaechen (nur localhost):
    - naechste Prioritaet bleibt trotz guter Kernbasis PBS-Storage, portabler Backup-Stick und Inventar-Finalisierung
 
 ## Aktive Operator-Aktionen
+
+- [x] Geraete-Rollout: Surface Laptop und iPhone (Verifiziert am 2026-04-09)
+- [x] Vaultwarden Recovery: Physischer Nachweis erbracht (2026-04-09)
+- [ ] Radio/Media: Kuration der Bibliothek (Lane E)
+- [ ] Website: Go-Live Vorbereitung (Lane B)
 
 0. `AKTION VON DIR ERFORDERLICH:` Falls du die klassischen `hs27.internal`-Hostnamen schon vor der Vollmigration direkt auf `wolfstudiopc` im Browser willst, braucht es einen bewussten Windows-Hosts-/DNS-Schritt mit Admin-Token.
    - benoetigte Aktion: nur entscheiden, ob der StudioPC bis zur Vollmigration per Tailscale-Frontdoors arbeiten soll oder ob zusaetzlich lokale Hostnamen per Admin-Override wiederhergestellt werden sollen
@@ -836,3 +866,54 @@ Lokale Admin-Flaechen (nur localhost):
 - 2026-04-09: Medienpfad Stockenweiler technisch wieder offen. `stockenweiler-pve` advertised `192.168.178.0/24`; auf `CT 100 toolbox` wurde `tailscale set --accept-routes=true` gesetzt und `ping 192.168.178.25` ist wieder erfolgreich. Gleichzeitig ist die lokale Entlastungs-SSD `/mnt/music_ssd` trotz `exfatprogs` + `fsck.exfat -p` nicht stabil: unter Schreiblast erneuter Kernel-Fallback auf read-only. `Stockenweiler` ist damit als Sichtungsquelle wieder brauchbar, waehrend `music_ssd` bis auf Weiteres nicht als verlaesslicher Offload-Pfad gelten darf.
 
 - 2026-04-09: Medien-Aufraeumlogik nachgezogen. `studiopc-import-2026-03-25` ist als Review-/Cache-Ballast identifiziert, waehrend `Wolf_EE_20260409` der sinnvollere kuratierte Reviewbestand bleibt. Groesserer Stockenweiler-Bestand (`radio_nas`, `UNSORTED`) ist sichtbar, wird aber bis zu einem stabilen Offload-Pfad nur als Sichtungsquelle behandelt.
+
+- 2026-04-09: Erster sichtbarer Medien-Quantensprung. `studiopc-import-2026-03-25` ist nicht mehr auf `storage-node` als Kapazitaetsballast vorhanden, sondern als vier verifizierte Tar-Archive auf `Stockenweiler:/mnt/data_family/FraWo_review_imports_archives/`. `storage-node` steht danach bei ca. `86%`, `proxmox-anker /` bei ca. `85%`.
+
+- 2026-04-09: `Wolf_EE` lokal in Bulk vs. Review getrennt. Auf `storage-node` bleibt in `incoming/Wolf_EE_20260409` nur noch `MUSIK` als generischer Massenblock; `Job Jobse`, `Sets` und `The_TraXx` wurden in `/mnt/data/media/yourparty_Libary/review/Wolf_EE_20260409` verschoben und sind damit fuer die naechste Sortierphase sauber abgegrenzt.
+
+- 2026-04-09: Medien-Kuration auf Best-Practice-Soll gezogen. `incoming` ist wieder leer, `Wolf_EE` ist logisch in `bulk` und `review` getrennt, und die vorherige `studiopc-import`-Notiz liegt nur noch als Repo-Artefakt vor. Grundlage dafuer ist der dokumentierte Kurationspfad in `artifacts/media_reconciliation/20260409_wolf_ee_curation_best_practice.md`.
+
+- 2026-04-09: `Wolf_EE` weiter kuratiert. `reference_sets` und `download_pools` sind nicht mehr Sammeltoepfe, sondern tragen jetzt sprechende Untergruppen (`essential_mixes`, `record_data`, `nicotone`, `artist_pool`, `genre_pool`). Das reduziert Such- und Sortieraufwand fuer die naechste Kurationsphase deutlich.
+
+## 2026-04-09 - Nextcloud IP Conflict Recovery And Demo Readiness
+
+- Root cause for renewed `Nextcloud` outage was not app health but Proxmox cloud-init IP drift: `VM 200 nextcloud` had `ipconfig0=10.1.0.24/24` and collided with `VM 210 HAOS`.
+- Controlled remediation set `VM 200` back to the intended `10.1.0.21/24` path and restored `cloud.hs27.internal/status.php` plus mobile frontdoor `:8445/status.php` to `HTTP 200`.
+- Evening smoke verification from `toolbox` showed demo core green enough for tomorrow: `Portal=200`, `Odoo=200`, `Paperless=302`, `Nextcloud status=200`, `Vaultwarden alive=200`, mobile `8444=200`, `8445=200`, `8446=302`, `8447=200`.
+- `ha.hs27.internal` is currently a smaller reverse-proxy/trust drift (`400`) while direct `10.1.0.24:8123` remains `200`; this is not the main business-MVP blocker.
+- Public website blocker is now sharply isolated outside Odoo/Caddy internals: ACME reaches challenge attempts, but public IP `92.211.33.54` still returns `Connection refused` for `frawo-tech.de` and `www.frawo-tech.de`.
+
+## 2026-04-09 - FraWo Website Copy Refinement
+
+- Homepage und Kontaktseite wurden live textlich neu gefasst, um den restlichen KI-/Agenturton aus dem publizierten FraWo-Auftritt zu entfernen.
+- Die tatsaechlich publizierte Homepage lief doppelt ueber die Views 3636 und 3644; beide wurden bewusst auf denselben Stand gezogen, damit nicht weiter zwei Startseiten im System gegeneinander laufen.
+- Sichtbar live sind jetzt u. a. Technik fuer Veranstaltungen, die sauber laufen., Planung, Betrieb und digitale Begleitung. sowie Veranstaltungstechnik bewertet man nicht nach Prospekt..
+- Die Kontaktseite fuehrt jetzt konkreter mit Typische Anfragen und Fuer die erste Mail hilfreich statt mit generischen Marketingfloskeln.
+
+
+## 2026-04-10 - FraWo Website Visual Finish
+
+- Der visuelle Website-Pass wurde live in Odoo ausgerollt, nicht nur lokal vorbereitet.
+- Neben der harten Textkorrektur ist jetzt auch die Struktur deutlich staerker: Hero mit Bildstapel, editorial panel, breiter Service-Grid, Prozessblock, Proof-Gallery und neu gerasterte Kontaktseite.
+- Verifiziert im gerenderten HTML sind die aktiven Klassen rawo-hero-shell, rawo-editorial-card, rawo-service-grid, rawo-proof-gallery, rawo-contact-shell und rawo-contact-grid.
+- Die typischen Billig-/KI-Begriffe bleiben im publizierten Pfad weiterhin raus.
+
+
+## 2026-04-10 - Anti-Split-Brain Rule For FraWo Website
+
+- For `FraWo Website / Odoo Views`, `Codex` is now the explicit single writer for repo assets and live Odoo views.
+- `Gemini` stays `visible_verification_only` in this scope and must not create a second competing implementation path.
+- `Claude` handoffs are advisory inputs only; they must be consolidated into `Codex/website/` before anything is written live.
+- Canonical website write path is:
+  - `Codex/website/frawo_custom_css.css`
+  - `Codex/website/frawo_homepage_blocks.html`
+  - `Codex/website/frawo_contactus.html`
+- No more parallel blind edits directly in Odoo while repo assets diverge.
+
+## 2026-04-10 - FraWo Website SEO Cleanup
+
+- Die generischen Odoo-Metadaten This is the homepage of the website und This is the contact us page of the website wurden live ersetzt.
+- Homepage liefert jetzt echten Meta-Title, Meta-Description, OG-Description und korrektes Canonical auf https://www.frawo-tech.de/.
+- Kontaktseite liefert jetzt echte Description und korrektes Canonical auf https://www.frawo-tech.de/contactus.
+- Kleiner Restpunkt: og:url der Kontaktseite zieht im Host-Preview weiter http://odoo.hs27.internal/contactus statt den oeffentlichen Host.
+

@@ -173,6 +173,23 @@
     - End-to-End-Probe: neue Testmail an `info@frawo-tech.de` wurde nach Service-Lauf von `INBOX` nach `Aliases.Info` verschoben
     - Rueckzug `2026-04-08` spaet: `wolf@`-Mails wurden wieder aus `Aliases.Wolf` in `INBOX` geholt; neue `wolf@`-Probe blieb danach in `INBOX`
     - Laufzeitverifikation danach: `INBOX=6`, `Aliases.Agent=1`, `Aliases.Info=5`, `Aliases.Wolf=0`
+  - Reachability-Remediation `2026-04-09`:
+    - `cloud.hs27.internal` fiel erneut mit `502` aus, obwohl die App in `VM 200` lokal gesund blieb
+    - Root Cause war ein Proxmox-/Cloud-Init-IP-Drift: `qm config 200` zeigte `ipconfig0: 10.1.0.24/24`, also dieselbe UCG-Adresse wie `VM 210 HAOS`
+    - Verifikation vor Fix:
+      - in `VM 200` lieferte `http://127.0.0.1:8080/status.php` `HTTP 200`
+      - auf `toolbox` war `10.1.0.21` unbenutzt (`FAILED` im Neighbor-Cache)
+      - `toolbox -> http://10.1.0.24:8080` war tot, weil `10.1.0.24` real `HAOS` blieb
+    - Remediation:
+      - Proxmox-Metadaten auf den Sollpfad zurueckgesetzt: `qm set 200 --ipconfig0 ip=10.1.0.21/24,gw=10.1.0.1`
+      - `VM 200` danach kontrolliert neu gestartet
+    - Verifikation nach Fix:
+      - `toolbox -> 10.1.0.21` wieder pingbar
+      - `toolbox -> http://10.1.0.21:8080/status.php` -> `HTTP 200`
+      - `toolbox -> http://cloud.hs27.internal/status.php` -> `HTTP 200`
+      - mobile Frontdoor `http://100.99.206.128:8445/status.php` -> `HTTP 200`
+    - Restpunkt:
+      - `10.1.0.21:22` antwortet aktuell `Connection refused`; der App-Pfad ist gruen, aber der SSH-Status sollte spaeter bewusst entschieden werden
 
 ## VM 220 - Odoo
 
@@ -330,6 +347,10 @@
   - Home Assistant reverse-proxy trust was enabled for toolbox source IP `192.168.2.20`
   - a local `vzdump` archive for `VM 210` now exists on Proxmox `local`
   - USB passthrough is still not actionable because no target adapter is visible on the Proxmox host
+  - Spot-Check `2026-04-09`:
+    - Direktpfad `http://10.1.0.24:8123/` liefert weiter `HTTP 200`
+    - `http://ha.hs27.internal/` liefert am Abendstand jedoch `HTTP 400`
+    - das Bild spricht fuer einen kleineren Reverse-Proxy-/Trust-Drift nach den Netzkorrekturen, nicht fuer einen HAOS-Ausfall
 
 ## VM 320 - Restore Test (2026-03-24)
 
@@ -541,3 +562,23 @@
   - `/mnt/music_hdd/yourparty_Libary` ca. `283G`
   - `/mnt/data_family` ca. `830G` belegt, rund `102G` frei
   - `/mnt/music_hdd` selbst ist praktisch voll
+
+## Media Cleanup Result 2026-04-09
+
+- Der zuvor kapazitaetskritische Review-Ordner `studiopc-import-2026-03-25` wurde in vier Archivbloecken nach `stockenweiler-pve:/mnt/data_family/FraWo_review_imports_archives/` ausgelagert:
+  - `studio-one-media.tar` `157M`
+  - `mixxx-recordings.tar` `409M`
+  - `onedrive-mixxx-recordings.tar` `1.5G`
+  - `studio-one-cache-audio.tar` `3.2G`
+- Verifiziert:
+  - die Tarballs liegen auf `Stockenweiler`
+  - `studiopc-import-2026-03-25` enthaelt auf `storage-node` danach nur noch `IMPORT_NOTES.txt`
+  - `CT 110 storage-node` fiel von ca. `91%` auf ca. `86%`
+  - `proxmox-anker /` fiel nach Entfernen der Zwischenarchive von ca. `93%` auf ca. `85%`
+- Zusatzbereinigung `Wolf_EE`:
+  - `incoming/Wolf_EE_20260409` wurde danach vollstaendig aufgeloest
+  - `MUSIK` (`6.5G`) liegt jetzt unter `/mnt/data/media/yourparty_Libary/bulk/Wolf_EE_20260409`
+  - `Job Jobse`, `Sets` und `The_TraXx` wurden in den lokalen Review-Pfad `/mnt/data/media/yourparty_Libary/review/Wolf_EE_20260409` verschoben
+  - `Sets` wurde dort weiter zerlegt in `source_series/essential_mixes` und `misc_reference_sets/record_data`
+  - `The_TraXx` wurde dort weiter zerlegt in `source_pools/nicotone`, `artist_buckets/artist_pool` und `genre_buckets/genre_pool`
+  - `incoming/` ist danach wieder leer

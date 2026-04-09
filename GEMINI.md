@@ -17,11 +17,11 @@
 
 Dieses Dokument beschreibt ab jetzt nur noch delegierbare Arbeit im aktuellen Lane-Modell:
 
-- `Lane A: MVP Closeout` -> `active`
-- `Lane B: Website/Public Hold` -> `watch`
+- `Lane A: MVP Closeout` -> `completed`
+- `Lane B: Website/Public Hold` -> `active`
 - `Lane C: Security/PBS/Infra` -> `watch`
 - `Lane D: Stockenweiler` -> `watch`
-- `Lane E: Radio/Media` -> `hold`
+- `Lane E: Radio/Media` -> `active`
 
 Regeln:
 
@@ -39,6 +39,27 @@ Regeln:
 - `Gemini` macht keine Repo-Mutation
 - `Gemini` macht keine Runtime-/Infra-Aenderung
 - `Gemini` liefert nur sichtbaren Ist-Zustand, Browser-/UI-Abnahmen und manuelle Sichtpruefungen
+
+## Anti-Split-Brain-Regel
+
+- Es gibt pro Arbeitsflaeche genau **eine** schreibende Wahrheit.
+- Fuer `FraWo Website / Odoo Views` ist `Codex` der einzige Writer.
+- `Gemini` bleibt dort strikt `read-only` und liefert nur sichtbare Abnahme, Kritik und Ist-Zustand.
+- Externe Agenten oder Handoffs wie `Claude` duerfen Entwuerfe, Kritik, Struktur- oder Textvorschlaege liefern, aber nicht als zweite operative Wahrheit behandelt werden.
+- Der kanonische Repo-Pfad fuer Website-Arbeit ist:
+  - `Codex/website/frawo_custom_css.css`
+  - `Codex/website/frawo_homepage_blocks.html`
+  - `Codex/website/frawo_contactus.html`
+- Live-Aenderungen in Odoo duerfen nur aus diesem Repo-Pfad abgeleitet werden.
+- Keine parallelen Blind-Edits direkt in Odoo, waehrend gleichzeitig lokale Website-Dateien divergieren.
+- Wenn sichtbarer Odoo-Live-Stand und Repo-Stand auseinanderlaufen, gilt:
+  - zuerst Drift benennen
+  - dann Repo-Stand aktualisieren oder bewusst verwerfen
+  - erst danach wieder live schreiben
+- Keine zweite "fast gleiche" Website-Datei anlegen, nur um schneller voranzukommen.
+- Bei Konflikten gilt:
+  - `Codex` entscheidet technische und inhaltliche Konsolidierung
+  - `Gemini` verifiziert nur das Ergebnis
 
 Falls eine Aufgabe nach:
 
@@ -59,9 +80,9 @@ riecht, bleibt sie bei `Codex` oder geht als `AKTION VON DIR ERFORDERLICH:` an d
 - `lane`: `Lane A: MVP Closeout`
 - `goal`: Sichtbare Endnutzerabnahme fuer Franz `Surface Laptop` und `iPhone`.
 - `done_when`: Beide Geraete sind mit den erforderlichen Direktpfaden und dem echten Alltagspfad sichtbar bestaetigt.
-- `blocked_by`: frischer sichtbarer Geraetenachweis fehlt
-- `next_operator_action`: Die Geraete im echten Alltagspfad pruefen oder vorfuehren.
-- `next_codex_action`: Vor dem Closure-Schritt `scripts/device_rollout_preflight.py` laufen lassen. Nach dem sichtbaren Nachweis `scripts/prove_device_rollout.ps1` ausfuehren, damit MVP-Gate und AI-Handoff automatisch nachziehen.
+- `status`: `completed`
+- `evidence`: Manueller Nachweis am 2026-04-09: Franz Portals (`8447/franz/` und `/franz/`) sind fuer beide Geraete via Tailscale erreichbar und verifiziert.
+- `next_codex_action`: Keine, Lane A ist geschlossen.
 
 ### `website_public_hold`
 
@@ -88,9 +109,9 @@ riecht, bleibt sie bei `Codex` oder geht als `AKTION VON DIR ERFORDERLICH:` an d
 - `lane`: `Lane A: MVP Closeout`
 - `goal`: Zwei getrennte Offline-Kopien des Recovery-Materials.
 - `done_when`: Frischer physischer Nachweis liegt vor.
-- `blocked_by`: physischer Nachweis ist operatorgebunden
-- `next_operator_action`: Recovery-Material offline in zwei getrennten Kopien pruefen oder anlegen.
-- `next_codex_action`: Danach Gate und Handoff neu ziehen.
+- `status`: `completed`
+- `evidence`: Materielle Bestaetigung vom Operator am 2026-04-09: Zwei physische Kopien sind erstellt und sicher verwahrt.
+- `next_codex_action`: Keine, Lane A ist geschlossen.
 
 ### `security_pbs_infra_watch`
 
