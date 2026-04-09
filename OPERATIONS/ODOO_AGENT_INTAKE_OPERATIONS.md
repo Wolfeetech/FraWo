@@ -31,6 +31,28 @@ Dieser Runbook-Pfad beschreibt den sichere(re)n Intake fuer `agent@frawo-tech.de
   - markiert Duplikate ueber `Message-ID`
   - verschiebt erfolgreich verarbeitete Mails nach `Aliases.Agent.Processed`
 
+## Live-Stand 2026-04-09
+
+- Ausgerollt auf `VM 200 nextcloud`, weil dort bereits der Alias-Router fuer die Shared-Mailbox laeuft.
+- Runtime-Dateien:
+  - `/opt/homeserver2027/tools/odoo_rpc_client.py`
+  - `/opt/homeserver2027/tools/odoo_agent_intake_bridge.py`
+  - `/usr/local/sbin/odoo_agent_intake_runner.sh`
+  - root-only Secret: `/root/.config/homeserver2027/odoo_agent_rpc.env`
+- Service-Pfad:
+  - `hs27-odoo-agent-intake.service`
+  - `hs27-odoo-agent-intake.timer`
+- Timer-Stand:
+  - `enabled`
+  - `active`
+  - Intervall aktuell `OnBootSec=2min`, danach `OnUnitActiveSec=5min`
+- Live-Proof:
+  - bestehende `agent@`-Probe aus `Aliases.Agent` wurde erfolgreich in Odoo uebernommen
+  - verarbeitete Mail wurde nach `Aliases.Agent.Processed` verschoben
+  - Proof-Task steht im Masterprojekt als `[agent@] HS27 alias delivery probe retry 20260408-181036`
+  - Stage `Backlog`
+  - Owner `wolf@frawo-tech.de` plus `agent@frawo-tech.de`
+
 ## Sicherheitsregeln
 
 - keine produktive Verarbeitung direkt aus `INBOX`
@@ -86,9 +108,9 @@ python odoo_agent_intake_bridge.py `
 
 ## Heute bewusst noch offen
 
-- kein systemd-/Cron-Livegang ohne sichtbaren ersten Manual-Proof
 - keine direkte Odoo-Fetchmail-Freigabe auf dem Shared-Postfach
 - keine automatische Klassifizierung ueber Lanes ohne echten Bedarf
+- API-Key-only-RPC blieb fuer `agent@` in dieser Session nicht belastbar; der produktive V1-Pfad nutzt deshalb vorerst einen dedizierten bot-only RPC-Secret-Pfad ausserhalb des Repos
 
 ## Definition Of Done fuer den Intake
 

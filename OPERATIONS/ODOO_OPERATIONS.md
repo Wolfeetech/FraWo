@@ -359,3 +359,23 @@ Der professionelle Zielzustand ist nicht nur `HTTP 200`, sondern ein bewusst def
   - vor erstem produktivem --apply immer sichtbarer dry-run
   - kein systemd-/Cron-Livegang ohne ersten Manual-Proof
   - keine direkte Fetchmail-Freigabe auf der kompletten Shared-INBOX, solange dieser dedizierte Pfad nicht bewusst verworfen wird
+## Agent-Intake Deployment 2026-04-09
+
+- Der `agent@`-Intake ist jetzt nicht mehr nur vorbereitet, sondern auf `VM 200 nextcloud` produktionsnah ausgerollt.
+- Ausgerollte Runtime-Dateien:
+  - `/opt/homeserver2027/tools/odoo_rpc_client.py`
+  - `/opt/homeserver2027/tools/odoo_agent_intake_bridge.py`
+  - `/usr/local/sbin/odoo_agent_intake_runner.sh`
+  - root-only Secret `/root/.config/homeserver2027/odoo_agent_rpc.env`
+- Der Pfad liest bewusst **nur** `Aliases.Agent`, nicht die gesamte Shared-INBOX.
+- Live verifiziert:
+  - XML-RPC-Login des Bot-Users `agent@frawo-tech.de` funktioniert jetzt von `VM 200` gegen Odoo.
+  - `hs27-odoo-agent-intake.service` lief erfolgreich mit `created=1 moved=1`.
+  - danach lieferte der Dry-Run `checked=0`, also keine liegengebliebene Mail im Intake-Ordner.
+  - Proof-Task im Masterprojekt: `[agent@] HS27 alias delivery probe retry 20260408-181036`, Stage `Backlog`, Owner `wolf + agent`, Tag `Lane A: MVP`.
+- Betriebsstatus:
+  - `hs27-odoo-agent-intake.timer` ist `enabled` und `active`
+  - aktuelles Intervall: Boot+2min, danach alle 5 Minuten
+- Einordnung:
+  - API-Key-Erzeugung fuer `agent@` wurde serverseitig erneut ausprobiert, war aber fuer echten XML-RPC-Login in diesem Lauf nicht belastbar.
+  - Der produktive V1-Pfad nutzt deshalb aktuell bewusst einen dedizierten bot-only RPC-Secret-Pfad ausserhalb des Repos statt menschlicher Zugangsdaten.

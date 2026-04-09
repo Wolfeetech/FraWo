@@ -439,3 +439,95 @@
 - Strategic consequence:
   - do not call `Odoo` production-ready only because the runtime is healthy; first freeze the intended module/profile rollout and customer portal scope.
   - do not thin Stockenweiler blindly; first secure the legacy `yourparty` payload across `VM 210`, `CT 207`, `CT 208`, and `CT 211`.
+
+## VM 200 nextcloud - Odoo Agent Intake Deployment 2026-04-09
+
+- Neue Runtime-Dateien ausgerollt:
+  - `/opt/homeserver2027/tools/odoo_rpc_client.py`
+  - `/opt/homeserver2027/tools/odoo_agent_intake_bridge.py`
+  - `/usr/local/sbin/odoo_agent_intake_runner.sh`
+  - `/root/.config/homeserver2027/odoo_agent_rpc.env` (root-only)
+- Neue systemd-Units:
+  - `hs27-odoo-agent-intake.service`
+  - `hs27-odoo-agent-intake.timer`
+- Verifiziert:
+  - Timer `enabled` und `active`
+  - letzter erfolgreicher Lauf: `checked=0`, `created=0`, `moved=0` nach dem initialen Proof-Lauf
+  - initialer Proof-Lauf davor: `created=1`, `moved=1`
+- Zweck:
+  - Odoo liest fuer `agent@` nicht die gesamte Shared-INBOX, sondern nur den bereits getrennten Ordner `Aliases.Agent`
+
+## Media / Wolf.EE Snapshot 2026-04-09
+
+- `Jellyfin` auf `CT 100 toolbox` ist live und liest read-only von `/srv/media-library`.
+- Der eigentliche Netzwerk-Musikpfad ist dort verifiziert als:
+  - `/srv/media-library/music-network`
+  - Source: `//10.1.0.30/Media`
+  - FSTYPE: `cifs`
+- Sichtbar fuer den Mediaserver:
+  - `/srv/media-library/music-network/yourparty_Libary`
+  - Groessenordnung des Netzwerkbestands: ca. `70G`
+- Der zentrale Medienbestand liegt damit aktuell produktiv auf `CT 110 storage-node` unter:
+  - `/mnt/data/media/yourparty_Libary`
+- `Wolf.EE` ist als USB-NTFS-Platte auf `proxmox-anker` sichtbar:
+  - Device: `/dev/sda2`
+  - Label: `Wolf.EE`
+  - Filesystem: `ntfs`
+- `Wolf.EE` wurde fuer Sichtpruefung bewusst nur read-only gemountet:
+  - Mountpoint: `/mnt/wolf-ee`
+  - Mount-Optionen: `ro`
+- Sichtbare grobe Sortierkandidaten auf `Wolf.EE`:
+  - `MUSIK` ca. `6.5G`
+  - `Sets` ca. `3.7G`
+  - `Job Jobse` ca. `437M`
+  - `von HDD` ca. `157G`
+  - `Plugins` ca. `177G`
+  - `StudioOne` ca. `32G`
+  - `Nicotine` ca. `18G`
+- Wichtige Einordnung:
+  - Der Mediaserver sieht die zentrale Musik bereits.
+  - `Wolf.EE` ist derzeit **keine** produktive Medienquelle, sondern eine separate read-only Sichtungs-/Sortierquelle.
+  - Ein direkter `Stockenweiler`-Quellpfad wurde in dieser Session nicht live eingebunden.
+
+## Media Import - Wolf.EE nach storage-node 2026-04-09
+
+- Erster kontrollierter Medienimport von `Wolf.EE` wurde in den zentralen Review-/Importpfad ausgefuehrt:
+  - Ziel: `/mnt/data/media/yourparty_Libary/incoming/Wolf_EE_20260409`
+- Importierte Ordner:
+  - `Job Jobse`
+  - `The_TraXx`
+  - `Sets`
+  - `MUSIK`
+- Verifizierte Zielgroessen:
+  - `Job Jobse` `438M`
+  - `The_TraXx` `2.7G`
+  - `Sets` `3.7G`
+  - `MUSIK` `6.5G`
+  - gesamt ca. `14G`
+- Wichtige Betriebsfolge:
+  - `storage-node` steht danach bei `84G used / 9.1G free / 91%`
+  - fuer diesen Block keine weiteren grossen Medienimporte mehr auf denselben Pfad ziehen
+- `Stockenweiler` bleibt fuer Live-Medienimport weiter blockiert:
+  - von `CT 100 toolbox` aktuell keine Route / kein Ping nach `192.168.178.25`
+
+## Media Transport / Capacity Clarification 2026-04-09
+
+- `Stockenweiler` ist ueber Tailscale als Peer sichtbar und antwortet auf Peer-Ebene:
+  - Peer: `stockenweiler-pve`
+  - Tailscale-IP: `100.91.20.116`
+  - `tailscale ping stockenweiler-pve` von `CT 100 toolbox` liefert `pong`
+- Der produktiv relevante Medienpfad nach `Stockenweiler` ist trotzdem nicht vorhanden:
+  - auf `CT 100 toolbox` existiert aktuell keine Route fuer `192.168.178.0/24`
+  - `tailscale status` meldet weiter `Some peers are advertising routes but --accept-routes is false`
+  - daraus folgt: Peer erreichbar, Stockenweiler-LAN fuer Import aber nicht angebunden
+- Die geplante Entlastungs-SSD auf `proxmox-anker` ist aktuell nicht schreibbar:
+  - Mount: `/mnt/music_ssd`
+  - Device: `/dev/sdb1`
+  - Filesystem: `exfat`
+  - Mount-Optionen: `ro,...,errors=remount-ro`
+  - `touch /mnt/music_ssd/.hs27_write_probe` scheitert mit `Read-only file system`
+  - `dmesg` meldet `exFAT-fs (sdb1) ... Filesystem has been set read-only`
+- Einordnung:
+  - `proxmox-anker` selbst ist nicht das akute Kapazitaetsproblem (`/` ca. `84%`)
+  - der aktuelle Druckpunkt ist `CT 110 storage-node` mit ca. `91%` nach dem `Wolf.EE`-Reviewimport
+  - weitere grosse Medienimporte bleiben bis zu einer sicheren Entlastung bewusst gestoppt

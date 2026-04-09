@@ -79,6 +79,30 @@ Diese Datei beschreibt den sichere Zielpfad fuer gemeinsame Daten zwischen `Next
 3. Den zentralen Medienpfad `yourparty_Libary` in `Nextcloud` nur read-only sichtbar machen.
 4. `Stockenweiler`-Musik erst dann einbinden, wenn die Quelle read-only verifiziert und in den zentralen Medienpfad ueberfuehrt oder sauber referenziert ist.
 
+## Wolf.EE Importstand 2026-04-09
+
+- `Wolf.EE` wurde fuer Sichtpruefung read-only unter `/mnt/wolf-ee` auf `proxmox-anker` gemountet.
+- Erster kontrollierter Import in den zentralen Review-Pfad ist erfolgt:
+  - Ziel: `/mnt/data/media/yourparty_Libary/incoming/Wolf_EE_20260409`
+  - uebernommen: `Job Jobse`, `The_TraXx`, `Sets`, `MUSIK`
+  - Umfang: ca. `14G`
+- Wichtige Betriebsfolge:
+  - `storage-node` steht danach bei ca. `91%`
+  - deshalb in diesem Block keine weiteren grossen Medienimporte mehr, bis Review/Weiterverteilung oder Entlastung erfolgt
+- Nicht importierte `Wolf.EE`-Bereiche bleiben vorerst nur Sichtungsquelle:
+  - `Nicotine`
+  - `von HDD`
+  - `Plugins`
+  - `StudioOne`
+  - offensichtlicher Nicht-Medienballast
+- Die grosse Zusatz-SSD `music_ssd` ist aktuell **kein** Entlastungspfad:
+  - Mount: `/mnt/music_ssd`
+  - Device: `/dev/sdb1`
+  - Filesystem: `exfat`
+  - Status: vom Kernel wegen Dateisystemfehler read-only gesetzt
+  - Nachweis: `exFAT-fs (sdb1) ... Filesystem has been set read-only`
+  - Folge: vor einer Reparatur kein Schreibziel fuer Review- oder Auslagerungsdaten
+
 ## Naechster technische Ausbau
 
 1. `Nextcloud External Storage` fuer den zentralen Medienpfad vorbereiten.
@@ -93,6 +117,13 @@ Diese Datei beschreibt den sichere Zielpfad fuer gemeinsame Daten zwischen `Next
 
 - Odoo verwendet noch Runtime-Konfiguration, die konsequent in den Secret-/Vault-Pfad gezogen werden sollte.
 - Der `Stockenweiler`-Quellpfad fuer eine moegliche Musikuebernahme ist heute nicht als live-verifiziert gruen anzusehen.
+- `Stockenweiler` ist nicht pauschal "offline", aber der fuer Medienimporte noetige LAN-Pfad fehlt aktuell:
+  - Tailscale-Peer `stockenweiler-pve` antwortet
+  - auf `toolbox` fehlt jedoch die Route fuer `192.168.178.0/24`
+  - `tailscale status` meldet zudem weiter `Some peers are advertising routes but --accept-routes is false`
+- Die Storage-Optimierung ist aktuell nicht durch Rohkapazitaet der USB-Geraete blockiert, sondern durch:
+  - `storage-node` bei ca. `91%`
+  - `music_ssd` als read-only statt schreibbar
 
 ## Eskalation
 

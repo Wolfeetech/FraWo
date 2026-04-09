@@ -7,6 +7,7 @@ import imaplib
 import os
 import re
 import ssl
+import unicodedata
 from dataclasses import dataclass
 from email.header import decode_header
 from email.message import Message
@@ -44,6 +45,13 @@ class IntakeMessage:
     message_id: str | None
     date_display: str
     body_excerpt: str
+
+
+def normalize_label(value: str) -> str:
+    normalized = unicodedata.normalize("NFKD", value or "")
+    stripped = "".join(ch for ch in normalized if not unicodedata.combining(ch))
+    stripped = re.sub(r"[^0-9A-Za-zäöüÄÖÜß ]+", " ", stripped)
+    return re.sub(r"\s+", " ", stripped).strip().lower()
 
 
 def decode_header_value(value: str) -> str:
@@ -294,12 +302,31 @@ def resolve_tag_id(session: OdooSession, tag_name: str | None) -> int | None:
         session,
         "project.tags",
         "search_read",
-        [[("name", "=", tag_name)]],
-        {"fields": ["name"], "limit": 1},
+        [[]],
+        {"fields": ["name"], "order": "id asc"},
     )
     if not tags:
         raise RuntimeError(f"Tag nicht gefunden: {tag_name}")
-    return int(tags[0]["id"])
+    normalized_requested = normalize_label(tag_name)
+    exact_match = next(
+        (tag for tag in tags if normalize_label(tag.get("name", "")) == normalized_requested),
+        None,
+    )
+    if exact_match:
+        return int(exact_match["id"])
+
+    contains_match = next(
+        (
+            tag
+            for tag in tags
+            if normalized_requested in normalize_label(tag.get("name", ""))
+        ),
+        None,
+    )
+    if contains_match:
+        return int(contains_match["id"])
+
+    raise RuntimeError(f"Tag nicht gefunden: {tag_name}")
 
 
 def find_existing_task_id(session: OdooSession, project_id: int, message_id: str) -> int | None:
@@ -357,7 +384,7 @@ def create_task(
         payload["user_ids"] = [(6, 0, owner_ids)]
     if tag_id is not None:
         payload["tag_ids"] = [(6, 0, [tag_id])]
-    return int(xmlrpc_call(session, "project.task", "create", [[payload]]))
+    return int(xmlrpc_call(session, "project.task", "create", [payload]))
 
 
 def print_summary(

@@ -284,3 +284,8 @@ Nicht akzeptabel:
   - Odoo soll fuer gent@ nicht die komplette Shared-Mailbox webmaster@... per Fetchmail lesen
   - der bevorzugte V1-Pfad liest nur Aliases.Agent
   - dafuer liegt der dedizierte Brueckenbaustein odoo_agent_intake_bridge.py plus Runbook OPERATIONS/ODOO_AGENT_INTAKE_OPERATIONS.md bereit
+- Odoo-Intake seit `2026-04-09` live ueber dedizierten Alias-Ordner statt Shared-INBOX:
+  - `agent@` wird weiter nach `Aliases.Agent` getrennt
+  - `VM 200` uebernimmt daraus jetzt automatisiert Odoo-Tasks
+  - Service/Timer: `hs27-odoo-agent-intake.service` und `hs27-odoo-agent-intake.timer`
+  - verarbeitete Mails landen danach in `Aliases.Agent.Processed`

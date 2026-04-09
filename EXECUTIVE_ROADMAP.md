@@ -25,11 +25,12 @@ Diese Datei ist die kompakteste Fuehrungsansicht fuer den aktuellen Projektstand
 - Die echten Restblocker liegen jetzt nicht mehr bei Odoo-Reachability, sondern bei sichtbarer Operator-Abnahme und den offenen MVP-Gates `device_rollout_verified` sowie `vaultwarden_recovery_material_verified`.
 - Der Website-Track ist damit nicht mehr primaer am Odoo-Inhalt blockiert, sondern weiter am getrennten Public-Edge-/Forwarding-Nachweis.
 - `agent@frawo-tech.de` ist als Alias auf `webmaster@frawo-tech.de` technisch zustellbar verifiziert; offen bleibt die bewusste Incoming-Strategie fuer Odoo ohne serverseitiges `n8n`.
+- Diese Incoming-Strategie ist jetzt technisch umgesetzt: `VM 200` trennt `agent@` weiter nach `Aliases.Agent`, die Odoo-Bridge uebernimmt daraus Tasks ins Masterprojekt, und der Timer `hs27-odoo-agent-intake.timer` laeuft aktiv.
 
 ## Operative Reihenfolge (MVP Ready Path)
 
 1. **MVP-Abnahme:** sichtbare Geraete-/2FA-Abnahme und Vaultwarden-Recovery-Evidenz abschliessen.
-2. **Odoo-SSOT fortfuehren:** API-Key-Hardening fuer `agent@`, Incoming-Alias vorbereiten und Board-Governance im Alltag bestaetigen.
+2. **Odoo-SSOT fortfuehren:** laufenden `agent@`-Intake im Alltag bestaetigen, Board-Governance stabil halten und den Bot-Secret-/API-Key-Pfad spaeter weiter haerten.
 3. **Website-Public-Edge:** externen Pfad fuer `www.frawo-tech.de` sauber verifizieren, nachdem der Odoo-Inhalt jetzt gruen ist.
 4. **App-Testmails und Release Gates:** SMTP-Restpfade in Odoo pruefen und `release-mvp-gate` auf GRUEN ziehen.
 
