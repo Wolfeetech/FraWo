@@ -1,6 +1,69 @@
 # Homeserver 2027 Ops Workspace
 
-This is the shared operational workspace for Homeserver 2027.
+> **Solo Operator? Start here.** This workspace runs a hybrid Proxmox home-lab for the GbR "FraWo".
+> If you feel lost, read the three lines under [Start Here](#start-here) and pick your objective.
+
+---
+
+## Start Here
+
+1. **What is running right now?** → Open [`LIVE_CONTEXT.md`](LIVE_CONTEXT.md)
+2. **What should I do next?** → Open [`OPERATOR_TODO_QUEUE.md`](OPERATOR_TODO_QUEUE.md)
+3. **Something broke / I need the big picture?** → Open [`OPS_HOME.md`](OPS_HOME.md)
+
+### Pick Your Objective (A / B / C)
+
+| # | Objective | Status | Entry Point |
+|---|-----------|--------|-------------|
+| **A** | Basis-Plattform: Proxmox + Netzwerk + DNS + Remote-Zugriff | ✅ Done | [`MASTERPLAN.md`](MASTERPLAN.md) |
+| **B** | Business-MVP: Nextcloud + Odoo + Paperless produktiv | ✅ Done | [`OPS_HOME.md`](OPS_HOME.md) → Lane A |
+| **C** | Nächste Phase: Website-Release / Stockenweiler / PBS-Restore | 🔄 Active | [`OPERATOR_TODO_QUEUE.md`](OPERATOR_TODO_QUEUE.md) |
+
+**Recommended immediate next step:** Run `make start-day` and check `OPERATOR_TODO_QUEUE.md`.
+
+---
+
+## Daily Quick Commands
+
+```bash
+make start-day          # Morning routine: context refresh + status check
+make ops-brief          # 3-line platform summary
+make operator-todos     # Show open manual tasks
+make security-baseline-check  # Verify security posture
+make close-day          # Evening routine: snapshot + handoff
+```
+
+See [`Makefile`](Makefile) for the full command list or run `make help`.
+
+---
+
+## Key Documents (SSOT)
+
+| File | Purpose |
+|------|---------|
+| [`MASTERPLAN.md`](MASTERPLAN.md) | Strategic roadmap and architecture |
+| [`LIVE_CONTEXT.md`](LIVE_CONTEXT.md) | Always-current handoff state |
+| [`OPS_HOME.md`](OPS_HOME.md) | Operator start page and navigation hub |
+| [`OPERATOR_TODO_QUEUE.md`](OPERATOR_TODO_QUEUE.md) | Kanban queue – what to do next |
+| [`MEMORY.md`](MEMORY.md) | Long-lived project knowledge base |
+| [`NETWORK_INVENTORY.md`](NETWORK_INVENTORY.md) | LAN inventory and IP map |
+| [`VM_AUDIT.md`](VM_AUDIT.md) | Verified VM runtime state |
+| [`SECURITY_BASELINE.md`](SECURITY_BASELINE.md) | Security posture and daily checks |
+| [`SECURITY.md`](SECURITY.md) | Secret handling and local setup guide |
+| [`AGENTS.md`](AGENTS.md) | Agent (AI) collaboration rules |
+| [`OPERATIONS/`](OPERATIONS/) | Per-service runbooks |
+
+---
+
+## Secrets & Security
+
+**Never commit secrets.** See [`SECURITY.md`](SECURITY.md) for the full policy.
+
+- Ansible vault password → local file `.vault_pass` (gitignored). Copy from `.vault_pass.example`.
+- Encrypted secrets → `ansible/inventory/group_vars/all/vault.yml` (committed, encrypted).
+- Runtime SMTP credentials → local `ansible/inventory/group_vars/all/mail_runtime.local.yml` (gitignored).
+
+---
 
 ## Workspace Identity
 

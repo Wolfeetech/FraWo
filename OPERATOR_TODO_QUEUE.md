@@ -1,10 +1,81 @@
 # Operator Todo Queue
 
-Stand: `2026-04-09`
+> **Solo Operator Quick Start:** Pick one item from **Next**, move it to **Doing**, finish it, move to **Done**.
+> Don't add more than 3 items to Doing at once.
+
+Stand: `2026-04-09` | Aktualisiert von: Codex
+
+---
+
+## Kanban Board
+
+### 🔴 Blocked
+*(Warte auf externen Input – Operator-Aktion erforderlich)*
+
+| Task | Warum blockiert | Was danach? |
+|------|-----------------|-------------|
+| `vaultwarden_recovery_material_verified` | Physischer Nachweis fehlt (2 Offline-Kopien) | MVP-Gate final schließen |
+| `device_rollout_verified` (Franz Surface/iPhone) | Sichtbarer Gerätenachweis fehlt | `scripts/prove_device_rollout.ps1` ausführen |
+
+### 🟡 Next (Bereit zum Start)
+
+| Task | Lane | Einstieg |
+|------|------|---------|
+| PBS-Restore-Drill monatlich wiederholen | Lane C | `make pbs-restore-proof` |
+| Tailnet Route-Freigabe + Split-DNS schließen | Lane C | `SECURITY_BASELINE.md` → Punkt 2 |
+| `NETWORK_INVENTORY.md` via Easy-Box-Abgleich finalisieren | Lane C | `make easybox-browser-probe` |
+
+### 🟢 Doing
+*(Max. 3 gleichzeitig)*
+
+| Task | Gestartet | Nächster Schritt |
+|------|-----------|-----------------|
+| *(leer)* | | |
+
+### ✅ Done (Letzte 30 Tage)
+
+| Task | Abgeschlossen |
+|------|---------------|
+| Lane A: Business-MVP (Nextcloud, Odoo, Paperless live) | 2026-03-30 |
+| PBS-Erstinbetriebnahme + erster Restore-Drill | 2026-03-21 |
+| Surface Go Frontend V1 live | 2026-03-25 |
+| Radio AzuraCast live auf Pi | 2026-03-28 |
+| MVP-Browserabnahme (Wolf + Franz) | 2026-03-30 |
+| Repo-Hygiene: .vault_pass entfernt, SECURITY.md hinzugefügt | 2026-04-09 |
+
+---
+
+## Definition of Done (DoD)
+
+Eine Task gilt erst als **Done**, wenn alle folgenden Punkte erfüllt sind:
+
+- [ ] **Verifikation läuft durch**: Mindestens ein `make <check>` oder Script liefert grünes Ergebnis
+- [ ] **Runbook existiert**: Wie reproduziert man es? Wie rollt man zurück? (min. 3 Zeilen in einer `.md`)
+- [ ] **Secrets nicht im Repo**: Kein Klartext-Passwort, kein Token in einer committed Datei
+- [ ] **SSOT aktualisiert**: Mindestens eine kanonische Datei (LIVE_CONTEXT.md, VM_AUDIT.md, MEMORY.md) spiegelt den neuen Zustand
+- [ ] **Operator informiert**: Falls Handoff nötig, steht es unter `AKTION VON DIR ERFORDERLICH:` in dieser Datei
+
+---
+
+## Task-Template
+
+```markdown
+### [TASK-ID] Kurzbeschreibung
+
+- **Lane:** Lane X
+- **Prio:** High / Medium / Low
+- **Gestartet:** YYYY-MM-DD
+- **Ziel:** Was soll am Ende sichtbar besser sein?
+- **Verifikation:** `make <target>` oder manueller Check
+- **Runbook:** Link zu `.md` oder Inline-Schritten
+- **Blocker:** (leer wenn keiner)
+```
+
+---
 
 ## Zweck
 
-Diese Datei ist ab jetzt nur noch die kurze manuelle Unblock-Queue.
+Diese Datei ist die kurze manuelle Unblock-Queue.
 
 Keine zweite Projektplanung, keine erledigte Historie, keine Nebenstrang-Roadmaps.
 Der aktive Arbeitsfokus liegt nun nicht mehr in Lane A, da das MVP abgeschlossen ist.

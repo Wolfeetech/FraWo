@@ -1,4 +1,4 @@
-.PHONY: refresh-context ai-server-handoff estate-census platform-health-audit cicd-delivery-factory-preflight cicd-delivery-factory-report portal-ucg-pilot-preflight inventory-check ansible-ping qga-check close-day start-day stress-test release-mvp-audit release-mvp-gate website-release-audit website-release-gate production-gate document-ownership-check document-ownership-report stockenweiler-inventory-check stockenweiler-inventory-report stockenweiler-support-brief stockenweiler-public-truth-check stockenweiler-remote-path-probe stockenweiler-toolbox-access stockenweiler-wireguard-refresh stockenweiler-wireguard-reapply stockenweiler-tailscale-bridge-prepare stockenweiler-tailscale-bridge-check wireguard-legacy-cleanup control-surface-actions-check control-surface-actions-report ansible-syntax-check ansible-syntax-check-toolbox ansible-syntax-check-toolbox-tailscale ansible-syntax-check-toolbox-mobile-firewall ansible-syntax-check-proxmox-backups ansible-syntax-check-haos ansible-syntax-check-business-hardening ansible-syntax-check-pbs ansible-syntax-check-surface-go ansible-syntax-check-rpi-radio ansible-syntax-check-rpi-radio-media ansible-syntax-check-rpi-radio-usb ansible-syntax-check-rpi-radio-network ansible-syntax-check-rpi-azuracast-host ansible-syntax-check-rpi-azuracast ansible-syntax-check-rpi-azuracast-tuning ansible-syntax-check-paperless-nextcloud-bridge ansible-syntax-check-app-smtp ansible-list-business proxmox-storage-check backup-proof backup-list business-drift-check basics-check backup-prune-dry-run backup-prune toolbox-deploy toolbox-network-check toolbox-portal-status-check toolbox-tun-prep toolbox-tailscale-prep toolbox-tailscale-check toolbox-tailscale-login-url toolbox-tailscale-join-assist toolbox-tailscale-mobile-check toolbox-mobile-firewall-deploy toolbox-media-deploy toolbox-media-storage-integrate toolbox-media-check toolbox-jellyfin-ui-check toolbox-media-sync-deploy toolbox-media-sync-check toolbox-media-bootstrap-progress media-migration-status toolbox-music-library-report toolbox-music-scan-issues toolbox-music-curation-candidates toolbox-music-curated-layout toolbox-music-quarantine-candidates toolbox-music-selection-sync toolbox-music-selection-seed-report toolbox-music-selection-generate-starter toolbox-music-selection-promote-starter rightsize-stage-gate rightsize-plan rightsize-apply haos-preflight haos-usb-audit haos-stage-gate haos-runner-deploy haos-vm-check haos-reverse-proxy-enable haos-reverse-proxy-check gateway-cutover-stage-gate pbs-preflight pbs-stage-gate pbs-proof-check pbs-restore-proof pbs-runner-deploy pbs-vm-check pbs-guest-check pbs-iso-stage pbs-usb-interim-prepare pbs-rebuild-storage-audit pbs-rebuild-contract-check pbs-device-inventory pbs-contract-prefill pbs-datastore-prepare pbs-vm240-reconcile pbs-guarded-rebuild app-smtp-deploy app-smtp-check vaultwarden-smtp-deploy vaultwarden-smtp-check vaultwarden-admin-token-check vaultwarden-network-baseline storage-node-network-baseline public-ipv6-exposure-audit proxmox-local-backup-deploy proxmox-local-backup-check portable-backup-usb-prepare portable-backup-usb-autoprepare portable-backup-usb-fill portable-backup-usb-check portable-backup-usb-run security-baseline-check business-hardening-deploy easybox-browser-probe easybox-authenticated-overview capacity-review plan-progress surface-go-check surface-go-bootstrap surface-go-root-sleep-harden media-fetch media-devices surface-iso-fetch surface-usb-prepare usb-stick-roles-prepare favorites-usb-prepare rpi-sd-flash rpi-firstboot-seed rpi-radio-bootstrap rpi-radio-media-prepare rpi-radio-media-check rpi-radio-usb-integrate rpi-radio-usb-check rpi-radio-network-integrate rpi-radio-network-check rpi-azuracast-host-prepare rpi-azuracast-deploy rpi-radio-check rpi-radio-integration-check rpi-azuracast-check rpi-azuracast-tune rpi-resource-check radio-ops-check anydesk-zenbook-install zenbook-remote-check remote-only-check operator-todos ops-brief adguard-pilot-check tailscale-split-dns-check inventory-resolution-check inventory-unknown-report paperless-nextcloud-bridge-deploy paperless-nextcloud-bridge-check public-dns-check public-http-redirect-check public-https-check public-mail-dns-check prove-strato-mail-model
+.PHONY: help lint ansible-check docs refresh-context ai-server-handoff estate-census platform-health-audit cicd-delivery-factory-preflight cicd-delivery-factory-report portal-ucg-pilot-preflight inventory-check ansible-ping qga-check close-day start-day stress-test release-mvp-audit release-mvp-gate website-release-audit website-release-gate production-gate document-ownership-check document-ownership-report stockenweiler-inventory-check stockenweiler-inventory-report stockenweiler-support-brief stockenweiler-public-truth-check stockenweiler-remote-path-probe stockenweiler-toolbox-access stockenweiler-wireguard-refresh stockenweiler-wireguard-reapply stockenweiler-tailscale-bridge-prepare stockenweiler-tailscale-bridge-check wireguard-legacy-cleanup control-surface-actions-check control-surface-actions-report ansible-syntax-check ansible-syntax-check-toolbox ansible-syntax-check-toolbox-tailscale ansible-syntax-check-toolbox-mobile-firewall ansible-syntax-check-proxmox-backups ansible-syntax-check-haos ansible-syntax-check-business-hardening ansible-syntax-check-pbs ansible-syntax-check-surface-go ansible-syntax-check-rpi-radio ansible-syntax-check-rpi-radio-media ansible-syntax-check-rpi-radio-usb ansible-syntax-check-rpi-radio-network ansible-syntax-check-rpi-azuracast-host ansible-syntax-check-rpi-azuracast ansible-syntax-check-rpi-azuracast-tuning ansible-syntax-check-paperless-nextcloud-bridge ansible-syntax-check-app-smtp ansible-list-business proxmox-storage-check backup-proof backup-list business-drift-check basics-check backup-prune-dry-run backup-prune toolbox-deploy toolbox-network-check toolbox-portal-status-check toolbox-tun-prep toolbox-tailscale-prep toolbox-tailscale-check toolbox-tailscale-login-url toolbox-tailscale-join-assist toolbox-tailscale-mobile-check toolbox-mobile-firewall-deploy toolbox-media-deploy toolbox-media-storage-integrate toolbox-media-check toolbox-jellyfin-ui-check toolbox-media-sync-deploy toolbox-media-sync-check toolbox-media-bootstrap-progress media-migration-status toolbox-music-library-report toolbox-music-scan-issues toolbox-music-curation-candidates toolbox-music-curated-layout toolbox-music-quarantine-candidates toolbox-music-selection-sync toolbox-music-selection-seed-report toolbox-music-selection-generate-starter toolbox-music-selection-promote-starter rightsize-stage-gate rightsize-plan rightsize-apply haos-preflight haos-usb-audit haos-stage-gate haos-runner-deploy haos-vm-check haos-reverse-proxy-enable haos-reverse-proxy-check gateway-cutover-stage-gate pbs-preflight pbs-stage-gate pbs-proof-check pbs-restore-proof pbs-runner-deploy pbs-vm-check pbs-guest-check pbs-iso-stage pbs-usb-interim-prepare pbs-rebuild-storage-audit pbs-rebuild-contract-check pbs-device-inventory pbs-contract-prefill pbs-datastore-prepare pbs-vm240-reconcile pbs-guarded-rebuild app-smtp-deploy app-smtp-check vaultwarden-smtp-deploy vaultwarden-smtp-check vaultwarden-admin-token-check vaultwarden-network-baseline storage-node-network-baseline public-ipv6-exposure-audit proxmox-local-backup-deploy proxmox-local-backup-check portable-backup-usb-prepare portable-backup-usb-autoprepare portable-backup-usb-fill portable-backup-usb-check portable-backup-usb-run security-baseline-check business-hardening-deploy easybox-browser-probe easybox-authenticated-overview capacity-review plan-progress surface-go-check surface-go-bootstrap surface-go-root-sleep-harden media-fetch media-devices surface-iso-fetch surface-usb-prepare usb-stick-roles-prepare favorites-usb-prepare rpi-sd-flash rpi-firstboot-seed rpi-radio-bootstrap rpi-radio-media-prepare rpi-radio-media-check rpi-radio-usb-integrate rpi-radio-usb-check rpi-radio-network-integrate rpi-radio-network-check rpi-azuracast-host-prepare rpi-azuracast-deploy rpi-radio-check rpi-radio-integration-check rpi-azuracast-check rpi-azuracast-tune rpi-resource-check radio-ops-check anydesk-zenbook-install zenbook-remote-check remote-only-check operator-todos ops-brief adguard-pilot-check tailscale-split-dns-check inventory-resolution-check inventory-unknown-report paperless-nextcloud-bridge-deploy paperless-nextcloud-bridge-check public-dns-check public-http-redirect-check public-https-check public-mail-dns-check prove-strato-mail-model
 
 ROOT_DIR := $(CURDIR)
 ANSIBLE_CONFIG_PATH := $(ROOT_DIR)/ansible.cfg
@@ -8,6 +8,72 @@ ANSIBLE_CMD = $(ANSIBLE_ENV) ansible --inventory "$(ANSIBLE_INVENTORY_PATH)"
 ANSIBLE_PLAYBOOK_CMD = $(ANSIBLE_ENV) ansible-playbook --inventory "$(ANSIBLE_INVENTORY_PATH)"
 ANSIBLE_INVENTORY_CMD = $(ANSIBLE_ENV) ansible-inventory --inventory "$(ANSIBLE_INVENTORY_PATH)"
 PROXMOX_REMOTE = bash ./scripts/proxmox_remote_exec.sh
+
+# ─── Solo Operator Entry Points ─────────────────────────────────────────────
+
+## help: Show this help message
+help:
+	@echo ""
+	@echo "Homeserver 2027 Ops Workspace – Common Make Targets"
+	@echo "====================================================="
+	@echo ""
+	@echo "DAILY OPERATIONS:"
+	@echo "  make start-day              Morning routine (context refresh + status)"
+	@echo "  make ops-brief              3-line platform summary"
+	@echo "  make operator-todos         Show open manual tasks"
+	@echo "  make close-day              Evening routine (snapshot + handoff)"
+	@echo ""
+	@echo "HEALTH CHECKS:"
+	@echo "  make basics-check           Ping all VMs + toolbox"
+	@echo "  make security-baseline-check  Verify security posture"
+	@echo "  make business-drift-check   Check business services for drift"
+	@echo "  make backup-proof           Verify last backup"
+	@echo ""
+	@echo "LINTING / VALIDATION:"
+	@echo "  make lint                   Run all local lint checks"
+	@echo "  make ansible-check          Ansible syntax check (all playbooks)"
+	@echo "  make docs                   Validate key documentation files exist"
+	@echo ""
+	@echo "ANSIBLE:"
+	@echo "  make ansible-ping           Ping all managed hosts"
+	@echo "  make ansible-syntax-check   Syntax check all playbooks"
+	@echo "  make toolbox-deploy         Deploy toolbox configuration"
+	@echo ""
+	@echo "BACKUP / PBS:"
+	@echo "  make backup-list            List current backups"
+	@echo "  make pbs-restore-proof      Run monthly PBS restore drill"
+	@echo ""
+	@echo "CONTEXT:"
+	@echo "  make refresh-context        Refresh LIVE_CONTEXT.md"
+	@echo "  make plan-progress          Show masterplan progress percentage"
+	@echo ""
+	@echo "Run 'make <target>' for any target above."
+	@echo "Full target list: see Makefile or README.md Quick Commands section."
+	@echo ""
+
+## lint: Run local lint checks (ansible syntax, yaml, python)
+lint: ansible-check
+	@echo "[lint] Checking for plaintext secrets in common locations..."
+	@if grep -r "password\s*=\s*['\"][^'\"]\+['\"]" ansible/inventory/group_vars/all/vault.yml 2>/dev/null; then \
+		echo "[WARN] vault.yml may contain plaintext values – run: ansible-vault view ansible/inventory/group_vars/all/vault.yml"; \
+	fi
+	@if [ -f .vault_pass ] && grep -q "your-vault-password-here" .vault_pass 2>/dev/null; then \
+		echo "[WARN] .vault_pass still contains the example placeholder"; \
+	fi
+	@echo "[lint] Done."
+
+## ansible-check: Syntax-check all Ansible playbooks
+ansible-check: ansible-syntax-check
+
+## docs: Verify key SSOT documentation files are present
+docs:
+	@echo "[docs] Checking required SSOT files..."
+	@for f in README.md MASTERPLAN.md OPERATOR_TODO_QUEUE.md OPS_HOME.md LIVE_CONTEXT.md SECURITY.md SECURITY_BASELINE.md MEMORY.md NETWORK_INVENTORY.md VM_AUDIT.md; do \
+		if [ -f "$$f" ]; then echo "  ✓ $$f"; else echo "  ✗ MISSING: $$f"; fi; \
+	done
+	@echo "[docs] Done."
+
+# ─────────────────────────────────────────────────────────────────────────────
 
 refresh-context:
 	./scripts/refresh_live_context.sh

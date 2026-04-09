@@ -1,0 +1,124 @@
+name: repo-hygiene
+
+# Lightweight checks to help the solo operator catch obvious issues early.
+# All steps are non-blocking (continue-on-error) initially.
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+jobs:
+  docs-check:
+    name: Documentation & Security Hygiene
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify required SSOT files exist
+        run: |
+          echo "Checking required SSOT files..."
+          REQUIRED=(
+            README.md
+            MASTERPLAN.md
+            OPERATOR_TODO_QUEUE.md
+            OPS_HOME.md
+            LIVE_CONTEXT.md
+            SECURITY.md
+            SECURITY_BASELINE.md
+            MEMORY.md
+            NETWORK_INVENTORY.md
+            VM_AUDIT.md
+          )
+          MISSING=0
+          for f in "${REQUIRED[@]}"; do
+            if [ -f "$f" ]; then
+              echo "  ✓ $f"
+            else
+              echo "  ✗ MISSING: $f"
+              MISSING=$((MISSING + 1))
+            fi
+          done
+          if [ "$MISSING" -gt 0 ]; then
+            echo "WARNING: $MISSING required file(s) are missing."
+            exit 1
+          fi
+
+      - name: Check .vault_pass is not tracked
+        run: |
+          if git ls-files --error-unmatch .vault_pass 2>/dev/null; then
+            echo "ERROR: .vault_pass is tracked by git. Remove it: git rm --cached .vault_pass"
+            exit 1
+          else
+            echo "✓ .vault_pass is not tracked by git"
+          fi
+
+      - name: Scan for obvious plaintext secrets in committed files
+        continue-on-error: true
+        run: |
+          echo "Scanning for common secret patterns..."
+          # Check for password= lines outside encrypted vault files
+          if grep -rn --include="*.yml" --include="*.yaml" --include="*.env" \
+            -E "(password|passwd|secret|token)\s*[:=]\s*['\"]?[A-Za-z0-9+/]{8,}" \
+            --exclude-dir=.git \
+            --exclude="vault.yml" \
+            . 2>/dev/null | grep -v "^Binary"; then
+            echo "WARNING: Potential plaintext secrets found above. Review and move to vault."
+          else
+            echo "✓ No obvious plaintext secrets detected"
+          fi
+
+  ansible-syntax:
+    name: Ansible Syntax Check
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Ansible
+        run: pip install ansible
+
+      - name: Create dummy vault password
+        run: echo "dummy-ci-password" > .vault_pass
+
+      - name: Ansible syntax check (all playbooks)
+        run: |
+          echo "Running ansible syntax checks..."
+          FAILED=0
+          for playbook in ansible/playbooks/*.yml; do
+            if ansible-playbook --syntax-check \
+              --inventory ansible/inventory/hosts.yml \
+              "$playbook" 2>&1 | grep -q "ERROR\|FAILED"; then
+              echo "  ✗ Syntax error in: $playbook"
+              FAILED=$((FAILED + 1))
+            else
+              echo "  ✓ $playbook"
+            fi
+          done
+          if [ "$FAILED" -gt 0 ]; then
+            echo "$FAILED playbook(s) have syntax errors."
+          else
+            echo "All playbooks passed syntax check."
+          fi
+
+  yaml-lint:
+    name: YAML Lint
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install yamllint
+        run: pip install yamllint
+
+      - name: Lint YAML files
+        run: |
+          yamllint -d '{extends: relaxed, rules: {line-length: {max: 200}}}' \
+            ansible/playbooks/ ansible/inventory/ \
+            .github/workflows/ 2>&1 || true
+          echo "YAML lint complete (non-blocking)"
