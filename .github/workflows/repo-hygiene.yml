@@ -14,6 +14,8 @@ jobs:
   docs-check:
     name: Documentation & Security Hygiene
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -64,7 +66,7 @@ jobs:
           if grep -rn --include="*.yml" --include="*.yaml" --include="*.env" \
             -E "(password|passwd|secret|token)\s*[:=]\s*['\"]?[A-Za-z0-9+/]{8,}" \
             --exclude-dir=.git \
-            --exclude="vault.yml" \
+            --exclude="*/vault.yml" \
             . 2>/dev/null | grep -v "^Binary"; then
             echo "WARNING: Potential plaintext secrets found above. Review and move to vault."
           else
@@ -75,6 +77,8 @@ jobs:
     name: Ansible Syntax Check
     runs-on: ubuntu-latest
     continue-on-error: true
+    permissions:
+      contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -109,6 +113,8 @@ jobs:
     name: YAML Lint
     runs-on: ubuntu-latest
     continue-on-error: true
+    permissions:
+      contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@v4

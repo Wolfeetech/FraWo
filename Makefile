@@ -53,9 +53,12 @@ help:
 
 ## lint: Run local lint checks (ansible syntax, yaml, python)
 lint: ansible-check
-	@echo "[lint] Checking for plaintext secrets in common locations..."
-	@if grep -r "password\s*=\s*['\"][^'\"]\+['\"]" ansible/inventory/group_vars/all/vault.yml 2>/dev/null; then \
-		echo "[WARN] vault.yml may contain plaintext values – run: ansible-vault view ansible/inventory/group_vars/all/vault.yml"; \
+	@echo "[lint] Checking for obvious plaintext secrets in non-vault yml files..."
+	@if grep -rn --include="*.yml" --include="*.yaml" \
+		-E "(password|passwd|secret|token)\s*[:=]\s*['\"][A-Za-z0-9+/]{8,}" \
+		--exclude-dir=.git --exclude="*/vault.yml" \
+		. 2>/dev/null | grep -v "vault_password_file\|example\|placeholder"; then \
+		echo "[WARN] Potential plaintext secrets found above. Move them to ansible-vault."; \
 	fi
 	@if [ -f .vault_pass ] && grep -q "your-vault-password-here" .vault_pass 2>/dev/null; then \
 		echo "[WARN] .vault_pass still contains the example placeholder"; \
