@@ -44,7 +44,7 @@
 - `proxmox-anker.tail150400.ts.net` -> online `true` / ip `100.69.179.87, fd7a:115c:a1e0::c63a:b357` / routes `10.1.0.0/24`
 - `radio-node.tail150400.ts.net` -> online `false` / ip `100.64.23.77, fd7a:115c:a1e0::243a:174d`
 - `stockenweiler-pve.tail150400.ts.net` -> online `true` / ip `100.91.20.116, fd7a:115c:a1e0::ed3a:1474` / routes `192.168.178.0/24`
-- `surface-go-frontend.tail150400.ts.net` -> online `false` / ip `100.106.67.127, fd7a:115c:a1e0::113a:437f`
+- `kiosk-frontend.tail150400.ts.net` -> online `false` / ip `100.106.67.127, fd7a:115c:a1e0::113a:437f`
 - `toolbox.tail150400.ts.net` -> online `true` / ip `100.99.206.128, fd7a:115c:a1e0::af01:cea1`
 - `wohnzimmertv.tail150400.ts.net` -> online `false` / ip `100.84.241.124, fd7a:115c:a1e0::da3a:f17c`
 - `wolf-zenbook-ux325ea-ux325ea.tail150400.ts.net` -> online `false` / ip `100.76.249.126, fd7a:115c:a1e0::d03a:f97e`
@@ -92,7 +92,7 @@
 - StudioPC direct access to legacy guest 192.168.2.x is not the working path during the UCG transition because the same subnet exists on two different L2 domains.
 - Stockenweiler has inactive storage targets: anker-music.
 - Stockenweiler public legacy endpoints are still broken: https://home.prinz-stockenweiler.de, https://papierkram.prinz-stockenweiler.de/dashboard, https://cloud.prinz-stockenweiler.de/apps/dashboard/, https://pve.prinz-stockenweiler.de.
-- Some expected Tailscale peers are offline: iphone-15.tail150400.ts.net, pixel-8a.tail150400.ts.net, radio-node.tail150400.ts.net, surface-go-frontend.tail150400.ts.net, wohnzimmertv.tail150400.ts.net, wolf-zenbook-ux325ea-ux325ea.tail150400.ts.net.
+- Some expected Tailscale peers are offline: iphone-15.tail150400.ts.net, pixel-8a.tail150400.ts.net, radio-node.tail150400.ts.net, kiosk-frontend.tail150400.ts.net, wohnzimmertv.tail150400.ts.net, wolf-zenbook-ux325ea-ux325ea.tail150400.ts.net.
 
 ## Recommended Next Order
 

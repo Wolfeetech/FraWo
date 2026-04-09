@@ -9,8 +9,8 @@ Diese Datei ist der kanonische Onboarding- und Benutzerbetriebsartikel fuer:
 - `Wolf`
 - `Franz`
 - gemeinsame Geraete
-- Franzs `Surface Laptop` und `iPhone`
-- Wolfs `Arbeitssurface`
+- `surface-franz` und `iPhone`
+- `surface-wolfi`
 
 ## Aktueller Betriebsstand
 
@@ -32,7 +32,7 @@ Der offene Benutzerblock fuer den aktuellen Arbeits-MVP ist jetzt nur noch:
 
 Pass-Bedingung dafuer:
 
-- `Franz Surface Laptop` nutzt sichtbar `http://portal.hs27.internal/franz/` als alltagstauglichen Startpfad
+- `surface-franz` nutzt sichtbar `http://portal.hs27.internal/franz/` als alltagstauglichen Startpfad
 - `Franz iPhone` nutzt sichtbar `http://100.99.206.128:8447/franz/` als mobilen Startpfad
 - auf beiden Pfaden sind `Nextcloud`, `Paperless`, `Odoo` und `Vaultwarden` sichtbar als direkte Kernziele erreichbar
 - es bleibt kein sichtbarer Blocker fuer den echten Alltagspfad uebrig
@@ -73,10 +73,10 @@ Danach:
   - `Vaultwarden`
   - weitere Admin-UIs erst nach stabilem MVP
 
-### Wolfs Arbeitssurface
+### surface-wolfi
 
-- ist **nicht** dasselbe Geraet wie `Franz Surface Laptop`
-- Router-/WLAN-Signal derzeit: `Surface_Laptop` auf `192.168.2.118`
+- ist **nicht** dasselbe Geraet wie `surface-franz`
+- Router-/WLAN-Signal derzeit: `surface-wolfi` auf `192.168.2.118`
 - Rolle:
   - primaeres Arbeitsgeraet fuer Wolf
   - muss fuer `VT`- und Hauptarbeitskontext auch ohne dauerhaften VPN-Zwang brauchbar bleiben
@@ -104,7 +104,7 @@ Danach:
   - `Paperless`
   - `Odoo`
   - `Vaultwarden` nur bei Login-Bedarf
-- kein `Surface Go`-Kioskpfad
+- kein `kiosk-frontend`-Kioskpfad
 - persoenlicher Start ueber `portal.hs27.internal/franz/`
 - `Franz` bleibt Anwender, nicht Mit-Admin
 - der Standard ist portal-first und shortcut-first, nicht URL-Merkerei
@@ -113,7 +113,7 @@ Danach:
 
 - `Jellyfin`
 - `Radio`
-- Shared `surface-go-frontend`
+- Shared `kiosk-frontend`
 - spaetere Komfortpfade fuer TV und Wohnzimmer
 
 ## Reihenfolge Fuer Den Internen Benutzer-Deploy
@@ -160,7 +160,7 @@ Zusatz:
 
 ### Spaeterer Ausbau
 
-- `surface-go-frontend`
+- `kiosk-frontend`
 - `TV Wohnzimmer`
 - `Jellyfin`
 - `Radio`
@@ -168,7 +168,7 @@ Zusatz:
 
 ## Franz Geraete-Deploy
 
-### Surface Laptop
+### surface-franz
 
 - Hauptpfad: `http://portal.hs27.internal/franz/`
 - Shortcuts ausrollen mit:
@@ -209,7 +209,7 @@ Zusatz:
 - wenn ein Link sauber funktioniert, wird kein zusaetzlicher Client-Setup-Zwang eingefuehrt
 - Media-, Radio- und Wohnzimmerpfade bleiben bis nach dem MVP ausserhalb des Hauptstarts
 
-## Wolf Arbeitssurface Standard
+## surface-wolfi Standard
 
 - Standardpfad:
   - lokales Arbeiten zuerst
@@ -246,7 +246,7 @@ Zusatz:
   - `TV Wohnzimmer`
   - `Jellyfin`
   - `Radio`
-  - `surface-go-frontend`
+  - `kiosk-frontend`
 
 ## Wenn Etwas Kaputt Wirkt
 
@@ -269,9 +269,9 @@ Dann dienstspezifisch:
 
 - keine neuen produktiven Passwoerter in Markdown pflegen
 - keine Admin-UIs oeffentlich freigeben
-- Franz nicht in den `Surface Go`-Kioskpfad pressen
-- Wolfs `Arbeitssurface` nicht mit `Franz Surface Laptop` oder `surface-go-frontend` verwechseln
-- Wolfs `Arbeitssurface` nicht dauerhaft in einen Volltunnel zwingen
+- Franz nicht in den `kiosk-frontend`-Kioskpfad pressen
+- `surface-wolfi` nicht mit `surface-franz` oder `kiosk-frontend` verwechseln
+- `surface-wolfi` nicht dauerhaft in einen Volltunnel zwingen
 - `Odoo` nicht als persoenlichen Mailclient verwenden
 - den Arbeits-MVP nicht wieder mit spaeteren Komfortpfaden ueberladen
 

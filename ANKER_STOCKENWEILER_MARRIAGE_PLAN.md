@@ -131,7 +131,7 @@ Wir bauen in dieser Reihenfolge:
 - `stockenweiler-pve` ist als `Tailscale subnet-router` vorbereitet, aber noch nicht freigeschaltet
 - `StudioPC` hat noch stale lokales `WireGuard`; das ist Altlast/Recovery, nicht das spaetere Standort-VPN
 - `AnyDesk` ist lokal da, aber die IDs sind nicht den heutigen Geraeten zugeordnet
-- `Surface_Laptop` fuer Wolf ist separat modelliert, aber live noch zu bestaetigen
+- `surface-wolfi` fuer Wolf ist separat modelliert, aber live noch zu bestaetigen
 - `PBS`-Rolle in Stockenweiler ist nur ein spaeterer Kandidat
 
 ### Rot

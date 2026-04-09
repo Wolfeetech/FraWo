@@ -135,6 +135,10 @@
 - Media server V1 is now live on `CT 100 toolbox`: Jellyfin is reachable internally on `http://media.hs27.internal`, directly on `http://10.1.0.20:8096`, and through the mobile Tailscale frontdoor on `:8449`; the obsolete local bootstrap sync is retired and Jellyfin reads from the central SMB-backed media path
 - ZenBook remote posture is now stronger: Tailscale joined on `100.76.249.126` and AnyDesk is installed and active as a GUI fallback
 - Remote-only work windows are now codified through `REMOTE_ONLY_WORK_WINDOW.md` and `make remote-only-check`
+- **StudioPC Workstation Katarzis:** Der Rechner wurde in eine dedizierte Antigravity-Workstation transformiert.
+   - **Laufwerks-Mapping (Persistent):** `P:\` (PROJEKTE), `S:\` (SAMPLES), `L:\` (LIBRARY_ASSETS) auf `C:\WORKSPACE`.
+   - **Bereinigung:** Alle Gaming-Altlasten (Riot, Steam-Residuen, Vanguard) wurden entfernt.
+   - **Optimierung:** Windows Telemetrie deaktiviert, GPU Studio-Treiber (572.83) verifiziert, ~250GB Speicher befreit.
 
 ## Active Work Queue
 

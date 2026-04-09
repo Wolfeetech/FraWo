@@ -11,25 +11,25 @@ Keine Secrets. Keine Passwoerter. Diese Datei ist dafuer gedacht, sie direkt an 
 
 ## Generierung
 
-- Generated at: `2026-04-05 08:23:27`
-- Workspace root: `/mnt/c/Users/StudioPC/Documents/Homeserver 2027 Workspace`
+- Generated at: `2026-04-09 20:28:39`
+- Workspace root: `C:\Users\StudioPC\Documents\Homeserver 2027 Workspace`
 - Git branch: `main`
-- Pending git changes: `746`
+- Pending git changes: `4`
 - Managed hosts in inventory: `30`
 
 ## Source Freshness
 
-- `AI_BOOTSTRAP_CONTEXT.md`: `2026-04-04 02:03:02`
+- `AI_BOOTSTRAP_CONTEXT.md`: `2026-04-09 18:31:08`
 - `OPS_HOME.md`: `2026-03-31 06:53:07`
-- `OPERATOR_TODO_QUEUE.md`: `2026-04-05 02:09:08`
-- `manifests/work_lanes/current_plan.json`: `2026-04-04 02:03:02`
-- `artifacts/release_mvp_gate/latest_release_mvp_gate.json`: `2026-03-31 09:57:09`
+- `OPERATOR_TODO_QUEUE.md`: `2026-04-09 15:01:40`
+- `manifests/work_lanes/current_plan.json`: `2026-04-09 20:28:25`
+- `artifacts/release_mvp_gate/latest_release_mvp_gate.json`: `2026-04-09 17:13:09`
 - `artifacts/public_ipv6_exposure_audit/latest_report.md`: `2026-03-31 06:32:34`
-- `artifacts/estate_census/latest_report.json`: `2026-04-03 23:27:25`
+- `artifacts/estate_census/latest_report.json`: `2026-04-09 17:23:24`
 - `artifacts/ucg_portal_pilot_preflight/latest_report.json`: `2026-04-05 01:32:41`
-- `artifacts/website_release_gate/20260330_161648/website_release_gate.md`: `2026-03-30 16:16:48`
-- `artifacts/production_gate/20260328_072130/production_gate.md`: `2026-03-28 07:21:32`
-- `manifests/control_surface/actions.json`: `2026-03-30 21:53:25`
+- `artifacts\website_release_gate\20260330_161648\website_release_gate.md`: `2026-03-30 16:16:48`
+- `artifacts\production_gate\20260328_072130\production_gate.md`: `2026-03-28 07:21:32`
+- `manifests/control_surface/actions.json`: `2026-04-09 20:28:34`
 
 ## Estate Snapshot
 
@@ -47,7 +47,7 @@ Keine Secrets. Keine Passwoerter. Diese Datei ist dafuer gedacht, sie direkt an 
 - PBS VM target: `192.168.2.25`, currently `degraded`
 - Vaultwarden CT: `192.168.2.26:8080`, productive entry via `https://vault.hs27.internal`
 - Radio node: `192.168.2.155` and Tailscale `100.64.23.77`
-- Shared frontend node: `surface-go-frontend` on `192.168.2.154`
+- Shared frontend node: `kiosk-frontend` on `192.168.2.154`
 - Separate Stockenweiler legacy support LAN exists on `192.168.178.0/24`
 - Internal DNS zone: `hs27.internal`
 - Tailscale subnet router and internal reverse proxy live on `toolbox`
@@ -119,17 +119,21 @@ Keine Secrets. Keine Passwoerter. Diese Datei ist dafuer gedacht, sie direkt an 
 
 ## Estate Census Snapshot
 
-- Generated at: `2026-04-03 23:27:25`
-- Tailscale peers: online `5` / offline `4` / routed `1`
-- Running estate nodes: anker containers `3`, anker VMs `4`, stock containers `14`, stock VMs `2`
-- Working toolbox frontdoors: `8` / `8`; Stockenweiler public legacy hosts green `0` / `4`
-- Local active IPv4 interfaces: `vEthernet (WSL (Hyper-V firewall)): 172.24.176.1/20, Tailscale: 100.98.31.60/32, VPN: 10.0.0.2/32, Ethernet: 192.168.2.162/24`
+- Generated at: `2026-04-09 17:23:24`
+- Tailscale peers: online `5` / offline `6` / routed `2`
+- Running estate nodes: anker containers `3`, anker VMs `4`, stock containers `6`, stock VMs `1`
+- Working toolbox frontdoors: `5` / `8`; Stockenweiler public legacy hosts green `0` / `4`
+- Local active IPv4 interfaces: `vEthernet (WSL (Hyper-V firewall)): 172.24.176.1/20, Tailscale: 100.98.31.60/32, WLAN: 192.168.2.161/24, wg-studiopc: 10.0.0.2/32`
+- Degraded frontdoors:
+  - `vaultwarden` -> HTTP `000` via `http://100.99.206.128:8442/alive`
+  - `home_assistant` -> HTTP `400` via `http://100.99.206.128:8443/`
+  - `radio` -> HTTP `502` via `http://100.99.206.128:8448/`
 - Current estate blockers:
+  - Home Assistant mobile/frontdoor is still degraded and returns HTTP 400 through toolbox.
   - StudioPC direct access to legacy guest 192.168.2.x is not the working path during the UCG transition because the same subnet exists on two different L2 domains.
-  - StudioPC still has a legacy local WireGuard VPN interface active (`VPN` / `10.0.0.2`), which keeps old Stockenweiler assumptions alive and adds operator confusion.
   - Stockenweiler has inactive storage targets: anker-music.
   - Stockenweiler public legacy endpoints are still broken: https://home.prinz-stockenweiler.de, https://papierkram.prinz-stockenweiler.de/dashboard, https://cloud.prinz-stockenweiler.de/apps/dashboard/, https://pve.prinz-stockenweiler.de.
-  - Some expected Tailscale peers are offline: pixel-8a.tail150400.ts.net, surface-go-frontend.tail150400.ts.net, wohnzimmertv.tail150400.ts.net, wolf-zenbook-ux325ea-ux325ea.tail150400.ts.net.
+  - Some expected Tailscale peers are offline: iphone-15.tail150400.ts.net, pixel-8a.tail150400.ts.net, radio-node.tail150400.ts.net, surface-go-frontend.tail150400.ts.net, wohnzimmertv.tail150400.ts.net, wolf-zenbook-ux325ea-ux325ea.tail150400.ts.net.
 - Current working order:
   - Treat Tailscale as the only professional operator path; stop depending on direct StudioPC-to-legacy 192.168.2.x reachability during migration.
   - Freeze the current working transition state: Proxmox on 10.1.0.92, toolbox frontdoors 8/8 green, guests still isolated behind the transition router.
@@ -294,15 +298,15 @@ Keine Secrets. Keine Passwoerter. Diese Datei ist dafuer gedacht, sie direkt an 
 - `status`: `pending`
 - `lane`: Lane A: MVP Closeout
 - `change_class`: repo_only
-- `goal`: Franz Surface Laptop and iPhone are visibly accepted as released MVP devices with the required direct entry paths.
-- `done_when`: Franz Surface Laptop and Franz iPhone both have the required direct app entrypoints and the visible everyday path is confirmed.
+- `goal`: surface-franz and iPhone are visibly accepted as released MVP devices with the required direct entry paths.
+- `done_when`: surface-franz and Franz iPhone both have the required direct app entrypoints and the visible everyday path is confirmed.
 - `blocked_by`: `visible_device_acceptance_missing`, `operator_smartphone_lost_2fa_block`
 - `preflight_checks`: `python scripts/device_rollout_preflight.py returns ready_for_manual_device_acceptance`, `latest MVP gate still shows device_rollout_verified as pending before closure`
 - `rollback_plan`: If the visible evidence is incomplete or inconsistent, keep the manual check pending and do not refresh the gate as passed.
 - `verification_commands`: `python scripts/device_rollout_preflight.py`, `powershell -ExecutionPolicy Bypass -File .\scripts\prove_device_rollout.ps1`
 - `last_verified_at`: 2026-04-03
-- `next_operator_action`: Recover the missing 2FA path blocked by the lost operator smartphone, then walk the Franz Surface Laptop and iPhone through the real direct entrypoints and capture a fresh visible acceptance result.
-- `next_codex_action`: Run scripts/device_rollout_preflight.py first. If it stays ready_for_manual_device_acceptance, use scripts/prove_device_rollout.ps1 with the fresh visible Surface Laptop and iPhone evidence so the MVP gate and AI handoff refresh automatically.
+- `next_operator_action`: Recover the missing 2FA path blocked by the lost operator smartphone, then walk the surface-franz and iPhone through the real direct entrypoints and capture a fresh visible acceptance result.
+- `next_codex_action`: Run scripts/device_rollout_preflight.py first. If it stays ready_for_manual_device_acceptance, use scripts/prove_device_rollout.ps1 with the fresh visible surface-franz and iPhone evidence so the MVP gate and AI handoff refresh automatically.
 
 ### `vaultwarden_recovery_material_verified`
 
@@ -416,14 +420,14 @@ Keine Secrets. Keine Passwoerter. Diese Datei ist dafuer gedacht, sie direkt an 
 - `status`: `watch`
 - `lane`: Lane C: Security/PBS/Infra
 - `change_class`: repo_only
-- `goal`: Keep Wolfs Arbeitssurface as a separate trusted client with split access: normal local work by default, internal full access only on demand.
-- `done_when`: The device is documented and treated separately from Franz Surface Laptop, with no permanent full-tunnel and no blind RouteAll requirement.
-- `blocked_by`: `surface_laptop_identity_needs_live_revalidation`
-- `preflight_checks`: `Confirm Surface_Laptop remains modeled separately from Franz Surface Laptop`, `Confirm no full-tunnel or blind RouteAll requirement has been introduced`
+- `goal`: Keep surface-wolfi as a separate trusted client with split access: normal local work by default, internal full access only on demand.
+- `done_when`: The device is documented and treated separately from surface-franz, with no permanent full-tunnel and no blind RouteAll requirement.
+- `blocked_by`: `surface_wolfi_identity_needs_live_revalidation`
+- `preflight_checks`: `Confirm surface-wolfi remains modeled separately from surface-franz`, `Confirm no full-tunnel or blind RouteAll requirement has been introduced`
 - `rollback_plan`: Revert documentation-only drift if the live identity is disproven; do not push runtime VPN policy without a gated decision.
 - `verification_commands`: `python scripts/generate_ai_server_handoff.py`
 - `last_verified_at`: 2026-03-31
-- `next_operator_action`: Confirm that the active WLAN device Surface_Laptop on 192.168.2.118 is Wolfs current Arbeitssurface and whether Tailscale is already installed there.
+- `next_operator_action`: Confirm that the active WLAN device surface-wolfi on 192.168.2.118 is Wolfs current Arbeitssurface and whether Tailscale is already installed there.
 - `next_codex_action`: Keep the split-access model canonical in NETWORK_INVENTORY.md, OPERATIONS/USER_ONBOARDING_OPERATIONS.md, and AI_BOOTSTRAP_CONTEXT.md; do not fold the device into the Franz or kiosk paths.
 
 ### `storage_optimization_watch`

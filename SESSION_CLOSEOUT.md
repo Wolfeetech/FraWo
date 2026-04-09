@@ -96,12 +96,13 @@ Generated at: `2026-04-04 15:25:00 CEST`
 11. Installed and verified QEMU Guest Agent on `VM 230 paperless`, including a successful reboot.
 12. Cleaned up temporary business-VM snapshots, enabled LVM thin-pool autoextend on Proxmox and extended `local-lvm` from `140.87 GiB` to `156.88 GiB`.
 13. Verified the new thin-pool settings with a successful create/delete test snapshot on `VM 200`.
-14. Proved the interim backup and restore path end to end:
+14. **Workstation-Katarzis:** Der StudioPC wurde erfolgreich in eine dedizierte Antigravity-Workstation transformiert (~250 GB befreit, P:/S:/L: Laufwerke gemappt, Gaming-Bloat entfernt).
+15. Proved the interim backup and restore path end to end:
    - local `vzdump` backups for `VM 200`, `VM 220` and `VM 230` succeeded
    - Odoo restore to temporary `VM 920` succeeded with `qga_ok`
    - `http://192.168.2.240:8069/web/login` returned `200`
    - test VM `920` was removed again after verification
-15. Added and verified `make business-drift-check` for the IaC-managed business stacks:
+16. Added and verified `make business-drift-check` for the IaC-managed business stacks:
    - Nextcloud, Odoo and Paperless systemd units are enabled and active
    - compose files are present under `/opt/homeserver2027/stacks`
    - application login endpoints returned healthy HTTP responses
