@@ -23,7 +23,7 @@
 - PBS VM target: `192.168.2.25`, currently `degraded`
 - Vaultwarden CT: `192.168.2.26:8080`, productive entry via `https://vault.hs27.internal`
 - Radio node: `192.168.2.155` and Tailscale `100.64.23.77`
-- Shared frontend node: `surface-go-frontend` on `192.168.2.154`
+- Shared frontend node: `kiosk-frontend` on `192.168.2.154`
 - Separate Stockenweiler legacy support LAN exists on `192.168.178.0/24`
 - Internal DNS zone: `hs27.internal`
 - Tailscale subnet router and internal reverse proxy live on `toolbox`
@@ -54,12 +54,12 @@
 ## User And Device Model
 
 - `Wolf` is the operator/admin path. His core tools are Nextcloud, Paperless, Odoo, Home Assistant, Radio Control, Vaultwarden, and the portal.
-- `Wolf Arbeitssurface` is a separate trusted client from `Franz Surface Laptop`: default local work device, internal access on-demand via Tailscale, no permanent full-tunnel by default.
-- `Franz` is the normal business user path. The current MVP scope is Surface Laptop, iPhone, Nextcloud, Paperless, Odoo, and Vaultwarden.
+- `surface-wolfi` is a separate trusted client from `surface-franz`: default local work device, internal access on-demand via Tailscale, no permanent full-tunnel by default.
+- `Franz` is the normal business user path. The current MVP scope is `surface-franz`, iPhone, Nextcloud, Paperless, Odoo, and Vaultwarden.
 - Shared living-room usage is a separate path from admin usage.
 - Google TV now connects to Jellyfin again, but the successful test used the `Wolf` account.
 - The intended shared Jellyfin profile remains `TV Wohnzimmer`, but its password was not available during the last TV test.
-- `surface-go-frontend` is a shared kiosk-style frontend node and remains inside the certification scope.
+- `kiosk-frontend` is a shared kiosk-style frontend node and remains inside the certification scope.
 - `Stockenweiler` is the next external managed-support track after the website release track, not a second integrated site.
 
 ## Access And Secret Rules

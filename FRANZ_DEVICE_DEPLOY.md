@@ -29,7 +29,7 @@ Stand: `2026-03-27`
 
 ## Restabnahme
 
-- `Franz Surface Laptop`
+- `surface-franz`
 - `Franz iPhone`
 - `Vaultwarden`
 - `Nextcloud`
