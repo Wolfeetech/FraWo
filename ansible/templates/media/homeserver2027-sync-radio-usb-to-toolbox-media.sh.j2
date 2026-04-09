@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SOURCE="{{ toolbox_media_radio_sync_source_user }}@{{ toolbox_media_radio_sync_source_host }}:{{ toolbox_media_radio_sync_source_path }}"
+TARGET="{{ toolbox_media_radio_sync_target_path }}"
+KEY="{{ toolbox_media_radio_sync_key_path }}"
+LOGFILE="{{ toolbox_media_radio_sync_log_path }}"
+EXCLUDE_FILE="{{ toolbox_media_radio_sync_exclude_file }}"
+
+mkdir -p "$(dirname "${LOGFILE}")"
+touch "${LOGFILE}"
+
+exclude_args=()
+if [[ -f "${EXCLUDE_FILE}" ]]; then
+  exclude_args+=(--exclude-from="${EXCLUDE_FILE}")
+fi
+
+{
+  echo "[media-sync] started $(date --iso-8601=seconds)"
+  echo "[media-sync] source=${SOURCE}"
+  echo "[media-sync] target=${TARGET}"
+  echo "[media-sync] exclude_file=${EXCLUDE_FILE}"
+
+  rsync \
+    -a \
+    --no-perms \
+    --delete-delay \
+    --modify-window=2 \
+    --chmod=Du=rwx,Dgo=rx,Fu=rw,Fgo=r \
+    --human-readable \
+    --info=stats2,progress2 \
+    --exclude='System Volume Information/' \
+    --exclude='.Trashes/' \
+    --exclude='.Spotlight-V100/' \
+    "${exclude_args[@]}" \
+    -e "ssh -i ${KEY} -o BatchMode=yes -o StrictHostKeyChecking=accept-new" \
+    "${SOURCE}" \
+    "${TARGET}"
+
+  find "${TARGET}" -type d -exec chmod 0755 {} + 2>/dev/null || true
+  find "${TARGET}" -type f -exec chmod 0644 {} + 2>/dev/null || true
+
+  echo "[media-sync] finished $(date --iso-8601=seconds)"
+} >>"${LOGFILE}" 2>&1

@@ -1,0 +1,55 @@
+---
+rpi_radio_target_hostname: radio-node
+rpi_radio_admin_user: wolf
+rpi_radio_timezone: Europe/Zurich
+rpi_radio_compose_root: /opt/homeserver2027/radio-node
+rpi_radio_station_shortcode: frawo-funk
+rpi_radio_library_root: /srv/radio-library
+rpi_radio_assets_root: /srv/radio-assets
+rpi_radio_media_share: //10.1.0.30/Media
+rpi_radio_media_mountpoint: /srv/radio-library/music-network
+rpi_radio_media_subdir: yourparty_Libary
+rpi_radio_media_credentials_file: /etc/hs27/storage-node-media.credentials
+rpi_radio_media_mount_opts: rw,vers=3.1.1,iocharset=utf8,credentials=/etc/hs27/storage-node-media.credentials,uid=1000,gid=1000,file_mode=0660,dir_mode=0770,nofail,x-systemd.automount,x-systemd.device-timeout=10s
+rpi_radio_library_dirs:
+  - incoming
+  - music
+  - playlists
+rpi_radio_assets_dirs:
+  - ids
+  - jingles
+  - shows
+  - staging
+  - sweepers
+rpi_radio_tailscale_repo_key_url: https://pkgs.tailscale.com/stable/ubuntu/jammy.noarmor.gpg
+rpi_radio_tailscale_repo_list_url: https://pkgs.tailscale.com/stable/ubuntu/jammy.tailscale-keyring.list
+rpi_radio_resource_profile: pi4_2gb_single_station_low_resource
+rpi_radio_recommended_station_count: 1
+rpi_radio_compose_http_timeout: 900
+rpi_radio_azuracast_env_overrides:
+  NOW_PLAYING_DELAY_TIME: "15"
+  NOW_PLAYING_MAX_CONCURRENT_PROCESSES: "1"
+  PHP_FPM_MAX_CHILDREN: "2"
+  ENABLE_WEB_UPDATER: "false"
+rpi_radio_operator_pubkey_file: "{{ lookup('env', 'HOME') }}/.ssh/id_ed25519.pub"
+rpi_radio_required_packages:
+  - openssh-server
+  - curl
+  - ca-certificates
+  - unattended-upgrades
+  - avahi-daemon
+  - jq
+  - gnupg
+  - apt-transport-https
+  - docker.io
+  - cifs-utils
+rpi_radio_absent_packages:
+  - apache2
+  - apache2-bin
+  - apache2-data
+  - apache2-utils
+  - nginx
+  - nginx-common
+  - nginx-core
+  - nginx-full
+  - nginx-light

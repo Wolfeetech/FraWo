@@ -1,0 +1,94 @@
+{
+  "organization_name": "FraWo",
+  "organization_legal_name": "FraWo GbR",
+  "organization_purpose": "Gemeinsame Secret-Organisation fuer Franz Zimmermann und Wolfi als Betriebs- und DevOps-Basis.",
+  "members": [
+    {
+      "name": "Wolfi",
+      "email": "wolf@frawo-tech.de",
+      "role": "owner",
+      "function": "VT-IT-Techniker"
+    },
+    {
+      "name": "Franz Zimmermann",
+      "email": "franz@frawo-tech.de",
+      "role": "member",
+      "function": "GbR-Mitinhaber"
+    }
+  ],
+  "collections": [
+    "Core Infra",
+    "Business Apps",
+    "Media",
+    "Mail & Domains",
+    "Devices",
+    "Stockenweiler"
+  ],
+  "sites": {
+    "Anker": "Basisserver, privates Kernnetz und der aktuelle Homeserver-Standort.",
+    "Villa": "Studio- und Radio-Kontext fuer FraWo-Funk, kreative Workflows und spaetere Villa-Endpunkte.",
+    "Stockenweiler": "Separater externer Support- und Betreuungsstandort."
+  },
+  "default_sites": [
+    "Anker"
+  ],
+  "service_rules": [
+    {
+      "match": "Nextcloud",
+      "match_type": "contains",
+      "collection": "Business Apps",
+      "sites": [
+        "Anker"
+      ]
+    },
+    {
+      "match": "Paperless",
+      "match_type": "contains",
+      "collection": "Business Apps",
+      "sites": [
+        "Anker"
+      ]
+    },
+    {
+      "match": "Odoo",
+      "match_type": "contains",
+      "collection": "Business Apps",
+      "sites": [
+        "Anker"
+      ]
+    },
+    {
+      "match": "Home Assistant",
+      "match_type": "contains",
+      "collection": "Core Infra",
+      "sites": [
+        "Anker"
+      ]
+    },
+    {
+      "match": "AdGuard",
+      "match_type": "contains",
+      "collection": "Core Infra",
+      "sites": [
+        "Anker"
+      ]
+    },
+    {
+      "match": "Jellyfin",
+      "match_type": "contains",
+      "collection": "Media",
+      "sites": [
+        "Anker"
+      ]
+    },
+    {
+      "match": "AzuraCast",
+      "match_type": "contains",
+      "collection": "Media",
+      "sites": [
+        "Anker",
+        "Villa"
+      ]
+    }
+  ]
+}

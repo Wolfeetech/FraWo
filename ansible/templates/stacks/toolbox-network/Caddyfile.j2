@@ -1,0 +1,73 @@
+{
+  auto_https disable_redirects
+}
+
+:80 {
+  @health path /healthz
+  respond @health 200
+  respond "Homeserver 2027 toolbox network foundation active.\n" 200
+}
+
+{% for item in toolbox_network_internal_proxy_hosts %}
+{{ item.scheme | default('http') }}://{{ item.hostname }} {
+{% if item.tls_internal | default(false) %}
+  tls internal
+{% endif %}
+{% for redirect in item.path_redirects | default([]) %}
+  @path_redirect_{{ loop.index }} path {{ redirect.source }}
+  redir @path_redirect_{{ loop.index }} {{ redirect.target }} {{ redirect.code | default(308) }}
+{% endfor %}
+{% for route in item.path_proxies | default([]) %}
+  handle_path {{ route.path }} {
+    reverse_proxy {{ route.upstream }}
+  }
+{% endfor %}
+  reverse_proxy {{ item.upstream }}
+}
+
+{% endfor %}
+{% for item in toolbox_network_static_file_hosts %}
+http://{{ item.hostname }} {
+  root * {{ item.root }}
+  header {
+    Cache-Control "no-store, max-age=0"
+  }
+  file_server
+}
+
+{% endfor %}
+{% for item in toolbox_network_public_redirect_hosts | default([]) %}
+http://{{ item.hostname }}, https://{{ item.hostname }} {
+  redir {{ item.target }} {{ item.code | default(308) }}
+}
+
+{% endfor %}
+{% for item in toolbox_network_public_proxy_hosts | default([]) %}
+http://{{ item.hostname }}, https://{{ item.hostname }} {
+{% for redirect in item.path_redirects | default([]) %}
+  @path_redirect_{{ loop.index }} path {{ redirect.source }}
+  redir @path_redirect_{{ loop.index }} {{ redirect.target }} {{ redirect.code | default(308) }}
+{% endfor %}
+{% for route in item.path_proxies | default([]) %}
+  handle_path {{ route.path }} {
+    reverse_proxy {{ route.upstream }}
+  }
+{% endfor %}
+  reverse_proxy {{ item.upstream }}
+}
+
+{% endfor %}
+{% for item in toolbox_network_placeholder_hosts %}
+http://{{ item.hostname }} {
+  respond "{{ item.message }}" 503
+}
+
+{% endfor %}
+{% for item in toolbox_network_tailscale_mobile_proxies %}
+http://:{{ item.listen_port }} {
+  reverse_proxy {{ item.upstream }} {
+    header_up Host {{ item.host_header }}
+  }
+}
+
+{% endfor %}

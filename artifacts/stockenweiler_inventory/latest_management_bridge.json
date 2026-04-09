@@ -1,0 +1,10 @@
+{
+  "generated_at": "2026-03-31 16:16:26",
+  "ensure_access_returncode": 0,
+  "prepare_bridge_returncode": 999,
+  "check_bridge_returncode": 999,
+  "bridge_state": "pending_login",
+  "auth_url": "https://login.tailscale.com/a/14bca4f701de61",
+  "summary": "Bridge is prepared and waiting only for Tailscale login approval.",
+  "next_action": "Open https://login.tailscale.com/a/14bca4f701de61 in a browser and complete the Tailscale login for stockenweiler-pve."
+}

@@ -1,0 +1,61 @@
+---
+- name: Deploy interim local backup operations on Proxmox
+  hosts: proxmox
+  remote_user: root
+  vars:
+    ansible_remote_tmp: /tmp/.ansible-root
+
+  pre_tasks:
+    - name: Assert proxmox local backup metadata is present
+      ansible.builtin.assert:
+        that:
+          - proxmox_local_backup_service_name is defined
+          - proxmox_local_backup_timer_name is defined
+          - proxmox_local_backup_script_path is defined
+          - proxmox_local_backup_storage is defined
+          - proxmox_local_backup_dir is defined
+          - proxmox_local_backup_vmids is defined
+          - proxmox_local_backup_keep_last is defined
+          - proxmox_local_backup_min_available_gib is defined
+          - proxmox_local_backup_on_calendar is defined
+
+  tasks:
+    - name: Install local backup runner script
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/proxmox/homeserver2027-local-business-backup.sh.j2"
+        dest: "{{ proxmox_local_backup_script_path }}"
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Install local backup service unit
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/systemd/homeserver2027-local-business-backup.service.j2"
+        dest: "/etc/systemd/system/{{ proxmox_local_backup_service_name }}"
+        owner: root
+        group: root
+        mode: "0644"
+      notify: reload systemd
+
+    - name: Install local backup timer unit
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/systemd/homeserver2027-local-business-backup.timer.j2"
+        dest: "/etc/systemd/system/{{ proxmox_local_backup_timer_name }}"
+        owner: root
+        group: root
+        mode: "0644"
+      notify: reload systemd
+
+    - name: Ensure local backup timer is enabled
+      ansible.builtin.systemd:
+        name: "{{ proxmox_local_backup_timer_name }}"
+        enabled: true
+        state: started
+        daemon_reload: true
+      when: not ansible_check_mode
+
+  handlers:
+    - name: reload systemd
+      ansible.builtin.systemd:
+        daemon_reload: true
+      when: not ansible_check_mode

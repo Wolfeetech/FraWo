@@ -1,0 +1,21 @@
+---
+- name: Curate AzuraCast Radio Library from network media share
+  hosts: raspberry_pi_radio
+  become: yes
+  tasks:
+    - name: Ensure target music curation directory exists
+      ansible.builtin.file:
+        path: /srv/radio-library/music/clean
+        state: directory
+        owner: "1000"
+        group: "1000"
+        mode: '0755'
+
+    - name: Sync curated 'clean' tracks from SMB-backed media share to RadioLibrary using rsync
+      ansible.builtin.command:
+        cmd: rsync -a /srv/radio-library/music-network/yourparty_Libary/clean/ /srv/radio-library/music/clean/
+      register: rsync_result
+      changed_when: rsync_result.stdout != ''
+
+    - name: Ensure permissions are correct
+      ansible.builtin.command: chown -R 1000:1000 /srv/radio-library/music/clean

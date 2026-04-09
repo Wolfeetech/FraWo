@@ -1,0 +1,6 @@
+# Managed by Ansible (homeserver2027 storage node)
+{% for export in homeserver_storage_node.nfs_exports | default([]) %}
+{% for client in export.clients %}
+{{ export.path }} {{ client }}({{ export.options }})
+{% endfor %}
+{% endfor %}

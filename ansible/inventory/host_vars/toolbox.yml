@@ -1,0 +1,204 @@
+---
+toolbox_network_stack_name: toolbox-network
+toolbox_network_service_name: homeserver-compose-toolbox-network.service
+toolbox_network_compose_template: stacks/toolbox-network/docker-compose.yml.j2
+toolbox_network_caddy_template: stacks/toolbox-network/Caddyfile.j2
+toolbox_network_adguard_template: stacks/toolbox-network/AdGuardHome.yaml.j2
+toolbox_network_adguard_admin_username: admin
+toolbox_network_adguard_upstream_dns:
+  - "1.1.1.1"
+  - "1.0.0.1"
+  - "9.9.9.9"
+toolbox_network_adguard_allowed_clients:
+  - "192.168.2.0/24"
+  - "10.1.0.0/24"
+  - "100.64.0.0/10"
+  - "fd7a:115c:a1e0::/48"
+toolbox_network_adguard_local_ptr_upstreams:
+  - "10.1.0.1"
+toolbox_network_adguard_rewrites:
+  - domain: portal.hs27.internal
+    answer: 10.1.0.20
+  - domain: media.hs27.internal
+    answer: 10.1.0.20
+  - domain: cloud.hs27.internal
+    answer: 10.1.0.20
+  - domain: odoo.hs27.internal
+    answer: 10.1.0.20
+  - domain: paperless.hs27.internal
+    answer: 10.1.0.20
+  - domain: ha.hs27.internal
+    answer: 10.1.0.20
+  - domain: radio.hs27.internal
+    answer: 10.1.0.20
+  - domain: vault.hs27.internal
+    answer: 10.1.0.20
+toolbox_network_internal_proxy_hosts:
+  - hostname: media.hs27.internal
+    upstream: 10.1.0.20:8096
+  - hostname: cloud.hs27.internal
+    upstream: 10.1.0.21:80
+  - hostname: odoo.hs27.internal
+    upstream: 10.1.0.22:8069
+    path_redirects:
+      - source: /radio
+        target: /radio/public/frawo-funk
+      - source: /radio/
+        target: /radio/public/frawo-funk
+    path_proxies:
+      - path: /radio/*
+        upstream: 100.64.23.77:80
+  - hostname: paperless.hs27.internal
+    upstream: 10.1.0.23:8000
+  - hostname: ha.hs27.internal
+    upstream: "{{ homeserver_haos_current_ip }}:8123"
+  - hostname: radio.hs27.internal
+    upstream: 100.64.23.77:80
+  - hostname: vault.hs27.internal
+    upstream: 10.1.0.26:8080
+    scheme: https
+    tls_internal: true
+toolbox_network_static_file_hosts:
+  - hostname: portal.hs27.internal
+    root: /srv/portal
+toolbox_network_public_redirect_hosts:
+  - hostname: frawo-tech.de
+    target: https://www.frawo-tech.de{uri}
+toolbox_network_public_proxy_hosts:
+  - hostname: www.frawo-tech.de
+    upstream: 10.1.0.22:8069
+    path_redirects:
+      - source: /radio
+        target: /radio/public/frawo-funk
+      - source: /radio/
+        target: /radio/public/frawo-funk
+    path_proxies:
+      - path: /radio/*
+        upstream: 100.64.23.77:80
+toolbox_network_placeholder_hosts: []
+toolbox_network_portal_links:
+  - label: Nextcloud
+    group: Arbeit
+    hint: Dateien und Zusammenarbeit
+    url: http://cloud.hs27.internal
+  - label: Paperless
+    group: Arbeit
+    hint: Archiv und OCR
+    url: http://paperless.hs27.internal
+  - label: Odoo
+    group: Arbeit
+    hint: Betrieb und Kunden
+    url: http://odoo.hs27.internal/web/login
+  - label: Franz Start
+    group: Betrieb
+    hint: Einstieg fuer Franz
+    url: http://portal.hs27.internal/franz/
+  - label: Vault
+    group: Betrieb
+    hint: Passworttresor
+    url: https://vault.hs27.internal
+toolbox_network_persona_cards: []
+toolbox_network_status_targets:
+  - key: nextcloud
+    label: Nextcloud
+    check_url: http://10.1.0.21
+    success_codes: [200]
+    summary: Dateien und Zusammenarbeit
+  - key: paperless
+    label: Paperless
+    check_url: http://10.1.0.23:8000
+    success_codes: [200]
+    summary: Dokumentenarchiv
+  - key: odoo
+    label: Odoo
+    check_url: http://10.1.0.22:8069/web/login
+    success_codes: [200]
+    summary: Betrieb und Kunden
+  - key: portal
+    label: Portal
+    check_url: http://127.0.0.1
+    success_codes: [200]
+    summary: Startseite
+  - key: vaultwarden
+    label: Vault
+    check_url: http://10.1.0.26:8080/alive
+    success_codes: [200]
+    summary: Passworttresor
+toolbox_network_tailscale_mobile_proxies:
+  - name: ha_mobile
+    listen_port: 8443
+    upstream: "{{ homeserver_haos_current_ip }}:8123"
+    host_header: ha.hs27.internal
+  - name: odoo_mobile
+    listen_port: 8444
+    upstream: 10.1.0.22:8069
+    host_header: odoo.hs27.internal
+  - name: nextcloud_mobile
+    listen_port: 8445
+    upstream: 10.1.0.21:80
+    host_header: cloud.hs27.internal
+  - name: paperless_mobile
+    listen_port: 8446
+    upstream: 10.1.0.23:8000
+    host_header: paperless.hs27.internal
+  - name: portal_mobile
+    listen_port: 8447
+    upstream: 127.0.0.1:80
+    host_header: portal.hs27.internal
+  - name: radio_mobile
+    listen_port: 8448
+    upstream: 100.64.23.77:80
+    host_header: radio.hs27.internal
+  - name: media_mobile
+    listen_port: 8449
+    upstream: 10.1.0.20:8096
+    host_header: media.hs27.internal
+  - name: vault_mobile
+    listen_port: 8442
+    upstream: 10.1.0.26:8080
+    host_header: vault.hs27.internal
+toolbox_tailscale_hostname: toolbox
+toolbox_tailscale_repo_key_url: https://pkgs.tailscale.com/stable/debian/bookworm.noarmor.gpg
+toolbox_tailscale_repo_list_url: https://pkgs.tailscale.com/stable/debian/bookworm.tailscale-keyring.list
+toolbox_tailscale_advertise_routes:
+  - 10.1.0.0/24
+toolbox_tailscale_accept_dns: false
+
+toolbox_media_stack_name: toolbox-media
+toolbox_media_service_name: homeserver-compose-toolbox-media.service
+toolbox_media_compose_template: stacks/toolbox-media/docker-compose.yml.j2
+toolbox_media_stack_dir: "{{ homeserver_compose_root }}/{{ toolbox_media_stack_name }}"
+toolbox_media_library_root: /srv/media-library
+toolbox_media_config_root: /srv/jellyfin
+toolbox_lxc_vmid: 100
+toolbox_media_share: //10.1.0.30/Media
+toolbox_media_mountpoint: /srv/media-library/music-network
+toolbox_media_subdir: yourparty_Libary
+toolbox_media_credentials_file: /etc/hs27/storage-node-media.credentials
+toolbox_media_mount_opts: rw,vers=3.1.1,iocharset=utf8,credentials=/etc/hs27/storage-node-media.credentials,nofail,x-systemd.automount,x-systemd.device-timeout=10s
+toolbox_media_proxmox_mountpoint: /mnt/hs27-media
+toolbox_media_proxmox_credentials_file: /root/.smb/storage-node-media.credentials
+toolbox_media_bind_mount_slot: mp0
+toolbox_media_library_dirs:
+  - movies
+  - shows
+  - music
+  - homevideos
+toolbox_media_curation_dirs:
+  - movies/inbox
+  - shows/inbox
+  - music-network
+  - music/curated
+  - music/favorites
+  - music/inbox
+  - homevideos/inbox
+  - quarantine
+toolbox_media_radio_sync_key_path: /root/.ssh/homeserver2027_media_sync
+toolbox_media_radio_sync_source_user: wolf
+toolbox_media_radio_sync_source_host: 100.64.23.77
+toolbox_media_radio_sync_source_path: /srv/radio-library/music-network/yourparty_Libary/
+toolbox_media_radio_sync_target_path: /srv/media-library/music-network/yourparty_Libary/
+toolbox_media_radio_sync_log_path: /var/log/homeserver2027-media-sync.log
+toolbox_media_radio_sync_exclude_file: /etc/homeserver2027/media-sync-excludes.txt
+toolbox_media_quarantine_root: /srv/media-library/quarantine/bootstrap-review
+toolbox_media_published_server_url: http://10.1.0.20:8096

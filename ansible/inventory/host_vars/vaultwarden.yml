@@ -1,0 +1,7 @@
+---
+compose_stack_name: vaultwarden
+compose_http_bind: 10.1.0.26
+compose_http_port: 8080
+vaultwarden_compose_root: /opt/homeserver2027/stacks/vaultwarden
+vaultwarden_domain: https://vault.hs27.internal
+vaultwarden_ssh_direct_enabled: false

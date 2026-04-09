@@ -1,0 +1,16 @@
+[Unit]
+Description=Homeserver 2027 Surface local portal
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User={{ surface_go_kiosk_user }}
+Group={{ surface_go_kiosk_user }}
+WorkingDirectory={{ surface_go_portal_dir }}
+ExecStart=/usr/bin/python3 -m http.server {{ surface_go_portal_http_port }} --bind {{ surface_go_portal_bind_address }} --directory {{ surface_go_portal_dir }}
+Restart=always
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target

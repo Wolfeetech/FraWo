@@ -1,0 +1,45 @@
+version: "3"
+services:
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+
+      - "8443:8443"
+
+      - "8444:8444"
+
+      - "8445:8445"
+
+      - "8446:8446"
+
+      - "8447:8447"
+
+      - "8448:8448"
+
+      - "8449:8449"
+
+      - "8442:8442"
+
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./portal:/srv/portal:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
+  adguard:
+    image: adguard/adguardhome:latest
+    restart: unless-stopped
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "127.0.0.1:3000:3000/tcp"
+    volumes:
+      - ./adguard/work:/opt/adguardhome/work
+      - ./adguard/conf:/opt/adguardhome/conf
+
+volumes:
+  caddy_data:
+  caddy_config:

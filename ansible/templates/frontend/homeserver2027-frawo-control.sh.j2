@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+BROWSER="{{ surface_go_browser_binary }}"
+DEFAULT_URL="{{ surface_go_kiosk_start_url }}"
+KIOSK_MODE="false"
+TARGET_URL="${DEFAULT_URL}"
+
+if [[ "${1:-}" == "--kiosk" ]]; then
+  KIOSK_MODE="true"
+  shift
+fi
+
+if [[ -n "${1:-}" ]]; then
+  TARGET_URL="$1"
+fi
+
+if [[ "${KIOSK_MODE}" == "true" ]]; then
+  pkill -u "${USER}" -x "$(basename "${BROWSER}")" >/dev/null 2>&1 || true
+  sleep 1
+  exec "${BROWSER}" --kiosk "${TARGET_URL}"
+fi
+
+exec "${BROWSER}" --new-window "${TARGET_URL}"

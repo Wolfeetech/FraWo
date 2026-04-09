@@ -1,0 +1,655 @@
+{
+  "generated_at": "2026-04-04T00:06:27+02:00",
+  "access_paths": {
+    "anker_management": "root@100.69.179.87",
+    "stock_management": "stock-pve",
+    "tailscale_frontdoor": "100.99.206.128"
+  },
+  "summary": {
+    "top_priority_issue": "Stockenweiler host is under real memory pressure: swap used `6.3 GiB` / `8.0 GiB`.",
+    "blocker_count": 5,
+    "optimization_count": 5,
+    "strategic_count": 5,
+    "odoo_runtime_green": true,
+    "frontdoors_ok": 8,
+    "frontdoors_total": 8
+  },
+  "anker": {
+    "host": {
+      "hostname": "proxmox-anker",
+      "pve_version": "pve-manager/9.1.6/71482d1833ded40a",
+      "loadavg": [
+        "0.35",
+        "0.24",
+        "0.17"
+      ],
+      "memory_used_gib": 10.01,
+      "memory_total_gib": 15.46,
+      "memory_used_pct": 64.8,
+      "swap_used_gib": 0.0,
+      "swap_total_gib": 8.0,
+      "swap_used_pct": 0.0,
+      "rootfs_used_gib": 46.74,
+      "rootfs_total_gib": 67.61,
+      "rootfs_used_pct": 69.1
+    },
+    "storages": [
+      {
+        "storage": "local",
+        "type": "dir",
+        "active": true,
+        "enabled": true,
+        "shared": false,
+        "used_gib": 46.74,
+        "avail_gib": 17.39,
+        "total_gib": 67.61,
+        "used_pct": 69.1,
+        "content": "images,vztmpl,iso,backup,rootdir,import"
+      },
+      {
+        "storage": "local-lvm",
+        "type": "lvmthin",
+        "active": true,
+        "enabled": true,
+        "shared": false,
+        "used_gib": 95.94,
+        "avail_gib": 60.93,
+        "total_gib": 156.88,
+        "used_pct": 61.2,
+        "content": "images,rootdir"
+      },
+      {
+        "storage": "stockenweiler-data",
+        "type": "nfs",
+        "active": true,
+        "enabled": true,
+        "shared": true,
+        "used_gib": 17.43,
+        "avail_gib": 46.81,
+        "total_gib": 67.73,
+        "used_pct": 25.7,
+        "content": "vztmpl,iso,images,snippets,rootdir,backup"
+      },
+      {
+        "storage": "pbs-interim",
+        "type": "pbs",
+        "active": false,
+        "enabled": false,
+        "shared": true,
+        "used_gib": 0.0,
+        "avail_gib": 0.0,
+        "total_gib": 0.0,
+        "used_pct": 0.0,
+        "content": "backup"
+      },
+      {
+        "storage": "pbs-usb",
+        "type": "dir",
+        "active": false,
+        "enabled": false,
+        "shared": false,
+        "used_gib": 0.0,
+        "avail_gib": 0.0,
+        "total_gib": 0.0,
+        "used_pct": 0.0,
+        "content": "backup,images"
+      }
+    ],
+    "resources": [
+      {
+        "vmid": 100,
+        "name": "toolbox",
+        "type": "lxc",
+        "status": "running",
+        "cpu": 0.1,
+        "mem_used_gib": 0.28,
+        "mem_max_gib": 2.0,
+        "mem_used_pct": 14.1,
+        "disk_used_gib": 5.73,
+        "disk_max_gib": 93.93,
+        "disk_used_pct": 6.1,
+        "uptime_seconds": 12727
+      },
+      {
+        "vmid": 110,
+        "name": "storage-node",
+        "type": "lxc",
+        "status": "running",
+        "cpu": 0.0,
+        "mem_used_gib": 0.03,
+        "mem_max_gib": 1.0,
+        "mem_used_pct": 2.6,
+        "disk_used_gib": 70.65,
+        "disk_max_gib": 97.87,
+        "disk_used_pct": 72.2,
+        "uptime_seconds": 12740
+      },
+      {
+        "vmid": 120,
+        "name": "vaultwarden",
+        "type": "lxc",
+        "status": "running",
+        "cpu": 0.1,
+        "mem_used_gib": 0.09,
+        "mem_max_gib": 1.0,
+        "mem_used_pct": 9.0,
+        "disk_used_gib": 1.26,
+        "disk_max_gib": 7.78,
+        "disk_used_pct": 16.2,
+        "uptime_seconds": 19967
+      },
+      {
+        "vmid": 200,
+        "name": "nextcloud",
+        "type": "qemu",
+        "status": "running",
+        "cpu": 1.2,
+        "mem_used_gib": 1.06,
+        "mem_max_gib": 2.0,
+        "mem_used_pct": 53.1,
+        "disk_used_gib": 0.0,
+        "disk_max_gib": 32.0,
+        "disk_used_pct": 0.0,
+        "uptime_seconds": 20011
+      },
+      {
+        "vmid": 210,
+        "name": "haos",
+        "type": "qemu",
+        "status": "running",
+        "cpu": 0.5,
+        "mem_used_gib": 2.45,
+        "mem_max_gib": 4.0,
+        "mem_used_pct": 61.3,
+        "disk_used_gib": 0.0,
+        "disk_max_gib": 32.0,
+        "disk_used_pct": 0.0,
+        "uptime_seconds": 20008
+      },
+      {
+        "vmid": 220,
+        "name": "odoo",
+        "type": "qemu",
+        "status": "running",
+        "cpu": 1.1,
+        "mem_used_gib": 1.26,
+        "mem_max_gib": 2.0,
+        "mem_used_pct": 62.9,
+        "disk_used_gib": 0.0,
+        "disk_max_gib": 32.0,
+        "disk_used_pct": 0.0,
+        "uptime_seconds": 20005
+      },
+      {
+        "vmid": 230,
+        "name": "paperless",
+        "type": "qemu",
+        "status": "running",
+        "cpu": 1.6,
+        "mem_used_gib": 1.92,
+        "mem_max_gib": 4.0,
+        "mem_used_pct": 48.1,
+        "disk_used_gib": 0.0,
+        "disk_max_gib": 32.0,
+        "disk_used_pct": 0.0,
+        "uptime_seconds": 20001
+      },
+      {
+        "vmid": 240,
+        "name": "pbs",
+        "type": "qemu",
+        "status": "stopped",
+        "cpu": 0.0,
+        "mem_used_gib": 0.0,
+        "mem_max_gib": 3.0,
+        "mem_used_pct": 0.0,
+        "disk_used_gib": 0.0,
+        "disk_max_gib": 32.0,
+        "disk_used_pct": 0.0,
+        "uptime_seconds": 0
+      }
+    ],
+    "direct_checks": {
+      "odoo_direct": "200",
+      "nextcloud_direct": "302",
+      "paperless_direct": "000",
+      "ha_direct": "000"
+    }
+  },
+  "stockenweiler": {
+    "host": {
+      "hostname": "pve",
+      "pve_version": "pve-manager/9.1.4/5ac30304265fbd8e",
+      "loadavg": [
+        "3.34",
+        "3.35",
+        "3.62"
+      ],
+      "memory_used_gib": 11.1,
+      "memory_total_gib": 15.5,
+      "memory_used_pct": 71.6,
+      "swap_used_gib": 6.3,
+      "swap_total_gib": 8.0,
+      "swap_used_pct": 78.8,
+      "rootfs_used_gib": 17.43,
+      "rootfs_total_gib": 67.73,
+      "rootfs_used_pct": 25.7
+    },
+    "storages": [
+      {
+        "storage": "hdd-backup",
+        "type": "dir",
+        "active": true,
+        "enabled": true,
+        "shared": false,
+        "used_gib": 782.26,
+        "avail_gib": 149.22,
+        "total_gib": 931.48,
+        "used_pct": 84.0,
+        "content": "images,backup,rootdir"
+      },
+      {
+        "storage": "local-lvm",
+        "type": "lvmthin",
+        "active": true,
+        "enabled": true,
+        "shared": false,
+        "used_gib": 101.58,
+        "avail_gib": 55.64,
+        "total_gib": 157.23,
+        "used_pct": 64.6,
+        "content": "rootdir,images"
+      },
+      {
+        "storage": "local",
+        "type": "dir",
+        "active": true,
+        "enabled": true,
+        "shared": false,
+        "used_gib": 17.43,
+        "avail_gib": 46.81,
+        "total_gib": 67.73,
+        "used_pct": 25.7,
+        "content": "iso,backup,vztmpl"
+      },
+      {
+        "storage": "anker-music",
+        "type": "nfs",
+        "active": false,
+        "enabled": true,
+        "shared": true,
+        "used_gib": 0.0,
+        "avail_gib": 0.0,
+        "total_gib": 0.0,
+        "used_pct": 0.0,
+        "content": "backup,rootdir,iso,vztmpl,snippets,images"
+      }
+    ],
+    "resources": [
+      {
+        "vmid": 101,
+        "name": "adguard",
+        "type": "lxc",
+        "status": "running",
+        "cpu": 1.4,
+        "mem_used_gib": 0.1,
+        "mem_max_gib": 0.5,
+        "mem_used_pct": 21.0,
+        "disk_used_gib": 3.73,
+        "disk_max_gib": 7.78,
+        "disk_used_pct": 47.9,
+        "uptime_seconds": 10548099
+      },
+      {
+        "vmid": 103,
+        "name": "npm",
+        "type": "lxc",
+        "status": "running",
+        "cpu": 0.2,
+        "mem_used_gib": 0.2,
+        "mem_max_gib": 0.5,
+        "mem_used_pct": 39.8,
+        "disk_used_gib": 2.6,
+        "disk_max_gib": 9.75,
+        "disk_used_pct": 26.7,
+        "uptime_seconds": 7799298
+      },
+      {
+        "vmid": 106,
+        "name": "wireguard",
+        "type": "lxc",
+        "status": "running",
+        "cpu": 0.0,
+        "mem_used_gib": 0.01,
+        "mem_max_gib": 0.25,
+        "mem_used_pct": 3.5,
+        "disk_used_gib": 2.01,
+        "disk_max_gib": 4.84,
+        "disk_used_pct": 41.4,
+        "uptime_seconds": 7599457
+      },
+      {
+        "vmid": 108,
+        "name": "vaultwarden",
+        "type": "lxc",
+        "status": "running",
+        "cpu": 0.3,
+        "mem_used_gib": 0.06,
+        "mem_max_gib": 0.5,
+        "mem_used_pct": 11.9,
+        "disk_used_gib": 1.83,
+        "disk_max_gib": 9.75,
+        "disk_used_pct": 18.8,
+        "uptime_seconds": 7598224
+      },
+      {
+        "vmid": 109,
+        "name": "pbs",
+        "type": "lxc",
+        "status": "running",
+        "cpu": 0.2,
+        "mem_used_gib": 0.06,
+        "mem_max_gib": 0.5,
+        "mem_used_pct": 11.4,
+        "disk_used_gib": 2.6,
+        "disk_max_gib": 19.52,
+        "disk_used_pct": 13.3,
+        "uptime_seconds": 201364
+      },
+      {
+        "vmid": 110,
+        "name": "n8n",
+        "type": "lxc",
+        "status": "running",
+        "cpu": 1.9,
+        "mem_used_gib": 0.31,
+        "mem_max_gib": 2.0,
+        "mem_used_pct": 15.6,
+        "disk_used_gib": 8.61,
+        "disk_max_gib": 9.75,
+        "disk_used_pct": 88.3,
+        "uptime_seconds": 10632435
+      },
+      {
+        "vmid": 120,
+        "name": "fileserver",
+        "type": "lxc",
+        "status": "running",
+        "cpu": 69.7,
+        "mem_used_gib": 0.17,
+        "mem_max_gib": 0.5,
+        "mem_used_pct": 34.5,
+        "disk_used_gib": 3.9,
+        "disk_max_gib": 31.2,
+        "disk_used_pct": 12.5,
+        "uptime_seconds": 7598707
+      },
+      {
+        "vmid": 130,
+        "name": "mail-relay",
+        "type": "lxc",
+        "status": "running",
+        "cpu": 70.0,
+        "mem_used_gib": 0.17,
+        "mem_max_gib": 0.5,
+        "mem_used_pct": 34.8,
+        "disk_used_gib": 2.26,
+        "disk_max_gib": 15.58,
+        "disk_used_pct": 14.5,
+        "uptime_seconds": 7598696
+      },
+      {
+        "vmid": 150,
+        "name": "monitoring-stack",
+        "type": "lxc",
+        "status": "running",
+        "cpu": 0.3,
+        "mem_used_gib": 0.19,
+        "mem_max_gib": 2.0,
+        "mem_used_pct": 9.5,
+        "disk_used_gib": 3.51,
+        "disk_max_gib": 3.86,
+        "disk_used_pct": 91.1,
+        "uptime_seconds": 7814847
+      },
+      {
+        "vmid": 202,
+        "name": "mongodb-primary",
+        "type": "lxc",
+        "status": "running",
+        "cpu": 0.0,
+        "mem_used_gib": 0.01,
+        "mem_max_gib": 0.5,
+        "mem_used_pct": 1.5,
+        "disk_used_gib": 5.28,
+        "disk_max_gib": 14.66,
+        "disk_used_pct": 36.0,
+        "uptime_seconds": 9203004
+      },
+      {
+        "vmid": 207,
+        "name": "radio-wordpress-prod",
+        "type": "lxc",
+        "status": "running",
+        "cpu": 0.0,
+        "mem_used_gib": 0.15,
+        "mem_max_gib": 2.0,
+        "mem_used_pct": 7.3,
+        "disk_used_gib": 782.26,
+        "disk_max_gib": 931.48,
+        "disk_used_pct": 84.0,
+        "uptime_seconds": 9504557
+      },
+      {
+        "vmid": 208,
+        "name": "mariadb-server",
+        "type": "lxc",
+        "status": "running",
+        "cpu": 0.0,
+        "mem_used_gib": 0.27,
+        "mem_max_gib": 2.0,
+        "mem_used_pct": 13.7,
+        "disk_used_gib": 1.11,
+        "disk_max_gib": 14.66,
+        "disk_used_pct": 7.6,
+        "uptime_seconds": 10127221
+      },
+      {
+        "vmid": 211,
+        "name": "radio-api",
+        "type": "lxc",
+        "status": "running",
+        "cpu": 45.1,
+        "mem_used_gib": 0.27,
+        "mem_max_gib": 0.5,
+        "mem_used_pct": 54.8,
+        "disk_used_gib": 4.84,
+        "disk_max_gib": 19.52,
+        "disk_used_pct": 24.8,
+        "uptime_seconds": 7822963
+      },
+      {
+        "vmid": 212,
+        "name": "jellyfin",
+        "type": "lxc",
+        "status": "running",
+        "cpu": 0.1,
+        "mem_used_gib": 0.24,
+        "mem_max_gib": 2.0,
+        "mem_used_pct": 12.1,
+        "disk_used_gib": 3.24,
+        "disk_max_gib": 7.78,
+        "disk_used_pct": 41.6,
+        "uptime_seconds": 7800074
+      },
+      {
+        "vmid": 210,
+        "name": "azuracast-vm",
+        "type": "qemu",
+        "status": "running",
+        "cpu": 49.3,
+        "mem_used_gib": 3.59,
+        "mem_max_gib": 4.0,
+        "mem_used_pct": 89.7,
+        "disk_used_gib": 0.0,
+        "disk_max_gib": 64.0,
+        "disk_used_pct": 0.0,
+        "uptime_seconds": 196454
+      },
+      {
+        "vmid": 360,
+        "name": "homeassistant-eltern",
+        "type": "qemu",
+        "status": "running",
+        "cpu": 5.4,
+        "mem_used_gib": 3.52,
+        "mem_max_gib": 4.0,
+        "mem_used_pct": 88.0,
+        "disk_used_gib": 0.0,
+        "disk_max_gib": 42.0,
+        "disk_used_pct": 0.0,
+        "uptime_seconds": 43406
+      }
+    ],
+    "selected_pct_configs": {
+      "120": {
+        "hostname": "fileserver",
+        "mp0": "/mnt/music_hdd,mp=/mnt/music",
+        "net0": "name=eth0,bridge=vmbr0,gw=192.168.178.1,hwaddr=BC:24:11:17:B7:03,ip=192.168.178.120/24,type=veth",
+        "rootfs": "hdd-backup:120/vm-120-disk-0.raw,size=32G"
+      },
+      "207": {
+        "hostname": "radio-wordpress-prod",
+        "net0": "name=eth0,bridge=vmbr0,gw=192.168.178.25,hwaddr=BC:24:11:F0:EA:96,ip=192.168.178.207/24,type=veth",
+        "rootfs": "/mnt/data_family/proxmox_backups/207"
+      },
+      "211": {
+        "hostname": "radio-api",
+        "mp0": "/mnt/music_hdd,mp=/var/radio/music",
+        "net0": "name=eth0,bridge=vmbr0,gw=192.168.178.25,hwaddr=BC:24:11:DC:21:AF,ip=192.168.178.211/24,type=veth",
+        "rootfs": "hdd-backup:211/vm-211-disk-0.raw,size=20G"
+      }
+    }
+  },
+  "frontdoors": {
+    "vaultwarden": {
+      "url": "http://100.99.206.128:8442/alive",
+      "curl_exit_code": 0,
+      "http_code": "200",
+      "remote_ip": "100.99.206.128",
+      "time_total": "0.070718",
+      "stderr": ""
+    },
+    "home_assistant": {
+      "url": "http://100.99.206.128:8443/",
+      "curl_exit_code": 0,
+      "http_code": "200",
+      "remote_ip": "100.99.206.128",
+      "time_total": "0.065544",
+      "stderr": ""
+    },
+    "odoo": {
+      "url": "http://100.99.206.128:8444/web/login",
+      "curl_exit_code": 0,
+      "http_code": "200",
+      "remote_ip": "100.99.206.128",
+      "time_total": "0.126229",
+      "stderr": ""
+    },
+    "nextcloud": {
+      "url": "http://100.99.206.128:8445/",
+      "curl_exit_code": 0,
+      "http_code": "302",
+      "remote_ip": "100.99.206.128",
+      "time_total": "0.072306",
+      "stderr": ""
+    },
+    "paperless": {
+      "url": "http://100.99.206.128:8446/accounts/login/",
+      "curl_exit_code": 0,
+      "http_code": "200",
+      "remote_ip": "100.99.206.128",
+      "time_total": "0.095472",
+      "stderr": ""
+    },
+    "portal": {
+      "url": "http://100.99.206.128:8447/",
+      "curl_exit_code": 0,
+      "http_code": "200",
+      "remote_ip": "100.99.206.128",
+      "time_total": "0.091779",
+      "stderr": ""
+    },
+    "radio": {
+      "url": "http://100.99.206.128:8448/",
+      "curl_exit_code": 0,
+      "http_code": "302",
+      "remote_ip": "100.99.206.128",
+      "time_total": "0.081924",
+      "stderr": ""
+    },
+    "media": {
+      "url": "http://100.99.206.128:8449/",
+      "curl_exit_code": 0,
+      "http_code": "302",
+      "remote_ip": "100.99.206.128",
+      "time_total": "0.050835",
+      "stderr": ""
+    }
+  },
+  "blockers": [
+    "Stockenweiler host is under real memory pressure: swap used `6.3 GiB` / `8.0 GiB`.",
+    "Stockenweiler storage `hdd-backup` is at `84.0%` and should not receive new backup or migration load yet.",
+    "Anker PBS path `pbs-interim` is not active; backup consolidation is still not green.",
+    "Anker PBS path `pbs-usb` is not active; backup consolidation is still not green.",
+    "VM 240 PBS is still stopped, so there is no current green dedicated PBS runtime on Anker."
+  ],
+  "optimization_candidates": [
+    "Anker guest `toolbox` (`100`) runs at only `14.1%` RAM use and is a later rightsizing candidate.",
+    "Anker guest `storage-node` (`110`) runs at only `2.6%` RAM use and is a later rightsizing candidate.",
+    "Anker guest `vaultwarden` (`120`) runs at only `9.0%` RAM use and is a later rightsizing candidate.",
+    "Stockenweiler guest `azuracast-vm` (`210`) is at `89.7%` RAM use and should be reviewed before adding workloads.",
+    "Stockenweiler guest `homeassistant-eltern` (`360`) is at `88.0%` RAM use and should be reviewed before adding workloads."
+  ],
+  "strategic_recommendations": [
+    "Stockenweiler still carries a fragmented legacy yourparty stack across VM 210 azuracast-vm, CT 207 radio-wordpress-prod, CT 208 mariadb-server, and CT 211 radio-api.",
+    "Odoo is runtime-green, but production-ready should mean a defined module/profile rollout, customer portal scope, backup/restore path, and mail/identity workflow, not only HTTP 200.",
+    "Best-fit product model is Odoo as CRM/portal/business shell around radio, while AzuraCast remains the media engine rather than the master identity system for listeners.",
+    "Home Assistant should stay separated per household first; later integration should expose selected entities only, not merge both households into one HA runtime.",
+    "Before thinning Stockenweiler, capture the essential yourparty payload into Rothkreuz: AzuraCast station config, WordPress content, MariaDB data, and radio API/config."
+  ],
+  "odoo_assessment": {
+    "runtime_green": true,
+    "direct_http_code": "200",
+    "frontdoor_http_code": "200",
+    "assessment": "runtime_green_but_production_profile_pending",
+    "production_ready_next": [
+      "Freeze the exact Odoo product scope: CRM, invoicing, sales, project, helpdesk/customer portal only if intentionally needed.",
+      "Define the portal/user model and mail workflow before onboarding external customers.",
+      "Keep restore-proof and backup path visible; PBS is still not fully green."
+    ]
+  },
+  "azuracast_assessment": {
+    "anker_runtime_role": "frawo_hobby_media_engine",
+    "listener_binding_recommendation": "Use Odoo for CRM, website, portal, newsletters, sponsors, and supporter flows; keep AzuraCast as streaming/schedule/metadata engine.",
+    "legacy_stockenweiler_components": [
+      "VM 210 azuracast-vm",
+      "CT 207 radio-wordpress-prod",
+      "CT 208 mariadb-server",
+      "CT 211 radio-api"
+    ],
+    "before_thinning_stock": [
+      "Export AzuraCast station configuration and media references.",
+      "Capture WordPress content and relevant plugins/themes.",
+      "Dump MariaDB data for the radio/web stack.",
+      "Preserve the radio API/config payload and dependency notes."
+    ]
+  },
+  "recommended_next_order": [
+    "Keep Anker stable; do not start broad migrations while PBS and Stockenweiler pressure remain open.",
+    "Define the Odoo production profile and customer portal scope before calling it production-ready.",
+    "Capture the essential yourparty payload from Stockenweiler into Rothkreuz before deleting or thinning radio/web components.",
+    "Only after payload capture: retire duplicated Stockenweiler radio/web/api roles stepwise.",
+    "Keep Home Assistant separated per household; integrate selected entities later via the management bridge."
+  ]
+}

@@ -1,0 +1,45 @@
+http:
+  address: 0.0.0.0:3000
+users:
+  - name: "{{ toolbox_network_adguard_admin_username }}"
+    password: "{{ homeserver_vault_adguard_admin_password_hash }}"
+auth_attempts: 5
+block_auth_min: 15
+dns:
+  bind_hosts:
+    - 0.0.0.0
+  port: 53
+  upstream_dns:
+{% for item in toolbox_network_adguard_upstream_dns | flatten %}
+    - "{{ item }}"
+{% endfor %}
+  allowed_clients:
+{% for item in toolbox_network_adguard_allowed_clients | flatten %}
+    - "{{ item }}"
+{% endfor %}
+  use_private_ptr_resolvers: true
+  local_ptr_upstreams:
+{% for item in toolbox_network_adguard_local_ptr_upstreams | flatten %}
+    - "{{ item }}"
+{% endfor %}
+  cache_size: 4194304
+  ratelimit: 20
+dhcp:
+  enabled: false
+filtering:
+  protection_enabled: true
+  filtering_enabled: true
+  rewrites_enabled: true
+  rewrites:
+{% for item in toolbox_network_adguard_rewrites %}
+    - domain: "{{ item.domain }}"
+      answer: "{{ item.answer }}"
+      enabled: true
+{% endfor %}
+log:
+  file: ""
+  max_backups: 3
+  max_age: 7
+  max_size: 10
+  compress: false
+schema_version: 33

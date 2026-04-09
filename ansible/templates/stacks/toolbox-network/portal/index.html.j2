@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Arbeitsportal</title>
+  <style>
+    :root {
+      --glass-bg: rgba(20, 25, 33, 0.68);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --base-text: #e2e8f0;
+      --muted-text: rgba(226, 232, 240, 0.72);
+      --accent: #38bdf8;
+      --accent-glow: rgba(56, 189, 248, 0.32);
+      --danger: #fb7185;
+      --ok: #34d399;
+      --warn: #f59e0b;
+      --shadow: 0 18px 36px rgba(0, 0, 0, 0.28);
+      --panel-shadow: 0 20px 48px rgba(0, 0, 0, 0.24);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      color: var(--base-text);
+      background:
+        radial-gradient(circle at top left, rgba(56, 189, 248, 0.18), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(251, 113, 133, 0.14), transparent 24%),
+        linear-gradient(135deg, #0f172a 0%, #172033 42%, #111827 100%);
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        linear-gradient(135deg, rgba(15, 23, 42, 0.74) 0%, rgba(30, 41, 59, 0.54) 100%),
+        repeating-linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0.02) 0,
+          rgba(255, 255, 255, 0.02) 1px,
+          transparent 1px,
+          transparent 110px
+        );
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    main {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 2.2rem;
+      display: grid;
+      gap: 2rem;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1.5rem;
+    }
+
+    .time-widget {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+      text-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    .time {
+      font-size: 5.2rem;
+      font-weight: 300;
+      line-height: 0.95;
+      letter-spacing: -0.06em;
+    }
+
+    .date {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .mode-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.7rem;
+      padding: 0.85rem 1.35rem;
+      border-radius: 999px;
+      background: rgba(56, 189, 248, 0.14);
+      border: 1px solid rgba(56, 189, 248, 0.26);
+      color: var(--accent);
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.12);
+    }
+
+    .mode-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 12px var(--accent);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.45); }
+      70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(56, 189, 248, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); }
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+      gap: 1.5rem;
+      align-items: stretch;
+    }
+
+    .hero-card,
+    .panel,
+    .app-card,
+    .service-card {
+      border-radius: 26px;
+      border: 1px solid var(--glass-border);
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: var(--panel-shadow);
+    }
+
+    .hero-card {
+      padding: 2rem;
+    }
+
+    .hero-kicker {
+      display: inline-block;
+      margin-bottom: 1rem;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      font-size: 0.76rem;
+      font-weight: 800;
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: clamp(2.5rem, 6vw, 4.8rem);
+      line-height: 0.94;
+      letter-spacing: -0.05em;
+      max-width: 9ch;
+    }
+
+    .hero p {
+      margin: 0.9rem 0 0;
+      max-width: 58ch;
+      color: var(--muted-text);
+      line-height: 1.65;
+      font-size: 1.02rem;
+    }
+
+    .hero-note {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+
+    .hero-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.8rem 1rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--muted-text);
+      font-size: 0.88rem;
+      font-weight: 600;
+    }
+
+    .hero-pill::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--ok);
+      box-shadow: 0 0 0 6px rgba(52, 211, 153, 0.1);
+    }
+
+    .status-card {
+      padding: 1.6rem;
+      display: grid;
+      gap: 1rem;
+      background: linear-gradient(180deg, rgba(17, 24, 39, 0.82), rgba(15, 23, 42, 0.72));
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 1rem;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: 1.2rem;
+      letter-spacing: -0.03em;
+    }
+
+    .section-head small {
+      color: var(--muted-text);
+      font-size: 0.84rem;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.9rem;
+    }
+
+    .metric {
+      padding: 1rem;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .metric-label {
+      display: block;
+      margin-bottom: 0.45rem;
+      color: var(--muted-text);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-weight: 700;
+    }
+
+    .metric-value {
+      display: block;
+      font-size: 1.7rem;
+      font-weight: 800;
+      letter-spacing: -0.05em;
+    }
+
+    .metric-note {
+      display: block;
+      margin-top: 0.5rem;
+      color: var(--muted-text);
+      font-size: 0.88rem;
+      line-height: 1.45;
+    }
+
+    .search-wrap {
+      display: grid;
+      gap: 0.7rem;
+    }
+
+    .search-form {
+      position: relative;
+      display: flex;
+      width: 100%;
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 999px;
+      padding: 0.7rem;
+      box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+
+    .search-form:focus-within {
+      border-color: var(--accent);
+      box-shadow: var(--shadow), 0 0 20px var(--accent-glow);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 1.6rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 22px;
+      height: 22px;
+      fill: rgba(255, 255, 255, 0.56);
+    }
+
+    .search-input {
+      flex: 1;
+      min-width: 0;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: white;
+      font-size: 1.25rem;
+      padding: 0.95rem 1rem 0.95rem 3.3rem;
+    }
+
+    .search-input::placeholder {
+      color: rgba(255, 255, 255, 0.42);
+    }
+
+    .search-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 0 2rem;
+      background: var(--accent);
+      color: #0f172a;
+      font-size: 1.05rem;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 0 15px var(--accent-glow);
+      transition: transform 0.18s ease, filter 0.18s ease;
+    }
+
+    .search-btn:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.08);
+    }
+
+    .search-note {
+      color: var(--muted-text);
+      font-size: 0.9rem;
+    }
+
+    .app-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.3rem;
+    }
+
+    .app-card {
+      min-height: 220px;
+      padding: 1.7rem 1.3rem;
+      text-decoration: none;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 1rem;
+      transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .app-card:hover {
+      transform: translateY(-5px);
+      background: rgba(30, 41, 59, 0.8);
+      border-color: rgba(255, 255, 255, 0.16);
+    }
+
+    .app-card.is-primary:hover {
+      border-color: var(--accent);
+      box-shadow: var(--panel-shadow), 0 0 18px var(--accent-glow);
+    }
+
+    .app-card.is-secondary:hover {
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .app-mark {
+      width: 60px;
+      height: 60px;
+      border-radius: 18px;
+      display: grid;
+      place-items: center;
+      font-size: 1rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      background: rgba(56, 189, 248, 0.14);
+      color: var(--accent);
+    }
+
+    .app-card.is-secondary .app-mark {
+      background: rgba(255, 255, 255, 0.08);
+      color: #f8fafc;
+    }
+
+    .app-meta {
+      display: grid;
+      gap: 0.4rem;
+    }
+
+    .app-group {
+      color: var(--muted-text);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-weight: 700;
+    }
+
+    .app-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    .app-hint {
+      color: var(--muted-text);
+      font-size: 0.94rem;
+      line-height: 1.5;
+    }
+
+    .app-url {
+      color: rgba(226, 232, 240, 0.58);
+      font-size: 0.82rem;
+      line-height: 1.45;
+      word-break: break-word;
+    }
+
+    .panel {
+      padding: 1.5rem;
+      display: grid;
+      gap: 1rem;
+    }
+
+    .service-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+
+    .service-card {
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.04);
+      border-color: rgba(255, 255, 255, 0.08);
+      box-shadow: none;
+    }
+
+    .service-card.is-ok {
+      border-color: rgba(52, 211, 153, 0.22);
+    }
+
+    .service-card.is-warn {
+      border-color: rgba(245, 158, 11, 0.22);
+    }
+
+    .service-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 0.8rem;
+      margin-bottom: 0.7rem;
+    }
+
+    .service-head strong {
+      font-size: 1rem;
+      line-height: 1.2;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 0.4rem 0.65rem;
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      white-space: nowrap;
+    }
+
+    .badge.is-ok {
+      background: rgba(52, 211, 153, 0.12);
+      color: var(--ok);
+    }
+
+    .badge.is-warn {
+      background: rgba(245, 158, 11, 0.12);
+      color: var(--warn);
+    }
+
+    .service-card p,
+    .panel p,
+    .panel li {
+      margin: 0;
+      color: var(--muted-text);
+      line-height: 1.55;
+    }
+
+    .panel ul {
+      margin: 0;
+      padding-left: 1.2rem;
+      display: grid;
+      gap: 0.5rem;
+    }
+
+    @media (max-width: 1024px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      main {
+        padding: 1.4rem;
+      }
+
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .time {
+        font-size: 3.7rem;
+      }
+
+      .hero-card,
+      .status-card,
+      .panel,
+      .app-card {
+        border-radius: 22px;
+      }
+
+      .search-form {
+        flex-direction: column;
+        border-radius: 28px;
+        gap: 0.7rem;
+      }
+
+      .search-icon {
+        left: 1.35rem;
+        top: 1.55rem;
+        transform: none;
+      }
+
+      .search-input {
+        padding: 0.95rem 1rem 0.95rem 3rem;
+        font-size: 1.08rem;
+      }
+
+      .search-btn {
+        min-height: 50px;
+      }
+
+      .metrics {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header class="header">
+      <div class="time-widget">
+        <div class="time" id="clock">00:00</div>
+        <div class="date" id="date">Laedt...</div>
+      </div>
+      <div class="mode-badge">
+        <div class="mode-dot"></div>
+        INTERNE DIREKTLINKS
+      </div>
+    </header>
+
+    <section class="hero">
+      <article class="hero-card">
+        <span class="hero-kicker">FraWo</span>
+        <h1>Arbeitsportal</h1>
+        <p>Direktzugriff auf die Kernsysteme.</p>
+        <div class="hero-note">
+          <span class="hero-pill">Nextcloud</span>
+          <span class="hero-pill">Paperless</span>
+          <span class="hero-pill">Odoo</span>
+          <span class="hero-pill">Vault</span>
+        </div>
+      </article>
+
+      <aside class="status-card">
+        <div class="section-head">
+          <h2>Status</h2>
+          <small>Live</small>
+        </div>
+        <div class="metrics">
+          <div class="metric">
+            <span class="metric-label">MVP Zustand</span>
+            <span class="metric-value" id="platform-core">Laedt</span>
+            <span class="metric-note">Portal und Kernsysteme</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">Kernpfade gesund</span>
+            <span class="metric-value" id="healthy-count">-</span>
+            <span class="metric-note">Aktive Kernsysteme</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">Letzter Feed</span>
+            <span class="metric-value" id="snapshot-time">Warte</span>
+            <span class="metric-note">Statusfeed</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">Ausserhalb</span>
+            <span class="metric-value">Spaeter</span>
+            <span class="metric-note">Media, Radio, HA, Surface, PBS</span>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="search-wrap">
+      <form class="search-form" action="http://paperless.hs27.internal/documents" method="GET">
+        <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
+        </svg>
+        <input class="search-input" type="text" name="query" placeholder="Suchen in Paperless, z. B. Gewerbeanmeldung" autocomplete="off" autofocus>
+        <button class="search-btn" type="submit">Suchen</button>
+      </form>
+      <div class="search-note">Paperless-Suche.</div>
+    </section>
+
+    <section class="app-grid" aria-label="Direktlinks">
+{% for link in toolbox_network_portal_links | default([]) %}
+{% set card_class = 'is-primary' if link.group in ['Work', 'Arbeit'] else 'is-secondary' %}
+{% if link.label == 'Nextcloud' %}
+{% set link_mark = 'NC' %}
+{% elif link.label == 'Paperless' %}
+{% set link_mark = 'PL' %}
+{% elif link.label == 'Odoo' %}
+{% set link_mark = 'OD' %}
+{% elif 'Franz' in link.label %}
+{% set link_mark = 'FR' %}
+{% elif link.label == 'Vault' %}
+{% set link_mark = 'VA' %}
+{% else %}
+{% set link_mark = link.label[:2] | upper %}
+{% endif %}
+      <a class="app-card {{ card_class }} hero-card" href="{{ link.url }}">
+        <div class="app-mark">{{ link_mark }}</div>
+        <div class="app-meta">
+          <span class="app-group">{{ link.group | default('Link') }}</span>
+          <span class="app-title">{{ link.label }}</span>
+          <span class="app-hint">{{ link.hint }}</span>
+        </div>
+        <div class="app-url">{{ link.url | replace('http://', '') | replace('https://', '') }}</div>
+      </a>
+{% endfor %}
+    </section>
+
+    <section class="panel">
+      <div class="section-head">
+        <h2>Status</h2>
+        <small>Kernsysteme</small>
+      </div>
+      <div id="service-health" class="service-grid"></div>
+    </section>
+
+    <section class="panel">
+      <div class="section-head">
+        <h2>Nicht Teil des MVP</h2>
+        <small>Spaeter</small>
+      </div>
+      <ul>
+        <li>Media, Radio und TV-spezifische Pfade</li>
+        <li>Home Assistant im taeglichen Startbild</li>
+        <li>Shared Frontend und Surface-Go-Kiosk</li>
+        <li>PBS und das spaetere Produktionssiegel</li>
+      </ul>
+    </section>
+  </main>
+
+  <script>
+    const allowedLabels = {{ (toolbox_network_status_targets | default([]) | map(attribute='label') | list) | tojson }};
+    const platformCore = document.getElementById("platform-core");
+    const healthyCount = document.getElementById("healthy-count");
+    const snapshotTime = document.getElementById("snapshot-time");
+    const serviceHealth = document.getElementById("service-health");
+
+    function updateClock() {
+      const now = new Date();
+      document.getElementById("clock").textContent = now.toLocaleTimeString("de-DE", {
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+      document.getElementById("date").textContent = now.toLocaleDateString("de-DE", {
+        weekday: "long",
+        day: "2-digit",
+        month: "long"
+      });
+    }
+
+    function toneClass(status) {
+      return status === "ok" ? "is-ok" : "is-warn";
+    }
+
+    function toneLabel(status) {
+      return status === "ok" ? "Online" : "Pruefen";
+    }
+
+    function renderMissingService(label) {
+      return `
+        <article class="service-card is-warn">
+          <div class="service-head">
+            <strong>${label}</strong>
+            <span class="badge is-warn">Fehlt</span>
+          </div>
+          <p>Der Kernpfad ist im aktuellen Snapshot nicht sichtbar und muss geprueft werden.</p>
+        </article>
+      `;
+    }
+
+    async function loadStatus() {
+      try {
+        const response = await fetch("./status.json", { cache: "no-store" });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+        const data = await response.json();
+        const serviceMap = new Map(
+          (Array.isArray(data.services) ? data.services : []).map((service) => [service.label, service])
+        );
+        const services = allowedLabels.map((label) => serviceMap.get(label) || null);
+        const healthy = services.filter((service) => service && service.status === "ok").length;
+
+        platformCore.textContent = healthy === allowedLabels.length ? "Bereit" : "Pruefen";
+        platformCore.style.color = healthy === allowedLabels.length ? "var(--ok)" : "var(--warn)";
+        healthyCount.textContent = `${healthy}/${allowedLabels.length}`;
+        snapshotTime.textContent = new Date(data.generated_at).toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit"
+        });
+
+        serviceHealth.innerHTML = services.map((service, index) => {
+          if (!service) return renderMissingService(allowedLabels[index]);
+          return `
+            <article class="service-card ${toneClass(service.status)}">
+              <div class="service-head">
+                <strong>${service.label}</strong>
+                <span class="badge ${toneClass(service.status)}">${toneLabel(service.status)}</span>
+              </div>
+              <p>${service.summary || "Interner Dienst ohne Zusatzbeschreibung."}</p>
+            </article>
+          `;
+        }).join("");
+      } catch (error) {
+        platformCore.textContent = "Offline";
+        platformCore.style.color = "var(--danger)";
+        healthyCount.textContent = `0/${allowedLabels.length}`;
+        snapshotTime.textContent = "Getrennt";
+        serviceHealth.innerHTML = `
+          <article class="service-card is-warn">
+            <div class="service-head">
+              <strong>Statusfeed nicht erreichbar</strong>
+              <span class="badge is-warn">Fehler</span>
+            </div>
+            <p>Das Portal konnte den MVP-Status nicht lesen. Toolbox oder Browser-Cache pruefen.</p>
+          </article>
+        `;
+      }
+    }
+
+    setInterval(updateClock, 1000);
+    updateClock();
+    loadStatus();
+  </script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+[{{ paperless_nextcloud_rclone_remote }}]
+type = webdav
+url = {{ paperless_nextcloud_base_url }}/remote.php/dav/files/{{ paperless_frontend_user }}
+vendor = nextcloud
+user = {{ paperless_frontend_user }}
+pass = {{ paperless_nextcloud_rclone_password_obscured }}

@@ -1,0 +1,11 @@
+[Unit]
+Description=Periodic Paperless to Nextcloud bridge sync
+
+[Timer]
+OnBootSec={{ paperless_nextcloud_bridge_on_boot_sec }}
+OnUnitActiveSec={{ paperless_nextcloud_bridge_on_unit_active_sec }}
+AccuracySec=30s
+Unit={{ paperless_nextcloud_bridge_service_name }}
+
+[Install]
+WantedBy=timers.target

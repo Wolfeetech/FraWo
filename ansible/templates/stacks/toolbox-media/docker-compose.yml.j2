@@ -1,0 +1,13 @@
+version: "3.8"
+services:
+  jellyfin:
+    image: jellyfin/jellyfin:latest
+    container_name: jellyfin
+    restart: unless-stopped
+    network_mode: host
+    environment:
+      - JELLYFIN_PublishedServerUrl={{ toolbox_media_published_server_url }}
+    volumes:
+      - {{ toolbox_media_config_root }}/config:/config
+      - {{ toolbox_media_config_root }}/cache:/cache
+      - {{ toolbox_media_library_root }}:/media:ro,rslave

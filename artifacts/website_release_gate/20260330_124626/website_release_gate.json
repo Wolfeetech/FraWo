@@ -1,0 +1,135 @@
+{
+  "decision": "BLOCKED",
+  "summary_source": "C:\\Users\\StudioPC\\Documents\\Homeserver 2027 Workspace\\artifacts\\website_release_audit\\20260330_124625\\summary.tsv",
+  "manual_checks_source": "C:\\Users\\StudioPC\\Documents\\Homeserver 2027 Workspace\\manifests\\website_release_gate\\manual_checks.json",
+  "critical_codex_checks": [
+    {
+      "id": "document-ownership-check",
+      "status": "passed",
+      "critical": true,
+      "log": "C:\\Users\\StudioPC\\Documents\\Homeserver 2027 Workspace\\artifacts\\website_release_gate\\20260330_124626\\document-ownership-check.log",
+      "executor": "codex",
+      "command_or_action": "C:\\Python313\\python.exe ./scripts/document_ownership_check.py"
+    },
+    {
+      "id": "public-dns-check",
+      "status": "passed",
+      "critical": true,
+      "log": "C:\\Users\\StudioPC\\Documents\\Homeserver 2027 Workspace\\artifacts\\website_release_audit\\20260330_124625\\public-dns-check.log",
+      "executor": "codex",
+      "command_or_action": "C:\\Python313\\python.exe ./scripts/public_dns_check.py"
+    },
+    {
+      "id": "public-http-redirect-check",
+      "status": "failed",
+      "critical": true,
+      "log": "C:\\Users\\StudioPC\\Documents\\Homeserver 2027 Workspace\\artifacts\\website_release_audit\\20260330_124625\\public-http-redirect-check.log",
+      "executor": "codex",
+      "command_or_action": "C:\\Python313\\python.exe ./scripts/public_http_redirect_check.py"
+    },
+    {
+      "id": "public-https-check",
+      "status": "failed",
+      "critical": true,
+      "log": "C:\\Users\\StudioPC\\Documents\\Homeserver 2027 Workspace\\artifacts\\website_release_audit\\20260330_124625\\public-https-check.log",
+      "executor": "codex",
+      "command_or_action": "C:\\Python313\\python.exe ./scripts/public_https_check.py"
+    },
+    {
+      "id": "public-mail-dns-check",
+      "status": "failed",
+      "critical": true,
+      "log": "C:\\Users\\StudioPC\\Documents\\Homeserver 2027 Workspace\\artifacts\\website_release_audit\\20260330_124625\\public-mail-dns-check.log",
+      "executor": "codex",
+      "command_or_action": "C:\\Python313\\python.exe ./scripts/public_mail_dns_check.py"
+    }
+  ],
+  "manual_checks": [
+    {
+      "id": "website_target_system_verified",
+      "title": "The target system is explicitly decided as the public Odoo website frontend on VM220 and not a public Odoo admin path",
+      "executor": "admin_only",
+      "critical": true,
+      "status": "pending",
+      "last_verified": "",
+      "evidence": ""
+    },
+    {
+      "id": "website_content_verified",
+      "title": "The public Odoo-managed website content is the intended GbR release content",
+      "executor": "wolfi",
+      "critical": true,
+      "status": "pending",
+      "last_verified": "",
+      "evidence": ""
+    },
+    {
+      "id": "public_browser_acceptance_verified",
+      "title": "Apex and www browser behavior are visibly verified for the website release scope",
+      "executor": "gemini_browser_ai",
+      "critical": true,
+      "status": "failed",
+      "last_verified": "2026-03-30",
+      "evidence": "Gemini browser check: apex and www HTTP show STRATO placeholder page without redirect; apex and www HTTPS show ERR_SSL_PROTOCOL_ERROR; no public GbR content visible."
+    },
+    {
+      "id": "public_radio_integration_verified",
+      "title": "The public website visibly includes the intended radio presence or player path",
+      "executor": "gemini_browser_ai",
+      "critical": true,
+      "status": "pending",
+      "last_verified": "",
+      "evidence": ""
+    },
+    {
+      "id": "public_mail_model_verified",
+      "title": "Public release mail model for webmaster, franz, info and noreply is verified",
+      "executor": "admin_only",
+      "critical": true,
+      "status": "pending",
+      "last_verified": "",
+      "evidence": ""
+    },
+    {
+      "id": "tls_automation_verified",
+      "title": "The chosen public TLS automation path is configured and documented",
+      "executor": "admin_only",
+      "critical": true,
+      "status": "pending",
+      "last_verified": "",
+      "evidence": ""
+    },
+    {
+      "id": "spf_dkim_dmarc_verified",
+      "title": "SPF, DKIM and DMARC are all intentionally configured for public release",
+      "executor": "admin_only",
+      "critical": true,
+      "status": "pending",
+      "last_verified": "",
+      "evidence": ""
+    },
+    {
+      "id": "rollback_runbook_verified",
+      "title": "Rollback for DNS, TLS and host-switch is complete and usable",
+      "executor": "admin_only",
+      "critical": true,
+      "status": "pending",
+      "last_verified": "",
+      "evidence": ""
+    }
+  ],
+  "blocked_reasons": [
+    "critical website Codex check not green: public-http-redirect-check=failed",
+    "critical website Codex check not green: public-https-check=failed",
+    "critical website Codex check not green: public-mail-dns-check=failed",
+    "critical website manual evidence not green: website_target_system_verified=pending",
+    "critical website manual evidence not green: website_content_verified=pending",
+    "critical website manual evidence not green: public_browser_acceptance_verified=failed",
+    "critical website manual evidence not green: public_radio_integration_verified=pending",
+    "critical website manual evidence not green: public_mail_model_verified=pending",
+    "critical website manual evidence not green: tls_automation_verified=pending",
+    "critical website manual evidence not green: spf_dkim_dmarc_verified=pending",
+    "critical website manual evidence not green: rollback_runbook_verified=pending"
+  ],
+  "scope_note": "This gate covers the public website release track only. It is separate from the internal business MVP gate and from full internal certification."
+}

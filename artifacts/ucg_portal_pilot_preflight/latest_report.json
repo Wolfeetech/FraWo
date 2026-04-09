@@ -1,0 +1,121 @@
+{
+  "generated_at": "2026-04-05 01:32:41",
+  "pilot": "portal",
+  "change_class": "read_only",
+  "ready_for_gated_runtime_change": false,
+  "runtime_alias_active": false,
+  "checks": [
+    {
+      "id": "portal_frontdoor_http",
+      "ok": true,
+      "evidence": "HTTP 200 via http://100.99.206.128:8447/"
+    },
+    {
+      "id": "portal_frontdoor_status_json",
+      "ok": false,
+      "evidence": "HTTP 200, platform_core=attention, healthy=6/7"
+    },
+    {
+      "id": "portal_internal_hostname",
+      "ok": false,
+      "evidence": "HTTP 0 via http://portal.hs27.internal/"
+    },
+    {
+      "id": "portal_internal_status_json",
+      "ok": false,
+      "evidence": "HTTP 0 via http://portal.hs27.internal/status.json"
+    },
+    {
+      "id": "anker_management_ssh",
+      "ok": false,
+      "evidence": "root@100.69.179.87: Permission denied (publickey,password)."
+    },
+    {
+      "id": "stock_management_ssh",
+      "ok": false,
+      "evidence": "ssh: Could not resolve hostname stock-pve: Temporary failure in name resolution"
+    },
+    {
+      "id": "pilot_documentation_present",
+      "ok": true,
+      "evidence": "pilot_section=True snapshot_rule=True verify_rule=True"
+    },
+    {
+      "id": "toolbox_target_ip_alias_active",
+      "ok": false,
+      "evidence": "root@100.69.179.87: Permission denied (publickey,password)."
+    },
+    {
+      "id": "portal_target_ip_vhost_status_json",
+      "ok": false,
+      "evidence": "platform_core=unknown, healthy=0/0"
+    }
+  ],
+  "portal_frontdoor": {
+    "root": {
+      "ok": true,
+      "url": "http://100.99.206.128:8447/",
+      "http_code": 200,
+      "error": ""
+    },
+    "status_json": {
+      "ok": true,
+      "url": "http://100.99.206.128:8447/status.json",
+      "http_code": 200,
+      "error": ""
+    },
+    "status_payload_summary": {
+      "platform_core": "attention",
+      "healthy_services": 6,
+      "total_services": 7
+    }
+  },
+  "portal_internal": {
+    "root": {
+      "ok": false,
+      "url": "http://portal.hs27.internal/",
+      "http_code": 0,
+      "error": "<urlopen error [Errno -3] Temporary failure in name resolution>"
+    },
+    "status_json": {
+      "ok": false,
+      "url": "http://portal.hs27.internal/status.json",
+      "http_code": 0,
+      "error": "<urlopen error [Errno -3] Temporary failure in name resolution>"
+    }
+  },
+  "portal_target_ip": {
+    "target_ip": "10.1.0.20",
+    "alias_probe": {
+      "ok": false,
+      "stdout": "",
+      "stderr": "root@100.69.179.87: Permission denied (publickey,password)."
+    },
+    "status_payload_summary": {
+      "platform_core": "unknown",
+      "healthy_services": 0,
+      "total_services": 0
+    }
+  },
+  "management_paths": {
+    "anker": {
+      "target": "root@100.69.179.87",
+      "ok": false,
+      "stdout_lines": [],
+      "stderr": "root@100.69.179.87: Permission denied (publickey,password)."
+    },
+    "stockenweiler": {
+      "target": "stock-pve",
+      "ok": false,
+      "stdout_lines": [],
+      "stderr": "ssh: Could not resolve hostname stock-pve: Temporary failure in name resolution"
+    }
+  },
+  "documentation": {
+    "ok": true,
+    "has_pilot_section": true,
+    "has_snapshot_rule": true,
+    "has_verify_rule": true
+  },
+  "recommendation": "fix_preflight_findings_before_any_runtime_portal_cutover"
+}

@@ -1,0 +1,112 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+log() {
+  printf '[pbs-runner] %s\n' "$*"
+}
+
+require_cmd() {
+  if ! command -v "$1" >/dev/null 2>&1; then
+    log "Missing required command: $1"
+    exit 1
+  fi
+}
+
+for cmd in findmnt pvesm python3 qm; do
+  require_cmd "$cmd"
+done
+
+VMID="{{ proxmox_pbs_vmid }}"
+VM_NAME="{{ proxmox_pbs_name }}"
+VM_STORAGE="{{ proxmox_pbs_storage }}"
+VM_BRIDGE="{{ proxmox_pbs_bridge }}"
+VM_MACHINE="{{ proxmox_pbs_machine }}"
+VM_BIOS="{{ proxmox_pbs_bios }}"
+VM_CPU="{{ proxmox_pbs_cpu }}"
+VM_CORES="{{ proxmox_pbs_cores }}"
+VM_MEMORY_MB="{{ proxmox_pbs_memory_mb }}"
+VM_SYSTEM_DISK_GB="{{ proxmox_pbs_system_disk_gb }}"
+VM_DATA_STORAGE_ID="{{ proxmox_pbs_data_storage_id }}"
+VM_DATA_DISK_GB="{{ proxmox_pbs_data_disk_gb }}"
+VM_AGENT_ENABLED="{{ proxmox_pbs_agent_enabled }}"
+VM_ONBOOT="{{ proxmox_pbs_onboot }}"
+VM_PROTECTION="{{ proxmox_pbs_protection }}"
+VM_FIREWALL="{{ proxmox_pbs_firewall }}"
+VM_START_AFTER_CREATE="{{ 1 if proxmox_pbs_start_after_create else 0 }}"
+PBS_ISO_PATH="{{ proxmox_pbs_iso_dir }}/{{ proxmox_pbs_iso_file }}"
+PBS_DATASTORE_PATH="{{ proxmox_pbs_datastore_mount_path }}"
+PBS_DATASTORE_MIN_GIB="{{ proxmox_pbs_datastore_min_gib }}"
+
+if qm status "$VMID" >/dev/null 2>&1; then
+  log "VM ${VMID} already exists; leaving the current VM untouched."
+  qm config "$VMID"
+  exit 0
+fi
+
+if [[ ! -f "$PBS_ISO_PATH" ]]; then
+  log "Missing PBS installer ISO at ${PBS_ISO_PATH}"
+  log "Stage the official Proxmox Backup Server ISO there before executing the runner."
+  exit 1
+fi
+
+if ! findmnt -rn "$PBS_DATASTORE_PATH" >/dev/null 2>&1; then
+  log "Required separate datastore mount ${PBS_DATASTORE_PATH} is not present."
+  exit 1
+fi
+
+if ! pvesm status --storage "$VM_DATA_STORAGE_ID" >/dev/null 2>&1; then
+  log "Required Proxmox storage ${VM_DATA_STORAGE_ID} is not present."
+  exit 1
+fi
+
+datastore_free_gib="$(
+  python3 - <<'PY'
+import os
+path = "{{ proxmox_pbs_datastore_mount_path }}"
+stats = os.statvfs(path)
+available = stats.f_frsize * stats.f_bavail / (1024 ** 3)
+print(f"{available:.2f}")
+PY
+)"
+
+if ! python3 - "$datastore_free_gib" "$PBS_DATASTORE_MIN_GIB" <<'PY'
+import sys
+available = float(sys.argv[1])
+required = float(sys.argv[2])
+raise SystemExit(0 if available >= required else 1)
+PY
+then
+  log "Datastore mount ${PBS_DATASTORE_PATH} has only ${datastore_free_gib} GiB free; need at least ${PBS_DATASTORE_MIN_GIB} GiB."
+  exit 1
+fi
+
+log "Creating PBS VM ${VMID} (${VM_NAME})"
+qm create "$VMID" \
+  --name "$VM_NAME" \
+  --ostype l26 \
+  --machine "$VM_MACHINE" \
+  --bios "$VM_BIOS" \
+  --cpu "$VM_CPU" \
+  --cores "$VM_CORES" \
+  --memory "$VM_MEMORY_MB" \
+  --scsihw virtio-scsi-single \
+  --scsi0 "${VM_STORAGE}:${VM_SYSTEM_DISK_GB},discard=on,ssd=1,iothread=1" \
+  --scsi1 "${VM_DATA_STORAGE_ID}:${VM_DATA_DISK_GB},discard=on,ssd=1,iothread=1" \
+  --ide2 "local:iso/{{ proxmox_pbs_iso_file }},media=cdrom" \
+  --net0 "virtio,bridge=${VM_BRIDGE},firewall=${VM_FIREWALL}" \
+  --serial0 socket \
+  --vga serial0 \
+  --agent "enabled=${VM_AGENT_ENABLED}" \
+  --onboot "$VM_ONBOOT" \
+  --protection "$VM_PROTECTION"
+
+qm set "$VMID" --boot order=ide2\;scsi0
+
+if [[ "$VM_START_AFTER_CREATE" == "1" ]]; then
+  log "Starting VM ${VMID}"
+  qm start "$VMID"
+else
+  log "Leaving VM ${VMID} stopped by configuration"
+fi
+
+log "PBS VM runner completed successfully"

@@ -1,0 +1,15 @@
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+*.log
+*.retry
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+.coverage
+dist/
+build/
+ansible/inventory/group_vars/all/mail_runtime.local.yml

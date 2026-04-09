@@ -1,0 +1,443 @@
+{
+  "version": 1,
+  "updated_at": "2026-03-31",
+  "active_lane": "lane_a_mvp_closeout",
+  "operating_model": {
+    "name": "professional_autopilot",
+    "autonomy": "aggressive_autopilot",
+    "primary_end_state": "internal_ops_first",
+    "agent_split": {
+      "codex": "lead",
+      "gemini": "visible_verification_only",
+      "operator": "decision_and_physical_actions_only"
+    },
+    "execution_loop": [
+      "read_only_truth",
+      "professional_check",
+      "change_classification",
+      "decision",
+      "post_verify",
+      "ssot_refresh"
+    ],
+    "change_classes": {
+      "read_only": "No repo or runtime mutation; truth collection only.",
+      "repo_only": "Repo-tracked documentation, manifests, generators and SSOT updates only.",
+      "reversible_runtime": "Controlled runtime change with explicit rollback and post-verify.",
+      "gated_infra": "Requires operator stop before execution."
+    },
+    "mandatory_stop_categories": [
+      "infra_public_changes",
+      "network_changes",
+      "data_migrations",
+      "storage_pbs_changes",
+      "router_changes",
+      "ha_pve_changes",
+      "security_boundary_changes",
+      "local_windows_admin_token_changes",
+      "irreversible_or_hard_to_rollback_changes"
+    ]
+  },
+  "lanes": [
+    {
+      "id": "lane_a_mvp_closeout",
+      "label": "Lane A: MVP Closeout",
+      "status": "active",
+      "priority": 1,
+      "goal": "Close the internal business MVP with the remaining visible manual proofs.",
+      "done_when": "Both remaining manual blockers are passed in the latest MVP gate: device_rollout_verified and vaultwarden_recovery_material_verified.",
+      "blocked_by": [
+        "device_rollout_verified",
+        "vaultwarden_recovery_material_verified"
+      ],
+      "next_operator_action": "Provide the visible device rollout proof and the fresh offline Vaultwarden recovery proof.",
+      "next_codex_action": "Keep all other lanes visible but non-competing, then rerun the MVP gate and regenerate the AI handoff after each new proof."
+    },
+    {
+      "id": "lane_b_website_public",
+      "label": "Lane B: Website/Public Hold",
+      "status": "watch",
+      "priority": 2,
+      "goal": "Keep the public website truth path and blockers visible without pulling the track into active release work.",
+      "done_when": "Lane A is closed and the public edge can be resumed with an explicit release decision.",
+      "blocked_by": [
+        "lane_a_mvp_closeout_active"
+      ],
+      "next_operator_action": "No new public release action unless a new security or reachability regression appears.",
+      "next_codex_action": "Maintain the truth path, blocker list, and security posture only; do not restart CI or design work."
+    },
+    {
+      "id": "lane_c_security_pbs_infra",
+      "label": "Lane C: Security/PBS/Infra",
+      "status": "watch",
+      "priority": 3,
+      "goal": "Keep hardening, reapply paths, and audits green without expanding the scope into a full infrastructure program.",
+      "done_when": "Lane A is closed and the team intentionally resumes PBS and broader infra certification work.",
+      "blocked_by": [
+        "lane_a_mvp_closeout_active"
+      ],
+      "next_operator_action": "Only act if a security regression or a PBS-critical runtime issue appears.",
+      "next_codex_action": "Preserve the audited hardening state and reapply paths; no new certification work before Lane A closes."
+    },
+    {
+      "id": "lane_d_stockenweiler",
+      "label": "Lane D: Stockenweiler",
+      "status": "watch",
+      "priority": 4,
+      "goal": "Keep the support concept, inventory baseline, remote-access model, and deferred phase-2 backlog visible without starting a live rollout or network marriage.",
+      "done_when": "Lane A is closed and Stockenweiler is explicitly promoted into an active support rollout.",
+      "blocked_by": [
+        "lane_a_mvp_closeout_active",
+        "ucg_2fa_unavailable"
+      ],
+      "next_operator_action": "No live rollout or network marriage; only provide new facts if real devices, provider details, or FRITZ/Tailscale observations are collected.",
+      "next_codex_action": "Maintain inventory, support-model documents, and the deferred phase-2 backlog; do not start site-to-site VPN, device migration, or WAN admin work."
+    },
+    {
+      "id": "lane_e_radio_media",
+      "label": "Lane E: Radio/Media",
+      "status": "hold",
+      "priority": 5,
+      "goal": "Keep radio and media operational without new feature work or UI expansion.",
+      "done_when": "Lane A is closed and there is an explicit decision to resume radio/media expansion.",
+      "blocked_by": [
+        "lane_a_mvp_closeout_active"
+      ],
+      "next_operator_action": "Only report breakage that affects current operation.",
+      "next_codex_action": "Keep the existing runtime stable and avoid scope growth."
+    }
+  ],
+  "tasks": [
+    {
+      "id": "device_rollout_verified",
+      "order": 1,
+      "lane": "Lane A: MVP Closeout",
+      "status": "pending",
+      "manual": true,
+      "delegable": true,
+      "change_class": "repo_only",
+      "preflight_checks": [
+        "python scripts/device_rollout_preflight.py returns ready_for_manual_device_acceptance",
+        "latest MVP gate still shows device_rollout_verified as pending before closure"
+      ],
+      "rollback_plan": "If the visible evidence is incomplete or inconsistent, keep the manual check pending and do not refresh the gate as passed.",
+      "verification_commands": [
+        "python scripts/device_rollout_preflight.py",
+        "powershell -ExecutionPolicy Bypass -File .\\scripts\\prove_device_rollout.ps1"
+      ],
+      "last_verified_at": "2026-04-03",
+      "goal": "Franz Surface Laptop and iPhone are visibly accepted as released MVP devices with the required direct entry paths.",
+      "done_when": "Franz Surface Laptop and Franz iPhone both have the required direct app entrypoints and the visible everyday path is confirmed.",
+      "blocked_by": [
+        "visible_device_acceptance_missing",
+        "operator_smartphone_lost_2fa_block"
+      ],
+      "next_operator_action": "Recover the missing 2FA path blocked by the lost operator smartphone, then walk the Franz Surface Laptop and iPhone through the real direct entrypoints and capture a fresh visible acceptance result.",
+      "next_codex_action": "Run scripts/device_rollout_preflight.py first. If it stays ready_for_manual_device_acceptance, use scripts/prove_device_rollout.ps1 with the fresh visible Surface Laptop and iPhone evidence so the MVP gate and AI handoff refresh automatically."
+    },
+    {
+      "id": "vaultwarden_recovery_material_verified",
+      "order": 2,
+      "lane": "Lane A: MVP Closeout",
+      "status": "pending",
+      "manual": true,
+      "delegable": false,
+      "change_class": "repo_only",
+      "preflight_checks": [
+        "Fresh visible proof exists for two separate offline recovery copies",
+        "latest MVP gate still shows vaultwarden_recovery_material_verified as pending before closure"
+      ],
+      "rollback_plan": "If the proof is stale or not visibly separate, keep the manual check pending and do not refresh the gate as passed.",
+      "verification_commands": [
+        "python scripts/release_mvp_gate.py",
+        "python scripts/generate_ai_server_handoff.py"
+      ],
+      "last_verified_at": "2026-03-31",
+      "goal": "Vaultwarden recovery material exists offline in two separate physical copies.",
+      "done_when": "Two separate offline copies exist and a fresh visible proof is recorded instead of relying on assumption.",
+      "blocked_by": [
+        "fresh_offline_proof_missing"
+      ],
+      "next_operator_action": "Create or verify two separate offline copies of the Vaultwarden recovery material and provide a fresh proof.",
+      "next_codex_action": "Update the manual MVP check, rerun release_mvp_gate.py, and regenerate AI_SERVER_HANDOFF.md."
+    },
+    {
+      "id": "website_public_hold",
+      "order": 3,
+      "lane": "Lane B: Website/Public Hold",
+      "status": "watch",
+      "manual": false,
+      "delegable": true,
+      "change_class": "read_only",
+      "preflight_checks": [
+        "Review latest website gate",
+        "Review latest public IPv6 exposure audit",
+        "Confirm Lane A is still the active delivery lane"
+      ],
+      "rollback_plan": "No runtime mutation; only truth-path refreshes and blocker updates.",
+      "verification_commands": [
+        "python scripts/generate_ai_server_handoff.py"
+      ],
+      "last_verified_at": "2026-03-31",
+      "goal": "Public website work stays visible as a paused truth path, not as an active release lane.",
+      "done_when": "Lane A is closed and public edge work is intentionally reactivated.",
+      "blocked_by": [
+        "lane_a_mvp_closeout_active"
+      ],
+      "next_operator_action": "No action unless a new public regression must be documented.",
+      "next_codex_action": "Keep the website gate, blockers, and security notes current; do not resume public release implementation."
+    },
+    {
+      "id": "platform_agnostic_delivery_factory",
+      "order": 3,
+      "lane": "Lane B: Website/Public Hold",
+      "status": "watch",
+      "manual": false,
+      "delegable": false,
+      "change_class": "repo_only",
+      "preflight_checks": [
+        "UCG VLAN target model is already canonical and does not need redesign",
+        "Public Edge remains a watch lane, not an active rollout lane",
+        "No runtime DMZ, DNS, router, or Coolify deployment change is attempted in this step",
+        "python scripts/cicd_delivery_factory_preflight.py confirms repo_side_factory_only",
+        "GHCR contract and env examples exist for the first stateless reference app",
+        "scripts/coolify_management_host_audit.py can prove a real Anker management-node candidate",
+        "Secret distribution model stays repo-only and does not activate live runtime secrets yet"
+      ],
+      "rollback_plan": "Repo-side step only; revert the factory plan, manifest, app catalog, workflow, and reports if the target architecture or first-wave app choice changes.",
+      "verification_commands": [
+        "python scripts/cicd_delivery_factory_preflight.py",
+        "python scripts/cicd_delivery_factory_report.py",
+        "python scripts/generate_ai_server_handoff.py",
+        "python scripts/coolify_management_host_audit.py"
+      ],
+      "last_verified_at": "2026-04-04",
+      "goal": "Keep one platform-agnostic CI/CD and DMZ delivery model visible so future public deployment work stops mixing build, registry, runtime, and HA concepts.",
+      "done_when": "The repo has one canonical delivery-factory plan, one machine-readable manifest, one app catalog, one preflight, one report, and one thin CI validation workflow that define dev, prod, promotion, DMZ nodes, controller boundaries, and current non-ready prerequisites.",
+      "blocked_by": [
+        "lane_a_mvp_closeout_active",
+        "public_edge_still_watch_only"
+      ],
+      "next_operator_action": "Later decide which OCI registry and which internal host should run Coolify management once Lane B is intentionally activated.",
+      "next_codex_action": "Use the Anker host audit to carry the next gated decision: create a dedicated internal management node first, then wire GHCR and Coolify live paths on top of it."
+    },
+    {
+      "id": "control_plane_clean",
+      "order": 4,
+      "lane": "Lane C: Security/PBS/Infra",
+      "status": "watch",
+      "manual": false,
+      "delegable": false,
+      "change_class": "reversible_runtime",
+      "preflight_checks": [
+        "Collect current process, service and route truth with scripts/control_plane_audit.py",
+        "Confirm stock-pve remains reachable before cleaning stale local helper paths",
+        "Do not perform Windows admin-token actions without an explicit gated stop"
+      ],
+      "rollback_plan": "If cleanup removes a useful path, restore the canonical admin path only: direct Anker aliases plus ssh stock-pve via toolbox-backed WireGuard. Do not reactivate old parallel paths blindly.",
+      "verification_commands": [
+        "python scripts/control_plane_audit.py",
+        "powershell -ExecutionPolicy Bypass -File .\\scripts\\cleanup_stale_control_plane_processes.ps1",
+        "python scripts/control_plane_audit.py",
+        "python scripts/generate_ai_server_handoff.py"
+      ],
+      "last_verified_at": "2026-03-31",
+      "goal": "Keep one clean control plane per target, reduce stale helper paths and local noise, and make the primary admin paths explicit.",
+      "done_when": "Stale local helper processes are reduced, workspace Pyrefly noise is suppressed, and the canonical admin path for Anker and Stockenweiler is verifiably documented.",
+      "blocked_by": [
+        "local_windows_admin_token_needed_for_full_wireguard_cleanup",
+        "stockenweiler_tailscale_subnet_route_approval_pending"
+      ],
+      "next_operator_action": "Only intervene if an elevated Windows token is needed for full WireGuard cleanup or if the advertised subnet route 192.168.178.0/24 for stockenweiler-pve must be approved in Tailscale admin.",
+      "next_codex_action": "Run the control-plane audit, keep the workspace-level Pyrefly suppression in place, remove only clearly stale helper processes, and keep Tailscale-first with ssh stock-pve as the current Stockenweiler admin path until the bridge is approved."
+    },
+    {
+      "id": "anker_ucg_transition_sequence",
+      "order": 5,
+      "lane": "Lane C: Security/PBS/Infra",
+      "status": "watch",
+      "manual": false,
+      "delegable": false,
+      "change_class": "repo_only",
+      "preflight_checks": [
+        "Estate census is current and shows all Anker toolbox frontdoors green",
+        "Proxmox transition router state is documented in VM_AUDIT.md and NETWORK_INVENTORY.md",
+        "No runtime renumbering or UCG firewall change is attempted in this step"
+      ],
+      "rollback_plan": "Documentation-only step; revert SSOT changes if the runtime truth changes.",
+      "verification_commands": [
+        "python scripts/portal_ucg_pilot_preflight.py",
+        "python scripts/estate_census_audit.py",
+        "python scripts/generate_ai_server_handoff.py"
+      ],
+      "last_verified_at": "2026-04-03",
+      "goal": "Keep one canonical Anker transition sequence visible so the UCG migration stops jumping between unrelated subproblems.",
+      "done_when": "The next runtime step is always taken from the same published service order instead of ad hoc troubleshooting.",
+      "blocked_by": [
+        "ucg_vlan_schema_exists_but_runtime_adoption_not_started"
+      ],
+      "next_operator_action": "Confirm that the published VLAN target in UCG_NETWORK_ARCHITECTURE.md remains the binding target model for the runtime migration.",
+      "next_codex_action": "Keep the canonical order visible in the estate census, VM_AUDIT.md, LIVE_CONTEXT.md, and AI_SERVER_HANDOFF.md; do not reopen subnet design, focus only on service-to-VLAN adoption and runtime cutover order."
+    },
+    {
+      "id": "anker_ucg_portal_pilot_preflight",
+      "order": 6,
+      "lane": "Lane C: Security/PBS/Infra",
+      "status": "watch",
+      "manual": false,
+      "delegable": false,
+      "change_class": "repo_only",
+      "preflight_checks": [
+        "Estate census is current and shows all Anker toolbox frontdoors green",
+        "Portal frontdoor 8447 remains green from wolfstudiopc",
+        "No runtime firewall, DNS, router, or VLAN mutation is attempted in this step"
+      ],
+      "rollback_plan": "Documentation-only preflight step; revert the pilot checklist if the runtime target or order changes.",
+      "verification_commands": [
+        "python scripts/estate_census_audit.py",
+        "python scripts/generate_ai_server_handoff.py"
+      ],
+      "last_verified_at": "2026-04-03",
+      "goal": "Keep the first low-risk UCG portal pilot live and verified so the transition now has one proven runtime success before core business services move.",
+      "done_when": "Toolbox carries the additive `10.1.0.20/24` pilot alias, the portal vhost answers on the target IP, and toolbox frontdoors remain green.",
+      "blocked_by": [
+        "next_low_risk_pilot_not_yet_selected"
+      ],
+      "next_operator_action": "Confirm whether `media` should become the second low-risk pilot before the first core business move.",
+      "next_codex_action": "Keep the live portal pilot verified in scripts/portal_ucg_pilot_preflight.py and SSOT, then prepare the next low-risk pilot without touching core business services yet."
+    },
+    {
+      "id": "security_pbs_infra_watch",
+      "order": 6,
+      "lane": "Lane C: Security/PBS/Infra",
+      "status": "watch",
+      "manual": false,
+      "delegable": false,
+      "change_class": "read_only",
+      "preflight_checks": [
+        "Review latest hardening audits",
+        "Review latest PBS/runtime blockers",
+        "Confirm no new regression has appeared"
+      ],
+      "rollback_plan": "No broad infra mutation in watch mode; only regression response and audit refresh.",
+      "verification_commands": [
+        "python scripts/generate_ai_server_handoff.py"
+      ],
+      "last_verified_at": "2026-03-31",
+      "goal": "Hardening, PBS status, and infrastructure guardrails remain visible without becoming the active delivery lane.",
+      "done_when": "Lane A is closed and a dedicated certification or PBS rebuild block is intentionally resumed.",
+      "blocked_by": [
+        "lane_a_mvp_closeout_active"
+      ],
+      "next_operator_action": "Only escalate if a new regression appears.",
+      "next_codex_action": "Maintain the existing audit-green state and the reapply paths; avoid broad new infra work."
+    },
+    {
+      "id": "wolf_arbeitssurface_access_model",
+      "order": 6,
+      "lane": "Lane C: Security/PBS/Infra",
+      "status": "watch",
+      "manual": false,
+      "delegable": false,
+      "change_class": "repo_only",
+      "preflight_checks": [
+        "Confirm Surface_Laptop remains modeled separately from Franz Surface Laptop",
+        "Confirm no full-tunnel or blind RouteAll requirement has been introduced"
+      ],
+      "rollback_plan": "Revert documentation-only drift if the live identity is disproven; do not push runtime VPN policy without a gated decision.",
+      "verification_commands": [
+        "python scripts/generate_ai_server_handoff.py"
+      ],
+      "last_verified_at": "2026-03-31",
+      "goal": "Keep Wolfs Arbeitssurface as a separate trusted client with split access: normal local work by default, internal full access only on demand.",
+      "done_when": "The device is documented and treated separately from Franz Surface Laptop, with no permanent full-tunnel and no blind RouteAll requirement.",
+      "blocked_by": [
+        "surface_laptop_identity_needs_live_revalidation"
+      ],
+      "next_operator_action": "Confirm that the active WLAN device Surface_Laptop on 192.168.2.118 is Wolfs current Arbeitssurface and whether Tailscale is already installed there.",
+      "next_codex_action": "Keep the split-access model canonical in NETWORK_INVENTORY.md, OPERATIONS/USER_ONBOARDING_OPERATIONS.md, and AI_BOOTSTRAP_CONTEXT.md; do not fold the device into the Franz or kiosk paths."
+    },
+    {
+      "id": "stockenweiler_watch",
+      "order": 7,
+      "lane": "Lane D: Stockenweiler",
+      "status": "watch",
+      "manual": false,
+      "delegable": true,
+      "change_class": "read_only",
+      "preflight_checks": [
+        "Verify stock-pve access path still works",
+        "Review latest Stockenweiler public truth, remote path and storage probe artifacts",
+        "Confirm Lane A remains active so no live rollout starts"
+      ],
+      "rollback_plan": "Stay in truth-collection mode only; no site marriage, no migration, no router/public changes.",
+      "verification_commands": [
+        "python scripts/stockenweiler_public_truth_check.py",
+        "python scripts/stockenweiler_remote_path_probe.py",
+        "python scripts/stockenweiler_wireguard_inventory.py",
+        "python scripts/stockenweiler_pve_storage_probe.py",
+        "python scripts/generate_ai_server_handoff.py"
+      ],
+      "last_verified_at": "2026-03-31",
+      "goal": "Stockenweiler stays visible as a prepared support track with inventory, remote-access concept, and a deferred management-first phase-2 backlog only.",
+      "done_when": "Lane A is closed and Stockenweiler is explicitly promoted into an active rollout.",
+      "blocked_by": [
+        "lane_a_mvp_closeout_active",
+        "ucg_2fa_unavailable"
+      ],
+      "next_operator_action": "No live rollout or cutover yet; share real gateway, FRITZ, UCG, Tailscale, or existing Stockenweiler WireGuard facts if available.",
+      "next_codex_action": "Keep inventory and planning current; stay read-only, but explicitly inventory the existing Stockenweiler WireGuard setup so a later professional UCG<->Stockenweiler site-to-site decision can be made without guesswork."
+    },
+    {
+      "id": "radio_media_hold",
+      "order": 8,
+      "lane": "Lane E: Radio/Media",
+      "status": "hold",
+      "manual": false,
+      "delegable": false,
+      "change_class": "read_only",
+      "preflight_checks": [
+        "Check only for breakage that affects current radio/media operation"
+      ],
+      "rollback_plan": "No expansion in hold mode; only restore known-good operation if breakage appears.",
+      "verification_commands": [
+        "python scripts/generate_ai_server_handoff.py"
+      ],
+      "last_verified_at": "2026-03-31",
+      "goal": "Radio and media remain operational, but expansion work stays out of the active queue.",
+      "done_when": "Lane A is closed and there is an explicit decision to expand radio/media again.",
+      "blocked_by": [
+        "lane_a_mvp_closeout_active"
+      ],
+      "next_operator_action": "Only report breakage that impacts current operation.",
+      "next_codex_action": "Hold the current operating state; no new features, no new public surface."
+    },
+    {
+      "id": "storage_optimization_watch",
+      "order": 6,
+      "lane": "Lane C: Security/PBS/Infra",
+      "status": "watch",
+      "manual": false,
+      "delegable": false,
+      "change_class": "read_only",
+      "preflight_checks": [
+        "Review latest platform health audit",
+        "Review latest stockenweiler storage probe",
+        "Confirm no storage delete or PBS mutation is attempted in this step"
+      ],
+      "rollback_plan": "Audit-and-plan step only; no runtime storage mutation in watch mode.",
+      "verification_commands": [
+        "python scripts/storage_optimization_audit.py",
+        "python scripts/generate_ai_server_handoff.py"
+      ],
+      "last_verified_at": "2026-04-04",
+      "goal": "Keep one factual storage-pressure and reclaim plan visible so backup, media, and PBS decisions stop mixing together.",
+      "done_when": "A dedicated storage optimization block is intentionally activated and the kept-set plus reclaim sequence are explicitly approved.",
+      "blocked_by": [
+        "storage_pbs_changes",
+        "lane_a_mvp_closeout_active"
+      ],
+      "next_operator_action": "Approve the kept-set policy for stockenweiler backup pruning and the classification rule for music_hdd payload before any deletes happen.",
+      "next_codex_action": "Keep the storage audit current and do not delete or retarget storage until the kept-set and PBS direction are explicitly chosen."
+    }
+  ]
+}

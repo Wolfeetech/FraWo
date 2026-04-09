@@ -1,0 +1,47 @@
+---
+- name: Harden toolbox mobile frontdoor to Tailscale-only
+  hosts: toolbox
+  remote_user: root
+  vars:
+    ansible_remote_tmp: /tmp/.ansible-root
+
+  tasks:
+    - name: Install toolbox mobile firewall helper
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/network/homeserver2027-toolbox-mobile-firewall.sh.j2"
+        dest: /usr/local/sbin/homeserver2027-toolbox-mobile-firewall.sh
+        owner: root
+        group: root
+        mode: "0755"
+      notify: apply toolbox mobile firewall
+
+    - name: Install toolbox mobile firewall service
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/systemd/homeserver2027-toolbox-mobile-firewall.service.j2"
+        dest: /etc/systemd/system/homeserver2027-toolbox-mobile-firewall.service
+        owner: root
+        group: root
+        mode: "0644"
+      notify:
+        - reload systemd
+        - apply toolbox mobile firewall
+
+    - name: Ensure toolbox mobile firewall service is enabled
+      ansible.builtin.systemd:
+        name: homeserver2027-toolbox-mobile-firewall.service
+        enabled: true
+        state: started
+        daemon_reload: true
+      when: not ansible_check_mode
+
+  handlers:
+    - name: reload systemd
+      ansible.builtin.systemd:
+        daemon_reload: true
+      when: not ansible_check_mode
+
+    - name: apply toolbox mobile firewall
+      ansible.builtin.systemd:
+        name: homeserver2027-toolbox-mobile-firewall.service
+        state: restarted
+      when: not ansible_check_mode

@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+CHAIN="HOMESERVER2027_MOBILE"
+PORTS="{% for item in toolbox_network_tailscale_mobile_proxies %}{{ item.listen_port }}{% if not loop.last %},{% endif %}{% endfor %}"
+
+iptables -N "${CHAIN}" 2>/dev/null || true
+iptables -F "${CHAIN}"
+iptables -A "${CHAIN}" -i lo -p tcp -m multiport --dports "${PORTS}" -j RETURN
+iptables -A "${CHAIN}" -i tailscale0 -p tcp -m multiport --dports "${PORTS}" -j RETURN
+iptables -A "${CHAIN}" -p tcp -m multiport --dports "${PORTS}" -j REJECT --reject-with tcp-reset
+iptables -A "${CHAIN}" -j RETURN
+
+for parent in INPUT DOCKER-USER; do
+  while iptables -C "${parent}" -j "${CHAIN}" 2>/dev/null; do
+    iptables -D "${parent}" -j "${CHAIN}"
+  done
+
+  iptables -I "${parent}" 1 -j "${CHAIN}"
+done

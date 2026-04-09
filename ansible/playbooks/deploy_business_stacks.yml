@@ -1,0 +1,102 @@
+---
+- name: Deploy business docker compose stacks
+  hosts: nextcloud_vm:odoo_vm:paperless_vm
+  become: true
+  vars:
+    compose_stack_dir: "{{ homeserver_compose_root }}/{{ compose_stack_name }}"
+
+  pre_tasks:
+    - name: Assert stack metadata is present
+      ansible.builtin.assert:
+        that:
+          - compose_stack_name is defined
+          - compose_service_name is defined
+          - compose_template is defined
+          - compose_env_template is defined
+
+  tasks:
+    - name: Ensure compose root exists
+      ansible.builtin.file:
+        path: "{{ homeserver_compose_root }}"
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Ensure compose stack directory exists
+      ansible.builtin.file:
+        path: "{{ compose_stack_dir }}"
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Install stack environment file
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/{{ compose_env_template }}"
+        dest: "{{ compose_stack_dir }}/stack.env"
+        owner: root
+        group: root
+        mode: "0600"
+      notify: restart compose stack
+
+    - name: Install docker compose file
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/{{ compose_template }}"
+        dest: "{{ compose_stack_dir }}/docker-compose.yml"
+        owner: root
+        group: root
+        mode: "0644"
+      notify: restart compose stack
+
+    - name: Install Odoo SMTP config when mail baseline is enabled
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/stacks/odoo/odoo.conf.j2"
+        dest: "{{ compose_stack_dir }}/odoo.conf"
+        owner: root
+        group: root
+        mode: "0600"
+      when:
+        - compose_stack_name == "odoo"
+        - homeserver_mail_app_smtp_enabled | default(false)
+      notify: restart compose stack
+
+    - name: Remove Odoo SMTP config when mail baseline is disabled
+      ansible.builtin.file:
+        path: "{{ compose_stack_dir }}/odoo.conf"
+        state: absent
+      when:
+        - compose_stack_name == "odoo"
+        - not (homeserver_mail_app_smtp_enabled | default(false))
+      notify: restart compose stack
+
+    - name: Install systemd service for stack
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/systemd/homeserver-compose-stack.service.j2"
+        dest: "/etc/systemd/system/{{ compose_service_name }}"
+        owner: root
+        group: root
+        mode: "0644"
+      notify:
+        - reload systemd
+        - restart compose stack
+
+    - name: Ensure stack service is enabled
+      ansible.builtin.systemd:
+        name: "{{ compose_service_name }}"
+        enabled: true
+        state: started
+        daemon_reload: true
+      when: not ansible_check_mode
+
+  handlers:
+    - name: reload systemd
+      ansible.builtin.systemd:
+        daemon_reload: true
+      when: not ansible_check_mode
+
+    - name: restart compose stack
+      ansible.builtin.systemd:
+        name: "{{ compose_service_name }}"
+        state: restarted
+      when: not ansible_check_mode

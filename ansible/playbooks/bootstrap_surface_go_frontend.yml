@@ -1,0 +1,273 @@
+---
+- name: Bootstrap Surface Go frontend node
+  hosts: surface_go_frontend
+  become: true
+
+  tasks:
+    - name: Refresh apt cache
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Install required frontend packages
+      ansible.builtin.apt:
+        name: "{{ surface_go_required_packages }}"
+        state: present
+
+    - name: Remove local webserver leftovers
+      ansible.builtin.apt:
+        name: "{{ surface_go_absent_packages }}"
+        state: absent
+        purge: true
+        autoremove: true
+
+    - name: Ensure Tailscale keyring directory exists
+      ansible.builtin.file:
+        path: /usr/share/keyrings
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Install Tailscale apt key
+      ansible.builtin.get_url:
+        url: "{{ surface_go_tailscale_repo_key_url }}"
+        dest: /usr/share/keyrings/tailscale-archive-keyring.gpg
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Install Tailscale apt source
+      ansible.builtin.get_url:
+        url: "{{ surface_go_tailscale_repo_list_url }}"
+        dest: /etc/apt/sources.list.d/tailscale.list
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Refresh apt cache after adding Tailscale repository
+      ansible.builtin.apt:
+        update_cache: true
+
+    - name: Install Tailscale
+      ansible.builtin.apt:
+        name: tailscale
+        state: present
+
+    - name: Ensure frontend hostname is set
+      ansible.builtin.hostname:
+        name: "{{ surface_go_target_hostname }}"
+
+    - name: Ensure kiosk user exists
+      ansible.builtin.user:
+        name: "{{ surface_go_kiosk_user }}"
+        create_home: true
+        shell: /bin/bash
+
+    - name: Ensure kiosk user is not in sudo group
+      ansible.builtin.command:
+        cmd: "gpasswd -d {{ surface_go_kiosk_user }} sudo"
+      register: surface_go_sudo_remove
+      changed_when: surface_go_sudo_remove.rc == 0
+      failed_when: surface_go_sudo_remove.rc not in [0, 3]
+
+    - name: Ensure required frontend directories exist
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        state: directory
+        owner: "{{ item.owner }}"
+        group: "{{ item.group }}"
+        mode: "{{ item.mode | default('0755') }}"
+      loop:
+        - path: "{{ surface_go_portal_dir }}"
+          owner: "{{ surface_go_kiosk_user }}"
+          group: "{{ surface_go_kiosk_user }}"
+        - path: "/home/{{ surface_go_kiosk_user }}/.config/autostart"
+          owner: "{{ surface_go_kiosk_user }}"
+          group: "{{ surface_go_kiosk_user }}"
+        - path: "/home/{{ surface_go_kiosk_user }}/.local/share/applications"
+          owner: "{{ surface_go_kiosk_user }}"
+          group: "{{ surface_go_kiosk_user }}"
+        - path: "/home/{{ surface_go_kiosk_user }}/Desktop"
+          owner: "{{ surface_go_kiosk_user }}"
+          group: "{{ surface_go_kiosk_user }}"
+        - path: "/home/{{ surface_go_admin_user }}/Desktop"
+          owner: "{{ surface_go_admin_user }}"
+          group: "{{ surface_go_admin_user }}"
+        - path: "/home/{{ surface_go_kiosk_user }}/.config/gnome-kiosk-script"
+          owner: "{{ surface_go_kiosk_user }}"
+          group: "{{ surface_go_kiosk_user }}"
+        - path: /etc/dconf/db/local.d
+          owner: root
+          group: root
+        - path: /etc/ssh/sshd_config.d
+          owner: root
+          group: root
+        - path: /opt/homeserver2027/install-media/remote
+          owner: root
+          group: root
+      loop_control:
+        label: "{{ item.path }}"
+
+    - name: Install local frontend portal
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/frontend/surface-go-portal/index.html.j2"
+        dest: "{{ surface_go_portal_dir }}/index.html"
+        owner: "{{ surface_go_kiosk_user }}"
+        group: "{{ surface_go_kiosk_user }}"
+        mode: "0644"
+      vars:
+        surface_go_actions_manifest: "{{ lookup('file', playbook_dir + '/../../manifests/control_surface/actions.json') | from_json }}"
+
+    - name: Install local portal service unit
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/frontend/homeserver2027-surface-portal.service.j2"
+        dest: /etc/systemd/system/homeserver2027-surface-portal.service
+        owner: root
+        group: root
+        mode: "0644"
+      notify: reload systemd
+
+    - name: Install frontend launcher wrapper
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/frontend/homeserver2027-frawo-control.sh.j2"
+        dest: "{{ surface_go_launcher_script }}"
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Install touch keyboard launcher wrapper
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/frontend/homeserver2027-touch-keyboard.sh.j2"
+        dest: "{{ surface_go_keyboard_launcher_script }}"
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Install touch-friendly GNOME defaults
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/frontend/surface-go-dconf.ini.j2"
+        dest: /etc/dconf/db/local.d/00-homeserver2027-frontend
+        owner: root
+        group: root
+        mode: "0644"
+      notify: update dconf
+
+    - name: Install gnome-kiosk launch script
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/frontend/homeserver2027-kiosk-script.sh.j2"
+        dest: "/home/{{ surface_go_kiosk_user }}/.config/gnome-kiosk-script/kiosk-script"
+        owner: "{{ surface_go_kiosk_user }}"
+        group: "{{ surface_go_kiosk_user }}"
+        mode: "0755"
+
+    - name: Install kiosk application launcher
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/frontend/surface-go-launcher.desktop.j2"
+        dest: "/home/{{ surface_go_kiosk_user }}/.local/share/applications/frawo-control.desktop"
+        owner: "{{ surface_go_kiosk_user }}"
+        group: "{{ surface_go_kiosk_user }}"
+        mode: "0755"
+      vars:
+        item:
+          name: FRAWO Control
+          comment: Oeffnet das gemeinsame FRAWO-Frontend
+          exec: "{{ surface_go_launcher_script }} --kiosk"
+          icon: web-browser
+          categories: Network;WebBrowser;
+
+    - name: Install kiosk desktop launchers
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/frontend/surface-go-launcher.desktop.j2"
+        dest: "/home/{{ surface_go_kiosk_user }}/Desktop/{{ item.name | regex_replace('[^A-Za-z0-9._ -]', '') }}.desktop"
+        owner: "{{ surface_go_kiosk_user }}"
+        group: "{{ surface_go_kiosk_user }}"
+        mode: "0755"
+      loop: "{{ surface_go_kiosk_desktop_launchers }}"
+      loop_control:
+        label: "{{ item.name }}"
+
+    - name: Install admin desktop launchers
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/frontend/surface-go-launcher.desktop.j2"
+        dest: "/home/{{ surface_go_admin_user }}/Desktop/{{ item.name | regex_replace('[^A-Za-z0-9._ -]', '') }}.desktop"
+        owner: "{{ surface_go_admin_user }}"
+        group: "{{ surface_go_admin_user }}"
+        mode: "0755"
+      loop: "{{ surface_go_admin_desktop_launchers }}"
+      loop_control:
+        label: "{{ item.name }}"
+
+    - name: Download AnyDesk package
+      ansible.builtin.get_url:
+        url: "{{ surface_go_anydesk_package_url }}"
+        dest: "{{ surface_go_anydesk_package_local_path }}"
+        owner: root
+        group: root
+        mode: "0644"
+      when: surface_go_anydesk_enabled | bool
+
+    - name: Install AnyDesk package
+      ansible.builtin.apt:
+        deb: "{{ surface_go_anydesk_package_local_path }}"
+      when: surface_go_anydesk_enabled | bool
+
+    - name: Ensure GDM autologin settings are present
+      ansible.builtin.blockinfile:
+        path: /etc/gdm3/custom.conf
+        marker: "# {mark} HOMESERVER2027 FRONTEND"
+        insertafter: '^\[daemon\]$'
+        block: |
+          AutomaticLoginEnable=true
+          AutomaticLogin={{ surface_go_kiosk_user }}
+
+    - name: Install SSH baseline drop-in
+      ansible.builtin.copy:
+        dest: /etc/ssh/sshd_config.d/90-homeserver2027-frontend.conf
+        owner: root
+        group: root
+        mode: "0644"
+        content: |
+          PermitRootLogin no
+          PasswordAuthentication yes
+          KbdInteractiveAuthentication yes
+          X11Forwarding no
+      notify: restart ssh
+
+    - name: Ensure local portal service is enabled
+      ansible.builtin.systemd:
+        name: homeserver2027-surface-portal.service
+        enabled: true
+        state: restarted
+        daemon_reload: true
+
+    - name: Ensure core frontend services are enabled
+      ansible.builtin.systemd:
+        name: "{{ item }}"
+        enabled: true
+        state: started
+      loop:
+        - ssh
+        - tailscaled
+        - unattended-upgrades
+
+    - name: Ensure AnyDesk service is enabled
+      ansible.builtin.systemd:
+        name: "{{ surface_go_anydesk_service_name }}"
+        enabled: true
+        state: started
+      when: surface_go_anydesk_enabled | bool
+
+  handlers:
+    - name: restart ssh
+      ansible.builtin.systemd:
+        name: ssh
+        state: restarted
+
+    - name: reload systemd
+      ansible.builtin.systemd:
+        daemon_reload: true
+
+    - name: update dconf
+      ansible.builtin.command:
+        cmd: dconf update

@@ -1,0 +1,82 @@
+---
+- name: Tune Raspberry Pi AzuraCast resources for low-RAM operation
+  hosts: raspberry_pi_radio
+  become: true
+
+  vars:
+    azuracast_root: /var/azuracast
+    azuracast_env_file: /var/azuracast/azuracast.env
+    azuracast_compose_env_file: /var/azuracast/.env
+
+  tasks:
+    - name: Assert AzuraCast config files exist
+      ansible.builtin.stat:
+        path: "{{ item }}"
+      loop:
+        - "{{ azuracast_compose_env_file }}"
+        - "{{ azuracast_env_file }}"
+      register: rpi_azuracast_env_stats
+
+    - name: Ensure AzuraCast config prerequisites are present
+      ansible.builtin.assert:
+        that:
+          - rpi_azuracast_env_stats.results | map(attribute='stat.exists') | min
+        fail_msg: "AzuraCast config files are missing; deploy AzuraCast before applying the low-resource tuning profile."
+
+    - name: Back up AzuraCast env files before tuning
+      ansible.builtin.copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        remote_src: true
+        force: false
+        owner: root
+        group: root
+        mode: "0644"
+      loop:
+        - src: "{{ azuracast_compose_env_file }}"
+          dest: "{{ azuracast_compose_env_file }}.resource_tuning_backup_{{ ansible_date_time.epoch }}"
+        - src: "{{ azuracast_env_file }}"
+          dest: "{{ azuracast_env_file }}.resource_tuning_backup_{{ ansible_date_time.epoch }}"
+
+    - name: Set Compose timeout for slow ARM Docker operations
+      ansible.builtin.lineinfile:
+        path: "{{ azuracast_compose_env_file }}"
+        regexp: '^COMPOSE_HTTP_TIMEOUT='
+        line: 'COMPOSE_HTTP_TIMEOUT=900'
+      notify: restart azuracast
+
+    - name: Apply low-resource AzuraCast tuning values
+      ansible.builtin.lineinfile:
+        path: "{{ azuracast_env_file }}"
+        regexp: '^{{ item.key }}='
+        line: '{{ item.key }}={{ item.value }}'
+      loop:
+        - key: NOW_PLAYING_DELAY_TIME
+          value: "15"
+        - key: NOW_PLAYING_MAX_CONCURRENT_PROCESSES
+          value: "1"
+        - key: PHP_FPM_MAX_CHILDREN
+          value: "2"
+        - key: ENABLE_WEB_UPDATER
+          value: "false"
+      notify: restart azuracast
+
+    - name: Flush AzuraCast restart handler
+      ansible.builtin.meta: flush_handlers
+
+    - name: Wait for AzuraCast web UI after resource tuning
+      ansible.builtin.uri:
+        url: http://127.0.0.1/
+        method: GET
+        status_code: [200, 302]
+      register: rpi_tuned_azuracast_http
+      retries: 18
+      delay: 10
+      until: rpi_tuned_azuracast_http.status in [200, 302]
+
+  handlers:
+    - name: restart azuracast
+      ansible.builtin.command:
+        cmd: docker compose up -d
+      args:
+        chdir: "{{ azuracast_root }}"

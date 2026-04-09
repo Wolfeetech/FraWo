@@ -1,0 +1,10 @@
+[Unit]
+Description=Homeserver 2027 portal status snapshot
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/homeserver2027-portal-status-snapshot.py
+User=root
+Group=root

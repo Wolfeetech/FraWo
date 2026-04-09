@@ -1,0 +1,27 @@
+{
+  "generated_at": "2026-04-04T02:04:25+02:00",
+  "anker": {
+    "local_used_fraction": 0.6914,
+    "local_lvm_used_fraction": 0.6117,
+    "dump_bytes": 25023706860
+  },
+  "stockenweiler": {
+    "hdd_backup_used_fraction": 0.8398,
+    "music_library_bytes": 1536202440704,
+    "music_inbox_bytes": 73531134976,
+    "yourparty_library_bytes": 302948459520,
+    "vm210_backup_count": 9,
+    "vm360_backup_count": 10,
+    "vm210_old_backup_reclaim_bytes": 240299619698,
+    "vm360_old_backup_reclaim_bytes": 74541813895,
+    "raw_image_archive_bytes": 140660178944
+  },
+  "recommendation_order": [
+    "freeze_new_backup_load_on_stockenweiler",
+    "prune_stockenweiler_vm210_and_vm360_backup_retention_after_verification",
+    "classify_or_export_stockenweiler_raw_image_archives",
+    "clean_stockenweiler_music_inbox_and_yourparty_side_payload",
+    "restore_anker_pbs_before_any_broader_migration_or_backup_retargeting",
+    "only_then_review_anker_local_dump_retention"
+  ]
+}

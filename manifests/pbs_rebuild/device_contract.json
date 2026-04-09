@@ -1,0 +1,20 @@
+{
+  "boot_usb": {
+    "serial": "",
+    "min_gib": 50,
+    "max_gib": 70,
+    "allow_destroy": false,
+    "notes": "Installer or rebuild stick only. Must be a clean removable medium and must not be reused as the datastore device."
+  },
+  "datastore_device": {
+    "serial": "",
+    "min_gib": 200,
+    "allow_destroy": false,
+    "allow_reformat_existing_filesystem": false,
+    "notes": "Dedicated PBS datastore block device. Only approve after visible confirmation that no wanted data remains on the device."
+  },
+  "approved_by": "",
+  "approved_at": "",
+  "change_ticket": "",
+  "notes": "Fill this file deliberately before any destructive PBS prepare step. Empty serials or false approval flags must block the prepare workflow."
+}

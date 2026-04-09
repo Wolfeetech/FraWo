@@ -1,0 +1,100 @@
+{
+  "version": 1,
+  "updated_at": "2026-04-04",
+  "apps": [
+    {
+      "id": "frawo_public_website",
+      "service_class": "stateful_public",
+      "current_source": "odoo_website_on_vm220",
+      "factory_deploy_ready_now": false,
+      "candidate_wave": 3,
+      "reason": "Current public website is coupled to the internal Odoo runtime and is not yet a separate OCI app artifact."
+    },
+    {
+      "id": "portal_frontdoor",
+      "service_class": "stateless_public",
+      "current_source": "toolbox_caddy_static_internal",
+      "factory_deploy_ready_now": false,
+      "candidate_wave": 2,
+      "reason": "Current portal is an internal frontdoor path, not yet separated as a standalone deployable public app."
+    },
+    {
+      "id": "radio_player_frontend",
+      "service_class": "stateless_public",
+      "current_source": "apps/radio-player-frontend",
+      "factory_deploy_ready_now": true,
+      "candidate_wave": 1,
+      "reason": "A standalone stateless OCI-ready frontend now exists in the repo and can serve as the first factory reference artifact before any live Coolify rollout.",
+      "oci_image_repository": "ghcr.io/wolfeetech/frawo/radio-player-frontend",
+      "env_examples": [
+        "apps/radio-player-frontend/env/dev.env.example",
+        "apps/radio-player-frontend/env/prod.env.example"
+      ],
+      "delivery_contract": "deployment/factory/contracts/GHCR_CONTRACT.md",
+      "secret_contract": "deployment/factory/contracts/SECRET_ENV_CONTRACT.md",
+      "deploy_bundle": "deployment/factory/apps/radio-player-frontend/compose.yaml",
+      "deploy_bundle_readme": "deployment/factory/apps/radio-player-frontend/README.md",
+      "compose_env_examples": [
+        "deployment/factory/apps/radio-player-frontend/compose.dev.env.example",
+        "deployment/factory/apps/radio-player-frontend/compose.prod.env.example"
+      ],
+      "secret_distribution_model": "deployment/factory/contracts/SECRET_DISTRIBUTION_MODEL.md"
+    },
+    {
+      "id": "odoo",
+      "service_class": "internal_business",
+      "current_source": "docker_compose_on_vm220",
+      "factory_deploy_ready_now": false,
+      "candidate_wave": 4,
+      "reason": "Runtime is healthy, but Odoo remains a primary plus restore/DR business service and is not a v1 dual-DMZ factory app."
+    },
+    {
+      "id": "nextcloud",
+      "service_class": "internal_business",
+      "current_source": "vm200_business_stack",
+      "factory_deploy_ready_now": false,
+      "candidate_wave": 4,
+      "reason": "Stateful internal business app; keep as primary plus restore/DR first."
+    },
+    {
+      "id": "paperless",
+      "service_class": "internal_business",
+      "current_source": "vm230_business_stack",
+      "factory_deploy_ready_now": false,
+      "candidate_wave": 4,
+      "reason": "Stateful internal business app; keep as primary plus restore/DR first."
+    },
+    {
+      "id": "vaultwarden",
+      "service_class": "internal_business",
+      "current_source": "ct120_business_stack",
+      "factory_deploy_ready_now": false,
+      "candidate_wave": 4,
+      "reason": "Security-critical internal service; not a v1 multi-site delivery candidate."
+    },
+    {
+      "id": "home_assistant_rothkreuz",
+      "service_class": "smart_home",
+      "current_source": "vm210_haos",
+      "factory_deploy_ready_now": false,
+      "candidate_wave": 5,
+      "reason": "Household-specific smart-home runtime; keep separate from the public delivery factory."
+    },
+    {
+      "id": "home_assistant_stockenweiler",
+      "service_class": "smart_home",
+      "current_source": "vm360_homeassistant_eltern",
+      "factory_deploy_ready_now": false,
+      "candidate_wave": 5,
+      "reason": "Household-specific smart-home runtime; keep separate from the public delivery factory."
+    },
+    {
+      "id": "azuracast",
+      "service_class": "hobby_media",
+      "current_source": "rpi_radio_node_and_stock_legacy",
+      "factory_deploy_ready_now": false,
+      "candidate_wave": 3,
+      "reason": "Media engine is strategically useful, but the current topology is split and not yet a clean factory artifact."
+    }
+  ]
+}

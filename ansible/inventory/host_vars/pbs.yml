@@ -1,0 +1,15 @@
+---
+pbs_vmid: 240
+pbs_admin_url: https://192.168.2.25:8007
+pbs_datastore_device_hint: ""
+pbs_datastore_mountpoint: /srv/pbs-datastore
+pbs_datastore_name: hs27-pbs
+pbs_proxmox_storage_id: pbs
+pbs_interim_mode: false
+pbs_expected_backing_storage: pbs-usb
+pbs_rebuild_state: blocked_wait_for_hardware_contract
+pbs_rebuild_notes:
+  - VM 240 exists but is stopped and storage-drifted.
+  - The current config incorrectly points both scsi0 and scsi1 at the disabled Proxmox storage `pbs-usb`.
+  - The guarded rebuild path requires a readable boot USB, an explicitly approved datastore device contract and a clean datastore prepare at `/srv/pbs-datastore`.
+  - Do not treat `/dev/sdb` as ready; the latest device inventory shows zero capacity / no medium.

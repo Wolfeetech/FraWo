@@ -1,0 +1,20 @@
+id	executor	status	command_or_action	log
+document-ownership-check	codex	passed	make document-ownership-check	/mnt/c/Users/StudioPC/Documents/Homeserver 2027 Workspace/artifacts/release_mvp_audit/20260328_004657/document-ownership-check.log
+inventory-check	codex	passed	make inventory-check	/mnt/c/Users/StudioPC/Documents/Homeserver 2027 Workspace/artifacts/release_mvp_audit/20260328_004657/inventory-check.log
+ansible-ping	codex	passed	make ansible-ping	/mnt/c/Users/StudioPC/Documents/Homeserver 2027 Workspace/artifacts/release_mvp_audit/20260328_004657/ansible-ping.log
+qga-check	codex	passed	make qga-check	/mnt/c/Users/StudioPC/Documents/Homeserver 2027 Workspace/artifacts/release_mvp_audit/20260328_004657/qga-check.log
+business-drift-check	codex	passed	make business-drift-check	/mnt/c/Users/StudioPC/Documents/Homeserver 2027 Workspace/artifacts/release_mvp_audit/20260328_004657/business-drift-check.log
+toolbox-network-check	codex	passed	make toolbox-network-check	/mnt/c/Users/StudioPC/Documents/Homeserver 2027 Workspace/artifacts/release_mvp_audit/20260328_004657/toolbox-network-check.log
+toolbox-portal-status-check	codex	passed	make toolbox-portal-status-check	/mnt/c/Users/StudioPC/Documents/Homeserver 2027 Workspace/artifacts/release_mvp_audit/20260328_004657/toolbox-portal-status-check.log
+vaultwarden-smtp-check	codex	passed	make vaultwarden-smtp-check	/mnt/c/Users/StudioPC/Documents/Homeserver 2027 Workspace/artifacts/release_mvp_audit/20260328_004657/vaultwarden-smtp-check.log
+proxmox-local-backup-check	codex	passed	make proxmox-local-backup-check	/mnt/c/Users/StudioPC/Documents/Homeserver 2027 Workspace/artifacts/release_mvp_audit/20260328_004657/proxmox-local-backup-check.log
+security-baseline-check	codex	passed	make security-baseline-check	/mnt/c/Users/StudioPC/Documents/Homeserver 2027 Workspace/artifacts/release_mvp_audit/20260328_004657/security-baseline-check.log
+core-app-smtp-check	codex	passed	bash ./scripts/app_smtp_check.sh	/mnt/c/Users/StudioPC/Documents/Homeserver 2027 Workspace/artifacts/release_mvp_audit/20260328_004657/core-app-smtp-check.log
+frawo-access-verified	gemini_browser_ai	pending_manual	Verify Franz can open FraWo and see the required collections and core entries.	-
+vaultwarden-visible-spotcheck	gemini_browser_ai	pending_manual	Open core imported entries in the Vaultwarden UI and verify they are usable.	-
+wolf-login-walkthrough	gemini_browser_ai	pending_manual	Walk Wolf through Vault, Nextcloud, Paperless and Odoo.	-
+franz-login-walkthrough	gemini_browser_ai	pending_manual	Walk Franz through Vault, Nextcloud, Paperless and Odoo.	-
+strato-mail-model-verified	admin_only	pending_manual	Visibly verify send and receive for webmaster, franz and noreply.	-
+device-rollout-verified	admin_only	pending_manual	Verify Franz Surface Laptop and iPhone direct entrypoints and device-local rollout.	-
+core-app-smtp-functional-test-verified	admin_only	pending_manual	Perform visible test mails for Nextcloud, Paperless and Odoo.	-
+vaultwarden-recovery-material-verified	admin_only	pending_manual	Verify the offline Vaultwarden recovery material in two separate copies.	-

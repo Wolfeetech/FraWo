@@ -1,0 +1,134 @@
+---
+homeserver_project: homeserver-2027
+homeserver_inventory_observed_at: "2026-03-17"
+homeserver_router_model: "Vodafone Easy Box"
+homeserver_future_gateway_model: "UniFi Cloud Gateway Ultra (UCG-Ultra)"
+homeserver_future_gateway_status: "active-transition"
+homeserver_router_login_username: "vodafone"
+homeserver_router_hostnames:
+  - "easy.box"
+  - "easy.box.local"
+homeserver_lan_cidr: "10.1.0.0/24"
+homeserver_gateway: "10.1.0.1"
+homeserver_internal_domain: "hs27.internal"
+homeserver_haos_target_ip: "10.1.0.24"
+homeserver_haos_current_ip: "10.1.0.24"
+
+homeserver_zone_definitions:
+  core: "Router and core network control plane"
+  management: "Hypervisor and administrative endpoints"
+  business: "GbR business workloads"
+  infra-services: "Shared infrastructure and control services"
+  smart-home-iot: "IoT and automation endpoints"
+  media-private: "Private media and entertainment endpoints"
+  trusted-clients: "Known clients allowed to administer systems"
+  unknown-review: "Unclassified endpoints pending review"
+
+homeserver_policy_defaults:
+  stack_standard: "open-source-first"
+  accepted_external_dependencies:
+    - "strato-domain-mail-v1"
+    - "tailscale-remote-access-v1-temporary"
+  network_model: "flat-lan-now-vlan-ready-later"
+  external_access: "tailscale-only"
+  public_exposure_enabled: false
+  router_truth_required: true
+  gateway_cutover_stage_gate:
+    - "all_target_lxcs_and_vms_built_and_stable"
+    - "business_backup_restore_proven"
+    - "inventory_and_ip_plan_finalized"
+    - "maintenance_window_and_easybox_rollback_ready"
+  public_exposure_stage_gate:
+    - "ucg_ultra_or_equivalent_firewall_control_active"
+    - "inventory_and_zone_model_finalized"
+    - "business_backup_restore_proven"
+    - "domain_dns_tls_monitoring_and_rollback_ready"
+  inventory_source_priority:
+    - "proxmox-runtime"
+    - "ssh-service-audit"
+    - "nmap-scan"
+    - "router-lease-table"
+
+homeserver_planned_services:
+  adguard_home:
+    status: "active_opt_in"
+    target_host: "toolbox"
+    initial_mode: "internal_opt_in_dns_for_trusted_clients"
+    promotion_gate: "primary_lan_dns_only_after_controlled_dhcp_and_rollback"
+  tailscale_toolbox_router:
+    status: "active_joined_route_pending_tailnet_approval"
+    target_host: "toolbox"
+    advertise_routes:
+      - "10.1.0.0/24"
+    join_gate: "joined"
+  haos_vm:
+    status: "active_baseline_stable_ip_ready_for_internal_proxy"
+    target_host: "proxmox"
+    vmid: 210
+    target_ip: "10.1.0.24"
+    current_ip: "10.1.0.24"
+    activation_gate: "satisfied"
+  public_edge:
+    status: "planned"
+    target_role: "separated_public_edge_for_selected_apps"
+    default_scope: "no_admin_ui_public_exposure"
+  surface_go_frontend:
+    status: "active_rebuilt_baseline_applied_pending_tailscale_join"
+    target_host: "surface_go_frontend"
+    target_ip: "192.168.2.154"
+    target_hostname: "surface-go-frontend"
+    operating_mode: "hybrid_kiosk_plus_admin_desktop"
+    activation_gate: "approve_tailscale_login_then_run_postinstall_acceptance"
+  azuracast_radio_node:
+    status: "active_internal_service_live_station_pending"
+    target_host: "raspberry_pi_radio"
+    target_role: "dedicated_internal_radio_node"
+    target_name: "radio-node"
+    activation_gate: "create_first_station_then_optional_public_edge"
+  ollama:
+    status: "wishlist_deferred"
+    rationale: "current_proxmox_host_has_15gb_ram_and_not_enough_headroom_for_comfortable_local_inference"
+
+homeserver_storage_node:
+  vmid: 110
+  hostname: storage-node
+  ip: "10.1.0.30"
+  cidr: "10.1.0.30/24"
+  gateway: "10.1.0.1"
+  disk_size: "100G"
+  disk_storage: "local-lvm"
+  ostemplate: "local:vztmpl/debian-12-standard_12.12-1_amd64.tar.zst"
+  smb_user: "radio"
+  media_library_subdir: "yourparty_Libary"
+  smb_shares:
+    - name: "Media"
+      path: "/mnt/data/media"
+      browseable: true
+      writable: true
+    - name: "Documents"
+      path: "/mnt/data/documents"
+      browseable: true
+      writable: true
+  nfs_exports:
+    - path: /mnt/data/documents
+      clients:
+        - "10.1.0.0/24"
+        - "100.64.0.0/10"
+      options: "rw,sync,no_subtree_check,root_squash"
+    - path: /mnt/data/media
+      clients:
+        - "10.1.0.0/24"
+        - "100.64.0.0/10"
+      options: "rw,sync,no_subtree_check,root_squash"
+
+homeserver_compose_root: /opt/homeserver2027/stacks
+homeserver_mail_provider: strato
+homeserver_mail_imap_host: imap.strato.de
+homeserver_mail_pop3_host: pop3.strato.de
+homeserver_mail_smtp_host: smtp.strato.de
+homeserver_mail_smtp_port: 587
+homeserver_mail_smtp_secure: tls
+homeserver_mail_sender_name: FraWo
+homeserver_mail_sender_email: noreply@frawo-tech.de
+homeserver_mail_smtp_auth_username: ""
+homeserver_mail_app_smtp_enabled: false

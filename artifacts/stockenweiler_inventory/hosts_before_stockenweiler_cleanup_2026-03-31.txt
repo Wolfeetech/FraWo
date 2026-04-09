@@ -1,0 +1,16 @@
+
+192.168.178.175 	 yourparty.tech
+192.168.178.175 	 www.yourparty.tech
+# TailscaleHostsSectionStart
+# This section contains MagicDNS entries for Tailscale.
+# Do not edit this section manually.
+
+100.102.51.64 pixel-8a.tail150400.ts.net. pixel-8a
+100.64.23.77 radio-node.tail150400.ts.net. radio-node
+100.106.67.127 surface-go-frontend.tail150400.ts.net. surface-go-frontend
+100.99.206.128 toolbox.tail150400.ts.net. toolbox
+100.84.241.124 wohnzimmertv.tail150400.ts.net. wohnzimmertv
+100.76.249.126 wolf-zenbook-ux325ea-ux325ea.tail150400.ts.net. wolf-zenbook-ux325ea-ux325ea
+100.98.31.60 wolfstudiopc.tail150400.ts.net. wolfstudiopc
+
+# TailscaleHostsSectionEnd

@@ -1,0 +1,2 @@
+---
+- import_playbook: integrate_toolbox_media_storage.yml

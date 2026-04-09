@@ -1,0 +1,168 @@
+---
+- name: Deploy Single Source of Truth Node (CT 110)
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    sot_vmid: "{{ homeserver_storage_node.vmid | default(110) }}"
+    sot_hostname: "{{ homeserver_storage_node.hostname | default('storage-node') }}"
+    sot_ip_cidr: "{{ homeserver_storage_node.cidr | default('192.168.2.30/24') }}"
+    sot_ip_address: "{{ sot_ip_cidr | regex_replace('/.*', '') }}"
+    sot_gateway: "{{ homeserver_storage_node.gateway | default(homeserver_gateway) }}"
+    sot_disk_size: "{{ homeserver_storage_node.disk_size | default('100G') }}"
+    sot_storage: "{{ homeserver_storage_node.disk_storage | default('local-lvm') }}"
+    sot_disk_volume: "{{ sot_storage }}:{{ sot_disk_size | regex_replace('[^0-9].*$', '') }}"
+    sot_ostemplate: "{{ homeserver_storage_node.ostemplate | default('local:vztmpl/debian-12-standard_12.12-1_amd64.tar.zst') }}"
+    proxmox_api_host: "{{ hostvars['proxmox'].ansible_host | default('192.168.2.10') }}"
+    proxmox_api_password: "{{ homeserver_vault_proxmox_api_password | default(lookup('env', 'PROXMOX_API_PASSWORD') | default('', true)) }}"
+    proxmox_api_token_id: "{{ homeserver_vault_proxmox_api_token_id | default(lookup('env', 'PROXMOX_API_TOKEN_ID') | default('', true)) }}"
+    proxmox_api_token_secret: "{{ homeserver_vault_proxmox_api_token_secret | default(lookup('env', 'PROXMOX_API_TOKEN_SECRET') | default('', true)) }}"
+    proxmox_auth_uses_token: "{{ proxmox_api_token_id | length > 0 and proxmox_api_token_secret | length > 0 }}"
+    sot_password: "{{ homeserver_vault_storage_root_password | default(lookup('env', 'HOMESERVER_STORAGE_LXC_PASSWORD') | default('', true)) }}"
+
+  pre_tasks:
+    - name: Assert Proxmox API credential is provided
+      ansible.builtin.assert:
+        that:
+          - proxmox_auth_uses_token or proxmox_api_password | length > 0
+        fail_msg: "Set PROXMOX_API_TOKEN_ID and PROXMOX_API_TOKEN_SECRET, or PROXMOX_API_PASSWORD."
+
+    - name: Assert storage node root password is provided
+      ansible.builtin.assert:
+        that:
+          - sot_password | length > 0
+        fail_msg: "Set HOMESERVER_STORAGE_LXC_PASSWORD env var or homeserver_vault_storage_root_password in vault."
+
+  tasks:
+    - name: Create storage-node LXC container
+      community.general.proxmox:
+        api_host: "{{ proxmox_api_host }}"
+        api_user: "root@pam"
+        api_password: "{{ proxmox_api_password if not proxmox_auth_uses_token else omit }}"
+        api_token_id: "{{ proxmox_api_token_id if proxmox_auth_uses_token else omit }}"
+        api_token_secret: "{{ proxmox_api_token_secret if proxmox_auth_uses_token else omit }}"
+        node: "proxmox-anker"
+        vmid: "{{ sot_vmid }}"
+        hostname: "{{ sot_hostname }}"
+        password: "{{ sot_password }}"
+        ostemplate: "{{ sot_ostemplate }}"
+        cores: 2
+        memory: 1024
+        netif: '{"net0":"name=eth0,bridge=vmbr0,ip={{ sot_ip_cidr }},gw={{ sot_gateway }}"}'
+        disk: "{{ sot_disk_volume }}"
+        unprivileged: true
+        state: present
+      register: lxc_creation
+      no_log: true
+
+    - name: Ensure container is started
+      community.general.proxmox:
+        api_host: "{{ proxmox_api_host }}"
+        api_user: "root@pam"
+        api_password: "{{ proxmox_api_password if not proxmox_auth_uses_token else omit }}"
+        api_token_id: "{{ proxmox_api_token_id if proxmox_auth_uses_token else omit }}"
+        api_token_secret: "{{ proxmox_api_token_secret if proxmox_auth_uses_token else omit }}"
+        vmid: "{{ sot_vmid }}"
+        state: started
+      no_log: true
+
+    - name: Wait for LXC network
+      ansible.builtin.wait_for:
+        host: "{{ sot_ip_address }}"
+        port: 22
+        state: started
+        timeout: 60
+      when: lxc_creation.changed
+
+- name: Configure storage-node SMB shares
+  hosts: storage_node
+  become: true
+  vars:
+    ansible_remote_tmp: /tmp/.ansible-root
+    ansible_user: root
+    ansible_password: "{{ homeserver_vault_storage_root_password | default(lookup('env', 'HOMESERVER_STORAGE_LXC_PASSWORD') | default('', true)) }}"
+    ansible_ssh_common_args: "-o StrictHostKeyChecking=accept-new"
+    storage_share_user: "{{ homeserver_storage_node.smb_user | default('radio') }}"
+    storage_share_password: "{{ homeserver_vault_storage_share_password | default(lookup('env', 'HOMESERVER_STORAGE_SHARE_PASSWORD') | default(ansible_password, true)) }}"
+    storage_shares: "{{ homeserver_storage_node.smb_shares | default([]) }}"
+    storage_media_library_subdir: "{{ homeserver_storage_node.media_library_subdir | default('yourparty_Libary') }}"
+
+  pre_tasks:
+    - name: Assert SMB shares are defined
+      ansible.builtin.assert:
+        that:
+          - storage_shares | length > 0
+        fail_msg: "Define homeserver_storage_node.smb_shares in group_vars/all/main.yml."
+
+  tasks:
+    - name: Install SMB server packages
+      ansible.builtin.apt:
+        name:
+          - samba
+          - acl
+        state: present
+        update_cache: true
+
+    - name: Ensure SMB group exists
+      ansible.builtin.group:
+        name: "{{ storage_share_user }}"
+        state: present
+
+    - name: Ensure SMB user exists
+      ansible.builtin.user:
+        name: "{{ storage_share_user }}"
+        group: "{{ storage_share_user }}"
+        create_home: false
+        shell: /usr/sbin/nologin
+        password_lock: true
+        state: present
+
+    - name: Ensure share roots exist
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        state: directory
+        owner: root
+        group: "{{ storage_share_user }}"
+        mode: "2770"
+      loop: "{{ storage_shares }}"
+
+    - name: Ensure media library subdirectory exists
+      ansible.builtin.file:
+        path: "{{ (storage_shares | selectattr('name', 'equalto', 'Media') | map(attribute='path') | first) ~ '/' ~ storage_media_library_subdir }}"
+        state: directory
+        owner: root
+        group: "{{ storage_share_user }}"
+        mode: "2770"
+      when: storage_shares | selectattr('name', 'equalto', 'Media') | list | length > 0
+
+    - name: Set Samba password for share user
+      ansible.builtin.shell: |
+        set -euo pipefail
+        (printf '%s\n' '{{ storage_share_password }}'; printf '%s\n' '{{ storage_share_password }}') | smbpasswd -s -a '{{ storage_share_user }}'
+      args:
+        executable: /bin/bash
+      changed_when: true
+      no_log: true
+
+    - name: Install /etc/samba/smb.conf
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/storage/smb.conf.j2"
+        dest: /etc/samba/smb.conf
+        owner: root
+        group: root
+        mode: "0644"
+      notify: restart smbd
+
+    - name: Ensure smbd is enabled
+      ansible.builtin.systemd:
+        name: smbd
+        enabled: true
+        state: started
+      when: not ansible_check_mode
+
+  handlers:
+    - name: restart smbd
+      ansible.builtin.systemd:
+        name: smbd
+        state: restarted
+      when: not ansible_check_mode

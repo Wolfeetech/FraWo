@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#0f172a">
+  <title>Arbeitsplatz Franz</title>
+  <style>
+    :root {
+      --glass-bg: rgba(20, 25, 33, 0.7);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --base-text: #e2e8f0;
+      --muted-text: rgba(226, 232, 240, 0.72);
+      --accent: #2dd4bf;
+      --accent-soft: rgba(45, 212, 191, 0.18);
+      --cyan: #67b9ff;
+      --warn: #f59e0b;
+      --shadow: 0 18px 36px rgba(0, 0, 0, 0.28);
+      --panel-shadow: 0 20px 48px rgba(0, 0, 0, 0.24);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      color: var(--base-text);
+      background:
+        radial-gradient(circle at top left, rgba(45, 212, 191, 0.16), transparent 28%),
+        radial-gradient(circle at top right, rgba(103, 185, 255, 0.14), transparent 26%),
+        linear-gradient(180deg, #07101c 0%, #0d1830 100%);
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        linear-gradient(180deg, rgba(6, 12, 24, 0.42), rgba(7, 12, 24, 0.12)),
+        repeating-linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0.018) 0,
+          rgba(255, 255, 255, 0.018) 1px,
+          transparent 1px,
+          transparent 120px
+        );
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    main {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 2rem 1.4rem 2.6rem;
+      display: grid;
+      gap: 1.4rem;
+    }
+
+    .hero,
+    .panel,
+    .link-card {
+      border-radius: 26px;
+      border: 1px solid var(--glass-border);
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: var(--panel-shadow);
+    }
+
+    .hero {
+      padding: 2rem;
+      display: grid;
+      gap: 1rem;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      font-size: 0.76rem;
+      font-weight: 800;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2.4rem, 6vw, 4.6rem);
+      line-height: 0.94;
+      letter-spacing: -0.05em;
+      max-width: 10ch;
+    }
+
+    .hero p {
+      margin: 0;
+      max-width: 58ch;
+      color: var(--muted-text);
+      line-height: 1.65;
+      font-size: 1.02rem;
+    }
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      padding: 0.8rem 1rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--muted-text);
+      font-size: 0.88rem;
+      font-weight: 600;
+    }
+
+    .badge::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 6px rgba(45, 212, 191, 0.1);
+    }
+
+    .link-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.2rem;
+    }
+
+    .link-card {
+      min-height: 220px;
+      padding: 1.6rem 1.2rem;
+      text-decoration: none;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 0.9rem;
+      transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .link-card:hover {
+      transform: translateY(-4px);
+      background: rgba(21, 34, 57, 0.88);
+      border-color: rgba(255, 255, 255, 0.18);
+    }
+
+    .link-card.primary:hover {
+      border-color: var(--accent);
+    }
+
+    .link-card.secondary:hover {
+      border-color: rgba(103, 185, 255, 0.28);
+    }
+
+    .mark {
+      width: 58px;
+      height: 58px;
+      border-radius: 18px;
+      display: grid;
+      place-items: center;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 1rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+    }
+
+    .secondary .mark {
+      background: rgba(103, 185, 255, 0.12);
+      color: var(--cyan);
+    }
+
+    .meta {
+      display: grid;
+      gap: 0.42rem;
+    }
+
+    .group {
+      color: var(--muted-text);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-weight: 700;
+    }
+
+    .title {
+      font-size: 1.32rem;
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    .hint {
+      color: var(--muted-text);
+      font-size: 0.94rem;
+      line-height: 1.5;
+    }
+
+    .url {
+      color: rgba(226, 232, 240, 0.58);
+      font-size: 0.82rem;
+      line-height: 1.45;
+      word-break: break-word;
+    }
+
+    .panel {
+      padding: 1.4rem;
+      display: grid;
+      gap: 1rem;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 1rem;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: 1.18rem;
+      letter-spacing: -0.03em;
+    }
+
+    .section-head small {
+      color: var(--muted-text);
+      font-size: 0.84rem;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+    }
+
+    .step {
+      padding: 1rem;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--muted-text);
+      line-height: 1.55;
+    }
+
+    .step strong {
+      display: block;
+      margin-bottom: 0.4rem;
+      color: var(--base-text);
+      font-size: 0.98rem;
+    }
+
+    .note {
+      padding: 1rem 1.1rem;
+      border-radius: 18px;
+      border-left: 4px solid var(--warn);
+      background: rgba(89, 56, 10, 0.24);
+      color: #f7d48c;
+      line-height: 1.55;
+    }
+
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      color: #cae7ff;
+    }
+
+    @media (max-width: 720px) {
+      main {
+        padding: 1.3rem 1rem 2rem;
+      }
+
+      .hero,
+      .panel,
+      .link-card {
+        border-radius: 22px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="hero">
+      <span class="eyebrow">FraWo</span>
+      <h1>Arbeitsplatz Franz</h1>
+      <p>Direktzugriff auf die benoetigten Apps.</p>
+      <div class="badge-row">
+        <span class="badge">Nextcloud</span>
+        <span class="badge">Paperless</span>
+        <span class="badge">Odoo</span>
+        <span class="badge">Vault</span>
+      </div>
+    </section>
+
+    <section class="link-grid" aria-label="Franz Direktlinks">
+      <a class="link-card primary" href="http://cloud.hs27.internal/">
+        <div class="mark">NC</div>
+        <div class="meta">
+          <span class="group">Arbeit</span>
+          <span class="title">Nextcloud</span>
+          <span class="hint">Dateien und Ablage.</span>
+        </div>
+        <div class="url">cloud.hs27.internal</div>
+      </a>
+
+      <a class="link-card primary" href="http://paperless.hs27.internal/accounts/login/">
+        <div class="mark">PL</div>
+        <div class="meta">
+          <span class="group">Arbeit</span>
+          <span class="title">Paperless</span>
+          <span class="hint">Archiv und Suche.</span>
+        </div>
+        <div class="url">paperless.hs27.internal/accounts/login/</div>
+      </a>
+
+      <a class="link-card primary" href="http://odoo.hs27.internal/web/login">
+        <div class="mark">OD</div>
+        <div class="meta">
+          <span class="group">Arbeit</span>
+          <span class="title">Odoo</span>
+          <span class="hint">Betrieb und Kunden.</span>
+        </div>
+        <div class="url">odoo.hs27.internal/web/login</div>
+      </a>
+
+      <a class="link-card secondary" href="https://vault.hs27.internal/">
+        <div class="mark">VA</div>
+        <div class="meta">
+          <span class="group">Betrieb</span>
+          <span class="title">Vault</span>
+          <span class="hint">Nur bei Passwortabfrage.</span>
+        </div>
+        <div class="url">vault.hs27.internal</div>
+      </a>
+
+      <a class="link-card secondary" href="http://cloud.hs27.internal/apps/files/?dir=/Paperless/Eingang">
+        <div class="mark">IN</div>
+        <div class="meta">
+          <span class="group">Dokumente</span>
+          <span class="title">Nextcloud Eingang</span>
+          <span class="hint">Neue Dokumente.</span>
+        </div>
+        <div class="url">cloud.hs27.internal/apps/files/?dir=/Paperless/Eingang</div>
+      </a>
+
+      <a class="link-card secondary" href="http://100.99.206.128:8447/franz/">
+        <div class="mark">MB</div>
+        <div class="meta">
+          <span class="group">Mobil</span>
+          <span class="title">Franz Mobil Start</span>
+          <span class="hint">iPhone ueber Tailscale.</span>
+        </div>
+        <div class="url">100.99.206.128:8447/franz/</div>
+      </a>
+    </section>
+
+    <section class="panel">
+      <div class="section-head">
+        <h2>Kurz</h2>
+        <small>Arbeitsweg</small>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <strong>Start hier</strong>
+          Diese Seite oder der Shortcut ist der Einstieg.
+        </div>
+        <div class="step">
+          <strong>Vault nur bei Bedarf</strong>
+          <code>Vault</code> nur oeffnen, wenn wirklich ein Passwort gebraucht wird.
+        </div>
+        <div class="step">
+          <strong>Kein Nebenpfad</strong>
+          Keine lokalen Passwortlisten.
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

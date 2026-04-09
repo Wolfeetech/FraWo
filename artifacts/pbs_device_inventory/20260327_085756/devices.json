@@ -1,0 +1,74 @@
+{
+  "devices": [
+    {
+      "path": "/dev/sda",
+      "name": "sda",
+      "transport": "usb",
+      "removable": "",
+      "hotplug": "True",
+      "size_bytes": 2000398934016,
+      "size_gib": 1863.02,
+      "fstype": "",
+      "label": "",
+      "mountpoint": "",
+      "model": "Tech",
+      "serial": "DD56419883961",
+      "udev": {
+        "id_model": "Tech",
+        "id_serial": "JMicron_Tech_DD56419883961-0:0",
+        "id_serial_short": "DD56419883961",
+        "id_bus": "usb",
+        "id_usb_driver": "uas"
+      },
+      "issues": [
+        "large_usb_device_handle_with_care"
+      ]
+    },
+    {
+      "path": "/dev/sdb",
+      "name": "sdb",
+      "transport": "usb",
+      "removable": "True",
+      "hotplug": "True",
+      "size_bytes": 0,
+      "size_gib": 0.0,
+      "fstype": "",
+      "label": "",
+      "mountpoint": "",
+      "model": "Disk 3.0",
+      "serial": "FC2604224284249D",
+      "udev": {
+        "id_model": "Disk_3.0",
+        "id_serial": "USB_Disk_3.0_FC2604224284249D-0:0",
+        "id_serial_short": "FC2604224284249D",
+        "id_bus": "usb",
+        "id_usb_driver": "usb-storage"
+      },
+      "issues": [
+        "no_medium_or_zero_capacity"
+      ]
+    },
+    {
+      "path": "/dev/nvme0n1",
+      "name": "nvme0n1",
+      "transport": "nvme",
+      "removable": "",
+      "hotplug": "",
+      "size_bytes": 256060514304,
+      "size_gib": 238.47,
+      "fstype": "",
+      "label": "",
+      "mountpoint": "",
+      "model": "SAMSUNG MZVLB256HBHQ-000L7",
+      "serial": "S4ELNF2MA50684",
+      "udev": {
+        "id_model": "",
+        "id_serial": "",
+        "id_serial_short": "",
+        "id_bus": "",
+        "id_usb_driver": ""
+      },
+      "issues": []
+    }
+  ]
+}

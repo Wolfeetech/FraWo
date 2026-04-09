@@ -1,0 +1,12 @@
+---
+# Copy this file to mail_runtime.local.yml on a trusted admin machine.
+# Keep the copied file untracked. Do not commit live SMTP credentials.
+
+homeserver_mail_app_smtp_enabled: true
+homeserver_mail_smtp_auth_username: webmaster@frawo-tech.de
+
+# Preferred: inject the password only at runtime:
+#   $env:HOMESERVER_MAIL_SMTP_PASSWORD = '...'
+#
+# Temporary local fallback on a trusted admin machine only:
+# homeserver_vault_mail_smtp_password: "replace-me"

@@ -1,0 +1,51 @@
+ M AZURACAST_FIRST_STATION_BASELINE.md
+ M BACKUP_RESTORE_PROOF.md
+ M GEMINI.md
+ M LIVE_CONTEXT.md
+ M MASTERPLAN.md
+ M MEDIA_SERVER_CLIENT_SETUP.md
+ M MEDIA_SERVER_PLAN.md
+ M MEMORY.md
+ M Makefile
+ M NETWORK_INVENTORY.md
+ M PBS_VM_240_SETUP_PLAN.md
+ M SHARED_STORAGE_ARCHITECTURE_PLAN.md
+ M ansible/inventory/host_vars/pbs.yml
+ M ansible/inventory/host_vars/surface_go_frontend.yml
+ M ansible/inventory/host_vars/toolbox.yml
+ M ansible/playbooks/bootstrap_surface_go_frontend.yml
+ M ansible/playbooks/deploy_toolbox_media_sync.yml
+ M ansible/templates/frontend/homeserver2027-frawo-control.sh.j2
+ M ansible/templates/frontend/homeserver2027-kiosk-script.sh.j2
+ M ansible/templates/stacks/toolbox-media/docker-compose.yml.j2
+ M manifests/media/curated_paths.txt
+ M manifests/media/favorites_paths.txt
+ M manifests/media/generated/curated_starter.txt
+ M manifests/media/generated/favorites_starter.txt
+ M scripts/rpi_azuracast_service_check.sh
+ M scripts/rpi_radio_integration_check.sh
+ M scripts/rpi_radio_media_layout_check.sh
+ M scripts/rpi_radio_readiness_check.sh
+ M scripts/rpi_radio_usb_music_check.sh
+ M scripts/rpi_resource_budget_check.sh
+ M scripts/surface_go_frontend_check.sh
+ M scripts/toolbox_media_bootstrap_progress.sh
+ M scripts/toolbox_media_sync_check.sh
+ M scripts/toolbox_music_curated_layout_check.sh
+ M scripts/toolbox_music_curation_candidates.sh
+ M scripts/toolbox_music_library_report.sh
+ M scripts/toolbox_music_selection_generate_starter.sh
+ M scripts/toolbox_music_selection_promote_starter.sh
+ M scripts/toolbox_music_selection_seed_report.sh
+ M scripts/toolbox_music_selection_sync.sh
+ M scripts/toolbox_quarantine_music_candidates.sh
+?? IDENTITY_STANDARD.md
+?? PLATFORM_STATUS.md
+?? TB_SSD_ASSESSMENT.md
+?? ansible/playbooks/integrate_raspberry_pi_radio_network_music.yml
+?? ansible/playbooks/integrate_toolbox_media_storage.yml
+?? ansible/templates/frontend/surface-go-launcher.desktop.j2
+?? scripts/media_migration_status.sh
+?? scripts/rpi_radio_network_music_check.sh
+?? scripts/rpi_radio_remote.sh
+?? scripts/toolbox_remote.sh

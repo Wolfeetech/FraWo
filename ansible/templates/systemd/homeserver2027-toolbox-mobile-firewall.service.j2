@@ -1,0 +1,12 @@
+[Unit]
+Description=Restrict toolbox mobile frontdoor to Tailscale traffic
+After=docker.service tailscaled.service
+Wants=docker.service tailscaled.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/homeserver2027-toolbox-mobile-firewall.sh
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

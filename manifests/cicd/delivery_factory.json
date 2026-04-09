@@ -1,0 +1,244 @@
+{
+  "version": 1,
+  "updated_at": "2026-04-04",
+  "status": "defined_not_deployed",
+  "preflight": {
+    "status": "repo_side_factory_only",
+    "verified_at": "2026-04-04",
+    "git_origin": "https://github.com/Wolfeetech/FraWo.git",
+    "workflow_file_count": 3,
+    "dockerfile_count": 1,
+    "compose_template_count": 6,
+    "factory_ready_app_count": 1,
+    "factory_catalog_app_count": 10,
+    "open_prerequisites": [
+      "oci_registry_undecided",
+      "coolify_management_host_undecided",
+      "stockenweiler_secondary_dmz_not_fixed",
+      "prod_secret_distribution_model_not_encoded"
+    ]
+  },
+  "controller": {
+    "preferred_cd": "coolify",
+    "controller_role": "delivery_only",
+    "controller_location": "internal_management_plane",
+    "platform_independence_rule": "build_once_deploy_anywhere_via_oci"
+  },
+  "branch_model": {
+    "feature": "ci_only",
+    "develop": "auto_deploy_dev",
+    "main": "promotion_only",
+    "tags": "immutable_prod_release"
+  },
+  "environments": [
+    {
+      "id": "dev",
+      "exposure": "internal_or_allowlisted",
+      "deploy_trigger": "merge_to_develop",
+      "promotion_source": "feature_branches"
+    },
+    {
+      "id": "prod",
+      "exposure": "public_dmz",
+      "deploy_trigger": "daily_promotion_or_release_tag",
+      "promotion_source": "last_green_dev_candidate"
+    }
+  ],
+  "topology": {
+    "anker_dmz": {
+      "subnet": "10.2.0.0/24",
+      "role": "primary_public_webnode_zone"
+    },
+    "anker_dmz_radio": {
+      "subnet": "10.3.0.0/24",
+      "role": "radio_public_zone"
+    },
+    "stockenweiler_dmz": {
+      "subnet": "tbd",
+      "role": "secondary_public_webnode_zone"
+    }
+  },
+  "service_classes": {
+    "stateless_public": {
+      "ha_mode": "active_active_possible",
+      "examples": [
+        "landing_pages",
+        "player_frontends",
+        "small_public_apis"
+      ]
+    },
+    "stateful_public": {
+      "ha_mode": "external_state_required",
+      "examples": [
+        "cms",
+        "db_backed_public_apps"
+      ]
+    },
+    "internal_business": {
+      "ha_mode": "primary_plus_dr",
+      "examples": [
+        "odoo",
+        "nextcloud",
+        "paperless",
+        "vaultwarden"
+      ]
+    },
+    "smart_home": {
+      "ha_mode": "separate_per_household",
+      "examples": [
+        "ha_rothkreuz",
+        "ha_stockenweiler"
+      ]
+    },
+    "hobby_media": {
+      "ha_mode": "separate_release_track",
+      "examples": [
+        "azuracast",
+        "radio_side_projects"
+      ]
+    }
+  },
+  "release_train": {
+    "dev_policy": "every_green_merge_to_develop_deploys_to_dev",
+    "prod_policy": "daily_promote_last_green_dev_candidate_or_release_tag",
+    "rollback_policy": "redeploy_last_known_good_immutable_tag"
+  },
+  "backup_strategy": {
+    "layers": [
+      "git_iac_delivery_config",
+      "immutable_oci_artifacts",
+      "stateful_runtime_data"
+    ],
+    "artifact_retention": {
+      "dev_successful_images": 20,
+      "prod_stable_releases": 10,
+      "keep_last_known_good_tag": true
+    },
+    "retention_v1": {
+      "daily": 7,
+      "weekly": 4,
+      "monthly": 6
+    },
+    "service_classes": {
+      "stateless_public": "repo_plus_image_plus_config_then_redeploy",
+      "stateful_public": "db_plus_volume_or_object_storage_backup",
+      "internal_business": "pbs_or_proxmox_vm_backup_plus_app_native_consistency_backup",
+      "smart_home": "per_household_full_backup_or_snapshot",
+      "hobby_media": "db_plus_station_config_plus_media_source_truth"
+    },
+    "stockenweiler_legacy_payload_before_thinning": [
+      "VM 210 azuracast-vm",
+      "CT 207 radio-wordpress-prod",
+      "CT 208 mariadb-server",
+      "CT 211 radio-api"
+    ],
+    "offsite_rule": "rothkreuz_primary_stockenweiler_dr_or_secondary_not_dual_write_v1"
+  },
+  "restore_strategy": {
+    "restore_types": [
+      "redeploy_restore",
+      "node_or_vm_restore",
+      "app_or_data_restore"
+    ],
+    "drill_policy_v1": "monthly_visible_restore_drill_for_one_stateful_core_service_rotating_odoo_nextcloud_paperless_home_assistant",
+    "promotion_rule": "stateful_prod_changes_require_known_rollback_tag_and_visible_restore_path",
+    "rto_rpo": {
+      "stateless_public": {
+        "rto": "minutes",
+        "rpo": "near_zero"
+      },
+      "internal_business": {
+        "rto": "hours",
+        "rpo": "last_successful_backup_or_dump"
+      },
+      "smart_home": {
+        "rto": "hours",
+        "rpo": "last_household_backup"
+      }
+    }
+  },
+  "gates": {
+    "before_dev_deploy": [
+      "lint",
+      "tests",
+      "image_build",
+      "registry_push"
+    ],
+    "before_prod_deploy": [
+      "dev_smoke_green",
+      "immutable_tag_exists",
+      "release_gate_green_for_target_scope",
+      "rollback_tag_known"
+    ]
+  },
+  "non_goals_v1": [
+    "dual_writing_odoo_across_sites",
+    "dual_writing_nextcloud_across_sites",
+    "dual_writing_paperless_across_sites",
+    "wan_proxmox_cluster_as_delivery_foundation",
+    "public_dev_without_restrictions"
+  ],
+  "registry": {
+    "preferred": "ghcr",
+    "repository_namespace": "ghcr.io/wolfeetech/frawo",
+    "first_reference_image": "ghcr.io/wolfeetech/frawo/radio-player-frontend",
+    "tag_contract": {
+      "develop": [
+        "dev-latest",
+        "sha-<gitsha>"
+      ],
+      "main": [
+        "main-latest",
+        "sha-<gitsha>"
+      ],
+      "release_tags": [
+        "v*"
+      ]
+    }
+  },
+  "env_secret_contract": {
+    "public_env_examples": [
+      "apps/radio-player-frontend/env/dev.env.example",
+      "apps/radio-player-frontend/env/prod.env.example"
+    ],
+    "contract_docs": [
+      "deployment/factory/contracts/GHCR_CONTRACT.md",
+      "deployment/factory/contracts/SECRET_ENV_CONTRACT.md"
+    ],
+    "future_controller_secret_names": [
+      "COOLIFY_DEV_WEBHOOK_RADIO_PLAYER_FRONTEND",
+      "COOLIFY_PROD_PRIMARY_WEBHOOK_RADIO_PLAYER_FRONTEND",
+      "COOLIFY_PROD_SECONDARY_WEBHOOK_RADIO_PLAYER_FRONTEND"
+    ]
+  },
+  "coolify_management_host_contract": {
+    "preferred_target": "new_dedicated_internal_management_ct_or_vm_on_anker",
+    "temporary_fallback": "toolbox_only_if_no_dedicated_node_exists",
+    "rejected_targets": [
+      "proxmox_anker_host_itself",
+      "stock_pve",
+      "dmz_nodes",
+      "surface_go_frontend_while_unstable"
+    ],
+    "contract_doc": "deployment/coolify/COOLIFY_HOST_SELECTION.md",
+    "node_spec_doc": "deployment/coolify/COOLIFY_MANAGEMENT_NODE_SPEC.md"
+  },
+  "first_reference_deploy_bundle": {
+    "app_id": "radio_player_frontend",
+    "bundle": "deployment/factory/apps/radio-player-frontend/compose.yaml",
+    "readme": "deployment/factory/apps/radio-player-frontend/README.md",
+    "compose_env_examples": [
+      "deployment/factory/apps/radio-player-frontend/compose.dev.env.example",
+      "deployment/factory/apps/radio-player-frontend/compose.prod.env.example"
+    ]
+  },
+  "secret_distribution_model": {
+    "doc": "deployment/factory/contracts/SECRET_DISTRIBUTION_MODEL.md",
+    "github_environments": [
+      "dev",
+      "prod"
+    ],
+    "package_push_auth": "github_token_when_possible",
+    "runtime_secret_plane": "coolify_per_environment_later"
+  }
+}

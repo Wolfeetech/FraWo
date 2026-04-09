@@ -1,0 +1,156 @@
+---
+- name: Bootstrap Raspberry Pi radio node
+  hosts: raspberry_pi_radio
+  become: true
+
+  vars:
+    rpi_radio_operator_pubkey: "{{ lookup('file', rpi_radio_operator_pubkey_file, errors='ignore') | trim }}"
+
+  tasks:
+    - name: Refresh apt cache
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Install required radio-node packages
+      ansible.builtin.apt:
+        name: "{{ rpi_radio_required_packages }}"
+        state: present
+
+    - name: Remove unwanted local webserver packages
+      ansible.builtin.apt:
+        name: "{{ rpi_radio_absent_packages }}"
+        state: absent
+        purge: true
+        autoremove: true
+
+    - name: Ensure radio-node hostname is set
+      ansible.builtin.hostname:
+        name: "{{ rpi_radio_target_hostname }}"
+
+    - name: Ensure timezone is set
+      ansible.builtin.command:
+        cmd: "timedatectl set-timezone {{ rpi_radio_timezone }}"
+      register: rpi_timezone_set
+      changed_when: "'Failed' not in (rpi_timezone_set.stderr | default(''))"
+
+    - name: Ensure admin user exists
+      ansible.builtin.user:
+        name: "{{ rpi_radio_admin_user }}"
+        create_home: true
+        shell: /bin/bash
+        groups: adm,sudo,audio,video,docker
+        append: true
+
+    - name: Ensure admin key is authorized
+      ansible.posix.authorized_key:
+        user: "{{ rpi_radio_admin_user }}"
+        key: "{{ rpi_radio_operator_pubkey }}"
+        state: present
+      when: rpi_radio_operator_pubkey | length > 0
+
+    - name: Ensure sudoers drop-in for passwordless automation exists
+      ansible.builtin.copy:
+        dest: "/etc/sudoers.d/90-homeserver2027-{{ rpi_radio_admin_user }}"
+        owner: root
+        group: root
+        mode: "0440"
+        content: "{{ rpi_radio_admin_user }} ALL=(ALL) NOPASSWD:ALL\n"
+
+    - name: Ensure Tailscale keyring directory exists
+      ansible.builtin.file:
+        path: /usr/share/keyrings
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Install Tailscale apt key
+      ansible.builtin.get_url:
+        url: "{{ rpi_radio_tailscale_repo_key_url }}"
+        dest: /usr/share/keyrings/tailscale-archive-keyring.gpg
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Install Tailscale apt source
+      ansible.builtin.get_url:
+        url: "{{ rpi_radio_tailscale_repo_list_url }}"
+        dest: /etc/apt/sources.list.d/tailscale.list
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Refresh apt cache after adding Tailscale repository
+      ansible.builtin.apt:
+        update_cache: true
+
+    - name: Install Tailscale
+      ansible.builtin.apt:
+        name: tailscale
+        state: present
+
+    - name: Ensure sshd drop-in directory exists
+      ansible.builtin.file:
+        path: /etc/ssh/sshd_config.d
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Install SSH baseline drop-in
+      ansible.builtin.copy:
+        dest: /etc/ssh/sshd_config.d/90-homeserver2027-radio-node.conf
+        owner: root
+        group: root
+        mode: "0644"
+        content: |
+          PermitRootLogin no
+          PasswordAuthentication no
+          KbdInteractiveAuthentication no
+          X11Forwarding no
+      notify: restart ssh
+
+    - name: Ensure compose root exists
+      ansible.builtin.file:
+        path: "{{ rpi_radio_compose_root }}"
+        state: directory
+        owner: "{{ rpi_radio_admin_user }}"
+        group: "{{ rpi_radio_admin_user }}"
+        mode: "0755"
+
+    - name: Ensure ssh is enabled
+      ansible.builtin.systemd:
+        name: ssh
+        enabled: true
+        state: started
+
+    - name: Ensure tailscaled is enabled
+      ansible.builtin.systemd:
+        name: tailscaled
+        enabled: true
+        state: started
+
+    - name: Ensure unattended-upgrades is enabled
+      ansible.builtin.systemd:
+        name: unattended-upgrades
+        enabled: true
+        state: started
+
+    - name: Ensure avahi-daemon is enabled
+      ansible.builtin.systemd:
+        name: avahi-daemon
+        enabled: true
+        state: started
+
+    - name: Ensure docker is enabled
+      ansible.builtin.systemd:
+        name: docker
+        enabled: true
+        state: started
+
+  handlers:
+    - name: restart ssh
+      ansible.builtin.systemd:
+        name: ssh
+        state: restarted

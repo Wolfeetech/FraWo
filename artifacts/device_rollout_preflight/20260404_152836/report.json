@@ -1,0 +1,97 @@
+{
+  "decision": "ready_for_manual_device_acceptance",
+  "generated_at": "2026-04-04 15:28:37",
+  "start_paths": [
+    {
+      "status": 200,
+      "final_url": "http://portal.hs27.internal/franz/",
+      "title": "Arbeitsplatz Franz",
+      "links": [
+        "http://cloud.hs27.internal/",
+        "http://paperless.hs27.internal/accounts/login/",
+        "http://odoo.hs27.internal/web/login",
+        "https://vault.hs27.internal/",
+        "http://cloud.hs27.internal/apps/files/?dir=/Paperless/Eingang",
+        "http://100.99.206.128:8447/franz/"
+      ],
+      "id": "surface_laptop_start",
+      "url": "http://portal.hs27.internal/franz/",
+      "ok": true
+    },
+    {
+      "status": 200,
+      "final_url": "http://100.99.206.128:8447/franz/",
+      "title": "Arbeitsplatz Franz",
+      "links": [
+        "http://cloud.hs27.internal/",
+        "http://paperless.hs27.internal/accounts/login/",
+        "http://odoo.hs27.internal/web/login",
+        "https://vault.hs27.internal/",
+        "http://cloud.hs27.internal/apps/files/?dir=/Paperless/Eingang",
+        "http://100.99.206.128:8447/franz/"
+      ],
+      "id": "iphone_mobile_start",
+      "url": "http://100.99.206.128:8447/franz/",
+      "ok": true
+    }
+  ],
+  "core_targets": [
+    {
+      "status": 200,
+      "final_url": "http://cloud.hs27.internal/login",
+      "title": "Login \u2013 Nextcloud",
+      "links": [
+        "https://www.enable-javascript.com/",
+        "https://nextcloud.com"
+      ],
+      "id": "nextcloud",
+      "url": "http://cloud.hs27.internal/",
+      "ok": true
+    },
+    {
+      "status": 200,
+      "final_url": "http://paperless.hs27.internal/accounts/login/",
+      "title": "Paperless-ngx sign in",
+      "links": [
+        "/accounts/password/reset/"
+      ],
+      "id": "paperless",
+      "url": "http://paperless.hs27.internal/accounts/login/",
+      "ok": true
+    },
+    {
+      "status": 200,
+      "final_url": "http://odoo.hs27.internal/web/login",
+      "title": "Login | FraWo",
+      "links": [
+        "#",
+        "/",
+        "/web/login",
+        "/contactus",
+        "/",
+        "/contactus",
+        "/",
+        "/",
+        "/contactus",
+        "/web/login",
+        "/contactus",
+        "/web/reset_password",
+        "tel:+1555-555-5556",
+        "http://www.odoo.com?utm_source=db&utm_medium=website",
+        "http://www.odoo.com/app/website?utm_source=db&utm_medium=website"
+      ],
+      "id": "odoo",
+      "url": "http://odoo.hs27.internal/web/login",
+      "ok": true
+    },
+    {
+      "status": 200,
+      "final_url": "https://vault.hs27.internal/",
+      "title": "Vaultwarden Web",
+      "links": [],
+      "id": "vaultwarden",
+      "url": "https://vault.hs27.internal/",
+      "ok": true
+    }
+  ]
+}

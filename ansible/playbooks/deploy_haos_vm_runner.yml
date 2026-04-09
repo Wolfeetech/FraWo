@@ -1,0 +1,53 @@
+---
+- name: Prepare HAOS VM deployment runner on Proxmox
+  hosts: proxmox
+  remote_user: root
+  vars:
+    ansible_remote_tmp: /tmp/.ansible-root
+
+  pre_tasks:
+    - name: Assert HAOS VM metadata is present
+      ansible.builtin.assert:
+        that:
+          - proxmox_haos_runner_script_path is defined
+          - proxmox_haos_image_dir is defined
+          - proxmox_haos_vmid is defined
+          - proxmox_haos_name is defined
+          - proxmox_haos_storage is defined
+          - proxmox_haos_bridge is defined
+          - proxmox_haos_machine is defined
+          - proxmox_haos_bios is defined
+          - proxmox_haos_cpu is defined
+          - proxmox_haos_cores is defined
+          - proxmox_haos_memory_mb is defined
+          - proxmox_haos_disk_gb is defined
+          - proxmox_haos_agent_enabled is defined
+          - proxmox_haos_onboot is defined
+          - proxmox_haos_protection is defined
+          - proxmox_haos_firewall is defined
+          - proxmox_haos_start_after_create is defined
+
+  tasks:
+    - name: Ensure HAOS image directory exists
+      ansible.builtin.file:
+        path: "{{ proxmox_haos_image_dir }}"
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Install HAOS VM deployment runner
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/proxmox/homeserver2027-deploy-haos-vm.sh.j2"
+        dest: "{{ proxmox_haos_runner_script_path }}"
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Execute HAOS VM deployment runner when explicitly requested
+      ansible.builtin.command: "{{ proxmox_haos_runner_script_path }}"
+      environment:
+        HAOS_TAG_OVERRIDE: "{{ proxmox_haos_tag_override | default('') }}"
+      when:
+        - not ansible_check_mode
+        - proxmox_haos_execute | default(false) | bool

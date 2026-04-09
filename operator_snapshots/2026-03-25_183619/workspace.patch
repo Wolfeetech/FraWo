@@ -1,0 +1,2187 @@
+diff --git a/AZURACAST_FIRST_STATION_BASELINE.md b/AZURACAST_FIRST_STATION_BASELINE.md
+index 67f0f71..0b27b94 100644
+--- a/AZURACAST_FIRST_STATION_BASELINE.md
++++ b/AZURACAST_FIRST_STATION_BASELINE.md
+@@ -9,12 +9,14 @@ Stand heute:
+ - der AzuraCast-Grundsetup ist abgeschlossen
+ - `http://radio.hs27.internal` liefert die Login-Seite
+ - die Status-API ist live
+-- die erste Station existiert jetzt als `FraWo - Funk` mit Shortcode `frawo-funk`
++- die erste Station existiert als `FraWo - Funk` mit Shortcode `frawo-funk`
+ - `GET /api/nowplaying` liefert bereits einen laufenden Track
+-- ein direkt am Pi steckendes USB-Medium ist als erste Musikquelle eingebunden
+-- das Host-Medienlayout auf dem Pi ist bereits vorbereitet:
++- das Host-Medienlayout auf dem Pi ist vorbereitet:
+   - `/srv/radio-library/incoming`, `music`, `playlists`
+   - `/srv/radio-assets/ids`, `jingles`, `shows`, `staging`, `sweepers`
++- der produktive Zielpfad fuer Musik ist jetzt der SMB-Mount:
++  - `/srv/radio-library/music-network/yourparty_Libary`
++- die SMB-Integrationschecks laufen von diesem Admin-PC reproduzierbar ueber den Proxmox-/Toolbox-Fallback
+ 
+ ## Verbindliches Profil fuer die erste Station
+ 
+@@ -25,11 +27,6 @@ Stand heute:
+ - Zeitzone: `Europe/Zurich`
+ - oeffentliche Ziel-URL spaeter: `https://radio.frawo.studio`
+ 
+-Wichtig:
+-
+-- Bis zum echten Public-Edge-Rollout bleibt die interne URL `http://radio.hs27.internal` kanonisch.
+-- Erst mit Domain, TLS und Edge-Rollout wird auf `https://radio.frawo.studio` umgestellt.
+-
+ ### Erste Station
+ 
+ - Live-Station Name: `FraWo - Funk`
+@@ -42,34 +39,24 @@ Wichtig:
+ - Public Pages: `enabled`
+ - Public Listed on Directories / YP: `disabled`
+ 
+-### Port-Strategie
+-
+-- Fuer die erste Station die von AzuraCast automatisch vorgeschlagenen Ports uebernehmen.
+-- Auf dem Pi-Ressourcenprofil keine manuellen Sonderport-Schemata erzwingen.
+-- Spaeter bei Public Edge nur ueber `radio.frawo.studio`, nicht ueber rohe Port-Bookmarks arbeiten.
+-
+ ## Low-Resource-Regeln nach dem Stationsaufbau
+ 
+-Diese Regeln sind auf dem kleinen Pi Pflicht:
+-
+ 1. `ReplayGain` nicht on-the-fly berechnen lassen.
+ 2. `AutoCue` zuerst deaktiviert lassen.
+ 3. `Audio Post-Processing` zuerst deaktiviert lassen.
+ 4. Keine zweite Station anlegen, solange die erste Station noch nicht stabil unter Last laeuft.
+-5. Medien nicht unkontrolliert auf die Root-Disk hochladen, sondern ueber den kuratierten USB-/spaeteren `RadioLibrary`- und `RadioAssets`-Pfad fuehren.
++5. Medien nicht unkontrolliert auf die Root-Disk hochladen, sondern ueber den zentralen SMB-Pfad und die kuratierten `RadioLibrary`-/`RadioAssets`-Pfade fuehren.
+ 
+ ## Medienstruktur fuer die erste Betriebsphase
+ 
+-Die erste Station arbeitet in der ersten Betriebsphase mit drei kuratierten Host-Pfaden:
+-
+-- aktueller Live-Importpfad
+-  - `/srv/radio-library/music-usb/yourparty.radio`
+-  - direkt angeschlossener USB-Musikbestand fuer die erste Betriebsphase
++Die erste Station arbeitet mit drei klaren Medienpfaden:
+ 
+-- `RadioLibrary`
++- Live-Importpfad:
++  - `/srv/radio-library/music-network/yourparty_Libary`
++- `RadioLibrary`:
+   - Songs, aus denen Playlists gebaut werden
+-  - spaeterer kuratierter Kanon fuer den eigentlichen Musikbestand
+-- `RadioAssets`
++  - lokaler Arbeits- und Kurationspfad auf dem Pi
++- `RadioAssets`:
+   - Jingles
+   - IDs
+   - Sweepers
+@@ -83,14 +70,6 @@ Die erste Stationsbasis gilt als sauber, wenn:
+ - genau eine Station `FraWo - Funk` existiert
+ - `GET /api/status` liefert `200`
+ - `GET /api/nowplaying` liefert mindestens einen Stationseintrag
+-- der aktuelle USB-Musikpfad ist in AzuraCast sichtbar und AutoDJ liefert einen echten Titel
++- der SMB-Musikpfad ist in AzuraCast sichtbar und AutoDJ liefert einen echten Titel
+ - die Low-Ressource-Regeln in der Station eingehalten sind
+-
+-## Quellen
+-
+-- AzuraCast Docker Installation:
+-  - https://www.azuracast.com/docs/getting-started/installation/docker/
+-- AzuraCast Settings:
+-  - https://www.azuracast.com/docs/getting-started/settings/
+-- AzuraCast Optimizing:
+-  - https://www.azuracast.com/docs/help/optimizing/
++- der alte USB-Zwischenpfad ist nicht mehr produktive Source of Truth
+diff --git a/BACKUP_RESTORE_PROOF.md b/BACKUP_RESTORE_PROOF.md
+index e0ff22f..2b7b332 100644
+--- a/BACKUP_RESTORE_PROOF.md
++++ b/BACKUP_RESTORE_PROOF.md
+@@ -62,7 +62,7 @@
+   - datastore `hs27-interim`
+   - first backup proof and first restore proof are both green for `VM 220`
+   - current interim retention:
+-    - `02:40,14:40`
++  - `02:40`
+     - `keep-daily=2`
+     - `keep-weekly=1`
+     - `keep-monthly=1`
+diff --git a/GEMINI.md b/GEMINI.md
+index 2319d64..3254158 100644
+--- a/GEMINI.md
++++ b/GEMINI.md
+@@ -107,7 +107,7 @@
+     - Datastore `hs27-interim` ist aktiv
+     - Proxmox-Storage `pbs-interim` ist aktiv
+     - taeglicher PBS-Job `hs27-pbs-interim-daily` ist angelegt
+-    - Interim-Retention ist aktiv: `02:40,14:40`, `keep-daily=2`, `keep-weekly=1`, `keep-monthly=1`
++- Interim-Retention ist aktiv: `02:40`, `keep-daily=2`, `keep-weekly=1`, `keep-monthly=1`
+     - erster gruener Proof-Backup-Lauf ist jetzt erbracht:
+       - `VM 220`
+       - Snapshot `vm/220/2026-03-21T10:04:30Z`
+diff --git a/LIVE_CONTEXT.md b/LIVE_CONTEXT.md
+index 16a1208..d74e699 100644
+--- a/LIVE_CONTEXT.md
++++ b/LIVE_CONTEXT.md
+@@ -124,7 +124,7 @@
+    - `VM 240 pbs` laeuft jetzt mit `3072 MB` RAM, `32G` Systemdisk auf `local-lvm` und `40G` USB-Data-Disk auf `pbs-usb`
+    - Datastore `hs27-interim` ist im Gast aktiv und Proxmox-Storage `pbs-interim` ist angebunden
+    - taeglicher PBS-Job `hs27-pbs-interim-daily` ist angelegt
+-   - platzbewusste Interim-Retention ist aktiv: `02:40,14:40` mit `keep-daily=2`, `keep-weekly=1`, `keep-monthly=1`
++- platzbewusste Interim-Retention ist aktiv: `02:40` mit `keep-daily=2`, `keep-weekly=1`, `keep-monthly=1`
+    - erster gruener Proof-Backup-Lauf ist jetzt erbracht: `VM 220` erfolgreich nach `pbs-interim`
+    - erster gruener Restore-Drill ist jetzt ebenfalls erbracht: `VM 220` -> Test-VM `920` -> `HTTP 200` auf Odoo-Login
+    - zweiter automatisierter Restore-Drill (`VM 220` -> `920`) war ebenfalls erfolgreich und beweist die Reproduzierbarkeit
+diff --git a/MASTERPLAN.md b/MASTERPLAN.md
+index c75f72f..0e9d1b0 100644
+--- a/MASTERPLAN.md
++++ b/MASTERPLAN.md
+@@ -23,11 +23,11 @@ Der Zielzustand ist eine hybride Proxmox-Infrastruktur mit klarer Rollentrennung
+ - `VM 240 pbs`
+   - dedizierter Proxmox Backup Server
+ - `wolfstudiopc`
+-  - primäres Admin- und Brückengerät (dieser PC)
+-  - SSOT für Netzwerk- und Servermanagement
++  - primÃ¤res Admin- und BrÃ¼ckengerÃ¤t (dieser PC)
++  - SSOT fÃ¼r Netzwerk- und Servermanagement
+ - `zenbook_radio_anchor`
+-  - zukünftiger Radio-Ankerpunkt ("Villa")
+-  - Livestream-Host für Studio-Broadcasts
++  - zukÃ¼nftiger Radio-Ankerpunkt ("Villa")
++  - Livestream-Host fÃ¼r Studio-Broadcasts
+ - `raspberry_pi_radio`
+   - dedizierter interner Radio-Node mit AzuraCast
+ - spaeter `surface_go_frontend`
+@@ -37,6 +37,7 @@ Der Zielzustand ist eine hybride Proxmox-Infrastruktur mit klarer Rollentrennung
+ 
+ ## Professioneller Zielstandard
+ 
++
+ Der Server gilt erst dann als wirklich fertig, wenn alle folgenden Punkte erfuellt sind:
+ 
+ 1. Alle Zielsysteme sind gebaut, dokumentiert und reproduzierbar ueber IaC pflegbar.
+@@ -53,6 +54,19 @@ Der Server gilt erst dann als wirklich fertig, wenn alle folgenden Punkte erfuel
+    - spaeter UCG-Ultra mit geplantem Cutover
+ 7. Oeffentliche Freigaben passieren nur ueber einen gehaerteten Edge-Pfad mit DNS, TLS, Auth, Logging und Monitoring.
+ 
++## Operator Shortcuts
++
++- Gesamtstatus: `PLATFORM_STATUS.md`
++- Identitaetsstandard: `IDENTITY_STANDARD.md`
++- 2-TB-SSD-Bewertung: `TB_SSD_ASSESSMENT.md`
++
++## Operator Note 2026-03-25
++
++- Auf `wolfstudiopc` war ein echter Routing-Fehler aktiv: Tailscale hat das von `toolbox` annoncierte Subnetz `192.168.2.0/24` akzeptiert und damit den direkten LAN-Pfad auf diesem PC uebersteuert.
++- Der Workstation-Fix ist gesetzt: `tailscale set --accept-routes=false`.
++- Damit ist die lokale Route auf diesem Admin-PC wieder priorisiert.
++- Wenn `192.168.2.10`, `192.168.2.20` oder `192.168.2.30` trotzdem nicht sauber antworten, ist das als Infrastrukturpfad-Thema zu behandeln, nicht vorschnell als App-Defekt.
++
+ ## Aktueller Ist-Stand
+ 
+ ### Bereits fertig oder betriebsreif
+@@ -77,9 +91,9 @@ Der Server gilt erst dann als wirklich fertig, wenn alle folgenden Punkte erfuel
+ - das Toolbox-Portal ist jetzt als gruppierte `FRAWO Control`-Frontdoor aufgewertet und bildet Playback-, Work- und Operations-Ziele klarer ab
+ - die `FRAWO Control`-Frontdoor fuehrt jetzt auch einen Live-Status-Snapshot der Kernservices mit und ist aktuell mit `7/7` gruen
+ - die `FRAWO Control`-Frontdoor zeigt jetzt zusaetzlich den laufenden Medienimport fuer Jellyfin ueber `status.json`
+-- `radio.hs27.internal` zeigt jetzt intern auf den Raspberry-Pi-Radio-Node und liefert die AzuraCast-Setup-Seite
+-- `media.hs27.internal` zeigt jetzt intern auf Jellyfin auf der Toolbox; der direkte LAN-Pfad `192.168.2.20:8096` und der mobile Tailscale-Pfad `100.99.206.128:8449` sind verifiziert
+-- ein wiederholbarer Bootstrap-Sync vom Pi auf die Toolbox-Mediathek ist jetzt live und befuellt `/srv/media-library/music/bootstrap-radio-usb`
++- `radio.hs27.internal` zeigt jetzt intern auf den Raspberry-Pi-Radio-Node und liefert die AzuraCast-Login-Seite
++- `media.hs27.internal` zeigt jetzt intern auf Jellyfin auf der Toolbox; der direkte LAN-Pfad `192.168.2.20:8096` und der mobile Tailscale-Pfad `100.99.206.128:8449` liefern konsistent `HTTP 302 -> /web/`
++- der zentrale SMB-Medienpfad auf `CT 110` ist jetzt angelegt; die kanonische Musikbibliothek ist `\\192.168.2.30\Media\yourparty_Libary`
+ - `CT 100 toolbox` wurde fuer den Medienpfad operativ vergroessert: Rootfs jetzt effektiv `96G`, im Gast aktuell rund `82G` frei statt vorher `64M`
+ - Der Raspberry-Pi-Radio-Node ist jetzt auf ein konservatives `pi4_2gb_single_station_low_resource`-Profil getunt: `4` CPU-Kerne, `~1.8 GiB` RAM, `2 GiB` Swap, `~21 GiB` freies Rootfs und AzuraCast-Leerlauf aktuell bei `~457 MiB`
+ - Right-Sizing-Stage-Gate und Wartungs-Runbook fuer `VM 200` und `VM 220` sind einsatzbereit.
+@@ -104,22 +118,22 @@ Der Server gilt erst dann als wirklich fertig, wenn alle folgenden Punkte erfuel
+ - internes `hs27.internal` bleibt bis zur bewussten internen DNS-Migration unveraendert.
+ - Der dedizierte Radio-Node auf dem Raspberry Pi 4 ist intern live: AzuraCast laeuft auf dem Pi, `radio.hs27.internal` liefert intern `HTTP 302` auf `/login`, und die Status-API ist erreichbar.
+ 
+-- Der Radio-Betrieb ist jetzt auch operativ verifiziert: `Radio`, `Radio Control` und `nowplaying` sind intern gruen; naechster Schritt ist die Kuration nach `RadioLibrary` / `RadioAssets` und danach eine touchfreundliche Surface-Monitor-/Control-Schicht.
+-- Der Medienserver-V1 ist technisch live und die Jellyfin-Erstkonfiguration ist fuer den Musikpfad abgeschlossen.
+-- Der Medienserver-V1 hat jetzt schon einen echten Content-Pfad: Pi-USB-Musik wird in die Toolbox-Mediathek synchronisiert; der verbleibende operative Block ist jetzt vor allem der laufende Bootstrap-Import und danach die Client-/Kurationsschicht.
+-- Der erste grosse Medienimport laeuft nach der Rootfs-Erweiterung wieder und ist jetzt der praktische Seed fuer Jellyfin.
+-- Das gemeinsame Frontend-Geraet auf `192.168.2.154` ist jetzt als `surface-go-frontend` frisch aufgebaut; SSH, lokales Portal und der Tailnet-Pfad auf `100.106.67.127` sind verifiziert.
++- Der Radio-Betrieb ist jetzt auch operativ verifiziert: `Radio`, `Radio Control` und `nowplaying` sind intern gruen; der Pi nutzt den zentralen SMB-Pfad produktiv und die Integrationschecks laufen von diesem Admin-PC jetzt auch ueber den Proxmox-/Toolbox-Fallback reproduzierbar.
++- Der Medienserver-V1 ist technisch live und fuer Browser, LAN und den mobilen Tailscale-Pfad betriebsbereit.
++- Die Jellyfin-Erstkonfiguration ist fuer den Musikpfad abgeschlossen; `media.hs27.internal`, `192.168.2.20:8096` und `100.99.206.128:8449` fuehren konsistent in die Web-Oberflaeche.
++- Der verbleibende operative Block auf der Medienseite ist jetzt nicht mehr die Grundfunktion, sondern die laufende USB->SMB-Bibliotheksmigration, danach Benutzer-/Client-Rollout und das harte Abschalten des alten USB-Zwischenpfads.
++- Das gemeinsame Frontend-Geraet auf `192.168.2.154` war bereits als `surface-go-frontend` frisch aufgebaut; der aktuelle Live-Rollout ist jedoch blockiert, weil das Geraet momentan nicht mehr bootet/startet.
+ - Die Root-Sleep-Haertung ist jetzt abgeschlossen: `sleep.target`, `suspend.target`, `hibernate.target` und `hybrid-sleep.target` sind maskiert, ein Reboot-Test ist erfolgreich zurueckgekommen.
+ - Das Surface nutzt jetzt einen robusteren lokalen Frontend-Pfad:
+   - lokaler Portalservice auf `127.0.0.1:17827`
+   - loopback-only HTTP auf `127.0.0.1:17827`
+   - `FRAWO Control` als sichtbarer Launcher
+-  - `epiphany-browser` wird aktuell ueber einen lokalen Wrapper als private Instanz gestartet
+-- Der praktische Restblock am Surface ist damit auf Browser-/Touch-Tastatur-Feinschliff und spaetere UX-Veredelung geschrumpft, nicht mehr auf Grundfunktion.
++  - Browser-/Launcher-Standard ist im Repo inzwischen auf `firefox` + produktive Launcher fuer `frontend` und `frawo` festgezogen
++- Der praktische Restblock am Surface ist derzeit kein UX-Thema mehr, sondern ein Hardware-/Boot-Blocker ausserhalb des laufenden Serverpfads.
+ - Neu als Zwischenstufe fuer Backups: der `64GB`-USB-Stick `HS27_PORTABLEBK` ist jetzt fest an Proxmox angeschlossen und traegt das kleine PBS-v1-Zwischenstorage; `VM 240 pbs` laeuft mit `32G` Systemdisk auf `local-lvm`, `40G` USB-Data-Disk auf `pbs-usb` und `3072 MB` RAM.
+ - `surface-go-frontend` auf `192.168.2.154` ist jetzt als `surface-go-frontend` frisch aufgebaut; SSH, lokales Portal und der Tailnet-Pfad auf `100.106.67.127` sind verifiziert.
+-- `wolfstudiopc` ist joined und als Admin-Gerät etabliert (`100.98.31.60`).
+-- `Zenbook` ist vorbereitet für die spätere Migration als Radio-Anker.
++- `wolfstudiopc` ist joined und als Admin-GerÃ¤t etabliert (`100.98.31.60`).
++- `Zenbook` ist vorbereitet fÃ¼r die spÃ¤tere Migration als Radio-Anker.
+ 
+ 
+ ## Roadmap Nach Phasen
+@@ -231,7 +245,7 @@ Erreicht:
+ - Proxmox-Storage `pbs-interim` aktiv
+ - taeglicher PBS-Backup-Job `hs27-pbs-interim-daily` fuer `200,210,220,230` angelegt
+ - aktuelle Interim-Retention ist jetzt platzbewusst gesetzt:
+-  - Schedule `02:40,14:40`
++- Schedule `02:40`
+   - `keep-daily=2`
+   - `keep-weekly=1`
+   - `keep-monthly=1`
+@@ -283,7 +297,7 @@ Ziel:
+ - Kiosk-first statt ueberladener Desktop
+ 
+ Status:
+-- weitgehend abgeschlossen, Feinschliff offen
++- Repo-seitig vorbereitet, Live-Rollout aktuell durch Hardware-/Boot-Problem blockiert
+ 
+ Erreicht:
+ - Host `surface-go-frontend` auf `192.168.2.154` per Clean Rebuild neu aufgebaut
+@@ -295,10 +309,15 @@ Erreicht:
+   - lokales Portal installiert
+   - GDM-Autologin gesetzt
+   - touchfreundliche GNOME-Defaults angewendet
++- Repo-Standard fuer den produktiven Betrieb ist nachgezogen:
++  - `frontend` als read-only/shared Kiosk-User
++  - `frawo` mit separaten Admin-/Remote-Launchern
++  - AnyDesk-Installpfad und `StudioPC Remote`-Launcher vorbereitet
+ 
+ Rest:
++- Geraet wieder boot-/startfaehig machen
++- danach Playbook erneut live ausrollen und visuell abnehmen
+ - feste DHCP-Reservierung
+-- spaetere UX-Verbesserung des Frontends
+ - optional `linux-surface` nur bei echten Hardware-Luecken
+ 
+ ## Phase 6b - Raspberry Pi Radio Node
+@@ -307,7 +326,7 @@ Ziel:
+ - dedizierter interner Radio-Node statt Medienlast auf `CT 100`
+ 
+ Status:
+-- in Arbeit, interner AzuraCast-Betrieb mit erster Station und USB-Musik live
++- intern produktiv auf SMB integriert, Bibliotheksmigration noch in Arbeit
+ 
+ Erreicht:
+ - Raspberry-Pi-Image ist lokal verifiziert
+@@ -318,12 +337,16 @@ Erreicht:
+ - `radio.hs27.internal` liefert intern `HTTP 302` auf `/login`
+ - das Host-Medienlayout fuer `RadioLibrary` und `RadioAssets` ist auf dem Pi jetzt vorbereitet
+ - die erste Station `FraWo - Funk` existiert
+-- die direkt am Pi steckende USB-Musikquelle ist eingebunden
+-- AutoDJ spielt jetzt intern bereits echte Titel aus der USB-Bibliothek
++- die erste produktive Station ist auf `frawo-funk` standardisiert
++- der Pi mountet `//192.168.2.30/Media` produktiv nach `/srv/radio-library/music-network`
++- AzuraCast bindet den SMB-Pfad in die Station `frawo-funk`
++- die Radio-Checks laufen von diesem Admin-PC jetzt reproduzierbar ueber den Proxmox-/Toolbox-Fallback
++- AutoDJ-Basis und Stationspfad sind damit klar vom alten USB-Zwischenpfad getrennt
+ 
+ Rest:
+ - DHCP-Reservierung sauber festziehen
+-- Medienkurationspfad zwischen USB-Quelle, `RadioLibrary` und `RadioAssets` sauber operationalisieren
++- laufende USB->SMB-Bibliothekskopie fertiglaufen lassen und danach den alten USB-Zwischenpfad operativ entfernen
++- Medienkurationspfad zwischen zentraler Musikfreigabe, `RadioLibrary` und `RadioAssets` sauber operationalisieren
+ - Ressourcen-Feintuning auf dem Pi nach den ersten echten Streams pruefen
+ 
+ ## Phase 6c - Interner Medienserver
+@@ -332,38 +355,48 @@ Ziel:
+ - sofort nutzbarer Medien-Mehrwert fuer Browser, Thomson und Google TV ohne Public Edge
+ 
+ Status:
+-- in Arbeit, technischer V1 live
++- Baseline abgeschlossen, SMB-Cutover technisch live; Client- und Benutzerrollout offen
+ 
+ Erreicht:
+ - Jellyfin laeuft auf `CT 100 toolbox`
+ - `media.hs27.internal` liefert intern die Jellyfin-Oberflaeche
+ - der direkte LAN-Pfad `192.168.2.20:8096` ist verifiziert
+ - der mobile Tailscale-Frontdoor auf `100.99.206.128:8449` ist verifiziert
++- alle drei Pfade liefern aktuell konsistent `HTTP 302 -> /web/`
+ - Bibliotheks-Stammverzeichnisse auf der Toolbox sind vorbereitet:
+   - `/srv/media-library/movies`
+   - `/srv/media-library/shows`
+   - `/srv/media-library/music`
+   - `/srv/media-library/homevideos`
++- der produktive SMB-Pfad ist hostseitig auf Proxmox nach `/mnt/hs27-media` gemountet und per Bind-Mount nach `CT 100` durchgereicht
++- der Docker-Bind in Jellyfin ist auf `rslave` gehaertet, damit der SMB-Inhalt im Container sichtbar bleibt
+ 
+ Rest:
++- Jellyfin-Admin- und Standard-User final festziehen und im Passwortmanager ablegen
+ - erste Thomson-/Google-TV-Clients verbinden
+-- spaeter Medienquelle und Kuration professionell von der Bootstrap-Phase in einen dauerhaften Pfad ueberfuehren (NFS/CT110)
++- Bibliotheksmigration auf SMB abschliessen und den alten Bootstrap-/USB-Pfad aus dem produktiven Betrieb nehmen
+ 
+ ## Phase 6d - Single Source of Truth Storage Node (CT 110)
+ 
+ Ziel:
+-- Dokumente (Paperless/Nextcloud) und Medien (Radio/Jellyfin) als Single Source of Truth bündeln, anstatt Isoliert mit Rsync zu jonglieren.
++- Dokumente (Paperless/Nextcloud) und Medien (Radio/Jellyfin) als Single Source of Truth buendeln, anstatt isoliert mit Rsync zu jonglieren.
+ 
+ Status:
+-- konzeptionell vorbereitet (siehe `SHARED_STORAGE_ARCHITECTURE_PLAN.md`), Umsetzung ausstehend
++- live und in aktiver Integration; Bibliotheksmigration laeuft
+ 
+ Erreicht:
+-- Architekturplan dokumentiert
++- `CT 110 storage-node` ist angelegt und laeuft im Netz auf `192.168.2.30`
++- SMB ist fuer den gemeinsamen Medienpfad der verbindliche Zielstandard
++- der Windows-/UNC-Zielpfad ist `\\192.168.2.30\Media\yourparty_Libary`
++- Toolbox und Pi sind an den SMB-Zielpfad angebunden
++- die USB->SMB-Migration der Radiobibliothek laeuft bereits gegen den Zielpfad
++- Architekturpfad fuer gemeinsame Dokumente und Medien ist damit nicht mehr nur theoretisch, sondern infrastrukturell und betrieblich aktiv
+ 
+ Rest:
+-- `CT 110 storage` deployen (Debian, NFS/SMB Kernel Server)
+-- Nextcloud + Paperless NFS mounts für `/media/archive` vorbereiten
+-- Pi AzuraCast + Jellyfin `/mnt/data/media` NFS/Tailscale mounts vorbereiten
++- laufende USB->SMB-Migration sauber abschliessen und validieren
++- SMB-Freigaben auf allen betroffenen Clients sauber und reproduzierbar mounten
++- Nextcloud + Paperless auf den finalen gemeinsamen Datenpfad ueberfuehren
++- Jellyfin-/AzuraCast-Zugaenge final festziehen und Benutzerstandard nachziehen
+ - (Optional Any-Sync/Anytype Node aufziehen)
+ 
+ ## Phase 7 - Gateway-Cutover auf UCG-Ultra
+@@ -426,20 +459,20 @@ Nie direkt oeffentlich:
+   - derzeit nicht sinnvoll auf dem bestehenden Host
+   - Wiedervorlage erst bei RAM-Upgrade oder separatem AI-Node
+ - `Anytype`
+-  - Integration als lokale SSOT für Wissensmanagement
+-  - Synergie mit der HS27-Infrastruktur prüfen
++  - Integration als lokale SSOT fÃ¼r Wissensmanagement
++  - Synergie mit der HS27-Infrastruktur prÃ¼fen
+ 
+ 
+ ## Was jetzt als Naechstes dran ist
+ 
+-1. **HAOS-USB-Pfad vorbereiten**: Sobald die Zigbee/Z-Wave Hardware steckt.
+-2. **Dokumenten-Workflow**: [x] DONE. Paperless-/Nextcloud-Pfad ist mit einem echten Dokumentenlauf abgenommen (bridge_timer live, 'probe' Document consumed).
+-3. **Radio & Control**: Radio-Kuration und Surface-Monitor (Kiosk) finalisieren.
+-4. **Media Clients**: Jellyfin-Anbindung für Thomson/Google TV.
+-5. **Phase 5 & 6**: [x] DONE. Backup-Standard (PBS VM 240) und Netzwerk-Inventar (.14x) sind stabil.
+-6. **Gateway-Cutover**: Erst nach Abschluss der oben genannten Stabilitäts-Gates.
+-7. **Public Edge**: Finaler Hardening-Schritt.
+-
++1. **Media Migration abschliessen**: laufende USB->SMB-Bibliothekskopie auf `CT 110` sauber beenden und validieren.
++2. **Media Logins finalisieren**: Jellyfin-, AzuraCast- und AdGuard-Zugaenge auf bekannte Endwerte setzen und im Passwortmanager ablegen.
++3. **Identity Standard umsetzen**: `wolf@frawo-tech.de`, `franz@frawo-tech.de`, `frontend@frawo-tech.de`, `info@frawo-tech.de` in die App-User ueberfuehren.
++4. **Dokumenten-Workflow**: [x] DONE. Paperless-/Nextcloud-Pfad ist mit einem echten Dokumentenlauf abgenommen (bridge_timer live, 'probe' Document consumed).
++5. **HAOS-USB-Pfad vorbereiten**: Sobald die Zigbee/Z-Wave Hardware steckt.
++6. **Surface**: erst nach Hardware-/Boot-Recovery wieder in den produktiven Pfad nehmen.
++7. **Gateway-Cutover**: Erst nach Abschluss der oben genannten Stabilitaets-Gates.
++8. **Public Edge**: Finaler Hardening-Schritt.
+ 
+ ## Die wichtigsten Dateien zum Masterplan
+ 
+@@ -454,4 +487,3 @@ Nie direkt oeffentlich:
+ - [PBS_VM_240_SETUP_PLAN.md](PBS_VM_240_SETUP_PLAN.md)
+ - [HAOS_VM_210_SETUP_PLAN.md](HAOS_VM_210_SETUP_PLAN.md)
+ - [SHARED_STORAGE_ARCHITECTURE_PLAN.md](SHARED_STORAGE_ARCHITECTURE_PLAN.md)
+-
+diff --git a/MEDIA_SERVER_CLIENT_SETUP.md b/MEDIA_SERVER_CLIENT_SETUP.md
+index fc67cd2..938be93 100644
+--- a/MEDIA_SERVER_CLIENT_SETUP.md
++++ b/MEDIA_SERVER_CLIENT_SETUP.md
+@@ -22,7 +22,7 @@ This document is the operator runbook for the first usable FRAWO media experienc
+   - `/media/music`
+ - a bootstrap sync from the Pi USB music library into the toolbox media library is now running
+ - current target path for the imported radio music is:
+-  - `/media/music/bootstrap-radio-usb`
++  - `/media/music-network/yourparty_Libary`
+ 
+ ## Google TV / Android TV / Thomson
+ 
+diff --git a/MEDIA_SERVER_PLAN.md b/MEDIA_SERVER_PLAN.md
+index 69c7960..6e9d6b5 100644
+--- a/MEDIA_SERVER_PLAN.md
++++ b/MEDIA_SERVER_PLAN.md
+@@ -2,124 +2,73 @@
+ 
+ ## Ziel
+ 
+-Dieses Dokument beschreibt den pragmatischen Medienserver-V1 fuer Homeserver 2027.
++Dieses Dokument beschreibt den produktiven Medienpfad fuer Homeserver 2027.
+ 
+-Ziel ist nicht ein perfektes Endsystem in einem Schritt, sondern ein sofort nutzbarer Mehrwert:
++Ziel ist ein sauberer, gemeinsamer Medienbestand fuer:
+ 
+-- interner Medienserver
+-- Google-TV-/Thomson-kompatibler Wiedergabepfad
+-- sauber getrennt vom Radio-Betrieb auf dem Raspberry Pi
++- Jellyfin auf `CT 100 toolbox`
++- AzuraCast auf `raspberry_pi_radio`
++- Windows- und Admin-Clients ueber SMB/UNC
+ 
+-## Gewaehlter V1-Pfad
++## Aktueller Standard
+ 
+-- Plattform: `CT 100 toolbox`
++- Plattform fuer Wiedergabe: `CT 100 toolbox`
+ - Software: `Jellyfin`
+ - Interne URL: `http://media.hs27.internal`
+ - Direkte LAN-URL fuer TV-Apps: `http://192.168.2.20:8096`
+-- Mobiler Tailscale-Interimspfad: `http://100.99.206.128:8449`
++- Mobiler Tailscale-Pfad: `http://100.99.206.128:8449`
++- Kanonische Musikquelle: `\192.168.2.30\Media\yourparty_Libary`
++- Toolbox-Mount-Ziel: `/srv/media-library/music-network/yourparty_Libary`
+ 
+ ## Warum Jellyfin
+ 
+ - gute Android-TV-/Google-TV-Unterstuetzung
+-- fuer Thomson-Geraete mit Google TV oder Android TV naheliegender Client-Pfad
+-- intern ohne Public Edge sinnvoll nutzbar
+-- trennt Medienwiedergabe sauber von AzuraCast
++- sinnvoller interner Wiedergabepfad ohne Public Edge
++- klare Trennung zu AzuraCast als Radiosystem
+ 
+-## TV-Integrationspfad
+-
+-### Google TV / Android TV / Thomson mit Google TV
+-
+-- Jellyfin-App auf dem TV installieren
+-- Server-Adresse lokal:
+-  - `http://192.168.2.20:8096`
+-- spaeter komfortabler:
+-  - `http://media.hs27.internal`
+-
+-### Browser-Fallback
+-
+-- jeder interne Client:
+-  - `http://media.hs27.internal`
++## Trennung zu Radio
+ 
+-## Bibliotheksstruktur
++- `AzuraCast` auf `radio-node` bleibt fuer Radio, AutoDJ und Sendelogik zustaendig
++- `Jellyfin` auf `toolbox` ist fuer On-Demand-Medienwiedergabe
++- beide Systeme sollen denselben SMB-Medienbestand lesen, aber nicht dieselbe Anwendungslogik teilen
+ 
+-Host-Pfad auf der Toolbox:
++## Verbindliche Bibliotheksstruktur
+ 
++### Toolbox lokal
+ - `/srv/media-library/movies`
+ - `/srv/media-library/shows`
+ - `/srv/media-library/music`
+ - `/srv/media-library/homevideos`
++- `/srv/media-library/music-network/yourparty_Libary`
+ 
+-## Trennung zu Radio
++### Zentraler SMB-Pfad
++- `\192.168.2.30\Media\yourparty_Libary\clean`
++- `\192.168.2.30\Media\yourparty_Libary\curated`
++- `\192.168.2.30\Media\yourparty_Libary\favorites`
++- `\192.168.2.30\Media\yourparty_Libary\incoming`
++- `\192.168.2.30\Media\yourparty_Libary\quarantine`
+ 
+-- `AzuraCast` auf `radio-node` bleibt fuer Radio, AutoDJ und Sendelogik zustaendig
+-- `Jellyfin` auf `toolbox` ist nur fuer Medienwiedergabe
+-- spaeter koennen beide dieselbe kuratierte Dateibasis nutzen, aber nicht dieselbe Anwendungslogik
++## Verifizierter Ist-Stand
+ 
+-## Definition of Done fuer V1
++- `media.hs27.internal` liefert `HTTP 302 -> /web/`
++- `192.168.2.20:8096` liefert `HTTP 302 -> /web/`
++- `100.99.206.128:8449` liefert `HTTP 302 -> /web/`
++- Jellyfin-Startup-Wizard ist abgeschlossen
++- mindestens ein lokaler Jellyfin-User ist vorhanden
++- der Medienstack auf `CT 100 toolbox` ist aktiv
++- der Storage-Node `CT 110` ist live auf `192.168.2.30`
++- das Share `\192.168.2.30\Media` ist erreichbar und `yourparty_Libary` existiert
+ 
+-- Jellyfin-Stack laeuft auf der Toolbox
+-- `media.hs27.internal` liefert die Jellyfin-Oberflaeche
+-- `192.168.2.20:8096` ist im LAN erreichbar
+-- mobile Tailscale-Frontdoor auf `:8449` funktioniert
+-- UI-basierte Erstkonfiguration ist abgeschlossen
+-- mindestens die Musikbibliothek ist an `/media/music` angebunden
++## Operativer Restblock
+ 
+-## Verifizierter Ist-Stand
++1. Laufende USB->SMB-Bibliotheksmigration auf `\192.168.2.30\Media\yourparty_Libary` abschliessen.
++2. Jellyfin gegen den vollstaendigen SMB-Bestand pruefen.
++3. Jellyfin-Admin- und Standard-User finalisieren.
++4. Thomson-/Google-TV-Clients anbinden.
++5. Alte Bootstrap-/USB-Zwischenpfade aus dem produktiven Betrieb nehmen.
++
++## Operative Checks
+ 
+-- `toolbox-media-check` ist gruen
+-- `toolbox-jellyfin-ui-check` bestaetigt jetzt:
+-  - `StartupWizardCompleted=true`
+-  - mindestens ein lokaler Benutzer ist in der Jellyfin-Datenbank vorhanden
+-  - die Musikbibliothek ist an `/media/music` angebunden
+-- `toolbox-music-scan-issues` liefert jetzt den ersten Qualitaetsbefund fuer den Bootstrap-Bestand:
+-  - `84` aktuelle `ffprobe`-Fehler im Jellyfin-Log
+-  - `2` wirklich verdaechtige Dateien
+-  - der Rest sind vor allem erwartbare Coverbilder und Sidecars
+-- `toolbox-music-curation-candidates` verdichtet diesen Befund auf den aktuellen Quarantaene-/Kurationspfad:
+-  - die urspruengliche Problemdatei wurde bereits nach `/srv/media-library/quarantine/bootstrap-review` verschoben
+-  - derzeit `0` echte Quarantaene-Kandidaten-Dateien
+-  - derzeit `9` harmlose Sidecars/Coverbilder
+-  - vorgeschlagener Zielpfad fuer harte Problemfaelle:
+-    - `/srv/media-library/quarantine/bootstrap-review`
+-- `toolbox-music-curated-layout` zeigt jetzt die naechste saubere Ausbaustufe:
+-  - Bootstrap-Bestand gefuellt
+-  - `curated` Starter-Auswahl live
+-  - `favorites` Starter-Auswahl live
+-  - `quarantine` enthaelt aktuell genau `1` verschobene Problemdatei
+-- neuer Auswahl-Workflow fuer die erste echte Kuration:
+-  - lokale Manifeste im Workspace:
+-    - `manifests/media/favorites_paths.txt`
+-    - `manifests/media/curated_paths.txt`
+-  - Kandidaten-Report:
+-    - `make toolbox-music-selection-seed-report`
+-  - idempotenter Sync:
+-    - `make toolbox-music-selection-sync`
+-  - aktueller Zustand: Starter-Manifeste sind in die Live-Manifeste uebernommen und per Sync materialisiert
+-- `media.hs27.internal` liefert aktuell `HTTP 302`
+-- `192.168.2.20:8096` liefert aktuell `HTTP 302`
+-- `100.99.206.128:8449` liefert aktuell `HTTP 302`
+-- systemd-Service fuer den Medienstack ist `enabled` und `active`
+-- die Bibliotheks-Stammverzeichnisse sind auf der Toolbox angelegt
+-- ein wiederholbarer Bootstrap-Sync vom Pi auf die Toolbox ist live:
+-  - Quelle: `wolf@100.64.23.77:/srv/radio-library/music-usb/yourparty.radio/`
+-  - Ziel: `/srv/media-library/music/bootstrap-radio-usb/`
+-  - Dienst: `homeserver2027-media-sync.service`
+-  - Timer: `homeserver2027-media-sync.timer`
+-  - schneller Check: `make toolbox-media-sync-check`
+-  - Fortschritts-Check: `make toolbox-media-bootstrap-progress`
+-  - Musikbestands-Report: `make toolbox-music-library-report`
+-- `CT 100 toolbox` wurde fuer diesen Import operativ vergroessert:
+-  - vorher: `10G` Rootfs, Import lief in `No space left on device`
+-  - jetzt: effektiv `96G` Rootfs mit wieder ausreichend Platz fuer den Bootstrap-Bestand
+-- `FRAWO Control` zeigt jetzt auch den laufenden Medienimport ueber `status.json`
+-- aktueller Musik-Befund aus dem laufenden Bootstrap:
+-  - Top-Level: `Contents`, `Music Locker Radio - Palms Trax (Mixed)`, `clean`
+-  - Formate bisher vor allem `mp3`, `flac`, `wav`
+-  - ein kleiner Rest an restriktiven Verzeichnisrechten bleibt sichtbar und ist der naechste technische Kurationspunkt
+-
+-## Naechster Operativer Schritt
+-
+-1. auf Thomson / Google TV die Jellyfin-App mit `http://192.168.2.20:8096` verbinden
+-2. parallel die Scan-/Kurationslage ueber `make toolbox-music-scan-issues`, `make toolbox-music-curation-candidates` und `make toolbox-music-curated-layout` im Blick behalten
+-3. den Starter-Stand in `favorites` und `curated` bei Bedarf ueber die Manifeste verfeinern
+-4. danach weitere Bibliotheken (`Movies`, `Shows`, `Homevideos`) nur bei echtem Bestand anbinden
++- Toolbox-SMB-Ziel: `scripts/toolbox_media_sync_check.sh`
++- Radio-/AzuraCast-SMB-Ziel: `scripts/rpi_radio_network_music_check.sh`
++- Laufende USB->SMB-Migration: `scripts/media_migration_status.sh`
+diff --git a/MEMORY.md b/MEMORY.md
+index 37d95a6..753db26 100644
+--- a/MEMORY.md
++++ b/MEMORY.md
+@@ -390,7 +390,7 @@ Lokale Admin-Flaechen (nur localhost):
+   - Proxmox-Storage `pbs-interim` ist aktiv
+   - taeglicher PBS-Job `hs27-pbs-interim-daily` fuer `200,210,220,230` ist angelegt
+   - Interim-Retention ist platzbewusst gesetzt:
+-    - Schedule `02:40,14:40`
++- Schedule `02:40`
+     - `keep-daily=2`
+     - `keep-weekly=1`
+     - `keep-monthly=1`
+@@ -486,7 +486,7 @@ Lokale Admin-Flaechen (nur localhost):
+    - `VM 240 pbs` laeuft jetzt mit `3072 MB` RAM, `32G` Systemdisk auf `local-lvm` und `40G` USB-Data-Disk auf `pbs-usb`
+    - Datastore `hs27-interim` ist im Gast aktiv und Proxmox-Storage `pbs-interim` ist angebunden
+    - taeglicher PBS-Job `hs27-pbs-interim-daily` ist angelegt
+-   - platzbewusste Interim-Retention ist aktiv: `02:40,14:40` mit `keep-daily=2`, `keep-weekly=1`, `keep-monthly=1`
++- platzbewusste Interim-Retention ist aktiv: `02:40` mit `keep-daily=2`, `keep-weekly=1`, `keep-monthly=1`
+    - erster gruener Proof-Backup-Lauf ist jetzt erbracht: `VM 220` erfolgreich nach `pbs-interim`
+    - erster gruener Restore-Drill ist jetzt ebenfalls erbracht: `VM 220` -> Test-VM `920` -> `HTTP 200` auf Odoo-Login
+    - zweiter automatisierter Restore-Drill (`VM 220` -> `920`) war ebenfalls erfolgreich und beweist die Reproduzierbarkeit
+diff --git a/Makefile b/Makefile
+index 6f0ab6d..5006372 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1,4 +1,4 @@
+-.PHONY: refresh-context inventory-check ansible-ping qga-check close-day start-day ansible-syntax-check ansible-syntax-check-toolbox ansible-syntax-check-toolbox-tailscale ansible-syntax-check-toolbox-mobile-firewall ansible-syntax-check-proxmox-backups ansible-syntax-check-haos ansible-syntax-check-business-hardening ansible-syntax-check-pbs ansible-syntax-check-surface-go ansible-syntax-check-rpi-radio ansible-syntax-check-rpi-radio-media ansible-syntax-check-rpi-radio-usb ansible-syntax-check-rpi-azuracast-host ansible-syntax-check-rpi-azuracast ansible-syntax-check-rpi-azuracast-tuning ansible-syntax-check-paperless-nextcloud-bridge ansible-list-business proxmox-storage-check backup-proof backup-list business-drift-check basics-check backup-prune-dry-run backup-prune toolbox-deploy toolbox-network-check toolbox-portal-status-check toolbox-tun-prep toolbox-tailscale-prep toolbox-tailscale-check toolbox-tailscale-login-url toolbox-tailscale-join-assist toolbox-tailscale-mobile-check toolbox-mobile-firewall-deploy toolbox-media-deploy toolbox-media-check toolbox-jellyfin-ui-check toolbox-media-sync-deploy toolbox-media-sync-check toolbox-media-bootstrap-progress toolbox-music-library-report toolbox-music-scan-issues toolbox-music-curation-candidates toolbox-music-curated-layout toolbox-music-quarantine-candidates toolbox-music-selection-sync toolbox-music-selection-seed-report toolbox-music-selection-generate-starter toolbox-music-selection-promote-starter rightsize-stage-gate rightsize-plan rightsize-apply haos-preflight haos-usb-audit haos-stage-gate haos-runner-deploy haos-vm-check haos-reverse-proxy-enable haos-reverse-proxy-check gateway-cutover-stage-gate pbs-preflight pbs-stage-gate pbs-proof-check pbs-restore-proof pbs-runner-deploy pbs-vm-check pbs-guest-check pbs-iso-stage pbs-usb-interim-prepare proxmox-local-backup-deploy proxmox-local-backup-check portable-backup-usb-prepare portable-backup-usb-autoprepare portable-backup-usb-fill portable-backup-usb-check portable-backup-usb-run security-baseline-check business-hardening-deploy easybox-browser-probe easybox-authenticated-overview capacity-review plan-progress surface-go-check surface-go-bootstrap surface-go-root-sleep-harden media-fetch media-devices surface-iso-fetch surface-usb-prepare usb-stick-roles-prepare favorites-usb-prepare rpi-sd-flash rpi-firstboot-seed rpi-radio-bootstrap rpi-radio-media-prepare rpi-radio-media-check rpi-radio-usb-integrate rpi-radio-usb-check rpi-azuracast-host-prepare rpi-azuracast-deploy rpi-radio-check rpi-radio-integration-check rpi-azuracast-check rpi-azuracast-tune rpi-resource-check radio-ops-check anydesk-zenbook-install zenbook-remote-check remote-only-check operator-todos ops-brief adguard-pilot-check tailscale-split-dns-check inventory-resolution-check inventory-unknown-report paperless-nextcloud-bridge-deploy paperless-nextcloud-bridge-check
++.PHONY: refresh-context inventory-check ansible-ping qga-check close-day start-day ansible-syntax-check ansible-syntax-check-toolbox ansible-syntax-check-toolbox-tailscale ansible-syntax-check-toolbox-mobile-firewall ansible-syntax-check-proxmox-backups ansible-syntax-check-haos ansible-syntax-check-business-hardening ansible-syntax-check-pbs ansible-syntax-check-surface-go ansible-syntax-check-rpi-radio ansible-syntax-check-rpi-radio-media ansible-syntax-check-rpi-radio-usb ansible-syntax-check-rpi-radio-network ansible-syntax-check-rpi-azuracast-host ansible-syntax-check-rpi-azuracast ansible-syntax-check-rpi-azuracast-tuning ansible-syntax-check-paperless-nextcloud-bridge ansible-list-business proxmox-storage-check backup-proof backup-list business-drift-check basics-check backup-prune-dry-run backup-prune toolbox-deploy toolbox-network-check toolbox-portal-status-check toolbox-tun-prep toolbox-tailscale-prep toolbox-tailscale-check toolbox-tailscale-login-url toolbox-tailscale-join-assist toolbox-tailscale-mobile-check toolbox-mobile-firewall-deploy toolbox-media-deploy toolbox-media-storage-integrate toolbox-media-check toolbox-jellyfin-ui-check toolbox-media-sync-deploy toolbox-media-sync-check toolbox-media-bootstrap-progress media-migration-status toolbox-music-library-report toolbox-music-scan-issues toolbox-music-curation-candidates toolbox-music-curated-layout toolbox-music-quarantine-candidates toolbox-music-selection-sync toolbox-music-selection-seed-report toolbox-music-selection-generate-starter toolbox-music-selection-promote-starter rightsize-stage-gate rightsize-plan rightsize-apply haos-preflight haos-usb-audit haos-stage-gate haos-runner-deploy haos-vm-check haos-reverse-proxy-enable haos-reverse-proxy-check gateway-cutover-stage-gate pbs-preflight pbs-stage-gate pbs-proof-check pbs-restore-proof pbs-runner-deploy pbs-vm-check pbs-guest-check pbs-iso-stage pbs-usb-interim-prepare proxmox-local-backup-deploy proxmox-local-backup-check portable-backup-usb-prepare portable-backup-usb-autoprepare portable-backup-usb-fill portable-backup-usb-check portable-backup-usb-run security-baseline-check business-hardening-deploy easybox-browser-probe easybox-authenticated-overview capacity-review plan-progress surface-go-check surface-go-bootstrap surface-go-root-sleep-harden media-fetch media-devices surface-iso-fetch surface-usb-prepare usb-stick-roles-prepare favorites-usb-prepare rpi-sd-flash rpi-firstboot-seed rpi-radio-bootstrap rpi-radio-media-prepare rpi-radio-media-check rpi-radio-usb-integrate rpi-radio-usb-check rpi-radio-network-integrate rpi-radio-network-check rpi-azuracast-host-prepare rpi-azuracast-deploy rpi-radio-check rpi-radio-integration-check rpi-azuracast-check rpi-azuracast-tune rpi-resource-check radio-ops-check anydesk-zenbook-install zenbook-remote-check remote-only-check operator-todos ops-brief adguard-pilot-check tailscale-split-dns-check inventory-resolution-check inventory-unknown-report paperless-nextcloud-bridge-deploy paperless-nextcloud-bridge-check
+ 
+ refresh-context:
+ 	./scripts/refresh_live_context.sh
+@@ -55,6 +55,9 @@ ansible-syntax-check-rpi-radio-media:
+ ansible-syntax-check-rpi-radio-usb:
+ 	ansible-playbook --syntax-check ansible/playbooks/integrate_raspberry_pi_radio_usb_music.yml
+ 
++ansible-syntax-check-rpi-radio-network:
++	ansible-playbook --syntax-check ansible/playbooks/integrate_raspberry_pi_radio_network_music.yml
++
+ ansible-syntax-check-rpi-azuracast-host:
+ 	ansible-playbook --syntax-check ansible/playbooks/prepare_raspberry_pi_azuracast_host.yml
+ 
+@@ -130,6 +133,9 @@ toolbox-mobile-firewall-deploy:
+ toolbox-media-deploy:
+ 	ansible-playbook ansible/playbooks/deploy_toolbox_media_server.yml
+ 
++toolbox-media-storage-integrate:
++	ansible-playbook ansible/playbooks/integrate_toolbox_media_storage.yml
++
+ toolbox-media-check:
+ 	./scripts/toolbox_media_server_check.sh
+ 
+@@ -145,6 +151,9 @@ toolbox-media-sync-check:
+ toolbox-media-bootstrap-progress:
+ 	./scripts/toolbox_media_bootstrap_progress.sh
+ 
++media-migration-status:
++	./scripts/media_migration_status.sh
++
+ toolbox-music-library-report:
+ 	./scripts/toolbox_music_library_report.sh
+ 
+@@ -238,9 +247,15 @@ rpi-radio-media-check:
+ rpi-radio-usb-integrate:
+ 	ansible-playbook ansible/playbooks/integrate_raspberry_pi_radio_usb_music.yml
+ 
++rpi-radio-network-integrate:
++	ansible-playbook ansible/playbooks/integrate_raspberry_pi_radio_network_music.yml
++
+ rpi-radio-usb-check:
+ 	./scripts/rpi_radio_usb_music_check.sh
+ 
++rpi-radio-network-check:
++	./scripts/rpi_radio_network_music_check.sh
++
+ rpi-azuracast-host-prepare:
+ 	ansible-playbook ansible/playbooks/prepare_raspberry_pi_azuracast_host.yml
+ 
+diff --git a/NETWORK_INVENTORY.md b/NETWORK_INVENTORY.md
+index 5d9b690..dfc491c 100644
+--- a/NETWORK_INVENTORY.md
++++ b/NETWORK_INVENTORY.md
+@@ -119,8 +119,8 @@
+ | Service | Planned Role | Current State | Activation Gate |
+ | --- | --- | --- | --- |
+ | `AdGuard Home` | internal DNS filtering, local upstream for `hs27.internal`, opt-in resolver for trusted clients | active in opt-in mode on `CT 100`; not LAN default DNS | keep on pilot clients first; promote to primary LAN DNS only after controlled DHCP ownership, lease cleanup and rollback proof |
+-| `Storage Node (CT 110)` | single source of truth NFS/SMB data node for documents + media | planned, not active | deploy CT110, export `/mnt/data/documents` and `/mnt/data/media`, then mount in Nextcloud, Paperless, Jellyfin, and radio-node |
+-| `AzuraCast radio node` | dedicated internal radio control plane on a Raspberry Pi 4 behind the internal frontdoor | active on `radio-node` (`192.168.2.155`, `100.64.23.77`); `radio.hs27.internal` now proxies to the Pi, the login/API path is live and the first station/media layout are the remaining steps | create the first station, apply the low-resource station profile and then bind the final `RadioLibrary` / `RadioAssets` media path |
++| `Storage Node (CT 110)` | single source of truth SMB/NFS data node for documents + media | active on `192.168.2.30`, client integration still open | mount `\\192.168.2.30\Media\yourparty_Libary` and the shared documents path cleanly into Nextcloud, Paperless, Jellyfin, and radio-node |
++| `AzuraCast radio node` | dedicated internal radio control plane on a Raspberry Pi 4 behind the internal frontdoor | active on `radio-node` (`192.168.1.16`, `100.64.23.77`) during the current UCG Ultra test segment; default gateway is `192.168.1.1`, `radio.hs27.internal` still proxies to the Pi, and SMB-backed media remains live | verify DNS and routing on the UCG test segment before broader rollout, then keep the Pi as the first controlled cutover client |
+ | `Proxmox Backup Server (VM 240)` | durable backup control plane for Proxmox jobs, retention and recurring restore drills | active as interim PBS-v1 on `192.168.2.25`; datastore `hs27-interim` is active on USB-backed storage, scheduled jobs are live, and first proof-backup plus restore drill are verified | keep the `64GB` USB attached, continue recurring restore drills, and later migrate to larger dedicated PBS storage |
+ | `Home Assistant OS (VM 210)` | smart-home control plane with Supervisor, Add-ons and later USB passthrough | active on stable in-guest address `192.168.2.24`; internal frontdoor `ha.hs27.internal` now live via `CT 100` | keep reverse-proxy trust and interim local backup coverage verified; add USB passthrough only once adapters are physically present |
+ | `Public Edge` | later public reverse-proxy layer for selected endpoints with TLS and monitoring | planned, not active | activate only after UCG-grade firewall control, final inventory/zones, proven backups, and documented domain/DNS/TLS/auth/monitoring/rollback |
+diff --git a/PBS_VM_240_SETUP_PLAN.md b/PBS_VM_240_SETUP_PLAN.md
+index eab7066..f5b1341 100644
+--- a/PBS_VM_240_SETUP_PLAN.md
++++ b/PBS_VM_240_SETUP_PLAN.md
+@@ -50,7 +50,7 @@ Prepare a controlled Proxmox Backup Server rollout path without weakening the cu
+   - Proxmox storage `pbs-interim` is already registered and active against `hs27-interim`
+   - daily backup job `hs27-pbs-interim-daily` exists for `200,210,220,230`
+   - retention is intentionally constrained for the `64GB` stick:
+-    - schedule `02:40,14:40`
++  - schedule `02:40`
+     - `keep-daily=2`
+     - `keep-weekly=1`
+     - `keep-monthly=1`
+diff --git a/SHARED_STORAGE_ARCHITECTURE_PLAN.md b/SHARED_STORAGE_ARCHITECTURE_PLAN.md
+index 27ba237..181f796 100644
+--- a/SHARED_STORAGE_ARCHITECTURE_PLAN.md
++++ b/SHARED_STORAGE_ARCHITECTURE_PLAN.md
+@@ -1,79 +1,70 @@
+-# Zentrales Storage-Architektur Konzept (Single Source of Truth)
++# Shared Storage Architecture Plan
+ 
+-## Zielsetzung
+-Abschaffung von doppelter Datenhaltung. Die Homeserver 2027 Infrastruktur benötigt eine vernetzte "Single Source of Truth" (SST) für Dokumente und Medien, bei der eine einzige Datei auf dem Datenträger liegt und von allen berechtigten Systemen konsumiert wird.
++## Ziel
+ 
+-## Das Problem der Isolation
+-Aktuell leben die Dienste in ihren eigenen VMs/LXCs:
+-- **Nextcloud (VM 200)** hat sein eigenes Root-Filesystem.
+-- **Paperless (VM 230)** hat sein eigenes PDF-Archiv verschlossen.
+-- **Jellyfin (CT 100)** und **AzuraCast (Radio Pi)** kopieren Medien über `rsync` hin und her.
++Eine zentrale Dateibasis fuer Dokumente und Medien. Keine dauerhafte Parallelhaltung mehr zwischen Pi, Toolbox, Nextcloud und Paperless.
+ 
+-## Best Practice Lösung: Der "Data Node" (LXC 110)
+-Anstatt NFS/Samba unsauber direkt auf dem Proxmox-Hypervisor zu installieren, kapseln wir unseren zentralen Datenpool in einem minimalistischen Container (File-Server).
++## Verbindlicher Standard
+ 
+-- **ID**: `CT 110 data-node`
+-- **OS**: Debian 12 (bookworm)
+-- **Storage**: Eine große virtuelle Disk (z. B. auf `local-lvm`), die später einfach auf SSDs oder ein ZFS-Mirror migriert werden kann.
+-- **Protokoll**:
+-  - `NFSv4` (extrem schnell, nativ für Linux, ideal für VMs)
+-  - `Samba / SMB` (optional, falls ein direkter Windows-Mount im LAN gewünscht ist)
++- Storage-Node: `CT 110 storage-node`
++- Host/IP: `192.168.2.30`
++- Medien-Share: `\192.168.2.30\Media`
++- kanonische Musikbibliothek: `\192.168.2.30\Media\yourparty_Libary`
++- Dokumenten-Share: `\192.168.2.30\Documents`
++- Protokoll-Standard fuer Clients: `SMB/CIFS`
++- `NFS` bleibt optional fuer spaetere Linux-only Optimierungen, ist aber nicht mehr der Prim?rpfad fuer das Radiosystem.
+ 
+----
++## Warum SMB hier der richtige Prim?rpfad ist
+ 
+-## Umsetzung: Dokumenten-Verschmelzung
++- Windows-Clients brauchen einen nativen `UNC`-Pfad.
++- AzuraCast auf dem Pi und Jellyfin auf der Toolbox koennen denselben Share per `CIFS` mounten.
++- Der Storage-Node ist bereits live und die Shares sind angelegt.
++- Damit gibt es einen klaren gemeinsamen Zielort statt USB-Zwischenpfad plus Toolbox-Bootstrap-Kopie.
+ 
+-**Ziel:** Paperless-Archiv = Nextcloud-Ordner
++## Zielbild je Dienst
+ 
+-1. Auf `CT 110` wird eine NFS-Freigabe `/mnt/data/documents` erstellt.
+-2. **Paperless (VM 230)** bindet dies per `/etc/fstab` (NFS) als sein `media/archive` Verzeichnis ein. Jedes OCR-verarbeitete PDF landet sofort auf dem NFS.
+-3. **Nextcloud (VM 200)** bindet **exakt diesen** NFS-Ordner ebenfalls schreibgeschützt (oder als Admin mit vollen Rechten) als "Externen Speicher" (Typ: Lokal gemounteter NFS) unter `/Freigaben/Paperless-Archiv` ein.
+-4. **Odoo (VM 220)** kann optional Dokumente über das Nextcloud-WebDAV reingeben oder selbst lesend auf das NFS zugreifen.
++### Jellyfin (`CT 100 toolbox`)
++- nutzt wegen unprivilegiertem LXC keinen direkten Container-CIFS-Mount
++- mountet `//192.168.2.30/Media` hostseitig auf Proxmox nach `/mnt/hs27-media`
++- bindet diesen Host-Mount per `mp0` nach `/srv/media-library/music-network` in `CT 100` ein
++- nutzt als kanonische Musikquelle `/srv/media-library/music-network/yourparty_Libary`
++- beh?lt lokale Arbeitsverzeichnisse fuer `curated`, `favorites`, `inbox` und `quarantine`
+ 
+-**Vorteile:** Nextcloud-User müssen nicht in Paperless springen, um alte PDFs durchzusuchen. Alles ist native im Dateimanager.
++### AzuraCast (`raspberry_pi_radio`)
++- mountet `//192.168.2.30/Media` nach `/srv/radio-library/music-network`
++- bindet `/srv/radio-library/music-network/yourparty_Libary` in die Station `frawo-funk`
++- der alte USB-Pfad ist nur noch Legacy-Fallback, nicht mehr produktiver Zielpfad
+ 
+----
++### Nextcloud / Paperless
++- nutzen `\192.168.2.30\Documents` als gemeinsamen Dokumentenpfad
++- operative Migration bleibt ein eigener Schritt, aber die Zielarchitektur ist damit klar
+ 
+-## Umsetzung: Medien-Verschmelzung
++## Verbindliche Ablagestruktur
+ 
+-**Ziel:** Raspberry Pi Radio = Jellyfin Bibliothek = 1 zentraler Ort
++### Media
++- `\192.168.2.30\Media\yourparty_Libary\clean`
++- `\192.168.2.30\Media\yourparty_Libary\curated`
++- `\192.168.2.30\Media\yourparty_Libary\favorites`
++- `\192.168.2.30\Media\yourparty_Libary\incoming`
++- `\192.168.2.30\Media\yourparty_Libary\quarantine`
+ 
+-1. Auf `CT 110` wird eine NFS-Freigabe `/mnt/data/media` erstellt.
+-2. Das Master-Verzeichnis (`/music`, `/shows`, `/movies`) liegt zentral hier.
+-3. **Jellyfin (CT 100)** bindet `/mnt/data/media/music` über einen Proxmox Bind-Mount (bei LXC zu LXC) oder über NFS ins eigene `/srv/media-library/music` ein.
+-4. **AzuraCast Pi (via Tailscale)** bindet sich per Tailnet-IP `100.x.x.x` das NFS-Laufwerk als `/var/azuracast/stations/frawo_funk/media/network` ein.
+-5. Die teure "Rsync-Kopie" entfällt. Wenn ein neues Lied hochgeladen wird, haben BEIDE Seiten es in derselben Sekunde abspielbereit im Index.
++### Documents
++- `\192.168.2.30\Documents\paperless-archive`
++- `\192.168.2.30\Documents\nextcloud-drop`
++- `\192.168.2.30\Documents\shared`
+ 
+----
++## Operativer Cutover
+ 
+-## Freigaben-Standard (NFS/SMB)
++1. Storage-Node als kanonischen Dateipfad festziehen.
++2. Toolbox auf hostseitigen SMB-Mount plus Bind-Mount umstellen.
++3. Raspberry Pi auf SMB-Mount umstellen.
++4. Jellyfin- und AzuraCast-Pfade gegen denselben Share pruefen.
++5. Danach alte USB-/Bootstrap-/Rsync-Zwischenpfade aus dem produktiven Betrieb nehmen.
+ 
+-### NFS (Default)
+-- Exports: `/mnt/data/documents`, `/mnt/data/media`
+-- Clients: `192.168.2.0/24` und `100.64.0.0/10` (Tailscale)
+-- Optionen: `rw,sync,no_subtree_check,root_squash`
+-- Mount-Beispiele (NFSv4):
+-  - `storage-node:/mnt/data/documents` -> `/media/archive`
+-  - `storage-node:/mnt/data/media` -> `/srv/media-library`
++## Done-Kriterien
+ 
+-### SMB (nur falls Windows-LAN-Clients zwingend noetig)
+-- Standard: deaktiviert
+-- Wenn benoetigt: SMB nur auf dem Storage-Node, nur LAN, kein Gast, kein Internet, klare Share-Namen
+-
+-## Checkliste für Codex (Abendschicht)
+-
+-Codex sollte heute Abend folgende Schritte nahtlos abarbeiten:
+-
+-- [ ] **1. Data Node Provisionierung:**
+-  Erstellen eines neuen Ansible-Playbooks (`deploy_storage_node.yml`), welches einen neuen Debian LXC Container `CT 110` (Name: `storage`) hochzieht.
+-- [ ] **2. NFS-Server Konfiguration:**
+-  Den LXC als NFSv4 Server einrichten (`apt install nfs-kernel-server`) und `/etc/exports` definieren (Absicherung via IP-Subnet `192.168.2.0/24` und Tailscale-Subnet).
+-- [ ] **3. Paperless Migration:**
+-  Das aktuelle Archiv temporär sichern, `/media/archive` auf den NFS-Mount umbiegen und Dateien rüberschieben.
+-- [ ] **4. Nextcloud `fstab`:**
+-  Das NFS-Share in der Nextcloud-VM mounten und den External Storage in der Nextcloud config via OCC-Command registrieren.
+-- [ ] **5. Any-Sync Node (Anytype):**
+-  Zusätzlich das Anytype Backbone als Docker Container (any-sync) in `CT 100 toolbox` oder `VM 200` vorbereiten, um P2P Offline-Sync zu garantieren.
+-
+----
+-*Dieser Blueprint orientiert sich strikt an Proxmox Separation of Concerns (SoC) und vermeidet Host-OS Pollution.*
++- `\192.168.2.30\Media\yourparty_Libary` ist les- und schreibbar
++- Jellyfin sieht Dateien ueber den SMB-Mount
++- AzuraCast sieht dieselben Dateien ueber den SMB-Mount
++- `frawo-funk` importiert aus dem SMB-Pfad
++- der produktive Betrieb haengt nicht mehr an `music-usb` oder `bootstrap-radio-usb`
+diff --git a/ansible/inventory/host_vars/pbs.yml b/ansible/inventory/host_vars/pbs.yml
+index e88c713..efc0450 100644
+--- a/ansible/inventory/host_vars/pbs.yml
++++ b/ansible/inventory/host_vars/pbs.yml
+@@ -6,7 +6,9 @@ pbs_datastore_mountpoint: /mnt/datastore-interim
+ pbs_datastore_name: hs27-interim
+ pbs_interim_mode: true
+ pbs_interim_backing_storage: pbs-usb
++pbs_interim_backup_schedule: "02:40"
+ pbs_interim_notes:
+   - Interim PBS-v1 uses the attached 64GB USB stick through Proxmox storage `pbs-usb`.
+   - VM 240 has a 32G system disk and a 40G data disk.
++  - The recurring PBS backup job runs only at `02:40`; the daytime `14:40` run was removed on 2026-03-25.
+   - Final larger PBS storage is still a later architecture step.
+diff --git a/ansible/inventory/host_vars/surface_go_frontend.yml b/ansible/inventory/host_vars/surface_go_frontend.yml
+index a14feb3..4646bad 100644
+--- a/ansible/inventory/host_vars/surface_go_frontend.yml
++++ b/ansible/inventory/host_vars/surface_go_frontend.yml
+@@ -9,7 +9,6 @@ surface_go_portal_http_port: 17827
+ surface_go_kiosk_start_url: http://127.0.0.1:17827
+ surface_go_browser_binary: /usr/bin/firefox
+ surface_go_launcher_script: /usr/local/bin/homeserver2027-frawo-control
+-surface_go_odoo_admin_url: http://odoo.hs27.internal/web/login
+ surface_go_firefox_package: firefox
+ surface_go_text_scaling_factor: 1.25
+ surface_go_enable_screen_keyboard: true
+@@ -17,6 +16,21 @@ surface_go_enable_toolkit_accessibility: true
+ surface_go_idle_delay_seconds: 0
+ surface_go_sleep_inactive_ac_type: nothing
+ surface_go_sleep_inactive_battery_type: nothing
++surface_go_nextcloud_url: http://cloud.hs27.internal/login
++surface_go_nextcloud_inbox_url: http://cloud.hs27.internal/apps/files/?dir=/Paperless/Eingang
++surface_go_nextcloud_archive_url: http://cloud.hs27.internal/apps/files/?dir=/Paperless/Archiv
++surface_go_paperless_url: http://paperless.hs27.internal/accounts/login/
++surface_go_media_url: http://media.hs27.internal
++surface_go_radio_player_url: http://radio.hs27.internal/public/frawo-funk
++surface_go_radio_control_url: http://radio.hs27.internal/login
++surface_go_odoo_url: http://odoo.hs27.internal/web/login
++surface_go_home_assistant_url: http://ha.hs27.internal
++surface_go_anydesk_enabled: true
++surface_go_anydesk_package_url: https://deb.anydesk.com/pool/main/a/anydesk/anydesk_8.0.0_amd64.deb
++surface_go_anydesk_package_local_path: /opt/homeserver2027/install-media/remote/anydesk_8.0.0_amd64.deb
++surface_go_anydesk_binary: /usr/bin/anydesk
++surface_go_anydesk_service_name: anydesk
++surface_go_studiopc_anydesk_id: "1559042020"
+ surface_go_tailscale_repo_key_url: https://pkgs.tailscale.com/stable/ubuntu/noble.noarmor.gpg
+ surface_go_tailscale_repo_list_url: https://pkgs.tailscale.com/stable/ubuntu/noble.tailscale-keyring.list
+ surface_go_required_packages:
+@@ -39,37 +53,130 @@ surface_go_absent_packages:
+ surface_go_portal_links:
+   - label: Home Assistant
+     group: Betrieb
+-    hint: Automationen, Geräte und Haushalts-Dashboards
+-    url: http://ha.hs27.internal
++    hint: Automationen, Geraete und Haushalts-Dashboards
++    url: "{{ surface_go_home_assistant_url }}"
+   - label: Nextcloud
+     group: Arbeit
+-    hint: Dateien und Zusammenarbeit (Hauptmenü)
+-    url: http://cloud.hs27.internal/login
++    hint: Dateien und Zusammenarbeit
++    url: "{{ surface_go_nextcloud_url }}"
+   - label: Nextcloud (Eingang)
+     group: Dokumente
+-    hint: Scans und PDFs hier hochladen für automatisches Archiv
+-    url: http://cloud.hs27.internal/apps/files/?dir=/Paperless/Eingang
++    hint: Scans und PDFs hier hochladen fuer automatisches Archiv
++    url: "{{ surface_go_nextcloud_inbox_url }}"
+   - label: Paperless (Archiv)
+     group: Dokumente
+     hint: Zugriff auf die im Archiv gespeicherten PDF-Originale
+-    url: http://cloud.hs27.internal/apps/files/?dir=/Paperless/Archiv
++    url: "{{ surface_go_nextcloud_archive_url }}"
+   - label: Dokumenten-Suche
+     group: Dokumente
+     hint: Paperless-Volltextsuche und OCR-Archiv
+-    url: http://paperless.hs27.internal/accounts/login/
++    url: "{{ surface_go_paperless_url }}"
+   - label: Media
+     group: Medien
+-    hint: Jellyfin für Filme, Serien und Musik
+-    url: http://media.hs27.internal
++    hint: Jellyfin fuer Filme, Serien und Musik
++    url: "{{ surface_go_media_url }}"
+   - label: Radio Player
+     group: Medien
+-    hint: Touch-optimierte Ansicht für den Live-Sender
+-    url: http://radio.hs27.internal/public/frawo-funk
+-  - label: Radio Control
+-    group: Medien
+-    hint: AzuraCast Sender- und Playlist-Steuerung
+-    url: http://radio.hs27.internal/login
++    hint: Touch-optimierte Ansicht fuer den Live-Sender
++    url: "{{ surface_go_radio_player_url }}"
+   - label: Odoo
+     group: Arbeit
+     hint: ERP und Business-Login
+-    url: http://odoo.hs27.internal/web/login
++    url: "{{ surface_go_odoo_url }}"
++surface_go_kiosk_desktop_launchers:
++  - name: FRAWO Control
++    comment: Oeffnet das gemeinsame FRAWO-Frontend
++    exec: "{{ surface_go_launcher_script }} --kiosk"
++    icon: web-browser
++    categories: Network;WebBrowser;
++  - name: Bildschirmtastatur
++    comment: Bildschirmtastatur fuer Touch-Bedienung
++    exec: "{{ surface_go_keyboard_launcher_script }}"
++    icon: input-keyboard
++    categories: Utility;Accessibility;
++  - name: Nextcloud
++    comment: Dateien und Zusammenarbeit
++    exec: "{{ surface_go_launcher_script }} {{ surface_go_nextcloud_url }}"
++    icon: nextcloud
++    categories: Office;Network;WebBrowser;
++  - name: Nextcloud Eingang
++    comment: Dokumente in den Paperless-Eingang hochladen
++    exec: "{{ surface_go_launcher_script }} {{ surface_go_nextcloud_inbox_url }}"
++    icon: folder-download
++    categories: Office;Network;WebBrowser;
++  - name: Paperless Suche
++    comment: Dokumentensuche und Archiv
++    exec: "{{ surface_go_launcher_script }} {{ surface_go_paperless_url }}"
++    icon: document-viewer
++    categories: Office;Network;WebBrowser;
++  - name: Media
++    comment: Jellyfin fuer Filme, Serien und Musik
++    exec: "{{ surface_go_launcher_script }} {{ surface_go_media_url }}"
++    icon: multimedia-video-player
++    categories: AudioVideo;Network;WebBrowser;
++  - name: Radio Player
++    comment: Touch-optimierter FraWo-Funk Player
++    exec: "{{ surface_go_launcher_script }} {{ surface_go_radio_player_url }}"
++    icon: radio
++    categories: AudioVideo;Network;WebBrowser;
++  - name: Odoo
++    comment: Odoo Login fuer die produktive Nutzung
++    exec: "{{ surface_go_launcher_script }} {{ surface_go_odoo_url }}"
++    icon: applications-office
++    categories: Office;Network;WebBrowser;
++surface_go_admin_desktop_launchers:
++  - name: FRAWO Control
++    comment: Oeffnet das gemeinsame FRAWO-Frontend
++    exec: "{{ surface_go_launcher_script }} {{ surface_go_kiosk_start_url }}"
++    icon: web-browser
++    categories: Network;WebBrowser;
++  - name: Bildschirmtastatur
++    comment: Bildschirmtastatur fuer Touch-Bedienung
++    exec: "{{ surface_go_keyboard_launcher_script }}"
++    icon: input-keyboard
++    categories: Utility;Accessibility;
++  - name: Nextcloud
++    comment: Dateien und Zusammenarbeit
++    exec: "{{ surface_go_launcher_script }} {{ surface_go_nextcloud_url }}"
++    icon: nextcloud
++    categories: Office;Network;WebBrowser;
++  - name: Nextcloud Eingang
++    comment: Dokumente in den Paperless-Eingang hochladen
++    exec: "{{ surface_go_launcher_script }} {{ surface_go_nextcloud_inbox_url }}"
++    icon: folder-download
++    categories: Office;Network;WebBrowser;
++  - name: Paperless Suche
++    comment: Dokumentensuche und Archiv
++    exec: "{{ surface_go_launcher_script }} {{ surface_go_paperless_url }}"
++    icon: document-viewer
++    categories: Office;Network;WebBrowser;
++  - name: Media
++    comment: Jellyfin fuer Filme, Serien und Musik
++    exec: "{{ surface_go_launcher_script }} {{ surface_go_media_url }}"
++    icon: multimedia-video-player
++    categories: AudioVideo;Network;WebBrowser;
++  - name: Radio Player
++    comment: Touch-optimierter FraWo-Funk Player
++    exec: "{{ surface_go_launcher_script }} {{ surface_go_radio_player_url }}"
++    icon: radio
++    categories: AudioVideo;Network;WebBrowser;
++  - name: Radio Control
++    comment: AzuraCast Steuerung
++    exec: "{{ surface_go_launcher_script }} {{ surface_go_radio_control_url }}"
++    icon: mixer
++    categories: AudioVideo;Network;WebBrowser;
++  - name: Odoo Admin
++    comment: Oeffnet die Odoo-Anmeldung
++    exec: "{{ surface_go_launcher_script }} {{ surface_go_odoo_url }}"
++    icon: applications-office
++    categories: Office;Network;WebBrowser;
++  - name: AnyDesk
++    comment: Startet die Remote-Support-Anwendung
++    exec: "{{ surface_go_anydesk_binary }}"
++    icon: anydesk
++    categories: Network;RemoteAccess;
++  - name: StudioPC Remote
++    comment: Remote-Zugriff auf den Studio-PC ueber AnyDesk
++    exec: "{{ surface_go_anydesk_binary }} {{ surface_go_studiopc_anydesk_id }}"
++    icon: computer
++    categories: Network;RemoteAccess;
+\ No newline at end of file
+diff --git a/ansible/inventory/host_vars/toolbox.yml b/ansible/inventory/host_vars/toolbox.yml
+index d0eb48a..8914bef 100644
+--- a/ansible/inventory/host_vars/toolbox.yml
++++ b/ansible/inventory/host_vars/toolbox.yml
+@@ -162,6 +162,15 @@ toolbox_media_compose_template: stacks/toolbox-media/docker-compose.yml.j2
+ toolbox_media_stack_dir: "{{ homeserver_compose_root }}/{{ toolbox_media_stack_name }}"
+ toolbox_media_library_root: /srv/media-library
+ toolbox_media_config_root: /srv/jellyfin
++toolbox_lxc_vmid: 100
++toolbox_media_share: //192.168.2.30/Media
++toolbox_media_mountpoint: /srv/media-library/music-network
++toolbox_media_subdir: yourparty_Libary
++toolbox_media_credentials_file: /etc/hs27/storage-node-media.credentials
++toolbox_media_mount_opts: rw,vers=3.1.1,iocharset=utf8,credentials=/etc/hs27/storage-node-media.credentials,nofail,x-systemd.automount,x-systemd.device-timeout=10s
++toolbox_media_proxmox_mountpoint: /mnt/hs27-media
++toolbox_media_proxmox_credentials_file: /root/.smb/storage-node-media.credentials
++toolbox_media_bind_mount_slot: mp0
+ toolbox_media_library_dirs:
+   - movies
+   - shows
+@@ -170,7 +179,7 @@ toolbox_media_library_dirs:
+ toolbox_media_curation_dirs:
+   - movies/inbox
+   - shows/inbox
+-  - music/bootstrap-radio-usb
++  - music-network
+   - music/curated
+   - music/favorites
+   - music/inbox
+@@ -179,8 +188,8 @@ toolbox_media_curation_dirs:
+ toolbox_media_radio_sync_key_path: /root/.ssh/homeserver2027_media_sync
+ toolbox_media_radio_sync_source_user: wolf
+ toolbox_media_radio_sync_source_host: 100.64.23.77
+-toolbox_media_radio_sync_source_path: /srv/radio-library/music-usb/yourparty.radio/
+-toolbox_media_radio_sync_target_path: /srv/media-library/music/bootstrap-radio-usb/
++toolbox_media_radio_sync_source_path: /srv/radio-library/music-network/yourparty_Libary/
++toolbox_media_radio_sync_target_path: /srv/media-library/music-network/yourparty_Libary/
+ toolbox_media_radio_sync_log_path: /var/log/homeserver2027-media-sync.log
+ toolbox_media_radio_sync_exclude_file: /etc/homeserver2027/media-sync-excludes.txt
+ toolbox_media_quarantine_root: /srv/media-library/quarantine/bootstrap-review
+diff --git a/ansible/playbooks/bootstrap_surface_go_frontend.yml b/ansible/playbooks/bootstrap_surface_go_frontend.yml
+index 1e099c7..c9cc0d3 100644
+--- a/ansible/playbooks/bootstrap_surface_go_frontend.yml
++++ b/ansible/playbooks/bootstrap_surface_go_frontend.yml
+@@ -71,13 +71,43 @@
+       changed_when: surface_go_sudo_remove.rc == 0
+       failed_when: surface_go_sudo_remove.rc not in [0, 3]
+ 
+-    - name: Ensure portal directory exists
++    - name: Ensure required frontend directories exist
+       ansible.builtin.file:
+-        path: "{{ surface_go_portal_dir }}"
++        path: "{{ item.path }}"
+         state: directory
+-        owner: "{{ surface_go_kiosk_user }}"
+-        group: "{{ surface_go_kiosk_user }}"
+-        mode: "0755"
++        owner: "{{ item.owner }}"
++        group: "{{ item.group }}"
++        mode: "{{ item.mode | default('0755') }}"
++      loop:
++        - path: "{{ surface_go_portal_dir }}"
++          owner: "{{ surface_go_kiosk_user }}"
++          group: "{{ surface_go_kiosk_user }}"
++        - path: "/home/{{ surface_go_kiosk_user }}/.config/autostart"
++          owner: "{{ surface_go_kiosk_user }}"
++          group: "{{ surface_go_kiosk_user }}"
++        - path: "/home/{{ surface_go_kiosk_user }}/.local/share/applications"
++          owner: "{{ surface_go_kiosk_user }}"
++          group: "{{ surface_go_kiosk_user }}"
++        - path: "/home/{{ surface_go_kiosk_user }}/Desktop"
++          owner: "{{ surface_go_kiosk_user }}"
++          group: "{{ surface_go_kiosk_user }}"
++        - path: "/home/{{ surface_go_admin_user }}/Desktop"
++          owner: "{{ surface_go_admin_user }}"
++          group: "{{ surface_go_admin_user }}"
++        - path: "/home/{{ surface_go_kiosk_user }}/.config/gnome-kiosk-script"
++          owner: "{{ surface_go_kiosk_user }}"
++          group: "{{ surface_go_kiosk_user }}"
++        - path: /etc/dconf/db/local.d
++          owner: root
++          group: root
++        - path: /etc/ssh/sshd_config.d
++          owner: root
++          group: root
++        - path: /opt/homeserver2027/install-media/remote
++          owner: root
++          group: root
++      loop_control:
++        label: "{{ item.path }}"
+ 
+     - name: Install local frontend portal
+       ansible.builtin.template:
+@@ -112,53 +142,6 @@
+         group: root
+         mode: "0755"
+ 
+-    - name: Ensure local portal service is enabled
+-      ansible.builtin.systemd:
+-        name: homeserver2027-surface-portal.service
+-        enabled: true
+-        state: restarted
+-        daemon_reload: true
+-
+-    - name: Ensure kiosk autostart directory exists
+-      ansible.builtin.file:
+-        path: "/home/{{ surface_go_kiosk_user }}/.config/autostart"
+-        state: directory
+-        owner: "{{ surface_go_kiosk_user }}"
+-        group: "{{ surface_go_kiosk_user }}"
+-        mode: "0755"
+-
+-    - name: Ensure kiosk applications directory exists
+-      ansible.builtin.file:
+-        path: "/home/{{ surface_go_kiosk_user }}/.local/share/applications"
+-        state: directory
+-        owner: "{{ surface_go_kiosk_user }}"
+-        group: "{{ surface_go_kiosk_user }}"
+-        mode: "0755"
+-
+-    - name: Ensure kiosk desktop directory exists
+-      ansible.builtin.file:
+-        path: "/home/{{ surface_go_kiosk_user }}/Desktop"
+-        state: directory
+-        owner: "{{ surface_go_kiosk_user }}"
+-        group: "{{ surface_go_kiosk_user }}"
+-        mode: "0755"
+-
+-    - name: Ensure admin desktop directory exists
+-      ansible.builtin.file:
+-        path: "/home/{{ surface_go_admin_user }}/Desktop"
+-        state: directory
+-        owner: "{{ surface_go_admin_user }}"
+-        group: "{{ surface_go_admin_user }}"
+-        mode: "0755"
+-
+-    - name: Ensure dconf local defaults directory exists
+-      ansible.builtin.file:
+-        path: /etc/dconf/db/local.d
+-        state: directory
+-        owner: root
+-        group: root
+-        mode: "0755"
+-
+     - name: Install touch-friendly GNOME defaults
+       ansible.builtin.template:
+         src: "{{ playbook_dir }}/../templates/frontend/surface-go-dconf.ini.j2"
+@@ -168,14 +151,6 @@
+         mode: "0644"
+       notify: update dconf
+ 
+-    - name: Ensure kiosk gnome-kiosk-script directory exists
+-      ansible.builtin.file:
+-        path: "/home/{{ surface_go_kiosk_user }}/.config/gnome-kiosk-script"
+-        state: directory
+-        owner: "{{ surface_go_kiosk_user }}"
+-        group: "{{ surface_go_kiosk_user }}"
+-        mode: "0755"
+-
+     - name: Install gnome-kiosk launch script
+       ansible.builtin.template:
+         src: "{{ playbook_dir }}/../templates/frontend/homeserver2027-kiosk-script.sh.j2"
+@@ -186,202 +161,55 @@
+ 
+     - name: Install kiosk application launcher
+       ansible.builtin.template:
+-        src: "{{ playbook_dir }}/../templates/frontend/homeserver2027-kiosk.desktop.j2"
++        src: "{{ playbook_dir }}/../templates/frontend/surface-go-launcher.desktop.j2"
+         dest: "/home/{{ surface_go_kiosk_user }}/.local/share/applications/frawo-control.desktop"
+         owner: "{{ surface_go_kiosk_user }}"
+         group: "{{ surface_go_kiosk_user }}"
+         mode: "0755"
++      vars:
++        item:
++          name: FRAWO Control
++          comment: Oeffnet das gemeinsame FRAWO-Frontend
++          exec: "{{ surface_go_launcher_script }} --kiosk"
++          icon: web-browser
++          categories: Network;WebBrowser;
+ 
+-    - name: Install kiosk desktop launcher
++    - name: Install kiosk desktop launchers
+       ansible.builtin.template:
+-        src: "{{ playbook_dir }}/../templates/frontend/homeserver2027-kiosk.desktop.j2"
+-        dest: "/home/{{ surface_go_kiosk_user }}/Desktop/FRAWO Control.desktop"
++        src: "{{ playbook_dir }}/../templates/frontend/surface-go-launcher.desktop.j2"
++        dest: "/home/{{ surface_go_kiosk_user }}/Desktop/{{ item.name | regex_replace('[^A-Za-z0-9._ -]', '') }}.desktop"
+         owner: "{{ surface_go_kiosk_user }}"
+         group: "{{ surface_go_kiosk_user }}"
+         mode: "0755"
++      loop: "{{ surface_go_kiosk_desktop_launchers }}"
++      loop_control:
++        label: "{{ item.name }}"
+ 
+-    - name: Install admin desktop launcher
+-      ansible.builtin.template:
+-        src: "{{ playbook_dir }}/../templates/frontend/homeserver2027-kiosk.desktop.j2"
+-        dest: "/home/{{ surface_go_admin_user }}/Desktop/FRAWO-Control.desktop"
+-        owner: "{{ surface_go_admin_user }}"
+-        group: "{{ surface_go_admin_user }}"
+-        mode: "0755"
+-
+-    - name: Install keyboard launcher on kiosk desktop
+-      ansible.builtin.template:
+-        src: "{{ playbook_dir }}/../templates/frontend/surface-go-keyboard.desktop.j2"
+-        dest: "/home/{{ surface_go_kiosk_user }}/Desktop/Bildschirmtastatur.desktop"
+-        owner: "{{ surface_go_kiosk_user }}"
+-        group: "{{ surface_go_kiosk_user }}"
+-        mode: "0755"
+-
+-    - name: Install Odoo admin launcher on kiosk desktop
+-      ansible.builtin.template:
+-        src: "{{ playbook_dir }}/../templates/frontend/surface-go-odoo-admin.desktop.j2"
+-        dest: "/home/{{ surface_go_kiosk_user }}/Desktop/Odoo-Admin.desktop"
+-        owner: "{{ surface_go_kiosk_user }}"
+-        group: "{{ surface_go_kiosk_user }}"
+-        mode: "0755"
+-
+-    - name: Install keyboard launcher on admin desktop
+-      ansible.builtin.template:
+-        src: "{{ playbook_dir }}/../templates/frontend/surface-go-keyboard.desktop.j2"
+-        dest: "/home/{{ surface_go_admin_user }}/Desktop/Bildschirmtastatur.desktop"
+-        owner: "{{ surface_go_admin_user }}"
+-        group: "{{ surface_go_admin_user }}"
+-        mode: "0755"
+-
+-    - name: Install Odoo admin launcher on admin desktop
++    - name: Install admin desktop launchers
+       ansible.builtin.template:
+-        src: "{{ playbook_dir }}/../templates/frontend/surface-go-odoo-admin.desktop.j2"
+-        dest: "/home/{{ surface_go_admin_user }}/Desktop/Odoo-Admin.desktop"
++        src: "{{ playbook_dir }}/../templates/frontend/surface-go-launcher.desktop.j2"
++        dest: "/home/{{ surface_go_admin_user }}/Desktop/{{ item.name | regex_replace('[^A-Za-z0-9._ -]', '') }}.desktop"
+         owner: "{{ surface_go_admin_user }}"
+         group: "{{ surface_go_admin_user }}"
+         mode: "0755"
++      loop: "{{ surface_go_admin_desktop_launchers }}"
++      loop_control:
++        label: "{{ item.name }}"
+ 
++    - name: Download AnyDesk package
++      ansible.builtin.get_url:
++        url: "{{ surface_go_anydesk_package_url }}"
++        dest: "{{ surface_go_anydesk_package_local_path }}"
++        owner: root
++        group: root
++        mode: "0644"
++      when: surface_go_anydesk_enabled | bool
+ 
+-    - name: Install Nextcloud launcher on kiosk desktop
+-      ansible.builtin.template:
+-        src: "{{ playbook_dir }}/../templates/frontend/surface-go-nextcloud.desktop.j2"
+-        dest: "/home/{{ surface_go_kiosk_user }}/Desktop/Nextcloud.desktop"
+-        owner: "{{ surface_go_kiosk_user }}"
+-        group: "{{ surface_go_kiosk_user }}"
+-        mode: "0755"
+-
+-    - name: Install Nextcloud Inbox launcher on kiosk desktop
+-      ansible.builtin.template:
+-        src: "{{ playbook_dir }}/../templates/frontend/surface-go-nextcloud-inbox.desktop.j2"
+-        dest: "/home/{{ surface_go_kiosk_user }}/Desktop/Nextcloud-Eingang.desktop"
+-        owner: "{{ surface_go_kiosk_user }}"
+-        group: "{{ surface_go_kiosk_user }}"
+-        mode: "0755"
+-
+-    - name: Install Paperless launcher on kiosk desktop
+-      ansible.builtin.template:
+-        src: "{{ playbook_dir }}/../templates/frontend/surface-go-paperless.desktop.j2"
+-        dest: "/home/{{ surface_go_kiosk_user }}/Desktop/Paperless-Suche.desktop"
+-        owner: "{{ surface_go_kiosk_user }}"
+-        group: "{{ surface_go_kiosk_user }}"
+-        mode: "0755"
+-
+-    - name: Install Nextcloud launcher on admin desktop
+-      ansible.builtin.template:
+-        src: "{{ playbook_dir }}/../templates/frontend/surface-go-nextcloud.desktop.j2"
+-        dest: "/home/{{ surface_go_admin_user }}/Desktop/Nextcloud.desktop"
+-        owner: "{{ surface_go_admin_user }}"
+-        group: "{{ surface_go_admin_user }}"
+-        mode: "0755"
+-
+-    - name: Install Nextcloud Inbox launcher on admin desktop
+-      ansible.builtin.template:
+-        src: "{{ playbook_dir }}/../templates/frontend/surface-go-nextcloud-inbox.desktop.j2"
+-        dest: "/home/{{ surface_go_admin_user }}/Desktop/Nextcloud-Eingang.desktop"
+-        owner: "{{ surface_go_admin_user }}"
+-        group: "{{ surface_go_admin_user }}"
+-        mode: "0755"
+-
+-    - name: Install Paperless launcher on admin desktop
+-      ansible.builtin.template:
+-        src: "{{ playbook_dir }}/../templates/frontend/surface-go-paperless.desktop.j2"
+-        dest: "/home/{{ surface_go_admin_user }}/Desktop/Paperless-Suche.desktop"
+-        owner: "{{ surface_go_admin_user }}"
+-        group: "{{ surface_go_admin_user }}"
+-        mode: "0755"
+-    - name: Install Nextcloud launcher on kiosk desktop
+-      ansible.builtin.template:
+-        src: "{{ playbook_dir }}/../templates/frontend/surface-go-nextcloud.desktop.j2"
+-        dest: "/home/{{ surface_go_kiosk_user }}/Desktop/Nextcloud.desktop"
+-        owner: "{{ surface_go_kiosk_user }}"
+-        group: "{{ surface_go_kiosk_user }}"
+-        mode: "0755"
+-
+-    - name: Install Nextcloud Inbox launcher on kiosk desktop
+-      ansible.builtin.template:
+-        src: "{{ playbook_dir }}/../templates/frontend/surface-go-nextcloud-inbox.desktop.j2"
+-        dest: "/home/{{ surface_go_kiosk_user }}/Desktop/Nextcloud-Eingang.desktop"
+-        owner: "{{ surface_go_kiosk_user }}"
+-        group: "{{ surface_go_kiosk_user }}"
+-        mode: "0755"
+-
+-    - name: Install Paperless launcher on kiosk desktop
+-      ansible.builtin.template:
+-        src: "{{ playbook_dir }}/../templates/frontend/surface-go-paperless.desktop.j2"
+-        dest: "/home/{{ surface_go_kiosk_user }}/Desktop/Paperless-Suche.desktop"
+-        owner: "{{ surface_go_kiosk_user }}"
+-        group: "{{ surface_go_kiosk_user }}"
+-        mode: "0755"
+-
+-    - name: Install Nextcloud launcher on admin desktop
+-      ansible.builtin.template:
+-        src: "{{ playbook_dir }}/../templates/frontend/surface-go-nextcloud.desktop.j2"
+-        dest: "/home/{{ surface_go_admin_user }}/Desktop/Nextcloud.desktop"
+-        owner: "{{ surface_go_admin_user }}"
+-        group: "{{ surface_go_admin_user }}"
+-        mode: "0755"
+-
+-    - name: Install Nextcloud Inbox launcher on admin desktop
+-      ansible.builtin.template:
+-        src: "{{ playbook_dir }}/../templates/frontend/surface-go-nextcloud-inbox.desktop.j2"
+-        dest: "/home/{{ surface_go_admin_user }}/Desktop/Nextcloud-Eingang.desktop"
+-        owner: "{{ surface_go_admin_user }}"
+-        group: "{{ surface_go_admin_user }}"
+-        mode: "0755"
+-
+-    - name: Install Paperless launcher on admin desktop
+-      ansible.builtin.template:
+-        src: "{{ playbook_dir }}/../templates/frontend/surface-go-paperless.desktop.j2"
+-        dest: "/home/{{ surface_go_admin_user }}/Desktop/Paperless-Suche.desktop"
+-        owner: "{{ surface_go_admin_user }}"
+-        group: "{{ surface_go_admin_user }}"
+-        mode: "0755"
+-    - name: Install Nextcloud launcher on kiosk desktop
+-      ansible.builtin.template:
+-        src: "{{ playbook_dir }}/../templates/frontend/surface-go-nextcloud.desktop.j2"
+-        dest: "/home/{{ surface_go_kiosk_user }}/Desktop/Nextcloud.desktop"
+-        owner: "{{ surface_go_kiosk_user }}"
+-        group: "{{ surface_go_kiosk_user }}"
+-        mode: "0755"
+-
+-    - name: Install Nextcloud Inbox launcher on kiosk desktop
+-      ansible.builtin.template:
+-        src: "{{ playbook_dir }}/../templates/frontend/surface-go-nextcloud-inbox.desktop.j2"
+-        dest: "/home/{{ surface_go_kiosk_user }}/Desktop/Nextcloud-Eingang.desktop"
+-        owner: "{{ surface_go_kiosk_user }}"
+-        group: "{{ surface_go_kiosk_user }}"
+-        mode: "0755"
+-
+-    - name: Install Paperless launcher on kiosk desktop
+-      ansible.builtin.template:
+-        src: "{{ playbook_dir }}/../templates/frontend/surface-go-paperless.desktop.j2"
+-        dest: "/home/{{ surface_go_kiosk_user }}/Desktop/Paperless-Suche.desktop"
+-        owner: "{{ surface_go_kiosk_user }}"
+-        group: "{{ surface_go_kiosk_user }}"
+-        mode: "0755"
+-
+-    - name: Install Nextcloud launcher on admin desktop
+-      ansible.builtin.template:
+-        src: "{{ playbook_dir }}/../templates/frontend/surface-go-nextcloud.desktop.j2"
+-        dest: "/home/{{ surface_go_admin_user }}/Desktop/Nextcloud.desktop"
+-        owner: "{{ surface_go_admin_user }}"
+-        group: "{{ surface_go_admin_user }}"
+-        mode: "0755"
+-
+-    - name: Install Nextcloud Inbox launcher on admin desktop
+-      ansible.builtin.template:
+-        src: "{{ playbook_dir }}/../templates/frontend/surface-go-nextcloud-inbox.desktop.j2"
+-        dest: "/home/{{ surface_go_admin_user }}/Desktop/Nextcloud-Eingang.desktop"
+-        owner: "{{ surface_go_admin_user }}"
+-        group: "{{ surface_go_admin_user }}"
+-        mode: "0755"
++    - name: Install AnyDesk package
++      ansible.builtin.apt:
++        deb: "{{ surface_go_anydesk_package_local_path }}"
++      when: surface_go_anydesk_enabled | bool
+ 
+-    - name: Install Paperless launcher on admin desktop
+-      ansible.builtin.template:
+-        src: "{{ playbook_dir }}/../templates/frontend/surface-go-paperless.desktop.j2"
+-        dest: "/home/{{ surface_go_admin_user }}/Desktop/Paperless-Suche.desktop"
+-        owner: "{{ surface_go_admin_user }}"
+-        group: "{{ surface_go_admin_user }}"
+-        mode: "0755"
+     - name: Ensure GDM autologin settings are present
+       ansible.builtin.blockinfile:
+         path: /etc/gdm3/custom.conf
+@@ -391,14 +219,6 @@
+           AutomaticLoginEnable=true
+           AutomaticLogin={{ surface_go_kiosk_user }}
+ 
+-    - name: Ensure sshd drop-in directory exists
+-      ansible.builtin.file:
+-        path: /etc/ssh/sshd_config.d
+-        state: directory
+-        owner: root
+-        group: root
+-        mode: "0755"
+-
+     - name: Install SSH baseline drop-in
+       ansible.builtin.copy:
+         dest: /etc/ssh/sshd_config.d/90-homeserver2027-frontend.conf
+@@ -412,23 +232,29 @@
+           X11Forwarding no
+       notify: restart ssh
+ 
+-    - name: Ensure openssh-server is enabled
++    - name: Ensure local portal service is enabled
+       ansible.builtin.systemd:
+-        name: ssh
++        name: homeserver2027-surface-portal.service
+         enabled: true
+-        state: started
++        state: restarted
++        daemon_reload: true
+ 
+-    - name: Ensure tailscaled is enabled
++    - name: Ensure core frontend services are enabled
+       ansible.builtin.systemd:
+-        name: tailscaled
++        name: "{{ item }}"
+         enabled: true
+         state: started
++      loop:
++        - ssh
++        - tailscaled
++        - unattended-upgrades
+ 
+-    - name: Ensure unattended-upgrades is enabled
++    - name: Ensure AnyDesk service is enabled
+       ansible.builtin.systemd:
+-        name: unattended-upgrades
++        name: "{{ surface_go_anydesk_service_name }}"
+         enabled: true
+         state: started
++      when: surface_go_anydesk_enabled | bool
+ 
+   handlers:
+     - name: restart ssh
+@@ -442,4 +268,4 @@
+ 
+     - name: update dconf
+       ansible.builtin.command:
+-        cmd: dconf update
++        cmd: dconf update
+\ No newline at end of file
+diff --git a/ansible/playbooks/deploy_toolbox_media_sync.yml b/ansible/playbooks/deploy_toolbox_media_sync.yml
+index bd773ec..1688807 100644
+--- a/ansible/playbooks/deploy_toolbox_media_sync.yml
++++ b/ansible/playbooks/deploy_toolbox_media_sync.yml
+@@ -1,145 +1,2 @@
+ ---
+-- name: Prepare toolbox side of radio-to-media sync
+-  hosts: toolbox
+-  remote_user: root
+-  vars:
+-    ansible_remote_tmp: /tmp/.ansible-root
+-
+-  pre_tasks:
+-    - name: Assert toolbox media sync metadata is present
+-      ansible.builtin.assert:
+-        that:
+-          - toolbox_media_library_root is defined
+-          - toolbox_media_curation_dirs is defined
+-          - toolbox_media_radio_sync_key_path is defined
+-          - toolbox_media_radio_sync_source_user is defined
+-          - toolbox_media_radio_sync_source_host is defined
+-          - toolbox_media_radio_sync_source_path is defined
+-          - toolbox_media_radio_sync_target_path is defined
+-
+-  tasks:
+-    - name: Install toolbox media sync packages
+-      ansible.builtin.apt:
+-        name:
+-          - rsync
+-          - openssh-client
+-        state: present
+-        update_cache: true
+-
+-    - name: Ensure toolbox media curation directories exist
+-      ansible.builtin.file:
+-        path: "{{ toolbox_media_library_root }}/{{ item }}"
+-        state: directory
+-        owner: root
+-        group: root
+-        mode: "0755"
+-      loop: "{{ toolbox_media_curation_dirs }}"
+-
+-    - name: Ensure toolbox media sync config directory exists
+-      ansible.builtin.file:
+-        path: "{{ toolbox_media_radio_sync_exclude_file | dirname }}"
+-        state: directory
+-        owner: root
+-        group: root
+-        mode: "0755"
+-
+-    - name: Ensure toolbox media sync exclude file exists
+-      ansible.builtin.file:
+-        path: "{{ toolbox_media_radio_sync_exclude_file }}"
+-        state: touch
+-        owner: root
+-        group: root
+-        mode: "0644"
+-
+-    - name: Ensure root ssh directory exists on toolbox
+-      ansible.builtin.file:
+-        path: /root/.ssh
+-        state: directory
+-        owner: root
+-        group: root
+-        mode: "0700"
+-
+-    - name: Generate dedicated toolbox media sync ssh key
+-      ansible.builtin.command:
+-        cmd: "ssh-keygen -t ed25519 -N '' -f {{ toolbox_media_radio_sync_key_path }} -C homeserver2027-media-sync"
+-      args:
+-        creates: "{{ toolbox_media_radio_sync_key_path }}"
+-
+-    - name: Read toolbox media sync public key
+-      ansible.builtin.slurp:
+-        src: "{{ toolbox_media_radio_sync_key_path }}.pub"
+-      register: toolbox_media_sync_pubkey_raw
+-
+-    - name: Expose toolbox media sync public key to later plays
+-      ansible.builtin.set_fact:
+-        toolbox_media_sync_pubkey: "{{ toolbox_media_sync_pubkey_raw.content | b64decode | trim }}"
+-
+-    - name: Install toolbox media sync script
+-      ansible.builtin.template:
+-        src: "{{ playbook_dir }}/../templates/media/homeserver2027-sync-radio-usb-to-toolbox-media.sh.j2"
+-        dest: /usr/local/sbin/homeserver2027-sync-radio-usb-to-toolbox-media.sh
+-        owner: root
+-        group: root
+-        mode: "0755"
+-
+-    - name: Install toolbox media sync service
+-      ansible.builtin.template:
+-        src: "{{ playbook_dir }}/../templates/systemd/homeserver2027-media-sync.service.j2"
+-        dest: /etc/systemd/system/homeserver2027-media-sync.service
+-        owner: root
+-        group: root
+-        mode: "0644"
+-      notify: reload systemd
+-
+-    - name: Install toolbox media sync timer
+-      ansible.builtin.template:
+-        src: "{{ playbook_dir }}/../templates/systemd/homeserver2027-media-sync.timer.j2"
+-        dest: /etc/systemd/system/homeserver2027-media-sync.timer
+-        owner: root
+-        group: root
+-        mode: "0644"
+-      notify: reload systemd
+-
+-  handlers:
+-    - name: reload systemd
+-      ansible.builtin.systemd:
+-        daemon_reload: true
+-      when: not ansible_check_mode
+-
+-- name: Authorize toolbox media sync key on radio node
+-  hosts: raspberry_pi_radio
+-  become: true
+-
+-  tasks:
+-    - name: Assert toolbox media sync public key is available
+-      ansible.builtin.assert:
+-        that:
+-          - hostvars['toolbox']['toolbox_media_sync_pubkey'] is defined
+-          - hostvars['toolbox']['toolbox_media_sync_pubkey'] | length > 0
+-
+-    - name: Authorize toolbox media sync key for radio admin user
+-      ansible.posix.authorized_key:
+-        user: "{{ rpi_radio_admin_user }}"
+-        state: present
+-        key: "{{ hostvars['toolbox']['toolbox_media_sync_pubkey'] }}"
+-
+-- name: Enable and start toolbox media sync timer
+-  hosts: toolbox
+-  remote_user: root
+-  vars:
+-    ansible_remote_tmp: /tmp/.ansible-root
+-
+-  tasks:
+-    - name: Ensure toolbox media sync timer is enabled
+-      ansible.builtin.systemd:
+-        name: homeserver2027-media-sync.timer
+-        enabled: true
+-        state: started
+-        daemon_reload: true
+-      when: not ansible_check_mode
+-
+-    - name: Kick off first toolbox media sync run
+-      ansible.builtin.systemd:
+-        name: homeserver2027-media-sync.service
+-        state: started
+-      when: not ansible_check_mode
++- import_playbook: integrate_toolbox_media_storage.yml
+diff --git a/ansible/templates/frontend/homeserver2027-frawo-control.sh.j2 b/ansible/templates/frontend/homeserver2027-frawo-control.sh.j2
+index 9ecbbd4..990b0db 100644
+--- a/ansible/templates/frontend/homeserver2027-frawo-control.sh.j2
++++ b/ansible/templates/frontend/homeserver2027-frawo-control.sh.j2
+@@ -1,10 +1,24 @@
+ #!/usr/bin/env bash
+ set -euo pipefail
+ 
+-URL="{{ surface_go_kiosk_start_url }}"
++BROWSER="{{ surface_go_browser_binary }}"
++DEFAULT_URL="{{ surface_go_kiosk_start_url }}"
++KIOSK_MODE="false"
++TARGET_URL="${DEFAULT_URL}"
+ 
+-# Kill any leftover browser
+-pkill -u "${USER}" -x firefox > /dev/null 2>&1 || true
+-sleep 1
++if [[ "${1:-}" == "--kiosk" ]]; then
++  KIOSK_MODE="true"
++  shift
++fi
+ 
+-exec /usr/bin/firefox --kiosk "${URL}"
++if [[ -n "${1:-}" ]]; then
++  TARGET_URL="$1"
++fi
++
++if [[ "${KIOSK_MODE}" == "true" ]]; then
++  pkill -u "${USER}" -x "$(basename "${BROWSER}")" >/dev/null 2>&1 || true
++  sleep 1
++  exec "${BROWSER}" --kiosk "${TARGET_URL}"
++fi
++
++exec "${BROWSER}" --new-window "${TARGET_URL}"
+\ No newline at end of file
+diff --git a/ansible/templates/frontend/homeserver2027-kiosk-script.sh.j2 b/ansible/templates/frontend/homeserver2027-kiosk-script.sh.j2
+index a75479e..775f6bd 100644
+--- a/ansible/templates/frontend/homeserver2027-kiosk-script.sh.j2
++++ b/ansible/templates/frontend/homeserver2027-kiosk-script.sh.j2
+@@ -1,4 +1,4 @@
+ #!/usr/bin/env bash
+ # gnome-kiosk-script-session calls this script by reading:
+ # ~/.config/gnome-kiosk-script/kiosk-script
+-exec {{ surface_go_launcher_script }}
++exec {{ surface_go_launcher_script }} --kiosk
+\ No newline at end of file
+diff --git a/ansible/templates/stacks/toolbox-media/docker-compose.yml.j2 b/ansible/templates/stacks/toolbox-media/docker-compose.yml.j2
+index 8eea319..c1686ac 100644
+--- a/ansible/templates/stacks/toolbox-media/docker-compose.yml.j2
++++ b/ansible/templates/stacks/toolbox-media/docker-compose.yml.j2
+@@ -10,4 +10,4 @@ services:
+     volumes:
+       - {{ toolbox_media_config_root }}/config:/config
+       - {{ toolbox_media_config_root }}/cache:/cache
+-      - {{ toolbox_media_library_root }}:/media:ro
++      - {{ toolbox_media_library_root }}:/media:ro,rslave
+diff --git a/manifests/media/curated_paths.txt b/manifests/media/curated_paths.txt
+index 817e54c..4e5f4cf 100644
+--- a/manifests/media/curated_paths.txt
++++ b/manifests/media/curated_paths.txt
+@@ -1,6 +1,6 @@
+ # Curated live manifest
+ # Promoted from the generated starter manifest.
+-# Relative paths under /srv/media-library/music/bootstrap-radio-usb
++# Relative paths under /srv/media-library/music-network/yourparty_Libary
+ 
+ clean/Digitalis
+ clean/Aloka
+diff --git a/manifests/media/favorites_paths.txt b/manifests/media/favorites_paths.txt
+index 6a438dc..e621a57 100644
+--- a/manifests/media/favorites_paths.txt
++++ b/manifests/media/favorites_paths.txt
+@@ -1,6 +1,6 @@
+ # Favorites live manifest
+ # Promoted from the generated starter manifest.
+-# Relative paths under /srv/media-library/music/bootstrap-radio-usb
++# Relative paths under /srv/media-library/music-network/yourparty_Libary
+ 
+ clean/Roza Terenzi & D. Tiffany
+ clean/Roza Terenzi
+diff --git a/manifests/media/generated/curated_starter.txt b/manifests/media/generated/curated_starter.txt
+index 108286d..8184e53 100644
+--- a/manifests/media/generated/curated_starter.txt
++++ b/manifests/media/generated/curated_starter.txt
+@@ -1,6 +1,6 @@
+ # Curated starter suggestion
+ # Generated automatically from the current bootstrap music seed.
+-# Relative paths under /srv/media-library/music/bootstrap-radio-usb
++# Relative paths under /srv/media-library/music-network/yourparty_Libary
+ 
+ clean/Digitalis
+ clean/Aloka
+diff --git a/manifests/media/generated/favorites_starter.txt b/manifests/media/generated/favorites_starter.txt
+index e47bb41..28d110e 100644
+--- a/manifests/media/generated/favorites_starter.txt
++++ b/manifests/media/generated/favorites_starter.txt
+@@ -1,6 +1,6 @@
+ # Favorites starter suggestion
+ # Generated automatically from the current bootstrap music seed.
+-# Relative paths under /srv/media-library/music/bootstrap-radio-usb
++# Relative paths under /srv/media-library/music-network/yourparty_Libary
+ 
+ clean/Roza Terenzi & D. Tiffany
+ clean/Roza Terenzi
+diff --git a/scripts/rpi_azuracast_service_check.sh b/scripts/rpi_azuracast_service_check.sh
+index 5d41e23..7ed428e 100644
+--- a/scripts/rpi_azuracast_service_check.sh
++++ b/scripts/rpi_azuracast_service_check.sh
+@@ -1,12 +1,13 @@
+ #!/usr/bin/env bash
+ set -euo pipefail
+ 
++ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
++source "${ROOT_DIR}/scripts/rpi_radio_remote.sh"
++
+ TARGET_HOST="${1:-100.64.23.77}"
+-SSH_TARGET="wolf@${TARGET_HOST}"
+-SSH_OPTS=(-o BatchMode=yes -o ConnectTimeout=8 -o StrictHostKeyChecking=accept-new)
+ 
+ run_remote() {
+-  ssh "${SSH_OPTS[@]}" "${SSH_TARGET}" "$@"
++  run_rpi_remote "${TARGET_HOST}" "$@"
+ }
+ 
+ echo "hostname=$(run_remote "hostname" 2>/dev/null || echo unknown)"
+diff --git a/scripts/rpi_radio_integration_check.sh b/scripts/rpi_radio_integration_check.sh
+index e8d5702..ac5c4d1 100644
+--- a/scripts/rpi_radio_integration_check.sh
++++ b/scripts/rpi_radio_integration_check.sh
+@@ -15,11 +15,11 @@ http_ok() {
+   [[ "${code}" == "200" || "${code}" == "302" ]]
+ }
+ 
+-readiness_output="$(timeout 20 "${ROOT_DIR}/scripts/rpi_radio_readiness_check.sh" "${TARGET_HOST}" 2>/dev/null || true)"
+-service_output="$(timeout 20 "${ROOT_DIR}/scripts/rpi_azuracast_service_check.sh" "${TARGET_HOST}" 2>/dev/null || true)"
+-resource_output="$(timeout 20 "${ROOT_DIR}/scripts/rpi_resource_budget_check.sh" "${TARGET_HOST}" 2>/dev/null || true)"
+-media_output="$(timeout 20 "${ROOT_DIR}/scripts/rpi_radio_media_layout_check.sh" "${TARGET_HOST}" 2>/dev/null || true)"
+-usb_output="$(timeout 20 "${ROOT_DIR}/scripts/rpi_radio_usb_music_check.sh" "${TARGET_HOST}" 2>/dev/null || true)"
++readiness_output="$(timeout 60 "${ROOT_DIR}/scripts/rpi_radio_readiness_check.sh" "${TARGET_HOST}" 2>/dev/null || true)"
++service_output="$(timeout 60 "${ROOT_DIR}/scripts/rpi_azuracast_service_check.sh" "${TARGET_HOST}" 2>/dev/null || true)"
++resource_output="$(timeout 60 "${ROOT_DIR}/scripts/rpi_resource_budget_check.sh" "${TARGET_HOST}" 2>/dev/null || true)"
++media_output="$(timeout 60 "${ROOT_DIR}/scripts/rpi_radio_media_layout_check.sh" "${TARGET_HOST}" 2>/dev/null || true)"
++network_output="$(timeout 60 "${ROOT_DIR}/scripts/rpi_radio_network_music_check.sh" "${TARGET_HOST}" 2>/dev/null || true)"
+ 
+ radio_internal_proxy_http="$(curl -fsS -o /dev/null -w '%{http_code}' --max-time 10 http://radio.hs27.internal/ || true)"
+ radio_mobile_frontdoor_http="$(curl -fsS -o /dev/null -w '%{http_code}' --max-time 10 http://100.99.206.128:8448/ || true)"
+@@ -28,7 +28,7 @@ rpi_radio_ready="$(extract_value rpi_radio_ready_for_azuracast "${readiness_outp
+ rpi_azuracast_service_ready="$(extract_value rpi_azuracast_service_ready "${service_output}")"
+ rpi_resource_profile_ready="$(extract_value rpi_resource_profile_ready "${resource_output}")"
+ rpi_radio_media_layout_ready="$(extract_value rpi_radio_media_layout_ready "${media_output}")"
+-rpi_radio_usb_music_ready="$(extract_value rpi_radio_usb_music_ready "${usb_output}")"
++rpi_radio_network_music_ready="$(extract_value rpi_radio_network_music_ready "${network_output}")"
+ radio_node_http_code="$(extract_value radio_node_http_code "${service_output}")"
+ radio_node_http_location="$(extract_value radio_node_http_location "${service_output}")"
+ azuracast_initial_setup_complete="$(extract_value azuracast_initial_setup_complete "${service_output}")"
+@@ -57,7 +57,8 @@ echo "rpi_radio_ready_for_azuracast=${rpi_radio_ready:-unknown}"
+ echo "rpi_azuracast_service_ready=${rpi_azuracast_service_ready:-unknown}"
+ echo "rpi_resource_profile_ready=${rpi_resource_profile_ready:-unknown}"
+ echo "rpi_radio_media_layout_ready=${rpi_radio_media_layout_ready:-unknown}"
+-echo "rpi_radio_usb_music_ready=${rpi_radio_usb_music_ready:-unknown}"
++echo "rpi_radio_network_music_ready=${rpi_radio_network_music_ready:-unknown}"
++echo "rpi_radio_usb_music_ready=${rpi_radio_network_music_ready:-unknown}"
+ echo "radio_node_http_code=${radio_node_http_code:-unknown}"
+ echo "radio_node_http_location=${radio_node_http_location:-unknown}"
+ echo "azuracast_initial_setup_complete=${azuracast_initial_setup_complete:-unknown}"
+@@ -77,7 +78,7 @@ if [[ "${rpi_radio_ready:-no}" == "yes" \
+    && "${rpi_azuracast_service_ready:-no}" == "yes" \
+    && "${rpi_resource_profile_ready:-no}" == "yes" \
+    && "${rpi_radio_media_layout_ready:-no}" == "yes" \
+-   && "${rpi_radio_usb_music_ready:-no}" == "yes" \
++   && "${rpi_radio_network_music_ready:-no}" == "yes" \
+    && "${radio_internal_proxy_ready}" == "yes" \
+    && "${radio_mobile_frontdoor_ready}" == "yes" ]]; then
+   echo "rpi_radio_integrated=yes"
+@@ -86,11 +87,11 @@ if [[ "${rpi_radio_ready:-no}" == "yes" \
+   elif [[ "${azuracast_first_station_present:-unknown}" == "no" ]]; then
+     echo "recommendation=create_first_station_then_finalize_media_layout"
+   elif [[ "${azuracast_station_online:-unknown}" == "true" ]]; then
+-    echo "recommendation=radio_node_is_integrated_and_playing_from_usb_music"
++    echo "recommendation=radio_node_is_integrated_and_playing_from_network_music"
+   else
+     echo "recommendation=finish_station_playback_before_relying_on_radio_node"
+   fi
+ else
+   echo "rpi_radio_integrated=no"
+-  echo "recommendation=finish_proxy_mobile_resource_or_usb_music_integration_before_relying_on_radio_node"
++  echo "recommendation=finish_proxy_mobile_resource_or_network_music_integration_before_relying_on_radio_node"
+ fi
+diff --git a/scripts/rpi_radio_media_layout_check.sh b/scripts/rpi_radio_media_layout_check.sh
+index 1e11b47..7bb5ef8 100644
+--- a/scripts/rpi_radio_media_layout_check.sh
++++ b/scripts/rpi_radio_media_layout_check.sh
+@@ -1,12 +1,13 @@
+ #!/usr/bin/env bash
+ set -euo pipefail
+ 
++ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
++source "${ROOT_DIR}/scripts/rpi_radio_remote.sh"
++
+ TARGET_HOST="${1:-100.64.23.77}"
+-SSH_TARGET="wolf@${TARGET_HOST}"
+-SSH_OPTS=(-o BatchMode=yes -o ConnectTimeout=8 -o StrictHostKeyChecking=accept-new)
+ 
+ run_remote() {
+-  ssh "${SSH_OPTS[@]}" "${SSH_TARGET}" "$@"
++  run_rpi_remote "${TARGET_HOST}" "$@"
+ }
+ 
+ check_dir() {
+diff --git a/scripts/rpi_radio_readiness_check.sh b/scripts/rpi_radio_readiness_check.sh
+index 0d966b0..ab94b5d 100644
+--- a/scripts/rpi_radio_readiness_check.sh
++++ b/scripts/rpi_radio_readiness_check.sh
+@@ -1,12 +1,13 @@
+ #!/usr/bin/env bash
+ set -euo pipefail
+ 
++ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
++source "${ROOT_DIR}/scripts/rpi_radio_remote.sh"
++
+ TARGET_HOST="${1:-100.64.23.77}"
+-SSH_TARGET="wolf@${TARGET_HOST}"
+-SSH_OPTS=(-o BatchMode=yes -o ConnectTimeout=8 -o StrictHostKeyChecking=accept-new)
+ 
+ run_remote() {
+-  ssh "${SSH_OPTS[@]}" "${SSH_TARGET}" "$@"
++  run_rpi_remote "${TARGET_HOST}" "$@"
+ }
+ 
+ extract_value() {
+diff --git a/scripts/rpi_radio_usb_music_check.sh b/scripts/rpi_radio_usb_music_check.sh
+index 45bcbe3..4ae17ae 100644
+--- a/scripts/rpi_radio_usb_music_check.sh
++++ b/scripts/rpi_radio_usb_music_check.sh
+@@ -1,16 +1,17 @@
+ #!/usr/bin/env bash
+ set -euo pipefail
+ 
++ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
++source "${ROOT_DIR}/scripts/rpi_radio_remote.sh"
++
+ TARGET_HOST="${1:-100.64.23.77}"
+-SSH_TARGET="wolf@${TARGET_HOST}"
+-SSH_OPTS=(-o BatchMode=yes -o ConnectTimeout=8 -o StrictHostKeyChecking=accept-new)
+ 
+ run_remote() {
+-  ssh "${SSH_OPTS[@]}" "${SSH_TARGET}" "$@"
++  run_rpi_remote "${TARGET_HOST}" "$@"
+ }
+ 
+-mountpoint="/srv/radio-library/music-usb"
+-source_subdir="${mountpoint}/yourparty.radio"
++mountpoint="/srv/radio-library/music-network"
++source_subdir="${mountpoint}/yourparty_Libary"
+ container_media="/var/azuracast/stations/frawo-funk/media"
+ 
+ mount_state="no"
+@@ -37,6 +38,14 @@ station_media_count="$(run_remote "sudo docker exec azuracast azuracast_cli dbal
+ playlist_media_count="$(run_remote "sudo docker exec azuracast azuracast_cli dbal:run-sql --force-fetch 'SELECT COUNT(*) AS spm_count FROM station_playlist_media;' | awk '/^[[:space:]]+[0-9]+[[:space:]]*$/ {print \$1; exit}'" 2>/dev/null | tr -d ' ' || echo 0)"
+ 
+ echo "target_host=${TARGET_HOST}"
++echo "radio_network_mount_ready=${mount_state}"
++echo "radio_network_mount_mode=${mount_mode}"
++echo "radio_network_override_present=${override_present}"
++echo "radio_network_source_subdir=${source_subdir}"
++echo "radio_network_host_file_count=${host_file_count:-0}"
++echo "radio_network_container_file_count=${container_file_count:-0}"
++echo "radio_network_station_media_count=${station_media_count:-0}"
++echo "radio_network_playlist_media_count=${playlist_media_count:-0}"
+ echo "radio_usb_mount_ready=${mount_state}"
+ echo "radio_usb_mount_mode=${mount_mode}"
+ echo "radio_usb_override_present=${override_present}"
+@@ -47,9 +56,11 @@ echo "radio_usb_station_media_count=${station_media_count:-0}"
+ echo "radio_usb_playlist_media_count=${playlist_media_count:-0}"
+ 
+ if [[ "${mount_state}" == "yes" && "${mount_mode}" == "rw" && "${override_present}" == "yes" && "${host_file_count:-0}" =~ ^[0-9]+$ && "${container_file_count:-0}" =~ ^[0-9]+$ && "${station_media_count:-0}" =~ ^[0-9]+$ && "${playlist_media_count:-0}" =~ ^[0-9]+$ && ${host_file_count:-0} -gt 0 && ${container_file_count:-0} -gt 0 && ${station_media_count:-0} -gt 0 && ${playlist_media_count:-0} -gt 0 ]]; then
++  echo "rpi_radio_network_music_ready=yes"
+   echo "rpi_radio_usb_music_ready=yes"
+-  echo "recommendation=usb_music_integrated_continue_media_import_and_playlist_curation"
++  echo "recommendation=network_music_integrated_continue_media_import_and_playlist_curation"
+ else
++  echo "rpi_radio_network_music_ready=no"
+   echo "rpi_radio_usb_music_ready=no"
+-  echo "recommendation=use_rw_usb_media_binding_and_complete_playlist_assignment_before_relying_on_station_content"
++  echo "recommendation=use_rw_smb_media_binding_and_complete_playlist_assignment_before_relying_on_station_content"
+ fi
+diff --git a/scripts/rpi_resource_budget_check.sh b/scripts/rpi_resource_budget_check.sh
+index 321632f..c201561 100644
+--- a/scripts/rpi_resource_budget_check.sh
++++ b/scripts/rpi_resource_budget_check.sh
+@@ -1,12 +1,13 @@
+ #!/usr/bin/env bash
+ set -euo pipefail
+ 
++ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
++source "${ROOT_DIR}/scripts/rpi_radio_remote.sh"
++
+ TARGET_HOST="${1:-100.64.23.77}"
+-SSH_TARGET="wolf@${TARGET_HOST}"
+-SSH_OPTS=(-o BatchMode=yes -o ConnectTimeout=8 -o StrictHostKeyChecking=accept-new)
+ 
+ run_remote() {
+-  ssh "${SSH_OPTS[@]}" "${SSH_TARGET}" "$@"
++  run_rpi_remote "${TARGET_HOST}" "$@"
+ }
+ 
+ mem_total_kib="$(run_remote "awk '/MemTotal:/ {print \$2}' /proc/meminfo" 2>/dev/null || echo 0)"
+diff --git a/scripts/surface_go_frontend_check.sh b/scripts/surface_go_frontend_check.sh
+index a892e61..7384660 100644
+--- a/scripts/surface_go_frontend_check.sh
++++ b/scripts/surface_go_frontend_check.sh
+@@ -92,18 +92,21 @@ portal_service_active="unknown"
+ portal_http_local="unknown"
+ control_launcher_present="unknown"
+ browser_binary_present="unknown"
++anydesk_service_active="unknown"
+ 
+ if [[ "${remote_admin_ready}" == "yes" ]]; then
+   portal_service_active="$(remote_probe "systemctl is-active homeserver2027-surface-portal.service" | head -n1)"
+   portal_http_local="$(remote_probe "curl -fsSI http://127.0.0.1:17827 >/dev/null && echo ok || echo fail" | head -n1)"
+   control_launcher_present="$(remote_probe "test -f /home/frawo/Desktop/FRAWO-Control.desktop && echo yes || echo no" | head -n1)"
+-  browser_binary_present="$(remote_probe "command -v epiphany-browser >/dev/null && echo yes || echo no" | head -n1)"
++  browser_binary_present="$(remote_probe "command -v firefox >/dev/null && echo yes || echo no" | head -n1)"
++  anydesk_service_active="$(remote_probe "systemctl is-active anydesk 2>/dev/null || echo not-installed" | head -n1)"
+ fi
+ 
+ echo "surface_go_portal_service_active=${portal_service_active:-unknown}"
+ echo "surface_go_local_portal_http=${portal_http_local:-unknown}"
+ echo "surface_go_control_launcher_present=${control_launcher_present:-unknown}"
+ echo "surface_go_browser_binary_present=${browser_binary_present:-unknown}"
++echo "surface_go_anydesk_service_active=${anydesk_service_active:-unknown}"
+ 
+ rebuild_required="yes"
+ if [[ "${ssh_port}" == "open" && "${default_nginx}" == "no" ]]; then
+diff --git a/scripts/toolbox_media_bootstrap_progress.sh b/scripts/toolbox_media_bootstrap_progress.sh
+index 28bb5b9..92e71bc 100644
+--- a/scripts/toolbox_media_bootstrap_progress.sh
++++ b/scripts/toolbox_media_bootstrap_progress.sh
+@@ -1,10 +1,13 @@
+ #!/usr/bin/env bash
+ set -euo pipefail
+ 
+-SOURCE_HOST="wolf@100.64.23.77"
+-SOURCE_PATH="/srv/radio-library/music-usb/yourparty.radio"
+-TARGET_HOST="root@toolbox"
+-TARGET_PATH="/srv/media-library/music/bootstrap-radio-usb"
++ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
++source "${ROOT_DIR}/scripts/rpi_radio_remote.sh"
++source "${ROOT_DIR}/scripts/toolbox_remote.sh"
++
++TARGET_HOST="${1:-100.64.23.77}"
++SOURCE_PATH="/srv/radio-library/music-network/yourparty_Libary"
++TARGET_PATH="/srv/media-library/music-network/yourparty_Libary"
+ 
+ human_bytes() {
+   local bytes="${1:-0}"
+@@ -25,13 +28,13 @@ percent_of() {
+   awk -v part="${part}" -v total="${total}" 'BEGIN { printf "%.1f", (part / total) * 100 }'
+ }
+ 
+-source_file_count="$(ssh -o BatchMode=yes "${SOURCE_HOST}" "find '${SOURCE_PATH}' -type f 2>/dev/null | wc -l" 2>/dev/null || echo 0)"
+-source_size_bytes="$(ssh -o BatchMode=yes "${SOURCE_HOST}" "du -sb '${SOURCE_PATH}' 2>/dev/null | awk '{print \$1}'" 2>/dev/null || echo 0)"
+-target_file_count="$(ssh -o BatchMode=yes "${TARGET_HOST}" "find '${TARGET_PATH}' -type f 2>/dev/null | wc -l" 2>/dev/null || echo 0)"
+-target_size_bytes="$(ssh -o BatchMode=yes "${TARGET_HOST}" "du -sb '${TARGET_PATH}' 2>/dev/null | awk '{print \$1}'" 2>/dev/null || echo 0)"
+-sync_service_state="$(ssh -o BatchMode=yes "${TARGET_HOST}" "systemctl is-active homeserver2027-media-sync.service 2>/dev/null || true" 2>/dev/null || echo unknown)"
+-sync_timer_state="$(ssh -o BatchMode=yes "${TARGET_HOST}" "systemctl is-active homeserver2027-media-sync.timer 2>/dev/null || true" 2>/dev/null || echo unknown)"
+-rootfs_free_bytes="$(ssh -o BatchMode=yes "${TARGET_HOST}" "df -B1 / | awk 'NR==2 {print \$4}'" 2>/dev/null || echo 0)"
++source_file_count="$(run_rpi_remote "${TARGET_HOST}" "find '${SOURCE_PATH}' -type f 2>/dev/null | wc -l" 2>/dev/null || echo 0)"
++source_size_bytes="$(run_rpi_remote "${TARGET_HOST}" "du -sb '${SOURCE_PATH}' 2>/dev/null | awk '{print \$1}'" 2>/dev/null || echo 0)"
++target_file_count="$(run_toolbox_remote "find '${TARGET_PATH}' -type f 2>/dev/null | wc -l" 2>/dev/null || echo 0)"
++target_size_bytes="$(run_toolbox_remote "du -sb '${TARGET_PATH}' 2>/dev/null | awk '{print \$1}'" 2>/dev/null || echo 0)"
++sync_service_state="retired"
++sync_timer_state="retired"
++rootfs_free_bytes="$(run_toolbox_remote "df -B1 / | awk 'NR==2 {print \$4}'" 2>/dev/null || echo 0)"
+ 
+ file_count_percent="$(percent_of "${target_file_count}" "${source_file_count}")"
+ size_percent="$(percent_of "${target_size_bytes}" "${source_size_bytes}")"
+@@ -55,10 +58,8 @@ else
+   echo "toolbox_media_bootstrap_progress_ready=no"
+ fi
+ 
+-if [[ "${sync_service_state}" == "activating" ]]; then
+-  echo "recommendation=allow_bootstrap_media_sync_to_continue"
+-elif [[ "${target_size_bytes:-0}" == "${source_size_bytes:-0}" && "${source_size_bytes:-0}" != "0" ]]; then
+-  echo "recommendation=finish_jellyfin_ui_setup_and_start_client_rollout"
++if [[ "${target_size_bytes:-0}" == "${source_size_bytes:-0}" && "${source_size_bytes:-0}" != "0" ]]; then
++  echo "recommendation=toolbox_and_radio_point_to_the_same_central_media_path"
+ else
+-  echo "recommendation=inspect_media_bootstrap_sync_runtime"
++  echo "recommendation=verify_toolbox_mount_or_radio_source_against_central_media_path"
+ fi
+diff --git a/scripts/toolbox_media_sync_check.sh b/scripts/toolbox_media_sync_check.sh
+index ad4673b..d9d5f1a 100644
+--- a/scripts/toolbox_media_sync_check.sh
++++ b/scripts/toolbox_media_sync_check.sh
+@@ -1,22 +1,26 @@
+ #!/usr/bin/env bash
+ set -euo pipefail
+ 
+-service_state="$(ssh toolbox 'systemctl is-active homeserver2027-media-sync.service 2>/dev/null || true')"
+-timer_state="$(ssh toolbox 'systemctl is-active homeserver2027-media-sync.timer 2>/dev/null || true')"
+-timer_enabled="$(ssh toolbox 'systemctl is-enabled homeserver2027-media-sync.timer 2>/dev/null || true')"
+-target_file_count="$(ssh toolbox 'find /srv/media-library/music/bootstrap-radio-usb -type f 2>/dev/null | wc -l' 2>/dev/null || echo 0)"
+-target_size="$(ssh toolbox 'du -sh /srv/media-library/music/bootstrap-radio-usb 2>/dev/null | awk "{print \$1}"' 2>/dev/null || echo 0)"
++ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
++source "${ROOT_DIR}/scripts/toolbox_remote.sh"
+ 
+-echo "toolbox_media_sync_service_state=${service_state:-unknown}"
+-echo "toolbox_media_sync_timer_state=${timer_state:-unknown}"
+-echo "toolbox_media_sync_timer_enabled=${timer_enabled:-unknown}"
++mount_state="$(run_toolbox_remote 'findmnt -T /srv/media-library/music-network >/dev/null 2>&1 && echo yes || echo no' 2>/dev/null || echo no)"
++target_state="$(run_toolbox_remote 'test -d /srv/media-library/music-network/yourparty_Libary && echo yes || echo no' 2>/dev/null || echo no)"
++target_file_count="$(run_toolbox_remote 'find /srv/media-library/music-network/yourparty_Libary -type f 2>/dev/null | wc -l' 2>/dev/null || echo 0)"
++target_size="$(run_toolbox_remote 'du -sh /srv/media-library/music-network/yourparty_Libary 2>/dev/null | awk "{print \$1}"' 2>/dev/null || echo 0)"
++
++echo "toolbox_media_storage_mount_ready=${mount_state:-no}"
++echo "toolbox_media_storage_target_ready=${target_state:-no}"
+ echo "toolbox_media_sync_target_file_count=${target_file_count:-0}"
+ echo "toolbox_media_sync_target_size=${target_size:-0}"
++echo "toolbox_media_sync_service_state=retired"
++echo "toolbox_media_sync_timer_state=retired"
++echo "toolbox_media_sync_timer_enabled=retired"
+ 
+-if [[ "${timer_state}" == "active" && "${timer_enabled}" == "enabled" ]]; then
++if [[ "${mount_state}" == "yes" && "${target_state}" == "yes" ]]; then
+   echo "toolbox_media_sync_ready=yes"
+-  echo "recommendation=allow_initial_or_periodic_radio_music_sync_to_populate_jellyfin_library"
++  echo "recommendation=central_smb_media_path_is_ready_for_jellyfin"
+ else
+   echo "toolbox_media_sync_ready=no"
+-  echo "recommendation=inspect_media_sync_service_timer_and_radio_access"
++  echo "recommendation=mount_storage_node_media_share_on_toolbox_and_verify_target_subdir"
+ fi
+diff --git a/scripts/toolbox_music_curated_layout_check.sh b/scripts/toolbox_music_curated_layout_check.sh
+index 4bf0d87..cafbca7 100644
+--- a/scripts/toolbox_music_curated_layout_check.sh
++++ b/scripts/toolbox_music_curated_layout_check.sh
+@@ -6,7 +6,7 @@ from pathlib import Path
+ 
+ root = Path("/srv/media-library/music")
+ paths = {
+-    "bootstrap": root / "bootstrap-radio-usb",
++    "network": Path("/srv/media-library/music-network/yourparty_Libary"),
+     "curated": root / "curated",
+     "favorites": root / "favorites",
+     "inbox": root / "inbox",
+@@ -35,19 +35,19 @@ print(f"toolbox_music_layout_quarantine_state={dir_state(quarantine)}")
+ print(f"toolbox_music_layout_quarantine_file_count={file_count(quarantine)}")
+ print(f"toolbox_music_layout_quarantine_symlink_count={symlink_count(quarantine)}")
+ 
+-bootstrap_files = file_count(paths["bootstrap"])
++network_files = file_count(paths["network"])
+ curated_files = file_count(paths["curated"])
+ favorites_files = file_count(paths["favorites"])
+ curated_links = symlink_count(paths["curated"])
+ favorites_links = symlink_count(paths["favorites"])
+ 
+-if bootstrap_files > 0 and (curated_files > 0 or curated_links > 0 or favorites_files > 0 or favorites_links > 0):
++if network_files > 0 and (curated_files > 0 or curated_links > 0 or favorites_files > 0 or favorites_links > 0):
+     print("toolbox_music_curated_layout_ready=yes")
+     print("recommendation=starter_selection_is_live_refine_favorites_and_curated_over_time")
+-elif bootstrap_files > 0 and curated_files == 0 and favorites_files == 0 and curated_links == 0 and favorites_links == 0:
++elif network_files > 0 and curated_files == 0 and favorites_files == 0 and curated_links == 0 and favorites_links == 0:
+     print("toolbox_music_curated_layout_ready=yes")
+-    print("recommendation=begin_first_curated_and_favorites_selection_from_bootstrap_seed")
++    print("recommendation=begin_first_curated_and_favorites_selection_from_network_media_seed")
+ else:
+     print("toolbox_music_curated_layout_ready=no")
+-    print("recommendation=wait_for_bootstrap_music_seed")
++    print("recommendation=wait_for_network_media_seed")
+ PY
+diff --git a/scripts/toolbox_music_curation_candidates.sh b/scripts/toolbox_music_curation_candidates.sh
+index b03e979..09a5489 100644
+--- a/scripts/toolbox_music_curation_candidates.sh
++++ b/scripts/toolbox_music_curation_candidates.sh
+@@ -4,7 +4,7 @@ set -euo pipefail
+ ssh -o BatchMode=yes root@toolbox python3 - <<'PY'
+ from pathlib import Path
+ 
+-music_root = Path("/srv/media-library/music/bootstrap-radio-usb")
++music_root = Path("/srv/media-library/music-network/yourparty_Libary")
+ quarantine_root = Path("/srv/media-library/quarantine/bootstrap-review")
+ 
+ allowed_audio = {
+diff --git a/scripts/toolbox_music_library_report.sh b/scripts/toolbox_music_library_report.sh
+index c20df73..14b9bb4 100644
+--- a/scripts/toolbox_music_library_report.sh
++++ b/scripts/toolbox_music_library_report.sh
+@@ -2,7 +2,7 @@
+ set -euo pipefail
+ 
+ TARGET_HOST="root@toolbox"
+-TARGET_PATH="/srv/media-library/music/bootstrap-radio-usb"
++TARGET_PATH="/srv/media-library/music-network/yourparty_Libary"
+ 
+ remote() {
+   ssh -o BatchMode=yes "${TARGET_HOST}" "$@"
+diff --git a/scripts/toolbox_music_selection_generate_starter.sh b/scripts/toolbox_music_selection_generate_starter.sh
+index 353b466..09e7c82 100644
+--- a/scripts/toolbox_music_selection_generate_starter.sh
++++ b/scripts/toolbox_music_selection_generate_starter.sh
+@@ -13,7 +13,7 @@ from pathlib import Path
+ import json
+ import subprocess
+ 
+-root = Path("/srv/media-library/music/bootstrap-radio-usb/clean")
++root = Path("/srv/media-library/music-network/yourparty_Libary/clean")
+ audio_ext = {"mp3","flac","wav","m4a","aac","ogg","opus","aiff","aif","alac","wma"}
+ blocked_exact = {
+     "Various Artists",
+@@ -79,7 +79,7 @@ def write_manifest(path: Path, title: str, rows: list[dict]) -> None:
+     lines = [
+         f"# {title}",
+         "# Generated automatically from the current bootstrap music seed.",
+-        "# Relative paths under /srv/media-library/music/bootstrap-radio-usb",
++        "# Relative paths under /srv/media-library/music-network/yourparty_Libary",
+         "",
+     ]
+     for row in rows:
+diff --git a/scripts/toolbox_music_selection_promote_starter.sh b/scripts/toolbox_music_selection_promote_starter.sh
+index cb7cea9..8eff5f7 100644
+--- a/scripts/toolbox_music_selection_promote_starter.sh
++++ b/scripts/toolbox_music_selection_promote_starter.sh
+@@ -30,7 +30,7 @@ for raw in src.read_text(encoding="utf-8", errors="replace").splitlines():
+ header = [
+     f"# {title}",
+     "# Promoted from the generated starter manifest.",
+-    "# Relative paths under /srv/media-library/music/bootstrap-radio-usb",
++    "# Relative paths under /srv/media-library/music-network/yourparty_Libary",
+     "",
+ ]
+ dest.write_text("\n".join(header + entries) + "\n", encoding="utf-8")
+diff --git a/scripts/toolbox_music_selection_seed_report.sh b/scripts/toolbox_music_selection_seed_report.sh
+index 355596e..b86648d 100644
+--- a/scripts/toolbox_music_selection_seed_report.sh
++++ b/scripts/toolbox_music_selection_seed_report.sh
+@@ -5,7 +5,7 @@ ssh -o BatchMode=yes root@toolbox python3 - <<'PY'
+ from pathlib import Path
+ import subprocess
+ 
+-bootstrap = Path("/srv/media-library/music/bootstrap-radio-usb")
++bootstrap = Path("/srv/media-library/music-network/yourparty_Libary")
+ candidate_roots = [
+     bootstrap / "clean",
+     bootstrap / "Contents",
+diff --git a/scripts/toolbox_music_selection_sync.sh b/scripts/toolbox_music_selection_sync.sh
+index 95484ce..b05e925 100644
+--- a/scripts/toolbox_music_selection_sync.sh
++++ b/scripts/toolbox_music_selection_sync.sh
+@@ -47,7 +47,7 @@ import os
+ from pathlib import Path
+ 
+ selection = json.loads(base64.b64decode(os.environ["SELECTION_JSON_B64"]).decode("utf-8"))
+-bootstrap_root = Path("/srv/media-library/music/bootstrap-radio-usb")
++bootstrap_root = Path("/srv/media-library/music-network/yourparty_Libary")
+ dest_roots = {
+     "favorites": Path("/srv/media-library/music/favorites"),
+     "curated": Path("/srv/media-library/music/curated"),
+diff --git a/scripts/toolbox_quarantine_music_candidates.sh b/scripts/toolbox_quarantine_music_candidates.sh
+index b029fab..4838684 100644
+--- a/scripts/toolbox_quarantine_music_candidates.sh
++++ b/scripts/toolbox_quarantine_music_candidates.sh
+@@ -5,7 +5,7 @@ ssh -o BatchMode=yes root@toolbox python3 - <<'PY'
+ from pathlib import Path
+ import shutil
+ 
+-music_root = Path("/srv/media-library/music/bootstrap-radio-usb")
++music_root = Path("/srv/media-library/music-network/yourparty_Libary")
+ quarantine_root = Path("/srv/media-library/quarantine/bootstrap-review")
+ exclude_file = Path("/etc/homeserver2027/media-sync-excludes.txt")
+ 

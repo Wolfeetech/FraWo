@@ -1,0 +1,89 @@
+---
+ansible_become_password: "{{ homeserver_vault_surface_frawo_password }}"
+surface_go_target_hostname: surface-go-frontend
+surface_go_admin_user: frawo
+surface_go_kiosk_user: frontend
+surface_go_portal_dir: /home/frontend/homeserver2027-portal
+surface_go_portal_bind_address: 127.0.0.1
+surface_go_portal_http_port: 17827
+surface_go_kiosk_start_url: http://127.0.0.1:17827
+surface_go_browser_binary: /usr/bin/firefox
+surface_go_launcher_script: /usr/local/bin/homeserver2027-frawo-control
+surface_go_firefox_package: firefox
+surface_go_text_scaling_factor: 1.25
+surface_go_enable_screen_keyboard: true
+surface_go_enable_toolkit_accessibility: true
+surface_go_idle_delay_seconds: 0
+surface_go_sleep_inactive_ac_type: nothing
+surface_go_sleep_inactive_battery_type: nothing
+surface_go_nextcloud_url: http://cloud.hs27.internal/login
+surface_go_nextcloud_inbox_url: http://cloud.hs27.internal/apps/files/?dir=/Paperless/Eingang
+surface_go_nextcloud_archive_url: http://cloud.hs27.internal/apps/files/?dir=/Paperless/Archiv
+surface_go_paperless_url: http://paperless.hs27.internal/accounts/login/
+surface_go_media_url: http://media.hs27.internal
+surface_go_radio_player_url: http://radio.hs27.internal/public/frawo-funk
+surface_go_radio_control_url: http://radio.hs27.internal/login
+surface_go_odoo_url: http://odoo.hs27.internal/web/login
+surface_go_home_assistant_url: http://ha.hs27.internal
+surface_go_anydesk_enabled: true
+surface_go_anydesk_package_url: https://deb.anydesk.com/pool/main/a/anydesk/anydesk_8.0.0_amd64.deb
+surface_go_anydesk_package_local_path: /opt/homeserver2027/install-media/remote/anydesk_8.0.0_amd64.deb
+surface_go_anydesk_binary: /usr/bin/anydesk
+surface_go_anydesk_service_name: anydesk
+surface_go_studiopc_anydesk_id: "1559042020"
+surface_go_tailscale_repo_key_url: https://pkgs.tailscale.com/stable/ubuntu/noble.noarmor.gpg
+surface_go_tailscale_repo_list_url: https://pkgs.tailscale.com/stable/ubuntu/noble.tailscale-keyring.list
+surface_go_required_packages:
+  - openssh-server
+  - curl
+  - ca-certificates
+  - unattended-upgrades
+  - gdm3
+  - gnome-kiosk
+  - gnome-kiosk-script-session
+  - firefox
+  - dconf-cli
+surface_go_keyboard_launcher_script: /usr/local/bin/homeserver2027-touch-keyboard
+surface_go_absent_packages:
+  - nginx
+  - nginx-common
+  - nginx-core
+  - nginx-full
+  - nginx-light
+surface_go_kiosk_desktop_launchers:
+  - name: FRAWO Control
+    comment: Oeffnet das gemeinsame FRAWO-Frontend
+    exec: "{{ surface_go_launcher_script }} --kiosk"
+    icon: web-browser
+    categories: Network;WebBrowser;
+  - name: Bildschirmtastatur
+    comment: Bildschirmtastatur fuer Touch-Bedienung
+    exec: "{{ surface_go_keyboard_launcher_script }}"
+    icon: input-keyboard
+    categories: Utility;Accessibility;
+surface_go_admin_desktop_launchers:
+  - name: FRAWO Control
+    comment: Oeffnet das gemeinsame FRAWO-Frontend
+    exec: "{{ surface_go_launcher_script }} {{ surface_go_kiosk_start_url }}"
+    icon: web-browser
+    categories: Network;WebBrowser;
+  - name: Bildschirmtastatur
+    comment: Bildschirmtastatur fuer Touch-Bedienung
+    exec: "{{ surface_go_keyboard_launcher_script }}"
+    icon: input-keyboard
+    categories: Utility;Accessibility;
+  - name: Radio Control
+    comment: AzuraCast Steuerung
+    exec: "{{ surface_go_launcher_script }} {{ surface_go_radio_control_url }}"
+    icon: mixer
+    categories: AudioVideo;Network;WebBrowser;
+  - name: AnyDesk
+    comment: Startet die Remote-Support-Anwendung
+    exec: "{{ surface_go_anydesk_binary }}"
+    icon: anydesk
+    categories: Network;RemoteAccess;
+  - name: StudioPC Remote
+    comment: Remote-Zugriff auf den Studio-PC ueber AnyDesk
+    exec: "{{ surface_go_anydesk_binary }} {{ surface_go_studiopc_anydesk_id }}"
+    icon: computer
+    categories: Network;RemoteAccess;
