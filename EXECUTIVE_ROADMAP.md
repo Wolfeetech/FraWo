@@ -8,11 +8,11 @@ Diese Datei ist die kompakteste Fuehrungsansicht fuer den aktuellen Projektstand
 
 - interner Business-MVP stabil und sichtbar freigabefaehig
 - **Brand Identity:** Finalisiert am `2026-04-07` (`High-End Hybrid`)
-- **Website-Release:** `www.frawo-tech.de` (Odoo-basiert) mit Fokus auf Handwerk/IT-Symbiose und Radio-Integration
+- **Website-Release:** `www.frawo-tech.de` (Odoo-basiert) als professioneller FraWo-Eventdienstleister-Auftritt mit belastbarer Public-Edge-Auslieferung
 - Vollzertifizierung fuer `PBS`, `surface-go-frontend` und `Radio/AzuraCast` getrennt vom MVP
 - technisch verifizierte FRAWO-Mailpfade bei `STRATO`
 
-## Stand Heute (Audit 2026-04-08)
+## Stand Heute (Audit 2026-04-09)
 
 - **Status:** Konsistent mit lokalem `NETWORK_STATE.md` und Dashboard-Audit.
 - **Brand Kit:** Assets lokal unter `brand_assets/` verfuegbar; `IDENTITY_STANDARD.md` aktualisiert.
@@ -20,10 +20,11 @@ Diese Datei ist die kompakteste Fuehrungsansicht fuer den aktuellen Projektstand
 - `Vaultwarden` ist intern ueber `HTTPS` erreichbar.
 - `webmaster@frawo-tech.de` und `franz@frawo-tech.de` sind technisch gegen `IMAP` und `SMTP AUTH` verifiziert.
 - Odoo- und Nextcloud-Reachability-Drift vom `2026-04-07` sind behoben; die internen und mobilen Frontdoors antworten wieder, und das Odoo-Masterprojekt ist jetzt auf den kanonischen SSOT-Stand normalisiert.
-- Die Odoo-Website auf `VM 220` ist inhaltlich jetzt sichtbar auf FraWo gezogen: gebrandete Homepage, saubere Kontaktseite, Mailto-CTA auf `info@frawo-tech.de`, alter Platzhalter-Footer entfernt.
+- Die Odoo-Website auf `VM 220` ist inhaltlich sichtbar auf FraWo gezogen und gestalterisch in Arbeit; echte Bildassets sind wieder eingebunden, `Poppins` ist CI-weit gesetzt, und fuer Design/Hosting liegt jetzt ein separater Claude-Handoff samt Implementierungs-Assets unter `Codex/website/`.
 - Der semantische Website-Pfad ist ebenfalls bereinigt: `web.base.url=https://www.frawo-tech.de`, `website.domain=NULL`, dadurch rendern `canonical` und `og:url` im Host-Preview wieder korrekt fuer `www.frawo-tech.de`.
 - Die echten Restblocker liegen jetzt nicht mehr bei Odoo-Reachability, sondern bei sichtbarer Operator-Abnahme und den offenen MVP-Gates `device_rollout_verified` sowie `vaultwarden_recovery_material_verified`.
 - Der Website-Track ist damit nicht mehr primaer am Odoo-Inhalt blockiert, sondern weiter am getrennten Public-Edge-/Forwarding-Nachweis.
+- `agent@frawo-tech.de` ist als Alias auf `webmaster@frawo-tech.de` technisch zustellbar verifiziert; offen bleibt die bewusste Incoming-Strategie fuer Odoo ohne serverseitiges `n8n`.
 
 ## Operative Reihenfolge (MVP Ready Path)
 
@@ -31,6 +32,13 @@ Diese Datei ist die kompakteste Fuehrungsansicht fuer den aktuellen Projektstand
 2. **Odoo-SSOT fortfuehren:** API-Key-Hardening fuer `agent@`, Incoming-Alias vorbereiten und Board-Governance im Alltag bestaetigen.
 3. **Website-Public-Edge:** externen Pfad fuer `www.frawo-tech.de` sauber verifizieren, nachdem der Odoo-Inhalt jetzt gruen ist.
 4. **App-Testmails und Release Gates:** SMTP-Restpfade in Odoo pruefen und `release-mvp-gate` auf GRUEN ziehen.
+
+## Heute Abend Parallelspur
+
+- **Claude Track:** FraWo-Website-Design, Text und Hosting-Analyse anhand `CLAUDE_WEBSITE_HOSTING_HANDOFF.md` und `Codex/website/`.
+- **Codex Track:** Runtime-SSOT sauber halten, Executive-/Operator-Sicht aktualisieren und die nicht-websitegebundenen MVP-/Odoo-/Mail-Restpunkte weiter vorbereiten.
+- **Nicht kollidieren:** keine parallelen Blind-Edits in Odoo-Website-Views, solange Claude den Design-/Hosting-Finish vorbereitet.
+- **Ziel fuer morgen produktiv:** interner Business-Core bleibt stabil; Website-Finish und Public-Edge werden getrennt und bewusst freigegeben.
 
 ## Verweise
 

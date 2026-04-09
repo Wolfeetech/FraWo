@@ -1,0 +1,69 @@
+# FraWo Caddy — Public Release Block
+# Datum: 2026-04-09
+# 
+# VORAUSSETZUNGEN bevor dieser Block aktiv gesetzt wird:
+# 1. DNS: frawo-tech.de und www.frawo-tech.de zeigen auf öffentliche IP von toolbox
+# 2. UCG/Router: Port 80 und 443 nach außen offen (ACME-Challenge braucht beide)
+# 3. Odoo Settings > Website > Domain auf https://frawo-tech.de gesetzt
+# 4. Frischer SQL-Backup gemacht (Ziel: Codex/website_backups/)
+#
+# ERST DANN diesen Block in die aktive Caddyfile auf toolbox einfügen.
+# Aktive Caddyfile liegt typisch unter: /etc/caddy/Caddyfile oder im Docker-Volume
+# Reload: docker exec toolbox-network_caddy_1 caddy reload --config /etc/caddy/Caddyfile
+#
+# HINWEIS: "tls" ohne Parameter = Caddy macht ACME automatisch (Let's Encrypt)
+# "tls internal" NICHT verwenden für Public-Domains!
+
+
+# --- FRAWO PUBLIC WEBSITE ---
+
+# www → Root Redirect
+www.frawo-tech.de {
+  redir https://frawo-tech.de{uri} permanent
+}
+
+# Primäre Public-Domain → Odoo
+frawo-tech.de {
+  reverse_proxy 10.1.0.22:8069 {
+    header_up Host frawo-tech.de
+    header_up X-Forwarded-Proto https
+    header_up X-Forwarded-For {remote_host}
+  }
+
+  # Sicherheits-Header
+  header {
+    X-Content-Type-Options nosniff
+    X-Frame-Options SAMEORIGIN
+    Referrer-Policy strict-origin-when-cross-origin
+  }
+
+  # Odoo WebSocket Support (für Livechat, falls aktiv)
+  @websocket {
+    header Upgrade websocket
+  }
+  reverse_proxy @websocket 10.1.0.22:8072 {
+    header_up Host frawo-tech.de
+    header_up X-Forwarded-Proto https
+  }
+
+  # Logging
+  log {
+    output file /var/log/caddy/frawo-tech.log {
+      roll_size 10mb
+      roll_keep 5
+    }
+  }
+}
+
+
+# --- BESTEHENDE INTERNE MAPPINGS — UNVERÄNDERT LASSEN ---
+# (die folgenden Blöcke aus current_caddy.txt bleiben wie sie sind)
+#
+# http://funk.frawo-tech.de, https://funk.frawo-tech.de {
+#   tls internal
+#   ... (bleibt als interner Alias, nicht entfernen bis Public-Release verifiziert)
+# }
+#
+# NACH erfolgreichem Public-Release von frawo-tech.de: 
+# funk.frawo-tech.de entscheiden ob behalten oder entfernen
+# Empfehlung: behalten als interner Technikpfad, aber in README dokumentieren

@@ -324,3 +324,38 @@ Der professionelle Zielzustand ist nicht nur `HTTP 200`, sondern ein bewusst def
 - Homepage jetzt mit klarem Eventdienstleister-Fokus: technische Setups, Ablauf, Zuspielung, Website und Besucherinfo.
 - Kontaktseite jetzt mit konkreten Anfragepfaden statt allgemeinem Marketingtext.
 - Live verifiziert: neue Homepage-Subline FraWo plant und betreut technische Setups ..., Karten Technische Planung, Livebetrieb & Betreuung, Website & Besucherinfo, Kontaktseite Projektstart ohne Umwege, und kein Handwerk im Renderpfad.
+
+## Website-Pro-Redesign 2026-04-09
+- Homepage visuell und strukturell auf hoeheren professionellen Standard gezogen: starker dunkler Hero, modulare Leistungsflaechen, redaktionelleres Raster, groeßere Bildflaechen, klarere Eventdienstleister-Positionierung.
+- Referenzrichtung fuer Anspruch und Dramaturgie bewusst an grossen Medien-/Liveplattformen orientiert, ohne sie zu kopieren.
+- Live verifiziert auf Homepage: FraWo plant und betreut technische Setups ..., Technische Planung, Livebetrieb, Keine Show ueber der Show., Technikfachkraefte und Macher. und kein Handwerk im Renderpfad.
+- Kontaktseite nachgezogen und XML-Syntaxfehler durch unescaped Font-Import-URL behoben; /contactus rendert wieder mit Technik kurz briefing. Rest klaeren wir.`r
+
+- Typografie-Update 2026-04-09: Homepage, Kontaktseite und Footer auf Poppins umgestellt. Live verifiziert: amily=Poppins:wght@400;500;600;700;800 rendert auf / und /contactus; Barlow Condensed und Manrope sind aus dem geprueften Renderpfad entfernt.
+
+- Typografie-Feinschliff 2026-04-09: Poppins bleibt CI-Schrift, aber Gewichte wurden differenziert. Live verifiziert im Renderpfad: .frawo-display 800, .frawo-heading/.frawo-card h3/.frawo-panel h3 700, .frawo-contact-title 800, Contact-Subheads 700.
+
+- Claude-Handoff 2026-04-09: Separater Uebergabe-Brief fuer FraWo Website-Design und Hosting in CLAUDE_WEBSITE_HOSTING_HANDOFF.md angelegt. Enthalten: Designziel, CI-Regeln (Poppins), verbotene Sprache, Hosting-/Caddy-Kontext, Rollback-Dateien und direkter Startprompt fuer Claude.
+
+## Agent-Intake-Bridge 2026-04-09
+
+- Der sichere Intake-Pfad fuer gent@frawo-tech.de ist jetzt repo-seitig als eigener Brueckenbaustein vorbereitet:
+  - Script odoo_agent_intake_bridge.py
+  - Runbook OPERATIONS/ODOO_AGENT_INTAKE_OPERATIONS.md
+- Leitentscheidung:
+  - Odoo liest fuer V1 **nicht** die komplette Shared-Mailbox webmaster@frawo-tech.de
+  - stattdessen wird die bereits aktive Alias-Trennung ueber VM 200 genutzt:
+    - gent@ -> Aliases.Agent
+    - info@ -> Aliases.Info
+    - wolf@ bleibt in INBOX
+- Verhalten des neuen Brueckenpfads:
+  - dry-run standardmaessig
+  - liest nur den IMAP-Ordner Aliases.Agent
+  - baut daraus Odoo-Tasks im Masterprojekt
+  - setzt Standard-Owner auf wolf@frawo-tech.de plus gent@frawo-tech.de
+  - erkennt Duplikate ueber Message-ID
+  - verschiebt erfolgreich verarbeitete Mails nach Aliases.Agent.Processed
+- Betriebsregel:
+  - vor erstem produktivem --apply immer sichtbarer dry-run
+  - kein systemd-/Cron-Livegang ohne ersten Manual-Proof
+  - keine direkte Fetchmail-Freigabe auf der kompletten Shared-INBOX, solange dieser dedizierte Pfad nicht bewusst verworfen wird

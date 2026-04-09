@@ -279,3 +279,8 @@ Nicht akzeptabel:
 - `..\STRATO_MAIL_CLIENT_SETUP.md`
 - `..\NEXTCLOUD_MAIL_AND_ODOO_MAIL_ARCHITECTURE.md`
 - `..\INTERNAL_COMMUNICATION_STANDARD.md`
+
+- Odoo-Intake-Entscheidung seit 2026-04-09:
+  - Odoo soll fuer gent@ nicht die komplette Shared-Mailbox webmaster@... per Fetchmail lesen
+  - der bevorzugte V1-Pfad liest nur Aliases.Agent
+  - dafuer liegt der dedizierte Brueckenbaustein odoo_agent_intake_bridge.py plus Runbook OPERATIONS/ODOO_AGENT_INTAKE_OPERATIONS.md bereit

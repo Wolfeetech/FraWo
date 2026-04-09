@@ -815,3 +815,13 @@ Lokale Admin-Flaechen (nur localhost):
 - Website-Layout-Restore 2026-04-09: Die aktuell freigegebene FraWo-Startseite nutzt wieder den frueheren gefaelligen Aufbau als Hybrid mit den vorhandenen Odoo-Bildassets. Smart Media & Event ist als Hero zurueck, die Bildgruppe bleibt live sichtbar, und Handwerk-/HWK-Sprache ist weiterhin entfernt.
 
 - Website-Content-Fix 2026-04-09: Der gefaellige FraWo-Bild-/Layoutstand blieb erhalten, aber die Inhalte wurden in Odoo auf einen belastbaren Eventdienstleister-Text korrigiert: technische Setups, Livebetrieb, Besucherinfo, klare Anfragepfade. Kein Handwerk, kein Agentursprech.
+
+- Website-Pro-Redesign 2026-04-09: Die FraWo-Odoo-Seite wurde auf einen ambitionierteren professionellen Standard gezogen: dunkler Hero, starke Condensed-Typografie, modulare Leistungsflaechen, klare CTA-Struktur, professionellerer Eventdienstleister-Ton. Die Odoo-Bildassets bleiben als reale Bildflaechen im Layout. Kontaktseite wurde im selben Zug neu strukturiert und der XML-Renderfehler behoben.
+
+- Website-Typografie 2026-04-09: Aktiver Font-Standard fuer FraWo-Webseiten in Odoo ist jetzt Poppins; die fruehere Mischtypografie wurde aus Homepage, Kontaktseite und Footer entfernt.
+
+- Typografie-Feinschliff 2026-04-09: FraWo-Webseiten bleiben auf Poppins, nutzen aber jetzt abgestufte Gewichte statt eines flachen Bold-Looks. Display-/Hero-Ebene 800, inhaltliche Headlines 700, Labels/Meta reduziert.
+
+- Claude-Handoff 2026-04-09: Fuer Website-Design und Hosting existiert jetzt ein eigenstaendiger FraWo-Brief in CLAUDE_WEBSITE_HOSTING_HANDOFF.md, damit ein externer Claude-Lauf nicht wieder bei Null ansetzen oder in KI-/Agentursprech kippen muss.
+
+- 2026-04-09: Fuer den Odoo-Intake von gent@frawo-tech.de wurde ein dedizierter Brueckenpfad statt blindem Shared-Mailbox-Fetchmail vorbereitet. Repo-Bausteine: odoo_agent_intake_bridge.py und OPERATIONS/ODOO_AGENT_INTAKE_OPERATIONS.md. Zielpfad: STRATO -> webmaster@... -> Alias-Router Aliases.Agent -> Bridge -> Odoo-Task -> Aliases.Agent.Processed.

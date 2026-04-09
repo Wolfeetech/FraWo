@@ -190,3 +190,17 @@
 - Website-Layout-Restore 2026-04-09: Homepage auf den frueheren gefaelligen FraWo-Auftritt zurueckgezogen und als Hybrid neu aufgebaut. Hero wieder Smart Media & Event, alte Karten-/Band-/Kontaktdramaturgie zurueck, die Odoo-Fotos /web/image/1803, /1798, /1801, /1797, /1805, /1806 bleiben sichtbar eingebunden, und die problematische Handwerk-Sprache bleibt draussen.
 
 - Website-Content-Fix 2026-04-09: Homepage- und Kontakttexte wurden inhaltlich auf klaren Eventdienstleister-Fokus zurueckgezogen. Aktiver Live-Text betont Technik, Ablauf, Zuspielung und Besucherinfo; Handwerk-/HWK-Naehe und Agentursprech bleiben entfernt.
+
+- Website-Pro-Redesign 2026-04-09: FraWo-Startseite auf einen staerker redaktionellen, professionellen Eventdienstleister-Auftritt gezogen. Orientierung fuer Anspruch und Raster an grossen Medien-/Eventseiten wie sunshine live und NTS: starke Typohierarchie, modulare Sektionen, grosse Bildflaechen, klare Leistungsbloecke, kein Agentursprech.
+- Kontaktseite-Fix 2026-04-09: XML-Renderfehler durch unescaped Font-Import-URL behoben; /contactus liefert wieder sauber gerendertes HTML.
+
+- Website-Typografie 2026-04-09: FraWo-Homepage, Kontaktseite und Footer sind jetzt auf Poppins umgestellt. Die vorherige Mischtypografie mit Barlow Condensed/Manrope ist aus dem Renderpfad entfernt.
+
+- Typografie-Feinschliff 2026-04-09: Poppins bleibt CI-weit gesetzt, aber Gewichte sind jetzt abgestuft. Hero/Display weiter 800, Section-Heads/Card-Heads/Panels auf 700, Labels weicher gezogen und Uppercase-Haerte reduziert.
+
+- Claude-Handoff 2026-04-09: Fuer FraWo Website-Design und Hosting liegt jetzt ein separater Uebergabe-Brief in CLAUDE_WEBSITE_HOSTING_HANDOFF.md vor, inklusive CI-Regeln, Designanspruch, Hosting-Lage, Rollback-Dateien und direktem Startprompt.
+
+- Claude-Website-Implementierung 2026-04-09: Vollständige Implementierungs-Assets für FraWo-Website erstellt. Enthält: frawo_custom_css.css (Design-System mit Poppins-CI, Farb-Tokens, alle Klassen), frawo_homepage_blocks.html (7 fertige HTML-Sektionen: Hero, Leistungen, Bild-Trennblöcke, Arbeitsweise, Warum FraWo, CTA), frawo_contactus.html (neue Kontaktseite), frawo_caddy_public_release.txt (Caddy-Block für frawo-tech.de mit echtem ACME-TLS, erst nach DNS+Port-Verifikation aktivieren). Alle Dateien liegen in Codex/website/. Browser-Tool war auf dieser Maschine nicht verfügbar, daher kein direkter Odoo-Eingriff - manuelles Einfügen über Website-Builder erforderlich.
+
+- Odoo-Agent-Intake 2026-04-09: Fuer gent@frawo-tech.de liegt jetzt ein sicherer V1-Intake-Pfad ohne serverseitiges 
+8n und ohne blindes Fetchmail auf der Shared-INBOX vor. odoo_agent_intake_bridge.py liest nur Aliases.Agent, erzeugt daraus Odoo-Tasks im Masterprojekt, erkennt Duplikate ueber Message-ID und verschiebt verarbeitete Mails nach Aliases.Agent.Processed; Betriebsrunbook: OPERATIONS/ODOO_AGENT_INTAKE_OPERATIONS.md.

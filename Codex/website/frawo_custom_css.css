@@ -1,0 +1,428 @@
+/* =====================================================
+   FraWo GbR — Design System
+   CI-Schrift: Poppins
+   Einfügen in: Odoo Website > Customize > Custom CSS
+   Stand: 2026-04-09
+   ===================================================== */
+
+/* --- Google Font Import --- */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+
+/* --- Design Tokens --- */
+:root {
+  --frawo-bg:             #0d1117;
+  --frawo-surface:        #161b22;
+  --frawo-border:         #21262d;
+  --frawo-accent:         #00e5a0;
+  --frawo-accent-dim:     #00b882;
+  --frawo-text-primary:   #e6edf3;
+  --frawo-text-secondary: #8b949e;
+  --frawo-font:           'Poppins', sans-serif;
+}
+
+/* --- Global Reset auf FraWo-Basis --- */
+body,
+.o_website_preview body {
+  font-family: var(--frawo-font) !important;
+  background-color: var(--frawo-bg) !important;
+  color: var(--frawo-text-primary) !important;
+}
+
+/* --- Typohierarchie --- */
+.frawo-display {
+  font-family: var(--frawo-font);
+  font-weight: 800;
+  color: var(--frawo-text-primary);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.frawo-heading {
+  font-family: var(--frawo-font);
+  font-weight: 700;
+  color: var(--frawo-text-primary);
+  line-height: 1.2;
+}
+
+.frawo-subline {
+  font-family: var(--frawo-font);
+  font-weight: 400;
+  color: var(--frawo-text-secondary);
+  line-height: 1.6;
+}
+
+.frawo-label {
+  font-family: var(--frawo-font);
+  font-weight: 500;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--frawo-accent);
+}
+
+/* --- Hero --- */
+.frawo-hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-end;
+  padding: 0 0 6rem 0;
+  position: relative;
+  overflow: hidden;
+  background-color: var(--frawo-bg);
+}
+
+.frawo-hero-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 0;
+}
+
+.frawo-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(13, 17, 23, 0.4) 0%,
+    rgba(13, 17, 23, 0.85) 70%,
+    rgba(13, 17, 23, 1.0) 100%
+  );
+  z-index: 1;
+}
+
+.frawo-hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 800px;
+  padding: 0 2rem;
+}
+
+.frawo-hero-content h1 {
+  font-family: var(--frawo-font);
+  font-weight: 800;
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  color: var(--frawo-text-primary);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: 1.25rem;
+}
+
+.frawo-hero-content p {
+  font-family: var(--frawo-font);
+  font-weight: 400;
+  font-size: clamp(1rem, 1.5vw, 1.2rem);
+  color: var(--frawo-text-secondary);
+  line-height: 1.6;
+  max-width: 560px;
+  margin-bottom: 2rem;
+}
+
+/* --- CTA Button --- */
+.frawo-btn-primary {
+  display: inline-block;
+  font-family: var(--frawo-font);
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--frawo-bg) !important;
+  background-color: var(--frawo-accent);
+  padding: 0.85rem 2rem;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.frawo-btn-primary:hover {
+  background-color: var(--frawo-accent-dim);
+  color: var(--frawo-bg) !important;
+  text-decoration: none;
+}
+
+.frawo-btn-secondary {
+  display: inline-block;
+  font-family: var(--frawo-font);
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: var(--frawo-text-primary) !important;
+  background: transparent;
+  border: 1px solid var(--frawo-border);
+  padding: 0.85rem 2rem;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: border-color 0.2s ease;
+  cursor: pointer;
+}
+
+.frawo-btn-secondary:hover {
+  border-color: var(--frawo-accent);
+  text-decoration: none;
+}
+
+/* --- Section Wrapper --- */
+.frawo-section {
+  padding: 6rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.frawo-section-dark {
+  background-color: var(--frawo-surface);
+  padding: 6rem 2rem;
+}
+
+.frawo-section-dark .frawo-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* --- Leistungs-Grid --- */
+.frawo-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin-top: 3rem;
+}
+
+@media (max-width: 900px) {
+  .frawo-grid-3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+.frawo-card {
+  background-color: var(--frawo-surface);
+  border: 1px solid var(--frawo-border);
+  border-radius: 6px;
+  padding: 2rem;
+  transition: border-color 0.2s ease;
+}
+
+.frawo-card:hover {
+  border-color: var(--frawo-accent-dim);
+}
+
+.frawo-card h3 {
+  font-family: var(--frawo-font);
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--frawo-text-primary);
+  margin-bottom: 0.75rem;
+}
+
+.frawo-card p {
+  font-family: var(--frawo-font);
+  font-weight: 400;
+  font-size: 0.95rem;
+  color: var(--frawo-text-secondary);
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* --- Bild-Trennblock (Full-Bleed) --- */
+.frawo-image-break {
+  width: 100%;
+  height: 60vh;
+  min-height: 320px;
+  max-height: 600px;
+  object-fit: cover;
+  display: block;
+  filter: brightness(0.8);
+}
+
+/* --- Arbeitsweise 2-spaltig --- */
+.frawo-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: start;
+  margin-top: 3rem;
+}
+
+@media (max-width: 768px) {
+  .frawo-grid-2 {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}
+
+.frawo-grid-2 .frawo-text-large {
+  font-family: var(--frawo-font);
+  font-size: 1.35rem;
+  font-weight: 500;
+  color: var(--frawo-text-primary);
+  line-height: 1.6;
+}
+
+.frawo-stichpunkte {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.frawo-stichpunkte li {
+  font-family: var(--frawo-font);
+  font-size: 0.95rem;
+  color: var(--frawo-text-secondary);
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--frawo-border);
+  line-height: 1.5;
+}
+
+.frawo-stichpunkte li:last-child {
+  border-bottom: none;
+}
+
+.frawo-stichpunkte li::before {
+  content: "→ ";
+  color: var(--frawo-accent);
+  font-weight: 600;
+}
+
+/* --- CTA Sektion --- */
+.frawo-cta-section {
+  background-color: var(--frawo-surface);
+  border-top: 1px solid var(--frawo-border);
+  border-bottom: 1px solid var(--frawo-border);
+  padding: 6rem 2rem;
+  text-align: center;
+}
+
+.frawo-cta-section h2 {
+  font-family: var(--frawo-font);
+  font-weight: 700;
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  color: var(--frawo-text-primary);
+  margin-bottom: 0.75rem;
+}
+
+.frawo-cta-section p {
+  font-family: var(--frawo-font);
+  font-weight: 400;
+  color: var(--frawo-text-secondary);
+  margin-bottom: 2rem;
+}
+
+.frawo-contact-links {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.frawo-contact-links a {
+  font-family: var(--frawo-font);
+  font-weight: 500;
+  font-size: 1.1rem;
+  color: var(--frawo-accent) !important;
+  text-decoration: none;
+}
+
+.frawo-contact-links a:hover {
+  text-decoration: underline;
+}
+
+/* --- Footer --- */
+footer,
+.o_footer {
+  background-color: var(--frawo-bg) !important;
+  border-top: 1px solid var(--frawo-border) !important;
+  color: var(--frawo-text-secondary) !important;
+  font-family: var(--frawo-font) !important;
+}
+
+footer a,
+.o_footer a {
+  color: var(--frawo-text-secondary) !important;
+  font-family: var(--frawo-font) !important;
+  text-decoration: none;
+}
+
+footer a:hover,
+.o_footer a:hover {
+  color: var(--frawo-text-primary) !important;
+}
+
+/* --- Odoo-Standard-Elemente überschreiben --- */
+.navbar,
+.o_main_navbar {
+  background-color: var(--frawo-bg) !important;
+  border-bottom: 1px solid var(--frawo-border) !important;
+}
+
+.o_main_navbar .navbar-brand,
+.o_main_navbar a {
+  font-family: var(--frawo-font) !important;
+  color: var(--frawo-text-primary) !important;
+}
+
+/* --- Kontaktseite --- */
+.frawo-contact-page h1 {
+  font-family: var(--frawo-font);
+  font-weight: 800;
+  font-size: clamp(2rem, 4vw, 3rem);
+  color: var(--frawo-text-primary);
+  margin-bottom: 1rem;
+}
+
+.frawo-contact-page .frawo-intro {
+  font-size: 1.1rem;
+  color: var(--frawo-text-secondary);
+  max-width: 560px;
+  line-height: 1.7;
+  margin-bottom: 3rem;
+}
+
+.frawo-contact-block {
+  background: var(--frawo-surface);
+  border: 1px solid var(--frawo-border);
+  border-radius: 6px;
+  padding: 2rem;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.frawo-contact-block a {
+  font-family: var(--frawo-font);
+  font-weight: 500;
+  font-size: 1.05rem;
+  color: var(--frawo-accent) !important;
+  text-decoration: none;
+}
+
+.frawo-contact-block a:hover {
+  text-decoration: underline;
+}
+
+.frawo-response-note {
+  font-family: var(--frawo-font);
+  font-size: 0.875rem;
+  color: var(--frawo-text-secondary);
+  margin-top: 0.5rem;
+}
+
+/* --- Mobile Adjustments --- */
+@media (max-width: 600px) {
+  .frawo-hero-content h1 {
+    font-size: 2.25rem;
+  }
+
+  .frawo-section {
+    padding: 4rem 1.25rem;
+  }
+
+  .frawo-cta-section {
+    padding: 4rem 1.25rem;
+  }
+
+  .frawo-btn-primary,
+  .frawo-btn-secondary {
+    width: 100%;
+    text-align: center;
+  }
+}
