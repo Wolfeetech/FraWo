@@ -34,6 +34,7 @@ use_x_forwarded_for: true
 trusted_proxies:
   - ${TRUSTED_PROXY_PRIMARY}
   - ${TRUSTED_PROXY_FALLBACK}
+  - 192.168.2.1
 EOF
 "
 

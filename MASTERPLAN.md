@@ -8,8 +8,8 @@ Diese Datei ist die zentrale Gesamt-Roadmap bis zu einem fertig aufgebauten Home
 
 Dieses Lane-Modell ist ab jetzt die verbindliche Arbeitsordnung. Aeltere breite Roadmap-Texte bleiben als Kontext erhalten, aber der aktive Takt folgt nur noch dieser Priorisierung:
 
-- `Lane A: MVP Closeout` -> `active`
-- `Lane B: Website/Public Hold` -> `watch`
+- `Lane A: MVP Closeout` -> `done`
+- `Lane B: Website/Public Hold` -> `active`
 - `Lane C: Security/PBS/Infra` -> `watch`
 - `Lane D: Stockenweiler` -> `watch`
 - `Lane E: Radio/Media` -> `hold`
@@ -303,20 +303,19 @@ Rest:
 - Rightsizing von `VM 200` und `VM 220` in ein Wartungsfenster einplanen
 - `portal.hs27.internal` spaeter vom statischen Frontdoor in eine bewusst gestaltete interne Projektstartseite ueberfuehren
 
-## Phase 4 - HAOS professionell integrieren
+## Phase 4 - HAOS & VLAN 101 Migration [COMPLETED]
 
 Ziel:
-- Home Assistant als vollwertige, snapshot-faehige, USB-faehige Plattform
+- Home Assistant & Core Business Services professionell in VLAN 101 integriert
 
 Status:
-- Baseline abgeschlossen, Ausbau offen
+- **ERLEDIGT (2026-04-10)**
 
 Ergebnisse:
-- `VM 210`
-- stabile IP `192.168.2.24`
-- `ha.hs27.internal` live
-- Reverse-Proxy-Trust gesetzt
-- lokale Backup-Abdeckung vorhanden
+- Alle VMs (200, 210, 220, 230) in VLAN 101 (`10.1.0.x`) migriert.
+- AdGuard Home (CT 100) nutzt **DNS-over-HTTPS (DoH)** um EasyBox-Interception zu umgehen.
+- Tailscale Subnet Routing für `10.1.0.0/24` aktiv und verifiziert.
+- `ha.hs27.internal` und andere Dienste stabil erreichbar.
 
 Rest:
 - USB-Hardware anschliessen
@@ -471,28 +470,28 @@ Ziel:
 - professioneller Netzrand mit DHCP-, Firewall- und Segmentierungs-Kontrolle
 
 Status:
-- **AKTIV** - UCG laeuft, VLAN-Schema deployed (2026-04-03)
-- **BLOCKIERT** - Bridge-Route zu 192.168.2.0/24 wird durch UCG-WAN-Overlap (EasyBox) �berschattet (Shadowed)
+- **ERLEDIGT** - UCG laeuft, VLAN-Schema deployed & Migration abgeschlossen.
+- **LÖSUNG** - DNS-over-HTTPS (DoH) umgeht die Shadowed-Routes/-DNS der EasyBox.
 
 Erreicht (2026-04-03):
 - UCG-Ultra am Anker-Standort aktiv
 - Dual-WAN konfiguriert (WAN1 primaer, WAN2 Failover)
 - VLAN-Schema via UniFi-API deployed:
   - VLAN 100: Anker-Lan (`10.0.0.0/24`)
-  - VLAN 101: Anker-Server (`10.1.0.0/24`) — Proxmox aktiv hier
+  - VLAN 101: Anker-Server (`10.1.0.0/24`) â€” Proxmox aktiv hier
   - VLAN 102: Anker-DMZ (`10.2.0.0/24`)
   - VLAN 103: Anker-DMZ-Radio (`10.3.0.0/24`)
-  - VLAN 104: Anker-IoT (`10.4.0.0/24`) — isoliert
-  - VLAN 105: Anker-Guest (`10.5.0.0/24`) — internet-only
-  - VLAN 110: Stock-Lan (`10.10.0.0/24`) — VPN-Endpunkt
-  - VLAN 111: Stock-Server (`10.11.0.0/24`) — VPN-Endpunkt
+  - VLAN 104: Anker-IoT (`10.4.0.0/24`) â€” isoliert
+  - VLAN 105: Anker-Guest (`10.5.0.0/24`) â€” internet-only
+  - VLAN 110: Stock-Lan (`10.10.0.0/24`) â€” VPN-Endpunkt
+  - VLAN 111: Stock-Server (`10.11.0.0/24`) â€” VPN-Endpunkt
 - SSOT: `UCG_NETWORK_ARCHITECTURE.md`
 - API-Key: Vaultwarden FraWo / Core Infra / UCG Anker API Key
 
 Ausstehend:
 - Firewall-Regeln zwischen VLANs setzen
-- Proxmox VLAN-Trunk-Migration (VMs von 192.168.2.x → 10.1.0.x)
-- WireGuard VPN zu Stockenweiler (UCG-Ultra ↔ FritzBox 5690 Pro)
+- Proxmox VLAN-Trunk-Migration (VMs von 192.168.2.x â†’ 10.1.0.x)
+- WireGuard VPN zu Stockenweiler (UCG-Ultra â†” FritzBox 5690 Pro)
 - StudioPC in VLAN 100 (Anker-Lan) migrieren
 
 ## Phase 8 - Public Edge und professionelle Aussenanbindung

@@ -1,49 +1,70 @@
 import xmlrpc.client
 import getpass
 import sys
+import os
 
-URL = "http://odoo.hs27.internal"
+URL = "http://100.99.206.128:8444"
 DB = "postgres"  
 USER = "wolf@frawo-tech.de"  # The admin email defined in Vaultwarden for Odoo MVP
 
-print("🔹 Odoo Projekt Map Sync: Lane C (Security/Infra) 🔹")
+print("--- Odoo Projekt Map Sync: Lane C (Security/Infra) ---")
 print(f"Verbinde zu {URL}...")
 
-db_name = DB
-username = input(f"Benutzername (Enter für '{USER}'): ") or USER
-password = getpass.getpass("Odoo Admin Passwort: ")
+usernames = ["admin", "wolf@frawo-tech.de"]
+db_names = ["FraWo_GbR", "odoo", "postgres", "homeserver"]
+password = os.environ.get("ODOO_PASSWORD")
 
-common = xmlrpc.client.ServerProxy('{}/xmlrpc/2/common'.format(URL))
-try:
-    uid = common.authenticate(db_name, username, password, {})
-    if not uid:
-        print("❌ Login fehlgeschlagen! Falsches Passwort.")
-        sys.exit(1)
-    print("✅ Login erfolgreich!")
-except Exception as e:
-    print(f"❌ Verbindungsfehler: {e}")
+if not password:
+    print("FEHLER: ODOO_PASSWORD Umgebungsvariable nicht gesetzt.")
     sys.exit(1)
 
+uid = None
+active_db = None
+active_user = None
+
+for user in usernames:
+    for db in db_names:
+        print(f"Versuche: User '{user}' auf DB '{db}'...")
+        try:
+            common = xmlrpc.client.ServerProxy('{}/xmlrpc/2/common'.format(URL))
+            uid = common.authenticate(db, user, password, {})
+            if uid:
+                print(f"BINGO! Login erfolgreich: User '{user}', DB '{db}'")
+                active_db = db
+                active_user = user
+                break
+        except Exception as e:
+            # Skip errors that just mean "not here"
+            continue
+    if uid:
+        break
+
+if not uid:
+    print("Login fehlgeschlagen. Keine gueltige Kombination aus User/DB gefunden.")
+    sys.exit(1)
+
+db_name = active_db
+username = active_user
 models = xmlrpc.client.ServerProxy('{}/xmlrpc/2/object'.format(URL))
 
 tasks = [
     {
-        'name': '🚀 [Lane C] Tailscale Route Approval (10.1.0.0/24)',
+        'name': '[DONE] Phase 4: VLAN 101 Migration & DNS Recovery',
         'description': """
         <ul>
-            <li>[ ] In <a href="https://login.tailscale.com/admin/machines">Tailscale Admin</a> die beworbene Route 10.1.0.0/24 bei <b>toolbox</b> approven.</li>
-            <li>[ ] Route springt auf active</li>
-            <li>[ ] Nach Freigabe die KI anweisen "tailscale status verifizieren"</li>
+            <li>[x] Alle Core-VMs (Nextcloud, Odoo, Paperless, HA) sind in VLAN 101 (10.1.0.x) migriert.</li>
+            <li>[x] DNS-Interception der EasyBox via AdGuard Home DoH umgangen.</li>
+            <li>[x] Dokumentation (Masterplan, Live-Context, VM-Audit) aktualisiert.</li>
         </ul>
         """
     },
     {
-        'name': '🚀 [Lane C] Tailscale Split DNS Update',
+        'name': '[Lane B] Website Release Gate & Public Edge',
         'description': """
         <ul>
-            <li>[ ] In <a href="https://login.tailscale.com/admin/dns">Tailscale DNS</a> den restricted Nameserver fuer 'hs27.internal' und 'frawo-tech.de' auf <b>10.1.0.20</b> umstellen.</li>
-            <li>[ ] Remote-Clients erreichen portal, ha, odoo via internen Domainnamen.</li>
-            <li>[ ] KI anweisen "DNS Check abschließen"</li>
+            <li>[ ] STRATO DNS-Einträge für Public-Projekte vorbereiten.</li>
+            <li>[ ] Caddy-Zertifikats-Automatisierung für externe Domains.</li>
+            <li>[ ] Security-Sperre für interne Admin-Panels verifizieren.</li>
         </ul>
         """
     }
@@ -52,8 +73,8 @@ tasks = [
 for task_data in tasks:
     try:
         task_id = models.execute_kw(db_name, uid, password, 'project.task', 'create', [task_data])
-        print(f"🎉 Aufgabe '{task_data['name']}' erfolgreich in Odoo angelegt! (ID: {task_id})")
+        print(f"Aufgabe '{task_data['name']}' erfolgreich in Odoo angelegt! (ID: {task_id})")
     except Exception as e:
-        print(f"❌ Fehler beim Erstellen: {e}")
+        print(f"Fehler beim Erstellen: {e}")
 
-print("👉 Schau jetzt auf dein Odoo Kanboard und verlagere die aktiven Lanes.")
+print("Schau jetzt auf dein Odoo Kanboard und verlagere die aktiven Lanes.")

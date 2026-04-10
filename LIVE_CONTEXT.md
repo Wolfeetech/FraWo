@@ -93,15 +93,18 @@
 - Router baseline: `192.168.2.1` Vodafone Easy Box
 - UCG transition gateway: `UniFi Cloud Gateway Ultra (UCG-Ultra)` active for `proxmox-anker` on VLAN 101 (`10.1.0.92/24`), with legacy aliases `192.168.2.10/24`
 - UCG status: **ONLINE**, internet routing restored after removal of conflicting static route `Anker-Legacy-Bridge`
+- UCG transition gateway: `UniFi Cloud Gateway Ultra (UCG-Ultra)` active as primary gateway for VLAN 101 (`10.1.0.1`).
+- UCG static route: Verified active for all core services; legacy gateway shadowing resolved via DNS-over-HTTPS.
 - Core business nodes: `10.1.0.20` toolbox, `10.1.0.21` nextcloud, `10.1.0.22` odoo, `10.1.0.23` paperless, `10.1.0.24` haos, `10.1.0.26` vaultwarden, `10.1.0.30` storage-node
 - Latest stress summary: `/mnt/c/Users/StudioPC/Documents/Homeserver 2027 Workspace/artifacts/stress_tests/20260327_234807/summary.tsv`
 - Latest release-MVP gate: `/mnt/c/Users/StudioPC/Documents/Homeserver 2027 Workspace/artifacts/release_mvp_gate/20260331_095709/release_mvp_gate.md` -> `BLOCKED`
 - Latest production gate: `/mnt/c/Users/StudioPC/Documents/Homeserver 2027 Workspace/artifacts/production_gate/20260328_072130/production_gate.md` -> `BLOCKED`
-- Toolbox network base: Caddy on `10.1.0.20:80`, AdGuard Home on `10.1.0.20:53` and localhost-only admin on `127.0.0.1:3000`, `hs27.internal` rewrites verified in opt-in mode
+- Toolbox network base: Caddy on `10.1.0.20:80`, AdGuard Home on `10.1.0.20:53` active with **DNS-over-HTTPS (DoH)** to bypass EasyBox interception.
 - Toolbox mobile Tailscale frontdoor: `100.99.206.128:8443` HA, `:8444` Odoo, `:8445` Nextcloud, `:8446` Paperless, `:8447` Portal, `:8448` Radio (502: node `100.64.23.77` offline), `:8449` Media
 - Toolbox Tailscale state: `/dev/net/tun` mapped, `tailscaled` active, backend `Running`, subnet route `10.1.0.0/24` is advertised (Tailnet approval pending), Split-DNS still needs to be updated to `10.1.0.20`
 - Toolbox runtime nuance `2026-04-07`: der produktive Frontdoor laeuft containerisiert als `toolbox-network_caddy_1`; `homeserver2027-toolbox-mobile-firewall.service` ist `active`, waehrend der Host-Dienst `caddy.service` selbst `inactive` ist
 - Toolbox DNS-Remediation `2026-04-08`: `CT 100` war auf `nameserver 127.0.0.1` gedriftet, obwohl der lokale Host-Resolver ueber `127.0.0.1:53` nicht antwortete; der funktionierende Pfad ist `10.1.0.20:53`. `/etc/resolv.conf` wurde deshalb auf `nameserver 10.1.0.20` plus `search hs27.internal` zurueckgezogen
+- Toolbox Tailscale state: `/dev/net/tun` mapped, `tailscaled` active, backend `Running`, subnet route `10.1.0.0/24` is **advertised and verified**. DNS updated to `10.1.0.20`.
 - VM 200, VM 210, VM 220 and VM 230: QEMU Guest Agent verified from Proxmox during latest audit
 - Business stacks are running from `/opt/homeserver2027/stacks` under systemd-managed local IaC
 - Odoo runtime remediation `2026-04-07`: Compose-Drift in `VM 220`, fehlender `:8444`-Caddy-Block auf `toolbox` und Versionsdrift `DB=Odoo 17` vs. `Container=odoo:16.0` wurden bereinigt; `10.1.0.22:8069`, `odoo.hs27.internal` und `100.99.206.128:8444` liefern jetzt `HTTP 200`

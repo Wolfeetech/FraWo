@@ -6,21 +6,19 @@
 - Follow-up audit date: `2026-03-24`
 - Audit scope: `CT 100 toolbox`, `VM 200 nextcloud`, `VM 220 odoo`, `VM 230 paperless`, `VM 320 restore-test`
 
-## Network State Change - 2026-04-03 (UCG Test Segment)
+## Network State Change - 2026-04-10 (VLAN 101 Migration COMPLETE)
 
-- Proxmox host `proxmox-anker` now reports `vmbr0` on `10.1.0.92/24` via DHCP with gateway `10.1.0.1`.
-- `192.168.2.0/24` services are currently unreachable from `wolfstudiopc` (HTTP probes return `000`).
-- From Proxmox, pings to `192.168.2.20-24` fail, so the business VMs are effectively isolated from the old LAN.
-- VMs still run (`200/210/220/230` running), so the issue is network reachability, not VM power state.
-- Required decision: either move the Proxmox port back to the legacy LAN/VLAN or migrate the full stack (VMs + DNS + routes) into `10.1.0.0/24`.
-- `/etc/network/interfaces` is now staged for static `192.168.2.10/24` on `vmbr0` but not applied yet; it will only take effect after the Proxmox port is moved back to the legacy LAN and the network is reloaded.
+- Proxmox host `proxmox-anker` and all core business guests have successfully migrated to **VLAN 101** (`10.1.0.0/24`).
+- Connectivity is stable via the new UCG-Ultra gateway (`10.1.0.1`).
+- Legacy `192.168.2.0/24` shadowing is bypassed via AdGuard Home DNS-over-HTTPS (DoH).
+- Subnet routing for `10.1.0.0/24` is active on the toolbox and verified in the Tailnet.
 
 ## CT 100 - Toolbox
 
 - Proxmox metadata:
   - CT ID `100`
   - Name `toolbox`
-  - IP config `192.168.2.20/24`, gateway `192.168.2.1`
+  - IP config `10.1.0.20/24`, gateway `10.1.0.1` (VLAN 101)
   - Debian 12, unprivileged LXC, `nesting=1`
 - Runtime before remediation:
   - `/opt` was empty
@@ -35,7 +33,7 @@
   - Caddy verified on `192.168.2.20:80`
   - AdGuard Home verified on `192.168.2.20:53`
   - AdGuard admin verified as localhost-only on `127.0.0.1:3000` inside the guest
-  - `hs27.internal` rewrites verified to `192.168.2.20`
+  - `hs27.internal` rewrites verified to `10.1.0.20`
   - `cloud.hs27.internal`, `odoo.hs27.internal` and `paperless.hs27.internal` returned healthy HTTP
   - `ha.hs27.internal` and `radio.hs27.internal` returned intentional `503` placeholders
   - Proxmox snapshot `codex-pre-toolbox-ts-20260318` created before Tailscale prep
@@ -45,7 +43,7 @@
   - `net.ipv4.ip_forward = 1` and `net.ipv6.conf.all.forwarding = 1` verified
   - backend state currently `Running`
 - Remaining follow-up:
-  - approve advertised route `192.168.2.0/24` in the Tailnet admin
+  - approve advertised route `10.1.0.0/24` in the Tailnet admin
   - keep AdGuard Home in opt-in mode until DHCP ownership and rollback are documented
 - DNS-/n8n-Drift-Check `2026-04-08`:
   - `CT 100 toolbox` war auf `nameserver 127.0.0.1` gedriftet, obwohl der Hostpfad `127.0.0.1:53` lokal nicht antwortete
@@ -64,11 +62,11 @@
     - `100.99.206.128`
     - `fd7a:115c:a1e0::af01:cea1`
 - Local prefs:
-  - `AdvertiseRoutes` includes `192.168.2.0/24`
+  - `AdvertiseRoutes` includes `10.1.0.0/24`
   - `CorpDNS=false`
   - `Hostname=toolbox`
 - Remaining follow-up:
-  - verify route approval for `192.168.2.0/24` in the Tailscale admin
+  - verify route approval for `10.1.0.0/24` in the Tailscale admin
   - keep AdGuard pilot mode unchanged until DNS ownership is explicit
 
 ## Toolbox Admin Surface Hardening - 2026-03-18
@@ -126,7 +124,7 @@
 - Proxmox metadata:
   - VM ID `200`
   - Name `nextcloud`
-  - IP config `192.168.2.21/24`, gateway `192.168.2.1`
+  - IP config `10.1.0.21/24`, gateway `10.1.0.1` (VLAN 101)
   - `scsi0` on `local-lvm`, `32G`
   - `onboot=1`
 - Guest OS:
@@ -196,7 +194,7 @@
 - Proxmox metadata:
   - VM ID `220`
   - Name `odoo`
-  - IP config `192.168.2.22/24`, gateway `192.168.2.1`
+  - IP config `10.1.0.22/24`, gateway `10.1.0.1` (VLAN 101)
   - `scsi0` on `local-lvm`, `32G`
   - `onboot=1`
 - Guest OS:
@@ -232,7 +230,7 @@
 - Proxmox metadata:
   - VM ID `230`
   - Name `paperless`
-  - IP config `192.168.2.23/24`, gateway `192.168.2.1`
+  - IP config `10.1.0.23/24`, gateway `10.1.0.1` (VLAN 101)
   - `scsi0` on `local-lvm`, `32G`
   - `onboot=1`
 - Application runtime:
@@ -340,11 +338,11 @@
   - stabilized network identity:
     - MAC `BC:24:11:D5:BA:30`
     - hostname `homeassistant.local`
-    - static in-guest address `192.168.2.24`
-  - Home Assistant answered on `http://192.168.2.24:8123/` with `HTTP 200`
+    - static in-guest address `10.1.0.24` (VLAN 101)
+  - Home Assistant answered on `http://10.1.0.24:8123/` with `HTTP 200`
 - Important follow-up:
   - internal proxy hostname `ha.hs27.internal` now returns `HTTP 200` through `CT 100`
-  - Home Assistant reverse-proxy trust was enabled for toolbox source IP `192.168.2.20`
+  - Home Assistant reverse-proxy trust was enabled for toolbox source IP `10.1.0.20`
   - a local `vzdump` archive for `VM 210` now exists on Proxmox `local`
   - USB passthrough is still not actionable because no target adapter is visible on the Proxmox host
   - Spot-Check `2026-04-09`:
