@@ -3,7 +3,7 @@
 > **Solo Operator Quick Start:** Pick one item from **Next**, move it to **Doing**, finish it, move to **Done**.
 > Don't add more than 3 items to Doing at once.
 
-Stand: `2026-04-09` | Aktualisiert von: Codex
+Stand: `2026-04-10` | Aktualisiert von: Codex
 
 ---
 
@@ -12,12 +12,46 @@ Stand: `2026-04-09` | Aktualisiert von: Codex
 ### 🔴 Blocked
 *(Warte auf externen Input – Operator-Aktion erforderlich)*
 
-| Task | Warum blockiert | Was danach? |
-|------|-----------------|-------------|
-| `vaultwarden_recovery_material_verified` | Physischer Nachweis fehlt (2 Offline-Kopien) | MVP-Gate final schließen |
-| `device_rollout_verified` (Franz Surface/iPhone) | Sichtbarer Gerätenachweis fehlt | `scripts/prove_device_rollout.ps1` ausführen |
+| Task | Warum blockiert | Frühestes Datum | Was danach? |
+|------|-----------------|-----------------|-------------|
+| `vaultwarden_recovery_material_verified` | Offline-Kopien aktuell nicht möglich (Operator hat bis Mai 2026 keinen Zugriff auf Druck/USB/physische Ablage) | **2026-05-01** | Checkliste unten ausführen, dann MVP-Gate final schließen |
+| `device_rollout_verified` (Franz Surface/iPhone) | Sichtbarer Gerätenachweis fehlt – **offen: ist das bis Mai ebenfalls blockiert?** Am nächsten Laptop-Tag prüfen und diesen Eintrag aktualisieren. | unklar | `scripts/prove_device_rollout.ps1` ausführen |
 
-### 🟡 Next (Bereit zum Start)
+#### Checkliste: `vaultwarden_recovery_material_verified` (Mai 2026)
+
+Alle Schritte ohne Secrets – keine Passwörter oder Tokens ins Repo:
+
+- [ ] 1. Zwei physische Offline-Kopien der Vaultwarden-Recovery-Infos erstellen (z.B. Papierausdruck + USB-Stick, oder 2× USB-Stick an getrennten Orten).
+- [ ] 2. Sichtprüfung: Beide Kopien sind lesbar und vollständig.
+- [ ] 3. In `LIVE_CONTEXT.md` nur den Status setzen: `recovery_material: verified` (keinerlei Inhalte eintragen).
+- [ ] 4. In `MEMORY.md` unter `## Aktive Operator-Aktionen` den Blocker als erledigt markieren.
+- [ ] 5. `scripts/release_mvp_gate.py` ausführen, um das MVP-Gate zu schließen.
+
+---
+
+### 📱 Phone-only next steps
+
+*(Aufgaben, die ohne Terminal/Laptop machbar sind)*
+
+| Aufgabe | Wo / Wie |
+|---------|----------|
+| Diese Datei und `MEMORY.md` lesen – Kontext auffrischen | GitHub App / Browser |
+| `SECURITY_BASELINE.md` lesen – Verständnis, nichts ausführen | GitHub App / Browser |
+| `OPS_HOME.md` → Lane C / Security lesen | GitHub App / Browser |
+| `docs/plans/next_steps_until_may_2026.md` lesen und Entscheidungen treffen | GitHub App / Browser |
+| Entscheiden: Ist `device_rollout_verified` bis Mai blockiert? → Eintrag oben aktualisieren | GitHub App / PR-Kommentar |
+| Checkliste in diesem Dokument (Vaultwarden, Mai 2026) mental vorbereiten | keine Tools |
+
+*(Aufgaben, die Terminal / Laptop erfordern)*
+
+| Aufgabe | Einstieg |
+|---------|---------|
+| PBS-Restore-Drill monatlich wiederholen | `make pbs-restore-proof` |
+| Tailnet Route-Freigabe + Split-DNS schließen | `SECURITY_BASELINE.md` → Punkt 2 |
+| `NETWORK_INVENTORY.md` via Easy-Box-Abgleich finalisieren | `make easybox-browser-probe` |
+| Security-Baseline prüfen | `make security-baseline-check` |
+
+### 🟡 Next (Bereit zum Start – erfordert Laptop/Terminal)
 
 | Task | Lane | Einstieg |
 |------|------|---------|
@@ -117,7 +151,8 @@ Alles andere laeuft standardmaessig im Loop:
 
 ## Manuelle Unblock-Punkte
 
-*(Aktuell keine ungeloesten Blocker)*
+- `vaultwarden_recovery_material_verified` – blockiert bis **2026-05-01** (physische Offline-Kopien nicht früher möglich). Checkliste im Blocked-Abschnitt oben.
+- `device_rollout_verified` – Status unklar; am nächsten Laptop-Tag prüfen ob ebenfalls bis Mai blockiert.
 
 ## Nicht In Dieser Queue
 
