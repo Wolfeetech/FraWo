@@ -122,6 +122,21 @@ Nicht lesbar sein soll:
   - Odoo = Inhalt/Views
   - Caddy/Public Edge = Auslieferung / Domains / Frontdoor
 
+## Anti-Split-Brain-Regel
+
+- Dieser Handoff ist **advisory**, nicht die operative Schreibwahrheit.
+- `Codex` bleibt der einzige Writer fuer:
+  - Repo-Website-Assets unter `Codex/website/`
+  - Live-Odoo-Views
+  - Hosting-/Runtime-Aenderungen
+- Claude soll keine zweite konkurrierende Website-Realitaet erzeugen.
+- Wenn Claude neue Texte, Strukturen oder Designideen liefert, muessen diese zuerst gegen den kanonischen Repo-Pfad konsolidiert werden:
+  - `Codex/website/frawo_custom_css.css`
+  - `Codex/website/frawo_homepage_blocks.html`
+  - `Codex/website/frawo_contactus.html`
+- Keine Annahme treffen, dass ein Claude-Entwurf bereits live oder kanonisch ist.
+- Keine direkten Live-Edits parallel zu laufenden Codex-Website-Aenderungen.
+
 ## Relevante Dateien im Repo
 
 - `OPERATIONS/ODOO_OPERATIONS.md`

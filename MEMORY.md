@@ -917,3 +917,10 @@ Lokale Admin-Flaechen (nur localhost):
 - Kontaktseite liefert jetzt echte Description und korrektes Canonical auf https://www.frawo-tech.de/contactus.
 - Kleiner Restpunkt: og:url der Kontaktseite zieht im Host-Preview weiter http://odoo.hs27.internal/contactus statt den oeffentlichen Host.
 
+
+## 2026-04-10 - FraWo Contact Meta Finalization
+
+- Der letzte Kontaktseiten-Restpunkt war keine Text- oder Proxyfrage, sondern ein Odoo-Datenmodell-Drift: /contactus lief noch ohne website_id als generische Seite.
+- Nach Zuordnung der Seite zu website_id=1 rendert og:url nun korrekt auf https://www.frawo-tech.de/contactus.
+- Damit sind Homepage und Kontaktseite jetzt sowohl visuell als auch in ihren zentralen Meta-/Canonical-/OG-Pfaden sauberer als zuvor.
+

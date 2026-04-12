@@ -379,3 +379,56 @@ Der professionelle Zielzustand ist nicht nur `HTTP 200`, sondern ein bewusst def
 - Einordnung:
   - API-Key-Erzeugung fuer `agent@` wurde serverseitig erneut ausprobiert, war aber fuer echten XML-RPC-Login in diesem Lauf nicht belastbar.
   - Der produktive V1-Pfad nutzt deshalb aktuell bewusst einen dedizierten bot-only RPC-Secret-Pfad ausserhalb des Repos statt menschlicher Zugangsdaten.
+## Website-Copy-Refinement 2026-04-09 spaet
+
+- Die FraWo-Website wurde textlich erneut gestrafft, weil der bisherige Ton trotz besserem Layout noch nach generierter Agentur-/Prompt-Sprache klang.
+- Live umgesetzt:
+  - Homepage und Kontaktseite textlich komplett auf knappe Betreiber-Sprache gezogen
+  - globale und websitespezifische Homepage-Views `3636` und `3644` bewusst auf denselben Stand gebracht, damit nicht weiter zwei unterschiedliche Startseiten ausgespielt werden
+  - Kontaktseite `3637` auf denselben Tonstandard gezogen
+- Sichtbar live:
+  - Hero `Technik fuer Veranstaltungen, die sauber laufen.`
+  - Leistungsblock `Planung, Betrieb und digitale Begleitung.`
+  - Vertrauensblock `Veranstaltungstechnik bewertet man nicht nach Prospekt.`
+  - Kontaktseite `Technik kurz anreissen. Rest klaeren wir.`
+  - `Typische Anfragen` und `Fuer die erste Mail hilfreich` als konkrete, nicht-marketinghafte Kontaktfuehrung
+- Verifikation:
+  - Host-Preview auf `www.frawo-tech.de` zeigt die neuen Homepage-Phrasen im gerenderten HTML
+  - `/contactus` zeigt die neue Kontaktcopy und keine Prompt-/Agentur-Floskeln mehr
+
+## Website-Visual-Finish 2026-04-10
+
+- Der FraWo-Auftritt wurde visuell auf einen staerkeren Editorial-/Eventdienstleister-Standard gezogen.
+- Live umgesetzt:
+  - neue CSS-Basis mit `Poppins`, dunklerem Raster, staerkerer Typohierarchie und ruhigerem Spacing
+  - Hero jetzt mit Bildstapel und Meta-Rail statt einfachem Textblock
+  - breiter Service-Grid statt Standard-Dreikarten-Look
+  - Proof-/Galerieblock und neu gerasterte Kontaktseite mit klaren Kontaktpfaden
+- Verifikation im gerenderten HTML:
+  - `frawo-hero-shell`
+  - `frawo-editorial-card`
+  - `frawo-service-grid`
+  - `frawo-proof-gallery`
+  - `frawo-contact-shell`
+  - `frawo-contact-grid`
+- Der Textpfad blieb dabei bewusst hart und sachlich; typische KI-/Agentur-Floskeln sind im publizierten Pfad weiterhin nicht sichtbar.
+
+
+## Website-SEO-Cleanup 2026-04-10
+
+- Die Odoo-Default-Metadaten wurden live ersetzt.
+- Homepage:
+  - echter Title FraWo | Eventtechnik und technische Betreuung`n  - echte Description fuer Eventtechnik, Zuspielung, Umbauten und digitale Besucherinformation
+  - sauberes Canonical https://www.frawo-tech.de/`n- Kontaktseite:
+  - echter Title Kontakt | FraWo`n  - echte Description fuer den Kontaktpfad
+  - sauberes Canonical https://www.frawo-tech.de/contactus`n- Restpunkt: og:url auf /contactus zieht im Host-Preview noch den internen Hostnamen und braucht einen letzten gezielten Fix.
+
+
+
+## Website-Meta-Finalisierung 2026-04-10
+
+- Der letzte Kontaktseiten-Restpunkt wurde bereinigt.
+- Root Cause: website.page(3) fuer /contactus lief noch ohne website_id als generische Seite.
+- Nach Zuordnung auf website_id=1 rendert die Kontaktseite jetzt auch og:url korrekt auf https://www.frawo-tech.de/contactus.
+- Ergebnis: Homepage und Kontaktseite haben jetzt saubere Description-, Canonical- und OG-Basis fuer den oeffentlichen FraWo-Auftritt.
+

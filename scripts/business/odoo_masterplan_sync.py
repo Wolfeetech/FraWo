@@ -81,10 +81,12 @@ EXISTING_TASK_RULES = [
     {
         "match": "Mail Rollout",
         "owners": [WOLF_LOGIN, AGENT_LOGIN],
+        "stage": "✅ Erledigt",
     },
     {
         "match": "MVP Gate Audit",
         "owners": [WOLF_LOGIN, AGENT_LOGIN],
+        "stage": "✅ Erledigt",
     },
     {
         "match": "Vaultwarden Recovery",
@@ -93,14 +95,17 @@ EXISTING_TASK_RULES = [
     {
         "match": "Vaultwarden Recovery-Material verifizieren",
         "owners": [WOLF_LOGIN],
+        "stage": "✅ Erledigt",
     },
     {
         "match": "Geräte-Rollout",
         "owners": [WOLF_LOGIN],
+        "stage": "✅ Erledigt",
     },
     {
         "match": "Wolf & Franz Login-Walkthrough",
         "owners": [WOLF_LOGIN],
+        "stage": "✅ Erledigt",
     },
     {
         "match": "DNS Rollback dokumentieren",
