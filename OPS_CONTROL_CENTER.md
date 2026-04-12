@@ -22,11 +22,11 @@
 Diese Sektion fasst die zuletzt generierten Artefakte zusammen.
 Aktuelle Rohdaten: [`artifacts/estate_census/latest_report.md`](artifacts/estate_census/latest_report.md) · [`artifacts/platform_health/latest_report.md`](artifacts/platform_health/latest_report.md)
 
-### Frontdoors (Stand: 2026-04-09)
+### Frontdoors (Stand: 2026-04-11)
 
 | Service | Port | Status | URL |
 |---------|------|--------|-----|
-| **Vaultwarden** | 8442 | 🔴 down (000) | `http://100.99.206.128:8442/alive` |
+| **Vaultwarden** | 8442 | 🟢 ok (200) | `http://100.99.206.128:8442/alive` |
 | **Home Assistant** | 8443 | 🟡 degraded (400) | `http://100.99.206.128:8443/` |
 | **Odoo** | 8444 | 🟢 ok (200) | `http://100.99.206.128:8444/web/login` |
 | **Nextcloud** | 8445 | 🟢 ok (302) | `http://100.99.206.128:8445/` |
@@ -38,13 +38,13 @@ Aktuelle Rohdaten: [`artifacts/estate_census/latest_report.md`](artifacts/estate
 > **Hinweis:** Diese Tabelle wird manuell aktualisiert. Für den aktuellen Live-Stand immer
 > [`artifacts/estate_census/latest_report.md`](artifacts/estate_census/latest_report.md) öffnen.
 
-### Aktuelle Blocker (Stand: 2026-04-04)
+### Aktuelle Blocker (Stand: 2026-04-11)
 
-- 🔴 **Vaultwarden** ist down – Recovery-Material (2 Offline-Kopien) fehlt noch.
+- 🔴 **HTTPS / Public Edge** – `www.frawo-tech.de` HTTPS blockiert durch DS-Lite (EasyBox 805 kein IPv4-Portforward). Lösung: Cloudflare-Proxy oder ISP-Dual-Stack-Tarif.
+- 🔴 **Stockenweiler SSL** – Zertifikat für `home.prinz-stockenweiler.de` seit April 2026 abgelaufen. Erneuerung via NPM LXC 103 oder Certbot CLI erforderlich.
 - 🟡 **Home Assistant** Frontdoor gibt HTTP 400 zurück – Frontdoor-Konfiguration prüfen.
 - 🟡 **Radio** gibt HTTP 502 zurück – AzuraCast/Pi-Node prüfen.
-- 🟡 **PBS** (VM 240) gestoppt – kein aktiver Backup-Pfad auf Anker.
-- 🟡 **Stockenweiler** hat Speicher-Druck: Swap 78 % belegt.
+- 🟡 **PBS** (VM 240) – monatlicher Restore-Drill fällig.
 
 Vollständige Blocker-Liste: [`artifacts/platform_health/latest_report.md`](artifacts/platform_health/latest_report.md)
 
@@ -56,7 +56,7 @@ Vollständige Blocker-Liste: [`artifacts/platform_health/latest_report.md`](arti
 
 **Was gehört hierher:** Vaultwarden (Passwort-Tresor), Vault-Ansible, Recovery Material, Secrets-Policy.
 
-**Aktueller Stand:** Vaultwarden ist down. Recovery Material (2 Offline-Kopien) fehlt noch.
+**Aktueller Stand:** Vaultwarden ist operativ. Recovery-Material (2 Offline-Kopien) verifiziert am 2026-04-09. ✅
 
 **Wo nachschauen:**
 - Runbook: [`OPERATIONS/BITWARDEN_OPERATIONS.md`](OPERATIONS/BITWARDEN_OPERATIONS.md)
@@ -159,13 +159,13 @@ Vollständige Blocker-Liste: [`artifacts/platform_health/latest_report.md`](arti
 > **Regel:** Wähle genau **eine** Aufgabe aus dem Abschnitt **🟡 Next** in [`OPERATOR_TODO_QUEUE.md`](OPERATOR_TODO_QUEUE.md),
 > verschiebe sie nach **🟢 Doing** und erledige nur diese – bevor du eine neue startest.
 
-**Aktuelle "Next"-Tasks (Stand 2026-04-09):**
+**Aktuelle "Next"-Tasks (Stand 2026-04-11):**
 
 | Task | Lane | Einstieg |
 |------|------|---------|
+| HTTPS für `www.frawo-tech.de` (Cloudflare oder ISP-Dual-Stack) | Lane B | `PUBLIC_EDGE_ARCHITECTURE_PLAN.md` |
+| Stockenweiler SSL erneuern (`home.prinz-stockenweiler.de`) | Lane D | NPM LXC 103 oder Certbot CLI |
 | PBS-Restore-Drill monatlich wiederholen | Lane C | `make pbs-restore-proof` |
-| Tailnet Route-Freigabe + Split-DNS schließen | Lane C | `SECURITY_BASELINE.md` → Punkt 2 |
-| `NETWORK_INVENTORY.md` via Easy-Box-Abgleich finalisieren | Lane C | `make easybox-browser-probe` |
 
 → **Öffne [`OPERATOR_TODO_QUEUE.md`](OPERATOR_TODO_QUEUE.md) und wähle genau eine.**
 
@@ -196,7 +196,7 @@ Alle Links über Tailscale-IP `100.99.206.128` (toolbox). Nur bei aktivem Tailsc
 
 | Service | URL | Erwartete Antwort |
 |---------|-----|-------------------|
-| **Vaultwarden** (Passwörter) | [`http://100.99.206.128:8442/alive`](http://100.99.206.128:8442/alive) | `OK` (derzeit: down) |
+| **Vaultwarden** (Passwörter) | [`http://100.99.206.128:8442/alive`](http://100.99.206.128:8442/alive) | `OK` ✅ |
 | **Home Assistant** (Smart Home) | [`http://100.99.206.128:8443/`](http://100.99.206.128:8443/) | `302` oder Login (derzeit: 400) |
 | **Odoo** (CRM/Business) | [`http://100.99.206.128:8444/web/login`](http://100.99.206.128:8444/web/login) | `200` Login-Seite ✅ |
 | **Nextcloud** (Dateien) | [`http://100.99.206.128:8445/`](http://100.99.206.128:8445/) | `302` → Login ✅ |
@@ -222,12 +222,12 @@ Bevor du einen Service als "produktionsbereit" betrachtest, muss er durch das **
 **Vollständige Gate-Definition:** [`OPERATIONS/PRODUCTION_READINESS_OPERATIONS.md`](OPERATIONS/PRODUCTION_READINESS_OPERATIONS.md)
 
 **Bedeutung für den Alltag:**
-- `MVP_READY` = intern freigegeben, Business-MVP läuft – **das ist der aktuelle Stand**
+- `MVP_READY` = intern freigegeben, Business-MVP läuft – **das ist der aktuelle Stand** ✅ (Lane A abgeschlossen 2026-04-09)
 - `CERTIFIED` = alle Checks grün, manuelle Evidenz vollständig, Runbooks vorhanden
-- `BLOCKED` = offene Blocker verhindern den Betrieb – **Vaultwarden und PBS sind derzeit blocked**
+- `BLOCKED` = offene Blocker verhindern den Betrieb – **PBS ist derzeit blocked**
 
 Öffne [`OPERATIONS/PRODUCTION_READINESS_OPERATIONS.md`](OPERATIONS/PRODUCTION_READINESS_OPERATIONS.md) für die vollständige Checkliste und Gate-Kriterien.
 
 ---
 
-*Letzte manuelle Aktualisierung: 2026-04-10 | Artefakte: [`artifacts/estate_census/latest_report.md`](artifacts/estate_census/latest_report.md) (2026-04-09) · [`artifacts/platform_health/latest_report.md`](artifacts/platform_health/latest_report.md) (2026-04-04)*
+*Letzte manuelle Aktualisierung: 2026-04-11 | Artefakte: [`artifacts/estate_census/latest_report.md`](artifacts/estate_census/latest_report.md) (2026-04-09) · [`artifacts/platform_health/latest_report.md`](artifacts/platform_health/latest_report.md) (2026-04-11)*
