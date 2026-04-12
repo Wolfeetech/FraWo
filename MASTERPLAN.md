@@ -8,18 +8,18 @@ Diese Datei ist die zentrale Gesamt-Roadmap bis zu einem fertig aufgebauten Home
 
 Dieses Lane-Modell ist ab jetzt die verbindliche Arbeitsordnung. Aeltere breite Roadmap-Texte bleiben als Kontext erhalten, aber der aktive Takt folgt nur noch dieser Priorisierung:
 
-- `Lane A: MVP Closeout` -> `done`
-- `Lane B: Website/Public Hold` -> `active`
+- `Lane A: MVP Closeout` -> `done` ✅ (release_mvp_gate = MVP_READY, 2026-04-09)
+- `Lane B: Website/Public` -> `active` (DNS done, HTTPS durch DS-Lite blockiert)
 - `Lane C: Security/PBS/Infra` -> `watch`
 - `Lane D: Stockenweiler` -> `watch`
-- `Lane E: Radio/Media` -> `hold`
+- `Lane E: Radio/Media` -> `watch`
 
-Regeln:
+Regeln (Stand 2026-04-11, nach Lane-A-Abschluss):
 
-- Nur `Lane A: MVP Closeout` wird aktiv auf `done` gezogen.
-- Alle anderen Straenge bleiben sichtbar, duerfen `Lane A` aber nicht verdraengen.
-- `Lane A` ist erst fertig, wenn im aktuellen MVP-Gate nur noch `0` offene manuelle Blocker stehen.
-- Solange `Lane A` offen ist, gibt es kein neues Public-Go-Live, keinen PBS-Zertifizierungsblock, keinen Radio-Ausbau und keinen Stockenweiler-Live-Rollout.
+- `Lane A` ist abgeschlossen. `release-mvp-gate` = `MVP_READY` mit `0` offenen Blockern.
+- `Lane B` ist jetzt der aktive Track: `www.frawo-tech.de` HTTPS/Public-Edge abschliessen.
+- `Lane C`, `D` und `E` bleiben sichtbar und werden nach Lane-B-Entscheid priorisiert.
+- PBS-Rebuild, Surface-Recovery und Radio-Vollintegration bleiben Vollzertifizierungs-Track.
 
 ## Kanonische Steuerdateien
 
@@ -667,19 +667,20 @@ Dann folgen:
 ## Was jetzt als Naechstes dran ist
 
 1. **Business-MVP Technik gruen**: [x] DONE. `release-mvp-audit` ist technisch komplett gruen fuer `Portal`, `Vaultwarden`, `Nextcloud`, `Paperless`, `Odoo`, STRATO-Mail-Backbone und lokale Proxmox-Business-Backups.
-2. **Business-MVP Sichtbarkeit fehlt noch**: sichtbare Vaultwarden-Stichprobe, Wolf-/Franz-Walkthrough, sichtbare Mailtests, Geraeteabnahme und Recovery-Material muessen noch auf `passed`.
+2. **Business-MVP Sichtbarkeit abgeschlossen**: [x] DONE. `release-mvp-gate` = `MVP_READY`. Alle manuellen Nachweise (Wolf-/Franz-Walkthrough, Geraeteabnahme, Recovery-Material, STRATO-Mail) sind auf `passed`. Lane A ist geschlossen.
 3. **Thinpool entspannt**: [x] DONE. `local-lvm` ist aus dem kritischen Bereich heraus und die Plattform ist wieder betriebsfaehig.
 4. **Klartextregister aus dem Workspace entfernt**: [x] DONE. Im Repo gilt nur noch `ACCESS_REGISTER_VAULTWARDEN_REFERENCES.md`; das alte Register ist extern archiviert.
-5. **Mail- und Secret-Standard technisch etabliert**: [x] TEILWEISE DONE. `Vaultwarden`, Invite-SMTP, `webmaster` und `franz` sind technisch verifiziert; sichtbar abnehmen und `noreply` sauber abschliessen bleibt offen.
+5. **Mail- und Secret-Standard technisch etabliert**: [x] DONE. `Vaultwarden`, Invite-SMTP, `webmaster`, `franz` und `noreply` sind technisch und sichtbar verifiziert.
 6. **2-TB-SSD-Strategie festziehen**: die SSD dient aktuell als kontrollierter Archiv-/Entlastungspfad; die finale Linux-Serverpartition ist spaeter separat zu entscheiden.
 7. **Dokumenten-Workflow**: [x] DONE. Paperless-/Nextcloud-Pfad ist mit einem echten Dokumentenlauf abgenommen.
-8. **Website-first Release 2026-04-01 vorbereiten**: `www.frawo-tech.de` als Odoo-Website mit sichtbarer Radio-Praesenz bis zum ersten Website-Green-Gate festziehen.
-9. **Stockenweiler / Rentner OS vorbereiten**: Tailscale-only Managed Support fuer den ersten externen Testkundenfall definieren und inventarisieren.
-10. **HAOS-USB-Pfad vorbereiten**: Sobald die Zigbee/Z-Wave Hardware steckt.
-11. **Surface**: erst nach Hardware-/Boot-Recovery wieder in den produktiven Pfad nehmen.
-12. **PBS**: guarded Rebuild erst mit sauber freigegebener Hardware und erst fuer die spaetere Vollzertifizierung.
-13. **Gateway-Cutover**: Erst nach Abschluss der oben genannten Stabilitaets-Gates.
-14. **Public Edge**: Finaler Hardening-Schritt.
+8. **DNS-Cutover frawo-tech.de**: [x] DONE. A/AAAA bei STRATO auf VM220 gesetzt; HTTP-Erreichbarkeit verifiziert.
+9. **HTTPS/TLS Public Edge**: `www.frawo-tech.de` braucht Cloudflare-Proxy oder ISP-Dual-Stack, da EasyBox 805 im DS-Lite-Modus IPv4-Portforwards blockiert. Aktuell naechster aktiver Blocker fuer Lane B.
+10. **Stockenweiler / Rentner OS vorbereiten**: Tailscale-only Managed Support fuer den ersten externen Testkundenfall; SSL-Zertifikat fuer `home.prinz-stockenweiler.de` ist abgelaufen und muss erneuert werden.
+11. **HAOS-USB-Pfad vorbereiten**: Sobald die Zigbee/Z-Wave Hardware steckt.
+12. **Surface**: erst nach Hardware-/Boot-Recovery wieder in den produktiven Pfad nehmen.
+13. **PBS**: guarded Rebuild erst mit sauber freigegebener Hardware und erst fuer die spaetere Vollzertifizierung.
+14. **Gateway-Cutover**: Erst nach Abschluss der oben genannten Stabilitaets-Gates.
+15. **Public Edge haerten**: TLS, Auth, Monitoring und Rollback finalisieren nachdem DS-Lite-Blocker aufgeloest ist.
 
 ## Speicherfazit
 
