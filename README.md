@@ -1,4 +1,12 @@
-# Homeserver 2027 Ops Workspace
+# MASTER SINGLE SOURCE OF TRUTH (SSOT)
+
+> [!IMPORTANT]
+> **Dies ist das einzige und massgebliche Projektverzeichnis für Homeserver 2027.**
+> Alle technischen Fakten, Automatisierungen und Dokumentationen in diesem Repository sind die absolute Wahrheit für das FraWo-Estate.
+>
+> **Canonical Upstream**: [https://github.com/Wolfeetech/FraWo](https://github.com/Wolfeetech/FraWo)
+
+---
 
 > **Solo Operator? Start here.** This workspace runs a hybrid Proxmox home-lab for the GbR "FraWo".
 > If you feel lost, read the three lines under [Start Here](#start-here) and pick your objective.
@@ -6,80 +14,14 @@
 > 📱 **On your phone or don't know where to start?**
 > → Open **[`OPS_CONTROL_CENTER.md`](OPS_CONTROL_CENTER.md)** – your single entry point with status, categories, phone-safe links, and exactly one next action.
 
----
-
-## Start Here
-
-1. **On your phone or totally lost?** → Open [`OPS_CONTROL_CENTER.md`](OPS_CONTROL_CENTER.md)
-2. **What is running right now?** → Open [`LIVE_CONTEXT.md`](LIVE_CONTEXT.md)
-3. **What should I do next?** → Open [`OPERATOR_TODO_QUEUE.md`](OPERATOR_TODO_QUEUE.md)
-4. **Something broke / I need the big picture?** → Open [`OPS_HOME.md`](OPS_HOME.md)
-
-### Pick Your Objective (A / B / C)
-
-| # | Objective | Status | Entry Point |
-|---|-----------|--------|-------------|
-| **A** | Basis-Plattform: Proxmox + Netzwerk + DNS + Remote-Zugriff | ✅ Done | [`MASTERPLAN.md`](MASTERPLAN.md) |
-| **B** | Business-MVP: Nextcloud + Odoo + Paperless produktiv | ✅ Done | [`OPS_HOME.md`](OPS_HOME.md) → Lane A |
-| **C** | Nächste Phase: Website-Release / Stockenweiler / PBS-Restore | 🔄 Active | [`OPERATOR_TODO_QUEUE.md`](OPERATOR_TODO_QUEUE.md) |
-
-**Recommended immediate next step:** Run `make start-day` and check `OPERATOR_TODO_QUEUE.md`.
-
----
-
-## Daily Quick Commands
-
-```bash
-make start-day          # Morning routine: context refresh + status check
-make ops-brief          # 3-line platform summary
-make operator-todos     # Show open manual tasks
-make security-baseline-check  # Verify security posture
-make close-day          # Evening routine: snapshot + handoff
-```
-
-See [`Makefile`](Makefile) for the full command list or run `make help`.
-
----
-
-## Key Documents (SSOT)
-
-| File | Purpose |
-|------|---------|
-| [`OPS_CONTROL_CENTER.md`](OPS_CONTROL_CENTER.md) | **Phone-friendly central ops entry point** – status, categories, quick links, next action |
-| [`MASTERPLAN.md`](MASTERPLAN.md) | Strategic roadmap and architecture |
-| [`LIVE_CONTEXT.md`](LIVE_CONTEXT.md) | Always-current handoff state |
-| [`OPS_HOME.md`](OPS_HOME.md) | Operator start page and navigation hub |
-| [`OPERATOR_TODO_QUEUE.md`](OPERATOR_TODO_QUEUE.md) | Kanban queue – what to do next |
-| [`MEMORY.md`](MEMORY.md) | Long-lived project knowledge base |
-| [`NETWORK_INVENTORY.md`](NETWORK_INVENTORY.md) | LAN inventory and IP map |
-| [`VM_AUDIT.md`](VM_AUDIT.md) | Verified VM runtime state |
-| [`SECURITY_BASELINE.md`](SECURITY_BASELINE.md) | Security posture and daily checks |
-| [`SECURITY.md`](SECURITY.md) | Secret handling and local setup guide |
-| [`AGENTS.md`](AGENTS.md) | Agent (AI) collaboration rules |
-| [`OPERATIONS/`](OPERATIONS/) | Per-service runbooks |
-
----
-
-## Secrets & Security
-
-**Never commit secrets.** See [`SECURITY.md`](SECURITY.md) for the full policy.
-
-- Ansible vault password → local file `.vault_pass` (gitignored). Copy from `.vault_pass.example`.
-- Encrypted secrets → `ansible/inventory/group_vars/all/vault.yml` (committed, encrypted).
-- Runtime SMTP credentials → local `ansible/inventory/group_vars/all/mail_runtime.local.yml` (gitignored).
-
----
-
 ## Workspace Identity
 
-- Human-facing name: `Homeserver 2027 Ops Workspace`
-- Stable alias: `~/.gemini/antigravity/brain/Homeserver_2027_Ops_Workspace`
-- Desktop shortcut target: `~/Desktop/Homeserver 2027 Workspace`
-- Backing store: the Antigravity-managed workspace directory remains in place to avoid breaking internal tooling
-- Windows local bootstrap after the repo is present on a Windows client:
-  - `scripts\bootstrap_windows_workspace.cmd`
-  - creates the stable alias under `%USERPROFILE%\.gemini\antigravity\brain\Homeserver_2027_Ops_Workspace`
-  - creates the desktop shortcut `Homeserver 2027 Workspace`
+- Name: `Homeserver 2027 Ops Workspace`
+- Stabiler Alias: `~/.gemini/antigravity/brain/Homeserver_2027_Ops_Workspace`
+- Desktop-Shortcut: `Homeserver 2027 Workspace`
+- Backing Store: Das Antigravity-Arbeitsverzeichnis bleibt technisch unverändert.
+- Windows-Bootstrap:
+  - `scripts\bootstrap_windows_workspace.cmd` führt die initiale Einrichtung des Alias und des Shortcuts durch.
 
 ## Read Order
 

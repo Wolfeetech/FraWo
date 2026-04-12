@@ -13,9 +13,7 @@
 - Desktop-Shortcut: `~/Desktop/Homeserver 2027 Workspace`
 - Die UUID-basierte Antigravity-Ordnerstruktur bleibt technisch erhalten; der Alias ist die offizielle Arbeitsbezeichnung.
 
-## Aktuelles Lane-Modell
-
-Dieses Dokument beschreibt ab jetzt nur noch delegierbare Arbeit im aktuellen Lane-Modell:
+Dieses Dokument beschreibt ab jetzt alle Aktivitäten innerhalb des **einzeigen FraWo-Projekts**. Die Lanes sind lediglich interne Arbeitspakete desselben SSOT:
 
 - `Lane A: MVP Closeout` -> `completed`
 - `Lane B: Website/Public Hold` -> `active`
@@ -24,12 +22,8 @@ Dieses Dokument beschreibt ab jetzt nur noch delegierbare Arbeit im aktuellen La
 - `Lane E: Radio/Media` -> `active`
 
 Regeln:
-
-- Nur `Lane A` darf aktiv auf Abschluss gezogen werden.
-- `Lane B` bis `Lane E` bleiben sichtbar, aber nicht gleichrangig.
-- Keine neuen spezialisierten Prompt-Dateien fuer Einzelfaelle.
-- Keine zweite Parallelplanung in zufaelligen Markdown-Dateien.
-- Jede delegierte Aufgabe muss genau einer Lane zugeordnet sein.
+- Alle Lanes gehören zum selben Master-Projekt.
+- Keine parallele Planung in externen Dokumenten; dieser Workspace ist die einzige Wahrheit.
 
 ## Professional-Autopilot Boundary
 
@@ -155,7 +149,8 @@ riecht, bleibt sie bei `Codex` oder geht als `AKTION VON DIR ERFORDERLICH:` an d
 
 ## Source-of-Truth-Regel
 
-- Dieser Workspace ist ab jetzt die primaere Source of Truth fuer Homeserver 2027.
+- **Absolut das einzige Projekt**: Dieser Workspace ist die einzige und finale Source of Truth fuer Homeserver 2027. Es gibt keine parallelen oder externen Projekte mehr.
+- **Canonical Upstream**: `https://github.com/Wolfeetech/FraWo` ist der massgebliche Cloud-Mirror.
 - Aeltere Session-Artefakte duerfen nur fuer konfliktfreie Fakten wiederverwendet werden.
 - Bei Widerspruechen gilt immer das verifizierte Runtime-Mapping:
   - `CT 100` = Toolbox, Docker-Host, Ansible-Kontrollknoten, Caddy, Split-DNS, AdGuard Home im Opt-in-Betrieb und Tailscale-Subnet-Router

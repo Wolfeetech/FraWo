@@ -1,14 +1,17 @@
-# Live Context
+# MASTER SINGLE SOURCE OF TRUTH (SSOT) - LIVE CONTEXT
 
-## Workspace
+> [!IMPORTANT]
+> **Aktueller Betriebszustand von Homeserver 2027.**
+> Dies ist das einzige aktive Projekt. Dieser Workspace ist die verbindliche Quelle der Wahrheit (SSOT).
+>
+> **Canonical Upstream**: [https://github.com/Wolfeetech/FraWo](https://github.com/Wolfeetech/FraWo)
+
+## Workspace-Status
 
 - Name: `Homeserver 2027 Ops Workspace`
 - Alias: `/home/wolf/.gemini/antigravity/brain/Homeserver_2027_Ops_Workspace`
-- Desktop shortcut: `/home/wolf/Desktop/Homeserver 2027 Workspace`
-- Generated at: `2026-04-09 20:29:06 CEST`
-- Git branch: `main`
-- Pending git changes: `0`
-- Repository State: Clean & Reorganized (2026-04-12)
+- Desktop-Shortcut: `/home/wolf/Desktop/Homeserver 2027 Workspace`
+- Repository-Status: Clean & Reorganized (SSOT Established 2026-04-12)
 
 ## Shared Read Order
 

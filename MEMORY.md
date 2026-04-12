@@ -1,4 +1,8 @@
-# MEMORY - Homeserver 2027 Knowledge Base
+# MASTER SINGLE SOURCE OF TRUTH (SSOT)
+
+> [!IMPORTANT]
+> **Dies ist die einzige und maßgebliche Knowledge Base für Homeserver 2027.**
+> Jegliche technische Wahrheit über das FraWo-Estate wird ausschließlich hier und im Canonical Upstream (`https://github.com/Wolfeetech/FraWo`) gepflegt.
 
 ## Status
 
