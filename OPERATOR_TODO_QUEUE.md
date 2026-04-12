@@ -4,6 +4,7 @@
 > Don't add more than 3 items to Doing at once.
 
 Stand: `2026-04-10` | Aktualisiert von: Codex
+Stand: `2026-04-11` | Aktualisiert von: Codex
 
 ---
 
@@ -16,6 +17,10 @@ Stand: `2026-04-10` | Aktualisiert von: Codex
 |------|-----------------|-----------------|-------------|
 | `vaultwarden_recovery_material_verified` | Offline-Kopien aktuell nicht möglich (Operator hat bis Mai 2026 keinen Zugriff auf Druck/USB/physische Ablage) | **2026-05-01** | Checkliste unten ausführen, dann MVP-Gate final schließen |
 | `device_rollout_verified` (Franz Surface/iPhone) | Sichtbarer Gerätenachweis fehlt – **offen: ist das bis Mai ebenfalls blockiert?** Am nächsten Laptop-Tag prüfen und diesen Eintrag aktualisieren. | unklar | `scripts/prove_device_rollout.ps1` ausführen |
+| Task | Warum blockiert | Was danach? |
+|------|-----------------|-------------|
+| `public_edge_https_verified` (www.frawo-tech.de) | DS-Lite EasyBox 805 verhindert IPv4-Portforward; HTTPS braucht Cloudflare-Proxy oder ISP-Dual-Stack | `PUBLIC_EDGE_ARCHITECTURE_PLAN.md` → Cloudflare-Schritt |
+| `stockenweiler_ssl_renewed` (home.prinz-stockenweiler.de) | SSL-Zertifikat abgelaufen seit April 2026; NPM UI oder Certbot-CLI nötig | `SESSION_HANDOVER_APRIL_2026.md` → SSL Renewal |
 
 #### Checkliste: `vaultwarden_recovery_material_verified` (Mai 2026)
 
@@ -58,6 +63,9 @@ Alle Schritte ohne Secrets – keine Passwörter oder Tokens ins Repo:
 | PBS-Restore-Drill monatlich wiederholen | Lane C | `make pbs-restore-proof` |
 | Tailnet Route-Freigabe + Split-DNS schließen | Lane C | `SECURITY_BASELINE.md` → Punkt 2 |
 | `NETWORK_INVENTORY.md` via Easy-Box-Abgleich finalisieren | Lane C | `make easybox-browser-probe` |
+| AzuraCast Pi-Integration grün schließen | Lane E | `RASPBERRY_PI_RADIO_NODE_PLAN.md` |
+| Jellyfin `TV Wohnzimmer`-Passwort hinterlegen | Lane E | `JELLYFIN_USER_SETUP_PLAN.md` |
+| Stockenweiler yourparty-Payload sichern (vor Ausdünnung) | Lane D | `STOCKENWEILER_REMOTE_SUPPORT_PLAN.md` |
 
 ### 🟢 Doing
 *(Max. 3 gleichzeitig)*
@@ -75,7 +83,12 @@ Alle Schritte ohne Secrets – keine Passwörter oder Tokens ins Repo:
 | Surface Go Frontend V1 live | 2026-03-25 |
 | Radio AzuraCast live auf Pi | 2026-03-28 |
 | MVP-Browserabnahme (Wolf + Franz) | 2026-03-30 |
+| `strato_mail_model_verified` (webmaster, franz, noreply) | 2026-03-31 |
+| `vaultwarden_recovery_material_verified` (2 Offline-Kopien) | 2026-04-09 |
+| `device_rollout_verified` (Franz Surface + iPhone) | 2026-04-09 |
+| DNS-Cutover frawo-tech.de auf VM220 (A/AAAA bei STRATO) | 2026-04-09 |
 | Repo-Hygiene: .vault_pass entfernt, SECURITY.md hinzugefügt | 2026-04-09 |
+| Odoo-Website: FraWo-Eventdienstleister-Auftritt published | 2026-04-09 |
 
 ---
 
@@ -143,22 +156,24 @@ Alles andere laeuft standardmaessig im Loop:
 
 ## Lane Status
 
-- `Lane A: MVP Closeout` -> `completed`
-- `Lane B: Website/Public Hold` -> `watch`
-- `Lane C: Security/PBS/Infra` -> `completed`
-- `Lane D: Stockenweiler` -> `watch`
-- `Lane E: Radio/Media` -> `watch`
+- `Lane A: MVP Closeout` -> `completed` ✅ (release_mvp_gate = MVP_READY, alle manuellen Nachweise passed)
+- `Lane B: Website/Public` -> `active` (DNS-Cutover done; HTTPS/IPv4 durch DS-Lite blockiert)
+- `Lane C: Security/PBS/Infra` -> `watch` (PBS VM 240 gestoppt; monatliche Restore-Drills nötig)
+- `Lane D: Stockenweiler` -> `watch` (SSL abgelaufen; yourparty-Payload sichern vor Ausdünnung)
+- `Lane E: Radio/Media` -> `watch` (rpi_radio_integrated=no; Jellyfin TV noch nicht final)
 
 ## Manuelle Unblock-Punkte
 
 - `vaultwarden_recovery_material_verified` – blockiert bis **2026-05-01** (physische Offline-Kopien nicht früher möglich). Checkliste im Blocked-Abschnitt oben.
 - `device_rollout_verified` – Status unklar; am nächsten Laptop-Tag prüfen ob ebenfalls bis Mai blockiert.
+1. **DS-Lite / HTTPS** (Lane B): Cloudflare-Proxy aktivieren ODER ISP-Dual-Stack-Tarif beantragen, damit `www.frawo-tech.de` über IPv4 HTTPS erreichbar wird.
+2. **Stockenweiler SSL** (Lane D): Zertifikat für `home.prinz-stockenweiler.de` über NPM UI oder Certbot CLI in LXC 103 erneuern.
 
 ## Nicht In Dieser Queue
 
-- `Lane B: Website/Public Hold` bleibt sichtbar, aber ohne neue Go-Live-Arbeit.
-- `Lane D: Stockenweiler` bleibt sichtbar, aber ohne Live-Rollout.
-- `Lane E: Radio/Media` bleibt im Erhaltungsmodus ohne Ausbau.
+- `Lane A: MVP Closeout` ist abgeschlossen; keine neuen Aufgaben für diesen Track.
+- PBS-Rebuild und Surface-Go-Recovery sind Vollzertifizierungs-Track, nicht Teil des aktuellen Website-Releases.
+- Google-Drive-Integration und UCG-Cutover folgen erst nach stabilem Public-Edge-Nachweis.
 
 ## Kanonische Steuerdateien
 

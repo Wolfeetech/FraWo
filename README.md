@@ -2,14 +2,18 @@
 
 > **Solo Operator? Start here.** This workspace runs a hybrid Proxmox home-lab for the GbR "FraWo".
 > If you feel lost, read the three lines under [Start Here](#start-here) and pick your objective.
+>
+> 📱 **On your phone or don't know where to start?**
+> → Open **[`OPS_CONTROL_CENTER.md`](OPS_CONTROL_CENTER.md)** – your single entry point with status, categories, phone-safe links, and exactly one next action.
 
 ---
 
 ## Start Here
 
-1. **What is running right now?** → Open [`LIVE_CONTEXT.md`](LIVE_CONTEXT.md)
-2. **What should I do next?** → Open [`OPERATOR_TODO_QUEUE.md`](OPERATOR_TODO_QUEUE.md)
-3. **Something broke / I need the big picture?** → Open [`OPS_HOME.md`](OPS_HOME.md)
+1. **On your phone or totally lost?** → Open [`OPS_CONTROL_CENTER.md`](OPS_CONTROL_CENTER.md)
+2. **What is running right now?** → Open [`LIVE_CONTEXT.md`](LIVE_CONTEXT.md)
+3. **What should I do next?** → Open [`OPERATOR_TODO_QUEUE.md`](OPERATOR_TODO_QUEUE.md)
+4. **Something broke / I need the big picture?** → Open [`OPS_HOME.md`](OPS_HOME.md)
 
 ### Pick Your Objective (A / B / C)
 
@@ -41,6 +45,7 @@ See [`Makefile`](Makefile) for the full command list or run `make help`.
 
 | File | Purpose |
 |------|---------|
+| [`OPS_CONTROL_CENTER.md`](OPS_CONTROL_CENTER.md) | **Phone-friendly central ops entry point** – status, categories, quick links, next action |
 | [`MASTERPLAN.md`](MASTERPLAN.md) | Strategic roadmap and architecture |
 | [`LIVE_CONTEXT.md`](LIVE_CONTEXT.md) | Always-current handoff state |
 | [`OPS_HOME.md`](OPS_HOME.md) | Operator start page and navigation hub |

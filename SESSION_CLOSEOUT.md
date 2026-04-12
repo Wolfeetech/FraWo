@@ -1,3 +1,50 @@
+# Session Closeout - 2026-04-11
+Generated at: `2026-04-11 00:39:00 CEST`
+
+## Day Status
+
+- **Lane A abgeschlossen:** `release-mvp-gate` = `MVP_READY`. Alle manuellen Nachweise sind `passed`.
+  - `device_rollout_verified`: Franz Surface + iPhone bestätigt (2026-04-09)
+  - `vaultwarden_recovery_material_verified`: 2 physische Offline-Kopien bestätigt (2026-04-09)
+  - `strato_mail_model_verified`, Wolf-/Franz-Walkthrough, SMTP-Tests: alle passed
+- **Lane B aktiv:** DNS-Cutover für `frawo-tech.de` auf VM220 abgeschlossen; HTTP erreichbar.
+  - **DS-Lite Blocker offen:** EasyBox 805 blockiert IPv4-Portforwards → HTTPS fehlt noch.
+  - Odoo-Website inhaltlich als Eventdienstleister-Auftritt fertig und online unter HTTP.
+- **Stockenweiler SSL abgelaufen:** `home.prinz-stockenweiler.de` Zertifikat seit April 2026 abgelaufen (LXC 103 NPM).
+
+## Was Jetzt Als Naechstes Dran Ist
+
+### AKTION VON DIR ERFORDERLICH:
+
+1. **DS-Lite / HTTPS für www.frawo-tech.de:**
+   - Option A: Cloudflare-Proxy aktivieren (DNS zu Cloudflare, orange cloud, Caddy auf Port 80/443 im Proxymodus)
+   - Option B: ISP-Tarif-Upgrade auf Dual-Stack bei Vodafone beantragen
+   - Pfad danach: `PUBLIC_EDGE_ARCHITECTURE_PLAN.md`
+
+2. **Stockenweiler SSL erneuern:**
+   - NPM UI oder CLI in LXC 103: `certbot certonly --webroot -w /opt/npm/data/letsencrypt-acme-challenge -d home.prinz-stockenweiler.de`
+   - Pfad: `SESSION_HANDOVER_APRIL_2026.md`
+
+### Codex-Ready (ohne Operator-Aktion startbar):
+
+- PBS monatlicher Restore-Drill: `make pbs-restore-proof`
+- Tailnet Route-Freigabe in Tailscale Admin (10.1.0.0/24)
+- NETWORK_INVENTORY.md Easy-Box-Abgleich: `make easybox-browser-probe`
+- AzuraCast Pi-Integration: `RASPBERRY_PI_RADIO_NODE_PLAN.md`
+- Jellyfin `TV Wohnzimmer`-User: `JELLYFIN_USER_SETUP_PLAN.md`
+- Stockenweiler yourparty-Payload sichern (AzuraCast config, WP content, MariaDB): vor Ausdünnung
+
+## Resume Commands
+
+```bash
+cd ~/.gemini/antigravity/brain/Homeserver_2027_Ops_Workspace
+make refresh-context
+make plan-progress
+make release-mvp-gate
+```
+
+---
+
 # Session Closeout - 2026-04-09
 Generated at: `2026-04-09 17:21:00 CEST`
 
