@@ -7,7 +7,8 @@
 - Desktop shortcut: `/home/wolf/Desktop/Homeserver 2027 Workspace`
 - Generated at: `2026-04-09 20:29:06 CEST`
 - Git branch: `main`
-- Pending git changes: `14`
+- Pending git changes: `0`
+- Repository State: Clean & Reorganized (2026-04-12)
 
 ## Shared Read Order
 
@@ -125,6 +126,7 @@
 - Media server V1 is now live on `CT 100 toolbox`: Jellyfin is reachable internally on `http://media.hs27.internal`, directly on `http://10.1.0.20:8096`, and through the mobile Tailscale frontdoor on `:8449`; the obsolete local bootstrap sync is retired and Jellyfin reads from the central SMB-backed media path
 - ZenBook remote posture is now stronger: Tailscale joined on `100.76.249.126` and AnyDesk is installed and active as a GUI fallback
 - Remote-only work windows are now codified through `REMOTE_ONLY_WORK_WINDOW.md` and `make remote-only-check`
+- **Repository Reorganization (2026-04-12)**: Root clutter from past remediation phases has been moved into structured subdirectories (`scripts/remediations`, `scripts/archive`, `scripts/research`, `scripts/business`, `scripts/tools`). The root directory now only contains core infrastructure files, shortcut commands, and verified administrative documents.
 - **StudioPC Workstation Katarzis:** Der Rechner wurde in eine dedizierte Antigravity-Workstation transformiert.
    - **Laufwerks-Mapping (Persistent):** `P:\` (PROJEKTE), `S:\` (SAMPLES), `L:\` (LIBRARY_ASSETS) auf `C:\WORKSPACE`.
    - **Bereinigung:** Alle Gaming-Altlasten (Riot, Steam-Residuen, Vanguard) wurden entfernt.
