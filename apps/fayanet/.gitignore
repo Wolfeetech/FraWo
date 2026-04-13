@@ -1,0 +1,16 @@
+# Ignoriere lokale Konfigurationsdateien und Geheimnisse
+.env
+
+# Ignoriere Abhängigkeiten, die bei der Installation geladen werden
+node_modules/
+
+# Ignoriere Build-Artefakte und Log-Dateien
+dist/
+build/
+*.log
+npm-debug.log
+
+# Ignoriere System- und IDE-spezifische Ordner
+.DS_Store
+.vscode/
+.idea/

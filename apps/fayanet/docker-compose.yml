@@ -1,0 +1,46 @@
+version: '3.8'
+
+# Dieses Dokument ist der zentrale Bauplan für alle Kerndienste.
+# Jeder Dienst ist isoliert und wird hier definiert.
+
+services:
+  # Dienst 1: Der "Türsteher" (Reverse Proxy)
+  # Macht alle anderen Dienste sicher über Domains erreichbar (z.B. https://vault.deine-domain.de)
+  proxy:
+    image: 'jc21/nginx-proxy-manager:latest'
+    restart: unless-stopped
+    ports:
+      # Die einzigen Ports, die nach außen geöffnet werden müssen (im Router)
+      - '80:80'
+      - '443:443'
+      # Der Port für die Admin-Oberfläche des Proxy Managers
+      - '81:81'
+    volumes:
+      - ./data/npm/data:/data
+      - ./data/npm/letsencrypt:/etc/letsencrypt
+
+  # Dienst 2: Der "Tresor" (Passwort-Manager)
+  # Verwaltet alle Passwörter und Geheimnisse des Systems.
+  vaultwarden:
+    image: vaultwarden/server:latest
+    restart: unless-stopped
+    volumes:
+      - ./data/vaultwarden:/data/
+    environment:
+      ADMIN_TOKEN: ${VW_ADMIN_TOKEN}
+      SIGNUPS_ALLOWED: 'false'
+
+  # Dienst 3: Das "Zeitgehirn" (Kalender- & Kontakteserver)
+  # Zentrale Anlaufstelle für alle Termine, Aufgaben und Kontakte.
+  radicale:
+    image: tomsquest/docker-radicale:latest
+    restart: unless-stopped
+    # Der Port wird nicht nach außen freigegeben, Zugriff erfolgt über den Proxy
+    ports:
+      - "127.0.0.1:5232:5232"
+    volumes:
+      - ./data/radicale:/data
+
+volumes:
+  # Hier deklarieren wir die Volumes, um sicherzustellen, dass Docker die Daten persistent speichert.
+  # Die eigentliche Zuordnung geschieht oben bei den Diensten.
