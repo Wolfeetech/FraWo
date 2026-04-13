@@ -11,7 +11,9 @@
 - Name: `Homeserver 2027 Ops Workspace`
 - Alias: `/home/wolf/.gemini/antigravity/brain/Homeserver_2027_Ops_Workspace`
 - Desktop-Shortcut: `/home/wolf/Desktop/Homeserver 2027 Workspace`
-- Repository-Status: Clean & Reorganized (SSOT Established 2026-04-12)
+- Repository-Status: **MASTER SSOT ACTIVE** (2026-04-13)
+- Canonical Upstream: `https://github.com/Wolfeetech/FraWo`
+- Sync Tooling: `make repo-sync`, `make repo-status`
 
 ## Shared Read Order
 

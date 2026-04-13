@@ -6,6 +6,8 @@
 
 ## Status
 
+- Status: **MASTER SSOT ACTIVE**
+- Canonical Upstream: [https://github.com/Wolfeetech/FraWo](https://github.com/Wolfeetech/FraWo) (Established 2026-04-13)
 - Dokumenttyp: zentrale Knowledge Base / RAG-Index
 - Gueltig ab: 2026-03-17
 - Merge-Regel: aeltere Artefakte nur konfliktfrei uebernehmen; bei Konflikten gewinnt dieses Dokument
