@@ -12,4 +12,34 @@ __pycache__/
 .coverage
 dist/
 build/
+
+# Ansible secrets and local overrides
 ansible/inventory/group_vars/all/mail_runtime.local.yml
+.vault_pass
+vault_pass.txt
+*.vault_pass
+
+# Terraform sensitive files
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+.terraform/
+*.tfvars
+*.tfvars.json
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Local runtime data / dumps
+tailscale_dump.json
+tailscale_status.txt
+stock_state.txt
+current_caddy.txt
+current_caddy_utf8.txt
+
+# SSH private keys (just in case)
+id_rsa
+id_ed25519
+*.pem
+

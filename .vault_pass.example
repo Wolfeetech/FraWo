@@ -1,0 +1,17 @@
+# Ansible Vault Password File – EXAMPLE
+#
+# Copy this file to .vault_pass (gitignored) and replace the placeholder
+# with your real vault password.
+#
+# Usage:
+#   cp .vault_pass.example .vault_pass
+#   echo 'your-real-vault-password' > .vault_pass
+#   chmod 600 .vault_pass
+#
+# The ansible.cfg already points to .vault_pass via:
+#   vault_password_file = .vault_pass
+#
+# NEVER commit the real .vault_pass to git.
+# See SECURITY.md for the full secret-handling policy.
+
+your-vault-password-here

@@ -18,11 +18,10 @@
 | Public edge | red | intentionally not exposed yet; `2026-04-01` is website-first only | hold the line until DNS, TLS, auth, monitoring and rollback are ready |
 | Identity and mail model | yellow | `Franz` is in `FraWo`, Vaultwarden invite flow works, and `webmaster`/`franz` auth are technically verified, but visible send/receive and final `STRATO` verification are still open | finish visible send/receive for `webmaster`, `franz`, `noreply` and close the remaining app mail tests |
 | Secrets | yellow | Vaultwarden is live, Franz is in `FraWo`, but the visible spot-check and markdown cleanup are still open | verify the imported set visibly and then reduce markdown secrets to references |
-| Business MVP readiness | yellow | the current business core is technically close, but visible walkthroughs, device acceptance and visible app mail tests are still open | use the separate `release-mvp-gate` and close the remaining manual evidence |
-| Full internal certification | red | `production-gate` is correctly `BLOCKED` by `PBS`, `surface-go`, `Radio/AzuraCast`, and missing manual evidence | keep this separate from the business-MVP release |
-| Stockenweiler / Rentner OS | yellow | target model is now clear, but no operational remote-support onboarding exists yet | build the Tailscale-only support path and inventory the first managed devices |
-| 2-TB SSD | yellow | real extra space exists and is now used as interim cold archive relief, but not yet server-optimized | keep NTFS intact, then later shrink it from Windows and add a Linux partition |
-| Website release readiness | yellow | website-first release is still valid, but DNS/redirect, TLS, target system and rollback are not yet fully closed | keep the public release website-only and finish the website edge work separately |
+| Business MVP readiness | green | `release-mvp-gate` = `MVP_READY` (2026-04-09); alle manuellen Nachweise passed; Lane A geschlossen | Lane B (Website/Public) ist der aktive Nachfolgetrack |
+| Full internal certification | red | `production-gate` ist korrekt `BLOCKED` durch `PBS`, `surface-go`, `Radio/AzuraCast` und fehlende manuelle Evidenz | getrennt vom Website-Release weiter verfolgen |
+| Stockenweiler / Rentner OS | yellow | SSL-Zertifikat `home.prinz-stockenweiler.de` seit April 2026 abgelaufen; Inventar klar, aber kein operativer Remote-Support-Onboarding | SSL sofort erneuern (NPM LXC 103), dann Tailscale-only Support-Pfad |
+| Website release readiness | yellow | HTTP auf `www.frawo-tech.de` gruen; DS-Lite blockiert IPv4-Portforward fuer HTTPS | Cloudflare-Proxy oder Dual-Stack-ISP-Upgrade fuer TLS |
 
 ## Why Work Felt Slow
 
@@ -39,12 +38,11 @@
 
 ## Immediate Priorities
 
-1. Finish the visible MVP walkthrough for Wolf and Franz across `Vault`, `Nextcloud`, `Paperless`, and `Odoo`.
-2. Verify visible send/receive for `webmaster`, `franz`, and `noreply`, then close the visible test mails for `Nextcloud`, `Paperless`, and `Odoo`.
-3. Use `release-mvp-gate` for the business core and keep `production-gate` for the full certification scope.
-4. Hold the public release scope to `www.frawo-tech.de` only.
-5. Reopen `PBS`, shared frontend and radio only as their own certification track, not as part of the current MVP release.
-6. Decide the final 2-TB SSD role before any repartitioning.
+1. **Cloudflare oder ISP-Upgrade** für HTTPS auf `www.frawo-tech.de`: EasyBox 805 DS-Lite blockiert IPv4-Portforwards → Cloudflare-Proxy oder Dual-Stack-Tarif.
+2. **Stockenweiler SSL erneuern** für `home.prinz-stockenweiler.de` (abgelaufen seit April 2026) via NPM LXC 103 oder Certbot CLI.
+3. **PBS monatlicher Restore-Drill** via `make pbs-restore-proof` (VM 240 gestoppt, muss wieder aktiviert werden).
+4. **yourparty-Payload sichern** bevor Stockenweiler ausgedünnt wird: AzuraCast Station Config, WordPress-Content, MariaDB-Data, Radio-API-Config.
+5. **AzuraCast Pi-Integration** schließen (`rpi_radio_integrated=no`) und Jellyfin `TV Wohnzimmer`-Passwort hinterlegen.
 
 ## Current Operator Note
 
