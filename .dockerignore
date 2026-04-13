@@ -1,0 +1,11 @@
+# Schließe das Git-Verzeichnis aus dem Build-Kontext aus
+.git
+.gitignore
+
+# Schließe lokale Abhängigkeiten aus
+node_modules
+
+# Schließe sensible Dateien und Konfigurationen aus
+.env
+.env.example
+docker-compose.yml
