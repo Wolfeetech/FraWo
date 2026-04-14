@@ -69,7 +69,8 @@ Der Zielzustand ist eine konsolidierte, ressourceneffiziente Dual-Node-Infrastru
 - `surface_go_frontend`: Touch-Kiosk fuer Franz und Wolf (Rebuild offen).
 - `zenbook_radio_anchor`: Zukuenftiger Radio-Ankerpunkt.
 - `raspberry_pi_radio`: Dedizierter AzuraCast-Node.
-- `iphone-15`: Mobiles Primaergeraet Wolf.
+- `iphone-15`: Mobiles Primaergeraet Franz.
+- `pixel-9-pro`: Mobiles Primaergeraet Wolf.
 - `UniFi Cloud Gateway Ultra`: Netzwerkkontrollpunkt & VLANs.
 
 ## Professioneller Zielstandard
