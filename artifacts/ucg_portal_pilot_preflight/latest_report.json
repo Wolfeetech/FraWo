@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-05 01:32:41",
+  "generated_at": "2026-04-13 12:15:49",
   "pilot": "portal",
   "change_class": "read_only",
   "ready_for_gated_runtime_change": false,
@@ -13,7 +13,7 @@
     {
       "id": "portal_frontdoor_status_json",
       "ok": false,
-      "evidence": "HTTP 200, platform_core=attention, healthy=6/7"
+      "evidence": "HTTP 200, platform_core=attention, healthy=2/7"
     },
     {
       "id": "portal_internal_hostname",
@@ -27,23 +27,23 @@
     },
     {
       "id": "anker_management_ssh",
-      "ok": false,
-      "evidence": "root@100.69.179.87: Permission denied (publickey,password)."
+      "ok": true,
+      "evidence": "proxmox-anker; pve-manager/9.1.6/71482d1833ded40a (running kernel: 6.17.13-2-pve)"
     },
     {
       "id": "stock_management_ssh",
       "ok": false,
-      "evidence": "ssh: Could not resolve hostname stock-pve: Temporary failure in name resolution"
+      "evidence": "Warning: Permanently added '100.91.20.116' (ED25519) to the list of known hosts.\n# Tailscale SSH requires an additional check.\n# To authenticate, visit: https://login.tailscale.com/a/la3313c73ad1a8\nConnection to 100.91.20.116 port 22 timed out"
     },
     {
       "id": "pilot_documentation_present",
-      "ok": true,
-      "evidence": "pilot_section=True snapshot_rule=True verify_rule=True"
+      "ok": false,
+      "evidence": "pilot_section=False snapshot_rule=False verify_rule=False"
     },
     {
       "id": "toolbox_target_ip_alias_active",
-      "ok": false,
-      "evidence": "root@100.69.179.87: Permission denied (publickey,password)."
+      "ok": true,
+      "evidence": "inet 10.1.0.20/24 brd 10.1.0.255 scope global eth0"
     },
     {
       "id": "portal_target_ip_vhost_status_json",
@@ -66,7 +66,7 @@
     },
     "status_payload_summary": {
       "platform_core": "attention",
-      "healthy_services": 6,
+      "healthy_services": 2,
       "total_services": 7
     }
   },
@@ -75,21 +75,21 @@
       "ok": false,
       "url": "http://portal.hs27.internal/",
       "http_code": 0,
-      "error": "<urlopen error [Errno -3] Temporary failure in name resolution>"
+      "error": "<urlopen error [Errno 11001] getaddrinfo failed>"
     },
     "status_json": {
       "ok": false,
       "url": "http://portal.hs27.internal/status.json",
       "http_code": 0,
-      "error": "<urlopen error [Errno -3] Temporary failure in name resolution>"
+      "error": "<urlopen error [Errno 11001] getaddrinfo failed>"
     }
   },
   "portal_target_ip": {
     "target_ip": "10.1.0.20",
     "alias_probe": {
-      "ok": false,
-      "stdout": "",
-      "stderr": "root@100.69.179.87: Permission denied (publickey,password)."
+      "ok": true,
+      "stdout": "inet 10.1.0.20/24 brd 10.1.0.255 scope global eth0",
+      "stderr": ""
     },
     "status_payload_summary": {
       "platform_core": "unknown",
@@ -100,22 +100,25 @@
   "management_paths": {
     "anker": {
       "target": "root@100.69.179.87",
-      "ok": false,
-      "stdout_lines": [],
-      "stderr": "root@100.69.179.87: Permission denied (publickey,password)."
+      "ok": true,
+      "stdout_lines": [
+        "proxmox-anker",
+        "pve-manager/9.1.6/71482d1833ded40a (running kernel: 6.17.13-2-pve)"
+      ],
+      "stderr": ""
     },
     "stockenweiler": {
       "target": "stock-pve",
       "ok": false,
       "stdout_lines": [],
-      "stderr": "ssh: Could not resolve hostname stock-pve: Temporary failure in name resolution"
+      "stderr": "Warning: Permanently added '100.91.20.116' (ED25519) to the list of known hosts.\n# Tailscale SSH requires an additional check.\n# To authenticate, visit: https://login.tailscale.com/a/la3313c73ad1a8\nConnection to 100.91.20.116 port 22 timed out"
     }
   },
   "documentation": {
-    "ok": true,
-    "has_pilot_section": true,
-    "has_snapshot_rule": true,
-    "has_verify_rule": true
+    "ok": false,
+    "has_pilot_section": false,
+    "has_snapshot_rule": false,
+    "has_verify_rule": false
   },
   "recommendation": "fix_preflight_findings_before_any_runtime_portal_cutover"
 }

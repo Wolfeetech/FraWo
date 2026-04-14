@@ -24,24 +24,26 @@
 - Radio-Node: `radio-node` (192.168.2.155 / 100.64.23.77), ARM64 Raspberry Pi 4
 - PBS: `VM 240` (192.168.2.25), Interim-Datastore auf 64GB USB-Stick
 
-## Kanonische Topologie
+## Kanonische Topologie (Produktion)
 
 | ID | Typ | Dienst | Rolle | Ziel-IP | Betriebsmodell |
 | --- | --- | --- | --- | --- | --- |
 | 100 | CT | Toolbox | Docker, Ansible, Caddy, Tailscale, DNS | 10.1.0.20 | local storage (bypass LVM) |
-| 200 | VM | Nextcloud | Collaboration & Docs | 192.168.2.21 | dedizierte VM |
-| 210 | VM | HAOS | Smart Home | 192.168.2.24 | dedizierte HAOS-VM |
-| 220 | VM | Odoo | ERP/CRM | 192.168.2.22 | dedizierte VM |
-| 230 | VM | Paperless | DMS | 192.168.2.23 | dedizierte VM |
-| 240 | VM | PBS | Backup Server | 192.168.2.25 | dedizierte VM |
+| 200 | VM | Nextcloud | Cloud & Files | 10.1.0.21 | dedizierte VM |
+| 210 | VM | HAOS | Smart Home | 10.1.0.24 | dedizierte HAOS-VM |
+| 220 | VM | Odoo | Business ERP | 10.1.0.22 | dedizierte VM |
+| 230 | VM | Paperless | DMS | 10.1.0.23 | dedizierte VM |
+| 240 | VM | PBS | Backup Server | 192.168.2.25 | dedizierte VM (Interim) |
+| 110 | CT | Storage | NFS/SMB Data Node | 10.1.0.30 | CT 110 |
 
 ## Netzwerk & Freigaben
 
-- Router: Vodafone Easy Box (192.168.2.1) -> Transition zu UCG-Ultra (10.1.0.1)
-- DNS: AdGuard Home (CT 100)
-- VPN: Tailscale (Subnet Router 192.168.2.0/24 auf CT 100)
-- Frontdoors (intern): `*.hs27.internal` via Caddy
-- Frontdoors (mobile): `100.99.206.128:8443-8449` (Tailscale limited)
+- Router: **UCG-Ultra** (10.1.0.1) -> Primäres Gateway
+- Fallback: Vodafone Easy Box (192.168.2.1)
+- DNS: AdGuard Home (CT 100) on 10.1.0.20
+- VPN: Tailscale
+- **Public Edge**: [https://protocol-panel-cove-little.trycloudflare.com](https://protocol-panel-cove-little.trycloudflare.com) (Alpha)
+- Frontdoors (intern): `*.hs27.internal` via Caddy (10.1.0.20)
 
 ## Architekturentscheidungen & Business Logic
 
@@ -75,6 +77,14 @@
 - [x] Easy-Box-Geraete autoritativ zuordnen (.141-.144) -> in NETWORK_INVENTORY.md den Family-Phones zugeordnet.
 
 ## Chronologische Logs (Auszug)
+
+### 2026-04-14: Anker Blackout & Emergency Recovery (The "Wolf.EE" Incident)
+- Master node "Anker" crashed due to USB stick (Wolf.EE) failure, causing kernel panic.
+- "Stockenweiler" node isolated safely. Thermal panic resolved by disabling `anker-music` NFS mount.
+- "Anker" recovered and booted cleanly. Key VMs (200, 210, 220, 230) survived perfectly.
+- CRITICAL: `CT 100 toolbox` lost its raw disk image during the crash. Cloudflare, Caddy, and Tailscale routing died.
+- Quick Fix: Established direct NAT routing on Anker (`iptables` PREROUTING port 8069 to `10.1.0.22`) to bring Odoo back online locally.
+- Notiz: PBS-Instanz auf Anker wird stillgelegt; PBS Stockenweiler (109) übernimmt exklusiv.
 
 ### 2026-04-12: Repo Optimization
 - Clutter-Cleanup: Alle Root-Scripts in `scripts/remediations`, `archive`, `research`, `business`, `tools` verschoben.
