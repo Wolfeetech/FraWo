@@ -21,6 +21,7 @@
 - Studio-PC: `WOLFSTUDIOPC` (192.168.2.162)
 - Operator-Rechner: `wolf-ZenBook` (100.76.249.126)
 - Shared Frontend: `surface-go-frontend` (192.168.2.154 / 100.106.67.127)
+- **Toolbox Tailscale-IP nach CT-Rebuild**: `100.82.26.53` (Tailscale-Name: `toolbox-1` → umbenennen zu `toolbox` in Tailscale Admin; alter Eintrag `100.99.206.128` löschen)
 - Radio-Node: `radio-node` (192.168.2.155 / 100.64.23.77), ARM64 Raspberry Pi 4
 - PBS: `VM 240` (192.168.2.25), Interim-Datastore auf 64GB USB-Stick
 
