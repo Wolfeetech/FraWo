@@ -93,6 +93,7 @@
 
 - Managed hosts in Ansible inventory: `30`
 - **Branding Transition (2026-04-14)**: Das gesamte Estate wurde auf den neuen Namen **FraWo GbR** umgestellt. Sämtliche SSOT-Dokumente spiegeln nun die neue Marke wider.
+- **Anker Blackout & Recovery (2026-04-14)**: Kritischer Ausfall des Master-Nodes durch fehlerhaften USB-Stick "Wolf.EE". Anker ist wieder online, Kern-VMs (200-230) intakt. Die "toolbox" (LXC 100) hat ihre virtuelle Festplatte auf `local` verloren und lässt sich nicht starten. Odoo wurde mit einem Emergency-NAT bypass direkt zugänglich gemacht.
 - **Public Edge Launch**: Ein Cloudflare-Tunnel wurde als primärer öffentlicher Einstiegspunkt etabliert: [https://protocol-panel-cove-little.trycloudflare.com](https://protocol-panel-cove-little.trycloudflare.com).
 - **Toolbox Portal Update**: Das interne Dashboard zeigt nun dynamisch den Status der Kerndienste und den öffentlichen Link an.
 - **HAOS Recovery Success**: Der `400 Bad Request` Fehler in Home Assistant wurde durch Anpassung der `trusted_proxies` behoben.
@@ -191,6 +192,14 @@
    - benoetigte Aktion: entscheiden, ob Odoo den Shared-Posteingang `webmaster@frawo-tech.de` fuer `agent@` direkt per Fetchmail lesen darf oder ob vorher ein engerer Provider-/Ordner-Filterpfad geschaffen werden soll
    - warum: Alias, API-Key und sichtbare Zustellung sind jetzt gruen; offen bleibt nur noch die betriebssichere Incoming-Strategie fuer den Shared-Mailpfad
    - danach uebernehmen Codex/Gemini wieder: Odoo-Intake-End-to-End erneut pruefen und den Mailpfad fachlich einhaengen
+14. `AKTION VON DIR ERFORDERLICH:` Toolbox (LXC 100) neu aufbauen (Tailscale / Caddy)
+   - benoetigte Aktion: entscheiden, ob CT 100 aus einem lokalen/PBS-Backup wiederhergestellt oder neu konzipiert wird.
+   - warum: Nachdem der Anker-Crash die Toolbox-Disk zerstört hat, fehlt die zentrale Netzwerkbrücke für `100.99.206.128` und das offizielle Cloudflare/Proxy-Routing. Odoo läuft nur auf Bypass.
+   - danach uebernehmen Codex/Gemini wieder: DNS und Proxies wieder geradebügeln.
+15. `AKTION VON DIR ERFORDERLICH:` PBS-Instanz (Anker) endgültig abschreiben
+   - benoetigte Aktion: Das Backup-Konzept auf den laufenden PBS in Stockenweiler (109) fokussieren und die tote Anker-PBS-Instanz löschen.
+   - warum: Konsolidierung der Backup-Aktivitäten.
+
 13. Hinweis: Mobiler HTTPS-Vertrauensstandard (2026)
    - die interne CA (`frawo-ca.crt`) wird ueber `http://portal.hs27.internal/frawo-ca.crt` bereitgestellt.
    - die Installation ist fuer Bitwarden, Nextcloud und Odoo auf Android/iOS zwingend erforderlich, um untrusted-SSL-Fehler zu vermeiden.
