@@ -11,29 +11,29 @@ Keine Secrets. Keine Passwoerter. Diese Datei ist dafuer gedacht, sie direkt an 
 
 ## Generierung
 
-- Generated at: `2026-04-09 20:28:39`
+- Generated at: `2026-04-14 16:05:16`
 - Workspace root: `C:\Users\StudioPC\Documents\Homeserver 2027 Workspace`
 - Git branch: `main`
-- Pending git changes: `4`
+- Pending git changes: `0`
 - Managed hosts in inventory: `30`
 
 ## Source Freshness
 
-- `AI_BOOTSTRAP_CONTEXT.md`: `2026-04-09 18:31:08`
+- `AI_BOOTSTRAP_CONTEXT.md`: `2026-04-14 09:37:57`
 - `OPS_HOME.md`: `2026-03-31 06:53:07`
-- `OPERATOR_TODO_QUEUE.md`: `2026-04-09 15:01:40`
-- `manifests/work_lanes/current_plan.json`: `2026-04-09 20:28:25`
+- `OPERATOR_TODO_QUEUE.md`: `2026-04-14 10:37:50`
+- `manifests/work_lanes/current_plan.json`: `2026-04-10 06:11:57`
 - `artifacts/release_mvp_gate/latest_release_mvp_gate.json`: `2026-04-09 17:13:09`
 - `artifacts/public_ipv6_exposure_audit/latest_report.md`: `2026-03-31 06:32:34`
 - `artifacts/estate_census/latest_report.json`: `2026-04-09 17:23:24`
-- `artifacts/ucg_portal_pilot_preflight/latest_report.json`: `2026-04-05 01:32:41`
+- `artifacts/ucg_portal_pilot_preflight/latest_report.json`: `2026-04-13 12:15:49`
 - `artifacts\website_release_gate\20260330_161648\website_release_gate.md`: `2026-03-30 16:16:48`
 - `artifacts\production_gate\20260328_072130\production_gate.md`: `2026-03-28 07:21:32`
-- `manifests/control_surface/actions.json`: `2026-04-09 20:28:34`
+- `manifests/control_surface/actions.json`: `2026-04-10 06:11:57`
 
 ## Estate Snapshot
 
-- Organization: `FraWo`
+- Organization: `FraWo GbR`
 - Primary operator/admin: `Wolf`
 - Primary business user rollout: `Franz`
 - StudioPC local LAN gateway/router: `192.168.2.1` `easy_box`
@@ -47,7 +47,7 @@ Keine Secrets. Keine Passwoerter. Diese Datei ist dafuer gedacht, sie direkt an 
 - PBS VM target: `192.168.2.25`, currently `degraded`
 - Vaultwarden CT: `192.168.2.26:8080`, productive entry via `https://vault.hs27.internal`
 - Radio node: `192.168.2.155` and Tailscale `100.64.23.77`
-- Shared frontend node: `kiosk-frontend` on `192.168.2.154`
+- Shared frontend node: `surface-go-frontend` on `192.168.2.154`
 - Separate Stockenweiler legacy support LAN exists on `192.168.178.0/24`
 - Internal DNS zone: `hs27.internal`
 - Tailscale subnet router and internal reverse proxy live on `toolbox`
@@ -78,9 +78,9 @@ Keine Secrets. Keine Passwoerter. Diese Datei ist dafuer gedacht, sie direkt an 
 ## Current Release State
 
 - Active delivery lane: `Lane A: MVP Closeout`
-- Business MVP gate: `BLOCKED`
+- Business MVP gate: `MVP_READY`
 - Business MVP critical Codex checks: `passed=11` / `non-passed=0`
-- Business MVP manual checks: `passed=6` / `pending_or_failed=2`
+- Business MVP manual checks: `passed=8` / `pending_or_failed=0`
 - Public website gate: `BLOCKED`
 - Production certification gate: `BLOCKED`
 - Public IPv6 exposure audit: `open_checks=0` / `total_checks=13`
@@ -109,9 +109,9 @@ Keine Secrets. Keine Passwoerter. Diese Datei ist dafuer gedacht, sie direkt an 
 - Pyrefly process present: `false`
 - Stale ssh helpers: `0`
 - Stale mail powershell: `0`
-- Tailscale backend: `Running` / stockenweiler route visible `False`
-- ssh stock-pve: `reachable`
-- Local WireGuard VPN service running: `true`
+- Tailscale backend: `Running` / stockenweiler route visible `True`
+- ssh stock-pve: `unreachable`
+- Local WireGuard VPN service running: `false`
 - Important split: local StudioPC WireGuard is legacy/recovery only; it is not the same thing as a later professional site-to-site WireGuard between UCG and Stockenweiler.
 - Primary Stockenweiler admin path is currently ssh stock-pve via toolbox-backed userspace WireGuard.
 - Target professional bridge remains Tailscale subnet routing, not permanent dependence on the local stale Windows WireGuard tunnel.
@@ -186,9 +186,9 @@ Keine Secrets. Keine Passwoerter. Diese Datei ist dafuer gedacht, sie direkt an 
 - Ready for gated runtime change: `false`
 - Recommendation: `fix_preflight_findings_before_any_runtime_portal_cutover`
 - Runtime runbook: `UCG_PORTAL_PILOT_RUNBOOK.md`
-- Portal status snapshot: platform_core `attention`, healthy `6` / `7`
+- Portal status snapshot: platform_core `attention`, healthy `2` / `7`
   - `portal_frontdoor_http` -> `ok` / HTTP 200 via http://100.99.206.128:8447/
-  - `portal_frontdoor_status_json` -> `fail` / HTTP 200, platform_core=attention, healthy=6/7
+  - `portal_frontdoor_status_json` -> `fail` / HTTP 200, platform_core=attention, healthy=2/7
   - `portal_internal_hostname` -> `fail` / HTTP 0 via http://portal.hs27.internal/
   - `portal_internal_status_json` -> `fail` / HTTP 0 via http://portal.hs27.internal/status.json
 
@@ -207,15 +207,12 @@ Keine Secrets. Keine Passwoerter. Diese Datei ist dafuer gedacht, sie direkt an 
 
 ## Business MVP Blockers
 
-- `device_rollout_verified`: `pending`
-  - Open rollout blocker 2026-03-31: Franz Surface Laptop still needs visible acceptance on http://portal.hs27.internal/franz/ and Franz iPhone still needs visible acceptance on http://100.99.206.128:8447/franz/. Both start paths must visibly expose the core direct targets for Nextcloud, Paperless, Odoo and Vaultwarden before this check can pass. The rollout is currently additionally blocked by the missing 2FA path while the operator smartphone is still lost.
-- `vaultwarden_recovery_material_verified`: `pending`
-  - No fresh proof yet that the Vaultwarden recovery material exists offline in two separate physical copies.
+- none
 
 ## Public Website Release State
 
 - This track is separate from the internal business MVP.
-- Latest website gate source: `artifacts/website_release_gate/20260330_161648/website_release_gate.md`
+- Latest website gate source: `artifacts\website_release_gate\20260330_161648\website_release_gate.md`
 - Current blocked reasons:
   - public-http-redirect-check=failed
   - public-dualstack-edge-check=failed
@@ -290,6 +287,7 @@ Keine Secrets. Keine Passwoerter. Diese Datei ist dafuer gedacht, sie direkt an 
 - App SMTP authenticates with `webmaster@frawo-tech.de`.
 - The visible app sender is `noreply@frawo-tech.de`.
 - Vaultwarden is invite-only for productive use.
+- The `FraWo GbR` organization is the master identity for all business collections.
 
 ## Current Operator Queue
 

@@ -68,7 +68,7 @@ Alle Schritte ohne Secrets – keine Passwörter oder Tokens ins Repo:
 
 | Task | Gestartet | Nächster Schritt |
 |------|-----------|-----------------|
-| *(leer)* | | |
+| `website_design_odoo` | 2026-04-14 | **An Surface AI**: Odoo-Bypass aktiv (100.69.179.87:8069). Vaultwarden per SSH via `localhost:8443`. Ziel: FraWo GbR Homepage Frontend in Odoo finalisieren! |
 
 ### ✅ Done (Letzte 30 Tage)
 
