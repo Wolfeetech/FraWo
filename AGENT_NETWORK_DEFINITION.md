@@ -1,42 +1,100 @@
-# AGENT_NETWORK_DEFINITION.md - FraWo AI Agent Network
+# FraWo AI Agent Network Definition
 
-Um systematisches "Gegeneinanderarbeiten" zu verhindern, definieren wir hier die Rollen und Verantwortungsbereiche für alle KI-Agenten (Codex, Gemini, Claude, etc.), die auf diesem Workspace operieren.
+Dieses Dokument ist **bindend** für alle KI-Agenten (Gemini, Codex, Claude), die im FraWo-Ops-Workspace operieren.
+Es definiert das "Gemeinsame Gehirn" – die einzige Wahrheit über Rollen, Zuständigkeiten und Kollaborationsregeln.
+
+---
+
+## 🧠 Das Gemeinsame Gehirn (SSOT-Prinzip)
+
+Alle Agenten teilen exakt dieselbe Wissensbasis. Es gibt keine agenten-lokale Wahrheit.
+
+| Dokument | Zweck | Schreibrecht |
+|---|---|---|
+| `AGENT_INSTRUCTIONS.md` | Pflicht-Lektüre für jeden Agenten-Start | Operator (Wolf) |
+| `AI_BOOTSTRAP_CONTEXT.md` | Estate-Snapshot in einem Durchgang | Codex / Gemini |
+| `LIVE_CONTEXT.md` | Aktueller Handoff-Stand (auto-refresh) | Auto / Codex |
+| `MEMORY.md` | Durable Knowledge Base | Alle Agenten |
+| `NETWORK_INVENTORY.md` | LAN-Wahrheit | Codex |
+| `VM_AUDIT.md` | Verifizierbarer Laufzeit-Stand | Codex |
+| `GEMINI.md` | Gemini-spezifische Betriebsregeln | Operator (Wolf) |
+| `AGENT_NETWORK_DEFINITION.md` | Dieses Dokument – Governance | Operator (Wolf) |
+
+**Merge-Regel**: Bei Widersprüchen gewinnt das Repository (`https://github.com/Wolfeetech/FraWo`), nicht die lokale Agenten-Erinnerung.
+
+---
 
 ## 🏛️ Rollen-Architektur
 
-### 1. Rollen-Name: `INFRASTRUCTURE_ADMIN` (Codex Lead)
-- **Zuständigkeit**: Proxmox (Host & VMs), LXC-Container, SSH-Key-Management, Backup-Strategie (PBS), Netzwerk-Topology (UCG, Tailscale, VLANs).
-- **Ziel**: 100% Verfügbarkeit der Basis-Dienste und valide Backups.
-- **Befugnisse**: Darf Infrastruktur-Files (`ansible/`, `inventory/`, `pve/`) und Service-Configs (`Caddyfile`, `docker-compose.yml`) ändern.
+### Rolle 1: `INFRASTRUCTURE_ADMIN`
+- **Lead**: Codex
+- **Zuständigkeit**: Proxmox, LXC/VMs, SSH-Keys, Backup-Strategie (PBS), Netzwerk-Topologie (UCG, Tailscale, VLANs), Ansible-Playbooks.
+- **Ziel**: 100% Verfügbarkeit der Basis-Dienste.
+- **Schreibrecht**: `ansible/`, `inventory/`, `Caddyfile`, `docker-compose.yml`, `VM_AUDIT.md`, `NETWORK_INVENTORY.md`.
+- **Guardrail**: Keine Netzwerk-, Firewall- oder Proxmox-Änderung ohne expliziten Operator-Gate.
 
-### 2. Rollen-Name: `CONTENT_MANAGER` (Gemini/Claude Lead)
-- **Zuständigkeit**: Odoo Website-Design, Marketing-Texte, CRM-Workflows, Mediendaten-Struktur, Benutzer-Schnittstellen (Portal).
-- **Ziel**: Eine professionelle Außenwirkung der FraWo GbR ("Macher"-Identity).
-- **Befugnisse**: Darf Odoo-Views (`xml`), CSS (`frawo_custom_css.css`), HTML-Blocks und Mediendaten-Metadaten ändern.
+### Rolle 2: `CONTENT_MANAGER`
+- **Lead**: Gemini / Claude (advisory)
+- **Zuständigkeit**: Odoo Website-Design, Marketing-Texte, CRM-Workflows, Portal-Inhalte, Mediendaten-Struktur.
+- **Ziel**: Professionelle Außenwirkung der FraWo GbR ("Macher"-Identity).
+- **Schreibrecht**: `Codex/website/frawo_custom_css.css`, `Codex/website/frawo_homepage_blocks.html`, `Codex/website/frawo_contactus.html`.
+- **Guardrail**: Keine Live-Odoo-Änderungen, die nicht aus dem Repo-Pfad abgeleitet sind (Anti-Split-Brain).
 
-### 3. Rollen-Name: `QUALITY_AUDITOR` (Guardrail/Monitoring)
-- **Zuständigkeit**: SSOT-Integrität (`MEMORY.md`, `LIVE_CONTEXT.md`), Audit-Logs, Monitoring-Dashboards (Uptime Kuma), Zertifikats-Management.
+### Rolle 3: `QUALITY_AUDITOR`
+- **Lead**: Gemini (visible_verification_only)
+- **Zuständigkeit**: SSOT-Integrität, Audit-Logs, Browser-Abnahmen, Drift-Erkennung.
 - **Ziel**: Korrekte Dokumentation und proaktive Fehlererkennung.
-- **Befugnisse**: Darf Dokumentation aktualisieren und Konfigurations-Audits durchführen.
+- **Schreibrecht**: `MEMORY.md` (Fakten ergänzen), `LIVE_CONTEXT.md` (via refresh).
+- **Guardrail**: Kein Architektur-Entscheid, keine Repo-Mutation, keine Infra-Änderung.
 
 ---
 
-## 🤝 Handshake & Kollaboration
+## 🤝 Kollaborations-Protokoll
 
-- **Single Source of Truth (SSOT)**: `MEMORY.md` und `LIVE_CONTEXT.md` sind die einzige Wahrheit. Bevor ein Agent startet, MUSS er diese Dateien lesen.
-- **Drift-Vermeidung**: Wenn der `CONTENT_MANAGER` eine Änderung an Odoo plant, die eine neue VM-Ressource benötigt, muss er den `INFRASTRUCTURE_ADMIN` beauftragen (über `MEMORY.md`).
-- **Emergency-Pfad**: Bei System-Crashes (wie heute) pausiert der `CONTENT_MANAGER` alle Design-Deployments, bis der `INFRASTRUCTURE_ADMIN` die Stabilität bestätigt.
+### Handshake-Regel
+1. Jeder Agent liest beim Start: `AGENT_INSTRUCTIONS.md` → `AI_BOOTSTRAP_CONTEXT.md` → `LIVE_CONTEXT.md`.
+2. Jeder Agent schreibt Fakten in die kanonischen Dateien, nicht in Ad-hoc-Notizen.
+3. Jeder Agent beendet die Session mit `make refresh-context` (oder aktualisiert `LIVE_CONTEXT.md` direkt).
+
+### Drift-Vermeidung
+- Wenn `CONTENT_MANAGER` eine neue VM-Ressource braucht → Beauftragung von `INFRASTRUCTURE_ADMIN` über `MEMORY.md`.
+- Wenn `INFRASTRUCTURE_ADMIN` einen Crash behebt → `CONTENT_MANAGER` pausiert alle Deployments bis Stabilität bestätigt.
+- Widerspruch zwischen zwei Aussagen im Workspace → `QUALITY_AUDITOR` kennzeichnet den Drift, `INFRASTRUCTURE_ADMIN` entscheidet.
+
+### Emergency-Protokoll
+- **Crash/Ausfall**: `INFRASTRUCTURE_ADMIN` hat sofort Priorität. Alle anderen Rollen pausieren.
+- **Blocker**: Sofort mit Präfix `AKTION VON DIR ERFORDERLICH:` an den Operator (Wolf) eskalieren.
 
 ---
 
-## 📂 Datei-Zuständigkeiten (Beispiele)
+## 📂 Datei-Zuständigkeiten
 
-| Datei / Pfad | Hauptverantwortlich | Lese-Sperre? |
-| :--- | :--- | :--- |
-| `ansible/` | `INFRASTRUCTURE_ADMIN` | Nein |
-| `Codex/website/` | `CONTENT_MANAGER` | Nein |
-| `MEMORY.md` | `QUALITY_AUDITOR` | Nein (Alle schreiben Fakten) |
-| `NETWORK_STATE.md` | `INFRASTRUCTURE_ADMIN` | Nein |
+| Datei / Pfad | Hauptverantwortlich | Lese-Berechtigung |
+|---|---|---|
+| `ansible/` | `INFRASTRUCTURE_ADMIN` | Alle |
+| `Codex/website/` | `CONTENT_MANAGER` | Alle |
+| `MEMORY.md` | Alle (Fakten hinzufügen) | Alle |
+| `NETWORK_INVENTORY.md` | `INFRASTRUCTURE_ADMIN` | Alle |
+| `VM_AUDIT.md` | `INFRASTRUCTURE_ADMIN` | Alle |
+| `LIVE_CONTEXT.md` | Auto-Refresh / Codex | Alle |
+| `GEMINI.md` | Operator (Wolf) | Alle |
+| `AGENT_INSTRUCTIONS.md` | Operator (Wolf) | Alle |
+
+---
+
+## 🚫 Nicht delegierbar (immer an Wolf eskalieren)
+
+- Netzwerkänderungen (UCG, VLANs, Firewall-Policy)
+- Proxmox-Upgrades oder Node-Migrations
+- Datenmigrationen zwischen VMs
+- Physische Hardware-Änderungen (USB, Kabel)
+- Provider-Account-Aktionen (STRATO, Cloudflare, Tailscale Admin)
+- Vaultwarden Master-Password oder Recovery-Material
+
+---
 
 > [!IMPORTANT]
-> Dieses Dokument ist ab sofort bindend für alle Agenten-Instanzen. Verstöße gegen die Rollentrennung müssen im `MEMORY.md` als "Drift" markiert werden.
+> Verstöße gegen diese Rollentrennung (z.B. Gemini schreibt direkt in `ansible/`) müssen in `MEMORY.md` als **"Agent-Drift"** markiert werden.
+
+*Kanonischer Upstream: `https://github.com/Wolfeetech/FraWo`*
+*Letzte Aktualisierung: 2026-04-14 durch Gemini (QUALITY_AUDITOR)*

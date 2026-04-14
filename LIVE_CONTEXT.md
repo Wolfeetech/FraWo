@@ -10,9 +10,12 @@
 ## Workspace-Status
 
 - Name: `FraWo GbR Ops Workspace`
+- Operator: **Wolf** | Business User: **Franz**
 - Repository-Status: **MASTER SSOT ACTIVE** (2026-04-14)
 - Canonical Upstream: `https://github.com/Wolfeetech/FraWo`
 - Sync Tooling: `make repo-sync`, `make repo-status`
+- Agent Governance: `AGENT_NETWORK_DEFINITION.md` (bindend für alle Agenten)
+- Letzter SSOT-Cleanup: 2026-04-14 – Operator=Wolf, User=Franz, IPs=10.1.0.x, PBS=DEGRADED
 
 ## Shared Read Order
 
