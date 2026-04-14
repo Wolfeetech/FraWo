@@ -1,6 +1,19 @@
-Host proxmox-anker anker-pve toolbox pve stockenweiler-pve
+Host toolbox
+  HostName 100.99.206.128
   User root
   IdentityFile C:/Users/Admin/.ssh/id_ed25519
+
+Host anker-pve proxmox-anker pve
+  HostName 100.69.179.87
+  User root
+  IdentityFile C:/Users/Admin/.ssh/id_ed25519
+
+Host stockenweiler-pve
+  HostName 100.91.201.116
+  User root
+  IdentityFile C:/Users/Admin/.ssh/id_ed25519
+
+Host *
   IdentitiesOnly yes
   PreferredAuthentications publickey,password
   StrictHostKeyChecking accept-new

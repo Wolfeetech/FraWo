@@ -28,7 +28,7 @@
 
 | ID | Typ | Dienst | Rolle | Ziel-IP | Betriebsmodell |
 | --- | --- | --- | --- | --- | --- |
-| 100 | CT | Toolbox | Docker, Ansible, Caddy, Tailscale, DNS | 192.168.2.20 | LXC, Rebuild erlaubt |
+| 100 | CT | Toolbox | Docker, Ansible, Caddy, Tailscale, DNS | 10.1.0.20 | local storage (bypass LVM) |
 | 200 | VM | Nextcloud | Collaboration & Docs | 192.168.2.21 | dedizierte VM |
 | 210 | VM | HAOS | Smart Home | 192.168.2.24 | dedizierte HAOS-VM |
 | 220 | VM | Odoo | ERP/CRM | 192.168.2.22 | dedizierte VM |
@@ -54,17 +54,25 @@
 ## Aktuelle Arbeitsauftraege (Auszug)
 
 1. `NETWORK_INVENTORY.md` Finalisierung (Unknown Clients mapping).
-2. PBS-Target-Storage Erweiterung (Off-USB).
+2. Website: Release des professionellen Macher-Designs (Lane B).
 3. Radio-Library Kuration (USB -> Local Library).
-4. Media Server Client Rollout (TV/Browser).
-5. Public Edge Architektur (Go-Live Planning).
+4. Media Server Migration (CT 100 Rebuild follow-up).
+5. Professional AI Agent Network Governance (Active).
+
+## Aktiver Status 2026-04-14 (Restored)
+
+- **Infrastruktur**: STABIL. Wiederherstellung nach System-Crash abgeschlossen.
+- **Toolbox (CT 100)**: Restauriert (Clean-Room Rebuild). Läuft nun auf `local` (Directory-Storage), um LVM-Thin-Pool Blockaden zu umgehen. IP: `10.1.0.20`.
+- **Control Portal**: Live und erreichbar unter `10.1.0.20`.
+- **System-Haertung**: NTFS-Laufwerk `sda2` ist als defekt markiert und wird im Betrieb gemieden.
+- **AI Agent Network**: Rollenverteilung (`INFRASTRUCTURE_ADMIN`, `CONTENT_MANAGER`) etabliert.
 
 ## Aktive Operator-Aktionen
 
 - [ ] Radio/Media: Kuration der Bibliothek (Lane E)
-- [ ] Website: Go-Live Vorbereitung (Lane B)
+- [x] Website: Go-Live Vorbereitung (Lane B) -> abgeschlossen
 - [ ] Proxmox-Root-SSH-Key hinterlegen (AKTION VON DIR ERFORDERLICH)
-- [ ] Easy-Box-Geraete autoritativ zuordnen (.141-.144)
+- [x] Easy-Box-Geraete autoritativ zuordnen (.141-.144) -> in NETWORK_INVENTORY.md den Family-Phones zugeordnet.
 
 ## Chronologische Logs (Auszug)
 
