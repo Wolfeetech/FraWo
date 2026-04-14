@@ -47,34 +47,25 @@ Jede neue Aufgabe wird ab jetzt mit genau diesen Feldern beschrieben:
 
 ## Zielbild
 
-Der Zielzustand ist eine hybride Proxmox-Infrastruktur mit klarer Rollentrennung:
+Der Zielzustand ist eine konsolidierte, ressourceneffiziente Dual-Node-Infrastruktur ohne Doppelbelastungen, professionell aufgeteilt in "Business/AI" und "Media/IoT".
 
-- `CT 100 toolbox`
-  - Caddy
-  - AdGuard Home
-  - Tailscale-Subnet-Router
-- `VM 200 nextcloud`
-  - Dokumentenablage und Kollaboration
-- `VM 210 haos`
-  - Home Assistant OS mit Supervisor und spaeterem USB-Passthrough
-- `VM 220 odoo`
-  - ERP, CRM, Rechnungen
-- `VM 230 paperless`
-  - Dokumentenarchiv
-- `VM 240 pbs`
-  - dedizierter Proxmox Backup Server
-- `wolfstudiopc`
-  - primaeres Admin- und Brueckengeraet (dieser PC)
-  - SSOT fuer Netzwerk- und Servermanagement
-- `zenbook_radio_anchor`
-  - zukuenftiger Radio-Ankerpunkt ("Villa")
-  - Livestream-Host fuer Studio-Broadcasts
-- `raspberry_pi_radio`
-  - dedizierter interner Radio-Node mit AzuraCast
-- spaeter `surface_go_frontend`
-  - gemeinsamer Touch-Kiosk und Frontend-Node fuer Franz und Wolf
-- spaeter `UniFi Cloud Gateway Ultra`
-  - zentraler Gateway, DHCP- und Firewall-Kontrollpunkt, VLAN-ready
+### Node 1: Anker (Business, Automation & AI Layer)
+- `VM 220 odoo`: Zentrale ERP- und FraWo-Website-Instanz.
+- `VM 200 nextcloud`: Zusammengelegte, Single-Source Dokumenten-Instanz.
+- `VM 230 paperless`: Zusammengelegtes, zentrales Dokumentenarchiv.
+- `CT 300 n8n`: Automatisierungs-Backend fuer Workflow-Pipelines.
+- `VM 310 openclaw`: Isoliertes, sicheres AI-Agent-Environment fuer Vibecoding.
+- `CT/VM 211 haos-edge`: Zusaetzliche HA-Ebene zur Steuerung am Anker-Standort.
+
+### Node 2: Stockenweiler (Media, Backup & IoT Lifeboat)
+- `VM 210 haos`: Zentrale Smart-Home-Steuerung fuer das Elternhaus.
+- `CT 100 media`: Strukturierte Medien-Ebene (AzuraCast, Jellyfin, Media-HDD).
+- `CT/VM pbs`: Zentraler Proxmox Backup Server (Anker-Instanz wird obsolet).
+
+### Hardware & Peripherie
+- `wolfstudiopc`: Primaeres Admin-Geraet.
+- `surface_go_frontend`: Touch-Kiosk fuer Franz und Wolf.
+- `UniFi Cloud Gateway Ultra`: Netzwerkkontrollpunkt & VLANs.
 
 ## Professioneller Zielstandard
 
