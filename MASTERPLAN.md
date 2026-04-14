@@ -1,4 +1,4 @@
-# Homeserver 2027 Masterplan
+# FraWo GbR - Homeserver 2027 Masterplan
 
 ## Zweck
 
@@ -189,7 +189,8 @@ Der Server gilt erst dann als wirklich fertig, wenn alle folgenden Punkte erfuel
   - Caddy auf `VM220` ist auf `80/443` aktiv; ACME trifft jetzt den richtigen Zielpfad, scheitert aber aktuell mit `92.211.33.54: Connection refused`
 - Verbindlicher Release-Scope fuer `2026-04-01` bleibt die Website auf `www.frawo-tech.de`, getragen durch die Odoo-Website mit sichtbarer Radio-Praesenz; interne Business-UIs bleiben intern oder Tailscale-only.
 - `frawo-tech.de` bleibt die bevorzugte Hauptdomain fuer Website und spaetere Edge-Freigaben.
-- `yourparty.tech` bleibt Legacy-Kontext; `online-prinz.de` ist der aktuelle Zielname fuer den getrennten Fernwartungs- und Familienbetriebspfad in Stockenweiler.
+- `yourparty.tech` wird aufgeloest und ist Legacy-Kontext; `frawo-tech.de` ist die neue Primaerdomain fuer Website und Business.
+- `online-prinz.de` bleibt der Zielname fuer den getrennten Fernwartungs- und Familienbetriebspfad in Stockenweiler (Rentner OS).
 - internes `hs27.internal` bleibt bis zu einer bewusst geplanten DNS-Migration die aktive interne Betriebszone.
 - `Radio/AzuraCast` ist nicht als integriert verifiziert; die Frontdoor antwortet, der Node selbst ist im aktuellen Audit aber nicht sauber gruen.
 - `Jellyfin` bleibt technisch verfuegbar, gehoert aber nicht zum aktuellen Business-MVP-Freigabesignal.

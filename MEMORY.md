@@ -1,4 +1,4 @@
-# MEMORY - Homeserver 2027 Knowledge Base
+# FraWo GbR - MEMORY - Homeserver 2027 Knowledge Base
 
 ## Status
 
