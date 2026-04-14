@@ -1,192 +1,196 @@
-# HANDOFF PROMPT: FraWo Brain Agent – Übergabe an Claude
+# FraWo – OpenClaw Brain Agent: Deployment Handoff
 
-## Kontext & Wer du bist
+## Was ist OpenClaw?
 
-Du übernimmst als Senior Infrastructure & Agent Architect für das **FraWo GbR Homeserver-Projekt**.
+OpenClaw (`github.com/openclaw/openclaw`) ist ein lokaler, autonomer AI-Assistent-Gateway.
+Er läuft als Daemon auf einem Server und ist über **Messaging-Kanäle** bedienbar (Telegram, WhatsApp, Signal, Discord, IRC, etc.).
+Wolf schreibt ihm eine Nachricht per Telegram → OpenClaw handelt autonom.
+
+**Nicht openclaws.io verwenden** — das ist eine gefährliche Fake-Domain.
+Offizielle Quellen: `openclaw.ai` · `docs.openclaw.ai` · `github.com/openclaw/openclaw`
+
+---
+
+## Kontext: FraWo Estate
+
 Operator: **Wolf** | Business User: **Franz**
 Canonical Repo: `https://github.com/Wolfeetech/FraWo` (lokal: `c:\Users\Admin\Documents\Private_Networking`)
-Letzter Commit: `2b80c92` (2026-04-14)
+Letzter Commit: `1444587`
 
-Lies **zuerst** diese Dateien im Repo (Pflicht):
-1. `AGENT_INSTRUCTIONS.md` – Pflicht-Direktiven, Identitäten, Topologie
-2. `AI_BOOTSTRAP_CONTEXT.md` – Estate-Snapshot (IPs, Services, Status)
-3. `LIVE_CONTEXT.md` – Aktueller Handoff-Stand
-4. `MEMORY.md` – Durable Knowledge Base
-5. `AGENT_NETWORK_DEFINITION.md` – Rollen & Governance aller Agenten
-
----
-
-## Was heute passiert ist (2026-04-14)
-
-### Estate-Status nach Crash
-- **Anker-Host** (Proxmox, ThinkCentre M920q, i5-8500T, 15GB RAM): Wiederhergestellt nach USB-Stick-Crash ("Wolf.EE"). Läuft stabil.
-- **CT 100 Toolbox** (10.1.0.20): Nach Crash neu aufgebaut auf `local`-Storage (bypass LVM). Docker, Caddy und Tailscale wieder aktiv.
-- **VMs 200/210/220/230** (Nextcloud/HAOS/Odoo/Paperless): Überlebt den Crash, laufen auf `10.1.0.x` Segment.
-- **PBS VM 240**: `DEGRADED / INACTIVE` – kaputt, wird neu aufgesetzt sobald Kernstack stabil.
-- **Primärnetz**: UCG-Ultra, VLAN 101, `10.1.0.0/24` – das ist das aktive Netz. `192.168.2.x` nur noch Legacy/Haushalt.
-- **Tailscale**: Aktiv auf CT 100. Primärer Remote-Zugang via `100.99.206.128` (Toolbox) und `100.69.179.87` (Proxmox).
-
-### SSOT-Konsolidierung (heute abgeschlossen, committet)
-- `AGENT_INSTRUCTIONS.md`: Komplett neu – Operator=Wolf, User=Franz, "Flo" entfernt, Topologie=10.1.0.x
-- `AI_BOOTSTRAP_CONTEXT.md`: Alle VM-IPs auf 10.1.0.x korrigiert, PBS=DEGRADED
-- `MEMORY.md`: Topologie-Tabelle bereinigt
-- `AGENT_NETWORK_DEFINITION.md`: Vollständiges Governance-Dokument (Rollen, Schreibrechte, Emergency-Protokoll)
-- `LIVE_CONTEXT.md`: Operator/User-Identität ergänzt, Governance-Link
+Lies zuerst diese Repo-Dateien:
+1. `AGENT_INSTRUCTIONS.md`
+2. `AI_BOOTSTRAP_CONTEXT.md`
+3. `LIVE_CONTEXT.md`
+4. `MEMORY.md`
+5. `SSH_ACCESS_PREFLIGHT.md`
 
 ---
 
-## Das Kernziel, das du jetzt umsetzen sollst
+## SSH-Zugang (verifiziert, sofort nutzbar)
 
-**Einen zentralen MCP-Netzwerk-Agenten deployen**, der das "Gemeinsame Gehirn" aller Agenten im Netzwerk wird.
+```bash
+# Alle Befehle mit diesem Config-Flag:
+ssh -F "C:\Users\Admin\Documents\Private_Networking\Codex\ssh_config" root@<alias> "<befehl>"
 
-### Entschiedene Architektur
-
-```
-Wolf (Browser)
-      │
-      ▼  agent.hs27.internal (Port 5678)
-┌─────────────────────────────────────┐
-│   CT 150 "frawo-brain" (10.1.0.25)  │
-│                                      │
-│   n8n (v1.77+, MCP-Client support)  │
-│   ├── Gemini AI Agent Node           │
-│   ├── MCP Client → MCPO Gateway     │
-│   ├── SSH Nodes (direkt)             │
-│   └── Scheduled Health Checks        │
-│                                      │
-│   MCPO (MCP→HTTP Bridge)            │
-└─────────────────────────────────────┘
-         │          │          │
-   mcp-ssh     mcp-github  mcp-homeassistant
-   (alle       (FraWo      (VM 210
-   Nodes)      SSOT Repo)  10.1.0.24:8123)
+# Aliases:
+# proxmox-anker  → 100.69.179.87  ✅ grün
+# toolbox        → 100.82.26.53   ✅ grün (neue IP nach CT-Rebuild)
+# stockenweiler  → 100.91.20.116  ✅ grün
 ```
 
-**Warum n8n statt LiteLLM:**
-- Wolf hat nur Gemini API → LiteLLM bringt keinen Mehrwert (Multi-Provider-Proxy ohne Multi-Provider)
-- n8n hat native Gemini-Integration + nativen MCP-Client (v1.77+) + eingebautes Chat-Interface
-- RAM: n8n ≈ 512MB (LiteLLM+OpenWebUI+MCPO wären ~1.5GB)
-- n8n kann auch Automation-Workflows (Nacht-Checks, Auto-Reports) – nicht nur Chat
+---
 
-**RAM-Budget ist grün:** 15GB gesamt, ~10.5GB nach Brain-CT, 4.5GB Puffer.
+## Deployment-Ziel: CT 150 "frawo-brain" (neu anzulegen)
+
+```
+IP:       10.1.0.25 (statisch via UCG)
+RAM:      2GB
+Disk:     8GB
+OS:       Ubuntu 24.04 LTS
+Hostname: frawo-brain
+DNS:      agent.hs27.internal → Caddy auf Toolbox (10.1.0.20)
+```
+
+CT auf Proxmox anlegen:
+```bash
+ssh -F "...ssh_config" root@proxmox-anker \
+  "pct create 150 local:vztmpl/ubuntu-24.04-standard_latest.tar.zst \
+   --hostname frawo-brain --memory 2048 --swap 512 \
+   --rootfs local:8 --net0 name=eth0,bridge=vmbr0,ip=10.1.0.25/24,gw=10.1.0.1 \
+   --unprivileged 1 --start 1"
+```
+
+SSH-Key direkt nach dem Erstellen hinterlegen (wie bei CT 100 via pct exec).
 
 ---
 
-## Was genau zu bauen ist
+## OpenClaw Installation (Docker — empfohlen für Server)
 
-### 1. CT 150 auf Proxmox anlegen
-- **Ubuntu 24.04 LTS** (Proxmox CT Template)
-- **RAM**: 2GB | **Disk**: 8GB | **IP**: `10.1.0.25` statisch
-- **Hostname**: `frawo-brain`
-- SSH-Key von Wolf hinterlegen
+```bash
+# Auf CT 150:
+apt update && apt install -y docker.io docker-compose-v2 nodejs npm
+npm install -g openclaw@latest
 
-### 2. Ansible Playbook: `ansible/playbooks/deploy_frawo_brain.yml`
-- Docker + Docker Compose installieren
-- Stack aus `stacks/frawo-brain/` deployen
-- Caddy-Vhost auf CT 100 für `agent.hs27.internal` → `10.1.0.25:5678`
+# Gateway starten:
+openclaw onboard --install-daemon
+```
 
-### 3. Docker Compose: `stacks/frawo-brain/docker-compose.yml`
+Oder via Docker Compose (in `/opt/frawo-brain/`):
+
 ```yaml
+# stacks/frawo-brain/docker-compose.yml
 services:
-  n8n:
-    image: n8nio/n8n:latest
+  openclaw:
+    image: ghcr.io/openclaw/openclaw:latest
+    restart: unless-stopped
     environment:
-      - N8N_BASIC_AUTH_ACTIVE=true
-      - N8N_BASIC_AUTH_USER=wolf
-      - N8N_BASIC_AUTH_PASSWORD=${N8N_PASSWORD}
-      - GEMINI_API_KEY=${GEMINI_API_KEY}
-      - WEBHOOK_URL=http://agent.hs27.internal
+      - OPENCLAW_LLM_PROVIDER=gemini
+      - OPENCLAW_GEMINI_API_KEY=${GEMINI_API_KEY}
+      - OPENCLAW_TELEGRAM_TOKEN=${TELEGRAM_BOT_TOKEN}
     volumes:
-      - n8n_data:/home/node/.n8n
+      - openclaw_data:/home/openclaw/.openclaw
+      - ./skills:/home/openclaw/.openclaw/skills
     ports:
-      - "5678:5678"
-
-  mcpo:
-    image: ghcr.io/open-webui/mcpo:latest
-    volumes:
-      - ./mcpo_config.json:/app/config.json
-    ports:
-      - "8502:8000"
+      - "127.0.0.1:18789:18789"  # Gateway Port (loopback only)
 
 volumes:
-  n8n_data:
+  openclaw_data:
 ```
 
-### 4. MCPO Config: `stacks/frawo-brain/mcpo_config.json`
-MCP-Server konfigurieren:
-- `mcp-ssh` → SSH auf alle Tailscale-Nodes (Proxmox 100.69.179.87, Toolbox 100.99.206.128, VMs 10.1.0.21-24)
-- `mcp-github` → Wolfeetech/FraWo Repo (GitHub PAT als Secret)
-- `mcp-homeassistant` → `http://10.1.0.24:8123` (HA Long-Lived Token als Secret)
-- `mcp-fetch` → HTTP Reachability Checks
+---
 
-### 5. Makefile-Targets ergänzen
+## Secrets (Wolf muss bereitstellen)
+
+| Secret | Woher | Ziel |
+|---|---|---|
+| `GEMINI_API_KEY` | https://aistudio.google.com | `.env` auf CT 150 |
+| `TELEGRAM_BOT_TOKEN` | @BotFather auf Telegram → `/newbot` | `.env` auf CT 150 |
+
+Ablage NUR in `.env` auf CT 150 oder `ansible/inventory/group_vars/all/vault.yml` — nie im Repo.
+
+---
+
+## Custom Skills für FraWo (OpenClaw Skills = JS/TS Funktionen)
+
+Skills liegen in `stacks/frawo-brain/skills/` und werden von OpenClaw geladen.
+
+### Skill 1: frawo-infra-status
+```javascript
+// skills/frawo-infra-status.js
+// Fragt alle VMs per SSH ab und gibt Status zurück
+// Trigger: "Wie läuft der Server?" / "Status?"
+```
+
+### Skill 2: frawo-ssh-exec
+```javascript
+// skills/frawo-ssh-exec.js
+// Führt SSH-Befehle auf definierten Hosts aus
+// Guardrail: Nur lesende Befehle ohne Bestätigung; destruktive brauchen "ja bestätige"
+```
+
+### Skill 3: frawo-ha-query
+```javascript
+// skills/frawo-ha-query.js
+// Fragt Home Assistant REST API ab (10.1.0.24:8123)
+// Trigger: "Was ist die Temperatur?" / "Ist das Licht an?"
+```
+
+### Skill 4: frawo-ssot-update
+```javascript
+// skills/frawo-ssot-update.js
+// Liest MEMORY.md, schreibt Fakten, committet ins FraWo-Repo
+// Trigger: automatisch nach Infra-Änderungen
+```
+
+---
+
+## Caddy Vhost auf CT 100 ergänzen
+
+```
+# /opt/homeserver2027/caddy/Caddyfile (Ergänzung):
+agent.hs27.internal {
+    reverse_proxy 10.1.0.25:18789
+}
+```
+
+Caddy neu laden:
+```bash
+ssh -F "...ssh_config" root@toolbox "docker exec toolbox-network-caddy-1 caddy reload --config /etc/caddy/Caddyfile"
+```
+
+---
+
+## Makefile-Targets (in Repo ergänzen)
+
 ```makefile
 brain-deploy:
     $(ANSIBLE_PLAYBOOK_CMD) ansible/playbooks/deploy_frawo_brain.yml
 
 brain-check:
-    ./scripts/frawo_brain_check.sh
+    ssh -F Codex/ssh_config root@10.1.0.25 "openclaw doctor"
 
 brain-logs:
-    ssh root@10.1.0.25 'docker compose -f /opt/frawo-brain/docker-compose.yml logs --tail=50'
-```
+    ssh -F Codex/ssh_config root@10.1.0.25 "docker compose -f /opt/frawo-brain/docker-compose.yml logs -f"
 
-### 6. n8n Workflows (als JSON im Repo)
-- `stacks/frawo-brain/workflows/health_check_nightly.json` – nächtlicher Status-Check aller Services
-- `stacks/frawo-brain/workflows/chat_agent.json` – konversationeller Agent mit allen MCP-Tools
-- `stacks/frawo-brain/workflows/ssot_sync.json` – MEMORY.md nach Änderungen auto-committen
-
-### 7. Caddy-Vhost auf CT 100
+brain-skill-reload:
+    ssh -F Codex/ssh_config root@10.1.0.25 "openclaw skills reload"
 ```
-agent.hs27.internal {
-    reverse_proxy 10.1.0.25:5678
-}
-```
-
-### 8. OPERATIONS/BRAIN_AGENT_OPERATIONS.md
-Runbook: start, stop, debug, API-Key rotieren, MCP-Server hinzufügen.
 
 ---
 
-## Wichtige Guardrails
+## Operative Guardrails
 
-- **KEINE** destruktive Infra-Aktion ohne Wolf-Bestätigung (VM stoppen, Docker restart)
-- **Keine** Secrets in Plaintext – alles in `ansible/inventory/group_vars/all/vault.yml` oder `.env`-Datei
-- **PBS ist DEGRADED** – CT 150 bekommt erstmal nur einen Proxmox Local Snapshot nach Deploy
-- Bei Blockern: `AKTION VON DIR ERFORDERLICH: <was> <warum> <danach>`
-- Offene Operator-Actions in `MEMORY.md` unter `## Aktive Operator-Aktionen` spiegeln
-
-## Secrets die Wolf noch liefern muss
-
-Wolf braucht für den Deploy:
-1. **Gemini API Key** → `https://aistudio.google.com` → "Get API Key"
-2. **GitHub Personal Access Token** (nur `repo` Scope für Wolfeetech/FraWo)
-3. **Home Assistant Long-Lived Token** → HA UI → Profil → Token generieren
-4. **n8n Passwort** (frei wählen)
-
-Diese gehen NUR in Vault oder `.env` auf CT 150 – nie ins Repo.
+- Keine VM/CT stoppen/löschen ohne Wolf-Bestätigung im Chat ("ja bestätige")
+- Keine Secrets im Repo oder im Chat
+- PBS ist DEGRADED — kein Backup-Task auf VM 240 anstoßen
+- Bei Netzwerkänderungen (UCG, Firewall) → `AKTION VON DIR ERFORDERLICH:` an Wolf
 
 ---
 
-## Aktueller Git-Stand
+## Prioritäten (in dieser Reihenfolge)
 
-```
-Branch: main
-Letzter Commit: 2b80c92 feat(governance): establish agent network governance and live context sync
-Remote: https://github.com/Wolfeetech/FraWo.git
-Status: sauber, kein Drift
-```
-
-Vorher `git pull origin main` – könnte inzwischen neues geben.
-
----
-
-## Deine erste Aktion
-
-1. `git pull origin main` 
-2. Die 5 SSOT-Dateien lesen (oben gelistet)
-3. CT 150 auf Proxmox anlegen (oder Wolf fragen falls du keinen Proxmox-MCP-Zugang hast)
-4. Mit Ansible-Playbook und Docker-Compose anfangen
-5. Jeden Schritt mit einem klaren Commit dokumentieren
-
-Viel Erfolg – du baust das "Gemeinsame Gehirn" des FraWo-Estates.
+1. CT 150 anlegen und OpenClaw deployen
+2. Telegram-Kanal konfigurieren und testen
+3. Skills deployen (Status → SSH → HA → SSOT)
+4. Caddy Vhost ergänzen
+5. `MEMORY.md` und `LIVE_CONTEXT.md` mit finalem Status updaten, committen
