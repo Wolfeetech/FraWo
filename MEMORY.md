@@ -28,22 +28,22 @@
 
 | ID | Typ | Dienst | Rolle | Ziel-IP | Betriebsmodell |
 | --- | --- | --- | --- | --- | --- |
-| 100 | CT | Toolbox | Docker, Ansible, Caddy, Tailscale, DNS | 10.1.0.20 | local storage (bypass LVM) |
-| 200 | VM | Nextcloud | Cloud & Files | 10.1.0.21 | dedizierte VM |
-| 210 | VM | HAOS | Smart Home | 10.1.0.24 | dedizierte HAOS-VM |
-| 220 | VM | Odoo | Business ERP | 10.1.0.22 | dedizierte VM |
-| 230 | VM | Paperless | DMS | 10.1.0.23 | dedizierte VM |
-| 240 | VM | PBS | Backup Server | 192.168.2.25 | dedizierte VM (Interim) |
-| 110 | CT | Storage | NFS/SMB Data Node | 10.1.0.30 | CT 110 |
+| 100 | CT | Toolbox | Docker, Ansible, Caddy, Tailscale, DNS | **10.1.0.20** | local storage (bypass LVM) |
+| 200 | VM | Nextcloud | Cloud & Files | **10.1.0.21** | dedizierte VM |
+| 210 | VM | HAOS | Smart Home | **10.1.0.24** | dedizierte HAOS-VM |
+| 220 | VM | Odoo | Business ERP | **10.1.0.22** | dedizierte VM |
+| 230 | VM | Paperless | DMS | **10.1.0.23** | dedizierte VM |
+| 240 | VM | PBS | Backup Server | `192.168.2.25` | **DEGRADED / INACTIVE** – Neuaufsetzen geplant nach Kernstack-Stabilisierung |
+| 110 | CT | Storage | NFS/SMB Data Node | **10.1.0.30** | CT 110 |
 
 ## Netzwerk & Freigaben
 
-- Router: **UCG-Ultra** (10.1.0.1) -> Primäres Gateway
-- Fallback: Vodafone Easy Box (192.168.2.1)
-- DNS: AdGuard Home (CT 100) on 10.1.0.20
+- Router: **UCG-Ultra** (10.1.0.1) -> Primäres Gateway (**aktiv**)
+- Fallback: Vodafone Easy Box (192.168.2.1) -> Legacy-Segment (Haushalt/IoT)
+- DNS: AdGuard Home (CT 100) on **10.1.0.20**
 - VPN: Tailscale
-- **Public Edge**: [https://protocol-panel-cove-little.trycloudflare.com](https://protocol-panel-cove-little.trycloudflare.com) (Alpha)
-- Frontdoors (intern): `*.hs27.internal` via Caddy (10.1.0.20)
+- **Public Edge**: Cloudflare Tunnel (Alpha, nicht produktiv)
+- Frontdoors (intern): `*.hs27.internal` via Caddy (**10.1.0.20**)
 
 ## Architekturentscheidungen & Business Logic
 

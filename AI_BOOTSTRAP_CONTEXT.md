@@ -14,16 +14,16 @@
 - Organization: `FraWo GbR`
 - Primary operator/admin: `Wolf`
 - Primary business user rollout: `Franz`
-- StudioPC local LAN gateway/router: `192.168.2.1` `easy_box`
-- UCG transition gateway for `proxmox-anker`: `10.1.0.1`
-- Proxmox host professional management path: `100.69.179.87` Tailscale, runtime `10.1.0.92`, transition aliases `192.168.2.10` and temporary `192.168.2.1`
-- Core toolbox/control node: internal `192.168.2.20`, additive UCG pilot alias `10.1.0.20`, Tailscale/frontdoor `100.99.206.128`
-- Nextcloud VM: `192.168.2.21`
-- Odoo VM: `192.168.2.22`
-- Paperless VM: `192.168.2.23`
-- Home Assistant OS VM: `192.168.2.24`
-- PBS VM target: `192.168.2.25`, currently `degraded`
-- Vaultwarden CT: `192.168.2.26:8080`, productive entry via `https://vault.hs27.internal`
+- StudioPC local LAN gateway/router: `192.168.2.1` `easy_box` (legacy segment, still active for household devices)
+- UCG primary gateway: `10.1.0.1` (UCG-Ultra, VLAN 101 – **aktives Primärnetz**)
+- Proxmox host professional management path: `100.69.179.87` Tailscale, primary runtime `10.1.0.92`
+- Core toolbox/control node: **`10.1.0.20`** (primary), Tailscale/frontdoor `100.99.206.128`
+- Nextcloud VM: **`10.1.0.21`**
+- Odoo VM: **`10.1.0.22`**
+- Paperless VM: **`10.1.0.23`**
+- Home Assistant OS VM: **`10.1.0.24`**
+- PBS VM 240: `192.168.2.25`, status **`DEGRADED / INACTIVE`** – sauberes Neuaufsetzen geplant, sobald Kernstack stabil; aktuell kein valider Backup-Pfad
+- Vaultwarden CT: `10.1.0.26:8080`, productive entry via `https://vault.hs27.internal`
 - Radio node: `192.168.2.155` and Tailscale `100.64.23.77`
 - Shared frontend node: `surface-go-frontend` on `192.168.2.154`
 - Separate Stockenweiler legacy support LAN exists on `192.168.178.0/24`
@@ -108,7 +108,7 @@
 - `artifacts/production_gate/<latest>/production_gate.md` is the only valid certification decision source.
 - `MVP_READY` means the current business core can be released internally.
 - `MVP_READY` does not mean `CERTIFIED`.
-- `PBS` remains the main technical blocker until `VM 240`, datastore, backup proof, and restore proof are green again.
+- `PBS (VM 240)` ist aktuell **`DEGRADED / INACTIVE`**. Es wird neu aufgesetzt, sobald der Kernstack (Toolbox, VMs, Caddy, Tailscale) vollständig stabil ist. Bis dahin gilt: kein valider automatischer Backup-Pfad.
 - Manual evidence for user rollout, shared devices, and frontend acceptance is still required.
 - Future AI must not call the platform "production-ready" unless the latest production gate says `CERTIFIED`.
 
