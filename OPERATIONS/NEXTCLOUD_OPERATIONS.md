@@ -51,6 +51,7 @@ Die Storage-Integrationsregeln dazu stehen in `OPERATIONS/STORAGE_INTEGRATION_OP
 - `Odoo`-Intake auf dem Shared-Postfach `webmaster@...` bleibt eine getrennte Betriebsentscheidung und ist nicht identisch mit der Nextcloud-Mail-Trennung
 - `Odoo`-Anhaenge sollen spaeter nicht ueber einen gemeinsamen Live-Filestore, sondern ueber einen kontrollierten Export-/Mirror-Pfad in Nextcloud sichtbar werden
 - der zentrale Medienpfad kann spaeter read-only ueber `Nextcloud External Storage` sichtbar gemacht werden; das ist nicht dasselbe wie ein Umzug des Nextcloud-Datadirs
+- Reachability-Fix `2026-04-09`: `VM 200 nextcloud` war auf Proxmox per Cloud-Init auf `10.1.0.24/24` gedriftet und kollidierte damit mit `HAOS`; Sollpfad ist wieder `10.1.0.21/24`, danach liefern `cloud.hs27.internal/status.php` und die mobile Frontdoor `:8445/status.php` wieder `HTTP 200`
 
 ## Nie Tun
 

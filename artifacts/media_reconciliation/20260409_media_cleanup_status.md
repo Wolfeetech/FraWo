@@ -10,7 +10,14 @@ Stand: `2026-04-09`
 - Die lokale Zusatz-SSD `music_ssd` ist **nicht** als verlaesslicher Offload-Pfad zu werten:
   - `fsck.exfat -p` brachte sie kurz auf `rw`
   - unter Schreiblast fiel sie erneut auf `ro`
-- `storage-node` bleibt deshalb der aktuelle Druckpunkt mit ca. `91%`.
+- Der erste echte Platzgewinn ist umgesetzt:
+  - `studiopc-import-2026-03-25` wurde als Review-Archiv nach `Stockenweiler:/mnt/data_family/FraWo_review_imports_archives/` ausgelagert
+  - `storage-node` sank dadurch von ca. `91%` auf ca. `86%`
+  - `proxmox-anker` sank nach Entfernen der Zwischenarchive von ca. `93%` auf ca. `85%`
+- `incoming` ist jetzt wieder sauber:
+  - `studiopc-import-2026-03-25` ist komplett aus dem Live-Eingang entfernt
+  - `Wolf_EE_20260409` wurde in `bulk` und `review` getrennt
+  - `incoming/` ist aktuell leer
 
 ## Verifizierte Quellen
 
@@ -25,16 +32,25 @@ Stand: `2026-04-09`
 ### Incoming auf storage-node
 
 - `/mnt/data/media/yourparty_Libary/incoming/Wolf_EE_20260409`
-  - `MUSIK` `6.5G`
-  - `Sets` `3.7G`
-  - `The_TraXx` `2.7G`
-  - `Job Jobse` `438M`
+  - nach dem Cleanup nur noch `MUSIK` `6.5G`
 - `/mnt/data/media/yourparty_Libary/incoming/studiopc-import-2026-03-25`
-  - `studio-one-cache-audio` `2.5G`
-  - `onedrive-mixxx-recordings` `1.5G`
-  - `mixxx-recordings` `258M`
-  - `studio-one-media` `157M`
-  - `IMPORT_NOTES.txt`
+  - nach dem Cleanup nur noch `IMPORT_NOTES.txt`
+
+### Review-Pfad auf storage-node
+
+- `/mnt/data/media/yourparty_Libary/review/Wolf_EE_20260409`
+  - `release_packs/job_jobse_releases` `438M`
+  - `download_pools/source_pools/nicotone` plus `artist_buckets` und `genre_buckets` zusammen vormals `The_TraXx` `2.7G`
+  - `reference_sets/source_series/essential_mixes` plus `misc_reference_sets/record_data` zusammen vormals `Sets` `3.7G`
+
+### Ausgelagerte Review-Archive auf Stockenweiler
+
+- Zielpfad: `/mnt/data_family/FraWo_review_imports_archives`
+- verifiziert:
+  - `studio-one-media.tar` `157M`
+  - `mixxx-recordings.tar` `409M`
+  - `onedrive-mixxx-recordings.tar` `1.5G`
+  - `studio-one-cache-audio.tar` `3.2G`
 
 ### Stockenweiler
 
@@ -63,8 +79,9 @@ Stand: `2026-04-09`
    - behalten als Archiv
    - oder spaeter gezielt auslagern/loeschen
 2. `Wolf_EE_20260409` nur kuratiert weiterverteilen:
-   - zuerst `Job Jobse`, `Sets`, `The_TraXx`
-   - `MUSIK` zuletzt, weil groesster Block
+   - `Job Jobse`, `Sets`, `The_TraXx` liegen jetzt bereits sauber im Review-Pfad
+   - `Sets` und `The_TraXx` sind dort bereits weiter in sprechende Untergruppen zerlegt
+   - `MUSIK` liegt als letzter grosser Bulkblock unter `bulk/Wolf_EE_20260409`
 3. `Stockenweiler` nur in kleinen, thematisch klaren Chargen sichten:
    - `HOUSE`
    - `TECHNO (RAW _ DEEP _ HYPNOTIC)`

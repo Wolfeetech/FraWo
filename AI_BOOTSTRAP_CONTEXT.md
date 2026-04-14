@@ -2,6 +2,8 @@
 
 ## Purpose
 
+- **MASTER SSOT**: This repository is the exclusive technical and operational source of truth for the FraWo estate.
+- **Canonical Upstream**: `https://github.com/Wolfeetech/FraWo`
 - Read `INTRODUCTION_PROMPT.md` first.
 - Then read this file.
 - Then read `LIVE_CONTEXT.md`, `README.md`, `OPS_HOME.md`, and the relevant file in `OPERATIONS/`.

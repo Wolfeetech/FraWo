@@ -1,0 +1,11 @@
+StudioPC import on 2026-03-25
+
+Sources copied into this batch:
+- C:\Users\StudioPC\Music\Mixxx\Recordings
+- C:\Users\StudioPC\OneDrive\Music\Mixxx\Recordings
+- C:\Users\StudioPC\Documents\Studio One\Songs\Vinyl Recording\Media
+- C:\Users\StudioPC\Documents\Studio One\Songs\Vinyl Recording\Cache\Audio
+
+Purpose:
+- centralize currently reachable audio files on the canonical SMB media path
+- keep them under incoming until curation decides what moves to clean/curated/favorites

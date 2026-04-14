@@ -146,19 +146,29 @@ Diese Datei beschreibt den sichere Zielpfad fuer gemeinsame Daten zwischen `Next
   - `Wolf_EE_20260409` ist strukturierter Reviewbestand und fuer spaetere kuratierte Uebernahme besser geeignet
 - Konkrete Grobstruktur:
   - `studiopc-import-2026-03-25`
-    - `studio-one-cache-audio` ca. `2.5G`
-    - `onedrive-mixxx-recordings` ca. `1.5G`
-    - `mixxx-recordings` ca. `258M`
-    - `studio-one-media` ca. `157M`
+    - war Review-/Cache-Ballast
+    - ist jetzt nach `Stockenweiler:/mnt/data_family/FraWo_review_imports_archives/` ausgelagert
+    - auf `storage-node` bleibt nur noch `IMPORT_NOTES.txt`
   - `Wolf_EE_20260409`
-    - `MUSIK` ca. `6.5G`
-    - `Sets` ca. `3.7G`
-    - `The_TraXx` ca. `2.7G`
-    - `Job Jobse` ca. `438M`
+    - `MUSIK` ca. `6.5G` liegt als Bulkblock unter `/mnt/data/media/yourparty_Libary/bulk/Wolf_EE_20260409`
+    - `Job Jobse` ca. `438M` unter `release_packs/job_jobse_releases`
+    - `Sets` ca. `3.7G` weiter zerlegt in `reference_sets/source_series/essential_mixes` und `reference_sets/misc_reference_sets/record_data`
+    - `The_TraXx` ca. `2.7G` weiter zerlegt in `download_pools/source_pools/nicotone`, `artist_buckets/artist_pool` und `genre_buckets/genre_pool`
 - Praktische Reihenfolge:
   1. `studiopc-import-2026-03-25` als Review-/Archivfrage klaeren
   2. danach `Wolf_EE_20260409` in kleinen kuratierten Paketen weiterverteilen
   3. `Stockenweiler` erst dann in grossen Bloecken ziehen, wenn wieder ein wirklich belastbarer Offload-/Sortierpfad existiert
+
+## Platzgewinn 2026-04-09
+
+- Durch Auslagerung der `studiopc-import`-Bloecke nach `Stockenweiler` wurde der aktuelle Druckpunkt messbar reduziert:
+  - `CT 110 storage-node`: von ca. `91%` auf ca. `86%`
+  - `proxmox-anker /`: von ca. `93%` auf ca. `85%`
+- Zusaetzlicher Strukturgewinn:
+  - `Job Jobse`, `Sets` und `The_TraXx` sind in einen eigenen lokalen Review-Pfad verschoben
+  - `Sets` und `The_TraXx` wurden dort bereits in sprechende Untergruppen weiter zerlegt
+  - `MUSIK` wurde aus `incoming` in den Bulk-Pfad gezogen
+  - `incoming/` ist damit wieder frei fuer echte neue Rohimporte
 
 ## Eskalation
 

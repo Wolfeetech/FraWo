@@ -1,22 +1,16 @@
-# -*- coding: utf-8 -*-
-import xmlrpc.client
+param(
+    [string]$WebsiteHost = "www.frawo-tech.de",
+    [string]$WebsiteTitle = "FraWo"
+)
 
-url = 'http://172.21.0.3:8069'
-db = 'FraWo_GbR'
-username = 'wolf@frawo-tech.de'
-password = 'OD-Wolf-2026!'
+$ErrorActionPreference = "Stop"
 
-common = xmlrpc.client.ServerProxy(f'{url}/xmlrpc/2/common')
-uid = common.authenticate(db, username, password, {})
-models = xmlrpc.client.ServerProxy(f'{url}/xmlrpc/2/object')
-
-def update_view(view_id, arch):
-    models.execute_kw(db, uid, password, 'ir.ui.view', 'write', [[view_id], {'arch_db': arch}])
+$root = Split-Path -Parent $PSScriptRoot
+$proxmoxExec = Join-Path $PSScriptRoot "proxmox_windows_ssh_exec.ps1"
 
 # ─── HOMEPAGE (3644) ───
-# Use XML NCRs for all German characters to avoid encoding corruption
-# ä: &#xe4;  ö: &#xf6;  ü: &#xfc;  ß: &#xdf;  –: &#x2013;  
-home_arch = """<t name="Home" t-name="website.homepage">
+$homeXml = @"
+<t name="Home" t-name="website.homepage">
   <t t-call="website.layout">
     <t t-set="pageName" t-value="'homepage'"/>
     <div id="wrap" class="oe_structure">
@@ -109,10 +103,12 @@ home_arch = """<t name="Home" t-name="website.homepage">
       </section>
     </div>
   </t>
-</t>"""
+</t>
+"@
 
 # ─── CONTACT PAGE (3637) ───
-contact_arch = """<t name="Contact Us" t-name="website.contactus">
+$contactXml = @"
+<t name="Contact Us" t-name="website.contactus">
   <t t-call="website.layout">
     <div id="wrap" class="oe_structure">
       <style>
@@ -150,26 +146,56 @@ contact_arch = """<t name="Contact Us" t-name="website.contactus">
       </section>
     </div>
   </t>
-</t>"""
+</t>
+"@
 
-# ─── GLOBAL BRANDING & FIXES ───
-global_css = """<style>
+# ─── GLOBAL BRANDING ───
+$globalCss = @"
+<style>
   @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800;900&display=swap');
   body, #wrap { font-family: 'Poppins', sans-serif !important; }
   header#top, footer { background-color: #0d1117 !important; border-color: #30363d !important; }
   header#top .navbar, footer { color: #fff !important; }
   header#top .nav-link, footer a { color: #94a3b8 !important; }
   header#top .nav-link:hover, footer a:hover { color: #a855f7 !important; }
-</style>"""
+</style>
+"@
 
-# Push updates
-update_view(3644, home_arch)
-print("Homepage updated (NCR fix).")
+$homeJson = @{ en_US = $homeXml; de_DE = $homeXml } | ConvertTo-Json -Compress
+$contactJson = @{ en_US = $contactXml; de_DE = $contactXml } | ConvertTo-Json -Compress
 
-update_view(3637, contact_arch)
-print("Contact page updated (NCR fix).")
+$sql = @"
+begin;
+-- Update Website Meta
+update website set name = '$($WebsiteTitle.Replace("'", "''"))', domain = '$($WebsiteHost.Replace("'", "''"))', custom_code_head = '$($globalCss.Replace("'", "''"))' where id = 1;
 
-models.execute_kw(db, uid, password, 'website', 'write', [[1], {'custom_code_head': global_css}])
-print("Global CSS updated.")
+-- Update Homepage view
+update ir_ui_view set arch_db = '$($homeJson.Replace("'", "''"))'::jsonb where key = 'website.homepage';
 
-print("All NCR-protected updates complete!")
+-- Update Contactview
+update ir_ui_view set arch_db = '$($contactJson.Replace("'", "''"))'::jsonb where key = 'website.contactus';
+
+-- Ensure web.base.url is correct
+insert into ir_config_parameter (key, value, create_uid, write_uid, create_date, write_date)
+values ('web.base.url', 'https://$($WebsiteHost.Replace("'", "''"))', 1, 1, now(), now())
+on conflict (key) do update set value = excluded.value;
+
+commit;
+"@
+
+$sqlBase64 = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($sql))
+
+$remote = @"
+qm guest exec 220 -- bash -lc 'python3 - <<'"'"'PY'"'"'
+from pathlib import Path
+import base64
+Path("/tmp/frawo_site_high_end.sql").write_bytes(base64.b64decode("$sqlBase64"))
+PY
+cd /opt/homeserver2027/stacks/odoo
+docker-compose exec -T db psql -U odoo -d FraWo_GbR < /tmp/frawo_site_high_end.sql
+docker-compose restart web'
+"@
+
+Write-Host "Deploying High-End Odoo Website Baseline to VM 220..."
+& $proxmoxExec -RemoteCommand $remote
+Write-Host "Deployment complete."
