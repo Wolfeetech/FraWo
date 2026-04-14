@@ -24,24 +24,26 @@
 - Radio-Node: `radio-node` (192.168.2.155 / 100.64.23.77), ARM64 Raspberry Pi 4
 - PBS: `VM 240` (192.168.2.25), Interim-Datastore auf 64GB USB-Stick
 
-## Kanonische Topologie
+## Kanonische Topologie (Produktion)
 
 | ID | Typ | Dienst | Rolle | Ziel-IP | Betriebsmodell |
 | --- | --- | --- | --- | --- | --- |
-| 100 | CT | Toolbox | Docker, Ansible, Caddy, Tailscale, DNS | 192.168.2.20 | LXC, Rebuild erlaubt |
-| 200 | VM | Nextcloud | Collaboration & Docs | 192.168.2.21 | dedizierte VM |
-| 210 | VM | HAOS | Smart Home | 192.168.2.24 | dedizierte HAOS-VM |
-| 220 | VM | Odoo | ERP/CRM | 192.168.2.22 | dedizierte VM |
-| 230 | VM | Paperless | DMS | 192.168.2.23 | dedizierte VM |
-| 240 | VM | PBS | Backup Server | 192.168.2.25 | dedizierte VM |
+| 100 | CT | Toolbox | Docker, Caddy, Tailscale, DNS, Public Edge | 10.1.0.20 | LXC (Produktion) |
+| 200 | VM | Nextcloud | Cloud & Files | 10.1.0.21 | dedizierte VM |
+| 210 | VM | HAOS | Smart Home | 10.1.0.24 | dedizierte HAOS-VM |
+| 220 | VM | Odoo | Business ERP | 10.1.0.22 | dedizierte VM |
+| 230 | VM | Paperless | DMS | 10.1.0.23 | dedizierte VM |
+| 240 | VM | PBS | Backup Server | 192.168.2.25 | dedizierte VM (Interim) |
+| 110 | CT | Storage | NFS/SMB Data Node | 10.1.0.30 | CT 110 |
 
 ## Netzwerk & Freigaben
 
-- Router: Vodafone Easy Box (192.168.2.1) -> Transition zu UCG-Ultra (10.1.0.1)
-- DNS: AdGuard Home (CT 100)
-- VPN: Tailscale (Subnet Router 192.168.2.0/24 auf CT 100)
-- Frontdoors (intern): `*.hs27.internal` via Caddy
-- Frontdoors (mobile): `100.99.206.128:8443-8449` (Tailscale limited)
+- Router: **UCG-Ultra** (10.1.0.1) -> Primäres Gateway
+- Fallback: Vodafone Easy Box (192.168.2.1)
+- DNS: AdGuard Home (CT 100) on 10.1.0.20
+- VPN: Tailscale
+- **Public Edge**: [https://protocol-panel-cove-little.trycloudflare.com](https://protocol-panel-cove-little.trycloudflare.com) (Alpha)
+- Frontdoors (intern): `*.hs27.internal` via Caddy (10.1.0.20)
 
 ## Architekturentscheidungen & Business Logic
 

@@ -8,10 +8,8 @@
 
 ## Workspace-Status
 
-- Name: `Homeserver 2027 Ops Workspace`
-- Alias: `/home/wolf/.gemini/antigravity/brain/Homeserver_2027_Ops_Workspace`
-- Desktop-Shortcut: `/home/wolf/Desktop/Homeserver 2027 Workspace`
-- Repository-Status: **MASTER SSOT ACTIVE** (2026-04-13)
+- Name: `FraWo GbR Ops Workspace`
+- Repository-Status: **MASTER SSOT ACTIVE** (2026-04-14)
 - Canonical Upstream: `https://github.com/Wolfeetech/FraWo`
 - Sync Tooling: `make repo-sync`, `make repo-status`
 
@@ -94,18 +92,12 @@
 ## Current Estate Snapshot
 
 - Managed hosts in Ansible inventory: `30`
-- UCG transition gateway: `UniFi Cloud Gateway Ultra (UCG-Ultra)` active for `proxmox-anker` on VLAN 101 (`10.1.0.92/24`), with legacy aliases `192.168.2.10/24` + temporary `192.168.2.1/24`
-- UCG status: **ONLINE**, internet routing restored after removal of conflicting static route `Anker-Legacy-Bridge`
-- UCG static route: Verified active for all core services; legacy gateway shadowing resolved via DNS-over-HTTPS.
-- Core business nodes: `10.1.0.20` toolbox, `10.1.0.21` nextcloud, `10.1.0.22` odoo, `10.1.0.23` paperless, `10.1.0.24` haos, `10.1.0.26` vaultwarden, `10.1.0.30` storage-node
-- Latest stress summary: `artifacts/stress_tests/20260327_234807/summary.tsv`
-- Latest release-MVP gate: `artifacts/release_mvp_gate/20260409_171309/release_mvp_gate.md` -> `MVP_READY`
-- Latest production gate: `artifacts/production_gate/20260328_072130/production_gate.md` -> `BLOCKED`
-- Toolbox network base: Caddy on `10.1.0.20:80`, AdGuard Home on `10.1.0.20:53` active with **DNS-over-HTTPS (DoH)** to bypass EasyBox interception. Localhost-only admin on `127.0.0.1:3000`.
-- Toolbox mobile Tailscale frontdoor: `100.99.206.128:8443` HA, `:8444` Odoo, `:8445` Nextcloud, `:8446` Paperless, `:8447` Portal, `:8448` Radio (502: node `100.64.23.77` offline), `:8449` Media
-- Toolbox Tailscale state: `/dev/net/tun` mapped, `tailscaled` active, backend `Running`, subnet route `10.1.0.0/24` is **advertised and verified**. DNS updated to `10.1.0.20`.
-- Toolbox runtime nuance `2026-04-07`: der produktive Frontdoor laeuft containerisiert als `toolbox-network_caddy_1`; `homeserver2027-toolbox-mobile-firewall.service` ist `active`, waehrend der Host-Dienst `caddy.service` selbst `inactive` ist
-- Toolbox DNS-Remediation `2026-04-08`: `CT 100` war auf `nameserver 127.0.0.1` gedriftet, obwohl der lokale Host-Resolver ueber `127.0.0.1:53` nicht antwortete; der funktionierende Pfad ist `10.1.0.20:53`. `/etc/resolv.conf` wurde deshalb auf `nameserver 10.1.0.20` plus `search hs27.internal` zurueckgezogen
+- **Branding Transition (2026-04-14)**: Das gesamte Estate wurde auf den neuen Namen **FraWo GbR** umgestellt. Sämtliche SSOT-Dokumente spiegeln nun die neue Marke wider.
+- **Public Edge Launch**: Ein Cloudflare-Tunnel wurde als primärer öffentlicher Einstiegspunkt etabliert: [https://protocol-panel-cove-little.trycloudflare.com](https://protocol-panel-cove-little.trycloudflare.com).
+- **Toolbox Portal Update**: Das interne Dashboard zeigt nun dynamisch den Status der Kerndienste und den öffentlichen Link an.
+- **HAOS Recovery Success**: Der `400 Bad Request` Fehler in Home Assistant wurde durch Anpassung der `trusted_proxies` behoben.
+- **Stockenweiler Recovery**: Der Fernzugriff via Tailscale SSH wurde erfolgreich autorisiert und verifiziert.
+- **Subnet Focus**: Das primäre Produktionsnetz wurde auf das VLAN 101 (`10.1.0.0/24`) des UCG-Ultra migriert.
 - **Repository Reorganization (2026-04-12)**: Root clutter from past remediation phases has been moved into structured subdirectories (`scripts/remediations`, `scripts/archive`, `scripts/research`, `scripts/business`, `scripts/tools`). The root directory now only contains core infrastructure files, shortcut commands, and verified administrative documents.
 - **StudioPC Workstation Katarzis:** Der Rechner wurde in eine dedizierte Antigravity-Workstation transformiert.
     - **Laufwerks-Mapping (Persistent):** `P:\` (PROJEKTE), `S:\` (SAMPLES), `L:\` (LIBRARY_ASSETS) auf `C:\WORKSPACE`.

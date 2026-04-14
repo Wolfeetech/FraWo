@@ -15,12 +15,8 @@ Stand: `2026-04-11` | Aktualisiert von: Codex
 
 | Task | Warum blockiert | Frühestes Datum | Was danach? |
 |------|-----------------|-----------------|-------------|
-| `vaultwarden_recovery_material_verified` | Offline-Kopien aktuell nicht möglich (Operator hat bis Mai 2026 keinen Zugriff auf Druck/USB/physische Ablage) | **2026-05-01** | Checkliste unten ausführen, dann MVP-Gate final schließen |
-| `device_rollout_verified` (Franz Surface/iPhone) | Sichtbarer Gerätenachweis fehlt – **offen: ist das bis Mai ebenfalls blockiert?** Am nächsten Laptop-Tag prüfen und diesen Eintrag aktualisieren. | unklar | `scripts/prove_device_rollout.ps1` ausführen |
-| Task | Warum blockiert | Was danach? |
-|------|-----------------|-------------|
-| `public_edge_https_verified` (www.frawo-tech.de) | DS-Lite EasyBox 805 verhindert IPv4-Portforward; HTTPS braucht Cloudflare-Proxy oder ISP-Dual-Stack | `PUBLIC_EDGE_ARCHITECTURE_PLAN.md` → Cloudflare-Schritt |
-| `stockenweiler_ssl_renewed` (home.prinz-stockenweiler.de) | SSL-Zertifikat abgelaufen seit April 2026; NPM UI oder Certbot-CLI nötig | `SESSION_HANDOVER_APRIL_2026.md` → SSL Renewal |
+| `vaultwarden_recovery_material_verified` | Offline-Kopien aktuell nicht möglich | **2026-05-01** | Checkliste unten ausführen |
+| `radio_pi_power_cycle` | LAN blinkt, aber System reagiert nicht | **Sofort** | Status-Check nach Neustart |
 
 #### Checkliste: `vaultwarden_recovery_material_verified` (Mai 2026)
 
@@ -79,15 +75,10 @@ Alle Schritte ohne Secrets – keine Passwörter oder Tokens ins Repo:
 | Task | Abgeschlossen |
 |------|---------------|
 | Lane A: Business-MVP (Nextcloud, Odoo, Paperless live) | 2026-03-30 |
-| PBS-Erstinbetriebnahme + erster Restore-Drill | 2026-03-21 |
-| Surface Go Frontend V1 live | 2026-03-25 |
-| Radio AzuraCast live auf Pi | 2026-03-28 |
-| MVP-Browserabnahme (Wolf + Franz) | 2026-03-30 |
-| `strato_mail_model_verified` (webmaster, franz, noreply) | 2026-03-31 |
-| `vaultwarden_recovery_material_verified` (2 Offline-Kopien) | 2026-04-09 |
-| `device_rollout_verified` (Franz Surface + iPhone) | 2026-04-09 |
-| DNS-Cutover frawo-tech.de auf VM220 (A/AAAA bei STRATO) | 2026-04-09 |
-| Repo-Hygiene: .vault_pass entfernt, SECURITY.md hinzugefügt | 2026-04-09 |
+| `haos_vm_210_trusted_proxies_fix` | 2026-04-14 |
+| `public_edge_alpha_tunnel_live` | 2026-04-14 |
+| `stockenweiler_ssh_recovery` | 2026-04-14 |
+| `frawo_gbr_branding_sync` | 2026-04-14 |
 | Odoo-Website: FraWo-Eventdienstleister-Auftritt published | 2026-04-09 |
 
 ---
@@ -156,11 +147,11 @@ Alles andere laeuft standardmaessig im Loop:
 
 ## Lane Status
 
-- `Lane A: MVP Closeout` -> `completed` ✅ (release_mvp_gate = MVP_READY, alle manuellen Nachweise passed)
-- `Lane B: Website/Public` -> `active` (DNS-Cutover done; HTTPS/IPv4 durch DS-Lite blockiert)
-- `Lane C: Security/PBS/Infra` -> `watch` (PBS VM 240 gestoppt; monatliche Restore-Drills nötig)
-- `Lane D: Stockenweiler` -> `watch` (SSL abgelaufen; yourparty-Payload sichern vor Ausdünnung)
-- `Lane E: Radio/Media` -> `watch` (rpi_radio_integrated=no; Jellyfin TV noch nicht final)
+- `Lane A: MVP Closeout` -> `completed` ✅
+- `Lane B: Website/Public` -> `active` (Public Edge Alpha live: protocol-panel-cove-little.trycloudflare.com)
+- `Lane C: Security/PBS/Infra` -> `watch` (PBS Restore-Drill fällig)
+- `Lane D: Stockenweiler` -> `ok` (Access restored; home.prinz-stockenweiler.de valid until July)
+- `Lane E: Radio/Media` -> `blocked` (Power cycle for Pi 4 required)
 
 ## Manuelle Unblock-Punkte
 
