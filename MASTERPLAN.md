@@ -63,8 +63,13 @@ Der Zielzustand ist eine konsolidierte, ressourceneffiziente Dual-Node-Infrastru
 - `CT/VM pbs`: Zentraler Proxmox Backup Server (Anker-Instanz wird obsolet).
 
 ### Hardware & Peripherie
-- `wolfstudiopc`: Primaeres Admin-Geraet.
-- `surface_go_frontend`: Touch-Kiosk fuer Franz und Wolf.
+- `wolfstudiopc`: Primaeres Admin-Geraet & SSOT.
+- `surface-franz`: Franz' Arbeits-Laptop (Surface).
+- `surface-wolfi`: Wolf' portables Arbeitsgeraet (Surface).
+- `surface_go_frontend`: Touch-Kiosk fuer Franz und Wolf (Rebuild offen).
+- `zenbook_radio_anchor`: Zukuenftiger Radio-Ankerpunkt.
+- `raspberry_pi_radio`: Dedizierter AzuraCast-Node.
+- `iphone-15`: Mobiles Primaergeraet Wolf.
 - `UniFi Cloud Gateway Ultra`: Netzwerkkontrollpunkt & VLANs.
 
 ## Professioneller Zielstandard
@@ -118,25 +123,19 @@ Der Server gilt erst dann als wirklich fertig, wenn alle folgenden Punkte erfuel
 
 ## Aktueller Ist-Stand
 
-### Live gruen fuer den aktuellen Business-MVP
+### Live-Stand nach Anker-Crash (2026-04-14)
 
-- Workspace, SSOT, Handoffs und Routinen sind aufgebaut.
-- `CT 100 toolbox`, `CT 120 vaultwarden`, `VM 200 nextcloud`, `VM 220 odoo` und `VM 230 paperless` bilden den aktuellen tragenden Business-Kern.
-- `portal.hs27.internal`, `vault.hs27.internal`, `cloud.hs27.internal`, `paperless.hs27.internal` und `odoo.hs27.internal` sind der aktuelle interne Arbeitsweg.
-- `Nextcloud`, `Paperless` und `Odoo` gelten im Live-Audit als stabil; der Portal-Snapshot meldet den Kern aktuell gruen.
-- `Vaultwarden` ist fuer die Business-Linie produktiv nutzbar; SMTP fuer Einladungen ist gruen.
-- `Franz` hat die `FraWo`-Einladung angenommen; der Benutzerpfad ist organisatorisch vorbereitet.
-- `webmaster@frawo-tech.de` und `franz@frawo-tech.de` sind technisch gegen `IMAP` und `SMTP` verifiziert.
-- Lokale Proxmox-Business-Backups fuer `200`, `210`, `220` und `230` existieren real und sind Teil des aktuellen MVP-Sicherheitsnetzes.
-- `release-mvp-audit` ist technisch komplett gruen; `release-mvp-gate` blockiert aktuell nur noch an sichtbarer manueller Evidenz.
-- Der verbindliche interne MVP-Scope ist:
-  - `Portal`
-  - `Vaultwarden`
-  - `Nextcloud`
-  - `Paperless`
-  - `Odoo`
-  - STRATO-Mail-Backbone
-  - lokale Proxmox-Business-Backups
+> [!WARNING]
+> **CT 100 (Toolbox) ist TOT.** Laufwerk durch USB-Stick-Defekt verloren. Alle nachfolgenden Status-Angaben reflektieren den Post-Crash-Zustand.
+
+- `VM 220 odoo`: LIVE via Tailscale-NAT-Bypass (`100.69.179.87:8069`). Datenbank (`frawotech`) zu 100% intakt.
+- `VM 200 nextcloud`: LIVE, direkt per IP erreichbar. Kein Proxy-Frontend.
+- `VM 230 paperless`: LIVE, direkt per IP erreichbar. Kein Proxy-Frontend.
+- `Vaultwarden` (Stockenweiler CT 108): LIVE. Erreichbar per SSH-Tunnel (`localhost:8443`).
+- `CT 100 toolbox`: **VERLOREN**. Caddy, Tailscale-Subnet-Router und Cloudflare-Tunnel ausgefallen.
+- `portal.hs27.internal`, `odoo.hs27.internal` etc.: **NICHT ERREICHBAR** via DNS. Proxy-Frontend fehlt.
+- **AKTIV: Infra-Rebuild** auf neuer Dual-Node-Architektur (Anker = Business/AI, Stockenweiler = Media/Backup).
+- PBS: Stockenweiler CT 109 aktiv. Anker VM 240 deprecated. Sauberer Rebuild folgt nach Infra-Stabilisierung.
 
 ### Bewusst getrennt oder aktuell blockiert
 
