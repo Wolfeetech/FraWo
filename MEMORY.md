@@ -28,7 +28,7 @@
 
 | ID | Typ | Dienst | Rolle | Ziel-IP | Betriebsmodell |
 | --- | --- | --- | --- | --- | --- |
-| 100 | CT | Toolbox | Docker, Caddy, Tailscale, DNS, Public Edge | 10.1.0.20 | LXC (Produktion) |
+| 100 | CT | Toolbox | Docker, Caddy, Tailscale, DNS, Public Edge | 10.1.0.20 | LXC (DEFEKT/DISK LOST) |
 | 200 | VM | Nextcloud | Cloud & Files | 10.1.0.21 | dedizierte VM |
 | 210 | VM | HAOS | Smart Home | 10.1.0.24 | dedizierte HAOS-VM |
 | 220 | VM | Odoo | Business ERP | 10.1.0.22 | dedizierte VM |
@@ -69,6 +69,14 @@
 - [ ] Easy-Box-Geraete autoritativ zuordnen (.141-.144)
 
 ## Chronologische Logs (Auszug)
+
+### 2026-04-14: Anker Blackout & Emergency Recovery (The "Wolf.EE" Incident)
+- Master node "Anker" crashed due to USB stick (Wolf.EE) failure, causing kernel panic.
+- "Stockenweiler" node isolated safely. Thermal panic resolved by disabling `anker-music` NFS mount.
+- "Anker" recovered and booted cleanly. Key VMs (200, 210, 220, 230) survived perfectly.
+- CRITICAL: `CT 100 toolbox` lost its raw disk image during the crash. Cloudflare, Caddy, and Tailscale routing died.
+- Quick Fix: Established direct NAT routing on Anker (`iptables` PREROUTING port 8069 to `10.1.0.22`) to bring Odoo back online locally.
+- Notiz: PBS-Instanz auf Anker wird stillgelegt; PBS Stockenweiler (109) übernimmt exklusiv.
 
 ### 2026-04-12: Repo Optimization
 - Clutter-Cleanup: Alle Root-Scripts in `scripts/remediations`, `archive`, `research`, `business`, `tools` verschoben.
