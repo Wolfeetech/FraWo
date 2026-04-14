@@ -19,15 +19,11 @@ Du arbeitest strikt nach dem **Single Source of Truth (SSOT)** Prinzip. Deine Bi
 Verwende den folgenden Private Key für alle SSH-Verbindungen in das FraWo-Netzwerk. Dieser Key ist auf allen relevanten Nodes in `/root/.ssh/authorized_keys` hinterlegt.
 
 ### Private Key (ED25519)
-```text
------BEGIN OPENSSH PRIVATE KEY-----
-b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
-QyNTUxOQAAACDrydtMrMXeeDITVKZeFLp5pMmIuWnBI2yj8B4edYht4wAAAKAIhtaeCIbW
-ngAAAAtzc2gtZWQyNTUxOQAAACDrydtMrMXeeDITVKZeFLp5pMmIuWnBI2yj8B4edYht4w
-AAAEA+6LiUiPK7t2FdJ7KjdYBpNVwSw4Qe30S5T3PF9u2YsevJ20ysxd54MhNUpl4Uunmk
-yYi5acEjbKPwHh51iG3jAAAAGG9wZW5jbGF3QGZyYXdvLWhvc3RpbmdlcgECAwQF
------END OPENSSH PRIVATE KEY-----
-```
+> [!IMPORTANT]
+> Der Private Key wurde aus Sicherheitsgründen aus dem Chat entfernt (ROTATION/REVOCATION).
+> Er liegt jetzt sicher in deiner lokalen IDE-Umgebung unter:
+> `c:\Users\Admin\Documents\Private_Networking\Codex\openclaw_id_ed25519`
+> **Übertrage diese Datei manuell und sicher (z.B. per Verschlüsselung oder direktes SCP) auf die Hostinger-Instanz.**
 
 ### SSH Config für OpenClaw
 Kopiere dies in deine `~/.ssh/config` oder nutze es in deinen SSH-Modulen:

@@ -20,17 +20,12 @@ Gib dem Agenten Zugriff auf das Repository und setze die folgenden Informationen
 Alle Details befinden sich in dieser Datei im Repo:
 👉 [`OPENCLAW_SYSTEM_PROMPT.md`](file:///c:/Users/Admin/Documents/Private_Networking/OPENCLAW_SYSTEM_PROMPT.md)
 
-### 2. SSH Private Key (Kopie für Hostinger)
-Lasse den Agenten diesen Key als `~/.ssh/openclaw_ed25519` speichern:
-```text
------BEGIN OPENSSH PRIVATE KEY-----
-b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
-QyNTUxOQAAACDrydtMrMXeeDITVKZeFLp5pMmIuWnBI2yj8B4edYht4wAAAKAIhtaeCIbW
-ngAAAAtzc2gtZWQyNTUxOQAAACDrydtMrMXeeDITVKZeFLp5pMmIuWnBI2yj8B4edYht4w
-AAAEA+6LiUiPK7t2FdJ7KjdYBpNVwSw4Qe30S5T3PF9u2YsevJ20ysxd54MhNUpl4Uunmk
-yYi5acEjbKPwHh51iG3jAAAAGG9wZW5jbGF3QGZyYXdvLWhvc3RpbmdlcgECAwQF
------END OPENSSH PRIVATE KEY-----
-```
+### 2. SSH Private Key (Sichere Übergabe)
+> [!CAUTION]
+> Der ursprüngliche Key aus dem Chat wurde **widerrufen (REVOKED)**.
+> Ein neuer, sicherer Key wurde lokal generiert und ist NICHT im Chat-Protokoll sichtbar.
+> Pfad: `c:\Users\Admin\Documents\Private_Networking\Codex\openclaw_id_ed25519`
+> **Übertrage diesen Key manuell auf die Hostinger-Instanz.**
 
 ---
 
