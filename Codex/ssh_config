@@ -14,7 +14,7 @@ Host anker-pve proxmox-anker pve
   IdentityFile C:/Users/Admin/.ssh/id_ed25519
 
 # Stockenweiler Proxmox
-Host stockenweiler-pve stockenweiler
+Host stockenweiler-pve stockenweiler stock
   HostName 100.91.20.116
   User root
   IdentityFile C:/Users/Admin/.ssh/id_ed25519

@@ -19,9 +19,11 @@
 - Hardware: Lenovo ThinkCentre M920q (i5-8500T, 15 GB RAM)
 - Host: Proxmox VE auf lokalem NVMe-Storage
 - Studio-PC: `WOLFSTUDIOPC` (192.168.2.162)
-- Operator-Rechner: `wolf-ZenBook` (100.76.249.126)
+- Operator-Rechner (Workstation): `wolf-ZenBook` (100.76.249.126)
 - Shared Frontend: `surface-go-frontend` (192.168.2.154 / 100.106.67.127)
-- **Toolbox Tailscale-IP nach CT-Rebuild**: `100.82.26.53` (Tailscale-Name: `toolbox-1` → umbenennen zu `toolbox` in Tailscale Admin; alter Eintrag `100.99.206.128` löschen)
+- **Review & Control Node**: `wolf_surface` (DESKTOP-7LMP02S, 100.79.103.59)
+- **Toolbox Tailscale-IP**: `100.82.26.53` (Confirmed active after rebuild; old entry `100.99.206.128` is dead)
+- **WolfStudioPC Remote Reality (2026-04-15)**: `wolfstudiopc` is online in the tailnet at `100.98.31.60` and SMB is reachable, but `SSH` on port `22` is still closed.
 - Radio-Node: `radio-node` (192.168.2.155 / 100.64.23.77), ARM64 Raspberry Pi 4
 - PBS: `VM 240` (192.168.2.25), Interim-Datastore auf 64GB USB-Stick
 
@@ -53,6 +55,7 @@
 - **Backup**: Taegliche Backups via PBS (VM 240) + Proxmox-Local (local-lvm).
 - **Remediation History**: Detaillierte Drifts und Fixes aus Maerz/April 2026 sind archiviert in `DOCS/HISTORY_REMEDIATIONS_2026.md`.
 - **Website Rule**: Codex ist Single-Writer fuer Odoo-Views (Anti-Split-Brain).
+- **Surface Strategy**: `wolf_surface` dient als reiner Kontroll-Knoten. Hier erfolgen keine Code-Mutationen am Kern-Estate ohne expliziten Grund. Fokus: Browser-Abnahme, Log-Review und Backup-Drills.
 
 ## Aktuelle Arbeitsauftraege (Auszug)
 
@@ -68,13 +71,15 @@
 - **Toolbox (CT 100)**: Restauriert (Clean-Room Rebuild). Läuft nun auf `local` (Directory-Storage), um LVM-Thin-Pool Blockaden zu umgehen. IP: `10.1.0.20`.
 - **Control Portal**: Live und erreichbar unter `10.1.0.20`.
 - **System-Haertung**: NTFS-Laufwerk `sda2` ist als defekt markiert und wird im Betrieb gemieden.
-- **AI Agent Network**: Rollenverteilung (`INFRASTRUCTURE_ADMIN`, `CONTENT_MANAGER`) etabliert.
+- **AI Agent Network**: Rollenverteilung (`INFRASTRUCTURE_ADMIN`, `CONTENT_MANAGER`) etabliert. OpenClaw (Hostinger) ist über dedizierte, secure SSH-Keys angebunden und proaktiv einsatzbereit.
 
 ## Aktive Operator-Aktionen
 
 - [ ] Radio/Media: Kuration der Bibliothek (Lane E)
 - [x] Website: Go-Live Vorbereitung (Lane B) -> abgeschlossen
 - [ ] Proxmox-Root-SSH-Key hinterlegen (AKTION VON DIR ERFORDERLICH)
+- [ ] `AKTION VON DIR ERFORDERLICH:` In der Tailscale-Adminseite die `toolbox`-Route `10.1.0.0/24` approven und den restricted nameserver `10.1.0.20` fuer `hs27.internal` setzen, damit `wolf_surface` die internen Frontdoors sauber aufloest.
+- [ ] `AKTION VON DIR ERFORDERLICH:` Auf `wolfstudiopc` `OpenSSH Server` einschalten oder eine lokale Admin-Session bereitstellen; erst dann ist der Studio-PC als repo-basierter Admin-Pfad sauber steuerbar.
 - [x] Easy-Box-Geraete autoritativ zuordnen (.141-.144) -> in NETWORK_INVENTORY.md den Family-Phones zugeordnet.
 
 ## Chronologische Logs (Auszug)

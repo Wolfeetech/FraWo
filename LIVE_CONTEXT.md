@@ -1,11 +1,13 @@
 # LIVE CONTEXT
 
-## Infrastructure Recovery (2026-04-14)
-- **Status**: SUCCESSFUL. Anker host stabilized.
-- **Forensics**: 2TB NTFS Drive `sda2` is physically failing. Migration stopped.
-- **Toolbox**: REBUILT on `local` storage (to bypass LVM threshold). 
-- **Control Portal**: LIVE at `10.1.0.20`.
-- **Routing**: Caddy L7 proxying restored.
+## Infrastructure Status & Governance (2026-04-14)
+- **Status**: STABLE. Recovery from the Anker blackout is complete.
+- **Toolbox**: REBUILT and OPERATIONAL on `local` storage. Tailscale IP: `100.82.26.53`. 
+- **OpenClaw (Brain)**: Deployment package ready. Secure SSH-Keys installed on all nodes.
+- **Surface Control**: `wolf_surface` (DESKTOP-7LMP02S) is the active clean review & control node with repo checkout, Tailscale, Git and repo-based SSH launchers.
+- **Control Portal**: LIVE at `10.1.0.20` and `portal.hs27.internal`.
+- **Current Control-Node Gap**: `hs27.internal` does not yet resolve cleanly on `wolf_surface`; the canonical fix remains Tailscale route approval plus restricted nameserver `10.1.0.20` for `hs27.internal`.
+- **SSOT**: Repository is the sole source of truth.
 
 ## Workspace-Status
 
@@ -97,7 +99,6 @@
 
 - Managed hosts in Ansible inventory: `30`
 - **Branding Transition (2026-04-14)**: Das gesamte Estate wurde auf den neuen Namen **FraWo GbR** umgestellt. Sämtliche SSOT-Dokumente spiegeln nun die neue Marke wider.
-- **Anker Blackout & Recovery (2026-04-14)**: Kritischer Ausfall des Master-Nodes durch fehlerhaften USB-Stick "Wolf.EE". Anker ist wieder online, Kern-VMs (200-230) intakt. Die "toolbox" (LXC 100) hat ihre virtuelle Festplatte auf `local` verloren und lässt sich nicht starten. Odoo wurde mit einem Emergency-NAT bypass direkt zugänglich gemacht.
 - **Public Edge Launch**: Ein Cloudflare-Tunnel wurde als primärer öffentlicher Einstiegspunkt etabliert: [https://protocol-panel-cove-little.trycloudflare.com](https://protocol-panel-cove-little.trycloudflare.com).
 - **Toolbox Portal Update**: Das interne Dashboard zeigt nun dynamisch den Status der Kerndienste und den öffentlichen Link an.
 - **HAOS Recovery Success**: Der `400 Bad Request` Fehler in Home Assistant wurde durch Anpassung der `trusted_proxies` behoben.
@@ -141,25 +142,19 @@
 
 - [x] Geraete-Rollout: Surface Laptop und iPhone (Verifiziert am 2026-04-09)
 - [x] Vaultwarden Recovery: Physischer Nachweis erbracht (2026-04-09)
+- [ ] `AKTION VON DIR ERFORDERLICH:` In Tailscale Admin die `toolbox`-Route `10.1.0.0/24` approven und den restricted nameserver `10.1.0.20` fuer `hs27.internal` setzen.
+  - benoetigte Aktion: `https://login.tailscale.com/admin/machines` fuer die Route und `https://login.tailscale.com/admin/dns` fuer den Domain-spezifischen Nameserver pflegen.
+  - warum: `wolf_surface` ist jetzt der saubere Kontrollknoten, aber `portal.hs27.internal`, `cloud.hs27.internal` und die anderen internen Frontdoors loesen dort ohne diesen Account-gebundenen Schritt noch nicht sauber auf.
+  - danach uebernehmen Codex/Gemini wieder: sichtbare Portal-/Service-Abnahme auf `wolf_surface` und Handoff-Geraetepfad finalisieren.
+- [ ] `AKTION VON DIR ERFORDERLICH:` Auf `wolfstudiopc` `OpenSSH Server` einschalten oder eine lokale Admin-Session bereitstellen.
+  - benoetigte Aktion: Windows-OpenSSH auf dem Studio-PC aktivieren und einmalig freigeben, damit der Geraetepfad kuenftig ueber Repo-SSH statt SMB-/GUI-Improvisation laeuft.
+  - warum: `wolfstudiopc` ist im Tailnet online (`100.98.31.60`) und SMB ist erreichbar, aber `22/tcp` ist noch geschlossen.
+  - danach uebernehmen Codex/Gemini wieder: Repo lokal platzieren, `scripts/bootstrap_windows_workspace.cmd` ausrollen und den Studio-PC auf den gleichen SSOT-Standard ziehen.
 - [ ] Radio/Media: Kuration der Bibliothek (Lane E)
-- [ ] Website: Go-Live Vorbereitung (Lane B)
-
-0. `AKTION VON DIR ERFORDERLICH:` Falls du die klassischen `hs27.internal`-Hostnamen schon vor der Vollmigration direkt auf `wolfstudiopc` im Browser willst, braucht es einen bewussten Windows-Hosts-/DNS-Schritt mit Admin-Token.
-   - benoetigte Aktion: nur entscheiden, ob der StudioPC bis zur Vollmigration per Tailscale-Frontdoors arbeiten soll oder ob zusaetzlich lokale Hostnamen per Admin-Override wiederhergestellt werden sollen
-   - warum: der aktuelle professionelle Arbeitsweg steht bereits (`Tailscale first`), aber das alte direkte `192.168.2.x`-Namensmodell kollidiert mit der UCG-Uebergangsphase
-   - danach uebernehmen Codex/Gemini wieder: Netzpfad umstellen, DNS/hs27.internal anpassen und Erreichbarkeit verifizieren
-1. `AKTION VON DIR ERFORDERLICH:` Proxmox-Root-SSH-Key hinterlegen
-   - benoetigte Aktion: im Proxmox-UI (Node -> System -> Users -> root -> SSH Keys oder Node -> Shell) den Public Key aus `C:\\Users\\StudioPC\\.ssh\\hs27_ops_ed25519.pub` eintragen
-   - warum: aktuell nimmt `root@10.1.0.92` keinen der vorhandenen Keys an, dadurch kann ich die Netzwerkfixes nicht remote ausfuehren
-   - danach uebernehmen Codex/Gemini wieder: Netzwerk-Status verifizieren, Alias-IPs wiederherstellen und Tailscale-Frontdoors pruefen
-2. `AKTION VON DIR ERFORDERLICH:` spaeter einen ersten Thomson-/Google-TV-Client mit Jellyfin verbinden
-   - benoetigte Aktion: auf dem TV die Jellyfin-App installieren und den Server `http://192.168.2.20:8096` eintragen
-   - warum: die Musikbibliothek ist bereits an Jellyfin angebunden; der naechste echte Nutzwert ist jetzt der erste Client-Rollout statt weiterer Server-Basisarbeit
-   - danach uebernehmen Codex/Gemini wieder: Client-Fit, spaetere Bibliothekserweiterung und Medienkuration
-3. `AKTION VON DIR ERFORDERLICH:` den `64GB`-USB-Stick an Proxmox nicht abziehen
-   - benoetigte Aktion: den aktuell an Proxmox haengenden Stick eingesteckt lassen
-   - warum: der Stick traegt jetzt den aktiven Interim-PBS-Datastore `hs27-interim`
-   - danach uebernehmen Codex/Gemini weiter: Proof-Backups gruener machen und spaeter die finale groessere PBS-Zielarchitektur vorbereiten
+- [ ] Website: Go-Live Vorbereitung 1. `AKTION VON DIR ERFORDERLICH`: Den Private Key für OpenClaw (`c:\Users\Admin\Documents\Private_Networking\Codex\openclaw_id_ed25519`) sicher auf die Hostinger-Instanz übertragen.
+2. `AKTION VON DIR ERFORDERLICH`: Den alten Toolbox-Eintrag in Tailscale löschen und `toolbox-1` in `toolbox` umbenennen.
+3. `AKTION VON DIR ERFORDERLICH`: Später den ersten Thomson/Google-TV Client mit Jellyfin verbinden.
+rbereiten
 4. `AKTION VON DIR ERFORDERLICH:` restliche Easy-Box-Geraete autoritativ zuordnen
    - benoetigte Aktion: die verbliebenen Unknown-Clients `.141-.144` sowie zusaetzliche aktuelle Router-Labels wie `Surface_Laptop`, `RE355` und `iPhone-3-Pro` fachlich bestaetigen oder benennen
    - warum: `inventory_unknown_review_count=4` und damit `inventory_finalized=no`

@@ -1,6 +1,6 @@
 param(
   [string]$ComputerName = "toolbox",
-  [string]$FallbackIp = "100.99.206.128",
+  [string]$FallbackIp = "100.82.26.53",
   [string]$Username = "root"
 )
 
