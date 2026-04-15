@@ -137,6 +137,22 @@ After `INTRODUCTION_PROMPT.md`, choose the narrowest specialized prompt that fit
 - `ansible/inventory/host_vars/*.yml`
   - per-VM stack metadata for the business services
 
+## Consolidated Repositories
+
+This repository is the Single Source of Truth (SSOT). Key projects have been integrated via Git Subtrees:
+
+### Active Apps
+- **[`apps/yourparty/`](apps/yourparty/)** - Community radio application with mood-based playlists.
+  - Synced from: `wolfeetech/yourparty-tech`
+- **[`apps/fayanet/`](apps/fayanet/)** - Network security manager (Vaultwarden + Nginx).
+  - Synced from: `wolfeetech/FaYa-Net`
+
+### Automation
+Run [`./scripts/sync-subtrees.sh`](scripts/sync-subtrees.sh) to pull latest subtree updates.
+
+### Consolidation Documentation
+See **[`CONSOLIDATION.md`](CONSOLIDATION.md)** and **[`CONSOLIDATION_CHANGELOG.txt`](CONSOLIDATION_CHANGELOG.txt)** for migration details and timeline.
+
 ## Workspace Presets
 
 - `.editorconfig`

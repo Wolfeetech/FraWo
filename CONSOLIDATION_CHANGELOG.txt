@@ -1,0 +1,19 @@
+Consolidation Date: 2026-04-15
+Operator: Antigravity
+
+Timeline & Actions:
+- 02d76ed: Integrated 'apps/fayanet/' as git subtree from wolfeetech/FaYa-Net.
+- 6a1af7d: Integrated 'apps/yourparty/' as git subtree from wolfeetech/yourparty-tech.
+- a8843a1: Cleaned up legacy app copies and prepared FraWo root for SSOT status.
+- docs: Added CONSOLIDATION.md and CONSOLIDATION_CHANGELOG.txt.
+- scripts: Added sync-subtrees.sh for automated subtree updates.
+- docs: Migrated Odoo Recovery and GbR Founding reports into DOCS/Reports/ for permanent record.
+- odoo: Restored administrative access for wolf@frawo-tech.de on the primary production database.
+
+Repositories Consolidated & Archived:
+✓ wolfeetech/yourparty-tech → FraWo/apps/yourparty/
+✓ wolfeetech/FaYa-Net → FraWo/apps/fayanet/
+→ wolfeetech/AzuraCast → ARCHIVE (switched to official upstream)
+
+Milestone: v2026-04-15-consolidated
+Status: COMPLETE
