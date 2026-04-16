@@ -1,6 +1,7 @@
 param(
     [string]$ApexHost = "frawo-tech.de",
-    [string]$WwwHost = "www.frawo-tech.de"
+    [string]$WwwHost = "www.frawo-tech.de",
+    [int]$VMID = 220
 )
 
 $ErrorActionPreference = "Stop"
@@ -48,22 +49,20 @@ $caddyB64 = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($caddyfile)
 $overrideB64 = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($composeOverride))
 
 $remote = @"
-# Ensure directory exists
-mkdir -p /opt/homeserver2027/stacks/odoo
-cd /opt/homeserver2027/stacks/odoo
+# Command to run inside the VM
+VM_CMD="
+mkdir -p /opt/homeserver2027/stacks/odoo && \
+cd /opt/homeserver2027/stacks/odoo && \
+echo '$caddyB64' | base64 -d > Caddyfile.alpha && \
+echo '$overrideB64' | base64 -d > docker-compose.alpha.yml && \
+/usr/bin/docker-compose -f docker-compose.alpha.yml up -d && \
+sleep 10 && \
+/usr/bin/docker-compose -f docker-compose.alpha.yml logs cloudflared-alpha | grep 'trycloudflare.com'
+"
 
-# Write files using base64 pipes
-echo "$caddyB64" | base64 -d > Caddyfile.alpha
-echo "$overrideB64" | base64 -d > docker-compose.alpha.yml
-
-# Check current network - ensure odoo_default exists
-docker network inspect odoo_default > /dev/null 2>&1 || docker network create odoo_default
-
-# Deploy using full path
-/usr/bin/docker-compose -f docker-compose.alpha.yml up -d
-sleep 8
-/usr/bin/docker-compose -f docker-compose.alpha.yml logs cloudflared-alpha | grep "trycloudflare.com"
+# Execute via qm guest exec
+qm guest exec $VMID -- bash -c \"\$VM_CMD\"
 "@
 
-Write-Host "Restoring Alpha Public Edge via TryCloudflare..." -ForegroundColor Cyan
+Write-Host "Restoring Alpha Public Edge via TryCloudflare on VM $VMID..." -ForegroundColor Cyan
 & $proxmoxExec -RemoteCommand $remote
