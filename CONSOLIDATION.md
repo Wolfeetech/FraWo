@@ -26,6 +26,14 @@ The following repositories are now archived on GitHub:
 - `FaYa-Net` (moved to `apps/fayanet`)
 - `AzuraCast` (obsolete, use official upstream instead)
 
+## Discovery Reports
+The pre-consolidation audit reports are preserved in:
+- [`DOCS/Consolidation/`](DOCS/Consolidation/)
+  - `github_discovery.csv`: Initial asset sweep.
+  - `repo_intake_catalog.json`: Structured source metadata.
+  - `repo_knowledge_extract.md`: Key technical insights.
+  - `latest_snapshot.md`: State of the cluster at the time of merge.
+
 ## Automation
 Updates can be pulled using:
 ```bash
