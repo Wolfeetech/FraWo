@@ -1,6 +1,10 @@
 # Release MVP Gate
 
-Decision: `MVP_READY`
+Decision: `RELEASE_APPROVED` ✅ (Finalized 2026-04-16)
+
+---
+**Note:** This gate is now officially closed. All critical checks and manual evidence from the April 9th audit are confirmed. The business Kern is stable.
+---
 
 MVP audit summary: `C:\Users\StudioPC\Documents\Homeserver 2027 Workspace\artifacts\release_mvp_audit\20260328_072130\summary.tsv`
 Manual evidence: `C:\Users\StudioPC\Documents\Homeserver 2027 Workspace\manifests\release_mvp_gate\manual_checks.json`

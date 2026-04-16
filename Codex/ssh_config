@@ -5,25 +5,25 @@
 Host toolbox
   HostName 100.82.26.53
   User root
-  IdentityFile C:/Users/Admin/.ssh/id_ed25519
+  IdentityFile C:/Users/StudioPC/.ssh/id_ed25519
 
 # Proxmox Anker Host
 Host anker-pve proxmox-anker pve
   HostName 100.69.179.87
   User root
-  IdentityFile C:/Users/Admin/.ssh/id_ed25519
+  IdentityFile C:/Users/StudioPC/.ssh/id_ed25519
 
 # Stockenweiler Proxmox
 Host stockenweiler-pve stockenweiler stock
   HostName 100.91.20.116
   User root
-  IdentityFile C:/Users/Admin/.ssh/id_ed25519
+  IdentityFile C:/Users/StudioPC/.ssh/id_ed25519
 
 # Radio Node (Raspberry Pi)
 Host radio-node
   HostName 100.64.23.77
   User wolf
-  IdentityFile C:/Users/Admin/.ssh/id_ed25519
+  IdentityFile C:/Users/StudioPC/.ssh/id_ed25519
 
 Host *
   IdentitiesOnly yes

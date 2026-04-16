@@ -54,16 +54,16 @@
     },
     {
       "id": "lane_b_website_public",
-      "label": "Lane B: Website/Public Hold",
-      "status": "watch",
+      "label": "Lane B: Website/Public Edge",
+      "status": "active",
       "priority": 2,
       "goal": "Keep the public website truth path and blockers visible without pulling the track into active release work.",
-      "done_when": "Lane A is closed and the public edge can be resumed with an explicit release decision.",
+      "done_when": "Lane B is active via Cloudflare Tunnel and www.frawo-tech.de is publicly reachable.",
       "blocked_by": [
-        "lane_a_mvp_closeout_active"
+        "cloudflare_tunnel_token_missing"
       ],
-      "next_operator_action": "No new public release action unless a new security or reachability regression appears.",
-      "next_codex_action": "Maintain the truth path, blocker list, and security posture only; do not restart CI or design work."
+      "next_operator_action": "Provide the Cloudflare Tunnel Token to finalize the persistent edge.",
+      "next_codex_action": "Once token is received, rerun the deployment script and promote Lane B to RELEASE_APPROVED."
     },
     {
       "id": "lane_c_security_pbs_infra",

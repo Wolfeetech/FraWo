@@ -22,7 +22,15 @@ Jellyfin ist der interne Medienserver fuer Musik und spaeter weitere Medien.
 - SMB-Bibliothek ist die produktive Medienquelle
 - die TV-Verbindung funktioniert wieder
 - der letzte funktionierende TV-Test lief ueber `Wolf`
-- `TV Wohnzimmer` bleibt das gemeinsame Zielprofil, ist aber noch nicht als sichtbar abgeschlossen markiert
+- `TV Wohnzimmer` bleibt das gemeinsame Zielprofil.
+
+### Passwort-Management: TV Wohnzimmer
+- **Status:** Passwort muss gesetzt werden.
+- **Vorgehensweise:**
+  1. Als Administrator in Jellyfin einloggen.
+  2. Dashboard > Benutzer > `TV Wohnzimmer` auswählen.
+  3. Passwort auf den Standardwert für den Haushalt setzen.
+  4. Am TV-Client (192.168.2.20:8096) mit dem neuen Passwort anmelden.
 
 ## Normalbetrieb
 
