@@ -42,12 +42,12 @@ def connect(
     if not secret:
         secret = getpass.getpass(f"{secret_label}: ")
 
-    common = xmlrpc.client.ServerProxy(f"{url}/xmlrpc/2/common")
+    common = xmlrpc.client.ServerProxy(f"{url}/xmlrpc/2/common", allow_none=True)
     uid = common.authenticate(db, username, secret, {})
     if not uid:
         raise RuntimeError("Authentifizierung fehlgeschlagen.")
 
-    models = xmlrpc.client.ServerProxy(f"{url}/xmlrpc/2/object")
+    models = xmlrpc.client.ServerProxy(f"{url}/xmlrpc/2/object", allow_none=True)
     return OdooSession(
         url=url,
         db=db,

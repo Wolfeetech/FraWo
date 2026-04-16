@@ -66,7 +66,7 @@ Der Zielzustand ist eine konsolidierte, ressourceneffiziente Dual-Node-Infrastru
 - `wolfstudiopc`: Primaeres Admin-Geraet & SSOT.
 - `surface-franz`: Franz' Arbeits-Laptop (Surface).
 - `surface-wolfi`: Wolf' portables Arbeitsgeraet (Surface).
-- `surface_go_frontend`: Touch-Kiosk fuer Franz und Wolf (Rebuild offen).
+- `kiosk-frontend`: Touch-Kiosk fuer Franz und Wolf (Rebuild offen).
 - `zenbook_radio_anchor`: Zukuenftiger Radio-Ankerpunkt.
 - `raspberry_pi_radio`: Dedizierter AzuraCast-Node.
 - `iphone-15`: Mobiles Primaergeraet Franz.
@@ -187,7 +187,7 @@ Der Server gilt erst dann als wirklich fertig, wenn alle folgenden Punkte erfuel
 - `Jellyfin` bleibt technisch verfuegbar, gehoert aber nicht zum aktuellen Business-MVP-Freigabesignal.
 - `media.hs27.internal`, `192.168.2.20:8096` und der mobile Tailscale-Pfad bleiben nutzbar, sind aber bewusst ein separater Ausbaupfad.
 - Medien- und Wohnzimmerpfade bleiben fuer den laufenden Betrieb hilfreich, zaehlen aber nicht zum aktuellen Business-MVP-Gate.
-- `surface-go-frontend` ist im aktuellen Live-Audit nicht betriebsbereit; der naechste professionelle Schritt ist ein `clean rebuild`.
+- `kiosk-frontend` ist im aktuellen Live-Audit nicht betriebsbereit; der naechste professionelle Schritt ist ein `clean rebuild`.
 - Historische Surface-Haertungen bleiben relevant, ersetzen aber nicht den aktuellen Rebuild-Bedarf.
 - Repo- und Launcher-Stand fuer das Surface ist vorbereitet; die produktive Aussage bleibt trotzdem: Geraet aktuell nicht bereit.
 - Der kleine USB-Zwischenpfad bleibt historischer Zwischenstand; fuer den naechsten sauberen PBS-Schritt zaehlt nur der guarded Rebuild auf freigegebener Hardware.
@@ -651,7 +651,7 @@ Ziel:
 
 Dann folgen:
 1. `radio.frawo-tech.de` nur spaeter als separater dedizierter Radio-Pfad bei eigenem Green Gate
-2. Surface-Recovery und `frontend`-Pfad
+2. Surface-Recovery und `kiosk-frontend`-Pfad
 3. UCG-Ultra-Cutover
 4. 2-TB-SSD-Endrolle festziehen
 5. Google-Drive-Integration spaeter ueber den bestehenden `rclone`-/Nextcloud-Pfad

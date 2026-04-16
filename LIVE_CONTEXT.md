@@ -4,9 +4,9 @@
 - **Status**: STABLE. Recovery from the Anker blackout is complete.
 - **Toolbox**: REBUILT and OPERATIONAL on `local` storage. Tailscale IP: `100.82.26.53`. 
 - **OpenClaw (Brain)**: Deployment package ready. Secure SSH-Keys installed on all nodes.
-- **Surface Control**: `wolf_surface` (DESKTOP-7LMP02S) is the active clean review & control node with repo checkout, Tailscale, Git and repo-based SSH launchers.
+- **Surface Control**: `surface-wolfi` (DESKTOP-7LMP02S) is the active clean review & control node with repo checkout, Tailscale, Git and repo-based SSH launchers.
 - **Control Portal**: LIVE at `10.1.0.20` and `portal.hs27.internal`.
-- **Current Control-Node Gap**: `hs27.internal` does not yet resolve cleanly on `wolf_surface`; the canonical fix remains Tailscale route approval plus restricted nameserver `10.1.0.20` for `hs27.internal`.
+- **Current Control-Node Gap**: `hs27.internal` does not yet resolve cleanly on `surface-wolfi`; the canonical fix remains Tailscale route approval plus restricted nameserver `10.1.0.20` for `hs27.internal`.
 - **SSOT**: Repository is the sole source of truth.
 
 ## Workspace-Status
@@ -121,7 +121,7 @@
 - Security baseline from latest gate: `security-baseline-check=passed`
 - Capacity review says the host is memory-overcommitted on paper; immediate right-sizing candidates are `VM 200` and `VM 220`, while `VM 210` should not be reduced
 - Right-sizing stage gate is green; the actual memory reduction remains a maintenance-window change and is not yet applied
-- Shared frontend node `surface-go-frontend` on `192.168.2.154` remains blocked in the live audit; SSH, HTTP and HTTPS are currently closed and the active recommendation is `clean_rebuild_then_apply_bootstrap_surface_go_frontend_playbook`
+- Shared frontend node `kiosk-frontend` on `192.168.2.154` remains blocked in the live audit; SSH, HTTP and HTTPS are currently closed and the active recommendation is `clean_rebuild_then_apply_bootstrap_surface_go_frontend_playbook`
 - Local media prep is staged on the ZenBook: `/dev/mmcblk0` for Raspberry Pi, `/dev/sdd` is now the ready blue Ventoy install-/image-stick, and `/dev/sdc1` is the ready exFAT Favorites-stick `FRAWO_FAVS`
 - Portable backup / PBS datastore path is currently not verified green in the latest PBS checks; der sichtbare USB-Stick meldet derzeit `No medium found`, und die datentragende USB-SSD bleibt bis zu einer expliziten Freigabe unangetastet
 - Raspberry-Pi radio node remains only partially green: `radio.hs27.internal` and the mobile radio frontdoor answer through the toolbox, but the live audit still shows `rpi_radio_integrated=no` und `rpi_radio_usb_music_ready=no`
@@ -145,7 +145,7 @@
 - [ ] `AKTION VON DIR ERFORDERLICH:` In Tailscale Admin die `toolbox`-Route `10.1.0.0/24` approven und den restricted nameserver `10.1.0.20` fuer `hs27.internal` setzen.
   - benoetigte Aktion: `https://login.tailscale.com/admin/machines` fuer die Route und `https://login.tailscale.com/admin/dns` fuer den Domain-spezifischen Nameserver pflegen.
   - warum: `wolf_surface` ist jetzt der saubere Kontrollknoten, aber `portal.hs27.internal`, `cloud.hs27.internal` und die anderen internen Frontdoors loesen dort ohne diesen Account-gebundenen Schritt noch nicht sauber auf.
-  - danach uebernehmen Codex/Gemini wieder: sichtbare Portal-/Service-Abnahme auf `wolf_surface` und Handoff-Geraetepfad finalisieren.
+  - danach uebernehmen Codex/Gemini wieder: sichtbare Portal-/Service-Abnahme auf `surface-wolfi` und Handoff-Geraetepfad finalisieren.
 - [ ] `AKTION VON DIR ERFORDERLICH:` Auf `wolfstudiopc` `OpenSSH Server` einschalten oder eine lokale Admin-Session bereitstellen.
   - benoetigte Aktion: Windows-OpenSSH auf dem Studio-PC aktivieren und einmalig freigeben, damit der Geraetepfad kuenftig ueber Repo-SSH statt SMB-/GUI-Improvisation laeuft.
   - warum: `wolfstudiopc` ist im Tailnet online (`100.98.31.60`) und SMB ist erreichbar, aber `22/tcp` ist noch geschlossen.

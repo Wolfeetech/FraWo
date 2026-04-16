@@ -200,7 +200,10 @@ def print_changes(changes: list[Change], *, title: str) -> None:
         print("  - keine Aenderungen")
         return
     for change in changes:
-        print(f"  - [{change.scope}] {change.name}: {change.details}")
+        try:
+            print(f"  - [{change.scope}] {change.name}: {change.details}")
+        except UnicodeEncodeError:
+            print(f"  - [{change.scope}] {change.name.encode('ascii', 'ignore').decode()}: {change.details.encode('ascii', 'ignore').decode()}")
 
 
 def find_by_name(records: list[dict[str, Any]], target: str) -> dict[str, Any] | None:
@@ -371,7 +374,14 @@ def ensure_lane_tags(session: OdooSession) -> dict[str, dict[str, Any]]:
     for lane_key, tag_name in LANE_TAG_NAMES.items():
         tag = find_by_name(tags, tag_name)
         if not tag:
-            raise RuntimeError(f"Lane-Tag nicht gefunden: {tag_name}")
+            print(f"Erstelle fehlendes Lane-Tag: {tag_name}")
+            tag_id = xmlrpc_call(
+                session,
+                "project.tags",
+                "create",
+                [{"name": tag_name}]
+            )
+            tag = {"id": tag_id, "name": tag_name}
         tag_lookup[lane_key] = tag
     return tag_lookup
 
@@ -481,7 +491,10 @@ def upsert_new_tasks(
             changes.append(Change("tasks", spec["name"], f"wird neu in '{spec['stage']}' mit {', '.join(spec['owners'])} angelegt"))
             if apply:
                 task_id = xmlrpc_call(session, "project.task", "create", [[payload]])
-                existing_tasks.append({"id": task_id, **payload, "user_ids": owner_ids, "tag_ids": [tag_id], "stage_id": [payload["stage_id"], spec["stage"]]})
+                # Correctly handle stage_id display name for consistency
+                stage_record = stage_lookup[spec["stage"]]
+                stage_val = [stage_record["id"], stage_record["name"]]
+                existing_tasks.append({"id": task_id, **payload, "user_ids": owner_ids, "tag_ids": [tag_id], "stage_id": stage_val})
             continue
 
         updates: dict[str, Any] = {}
@@ -525,7 +538,9 @@ def reconcile_existing_tasks(
 
         stage_name = spec.get("stage")
         if stage_name and task.get("stage_id") and stage_lookup[stage_name]["id"] is not None:
-            if task["stage_id"][0] != stage_lookup[stage_name]["id"]:
+            # Check if stage_id is a list/tuple (m2o) or int
+            current_stage_id = task["stage_id"][0] if isinstance(task["stage_id"], (list, tuple)) else task["stage_id"]
+            if current_stage_id != stage_lookup[stage_name]["id"]:
                 updates["stage_id"] = stage_lookup[stage_name]["id"]
 
         append_note = spec.get("append_note")

@@ -9,7 +9,7 @@ def apply_branding():
         os.environ["ODOO_RPC_PASSWORD"] = "OD-Wolf-2026!"
         
     try:
-        session = odoo_rpc_client.connect()
+        session = odoo_rpc_client.connect(default_user="admin")
         
         branding_data = {
             'name': 'FraWo GbR',
