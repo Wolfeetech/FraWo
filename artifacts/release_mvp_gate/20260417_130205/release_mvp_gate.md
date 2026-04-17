@@ -2,13 +2,13 @@
 
 Decision: `BLOCKED`
 
-MVP audit summary: `C:\Users\StudioPC\Workspace\FraWo\artifacts\release_mvp_audit\20260417_122057\summary.tsv`
-Manual evidence: `C:\Users\StudioPC\Workspace\FraWo\manifests\release_mvp_gate\manual_checks.json`
+MVP audit summary: `/mnt/c/Users/StudioPC/Workspace/FraWo/artifacts/release_mvp_audit/20260417_123634/summary.tsv`
+Manual evidence: `/mnt/c/Users/StudioPC/Workspace/FraWo/manifests/release_mvp_gate/manual_checks.json`
 
 ## Scope Note
 
 This gate covers the current business MVP only.
-It is not the same as the public website track or the full internal production seal.
+It is not the same as the full internal production certification.
 
 ## Critical MVP Codex Checks
 

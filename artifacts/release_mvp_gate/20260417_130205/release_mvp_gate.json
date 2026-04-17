@@ -1,21 +1,21 @@
 {
   "decision": "BLOCKED",
-  "summary_source": "C:\\Users\\StudioPC\\Workspace\\FraWo\\artifacts\\release_mvp_audit\\20260417_122057\\summary.tsv",
-  "manual_checks_source": "C:\\Users\\StudioPC\\Workspace\\FraWo\\manifests\\release_mvp_gate\\manual_checks.json",
+  "summary_source": "/mnt/c/Users/StudioPC/Workspace/FraWo/artifacts/release_mvp_audit/20260417_123634/summary.tsv",
+  "manual_checks_source": "/mnt/c/Users/StudioPC/Workspace/FraWo/manifests/release_mvp_gate/manual_checks.json",
   "critical_codex_checks": [
     {
       "id": "document-ownership-check",
       "status": "passed",
       "critical": true,
-      "log": "C:\\Users\\StudioPC\\Workspace\\FraWo\\artifacts\\release_mvp_gate\\20260417_123622\\document-ownership-check.log",
+      "log": "/mnt/c/Users/StudioPC/Workspace/FraWo/artifacts/release_mvp_gate/20260417_130205/document-ownership-check.log",
       "executor": "codex",
-      "command_or_action": "C:\\Python313\\python.exe ./scripts/document_ownership_check.py"
+      "command_or_action": "make document-ownership-check"
     },
     {
       "id": "inventory-check",
       "status": "passed",
       "critical": true,
-      "log": "/mnt/c/Users/StudioPC/Workspace/FraWo/artifacts/release_mvp_audit/20260417_122057/inventory-check.log",
+      "log": "/mnt/c/Users/StudioPC/Workspace/FraWo/artifacts/release_mvp_audit/20260417_123634/inventory-check.log",
       "executor": "codex",
       "command_or_action": "make inventory-check"
     },
@@ -177,5 +177,5 @@
     "missing critical MVP Codex check: security-baseline-check",
     "missing critical MVP Codex check: core-app-smtp-check"
   ],
-  "scope_note": "This gate covers the current business MVP only. It is separate from the public website release track and from the full internal production certification."
+  "scope_note": "This gate covers the current business MVP only. PBS, Radio/AzuraCast integration, shared frontend certification, and the full production seal remain outside this decision."
 }

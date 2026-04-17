@@ -1,0 +1,3 @@
+id	executor	status	command_or_action	log
+document-ownership-check	codex	passed	make document-ownership-check	/mnt/c/Users/StudioPC/Workspace/FraWo/artifacts/release_mvp_audit/20260417_122057/document-ownership-check.log
+inventory-check	codex	passed	make inventory-check	/mnt/c/Users/StudioPC/Workspace/FraWo/artifacts/release_mvp_audit/20260417_122057/inventory-check.log

@@ -19,7 +19,7 @@ refine_release_mvp_status() {
   local log_path="$3"
 
   if [[ "${current_status}" != "passed" ]]; then
-    printf '%s\n' "${current_status}"
+    echo "${current_status}"
     return 0
   fi
 
