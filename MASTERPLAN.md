@@ -8,9 +8,9 @@ Diese Datei ist die zentrale Gesamt-Roadmap bis zu einem fertig aufgebauten Home
 
 Dieses Lane-Modell ist ab jetzt die verbindliche Arbeitsordnung. Aeltere breite Roadmap-Texte bleiben als Kontext erhalten, aber der aktive Takt folgt nur noch dieser Priorisierung:
 
-- `Lane A: MVP Closeout` -> `done` ✅ (restored 2026-04-17)
+- `Lane A: MVP Closeout` -> `done` ✅ (Data Restored & SSOT Sealed 2026-04-17)
 - `Lane B: Website/Public` -> `active` (In deployment, SSL/Tunnel pending)
-- `Lane C: Security/PBS/Infra` -> `active` (Recovery confirmed)
+- `Lane C: Security/PBS/Infra` -> `active` (Recovery confirmed, Dashboard cleaned)
 - `Lane D: Stockenweiler` -> `watch`
 - `Lane E: Radio/Media` -> `watch`
 
