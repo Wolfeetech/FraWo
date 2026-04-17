@@ -1,3 +1,3 @@
-latest_report_dir=C:\Users\StudioPC\Workspace\FraWo\artifacts\release_mvp_gate\20260417_123622
-latest_json=C:\Users\StudioPC\Workspace\FraWo\artifacts\release_mvp_gate\20260417_123622\release_mvp_gate.json
-latest_markdown=C:\Users\StudioPC\Workspace\FraWo\artifacts\release_mvp_gate\20260417_123622\release_mvp_gate.md
+latest_report_dir=C:\Users\StudioPC\Workspace\FraWo\artifacts\release_mvp_gate\20260417_133449
+latest_json=C:\Users\StudioPC\Workspace\FraWo\artifacts\release_mvp_gate\20260417_133449\release_mvp_gate.json
+latest_markdown=C:\Users\StudioPC\Workspace\FraWo\artifacts\release_mvp_gate\20260417_133449\release_mvp_gate.md

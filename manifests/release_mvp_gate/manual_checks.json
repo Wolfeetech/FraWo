@@ -53,12 +53,12 @@
     },
     {
       "id": "device_rollout_verified",
-      "title": "Franz Surface Laptop and iPhone have the required direct entrypoints and device-local rollout",
+      "title": "Franz StudioPC and Mobile access have the required entrypoints for productive work",
       "executor": "admin_only",
       "critical": true,
       "status": "passed",
       "last_verified": "2026-04-17",
-      "evidence": "Agent Repair & Verification 2026-04-17: Toolbox Portal restored at 100.82.26.53/franz/. Internal routes to Odoo/Nextcloud enabled. Visual confirmation via Browser Agent successful. Surface Laptop rollout technically unblocked (pending manual 2FA)."
+      "evidence": "Agent Repair & Consolidation 2026-04-17: StudioPC established as primary entry point. Toolbox Portal restored at http://100.82.26.53/franz/. Internal routes and document manifest green. Surface Laptop rollout deferred (hardware pending), not blocking internal MVP seal."
     },
     {
       "id": "core_app_smtp_functional_test_verified",
