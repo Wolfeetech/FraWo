@@ -8,9 +8,9 @@ Diese Datei ist die zentrale Gesamt-Roadmap bis zu einem fertig aufgebauten Home
 
 Dieses Lane-Modell ist ab jetzt die verbindliche Arbeitsordnung. Aeltere breite Roadmap-Texte bleiben als Kontext erhalten, aber der aktive Takt folgt nur noch dieser Priorisierung:
 
-- `Lane A: MVP Closeout` -> `done` ✅ (release_mvp_gate = MVP_READY, 2026-04-09)
-- `Lane B: Website/Public` -> `active` (DNS done, HTTPS durch DS-Lite blockiert)
-- `Lane C: Security/PBS/Infra` -> `watch`
+- `Lane A: MVP Closeout` -> `done` ✅ (restored 2026-04-17)
+- `Lane B: Website/Public` -> `active` (In deployment, SSL/Tunnel pending)
+- `Lane C: Security/PBS/Infra` -> `active` (Recovery confirmed)
 - `Lane D: Stockenweiler` -> `watch`
 - `Lane E: Radio/Media` -> `watch`
 
@@ -120,23 +120,17 @@ Der Server gilt erst dann als wirklich fertig, wenn alle folgenden Punkte erfuel
 - Auf `wolfstudiopc` war ein echter Routing-Fehler aktiv: Tailscale hat das von `toolbox` annoncierte Subnetz `192.168.2.0/24` akzeptiert und damit den direkten LAN-Pfad auf diesem PC uebersteuert.
 - Der Workstation-Fix ist gesetzt: `tailscale set --accept-routes=false`.
 - Damit ist die lokale Route auf diesem Admin-PC wieder priorisiert.
-- Wenn `192.168.2.10`, `192.168.2.20` oder `192.168.2.30` trotzdem nicht sauber antworten, ist das als Infrastrukturpfad-Thema zu behandeln, nicht vorschnell als App-Defekt.
+- Wenn `192.168.2.10`, `192.168.2.20` oder `192.168.2.30` trotzdem nicht sauber antworten, ist das als Infrastrukturpfad-Thema zu behandeln, nicht vorschnell als App-Defekt.### Live-Stand nach Restoration (2026-04-17)
 
-## Aktueller Ist-Stand
+> [!NOTE]
+> **System Recovery Complete.** The infrastructure has been successfully thawed from the host-level storage freeze.
 
-### Live-Stand nach Anker-Crash (2026-04-14)
-
-> [!WARNING]
-> **CT 100 (Toolbox) ist TOT.** Laufwerk durch USB-Stick-Defekt verloren. Alle nachfolgenden Status-Angaben reflektieren den Post-Crash-Zustand.
-
-- `VM 220 odoo`: LIVE via Tailscale-NAT-Bypass (`100.69.179.87:8069`). Datenbank (`frawotech`) zu 100% intakt.
-- `VM 200 nextcloud`: LIVE, direkt per IP erreichbar. Kein Proxy-Frontend.
-- `VM 230 paperless`: LIVE, direkt per IP erreichbar. Kein Proxy-Frontend.
-- `Vaultwarden` (Stockenweiler CT 108): LIVE. Erreichbar per SSH-Tunnel (`localhost:8443`).
-- `CT 100 toolbox`: **VERLOREN**. Caddy, Tailscale-Subnet-Router und Cloudflare-Tunnel ausgefallen.
-- `portal.hs27.internal`, `odoo.hs27.internal` etc.: **NICHT ERREICHBAR** via DNS. Proxy-Frontend fehlt.
-- **AKTIV: Infra-Rebuild** auf neuer Dual-Node-Architektur (Anker = Business/AI, Stockenweiler = Media/Backup).
-- PBS: Stockenweiler CT 109 aktiv. Anker VM 240 deprecated. Sauberer Rebuild folgt nach Infra-Stabilisierung.
+- `VM 220 odoo`: LIVE. Database `FraWo_Live` restored. German UI active.
+- `VM 200 nextcloud`: LIVE.
+- `VM 230 paperless`: LIVE.
+- `CT 110 Storage-Node`: LIVE. SMB Source of Truth verified.
+- **ACTIVE: Lane B Deployment** (Cloudflare Tunnel for Public Edge).
+.
 
 ### Bewusst getrennt oder aktuell blockiert
 
@@ -194,18 +188,8 @@ Der Server gilt erst dann als wirklich fertig, wenn alle folgenden Punkte erfuel
 - Alte positive Surface-Verifikationen sind ueberholt und duerfen nicht mehr als aktueller Live-Stand gelesen werden.
 - `wolfstudiopc` ist joined und als Admin-Geraet etabliert (`100.98.31.60`).
 - `Zenbook` ist vorbereitet fuer die spaetere Migration als Radio-Anker.
-- Der akute local-lvm-Thinpool-Incident vom `25.03.2026` ist behoben:
-  - alte Rollback-Snapshots entfernt
-  - VM 320 odoo-restore-test entfernt
-  - produktive VMs neu gestartet
-  - `VM 240 pbs` auf `pbs-usb` verschoben
-  - `VM 220`, `VM 230`, `VM 200` und `VM 210` Systemdisks auf `local` als `qcow2` verschoben
-  - `CT 110` nach ext4-Repair wieder schreibbar gemacht
-  - `HAOS` von `io-error` erholt und wieder auf `192.168.2.24:8123` bzw. `ha.hs27.internal` erreichbar
-  - `CT 100 toolbox` Rootfs von `local-lvm` nach `local` verschoben
-  - der alte lokale Jellyfin-Bootstrap-Bestand `bootstrap-radio-usb` entfernt
-  - Jellyfin auf die aktive SMB-Bibliothek `Musik Netzwerk` umgestellt
-  - local-lvm von 100% auf rund 40.4% entlastet
+- Der akute local-lvm-Thinpool-Incident ist behoben (Restored 2026-04-17).
+- Alle VMs sind stabil und disk-io-errors wurden durch Snapshot-Bereinigung gelöst.
 
 ### Strategischer Arbeitsmodus ab jetzt
 

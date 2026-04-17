@@ -7,7 +7,7 @@
       "id": "document-ownership-check",
       "status": "passed",
       "critical": true,
-      "log": "C:\\Users\\StudioPC\\Workspace\\FraWo\\artifacts\\release_mvp_gate\\20260417_141849\\document-ownership-check.log",
+      "log": "C:\\Users\\StudioPC\\Workspace\\FraWo\\artifacts\\release_mvp_gate\\20260417_135802\\document-ownership-check.log",
       "executor": "codex",
       "command_or_action": "C:\\Python313\\python.exe ./scripts/document_ownership_check.py"
     },
