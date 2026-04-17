@@ -18,7 +18,7 @@ def main() -> int:
     print(f"=== Odoo web.base.url Updater ===")
     print(f"Ziel-URL: {target_url}")
 
-    session = odoo_rpc_client.connect(default_user="admin")
+    session = odoo_rpc_client.connect(default_user="wolf@frawo-tech.de")
 
     # Aktuelle web.base.url lesen
     ids = session.models.execute_kw(
