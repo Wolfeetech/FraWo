@@ -1,11 +1,19 @@
 # -*- coding: utf-8 -*-
+import sys
 import xmlrpc.client
 import json
+from pathlib import Path
 
-url = 'http://172.21.0.3:8069'
-db = 'FraWo_GbR'
-username = 'wolf@frawo-tech.de'
-password = 'OD-Wolf-2026!'
+SCRIPT_ROOT = Path(__file__).resolve().parents[1]
+sys.path.append(str(SCRIPT_ROOT))
+
+from odoo_env import resolve_connection
+
+settings = resolve_connection("http://172.21.0.3:8069", "FraWo_GbR", "wolf@frawo-tech.de")
+url = settings.url
+db = settings.db
+username = settings.user
+password = settings.secret
 
 common = xmlrpc.client.ServerProxy(f'{url}/xmlrpc/2/common')
 uid = common.authenticate(db, username, password, {})

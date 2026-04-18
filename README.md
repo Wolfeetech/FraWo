@@ -22,6 +22,10 @@
 - Backing Store: Das Antigravity-Arbeitsverzeichnis bleibt technisch unverändert.
 - Windows-Bootstrap:
   - `scripts\bootstrap_windows_workspace.cmd` führt die initiale Einrichtung des Alias und des Shortcuts durch.
+  - `scripts\bootstrap_windows_operator_workstation.cmd` richtet die lokale Windows-Operator-Baseline mit Workspace- und Ops-Shortcuts ein.
+  - `scripts\update_windows_operator_workstation.ps1` fuehrt kontrollierte Paketupdates aus und ueberspringt laufende GUI-Blocker standardmaessig.
+  - `scripts\tools\workstation_operator_audit.ps1` erzeugt einen reproduzierbaren lokalen Audit-Report fuer diese Windows-Workstation.
+  - `scripts\tools\repo_credential_scan.ps1` erzeugt einen lokalen High-Risk-Scan fuer eingebettete Klartext-Credentials im Repo.
 
 ## Read Order
 

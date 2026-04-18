@@ -1,35 +1,60 @@
 import xmlrpc.client
 import sys
 import subprocess
+import os
+from pathlib import Path
 
-URL = 'http://10.1.0.22:8069'
-DB = 'FraWo_Live'
-USER = 'admin'
-PASSWORD = 'OD-Wolf-2026!'
+SCRIPT_DIR = Path(__file__).resolve().parent
+sys.path.append(str(SCRIPT_DIR))
+
+from odoo_env import resolve_connection
+
+
+DEFAULT_URL = 'http://10.1.0.22:8069'
+DEFAULT_DB = 'FraWo_Live'
+DEFAULT_USER = 'admin'
+DEFAULT_SSH_TARGET = '10.1.0.22'
+
+
+def sql_escape(value: str) -> str:
+    return value.replace("'", "''")
 
 def orchestrate():
-    print(f'Attempting Odoo Authentication at {URL}...')
+    settings = resolve_connection(DEFAULT_URL, DEFAULT_DB, DEFAULT_USER)
+    ssh_target = os.getenv("ODOO_SSH_TARGET", DEFAULT_SSH_TARGET)
+    print(f'Attempting Odoo Authentication at {settings.url}...')
     try:
-        common = xmlrpc.client.ServerProxy(f'{URL}/xmlrpc/2/common')
-        uid = common.authenticate(DB, USER, PASSWORD, {})
+        common = xmlrpc.client.ServerProxy(f'{settings.url}/xmlrpc/2/common')
+        uid = common.authenticate(settings.db, settings.user, settings.secret, {})
         if not uid:
             print('Authentication failed. Forcing password reset via psql...')
-            # Escape the password for the shell
-            pwd_reset = "UPDATE res_users SET password='OD-Wolf-2026!' WHERE login='admin';"
-            subprocess.run(['ssh', '-o', 'StrictHostKeyChecking=no', '10.1.0.22', f'docker exec -i odoo_db_1 psql -U odoo -d FraWo_Live -c "{pwd_reset}"'], check=True)
-            uid = common.authenticate(DB, USER, PASSWORD, {})
+            pwd_reset = (
+                f"UPDATE res_users SET password='{sql_escape(settings.secret)}' "
+                f"WHERE login='{sql_escape(settings.user)}';"
+            )
+            subprocess.run(
+                [
+                    'ssh',
+                    '-o',
+                    'StrictHostKeyChecking=no',
+                    ssh_target,
+                    f'docker exec -i odoo_db_1 psql -U odoo -d {settings.db} -c "{pwd_reset}"',
+                ],
+                check=True,
+            )
+            uid = common.authenticate(settings.db, settings.user, settings.secret, {})
             if not uid:
                  print('CRITICAL: Authentication failed even after SQL reset.')
                  return
         
-        print(f'Authenticated as {USER} (UID: {uid})')
-        models = xmlrpc.client.ServerProxy(f'{URL}/xmlrpc/2/object')
+        print(f'Authenticated as {settings.user} (UID: {uid})')
+        models = xmlrpc.client.ServerProxy(f'{settings.url}/xmlrpc/2/object')
 
         # 1. Update Company Information
         print('Updating Company Branding...')
-        company_ids = models.execute_kw(DB, uid, PASSWORD, 'res.company', 'search', [[['name', 'ilike', 'FraWo']]])
+        company_ids = models.execute_kw(settings.db, uid, settings.secret, 'res.company', 'search', [[['name', 'ilike', 'FraWo']]])
         if company_ids:
-             models.execute_kw(DB, uid, PASSWORD, 'res.company', 'write', [company_ids, {
+             models.execute_kw(settings.db, uid, settings.secret, 'res.company', 'write', [company_ids, {
                  'name': 'FraWo GbR',
                  'email': 'info@frawo-tech.de',
                  'website': 'https://frawo-tech.de'
@@ -57,16 +82,16 @@ def orchestrate():
 </t>'''
         
         # Target ALL homepage views
-        view_ids = models.execute_kw(DB, uid, PASSWORD, 'ir.ui.view', 'search', [[['key', '=', 'website.homepage']]])
+        view_ids = models.execute_kw(settings.db, uid, settings.secret, 'ir.ui.view', 'search', [[['key', '=', 'website.homepage']]])
         for vid in view_ids:
-            models.execute_kw(DB, uid, PASSWORD, 'ir.ui.view', 'write', [[vid], {'arch_db': HOMEPAGE_ARCH}])
+            models.execute_kw(settings.db, uid, settings.secret, 'ir.ui.view', 'write', [[vid], {'arch_db': HOMEPAGE_ARCH}])
             print(f'Successfully updated View ID: {vid}')
 
         # 3. Inject Ultra-Dark CSS
         DARK_CSS = '<style>body { background:#090b0a !important; color:white !important; } .navbar { background:#0a0c0b !important; border-bottom:1px solid rgba(255,255,255,0.1) !important; }</style>'
-        css_ids = models.execute_kw(DB, uid, PASSWORD, 'ir.ui.view', 'search', [[['key', '=', 'website.user_custom_css']]])
+        css_ids = models.execute_kw(settings.db, uid, settings.secret, 'ir.ui.view', 'search', [[['key', '=', 'website.user_custom_css']]])
         for cid in css_ids:
-             models.execute_kw(DB, uid, PASSWORD, 'ir.ui.view', 'write', [[cid], {'arch': DARK_CSS}])
+             models.execute_kw(settings.db, uid, settings.secret, 'ir.ui.view', 'write', [[cid], {'arch': DARK_CSS}])
              print(f'Successfully updated CSS ID: {cid}')
 
         print('\nSUCCESS: Master Orchestration Complete.')

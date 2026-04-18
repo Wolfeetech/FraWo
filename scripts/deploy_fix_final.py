@@ -1,11 +1,17 @@
-import xmlrpc.client
 import sys
+import xmlrpc.client
+from pathlib import Path
 
 # Odoo Connection Parameters
-URL = "http://10.1.0.22:8069"
-DB = "FraWo_Live"
-USER = "admin"
-PASSWORD = "OD-Wolf-2026!"
+SCRIPT_DIR = Path(__file__).resolve().parent
+sys.path.append(str(SCRIPT_DIR))
+
+from odoo_env import resolve_connection
+
+
+DEFAULT_URL = "http://10.1.0.22:8069"
+DEFAULT_DB = "FraWo_Live"
+DEFAULT_USER = "admin"
 
 # HOMEPAGE CONTENT (Simplified XML-RPC safe)
 HOMEPAGE_ARCH = '''<?xml version="1.0"?>
@@ -26,22 +32,23 @@ HOMEPAGE_ARCH = '''<?xml version="1.0"?>
 </t>'''
 
 def deploy():
-    print(f"Connecting to Odoo at {URL}...")
+    settings = resolve_connection(DEFAULT_URL, DEFAULT_DB, DEFAULT_USER)
+    print(f"Connecting to Odoo at {settings.url}...")
     try:
-        common = xmlrpc.client.ServerProxy(f"{URL}/xmlrpc/2/common")
-        uid = common.authenticate(DB, USER, PASSWORD, {})
+        common = xmlrpc.client.ServerProxy(f"{settings.url}/xmlrpc/2/common")
+        uid = common.authenticate(settings.db, settings.user, settings.secret, {})
         if not uid:
             print("Authentication failed!")
             return
         
-        models = xmlrpc.client.ServerProxy(f"{URL}/xmlrpc/2/object")
+        models = xmlrpc.client.ServerProxy(f"{settings.url}/xmlrpc/2/object")
         
         # Find all website homepage views
-        view_ids = models.execute_kw(DB, uid, PASSWORD, 'ir.ui.view', 'search', [[['key', '=', 'website.homepage']]])
+        view_ids = models.execute_kw(settings.db, uid, settings.secret, 'ir.ui.view', 'search', [[['key', '=', 'website.homepage']]])
         print(f"Found views: {view_ids}")
         
         for vid in view_ids:
-            models.execute_kw(DB, uid, PASSWORD, 'ir.ui.view', 'write', [[vid], {'arch_db': HOMEPAGE_ARCH}])
+            models.execute_kw(settings.db, uid, settings.secret, 'ir.ui.view', 'write', [[vid], {'arch_db': HOMEPAGE_ARCH}])
             print(f"Updated view {vid}")
 
         print("\nSUCCESS: Design forced onto all layers.")

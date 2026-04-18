@@ -1,11 +1,17 @@
-import xmlrpc.client
 import sys
+import xmlrpc.client
+from pathlib import Path
 
 # Odoo Connection Parameters
-URL = "http://10.1.0.22:8069"
-DB = "FraWo_Live"
-USER = "admin"
-PASSWORD = "OD-Wolf-2026!"
+SCRIPT_DIR = Path(__file__).resolve().parent
+sys.path.append(str(SCRIPT_DIR))
+
+from odoo_env import resolve_connection
+
+
+DEFAULT_URL = "http://10.1.0.22:8069"
+DEFAULT_DB = "FraWo_Live"
+DEFAULT_USER = "admin"
 
 # INLINED ASSETS
 CSS_CONTENT = """
@@ -123,21 +129,22 @@ CONTACT_HTML = """
 """
 
 def deploy():
-    print(f"Connecting to Odoo at {URL}...")
+    settings = resolve_connection(DEFAULT_URL, DEFAULT_DB, DEFAULT_USER)
+    print(f"Connecting to Odoo at {settings.url}...")
     try:
-        common = xmlrpc.client.ServerProxy(f"{URL}/xmlrpc/2/common")
-        uid = common.authenticate(DB, USER, PASSWORD, {})
+        common = xmlrpc.client.ServerProxy(f"{settings.url}/xmlrpc/2/common")
+        uid = common.authenticate(settings.db, settings.user, settings.secret, {})
         if not uid:
             print("Authentication failed!")
             return
         
-        models = xmlrpc.client.ServerProxy(f"{URL}/xmlrpc/2/object")
+        models = xmlrpc.client.ServerProxy(f"{settings.url}/xmlrpc/2/object")
         
         # 1. Update Company Information
         print("Updating Company Information...")
-        company_ids = models.execute_kw(DB, uid, PASSWORD, 'res.company', 'search', [[['name', 'ilike', 'FraWo']]])
+        company_ids = models.execute_kw(settings.db, uid, settings.secret, 'res.company', 'search', [[['name', 'ilike', 'FraWo']]])
         if company_ids:
-            models.execute_kw(DB, uid, PASSWORD, 'res.company', 'write', [company_ids, {
+            models.execute_kw(settings.db, uid, settings.secret, 'res.company', 'write', [company_ids, {
                 'name': 'FraWo GbR',
                 'street': 'Rothkreuz 14',
                 'zip': '88138',
@@ -149,24 +156,24 @@ def deploy():
 
         # 2. Inject Custom CSS
         print("Deploying Professional CSS...")
-        view_ids = models.execute_kw(DB, uid, PASSWORD, 'ir.ui.view', 'search', [[['key', '=', 'website.user_custom_css']]])
+        view_ids = models.execute_kw(settings.db, uid, settings.secret, 'ir.ui.view', 'search', [[['key', '=', 'website.user_custom_css']]])
         if view_ids:
             full_css = f"<style>{CSS_CONTENT}</style>"
-            models.execute_kw(DB, uid, PASSWORD, 'ir.ui.view', 'write', [view_ids, {'arch': full_css}])
+            models.execute_kw(settings.db, uid, settings.secret, 'ir.ui.view', 'write', [view_ids, {'arch': full_css}])
 
         # 3. Update Homepage Content
         print("Deploying Macher Homepage...")
-        homepage_ids = models.execute_kw(DB, uid, PASSWORD, 'ir.ui.view', 'search', [[['key', '=', 'website.homepage']]])
+        homepage_ids = models.execute_kw(settings.db, uid, settings.secret, 'ir.ui.view', 'search', [[['key', '=', 'website.homepage']]])
         if homepage_ids:
             arch = f'<?xml version="1.0"?>\\n<t name="Homepage" t-name="website.homepage">\\n    <t t-call="website.layout">\\n        <div id="wrap" class="oe_structure oe_empty">\\n            {HOMEPAGE_HTML}\\n        </div>\\n    </t>\\n</t>'
-            models.execute_kw(DB, uid, PASSWORD, 'ir.ui.view', 'write', [homepage_ids, {'arch_db': arch}])
+            models.execute_kw(settings.db, uid, settings.secret, 'ir.ui.view', 'write', [homepage_ids, {'arch_db': arch}])
 
         # 4. Update Contact Page
         print("Deploying Contact Page...")
-        contact_ids = models.execute_kw(DB, uid, PASSWORD, 'ir.ui.view', 'search', [[['key', 'ilike', 'contactus']]])
+        contact_ids = models.execute_kw(settings.db, uid, settings.secret, 'ir.ui.view', 'search', [[['key', 'ilike', 'contactus']]])
         if contact_ids:
             arch_contact = f'<?xml version="1.0"?>\\n<t name="Contact us" t-name="website.contactus">\\n    <t t-call="website.layout">\\n        <div id="wrap" class="oe_structure oe_empty">\\n            {CONTACT_HTML}\\n        </div>\\n    </t>\\n</t>'
-            models.execute_kw(DB, uid, PASSWORD, 'ir.ui.view', 'write', [contact_ids, {'arch_db': arch_contact}])
+            models.execute_kw(settings.db, uid, settings.secret, 'ir.ui.view', 'write', [contact_ids, {'arch_db': arch_contact}])
 
         print("\nSUCCESS: Professional assets deployed.")
 

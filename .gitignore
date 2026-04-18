@@ -43,3 +43,17 @@ id_rsa
 id_ed25519
 *.pem
 
+# Local-only remediation scratch files
+scripts/remediations/frawo_professionalization_v2.py
+scripts/remediations/script_b64.txt
+
+# Local workstation audit artifacts
+artifacts/workstation_audit/
+
+# Local alpha tunnel runtime artifacts
+artifacts/workstation_alpha_tunnel/
+tunnel_alpha.err
+tunnel_alpha.log
+
+# Local credential scan artifacts
+artifacts/security_inventory/

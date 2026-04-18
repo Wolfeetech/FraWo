@@ -1,5 +1,5 @@
-import os
 import subprocess
+from pathlib import Path
 
 # Configuration
 NODE_IP = "100.69.179.87"
@@ -39,7 +39,7 @@ WHERE project_id IS NULL OR project_id NOT IN (SELECT id FROM project_project WH
 UPDATE project_project SET favorite_user_ids = array_append(favorite_user_ids, 7) WHERE NOT 7 = ANY(COALESCE(favorite_user_ids, ARRAY[]::integer[]));
 """
     
-    local_path = "c:\\Users\\StudioPC\\Workspace\\FraWo\\scripts\\business\\recovery_bridge.sql"
+    local_path = Path(__file__).with_name("recovery_bridge.sql")
     with open(local_path, "w", encoding="utf-8") as f:
         f.write(sql_payload)
         
@@ -49,7 +49,7 @@ UPDATE project_project SET favorite_user_ids = array_append(favorite_user_ids, 7
     
     print("Executing injection on Host -> VM...")
     # Inject using file-stream to avoid any shell interpretation
-    inject_cmd = f"ssh -o StrictHostKeyChecking=no -p 22 root@{NODE_IP} 'qm guest exec {VM_ID} -- /usr/bin/docker exec -i odoo_db_1 psql -U odoo -d {TARGET_DB}' < /tmp/recovery_bridge.sql"
+    inject_cmd = f"ssh -o StrictHostKeyChecking=no -p 22 root@{NODE_IP} 'qm guest exec {VM_ID} -- /bin/bash -lc \"/usr/bin/docker exec -i odoo_db_1 psql -U odoo -d {TARGET_DB} < /tmp/recovery_bridge.sql\"'"
     result = subprocess.run(inject_cmd, shell=True, capture_output=True, text=True)
     
     if result.returncode == 0:

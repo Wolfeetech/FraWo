@@ -1,5 +1,5 @@
-import os
 import subprocess
+from pathlib import Path
 
 # Configuration
 NODE_IP = "100.69.179.87"
@@ -27,7 +27,7 @@ ON CONFLICT DO NOTHING;
 """
     
     # Save local temporary SQL file
-    local_sql = "c:\\Users\\StudioPC\\Workspace\\FraWo\\scripts\\business\\force_unify.sql"
+    local_sql = Path(__file__).with_name("force_unify.sql")
     with open(local_sql, "w", encoding="utf-8") as f:
         f.write(sql_content)
         

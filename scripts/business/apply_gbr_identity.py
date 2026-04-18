@@ -1,12 +1,7 @@
 import odoo_rpc_client
-import os
 
 def apply_branding():
     print("--- Applying FraWo GbR Identity ---")
-    
-    # Use password from environment or fallback to the one found in docs
-    if not os.environ.get("ODOO_RPC_PASSWORD"):
-        os.environ["ODOO_RPC_PASSWORD"] = "OD-Wolf-2026!"
         
     try:
         session = odoo_rpc_client.connect(default_user="admin")
