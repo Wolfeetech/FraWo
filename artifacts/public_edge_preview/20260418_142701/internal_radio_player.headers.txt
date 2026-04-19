@@ -1,0 +1,9 @@
+HTTP/1.1 404 Not Found
+Content-Type: text/html; charset=utf-8
+Date: Sat, 18 Apr 2026 12:27:02 GMT
+Server: nginx
+Vary: Accept-Encoding
+Via: 1.1 Caddy
+X-Powered-By: PHP/8.5.3
+Transfer-Encoding: chunked
+
