@@ -59,7 +59,7 @@
   - backend state is `Running`
   - tailnet DNS name is `toolbox.tail150400.ts.net.`
   - assigned Tailscale IPs:
-    - `100.99.206.128`
+    - `100.82.26.53`
     - `fd7a:115c:a1e0::af01:cea1`
 - Local prefs:
   - `AdvertiseRoutes` includes `10.1.0.0/24`
@@ -185,7 +185,7 @@
       - `toolbox -> 10.1.0.21` wieder pingbar
       - `toolbox -> http://10.1.0.21:8080/status.php` -> `HTTP 200`
       - `toolbox -> http://cloud.hs27.internal/status.php` -> `HTTP 200`
-      - mobile Frontdoor `http://100.99.206.128:8445/status.php` -> `HTTP 200`
+      - mobile Frontdoor `http://100.82.26.53:8445/status.php` -> `HTTP 200`
     - Restpunkt:
       - `10.1.0.21:22` antwortet aktuell `Connection refused`; der App-Pfad ist gruen, aber der SSH-Status sollte spaeter bewusst entschieden werden
 
@@ -419,15 +419,15 @@
   - started `CT 110 storage-node`, which restored the media bind-mount required by `CT 100 toolbox`
   - started `CT 100 toolbox` and recovered its Tailscale/mobile frontdoors
 - Verified from `wolfstudiopc` over Tailscale:
-  - `http://100.99.206.128:8444/web/login` -> `200` Odoo
-  - `http://100.99.206.128:8445/` -> `302` Nextcloud
-  - `http://100.99.206.128:8446/accounts/login/` -> `200` Paperless
-  - `http://100.99.206.128:8447/` -> `200` Portal
-  - `http://100.99.206.128:8442/alive` -> `200` Vaultwarden
-  - `http://100.99.206.128:8448/` -> `302` Radio
-  - `http://100.99.206.128:8449/` -> `302` Media
+  - `http://100.82.26.53:8444/web/login` -> `200` Odoo
+  - `http://100.82.26.53:8445/` -> `302` Nextcloud
+  - `http://100.82.26.53:8446/accounts/login/` -> `200` Paperless
+  - `http://100.82.26.53:8447/` -> `200` Portal
+  - `http://100.82.26.53:8442/alive` -> `200` Vaultwarden
+  - `http://100.82.26.53:8448/` -> `302` Radio
+  - `http://100.82.26.53:8449/` -> `302` Media
 - Remaining follow-up:
-  - `Home Assistant` frontdoor is now green again on `http://100.99.206.128:8443/` after extending HA trusted proxies to include the Proxmox transition-router path.
+  - `Home Assistant` frontdoor is now green again on `http://100.82.26.53:8443/` after extending HA trusted proxies to include the Proxmox transition-router path.
   - If classic `hs27.internal` hostnames should work directly on `wolfstudiopc` before the full migration, that needs a separate Windows hosts/DNS decision because local admin access is gated.
 
 ### Canonical Next Sequence
@@ -450,7 +450,7 @@
 - Current hard facts:
   - `proxmox-anker` is operational and not the hottest capacity problem.
   - `stock-pve` is the current runtime pressure point: host swap `6.3 / 8.0 GiB`, storage `hdd-backup` at `84%`.
-  - `Odoo` is runtime-green: direct `192.168.2.22:8069/web/login` returns `200` from Anker and the Tailscale frontdoor `100.99.206.128:8444/web/login` also returns `200`.
+  - `Odoo` is runtime-green: direct `192.168.2.22:8069/web/login` returns `200` from Anker and the Tailscale frontdoor `100.82.26.53:8444/web/login` also returns `200`.
   - `VM 240 PBS` remains stopped and the PBS storages on Anker are still not the green consolidated backup target.
 - Optimization hints from the same audit:
   - later rightsizing candidates on Anker are `CT 100 toolbox`, `CT 110 storage-node`, and `CT 120 vaultwarden`.

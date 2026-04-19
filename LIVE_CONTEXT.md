@@ -112,7 +112,7 @@
 - VM 200, VM 210, VM 220 and VM 230: QEMU Guest Agent verified from Proxmox during latest audit
 - Business stacks are running from `/opt/homeserver2027/stacks` under systemd-managed local IaC
 - Home Assistant OS is stable on `10.1.0.24:8123` and `ha.hs27.internal` now returns `HTTP 200` through Caddy
-- `Nextcloud`-Reachability wurde am `2026-04-09` erneut stabilisiert: `VM 200` war per Cloud-Init versehentlich auf `10.1.0.24/24` gedriftet und kollidierte damit mit `HAOS`; die VM wurde kontrolliert auf `10.1.0.21/24` zurueckgezogen, danach liefern `http://10.1.0.21:8080/status.php`, `http://cloud.hs27.internal/status.php` und `http://100.99.206.128:8445/status.php` wieder `HTTP 200`
+- `Nextcloud`-Reachability wurde am `2026-04-09` erneut stabilisiert: `VM 200` war per Cloud-Init versehentlich auf `10.1.0.24/24` gedriftet und kollidierte damit mit `HAOS`; die VM wurde kontrolliert auf `10.1.0.21/24` zurueckgezogen, danach liefern `http://10.1.0.21:8080/status.php`, `http://cloud.hs27.internal/status.php` und `http://100.82.26.53:8445/status.php` wieder `HTTP 200`
 - `frawo-tech.de` / `www.frawo-tech.de` bleiben trotz intern gruenem Odoo-/Caddy-Pfad extern blockiert; der aktuelle Caddy-Log zeigt fuer die ACME-Challenges auf `92.211.33.54` weiter `Connection refused`, also einen Public-Edge-/Forwarding-Block ausserhalb von Odoo selbst
 - `ha.hs27.internal` liefert am Abendstand `2026-04-09` ueber Caddy `HTTP 400`, waehrend der Direktpfad `10.1.0.24:8123` `HTTP 200` liefert; das ist aktuell ein kleiner HA-Reverse-Proxy-/Trust-Drift, nicht der zentrale Business-MVP-Blocker
 - Direct Ansible management status: `ansible-ping=passed`

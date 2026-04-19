@@ -5,6 +5,28 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 SURFACE_ISO="${HOME}/Downloads/Homeserver2027/install-media/surface/ubuntu-24.04.4-desktop-amd64.iso"
 SURFACE_ISO_MIN_BYTES=$((5 * 1024 * 1024 * 1024))
 
+toolbox_frontdoor_ip() {
+  awk '
+    /^[[:space:]]*#/ {next}
+    /^[[:space:]]*Host[[:space:]]+/ {
+      in_toolbox=0
+      for (i=2; i<=NF; i++) {
+        if ($i == "toolbox") {
+          in_toolbox=1
+        }
+      }
+      next
+    }
+    in_toolbox && /^[[:space:]]*HostName[[:space:]]+/ {
+      print $2
+      exit
+    }
+  ' "${ROOT_DIR}/Codex/ssh_config"
+}
+
+TOOLBOX_FRONTDOOR_IP="$(toolbox_frontdoor_ip)"
+TOOLBOX_FRONTDOOR_IP="${TOOLBOX_FRONTDOOR_IP:-100.82.26.53}"
+
 bool_from_systemd() {
   local unit="$1"
   if systemctl is-active --quiet "${unit}"; then
@@ -31,7 +53,7 @@ else
   zenbook_tailscale_ipv4=""
 fi
 
-toolbox_mobile_frontdoor_http="$(curl -fsS -o /dev/null -w '%{http_code}' --max-time 10 http://100.99.206.128:8447 || true)"
+toolbox_mobile_frontdoor_http="$(curl -fsS -o /dev/null -w '%{http_code}' --max-time 10 http://${TOOLBOX_FRONTDOOR_IP}:8447 || true)"
 if [[ "${toolbox_mobile_frontdoor_http}" == "200" ]]; then
   toolbox_mobile_frontdoor_ready="yes"
 else

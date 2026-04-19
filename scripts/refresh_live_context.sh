@@ -7,6 +7,28 @@ WORKSPACE_ALIAS="/home/wolf/.gemini/antigravity/brain/Homeserver_2027_Ops_Worksp
 DESKTOP_SHORTCUT="/home/wolf/Desktop/Homeserver 2027 Workspace"
 OUTPUT_FILE="${ROOT_DIR}/LIVE_CONTEXT.md"
 
+toolbox_frontdoor_ip() {
+  awk '
+    /^[[:space:]]*#/ {next}
+    /^[[:space:]]*Host[[:space:]]+/ {
+      in_toolbox=0
+      for (i=2; i<=NF; i++) {
+        if ($i == "toolbox") {
+          in_toolbox=1
+        }
+      }
+      next
+    }
+    in_toolbox && /^[[:space:]]*HostName[[:space:]]+/ {
+      print $2
+      exit
+    }
+  ' "${ROOT_DIR}/Codex/ssh_config"
+}
+
+TOOLBOX_FRONTDOOR_IP="$(toolbox_frontdoor_ip)"
+TOOLBOX_FRONTDOOR_IP="${TOOLBOX_FRONTDOOR_IP:-100.82.26.53}"
+
 section_body() {
   local file="$1"
   local heading="$2"
@@ -226,7 +248,7 @@ cat > "${OUTPUT_FILE}" <<EOF
 - Latest release-MVP gate: \`${latest_release_mvp_gate:-missing}\` -> \`${release_mvp_decision}\`
 - Latest production gate: \`${latest_production_gate:-missing}\` -> \`${production_decision}\`
 - Toolbox network base: Caddy on \`10.1.0.20:80\`, AdGuard Home on \`10.1.0.20:53\` and localhost-only admin on \`127.0.0.1:3000\`, \`hs27.internal\` rewrites verified in opt-in mode
-- Toolbox mobile Tailscale frontdoor: \`100.99.206.128:8443\` HA, \`:8444\` Odoo, \`:8445\` Nextcloud, \`:8446\` Paperless, \`:8447\` Portal, \`:8448\` Radio (502: node \`100.64.23.77\` offline), \`:8449\` Media
+- Toolbox mobile Tailscale frontdoor: \`${TOOLBOX_FRONTDOOR_IP}:8443\` HA, \`:8444\` Odoo, \`:8445\` Nextcloud, \`:8446\` Paperless, \`:8447\` Portal, \`:8448\` Radio (502: node \`100.64.23.77\` offline), \`:8449\` Media
 - Toolbox Tailscale state: \`/dev/net/tun\` mapped, \`tailscaled\` active, backend \`Running\`, subnet route \`10.1.0.0/24\` is advertised (Tailnet approval pending), Split-DNS still needs to be updated to \`10.1.0.20\`
 - VM 200, VM 210, VM 220 and VM 230: QEMU Guest Agent verified from Proxmox during latest audit
 - Business stacks are running from \`/opt/homeserver2027/stacks\` under systemd-managed local IaC

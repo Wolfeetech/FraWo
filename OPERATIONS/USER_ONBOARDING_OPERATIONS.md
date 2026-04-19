@@ -33,7 +33,7 @@ Der offene Benutzerblock fuer den aktuellen Arbeits-MVP ist jetzt nur noch:
 Pass-Bedingung dafuer:
 
 - `surface-franz` nutzt sichtbar `http://portal.hs27.internal/franz/` als alltagstauglichen Startpfad
-- `Franz iPhone` nutzt sichtbar `http://100.99.206.128:8447/franz/` als mobilen Startpfad
+- `Franz iPhone` nutzt sichtbar `http://100.82.26.53:8447/franz/` als mobilen Startpfad
 - auf beiden Pfaden sind `Nextcloud`, `Paperless`, `Odoo` und `Vaultwarden` sichtbar als direkte Kernziele erreichbar
 - es bleibt kein sichtbarer Blocker fuer den echten Alltagspfad uebrig
 
@@ -58,7 +58,7 @@ Danach:
 - Home Assistant: `http://ha.hs27.internal`
 - Jellyfin LAN mit DNS: `http://media.hs27.internal`
 - Jellyfin LAN ohne DNS: `http://192.168.2.20:8096`
-- Jellyfin mobil: `http://100.99.206.128:8449`
+- Jellyfin mobil: `http://100.82.26.53:8449`
 - Radio: `http://radio.hs27.internal`
 
 ## Benutzerrollen
@@ -185,9 +185,9 @@ Zusatz:
 - bevorzugt im LAN:
   - `http://portal.hs27.internal/franz/`
 - mobil ueber `Tailscale`:
-  - `http://100.99.206.128:8447/franz/`
+  - `http://100.82.26.53:8447/franz/`
 - Jellyfin mobil:
-  - `http://100.99.206.128:8449`
+  - `http://100.82.26.53:8449`
 - sichtbare Abnahme erst gruen, wenn:
   - `Franz Mobil Start` sichtbar laedt
   - die Kernziele `Nextcloud`, `Paperless`, `Odoo` und `Vaultwarden` von dort sichtbar erreichbar sind
@@ -196,7 +196,7 @@ Zusatz:
 ### Homescreen-Standard
 
 1. `Tailscale` verbinden
-2. `http://100.99.206.128:8447/franz/` in Safari oeffnen
+2. `http://100.82.26.53:8447/franz/` in Safari oeffnen
 3. `Zum Home-Bildschirm` anlegen
 4. `Vaultwarden` bewusst separat nutzen
 

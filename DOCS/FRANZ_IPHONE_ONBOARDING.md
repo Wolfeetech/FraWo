@@ -20,7 +20,7 @@ Tailscale ist unser privates Tunnel-Netzwerk. Es macht den Homeserver von uebera
 
 Hinweis:
 
-- Der aktuelle MVP-Mobilpfad fuer `Franz` nutzt den direkten Tailscale-Start unter `http://100.99.206.128:8447/franz/`.
+- Der aktuelle MVP-Mobilpfad fuer `Franz` nutzt den direkten Tailscale-Start unter `http://100.82.26.53:8447/franz/`.
 - Fuer diesen aktuellen MVP-Pfad ist kein zusaetzlicher Zertifikatsschritt noetig.
 
 ## 3. Das Franz-Portal aufrufen
@@ -28,7 +28,7 @@ Hinweis:
 Unser zentraler Einstiegspunkt ist das Portal.
 
 1. [ ] Oeffne **Safari** auf dem iPhone.
-2. [ ] Gib die Adresse: `http://100.99.206.128:8447/franz/` ein.
+2. [ ] Gib die Adresse: `http://100.82.26.53:8447/franz/` ein.
    - *Hinweis:* Dies ist der aktuelle mobile MVP-Pfad ueber das Tailnet.
 3. [ ] Klicke in Safari auf das **Teilen-Icon** (das Quadrat mit dem Pfeil nach oben).
 4. [ ] Waehle **"Zum Home-Bildschirm"**.
@@ -54,4 +54,4 @@ Du hast nun ein Icon auf deinem iPhone-Startbildschirm. Wenn du darauf klickst, 
 
 1. [ ] Pruefe, ob die Tailscale App gruen (`Connected`) leuchtet.
 2. [ ] Pruefe, ob du WLAN oder eine gute LTE-Verbindung hast.
-3. [ ] Falls die Seite `http://100.99.206.128:8447/franz/` nicht laedt, frage den Operator (Wolf).
+3. [ ] Falls die Seite `http://100.82.26.53:8447/franz/` nicht laedt, frage den Operator (Wolf).

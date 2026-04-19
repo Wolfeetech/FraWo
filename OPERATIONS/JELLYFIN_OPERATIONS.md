@@ -8,7 +8,7 @@ Jellyfin ist der interne Medienserver fuer Musik und spaeter weitere Medien.
 
 - LAN mit internem DNS: `http://media.hs27.internal`
 - LAN direkt ohne DNS: `http://192.168.2.20:8096`
-- mobil ueber `Tailscale`: `http://100.99.206.128:8449`
+- mobil ueber `Tailscale`: `http://100.82.26.53:8449`
 
 ## Wichtig
 

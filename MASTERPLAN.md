@@ -403,7 +403,7 @@ Erreicht:
 - Jellyfin laeuft auf `CT 100 toolbox`
 - `media.hs27.internal` liefert intern die Jellyfin-Oberflaeche
 - der direkte LAN-Pfad `192.168.2.20:8096` ist verifiziert
-- der mobile Tailscale-Frontdoor auf `100.99.206.128:8449` ist verifiziert
+- der mobile Tailscale-Frontdoor auf `100.82.26.53:8449` ist verifiziert
 - alle drei Pfade liefern aktuell konsistent `HTTP 302 -> /web/`
 - Bibliotheks-Stammverzeichnisse auf der Toolbox sind vorbereitet:
   - `/srv/media-library/movies`
@@ -690,6 +690,5 @@ Fuer den professionellen Dauerstandard folgt spaeter der geplante NTFS-Shrink pl
 - [PBS_VM_240_SETUP_PLAN.md](PBS_VM_240_SETUP_PLAN.md)
 - [HAOS_VM_210_SETUP_PLAN.md](HAOS_VM_210_SETUP_PLAN.md)
 - [SHARED_STORAGE_ARCHITECTURE_PLAN.md](SHARED_STORAGE_ARCHITECTURE_PLAN.md)
-
 
 

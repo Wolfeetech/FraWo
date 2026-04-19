@@ -94,13 +94,13 @@
 
 ## Current Mobile / Tailscale Frontdoor Paths
 
-- Home Assistant: `http://100.99.206.128:8443`
-- Odoo: `http://100.99.206.128:8444`
-- Nextcloud: `http://100.99.206.128:8445`
-- Paperless: `http://100.99.206.128:8446`
-- Portal: `http://100.99.206.128:8447`
-- Radio: `http://100.99.206.128:8448`
-- Jellyfin: `http://100.99.206.128:8449`
+- Home Assistant: `http://100.82.26.53:8443`
+- Odoo: `http://100.82.26.53:8444`
+- Nextcloud: `http://100.82.26.53:8445`
+- Paperless: `http://100.82.26.53:8446`
+- Portal: `http://100.82.26.53:8447`
+- Radio: `http://100.82.26.53:8448`
+- Jellyfin: `http://100.82.26.53:8449`
 
 ## Current Hard-Green Business Facts
 

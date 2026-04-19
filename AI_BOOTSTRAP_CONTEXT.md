@@ -17,7 +17,7 @@
 - StudioPC local LAN gateway/router: `192.168.2.1` `easy_box` (legacy segment, still active for household devices)
 - UCG primary gateway: `10.1.0.1` (UCG-Ultra, VLAN 101 – **aktives Primärnetz**)
 - Proxmox host professional management path: `100.69.179.87` Tailscale, primary runtime `10.1.0.92`
-- Core toolbox/control node: **`10.1.0.20`** (primary), Tailscale/frontdoor `100.99.206.128`
+- Core toolbox/control node: **`10.1.0.20`** (primary), Tailscale/frontdoor `100.82.26.53`
 - Nextcloud VM: **`10.1.0.21`**
 - Odoo VM: **`10.1.0.22`**
 - Paperless VM: **`10.1.0.23`**
@@ -34,7 +34,7 @@
 - Latest storage optimization audit: `artifacts/storage_optimization/latest_report.md`
 - Latest CI/CD delivery factory report: `artifacts/cicd_delivery_factory/latest_report.md`
 - Latest CI/CD delivery factory preflight: `artifacts/cicd_delivery_factory/latest_preflight.md` with current hard limit `repo_side_factory_only`
-- Transition note `2026-04-03`: `wolfstudiopc` currently reaches the core services professionally via `toolbox` Tailscale frontdoors on `100.99.206.128:*`; direct StudioPC access to the legacy guest `192.168.2.x` range is not the working path while the UCG migration bridge is active
+- Transition note `2026-04-03`: `wolfstudiopc` currently reaches the core services professionally via `toolbox` Tailscale frontdoors on `100.82.26.53:*`; direct StudioPC access to the legacy guest `192.168.2.x` range is not the working path while the UCG migration bridge is active
 
 ## Service And Page Map
 
@@ -49,9 +49,9 @@
 - Vaultwarden admin path: `https://vault.hs27.internal/admin`
 - Jellyfin browser path: `http://media.hs27.internal`
 - Jellyfin TV-safe path: `http://192.168.2.20:8096`
-- Jellyfin mobile Tailscale path: `http://100.99.206.128:8449`
+- Jellyfin mobile Tailscale path: `http://100.82.26.53:8449`
 - Radio UI: `http://radio.hs27.internal`
-- Radio mobile Tailscale path: `http://100.99.206.128:8448`
+- Radio mobile Tailscale path: `http://100.82.26.53:8448`
 
 ## User And Device Model
 
@@ -83,7 +83,7 @@
 - The Vaultwarden invitation mail to `franz@frawo-tech.de` arrived successfully.
 - The `FraWo` invite for `franz@frawo-tech.de` was accepted.
 - UCG transition segment is active: `proxmox-anker` now reports `vmbr0` on `10.1.0.92/24` (GW `10.1.0.1`) plus transition aliases `192.168.2.10/24` and `192.168.2.1/24`.
-- `wolfstudiopc` currently reaches `Home Assistant`, `Odoo`, `Nextcloud`, `Paperless`, `Portal`, `Vault`, `Radio`, and `Media` professionally through the `toolbox` Tailscale frontdoors on `100.99.206.128`.
+- `wolfstudiopc` currently reaches `Home Assistant`, `Odoo`, `Nextcloud`, `Paperless`, `Portal`, `Vault`, `Radio`, and `Media` professionally through the `toolbox` Tailscale frontdoors on `100.82.26.53`.
 - Platform health snapshot `2026-04-04`: Anker is operational and not capacity-critical; the hottest runtime pressure is Stockenweiler host swap plus `hdd-backup` pressure, while `Odoo` itself is runtime-green.
 - Stockenweiler still carries a fragmented legacy `yourparty` payload across `VM 210 azuracast-vm`, `CT 207 radio-wordpress-prod`, `CT 208 mariadb-server`, and `CT 211 radio-api`; capture this payload before thinning the site.
 - First UCG service pilot is live on `toolbox`: additive alias `10.1.0.20/24` is active and persistent, and the `portal` vhost answers on the target IP while the existing frontdoors remain green.

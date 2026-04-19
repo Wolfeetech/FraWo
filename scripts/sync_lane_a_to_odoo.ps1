@@ -1,11 +1,45 @@
 ﻿param(
-    [string]$Url = $(if ($env:ODOO_RPC_URL) { $env:ODOO_RPC_URL } else { "http://100.99.206.128:8444" }),
+    [string]$Url = $env:ODOO_RPC_URL,
     [string]$Db = $(if ($env:ODOO_RPC_DB) { $env:ODOO_RPC_DB } else { "FraWo_GbR" }),
     [string]$User = $(if ($env:ODOO_RPC_USER) { $env:ODOO_RPC_USER } else { "wolf@frawo-tech.de" }),
     [string]$Password = $env:ODOO_RPC_PASSWORD
 )
 
 $ErrorActionPreference = "Stop"
+
+function Get-ToolboxFrontdoorIp {
+    $repoRoot = Split-Path -Parent $PSScriptRoot
+    $sshConfigPath = Join-Path $repoRoot "Codex\\ssh_config"
+    if (-not (Test-Path $sshConfigPath)) {
+        return "100.82.26.53"
+    }
+
+    $inToolboxBlock = $false
+    foreach ($line in Get-Content -Path $sshConfigPath) {
+        $trimmed = $line.Trim()
+        if (-not $trimmed -or $trimmed.StartsWith("#")) {
+            continue
+        }
+        if ($trimmed -match '^(?i)Host\s+') {
+            $parts = $trimmed -split '\s+'
+            if ($parts.Length -gt 1) {
+                $inToolboxBlock = $parts[1..($parts.Length - 1)] -contains 'toolbox'
+            } else {
+                $inToolboxBlock = $false
+            }
+            continue
+        }
+        if ($inToolboxBlock -and $trimmed -match '^(?i)HostName\s+(.+)$') {
+            return $Matches[1].Trim()
+        }
+    }
+
+    return "100.82.26.53"
+}
+
+if (-not $Url) {
+    $Url = "http://$(Get-ToolboxFrontdoorIp):8444"
+}
 
 if (-not $Password) {
     $securePassword = Read-Host "ODOO_RPC_PASSWORD" -AsSecureString

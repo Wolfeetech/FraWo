@@ -117,9 +117,9 @@ Die Ziel-Platzierung ist **nicht** automatisch die echte Runtime-Reihenfolge. Fu
 
 | Pilot | Warum zuerst | Verify |
 | --- | --- | --- |
-| `portal` | statischer Frontdoor, kein Kern-Business-State | `http://100.99.206.128:8447/` |
-| `media` | nutzbar, aber nicht business-kritisch | `http://100.99.206.128:8449/` |
-| `radio` | sichtbarer Testpfad, aber nicht Kern-Business | `http://100.99.206.128:8448/` |
+| `portal` | statischer Frontdoor, kein Kern-Business-State | `http://100.82.26.53:8447/` |
+| `media` | nutzbar, aber nicht business-kritisch | `http://100.82.26.53:8449/` |
+| `radio` | sichtbarer Testpfad, aber nicht Kern-Business | `http://100.82.26.53:8448/` |
 
 **Empfehlung jetzt:** `portal` zuerst. Danach `media`, erst dann `radio`.
 
@@ -132,7 +132,7 @@ Dieser Block ist bewusst der naechste `Codex`-Schritt, ohne mit `Gemini` zu koll
 **Preflight vor jeder Runtime-Aenderung:**
 
 1. `Tailscale first` bleibt der Management-Pfad.
-2. `portal` ist ueber `http://100.99.206.128:8447/` gruen.
+2. `portal` ist ueber `http://100.82.26.53:8447/` gruen.
 3. `ssh root@100.69.179.87` und `ssh root@100.91.20.116` sind gruen.
 4. Snapshot-/Rollback-Pfad fuer `CT 100 toolbox` ist dokumentiert.
 5. Keine gleichzeitige Firewall-, DNS- oder Hostname-Aenderung im selben Fenster.
@@ -150,7 +150,7 @@ Dieser Block ist bewusst der naechste `Codex`-Schritt, ohne mit `Gemini` zu koll
 
 **Verify nach dem Pilot:**
 
-- `http://100.99.206.128:8447/` liefert weiter `200`
+- `http://100.82.26.53:8447/` liefert weiter `200`
 - `portal.hs27.internal` zeigt weiter denselben Inhalt
 - `estate_census` bleibt fuer alle Frontdoors gruen
 - `AI_SERVER_HANDOFF.md` wird direkt nachgezogen

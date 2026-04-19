@@ -16,10 +16,38 @@ OUTPUT_ROOT = ROOT_DIR / "artifacts" / "device_rollout_preflight"
 TIMESTAMP = datetime.now().strftime("%Y%m%d_%H%M%S")
 LATEST_REPORT_PATH = OUTPUT_ROOT / "latest_report.md"
 LATEST_JSON_PATH = OUTPUT_ROOT / "latest_report.json"
+SSH_CONFIG_PATH = ROOT_DIR / "Codex" / "ssh_config"
+DEFAULT_TOOLBOX_FRONTDOOR_IP = "100.82.26.53"
+
+
+def current_toolbox_frontdoor_ip() -> str:
+    try:
+        text = SSH_CONFIG_PATH.read_text(encoding="utf-8")
+    except OSError:
+        return DEFAULT_TOOLBOX_FRONTDOOR_IP
+
+    in_toolbox_block = False
+    for raw_line in text.splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("#"):
+            continue
+        lower = line.lower()
+        if lower.startswith("host "):
+            hosts = line.split()[1:]
+            in_toolbox_block = "toolbox" in hosts
+            continue
+        if in_toolbox_block and lower.startswith("hostname "):
+            parts = line.split(None, 1)
+            if len(parts) == 2 and parts[1].strip():
+                return parts[1].strip()
+    return DEFAULT_TOOLBOX_FRONTDOOR_IP
+
+
+TOOLBOX_FRONTDOOR_IP = current_toolbox_frontdoor_ip()
 
 START_URLS = [
     ("surface_laptop_start", "http://portal.hs27.internal/franz/"),
-    ("iphone_mobile_start", "http://100.99.206.128:8447/franz/"),
+    ("iphone_mobile_start", f"http://{TOOLBOX_FRONTDOOR_IP}:8447/franz/"),
 ]
 
 CORE_TARGETS = [
@@ -34,7 +62,7 @@ EXPECTED_PAGE_LINKS = {
     "http://paperless.hs27.internal/accounts/login/": "Paperless",
     "http://odoo.hs27.internal/web/login": "Odoo",
     "https://vault.hs27.internal/": "Vault",
-    "http://100.99.206.128:8447/franz/": "Franz Mobil Start",
+    f"http://{TOOLBOX_FRONTDOOR_IP}:8447/franz/": "Franz Mobil Start",
 }
 
 

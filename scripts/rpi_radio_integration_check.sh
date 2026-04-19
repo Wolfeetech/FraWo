@@ -4,6 +4,28 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 TARGET_HOST="${1:-100.64.23.77}"
 
+toolbox_frontdoor_ip() {
+  awk '
+    /^[[:space:]]*#/ {next}
+    /^[[:space:]]*Host[[:space:]]+/ {
+      in_toolbox=0
+      for (i=2; i<=NF; i++) {
+        if ($i == "toolbox") {
+          in_toolbox=1
+        }
+      }
+      next
+    }
+    in_toolbox && /^[[:space:]]*HostName[[:space:]]+/ {
+      print $2
+      exit
+    }
+  ' "${ROOT_DIR}/Codex/ssh_config"
+}
+
+TOOLBOX_FRONTDOOR_IP="$(toolbox_frontdoor_ip)"
+TOOLBOX_FRONTDOOR_IP="${TOOLBOX_FRONTDOOR_IP:-100.82.26.53}"
+
 extract_value() {
   local key="$1"
   local data="$2"
@@ -22,7 +44,7 @@ media_output="$(timeout 60 "${ROOT_DIR}/scripts/rpi_radio_media_layout_check.sh"
 network_output="$(timeout 60 "${ROOT_DIR}/scripts/rpi_radio_network_music_check.sh" "${TARGET_HOST}" 2>/dev/null || true)"
 
 radio_internal_proxy_http="$(curl -fsS -o /dev/null -w '%{http_code}' --max-time 10 http://radio.hs27.internal/ || true)"
-radio_mobile_frontdoor_http="$(curl -fsS -o /dev/null -w '%{http_code}' --max-time 10 http://100.99.206.128:8448/ || true)"
+radio_mobile_frontdoor_http="$(curl -fsS -o /dev/null -w '%{http_code}' --max-time 10 http://${TOOLBOX_FRONTDOOR_IP}:8448/ || true)"
 
 rpi_radio_ready="$(extract_value rpi_radio_ready_for_azuracast "${readiness_output}")"
 rpi_azuracast_service_ready="$(extract_value rpi_azuracast_service_ready "${service_output}")"
