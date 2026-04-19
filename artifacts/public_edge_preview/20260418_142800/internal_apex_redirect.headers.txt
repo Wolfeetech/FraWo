@@ -1,0 +1,10 @@
+HTTP/1.1 200 OK
+Content-Type: text/html; charset=utf-8
+Date: Sat, 18 Apr 2026 12:28:00 GMT
+Server: Werkzeug/2.0.2 Python/3.10.12
+Set-Cookie: frontend_lang=en_US; Expires=Sun, 18 Apr 2027 12:28:00 GMT; Path=/
+Set-Cookie: session_id=7e3296bf2e9d822479eec2cdc6202a356379fe40; Expires=Sun, 18 Apr 2027 12:28:00 GMT; Max-Age=604800; HttpOnly; Path=/
+Via: 1.0 Caddy
+X-Content-Type-Options: nosniff
+Transfer-Encoding: chunked
+
