@@ -1,13 +1,12 @@
 # LIVE CONTEXT
 
-## Infrastructure Status & Governance (2026-04-14)
-- **Status**: STABLE. Recovery from the Anker blackout is complete.
-- **Toolbox**: REBUILT and OPERATIONAL on `local` storage. Tailscale IP: `100.82.26.53`. 
+## Infrastructure Status & Governance (2026-04-18)
+- **Status**: STABLE. Odoo Shape-Up (Vordermann) completed.
+- **Odoo Stack (VM 220)**: Consolidated to canonical database **`FraWo_GbR`**. Website and Proxy configured.
+- **Public Edge**: Cloudflare Tunnel Technically Ready. Persistent Token pending for final Go-Live.
+- **Toolbox**: OPERATIONAL on `local` storage. Tailscale IP: `100.82.26.53`. 
 - **OpenClaw (Brain)**: Deployment package ready. Secure SSH-Keys installed on all nodes.
-- **Surface Control**: `surface-wolfi` (DESKTOP-7LMP02S) is the active clean review & control node with repo checkout, Tailscale, Git and repo-based SSH launchers.
-- **Control Portal**: LIVE at `10.1.0.20` and `portal.hs27.internal`.
-- **Current Control-Node Gap**: `hs27.internal` does not yet resolve cleanly on `surface-wolfi`; the canonical fix remains Tailscale route approval plus restricted nameserver `10.1.0.20` for `hs27.internal`.
-- **SSOT**: Repository is the sole source of truth.
+- **Surface Control**: `surface-wolfi` (DESKTOP-7LMP02S) is the active clean review & control node.
 
 ## Workspace-Status
 
