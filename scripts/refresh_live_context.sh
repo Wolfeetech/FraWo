@@ -192,7 +192,7 @@ cat > "${OUTPUT_FILE}" <<EOF
 27. \`RADIO_OPERATIONS_STANDARD.md\`
 28. \`MEDIA_SERVER_PLAN.md\`
 29. \`MEDIA_SERVER_CLIENT_SETUP.md\`
-30. \`OPERATOR_TODO_QUEUE.md\`
+30. \`DOCS/Task_Archive/OPERATOR_TODO_QUEUE.md\`
 31. \`PBS_VM_240_SETUP_PLAN.md\`
 32. \`HAOS_VM_210_SETUP_PLAN.md\`
 33. \`PORTABLE_BACKUP_USB_PLAN.md\`
@@ -230,7 +230,7 @@ cat > "${OUTPUT_FILE}" <<EOF
 - \`RADIO_OPERATIONS_STANDARD.md\` updated: \`$(mtime "${ROOT_DIR}/RADIO_OPERATIONS_STANDARD.md")\`
 - \`MEDIA_SERVER_PLAN.md\` updated: \`$(mtime "${ROOT_DIR}/MEDIA_SERVER_PLAN.md")\`
 - \`MEDIA_SERVER_CLIENT_SETUP.md\` updated: \`$(mtime "${ROOT_DIR}/MEDIA_SERVER_CLIENT_SETUP.md")\`
-- \`OPERATOR_TODO_QUEUE.md\` updated: \`$(mtime "${ROOT_DIR}/OPERATOR_TODO_QUEUE.md")\`
+- \`DOCS/Task_Archive/OPERATOR_TODO_QUEUE.md\` updated: \`$(mtime "${ROOT_DIR}/DOCS/Task_Archive/OPERATOR_TODO_QUEUE.md")\`
 - \`PBS_VM_240_SETUP_PLAN.md\` updated: \`$(mtime "${ROOT_DIR}/PBS_VM_240_SETUP_PLAN.md")\`
 - \`HAOS_VM_210_SETUP_PLAN.md\` updated: \`$(mtime "${ROOT_DIR}/HAOS_VM_210_SETUP_PLAN.md")\`
 - \`PORTABLE_BACKUP_USB_PLAN.md\` updated: \`$(mtime "${ROOT_DIR}/PORTABLE_BACKUP_USB_PLAN.md")\`
@@ -249,7 +249,7 @@ cat > "${OUTPUT_FILE}" <<EOF
 - Latest production gate: \`${latest_production_gate:-missing}\` -> \`${production_decision}\`
 - Toolbox network base: Caddy on \`10.1.0.20:80\`, AdGuard Home on \`10.1.0.20:53\` and localhost-only admin on \`127.0.0.1:3000\`, \`hs27.internal\` rewrites verified in opt-in mode
 - Toolbox mobile Tailscale frontdoor: \`${TOOLBOX_FRONTDOOR_IP}:8443\` HA, \`:8444\` Odoo, \`:8445\` Nextcloud, \`:8446\` Paperless, \`:8447\` Portal, \`:8448\` Radio (502: node \`100.64.23.77\` offline), \`:8449\` Media
-- Toolbox Tailscale state: \`/dev/net/tun\` mapped, \`tailscaled\` active, backend \`Running\`, subnet route \`10.1.0.0/24\` is advertised (Tailnet approval pending), Split-DNS still needs to be updated to \`10.1.0.20\`
+- Toolbox Tailscale state: \`/dev/net/tun\` mapped, \`tailscaled\` active, backend \`Running\`, subnet route \`10.1.0.0/24\` is advertised, and the remaining Split-DNS operator step is to point the restricted nameserver for \`hs27.internal\` to \`100.82.26.53\`
 - VM 200, VM 210, VM 220 and VM 230: QEMU Guest Agent verified from Proxmox during latest audit
 - Business stacks are running from \`/opt/homeserver2027/stacks\` under systemd-managed local IaC
 - Home Assistant OS is stable on \`10.1.0.24:8123\` and \`ha.hs27.internal\` now returns \`HTTP 200\` through Caddy

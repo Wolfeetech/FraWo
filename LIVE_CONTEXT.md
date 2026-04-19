@@ -1,18 +1,19 @@
 # LIVE CONTEXT
 
-## Infrastructure Status & Governance (2026-04-18)
-- **Status**: STABLE. Odoo Shape-Up (Vordermann) completed.
-- **Odoo Stack (VM 220)**: Consolidated to canonical database **`FraWo_GbR`**. Website and Proxy configured.
-- **Public Edge**: Cloudflare Tunnel Technically Ready. Persistent Token pending for final Go-Live.
-- **Toolbox**: OPERATIONAL on `local` storage. Tailscale IP: `100.82.26.53`. 
-- **OpenClaw (Brain)**: Deployment package ready. Secure SSH-Keys installed on all nodes.
-- **Surface Control**: `surface-wolfi` (DESKTOP-7LMP02S) is the active clean review & control node.
+## Infrastructure Status & Governance (2026-04-19)
+- **Status**: STABLE. Core platform recovered after the PVE/UCG incident and the repository is synced cleanly with `origin/main`.
+- **Business Stack**: `Portal`, `Odoo`, `Nextcloud`, `Paperless`, `Vaultwarden` and `Media` are back on the recovered `toolbox` frontdoor.
+- **Toolbox**: OPERATIONAL on `local` storage. Runtime `10.1.0.20`, Tailscale/frontdoor `100.82.26.53`, DNS and mobile frontdoor recovered.
+- **Split DNS**: `hs27.internal` resolves correctly through AdGuard on `100.82.26.53`; the only remaining operator step is to set the restricted nameserver to `100.82.26.53` in Tailscale Admin or run the elevated local NRPT helper.
+- **Radio**: still blocked. `radio-node` is offline on both LAN and Tailnet, so `http://100.82.26.53:8448` currently returns `502`.
+- **OpenClaw (Brain)**: Deployment package ready. Secure SSH keys installed on all nodes.
+- **Surface Control**: `surface-wolfi` (DESKTOP-7LMP02S) is the active clean review and control node.
 
 ## Workspace-Status
 
 - Name: `FraWo GbR Ops Workspace`
 - Operator: **Wolf** | Business User: **Franz**
-- Repository-Status: **MASTER SSOT ACTIVE** (2026-04-14)
+- Repository-Status: **MASTER SSOT ACTIVE** and synced with `origin/main` (2026-04-19)
 - Canonical Upstream: `https://github.com/Wolfeetech/FraWo`
 - Sync Tooling: `make repo-sync`, `make repo-status`
 - Agent Governance: `AGENT_NETWORK_DEFINITION.md` (bindend für alle Agenten)
@@ -49,7 +50,7 @@
 27. `RADIO_OPERATIONS_STANDARD.md`
 28. `MEDIA_SERVER_PLAN.md`
 29. `MEDIA_SERVER_CLIENT_SETUP.md`
-30. `OPERATOR_TODO_QUEUE.md`
+30. `DOCS/Task_Archive/OPERATOR_TODO_QUEUE.md`
 31. `PBS_VM_240_SETUP_PLAN.md`
 32. `HAOS_VM_210_SETUP_PLAN.md`
 33. `PORTABLE_BACKUP_USB_PLAN.md`
@@ -87,7 +88,7 @@
 - `RADIO_OPERATIONS_STANDARD.md` updated: `2026-04-09 19:28:38`
 - `MEDIA_SERVER_PLAN.md` updated: `2026-04-09 19:28:38`
 - `MEDIA_SERVER_CLIENT_SETUP.md` updated: `2026-04-09 19:28:38`
-- `OPERATOR_TODO_QUEUE.md` updated: `2026-04-09 19:28:38`
+- `DOCS/Task_Archive/OPERATOR_TODO_QUEUE.md` updated: `2026-04-19 22:00:00`
 - `PBS_VM_240_SETUP_PLAN.md` updated: `2026-03-27 08:57:47`
 - `HAOS_VM_210_SETUP_PLAN.md` updated: `2026-04-09 19:28:37`
 - `PORTABLE_BACKUP_USB_PLAN.md` updated: `2026-04-09 19:28:38`
@@ -133,6 +134,19 @@
    - **Laufwerks-Mapping (Persistent):** `P:\` (PROJEKTE), `S:\` (SAMPLES), `L:\` (LIBRARY_ASSETS) auf `C:\WORKSPACE`.
    - **Bereinigung:** Alle Gaming-Altlasten (Riot, Steam-Residuen, Vanguard) wurden entfernt.
    - **Optimierung:** Windows Telemetrie deaktiviert, GPU Studio-Treiber (572.83) verifiziert, ~250GB Speicher befreit.
+
+## Superseding Operator Delta (2026-04-19)
+
+This section supersedes the older operator-action list further below whenever the two disagree.
+
+- `AKTION VON DIR ERFORDERLICH:` In Tailscale Admin den restricted nameserver fuer `hs27.internal` auf `100.82.26.53` setzen.
+  - warum: der aktuelle technical proof shows `tailnet_route_visible=yes` and `adguard_hs27_resolves=yes`, but the final remote client experience still depends on the correct Tailscale Admin DNS entry.
+  - Alternative: `C:\Users\Admin\Workspace\Fix_HS27_Internal_Hosts.ps1` in erhoehter PowerShell ausfuehren.
+- `AKTION VON DIR ERFORDERLICH:` `radio-node` physisch pruefen und wiederbeleben.
+  - warum: no response on `192.168.2.155`, `100.64.23.77` or the backend behind `:8448`; this is now a Pi/power/boot/LAN issue, not a toolbox DNS/proxy issue.
+  - Hilfsmittel: `C:\Users\Admin\Workspace\Radio_Node_Recovery_Runbook_2026-04-19.md` and `C:\Users\Admin\Workspace\Radio_Node_Recovery_Watch.ps1`
+- `AKTION VON DIR ERFORDERLICH:` Auf `wolfstudiopc` `OpenSSH Server` einschalten oder eine lokale Admin-Session bereitstellen.
+- Windows GUI updates remain a later controlled cleanup item after the blocking apps are closed on purpose.
 
 ## Active Work Queue
 

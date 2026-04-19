@@ -40,15 +40,15 @@
 
 - Root control portal: `http://portal.hs27.internal`
 - Franz start page: `http://portal.hs27.internal/franz/`
-- Nextcloud: `http://cloud.hs27.internal` and direct `http://192.168.2.21`
-- Paperless: `http://paperless.hs27.internal` and direct `http://192.168.2.23`
-- Odoo: `http://odoo.hs27.internal` and direct `http://192.168.2.22:8069`
-- Home Assistant: `http://ha.hs27.internal` and direct `http://192.168.2.24:8123`
+- Nextcloud: `http://cloud.hs27.internal` and direct `http://10.1.0.21`
+- Paperless: `http://paperless.hs27.internal` and direct `http://10.1.0.23`
+- Odoo: `http://odoo.hs27.internal` and direct `http://10.1.0.22:8069`
+- Home Assistant: `http://ha.hs27.internal` and direct `http://10.1.0.24:8123`
 - Vaultwarden: `https://vault.hs27.internal`
-- Vaultwarden health/bootstrap path: `http://192.168.2.26:8080/alive`
+- Vaultwarden health/bootstrap path: `http://10.1.0.26:8080/alive`
 - Vaultwarden admin path: `https://vault.hs27.internal/admin`
 - Jellyfin browser path: `http://media.hs27.internal`
-- Jellyfin TV-safe path: `http://192.168.2.20:8096`
+- Jellyfin direct path: `http://10.1.0.20:8096`
 - Jellyfin mobile Tailscale path: `http://100.82.26.53:8449`
 - Radio UI: `http://radio.hs27.internal`
 - Radio mobile Tailscale path: `http://100.82.26.53:8448`
@@ -86,8 +86,10 @@
 - `wolfstudiopc` currently reaches `Home Assistant`, `Odoo`, `Nextcloud`, `Paperless`, `Portal`, `Vault`, `Radio`, and `Media` professionally through the `toolbox` Tailscale frontdoors on `100.82.26.53`.
 - Platform health snapshot `2026-04-04`: Anker is operational and not capacity-critical; the hottest runtime pressure is Stockenweiler host swap plus `hdd-backup` pressure, while `Odoo` itself is runtime-green.
 - Stockenweiler still carries a fragmented legacy `yourparty` payload across `VM 210 azuracast-vm`, `CT 207 radio-wordpress-prod`, `CT 208 mariadb-server`, and `CT 211 radio-api`; capture this payload before thinning the site.
-- First UCG service pilot is live on `toolbox`: additive alias `10.1.0.20/24` is active and persistent, and the `portal` vhost answers on the target IP while the existing frontdoors remain green.
+- Toolbox frontdoor and DNS recovery `2026-04-19`: `toolbox` is live again on `10.1.0.20` and `100.82.26.53`; AdGuard on `100.82.26.53:53` answers `hs27.internal` for Tailscale clients.
+- Important split-DNS rule: the restricted nameserver for remote Tailscale clients must point to `100.82.26.53`, not `10.1.0.20`.
 - Jellyfin now publishes the direct LAN address for clients, which fixed the TV connection path for devices without working `hs27.internal` DNS.
+- `radio-node` is currently the only hard-red service path: the Pi is offline on both `192.168.2.155` and `100.64.23.77`, and the mobile radio frontdoor `:8448` returns `502` until the Pi is physically recovered.
 - Franz mailbox authentication was verified.
 - `Nextcloud`, `Paperless`, and `Odoo` are SMTP-configured against the shared mail baseline.
 - `AzuraCast` remains the only app-SMTP holdout because the current blocker is SSH access to `raspberry_pi_radio`.
@@ -124,7 +126,7 @@
 
 ## Immediate Do-Not-Regress Rules
 
-- Do not switch Jellyfin TV clients back to `http://media.hs27.internal`; TVs should use `http://192.168.2.20:8096`.
+- Do not switch direct Jellyfin clients away from the verified direct path `http://10.1.0.20:8096` unless a fresh client test proves a better path.
 - Do not recreate any plaintext access register inside the workspace; keep shared passwords out of markdown files.
 - Do not bloat the portal UI with Media, Radio, Home Assistant, or shared frontend controls before the current business MVP is visibly stable.
 - Do not mark PBS healthy until the guarded rebuild path is actually completed and proven.

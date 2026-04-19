@@ -35,7 +35,7 @@ Read only this short boot path first:
 2. `AI_BOOTSTRAP_CONTEXT.md`
 3. `LIVE_CONTEXT.md`
 4. `OPS_HOME.md`
-5. `OPERATOR_TODO_QUEUE.md`
+5. `DOCS/Task_Archive/OPERATOR_TODO_QUEUE.md`
 6. `OPERATIONS/TOOLS_OPERATIONS_INDEX.md`
 7. `OPERATIONS/PRODUCTION_READINESS_OPERATIONS.md`
 8. `MASTERPLAN.md`
@@ -120,7 +120,7 @@ After `INTRODUCTION_PROMPT.md`, choose the narrowest specialized prompt that fit
   - canonical start-of-day, close-day and handoff control path
 - `OPERATIONS/USER_ONBOARDING_OPERATIONS.md`
   - canonical operator path for Wolf, Franz and device onboarding
-- `OPERATOR_TODO_QUEUE.md`
+- `DOCS/Task_Archive/OPERATOR_TODO_QUEUE.md`
   - short operator-facing queue for the next manual unblock steps
 - `PBS_VM_240_SETUP_PLAN.md`
   - controlled rollout path and stage gates for the planned PBS VM

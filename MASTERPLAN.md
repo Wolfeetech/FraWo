@@ -27,7 +27,7 @@ Diese Rollen gelten ohne Ausnahmen:
 
 - `AI_SERVER_HANDOFF.md`
   - externer KI-Handoff
-- `OPERATOR_TODO_QUEUE.md`
+- `DOCS/Task_Archive/OPERATOR_TODO_QUEUE.md`
   - nur manuelle Unblock-Punkte
 - `artifacts/release_mvp_gate/latest_release_mvp_gate.md`
   - einzige Wahrheit fuer die MVP-Entscheidung
@@ -690,5 +690,4 @@ Fuer den professionellen Dauerstandard folgt spaeter der geplante NTFS-Shrink pl
 - [PBS_VM_240_SETUP_PLAN.md](PBS_VM_240_SETUP_PLAN.md)
 - [HAOS_VM_210_SETUP_PLAN.md](HAOS_VM_210_SETUP_PLAN.md)
 - [SHARED_STORAGE_ARCHITECTURE_PLAN.md](SHARED_STORAGE_ARCHITECTURE_PLAN.md)
-
 

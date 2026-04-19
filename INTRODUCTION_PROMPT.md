@@ -62,7 +62,7 @@
   - running as the current shared storage node on Proxmox
 - `CT120 vaultwarden`:
   - Vaultwarden service
-  - direct container health path on `192.168.2.26:8080`
+  - direct container health path on `10.1.0.26:8080`
   - productive entry through internal HTTPS
 - `VM200 nextcloud`:
   - Nextcloud
@@ -83,13 +83,13 @@
 - Portal: `http://portal.hs27.internal`
 - Franz portal: `http://portal.hs27.internal/franz/`
 - Vaultwarden: `https://vault.hs27.internal`
-- Vaultwarden health: `http://192.168.2.26:8080/alive`
+- Vaultwarden health: `http://10.1.0.26:8080/alive`
 - Nextcloud: `http://cloud.hs27.internal`
 - Paperless: `http://paperless.hs27.internal`
 - Odoo: `http://odoo.hs27.internal`
 - Home Assistant: `http://ha.hs27.internal`
 - Jellyfin browser path: `http://media.hs27.internal`
-- Jellyfin TV-safe direct path: `http://192.168.2.20:8096`
+- Jellyfin direct path: `http://10.1.0.20:8096`
 - Radio frontdoor path: `http://radio.hs27.internal`
 
 ## Current Mobile / Tailscale Frontdoor Paths
