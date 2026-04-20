@@ -13,7 +13,7 @@ Stand: `2026-04-20` | Aktualisiert von: Codex
 | `radio_node_recovery` | `radio-node` antwortet weder auf `192.168.2.155` noch auf `100.64.23.77`; Frontdoor `:8448` liefert `502` | Pi physisch pruefen: Strom, LAN, Boot |
 | `split_dns_finalization` | `hs27.internal` ist technisch vorbereitet, aber der restricted nameserver ist im Tailscale Admin noch nicht final gesetzt | `100.82.26.53` in Tailscale Admin DNS eintragen oder lokalen NRPT-Helfer erhoeht ausfuehren |
 | `wolfstudiopc_repo_path` | `wolfstudiopc` ist online, aber `SSH` auf `22/tcp` ist geschlossen | Windows OpenSSH aktivieren oder lokale Admin-Session bereitstellen |
-| `public_edge_https_release` | direkter IPv4-/ACME-Pfad auf `VM220` bleibt durch DS-Lite blockiert; Website-Gate bleibt `BLOCKED` | Cloudflare-Proxy/Tunnel fuer `frawo-tech.de` und `www.frawo-tech.de` auf `VM220` final entscheiden und aktivieren |
+| `public_edge_https_release` | direkter IPv4-/ACME-Pfad auf `VM220` bleibt durch DS-Lite blockiert; HTTPS-Baseline fuer die Website ist deshalb noch rot | Cloudflare-Proxy/Tunnel fuer `frawo-tech.de` und `www.frawo-tech.de` auf `VM220` final entscheiden und aktivieren |
 
 ### Next
 
@@ -30,7 +30,7 @@ Stand: `2026-04-20` | Aktualisiert von: Codex
 
 | Task | Gestartet | Naechster Schritt |
 |------|-----------|-----------------|
-| `public_edge_decision_package` | 2026-04-20 | Cloudflare/VM220 als bevorzugten Lane-B-Pfad in Runbooks und Statusdateien festziehen |
+| `public_edge_decision_package` | 2026-04-20 | Cloudflare/VM220 als bevorzugten HTTPS-Baseline-Pfad in Runbooks und Statusdateien festziehen |
 
 ### Done
 
@@ -49,7 +49,8 @@ Stand: `2026-04-20` | Aktualisiert von: Codex
 
 - `radio-node` ist aktuell kein DNS- oder Proxy-Thema mehr. Die Gegenprobe von `toolbox` schlaegt ebenfalls fehl. Das ist sehr wahrscheinlich ein Pi-/Power-/Boot-/LAN-Problem.
 - Fuer entfernte Tailscale-Clients muss der restricted nameserver fuer `hs27.internal` auf `100.82.26.53` zeigen, nicht auf `10.1.0.20`.
-- Fuer Lane B ist der bevorzugte Release-Pfad jetzt `Cloudflare -> VM220`; echter direkter IPv4-/Dual-Stack-Cutover bleibt nur Alternativpfad.
+- Fuer Lane B ist der bevorzugte HTTPS-/Release-Pfad jetzt `Cloudflare -> VM220`; echter direkter IPv4-/Dual-Stack-Cutover bleibt nur Alternativpfad.
+- Der aktuelle Erfolgspunkt fuer Lane B ist zuerst gueltiges HTTPS; Design und Content duerfen bis spaeter vorlaeufig bleiben.
 - Der Repo-Stand ist sauber: `main` ist mit `origin/main` synchron.
 
 ## Definition Of Done

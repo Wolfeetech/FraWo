@@ -21,6 +21,12 @@ Stand `2026-03-26` ist der freigegebene Release-Scope fuer `2026-04-01` bewusst 
 - die Website selbst traegt im ersten Release bereits die sichtbare Radio-Praesenz
 - `radio.frawo-tech.de` bleibt fuer spaeter vorbereitet, ist aber nicht die Pflicht-Frontdoor des ersten Releases
 
+Aktueller Zwischenstand fuer Lane B Stand `2026-04-20`:
+
+- das operative Nahziel ist noch kleiner als der volle erste Website-Release
+- zuerst soll nur die HTTPS-/Public-Edge-Baseline fuer `frawo-tech.de` und `www.frawo-tech.de` gruen werden
+- Design, Content-Reife und Feintuning der Website duerfen bis spaeter provisorisch bleiben
+
 ## Live Facts 2026-04-20
 
 - `frawo-tech.de` loest oeffentlich jetzt auf `92.211.33.54` und `2a00:1e:ef80:7c01:be24:11ff:feaa:bbcc` auf.
@@ -52,9 +58,9 @@ Stand `2026-03-26` ist der freigegebene Release-Scope fuer `2026-04-01` bewusst 
 
 ## Decision Stand 2026-04-20
 
-Der bevorzugte Website-Release-Pfad ist jetzt klar:
+Der bevorzugte HTTPS-/Website-Pfad ist jetzt klar:
 
-- primaerer Release-Pfad: `Cloudflare` als oeffentlicher Edge vor `VM220`
+- primaerer Edge-Pfad: `Cloudflare` als oeffentlicher Edge vor `VM220`
 - primaerer Origin: `VM220 odoo` auf `10.1.0.22`
 - primaerer Scope: nur `frawo-tech.de` und `www.frawo-tech.de`
 - primaerer Nutzen: HTTPS wird nicht mehr vom DS-Lite-/IPv4-Forward der EasyBox blockiert
@@ -212,9 +218,10 @@ Vor dem ersten Public Rollout muessen gruen sein:
 4. Edge-Hostnamen und Redirect-Regeln festlegen
 5. TLS-Automation ueber den gewaehlten Edge-Pfad einrichten
 6. Logging und Uptime-Monitoring festlegen
-7. zuerst Odoo-Website mit sichtbarer Radio-Praesenz veroeffentlichen
-8. erst spaeter eine separate dedizierte Radio-Seite
-9. Business-/Portalpfade nur bewusst und spaet
+7. zuerst nur die HTTPS-/Public-Edge-Baseline gruen ziehen, auch wenn die Website inhaltlich noch vorlaeufig ist
+8. danach Odoo-Website mit sichtbarer Radio-Praesenz sauber release-faehig ziehen
+9. erst spaeter eine separate dedizierte Radio-Seite
+10. Business-/Portalpfade nur bewusst und spaet
 
 ## Definition of Done
 

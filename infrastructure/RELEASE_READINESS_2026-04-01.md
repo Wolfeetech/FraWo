@@ -9,6 +9,12 @@ Geplanter externer Release am `2026-04-01` mit bewusst kleinem Scope:
 - sichtbare Radio-Praesenz oder Player-Pfad auf der Website
 - keine oeffentlichen Business-UIs
 
+Aktueller Lane-B-Zwischenfokus Stand `2026-04-20`:
+
+- zuerst gueltiges HTTPS fuer `frawo-tech.de` und `www.frawo-tech.de`
+- Public Edge technisch gruen ziehen
+- Website-Design und Content duerfen bis spaeter vorlaeufig bleiben
+
 ## Scope In
 
 - Domain- und DNS-Vorbereitung fuer `frawo-tech.de`
@@ -39,7 +45,7 @@ Geplanter externer Release am `2026-04-01` mit bewusst kleinem Scope:
 | Backup / Restore | yellow | lokale Backups sind real, aber `PBS` bleibt fuer diese Website-Freigabe bewusst ausserhalb des Scope | lokalen Schutz stabil halten und `PBS` separat weiterfuehren |
 | Mail | yellow | `webmaster` und `franz` sind technisch verifiziert, aber `info`/`noreply` und sichtbare Send-/Receive-Abnahme sind noch offen | finalen Rollenpfad und Mail-Records schliessen |
 | Secrets | yellow | Vaultwarden laeuft jetzt intern ueber `HTTPS`, Franz ist in `FraWo`, aber sichtbare Spotchecks und Restbereinigung laufen noch | Vaultwarden-Bestand sichtbar verifizieren und Referenzpfad beibehalten |
-| Public Website | red | DNS-Cutover ist erfolgt, aber HTTPS/Public-Edge bleibt blockiert; bevorzugter Release-Pfad ist jetzt Cloudflare vor `VM220`, weil die EasyBox auf dem direkten IPv4-Pfad weiter im DS-Lite-Problem haengt | Cloudflare-Proxy/Tunnel fuer `frawo-tech.de` und `www.frawo-tech.de` finalisieren; Dual-Stack bleibt nur Ausweichpfad |
+| Public Website | red | DNS-Cutover ist erfolgt, aber HTTPS/Public-Edge bleibt blockiert; bevorzugter Lane-B-Pfad ist jetzt Cloudflare vor `VM220`, weil die EasyBox auf dem direkten IPv4-Pfad weiter im DS-Lite-Problem haengt | Cloudflare-Proxy/Tunnel fuer `frawo-tech.de` und `www.frawo-tech.de` finalisieren; Dual-Stack bleibt nur Ausweichpfad |
 | Radio Public | yellow | die Radio-Praesenz ist auf dem Zielsystem integriert und im Preview verifiziert, oeffentlich aber noch nicht sichtbar | nach echtem Public-Cutover die sichtbare Browser-Abnahme erneut ziehen |
 | Device Onboarding | yellow | Business-MVP laeuft separat; fuer die Website ist kein Shared Frontend noetig | getrennt im MVP-Track schliessen |
 | Stockenweiler | yellow | Zielbild klar, aber noch kein operativer Testkunde | Tailscale-only Supportpfad vorbereiten |
@@ -112,3 +118,8 @@ Fuer den aktuellen Website-Track gilt:
 - Alternativpfad nur bei echter externer Freigabe: `Dual-Stack/IPv4 -> VM220`
 - `CT100 toolbox` ist kein primaeres Public-Website-Zielsystem
 - Public Edge, Public Mail DNS und Rollback bleiben Lane-B-Themen und werden nicht mit Radio/PBS vermischt
+
+Fuer den aktuellen Lane-B-Arbeitsmodus gilt zusaetzlich:
+
+- Erfolg heisst zunaechst: HTTPS/Public Edge gruen
+- nicht zwingend: finale Website-Gestaltung oder finaler Content-Stand

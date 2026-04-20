@@ -9,9 +9,15 @@ Ziel ist nicht mehr ein alter Alpha-Zwischenstand, sondern ein sauberer kleiner 
 - `frawo-tech.de` und `www.frawo-tech.de` als einziger Scope
 - keine oeffentlichen Admin-UIs
 
+Der aktuelle Lane-B-Arbeitsmodus ist bewusst klein:
+
+- zuerst HTTPS/Public Edge gruen ziehen
+- die Website darf in Design und Content noch vorlaeufig sein
+- der volle inhaltliche Website-Release ist ein spaeterer Folgeschritt
+
 ## Decision Stand
 
-- bevorzugter Release-Pfad: `Cloudflare -> VM220`
+- bevorzugter HTTPS-/Release-Pfad: `Cloudflare -> VM220`
 - Alternativpfad nur bei echter externer Freigabe: direkter IPv4-/Dual-Stack-Pfad auf `VM220`
 - `CT100 toolbox` bleibt intern und ist nicht das primaere Public-Website-Ziel
 
@@ -66,7 +72,13 @@ Nach Aktivierung muessen sichtbar gruen werden:
 1. `http://frawo-tech.de` -> `308` auf `https://www.frawo-tech.de/`
 2. `https://www.frawo-tech.de` liefert die echte FraWo-Website
 3. `https://www.frawo-tech.de/radio/public/frawo-funk` liefert die sichtbare Radio-Praesenz
-4. `make website-release-gate` bleibt der formale Freigabepunkt
+4. `make website-release-gate` bleibt der formale Freigabepunkt fuer den spaeteren vollen Website-Release
+
+Minimaler Erfolg fuer den aktuellen Lane-B-Block:
+
+- `frawo-tech.de` und `www.frawo-tech.de` haben gueltiges HTTPS
+- kein Adminpfad ist oeffentlich
+- die Seite darf inhaltlich noch provisorisch sein
 
 ## Explicit Non-Goals
 
