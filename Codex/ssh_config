@@ -1,4 +1,4 @@
-# FraWo SSH Config - updated 2026-04-18
+# FraWo SSH Config - updated 2026-04-20
 # Canonical Upstream: https://github.com/Wolfeetech/FraWo
 
 # CT 100 Toolbox
@@ -20,6 +20,17 @@ Host stockenweiler-pve stockenweiler stock
 Host radio-node
   HostName 100.64.23.77
   User wolf
+
+# OpenClaw Professional Agent Identity
+Host openclaw-anker
+  HostName 100.69.179.87
+  User root
+  IdentityFile C:/WORKSPACE/OPERATIONS/OpenClaw/config/id_ed25519
+
+Host openclaw-stock
+  HostName 100.91.20.116
+  User root
+  IdentityFile C:/WORKSPACE/OPERATIONS/OpenClaw/config/id_ed25519
 
 Host *
   IdentityFile ~/.ssh/id_ed25519
