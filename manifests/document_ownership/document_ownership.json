@@ -31,6 +31,7 @@
       "OPERATIONS/USER_ONBOARDING_OPERATIONS.md"
     ],
     "codex": [
+      "AI_SERVER_HANDOFF.md",
       "AI_BOOTSTRAP_CONTEXT.md",
       "CONSOLIDATION.md",
       "DOCS/Consolidation/latest_snapshot.md",

@@ -32,16 +32,25 @@ CRITICAL_CODEX_CHECKS = [
     "core-app-smtp-check",
 ]
 
+REQUIRED_AUDIT_CHECKS = [check_id for check_id in CRITICAL_CODEX_CHECKS if check_id != "document-ownership-check"]
+
 
 def find_latest_summary() -> Path:
     candidates = sorted(
         path / "summary.tsv"
         for path in AUDIT_ROOT.iterdir()
-        if path.is_dir() and path.name[:8].isdigit()
+        if path.is_dir() and path.name[:8].isdigit() and (path / "summary.tsv").is_file()
     )
     if not candidates:
         raise FileNotFoundError("release_mvp_summary_not_found")
-    return candidates[-1]
+
+    fallback = candidates[-1]
+    for candidate in reversed(candidates):
+        rows = list(csv.DictReader(candidate.open("r", encoding="utf-8"), delimiter="\t"))
+        ids = {row["id"] for row in rows}
+        if all(check_id in ids for check_id in REQUIRED_AUDIT_CHECKS):
+            return candidate
+    return fallback
 
 
 def run_document_ownership_check(log_path: Path) -> str:
