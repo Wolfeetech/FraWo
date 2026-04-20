@@ -131,7 +131,9 @@ Der Server gilt erst dann als wirklich fertig, wenn alle folgenden Punkte erfuel
 - `VM 200 nextcloud`: LIVE auf `10.1.0.21`.
 - `VM 230 paperless`: LIVE auf `10.1.0.23`.
 - `VM 210 haos`: LIVE auf `10.1.0.24:8123`.
-- `CT 100 toolbox`: LIVE auf `10.1.0.20`; mobiler Frontdoor und Split-DNS laufen wieder ueber `100.82.26.53`.
+- `CT 100 toolbox`: LIVE auf `10.1.0.20`; mobiler Frontdoor und Split-DNS laufen wieder ueber `100.82.26.53`. MTU auf 1280 gehaertet.
+- **ACTIVE: Lane C & E Cleanup** (Node.js/Claude Code installed, Hue Bridges identified).
+- **FIXED**: Odoo "Endless Loading" solved via MTU Alignment (2026-04-20).
 - `CT 110 Storage-Node`: LIVE. SMB Source of Truth verified.
 - **ACTIVE: Lane B Deployment** (Public Edge / HTTPS / Tunnel).
 
@@ -350,7 +352,7 @@ Status:
 - in Arbeit
 
 Offene Punkte:
-- unbekannte Hosts `.141` bis `.144`
+- [x] unbekannte Hosts `.141` bis `.144` (Philips Hue Bridges identifiziert)
 - restliche Feinarbeit aus dem Router-Ueberblick:
   - sekundere Alias-/Raumzuordnung fuer bereits gesichtete Labels wie `RE355` und `iPhone-3-Pro`
   - finale Shelly-/Repeater-Disambiguierung mit aktuellem Lease-Stand
