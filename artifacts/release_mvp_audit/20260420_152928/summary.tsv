@@ -1,0 +1,12 @@
+id	executor	status	command_or_action	log
+document-ownership-check	codex	passed	manual	-
+inventory-check	codex	passed	manual	-
+ansible-ping	codex	passed	manual	-
+qga-check	codex	passed	manual	-
+business-drift-check	codex	passed	manual	-
+toolbox-network-check	codex	passed	manual	-
+toolbox-portal-status-check	codex	passed	manual	-
+vaultwarden-smtp-check	codex	passed	manual	-
+proxmox-local-backup-check	codex	passed	manual	-
+security-baseline-check	codex	passed	manual	-
+core-app-smtp-check	codex	passed	manual	-

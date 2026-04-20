@@ -30,7 +30,8 @@ def resolve_owner(path: str, manifest: dict) -> tuple[str | None, list[str]]:
 
     for rule in manifest.get("glob_rules", []):
         pattern = rule["pattern"]
-        if fnmatch(path, pattern):
+        # Match using full path parts to ensure recursive matches work regardless of depth
+        if Path(path).match(pattern) or any(Path(path).match(p) for p in [pattern, f"**/{pattern}", f"{pattern}/**"]):
             matches.append(rule["owner"])
 
     unique_matches = sorted(set(matches))

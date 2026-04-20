@@ -2,8 +2,8 @@
 
 Decision: `BLOCKED`
 
-MVP audit summary: `C:\Users\StudioPC\Documents\Homeserver 2027 Workspace\artifacts\release_mvp_audit\20260328_072130\summary.tsv`
-Manual evidence: `C:\Users\StudioPC\Documents\Homeserver 2027 Workspace\manifests\release_mvp_gate\manual_checks.json`
+MVP audit summary: `C:\WORKSPACE\PROJEKTE\Active\FraWo\artifacts\release_mvp_audit\20260328_072130\summary.tsv`
+Manual evidence: `C:\WORKSPACE\PROJEKTE\Active\FraWo\manifests\release_mvp_gate\manual_checks.json`
 
 ## Scope Note
 

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-09 17:23:24",
+  "generated_at": "2026-04-20 15:28:52",
   "local_network": {
     "ok": true,
     "ip_addresses": [
@@ -9,18 +9,13 @@
         "PrefixLength": 20
       },
       {
-        "InterfaceAlias": "Tailscale",
-        "IPAddress": "100.98.31.60",
-        "PrefixLength": 32
-      },
-      {
         "InterfaceAlias": "WLAN",
         "IPAddress": "192.168.2.161",
         "PrefixLength": 24
       },
       {
-        "InterfaceAlias": "wg-studiopc",
-        "IPAddress": "10.0.0.2",
+        "InterfaceAlias": "Tailscale",
+        "IPAddress": "100.98.31.60",
         "PrefixLength": 32
       },
       {
@@ -31,22 +26,21 @@
     ],
     "dns_servers": [
       {
-        "InterfaceAlias": "Ethernet",
-        "ServerAddresses": [
-          "10.1.0.1"
-        ]
-      },
-      {
-        "InterfaceAlias": "wg-studiopc",
-        "ServerAddresses": []
-      },
-      {
         "InterfaceAlias": "Tailscale",
         "ServerAddresses": []
       },
       {
-        "InterfaceAlias": "vEthernet (WSL (Hyper-V firewall))",
-        "ServerAddresses": []
+        "InterfaceAlias": "WLAN",
+        "ServerAddresses": [
+          "1.1.1.1",
+          "8.8.8.8"
+        ]
+      },
+      {
+        "InterfaceAlias": "Ethernet",
+        "ServerAddresses": [
+          "10.1.0.1"
+        ]
       },
       {
         "InterfaceAlias": "Ethernet 2",
@@ -61,17 +55,15 @@
         "ServerAddresses": []
       },
       {
-        "InterfaceAlias": "WLAN",
-        "ServerAddresses": [
-          "192.168.2.1"
-        ]
-      },
-      {
         "InterfaceAlias": "Bluetooth-Netzwerkverbindung",
         "ServerAddresses": []
       },
       {
         "InterfaceAlias": "Loopback Pseudo-Interface 1",
+        "ServerAddresses": []
+      },
+      {
+        "InterfaceAlias": "vEthernet (WSL (Hyper-V firewall))",
         "ServerAddresses": []
       }
     ]
@@ -117,7 +109,7 @@
       },
       {
         "dns_name": "pixel-9-pro.tail150400.ts.net",
-        "online": true,
+        "online": false,
         "tailscale_ips": [
           "100.83.213.17",
           "fd7a:115c:a1e0::683a:d511"
@@ -168,8 +160,8 @@
         "dns_name": "toolbox.tail150400.ts.net",
         "online": true,
         "tailscale_ips": [
-          "100.99.206.128",
-          "fd7a:115c:a1e0::af01:cea1"
+          "100.82.26.53",
+          "fd7a:115c:a1e0::e23a:1a35"
         ],
         "primary_routes": []
       },
@@ -193,8 +185,7 @@
       }
     ],
     "health": [
-      "Tailscale could not establish an encrypted connection with '\"derp4i.tailscale.com\"': likely intercepted connection; certificate is self-signed by CN=easy.box,O=EasyBox,L=Frankfurt,ST=Hessen,C=DE",
-      "Some peers are advertising routes but --accept-routes is false"
+      "Tailscale can't reach the configured DNS servers. Internet connectivity may be affected."
     ]
   },
   "anker": {
@@ -203,13 +194,13 @@
     "pve_version": "pve-manager/9.1.6/71482d1833ded40a (running kernel: 6.17.13-2-pve)",
     "vmbr0_ipv4": [
       "10.1.0.92/24",
-      "192.168.2.10/24",
-      "192.168.2.1/24"
+      "192.168.2.1/24",
+      "192.168.2.10/24"
     ],
     "routes": [
       "default via 10.1.0.1 dev vmbr0 ",
       "10.1.0.0/24 dev vmbr0 proto kernel scope link src 10.1.0.92 ",
-      "192.168.2.0/24 dev vmbr0 proto kernel scope link src 192.168.2.10"
+      "192.168.2.0/24 dev vmbr0 proto kernel scope link src 192.168.2.1"
     ],
     "transition_router_service": {
       "enabled": "enabled",
@@ -220,6 +211,11 @@
         "vmid": 100,
         "status": "running",
         "name": "toolbox"
+      },
+      {
+        "vmid": 101,
+        "status": "running",
+        "name": "adguard-slave"
       },
       {
         "vmid": 110,
@@ -255,14 +251,14 @@
       },
       {
         "vmid": 240,
-        "name": "pbs",
-        "status": "stopped"
+        "name": "PBS-FraWo",
+        "status": "running"
       }
     ],
     "toolbox_onboot": true,
     "storage_node_onboot": true,
     "legacy_http_checks": {
-      "nextcloud": "302",
+      "nextcloud": "400",
       "odoo": "200",
       "paperless": "000",
       "haos": "200",
@@ -307,7 +303,7 @@
       },
       {
         "vmid": 110,
-        "status": "stopped",
+        "status": "running",
         "name": "n8n"
       },
       {
@@ -355,7 +351,7 @@
       {
         "vmid": 210,
         "name": "azuracast-vm",
-        "status": "stopped"
+        "status": "running"
       },
       {
         "vmid": 360,
@@ -367,37 +363,37 @@
       {
         "name": "anker-music",
         "type": "nfs",
-        "status": "inactive",
-        "used_percent": "0.00%"
+        "status": "disabled",
+        "used_percent": "N/A"
       },
       {
         "name": "hdd-backup",
         "type": "dir",
         "status": "active",
-        "used_percent": "89.11%"
+        "used_percent": "85.75%"
       },
       {
         "name": "local",
         "type": "dir",
         "status": "active",
-        "used_percent": "25.74%"
+        "used_percent": "30.44%"
       },
       {
         "name": "local-lvm",
         "type": "lvmthin",
         "status": "active",
-        "used_percent": "64.71%"
+        "used_percent": "64.80%"
       }
     ]
   },
   "frontdoors": [
     {
       "url": "http://100.99.206.128:8442/alive",
-      "curl_exit_code": 7,
+      "curl_exit_code": 28,
       "http_code": "000",
-      "remote_ip": "2.067288",
+      "remote_ip": "8.009970",
       "time_total": "",
-      "stderr": "curl: (7) Failed to connect to 100.99.206.128 port 8442 after 2067 ms: Could not connect to server",
+      "stderr": "curl: (28) Connection timed out after 8009 milliseconds",
       "name": "vaultwarden",
       "ok_codes": [
         "200"
@@ -407,104 +403,104 @@
     },
     {
       "url": "http://100.99.206.128:8443/",
-      "curl_exit_code": 0,
-      "http_code": "400",
-      "remote_ip": "100.99.206.128",
-      "time_total": "0.014970",
-      "stderr": "",
+      "curl_exit_code": 28,
+      "http_code": "000",
+      "remote_ip": "8.009413",
+      "time_total": "",
+      "stderr": "curl: (28) Connection timed out after 8009 milliseconds",
       "name": "home_assistant",
       "ok_codes": [
         "200"
       ],
       "note": "Home Assistant mobile/frontdoor",
-      "status": "degraded"
+      "status": "down"
     },
     {
       "url": "http://100.99.206.128:8444/web/login",
-      "curl_exit_code": 0,
-      "http_code": "200",
-      "remote_ip": "100.99.206.128",
-      "time_total": "0.070399",
-      "stderr": "",
+      "curl_exit_code": 28,
+      "http_code": "000",
+      "remote_ip": "8.012581",
+      "time_total": "",
+      "stderr": "curl: (28) Connection timed out after 8012 milliseconds",
       "name": "odoo",
       "ok_codes": [
         "200"
       ],
       "note": "Odoo mobile/frontdoor",
-      "status": "ok"
+      "status": "down"
     },
     {
       "url": "http://100.99.206.128:8445/",
-      "curl_exit_code": 0,
-      "http_code": "302",
-      "remote_ip": "100.99.206.128",
-      "time_total": "0.036791",
-      "stderr": "",
+      "curl_exit_code": 28,
+      "http_code": "000",
+      "remote_ip": "8.003891",
+      "time_total": "",
+      "stderr": "curl: (28) Connection timed out after 8003 milliseconds",
       "name": "nextcloud",
       "ok_codes": [
         "200",
         "302"
       ],
       "note": "Nextcloud mobile/frontdoor",
-      "status": "ok"
+      "status": "down"
     },
     {
       "url": "http://100.99.206.128:8446/accounts/login/",
-      "curl_exit_code": 0,
-      "http_code": "200",
-      "remote_ip": "100.99.206.128",
-      "time_total": "0.032126",
-      "stderr": "",
+      "curl_exit_code": 28,
+      "http_code": "000",
+      "remote_ip": "8.010517",
+      "time_total": "",
+      "stderr": "curl: (28) Connection timed out after 8010 milliseconds",
       "name": "paperless",
       "ok_codes": [
         "200"
       ],
       "note": "Paperless mobile/frontdoor",
-      "status": "ok"
+      "status": "down"
     },
     {
       "url": "http://100.99.206.128:8447/",
-      "curl_exit_code": 0,
-      "http_code": "200",
-      "remote_ip": "100.99.206.128",
-      "time_total": "0.008883",
-      "stderr": "",
+      "curl_exit_code": 28,
+      "http_code": "000",
+      "remote_ip": "8.004331",
+      "time_total": "",
+      "stderr": "curl: (28) Connection timed out after 8004 milliseconds",
       "name": "portal",
       "ok_codes": [
         "200"
       ],
       "note": "Portal mobile/frontdoor",
-      "status": "ok"
+      "status": "down"
     },
     {
       "url": "http://100.99.206.128:8448/",
-      "curl_exit_code": 0,
-      "http_code": "502",
-      "remote_ip": "100.99.206.128",
-      "time_total": "3.014287",
-      "stderr": "",
+      "curl_exit_code": 28,
+      "http_code": "000",
+      "remote_ip": "8.010358",
+      "time_total": "",
+      "stderr": "curl: (28) Connection timed out after 8010 milliseconds",
       "name": "radio",
       "ok_codes": [
         "200",
         "302"
       ],
       "note": "Radio mobile/frontdoor",
-      "status": "degraded"
+      "status": "down"
     },
     {
       "url": "http://100.99.206.128:8449/",
-      "curl_exit_code": 0,
-      "http_code": "302",
-      "remote_ip": "100.99.206.128",
-      "time_total": "0.023172",
-      "stderr": "",
+      "curl_exit_code": 28,
+      "http_code": "000",
+      "remote_ip": "8.012799",
+      "time_total": "",
+      "stderr": "curl: (28) Connection timed out after 8012 milliseconds",
       "name": "media",
       "ok_codes": [
         "200",
         "302"
       ],
       "note": "Media mobile/frontdoor",
-      "status": "ok"
+      "status": "down"
     }
   ],
   "stock_public": [
@@ -512,7 +508,7 @@
       "url": "https://home.prinz-stockenweiler.de",
       "curl_exit_code": 35,
       "http_code": "000",
-      "remote_ip": "0.070184",
+      "remote_ip": "0.102600",
       "time_total": "",
       "stderr": "curl: (35) schannel: next InitializeSecurityContext failed: SEC_E_CERT_EXPIRED (0x80090328) - Das empfangene Zertifikat ist abgelaufen.",
       "status": "broken"
@@ -521,27 +517,27 @@
       "url": "https://papierkram.prinz-stockenweiler.de/dashboard",
       "curl_exit_code": 28,
       "http_code": "000",
-      "remote_ip": "8.004263",
+      "remote_ip": "8.003274",
       "time_total": "",
-      "stderr": "curl: (28) Connection timed out after 8004 milliseconds",
+      "stderr": "curl: (28) Connection timed out after 8003 milliseconds",
       "status": "broken"
     },
     {
       "url": "https://cloud.prinz-stockenweiler.de/apps/dashboard/",
       "curl_exit_code": 35,
       "http_code": "000",
-      "remote_ip": "0.069108",
+      "remote_ip": "0.076132",
       "time_total": "",
       "stderr": "curl: (35) schannel: next InitializeSecurityContext failed: SEC_E_ILLEGAL_MESSAGE (0x80090326) - This error usually occurs when a fatal SSL/TLS alert is received (e.g. handshake failed). More detail may be available in the Windows System event log.",
       "status": "broken"
     },
     {
       "url": "https://pve.prinz-stockenweiler.de",
-      "curl_exit_code": 6,
+      "curl_exit_code": 28,
       "http_code": "000",
-      "remote_ip": "0.026242",
+      "remote_ip": "8.002015",
       "time_total": "",
-      "stderr": "curl: (6) Could not resolve host: pve.prinz-stockenweiler.de",
+      "stderr": "curl: (28) Resolving timed out after 8002 milliseconds",
       "status": "broken"
     }
   ],
@@ -551,20 +547,14 @@
       "ssh root@100.91.20.116 (stockenweiler-pve)",
       "Tailscale peer toolbox.tail150400.ts.net / 100.99.206.128"
     ],
-    "service_paths": [
-      "http://100.99.206.128:8444/web/login",
-      "http://100.99.206.128:8445/",
-      "http://100.99.206.128:8446/accounts/login/",
-      "http://100.99.206.128:8447/",
-      "http://100.99.206.128:8449/"
-    ]
+    "service_paths": []
   },
   "blockers": [
     "Home Assistant mobile/frontdoor is still degraded and returns HTTP 400 through toolbox.",
     "StudioPC direct access to legacy guest 192.168.2.x is not the working path during the UCG transition because the same subnet exists on two different L2 domains.",
     "Stockenweiler has inactive storage targets: anker-music.",
     "Stockenweiler public legacy endpoints are still broken: https://home.prinz-stockenweiler.de, https://papierkram.prinz-stockenweiler.de/dashboard, https://cloud.prinz-stockenweiler.de/apps/dashboard/, https://pve.prinz-stockenweiler.de.",
-    "Some expected Tailscale peers are offline: iphone-15.tail150400.ts.net, pixel-8a.tail150400.ts.net, radio-node.tail150400.ts.net, surface-go-frontend.tail150400.ts.net, wohnzimmertv.tail150400.ts.net, wolf-zenbook-ux325ea-ux325ea.tail150400.ts.net."
+    "Some expected Tailscale peers are offline: iphone-15.tail150400.ts.net, pixel-8a.tail150400.ts.net, pixel-9-pro.tail150400.ts.net, radio-node.tail150400.ts.net, surface-go-frontend.tail150400.ts.net, wohnzimmertv.tail150400.ts.net, wolf-zenbook-ux325ea-ux325ea.tail150400.ts.net."
   ],
   "recommended_next_order": [
     "Treat Tailscale as the only professional operator path; stop depending on direct StudioPC-to-legacy 192.168.2.x reachability during migration.",
@@ -584,16 +574,16 @@
     "Handle PBS and any storage redesign last, after networking and service naming are stable."
   ],
   "summary": {
-    "local_ipv4_interfaces": 5,
+    "local_ipv4_interfaces": 4,
     "local_active_dns_sets": 2,
-    "online_tailscale_peers": 5,
-    "offline_tailscale_peers": 6,
+    "online_tailscale_peers": 4,
+    "offline_tailscale_peers": 7,
     "routed_tailscale_peers": 2,
-    "anker_running_containers": 3,
-    "anker_running_vms": 4,
-    "stock_running_containers": 6,
-    "stock_running_vms": 1,
-    "frontdoors_ok": 5,
+    "anker_running_containers": 4,
+    "anker_running_vms": 5,
+    "stock_running_containers": 7,
+    "stock_running_vms": 2,
+    "frontdoors_ok": 0,
     "frontdoors_total": 8,
     "stock_public_ok": 0,
     "stock_public_total": 4

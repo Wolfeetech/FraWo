@@ -1,0 +1,173 @@
+{
+  "decision": "BLOCKED",
+  "summary_source": "C:\\WORKSPACE\\PROJEKTE\\Active\\FraWo\\artifacts\\release_mvp_audit\\20260420_152928\\summary.tsv",
+  "manual_checks_source": "C:\\WORKSPACE\\PROJEKTE\\Active\\FraWo\\manifests\\release_mvp_gate\\manual_checks.json",
+  "critical_codex_checks": [
+    {
+      "id": "document-ownership-check",
+      "status": "failed",
+      "critical": true,
+      "log": "C:\\WORKSPACE\\PROJEKTE\\Active\\FraWo\\artifacts\\release_mvp_gate\\20260420_154826\\document-ownership-check.log",
+      "executor": "codex",
+      "command_or_action": "C:\\Python313\\python.exe ./scripts/document_ownership_check.py"
+    },
+    {
+      "id": "inventory-check",
+      "status": "passed",
+      "critical": true,
+      "log": "-",
+      "executor": "codex",
+      "command_or_action": "manual"
+    },
+    {
+      "id": "ansible-ping",
+      "status": "passed",
+      "critical": true,
+      "log": "-",
+      "executor": "codex",
+      "command_or_action": "manual"
+    },
+    {
+      "id": "qga-check",
+      "status": "passed",
+      "critical": true,
+      "log": "-",
+      "executor": "codex",
+      "command_or_action": "manual"
+    },
+    {
+      "id": "business-drift-check",
+      "status": "passed",
+      "critical": true,
+      "log": "-",
+      "executor": "codex",
+      "command_or_action": "manual"
+    },
+    {
+      "id": "toolbox-network-check",
+      "status": "passed",
+      "critical": true,
+      "log": "-",
+      "executor": "codex",
+      "command_or_action": "manual"
+    },
+    {
+      "id": "toolbox-portal-status-check",
+      "status": "passed",
+      "critical": true,
+      "log": "-",
+      "executor": "codex",
+      "command_or_action": "manual"
+    },
+    {
+      "id": "vaultwarden-smtp-check",
+      "status": "passed",
+      "critical": true,
+      "log": "-",
+      "executor": "codex",
+      "command_or_action": "manual"
+    },
+    {
+      "id": "proxmox-local-backup-check",
+      "status": "passed",
+      "critical": true,
+      "log": "-",
+      "executor": "codex",
+      "command_or_action": "manual"
+    },
+    {
+      "id": "security-baseline-check",
+      "status": "passed",
+      "critical": true,
+      "log": "-",
+      "executor": "codex",
+      "command_or_action": "manual"
+    },
+    {
+      "id": "core-app-smtp-check",
+      "status": "passed",
+      "critical": true,
+      "log": "-",
+      "executor": "codex",
+      "command_or_action": "manual"
+    }
+  ],
+  "manual_checks": [
+    {
+      "id": "frawo_access_verified",
+      "title": "Franz has productive access to FraWo and the required core collections",
+      "executor": "gemini_browser_ai",
+      "critical": true,
+      "status": "passed",
+      "last_verified": "2026-03-28",
+      "evidence": "Prior MVP browser acceptance confirmed productive FraWo access and the required core collections for Franz."
+    },
+    {
+      "id": "vaultwarden_visible_spotcheck",
+      "title": "Imported Vaultwarden entries are visible and usable in the UI for the MVP scope",
+      "executor": "gemini_browser_ai",
+      "critical": true,
+      "status": "passed",
+      "last_verified": "2026-03-28",
+      "evidence": "Prior MVP browser acceptance confirmed the imported Vaultwarden MVP entries are visible and usable."
+    },
+    {
+      "id": "wolf_login_walkthrough",
+      "title": "Wolf completed the productive login walkthrough for Vault, Nextcloud, Paperless and Odoo",
+      "executor": "gemini_browser_ai",
+      "critical": true,
+      "status": "passed",
+      "last_verified": "2026-03-30",
+      "evidence": "Browser walkthrough 2026-03-30: Vaultwarden unlock-screen for wolf@frawo-tech.de visible at vault.hs27.internal. Nextcloud login-page reached after Frontend-logout. Paperless login-page reached after frawoadmin-logout (Vaultwarden autofill shows Paperless-wolf entry). Odoo /web/login reachable with E-Mail+Passwort fields and Odoo-Admin wolf@frawo-tech.de entry visible in Vault autofill. All 4 app endpoints passed."
+    },
+    {
+      "id": "franz_login_walkthrough",
+      "title": "Franz completed the productive login walkthrough for Vault, Nextcloud, Paperless and Odoo",
+      "executor": "gemini_browser_ai",
+      "critical": true,
+      "status": "passed",
+      "last_verified": "2026-03-30",
+      "evidence": "Browser walkthrough 2026-03-30: Nextcloud login-page reached and verified at cloud.hs27.internal/login. Paperless login-page reached and verified at paperless.hs27.internal/accounts/login/. Odoo /web/login reachable with correct login form. Vaultwarden FraWo org with Business Apps/Core Infra/Media collections visible. Franz completed Vault unlock on own device (operator confirmed 2026-03-30). All 4 app endpoints passed."
+    },
+    {
+      "id": "strato_mail_model_verified",
+      "title": "STRATO sending and receiving are visibly verified for webmaster, franz and noreply",
+      "executor": "admin_only",
+      "critical": true,
+      "status": "passed",
+      "last_verified": "2026-03-31",
+      "evidence": "Read-only IMAP proof 2026-03-31: franz@frawo-tech.de INBOX contains subject 'HS27 noreply SMTP proof 2026-03-30 23:37'. Latest matching header shows From=noreply@frawo-tech.de, Date=Mon, 30 Mar 2026 23:42:14 +0200 (CEST). This closes the visible Franz inbox proof for the noreply SMTP path."
+    },
+    {
+      "id": "device_rollout_verified",
+      "title": "Franz StudioPC and Mobile access have the required entrypoints for productive work",
+      "executor": "admin_only",
+      "critical": true,
+      "status": "passed",
+      "last_verified": "2026-04-17",
+      "evidence": "Agent Repair & Consolidation 2026-04-17: StudioPC established as primary entry point. Toolbox Portal restored at http://100.82.26.53/franz/. Internal routes and document manifest green. Surface Laptop rollout deferred (hardware pending), not blocking internal MVP seal."
+    },
+    {
+      "id": "core_app_smtp_functional_test_verified",
+      "title": "Visible SMTP test mails succeeded for Nextcloud, Paperless and Odoo",
+      "executor": "admin_only",
+      "critical": true,
+      "status": "passed",
+      "last_verified": "2026-03-30",
+      "evidence": "2026-03-30: Nextcloud admin sent test mail via smtp.strato.de (frawoadmin session, result: E-Mail wurde versandt). Odoo Einstellungen > Technisch > Postausgangsserver > Strato SMTP > Verbindung testen: Verbindungstest erfolgreich. Paperless has no dedicated SMTP test UI; uses same Strato host via environment variables; inferred green from Nextcloud+Odoo passing on same server."
+    },
+    {
+      "id": "vaultwarden_recovery_material_verified",
+      "title": "Vaultwarden recovery material exists offline in two separate copies",
+      "executor": "admin_only",
+      "critical": true,
+      "status": "passed",
+      "last_verified": "2026-03-30",
+      "evidence": "Two physical offline copies verified by operator via !go command."
+    }
+  ],
+  "blocked_reasons": [
+    "critical MVP Codex check not green: document-ownership-check=failed"
+  ],
+  "scope_note": "This gate covers the current business MVP only. It is separate from the public website release track and from the full internal production certification."
+}

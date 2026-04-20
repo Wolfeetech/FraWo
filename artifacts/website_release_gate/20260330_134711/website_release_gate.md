@@ -3,7 +3,7 @@
 Decision: `BLOCKED`
 
 Website audit summary: `artifacts\website_release_audit\20260330_134359\summary.tsv`
-Manual evidence: `C:\Users\StudioPC\Documents\Homeserver 2027 Workspace\manifests\website_release_gate\manual_checks.json`
+Manual evidence: `C:\WORKSPACE\PROJEKTE\Active\FraWo\manifests\website_release_gate\manual_checks.json`
 
 ## Scope Note
 
