@@ -8,11 +8,11 @@ Diese Datei ist die zentrale Gesamt-Roadmap bis zu einem fertig aufgebauten Home
 
 Dieses Lane-Modell ist ab jetzt die verbindliche Arbeitsordnung. Aeltere breite Roadmap-Texte bleiben als Kontext erhalten, aber der aktive Takt folgt nur noch dieser Priorisierung:
 
-- `Lane A: MVP Closeout` -> `done` ✅ (Data Restored & SSOT Sealed 2026-04-17)
+- `Lane A: MVP Closeout` -> `done` (Data Restored & SSOT Sealed 2026-04-17)
 - `Lane B: Website/Public` -> `active` (In deployment, SSL/Tunnel pending)
 - `Lane C: Security/PBS/Infra` -> `active` (Recovery confirmed, Dashboard cleaned)
 - `Lane D: Stockenweiler` -> `watch`
-- `Lane E: Radio/Media` -> `watch`
+- `Lane E: Radio/Media` -> `watch` (Media live, Radio durch Offline-Pi blockiert)
 
 Regeln (Stand 2026-04-11, nach Lane-A-Abschluss):
 
@@ -120,17 +120,20 @@ Der Server gilt erst dann als wirklich fertig, wenn alle folgenden Punkte erfuel
 - Auf `wolfstudiopc` war ein echter Routing-Fehler aktiv: Tailscale hat das von `toolbox` annoncierte Subnetz `192.168.2.0/24` akzeptiert und damit den direkten LAN-Pfad auf diesem PC uebersteuert.
 - Der Workstation-Fix ist gesetzt: `tailscale set --accept-routes=false`.
 - Damit ist die lokale Route auf diesem Admin-PC wieder priorisiert.
-- Wenn `192.168.2.10`, `192.168.2.20` oder `192.168.2.30` trotzdem nicht sauber antworten, ist das als Infrastrukturpfad-Thema zu behandeln, nicht vorschnell als App-Defekt.### Live-Stand nach Restoration (2026-04-17)
+- Wenn Legacy-Pfade unter `192.168.2.x` trotzdem nicht sauber antworten, ist das als Infrastrukturpfad-Thema zu behandeln, nicht vorschnell als App-Defekt.
+
+### Live-Stand nach Recovery (2026-04-19)
 
 > [!NOTE]
-> **System Recovery Complete.** The infrastructure has been successfully thawed from the host-level storage freeze.
+> **Core platform recovered.** Proxmox, toolbox frontdoor, Toolbox-DNS und die zentrale SSOT sind wieder auf einem professionell gefuehrten Betriebsstand.
 
-- `VM 220 odoo`: LIVE. Database `FraWo_Live` restored. German UI active.
-- `VM 200 nextcloud`: LIVE.
-- `VM 230 paperless`: LIVE.
+- `VM 220 odoo`: LIVE auf `10.1.0.22:8069`. Database `FraWo_Live` restored. German UI active.
+- `VM 200 nextcloud`: LIVE auf `10.1.0.21`.
+- `VM 230 paperless`: LIVE auf `10.1.0.23`.
+- `VM 210 haos`: LIVE auf `10.1.0.24:8123`.
+- `CT 100 toolbox`: LIVE auf `10.1.0.20`; mobiler Frontdoor und Split-DNS laufen wieder ueber `100.82.26.53`.
 - `CT 110 Storage-Node`: LIVE. SMB Source of Truth verified.
-- **ACTIVE: Lane B Deployment** (Cloudflare Tunnel for Public Edge).
-.
+- **ACTIVE: Lane B Deployment** (Public Edge / HTTPS / Tunnel).
 
 ### Bewusst getrennt oder aktuell blockiert
 
@@ -141,6 +144,8 @@ Der Server gilt erst dann als wirklich fertig, wenn alle folgenden Punkte erfuel
   - der guarded Rebuild-Pfad ist vorbereitet, der produktive Betrieb aber blockiert
 - USB-Dongles fuer HAOS sind noch nicht am Host sichtbar.
 - AdGuard ist noch nicht primaerer LAN-DNS.
+- Split-DNS fuer entfernte Tailscale-Clients ist technisch vorbereitet, aber noch nicht final administrativ ausgerollt:
+  - der restricted nameserver fuer `hs27.internal` muss auf `100.82.26.53` zeigen, nicht auf `10.1.0.20`
 - UCG-Ultra ist inzwischen Teil des aktiven Uebergangsnetzes.
 - der UCG-Pfad ist aktuell bewusst vom akuten Website-Cutover getrennt:
   - das VLAN-/Subnetz-Zielbild bleibt `UCG-Ultra` und ist bereits veroeffentlicht
@@ -164,8 +169,8 @@ Der Server gilt erst dann als wirklich fertig, wenn alle folgenden Punkte erfuel
     - Apex-HTTP redirectet korrekt
     - HTTPS scheitert weiter mit `ERR_SSL_PROTOCOL_ERROR`
   - der Website-Inhalt selbst ist auf `VM220` jetzt korrekt vorbereitet:
-    - Host `www.frawo-tech.de` auf `192.168.2.22` -> `Home | FraWo`
-    - Host `frawo-tech.de` auf `192.168.2.22` -> `308` auf `https://www.frawo-tech.de/`
+    - Host `www.frawo-tech.de` auf `10.1.0.22` -> `Home | FraWo`
+    - Host `frawo-tech.de` auf `10.1.0.22` -> `308` auf `https://www.frawo-tech.de/`
     - Host `www.frawo-tech.de` auf `/radio/public/frawo-funk` -> `FraWo - Funk - AzuraCast`
   - `VM220` besitzt bereits eine globale IPv6 `2a00:1e:ef80:7c01:be24:11ff:feaa:bbcc`, die auf HTTP fuer `www.frawo-tech.de` antwortet
   - `public-dualstack-edge-check` ist jetzt explizit rot:
@@ -177,9 +182,11 @@ Der Server gilt erst dann als wirklich fertig, wenn alle folgenden Punkte erfuel
 - `yourparty.tech` wird aufgeloest und ist Legacy-Kontext; `frawo-tech.de` ist die neue Primaerdomain fuer Website und Business.
 - `online-prinz.de` bleibt der Zielname fuer den getrennten Fernwartungs- und Familienbetriebspfad in Stockenweiler (Rentner OS).
 - internes `hs27.internal` bleibt bis zu einer bewusst geplanten DNS-Migration die aktive interne Betriebszone.
-- `Radio/AzuraCast` ist nicht als integriert verifiziert; die Frontdoor antwortet, der Node selbst ist im aktuellen Audit aber nicht sauber gruen.
+- `Radio/AzuraCast` ist aktuell operativ blockiert:
+  - `radio-node` antwortet weder auf `192.168.2.155` noch auf `100.64.23.77`
+  - die Toolbox-Frontdoor liefert deshalb auf `:8448` aktuell `502`
 - `Jellyfin` bleibt technisch verfuegbar, gehoert aber nicht zum aktuellen Business-MVP-Freigabesignal.
-- `media.hs27.internal`, `192.168.2.20:8096` und der mobile Tailscale-Pfad bleiben nutzbar, sind aber bewusst ein separater Ausbaupfad.
+- `media.hs27.internal`, `10.1.0.20:8096` und der mobile Tailscale-Pfad `100.82.26.53:8449` bleiben nutzbar, sind aber bewusst ein separater Ausbaupfad.
 - Medien- und Wohnzimmerpfade bleiben fuer den laufenden Betrieb hilfreich, zaehlen aber nicht zum aktuellen Business-MVP-Gate.
 - `kiosk-frontend` ist im aktuellen Live-Audit nicht betriebsbereit; der naechste professionelle Schritt ist ein `clean rebuild`.
 - Historische Surface-Haertungen bleiben relevant, ersetzen aber nicht den aktuellen Rebuild-Bedarf.
@@ -189,7 +196,7 @@ Der Server gilt erst dann als wirklich fertig, wenn alle folgenden Punkte erfuel
 - `wolfstudiopc` ist joined und als Admin-Geraet etabliert (`100.98.31.60`).
 - `Zenbook` ist vorbereitet fuer die spaetere Migration als Radio-Anker.
 - Der akute local-lvm-Thinpool-Incident ist behoben (Restored 2026-04-17).
-- Alle VMs sind stabil und disk-io-errors wurden durch Snapshot-Bereinigung gelöst.
+- Alle VMs sind stabil und disk-io-errors wurden durch Snapshot-Bereinigung geloest.
 
 ### Strategischer Arbeitsmodus ab jetzt
 
@@ -261,7 +268,7 @@ Ergebnisse:
 - `hs27.internal`
 - `portal.hs27.internal`
 - Tailscale joined
-- mobiler Tailscale-Frontdoor auf `8443-8448`
+- mobiler Tailscale-Frontdoor auf `8442-8449`
 - `cloud.hs27.internal`
 - `odoo.hs27.internal`
 - `paperless.hs27.internal`
@@ -275,6 +282,7 @@ Rest:
 - DNS-Rollback fuer spaetere Promotion dokumentieren
 - Pilot- und Rollback-Runbook ist jetzt in `ADGUARD_PILOT_ROLLOUT_PLAN.md` festgezogen; Ausfuehrung bleibt offen
 - Tailnet-DNS fuer mobile Clients ist jetzt fuer `hs27.internal` ueber restricted nameserver vorbereitet und auf dem ZenBook erfolgreich verifiziert
+- der korrekte restricted nameserver fuer entfernte Tailscale-Clients ist `100.82.26.53`; die administrative Finalisierung im Tailscale-Panel bleibt offen
 - Split-DNS-Runbook ist jetzt in `TAILSCALE_SPLIT_DNS_PLAN.md` festgezogen und im Tailnet fuer den ZenBook-Testpfad erfolgreich umgesetzt
 - Rightsizing von `VM 200` und `VM 220` in ein Wartungsfenster einplanen
 - `portal.hs27.internal` spaeter vom statischen Frontdoor in eine bewusst gestaltete interne Projektstartseite ueberfuehren
@@ -290,7 +298,7 @@ Status:
 Ergebnisse:
 - Alle VMs (200, 210, 220, 230) in VLAN 101 (`10.1.0.x`) migriert.
 - AdGuard Home (CT 100) nutzt **DNS-over-HTTPS (DoH)** um EasyBox-Interception zu umgehen.
-- Tailscale Subnet Routing für `10.1.0.0/24` aktiv und verifiziert.
+- Tailscale Subnet Routing fuer `10.1.0.0/24` aktiv und verifiziert.
 - `ha.hs27.internal` und andere Dienste stabil erreichbar.
 
 Rest:
@@ -375,7 +383,7 @@ Ziel:
 - dedizierter interner Radio-Node statt Medienlast auf `CT 100`
 
 Status:
-- nicht sauber integriert, nicht Teil des aktuellen Business-MVP
+- blockiert, nicht Teil des aktuellen Business-MVP
 
 Erreicht:
 - Raspberry-Pi-Image ist lokal verifiziert
@@ -387,6 +395,9 @@ Erreicht:
 Rest:
 - aktueller Audit-Stand ist `rpi_radio_integrated=no`
 - aktueller Audit-Stand ist `rpi_radio_usb_music_ready=no`
+- `radio-node` antwortet aktuell weder auf `192.168.2.155` noch auf `100.64.23.77`
+- die mobile Frontdoor auf `100.82.26.53:8448` liefert deshalb aktuell `502`
+- der naechste echte Hebel ist Vor-Ort-Recovery: Strom, LEDs, Boot und LAN-Link pruefen
 - SSH-/Betriebspfad auf dem Pi sauber wiederherstellen
 - SMB-/Stationspfad und Medienlayout real verifizieren
 - sichtbaren SMTP-/Benachrichtigungspfad fuer `AzuraCast` erst danach finalisieren
@@ -402,7 +413,7 @@ Status:
 Erreicht:
 - Jellyfin laeuft auf `CT 100 toolbox`
 - `media.hs27.internal` liefert intern die Jellyfin-Oberflaeche
-- der direkte LAN-Pfad `192.168.2.20:8096` ist verifiziert
+- der direkte LAN-Pfad `10.1.0.20:8096` ist verifiziert
 - der mobile Tailscale-Frontdoor auf `100.82.26.53:8449` ist verifiziert
 - alle drei Pfade liefern aktuell konsistent `HTTP 302 -> /web/`
 - Bibliotheks-Stammverzeichnisse auf der Toolbox sind vorbereitet:
@@ -447,27 +458,27 @@ Ziel:
 
 Status:
 - **ERLEDIGT** - UCG laeuft, VLAN-Schema deployed & Migration abgeschlossen.
-- **LÖSUNG** - DNS-over-HTTPS (DoH) umgeht die Shadowed-Routes/-DNS der EasyBox.
+- **LOESUNG** - DNS-over-HTTPS (DoH) umgeht die Shadowed-Routes/-DNS der EasyBox.
 
 Erreicht (2026-04-03):
 - UCG-Ultra am Anker-Standort aktiv
 - Dual-WAN konfiguriert (WAN1 primaer, WAN2 Failover)
 - VLAN-Schema via UniFi-API deployed:
   - VLAN 100: Anker-Lan (`10.0.0.0/24`)
-  - VLAN 101: Anker-Server (`10.1.0.0/24`) â€” Proxmox aktiv hier
+  - VLAN 101: Anker-Server (`10.1.0.0/24`) -> Proxmox aktiv hier
   - VLAN 102: Anker-DMZ (`10.2.0.0/24`)
   - VLAN 103: Anker-DMZ-Radio (`10.3.0.0/24`)
-  - VLAN 104: Anker-IoT (`10.4.0.0/24`) â€” isoliert
-  - VLAN 105: Anker-Guest (`10.5.0.0/24`) â€” internet-only
-  - VLAN 110: Stock-Lan (`10.10.0.0/24`) â€” VPN-Endpunkt
-  - VLAN 111: Stock-Server (`10.11.0.0/24`) â€” VPN-Endpunkt
+  - VLAN 104: Anker-IoT (`10.4.0.0/24`) -> isoliert
+  - VLAN 105: Anker-Guest (`10.5.0.0/24`) -> internet-only
+  - VLAN 110: Stock-Lan (`10.10.0.0/24`) -> VPN-Endpunkt
+  - VLAN 111: Stock-Server (`10.11.0.0/24`) -> VPN-Endpunkt
 - SSOT: `UCG_NETWORK_ARCHITECTURE.md`
 - API-Key: Vaultwarden FraWo / Core Infra / UCG Anker API Key
 
 Ausstehend:
 - Firewall-Regeln zwischen VLANs setzen
-- Proxmox VLAN-Trunk-Migration (VMs von 192.168.2.x â†’ 10.1.0.x)
-- WireGuard VPN zu Stockenweiler (UCG-Ultra â†” FritzBox 5690 Pro)
+- Proxmox VLAN-Trunk-Migration (VMs von `192.168.2.x` nach `10.1.0.x`)
+- WireGuard VPN zu Stockenweiler (UCG-Ultra <-> FritzBox 5690 Pro)
 - StudioPC in VLAN 100 (Anker-Lan) migrieren
 
 ## Phase 8 - Public Edge und professionelle Aussenanbindung
@@ -642,21 +653,17 @@ Dann folgen:
 
 ## Was jetzt als Naechstes dran ist
 
-1. **Business-MVP Technik gruen**: [x] DONE. `release-mvp-audit` ist technisch komplett gruen fuer `Portal`, `Vaultwarden`, `Nextcloud`, `Paperless`, `Odoo`, STRATO-Mail-Backbone und lokale Proxmox-Business-Backups.
-2. **Business-MVP Sichtbarkeit abgeschlossen**: [x] DONE. `release-mvp-gate` = `MVP_READY`. Alle manuellen Nachweise (Wolf-/Franz-Walkthrough, Geraeteabnahme, Recovery-Material, STRATO-Mail) sind auf `passed`. Lane A ist geschlossen.
-3. **Thinpool entspannt**: [x] DONE. `local-lvm` ist aus dem kritischen Bereich heraus und die Plattform ist wieder betriebsfaehig.
-4. **Klartextregister aus dem Workspace entfernt**: [x] DONE. Im Repo gilt nur noch `ACCESS_REGISTER_VAULTWARDEN_REFERENCES.md`; das alte Register ist extern archiviert.
-5. **Mail- und Secret-Standard technisch etabliert**: [x] DONE. `Vaultwarden`, Invite-SMTP, `webmaster`, `franz` und `noreply` sind technisch und sichtbar verifiziert.
-6. **2-TB-SSD-Strategie festziehen**: die SSD dient aktuell als kontrollierter Archiv-/Entlastungspfad; die finale Linux-Serverpartition ist spaeter separat zu entscheiden.
-7. **Dokumenten-Workflow**: [x] DONE. Paperless-/Nextcloud-Pfad ist mit einem echten Dokumentenlauf abgenommen.
-8. **DNS-Cutover frawo-tech.de**: [x] DONE. A/AAAA bei STRATO auf VM220 gesetzt; HTTP-Erreichbarkeit verifiziert.
-9. **HTTPS/TLS Public Edge**: `www.frawo-tech.de` braucht Cloudflare-Proxy oder ISP-Dual-Stack, da EasyBox 805 im DS-Lite-Modus IPv4-Portforwards blockiert. Aktuell naechster aktiver Blocker fuer Lane B.
-10. **Stockenweiler / Rentner OS vorbereiten**: Tailscale-only Managed Support fuer den ersten externen Testkundenfall; SSL-Zertifikat fuer `home.prinz-stockenweiler.de` ist abgelaufen und muss erneuert werden.
-11. **HAOS-USB-Pfad vorbereiten**: Sobald die Zigbee/Z-Wave Hardware steckt.
-12. **Surface**: erst nach Hardware-/Boot-Recovery wieder in den produktiven Pfad nehmen.
-13. **PBS**: guarded Rebuild erst mit sauber freigegebener Hardware und erst fuer die spaetere Vollzertifizierung.
-14. **Gateway-Cutover**: Erst nach Abschluss der oben genannten Stabilitaets-Gates.
-15. **Public Edge haerten**: TLS, Auth, Monitoring und Rollback finalisieren nachdem DS-Lite-Blocker aufgeloest ist.
+Lane A und der Recovery-/SSOT-Block sind abgeschlossen. Der echte Rest folgt jetzt in dieser Reihenfolge:
+
+1. **Split-DNS finalisieren**: restricted nameserver fuer `hs27.internal` im Tailscale-Admin auf `100.82.26.53` setzen.
+2. **Radio-Node wiederbeleben**: Vor-Ort-Recovery fuer `radio-node`, damit `100.82.26.53:8448` nicht mehr `502` liefert.
+3. **HTTPS/TLS Public Edge schliessen**: `www.frawo-tech.de` ueber Cloudflare-Proxy oder einen echten Dual-Stack-/IPv4-Pfad release-faehig machen.
+4. **`wolfstudiopc`-Adminpfad haerten**: OpenSSH oder einen gleichwertigen lokalen Adminpfad sauber freigeben.
+5. **Stockenweiler vorbereiten**: Tailscale-only Supportpfad weiterziehen und das abgelaufene Zertifikat fuer `home.prinz-stockenweiler.de` erneuern.
+6. **HAOS-USB-Pfad vorbereiten**: Zigbee-/Z-Wave-Hardware stecken, Vendor/Product-ID sauber dokumentieren, dann Passthrough bauen.
+7. **PBS guarded rebuilden**: erst mit freigegebener Hardware und echtem Proof-Backup/Restore-Drill.
+8. **2-TB-SSD-Strategie final entscheiden**: aktueller Archivpfad ist okay, die Linux-Serverpartition bleibt aber noch offen.
+9. **Windows-GUI-Updates kontrolliert nachziehen**: blockierte Apps spaeter mit geschlossenem GUI-/Prozesszustand aktualisieren.
 
 ## Speicherfazit
 
@@ -690,4 +697,3 @@ Fuer den professionellen Dauerstandard folgt spaeter der geplante NTFS-Shrink pl
 - [PBS_VM_240_SETUP_PLAN.md](PBS_VM_240_SETUP_PLAN.md)
 - [HAOS_VM_210_SETUP_PLAN.md](HAOS_VM_210_SETUP_PLAN.md)
 - [SHARED_STORAGE_ARCHITECTURE_PLAN.md](SHARED_STORAGE_ARCHITECTURE_PLAN.md)
-
