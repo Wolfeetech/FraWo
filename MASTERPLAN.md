@@ -49,6 +49,9 @@ Jede neue Aufgabe wird ab jetzt mit genau diesen Feldern beschrieben:
 
 Der Zielzustand ist eine konsolidierte, ressourceneffiziente Dual-Node-Infrastruktur ohne Doppelbelastungen, professionell aufgeteilt in "Business/AI" und "Media/IoT".
 
+### Node 0: Lead (Admin Orchestrator & SSOT)
+- `wolfstudiopc` (100.98.31.60): **Primärer Lead-Knoten**. Alle Änderungen werden hier zentral konsolidiert. Andere Geräte (z.B. Surface) fungieren als Remote-Satelliten.
+
 ### Node 1: Anker (Business, Automation & AI Layer)
 - `VM 220 odoo`: Zentrale ERP- und FraWo-Website-Instanz.
 - `VM 200 nextcloud`: Zusammengelegte, Single-Source Dokumenten-Instanz.
@@ -63,9 +66,9 @@ Der Zielzustand ist eine konsolidierte, ressourceneffiziente Dual-Node-Infrastru
 - `CT/VM pbs`: Zentraler Proxmox Backup Server (Anker-Instanz wird obsolet).
 
 ### Hardware & Peripherie
-- `wolfstudiopc`: Primaeres Admin-Geraet & SSOT.
-- `surface-franz`: Franz' Arbeits-Laptop (Surface).
-- `surface-wolfi`: Wolf' portables Arbeitsgeraet (Surface).
+- `wolfstudiopc`: **LEAD** Admin-Geraet & SSOT.
+- `surface-franz`: Remote-Arbeitsgerät (Satellite).
+- `surface-wolfi` (Admin): Remote-Arbeitsgerät (Satellite).
 - `kiosk-frontend`: Touch-Kiosk fuer Franz und Wolf (Rebuild offen).
 - `zenbook_radio_anchor`: Zukuenftiger Radio-Ankerpunkt.
 - `raspberry_pi_radio`: Dedizierter AzuraCast-Node.
