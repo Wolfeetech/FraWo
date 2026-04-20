@@ -2,9 +2,9 @@
 from __future__ import annotations
 
 import argparse
+import fnmatch
 import json
 from pathlib import Path
-from fnmatch import fnmatch
 
 
 def load_manifest(path: Path) -> dict:
@@ -22,22 +22,57 @@ def iter_markdown_files(root: Path) -> list[str]:
 
 
 def resolve_owner(path: str, manifest: dict) -> tuple[str | None, list[str]]:
-    matches: list[str] = []
-
+    explicit_matches: list[str] = []
     for owner, payload in manifest.get("explicit_paths", {}).items():
         if path in payload:
-            matches.append(owner)
+            explicit_matches.append(owner)
 
+    explicit_unique = sorted(set(explicit_matches))
+    if explicit_unique:
+        if len(explicit_unique) == 1:
+            return explicit_unique[0], explicit_unique
+        return None, explicit_unique
+
+    glob_matches: list[str] = []
     for rule in manifest.get("glob_rules", []):
-        pattern = rule["pattern"]
-        # Match using full path parts to ensure recursive matches work regardless of depth
-        if Path(path).match(pattern) or any(Path(path).match(p) for p in [pattern, f"**/{pattern}", f"{pattern}/**"]):
-            matches.append(rule["owner"])
+        if match_glob(path, rule["pattern"]):
+            glob_matches.append(rule["owner"])
 
-    unique_matches = sorted(set(matches))
+    unique_matches = sorted(set(glob_matches))
     if len(unique_matches) == 1:
         return unique_matches[0], unique_matches
     return None, unique_matches
+
+
+def match_glob(path: str, pattern: str) -> bool:
+    if not pattern:
+        return False
+
+    # Patterns without a slash are treated as basename matches.
+    if "/" not in pattern:
+        return fnmatch.fnmatchcase(Path(path).name, pattern)
+
+    path_parts = [part for part in path.split("/") if part]
+    pattern_parts = [part for part in pattern.split("/") if part]
+    return match_glob_parts(path_parts, pattern_parts)
+
+
+def match_glob_parts(path_parts: list[str], pattern_parts: list[str]) -> bool:
+    if not pattern_parts:
+        return not path_parts
+
+    head, *tail = pattern_parts
+    if head == "**":
+        if match_glob_parts(path_parts, tail):
+            return True
+        return bool(path_parts) and match_glob_parts(path_parts[1:], pattern_parts)
+
+    if not path_parts:
+        return False
+
+    if not fnmatch.fnmatchcase(path_parts[0], head):
+        return False
+    return match_glob_parts(path_parts[1:], tail)
 
 
 def build_report(root: Path, manifest_path: Path) -> dict:

@@ -100,6 +100,23 @@ docs:
 	done
 	@echo "[docs] Done."
 
+## ai-status: Check health of local brains (Ollama) and MCP bridge
+ai-status:
+	@"C:\Users\StudioPC\AppData\Local\Programs\Ollama\ollama.exe" list
+	@python scripts/business/mcp_odoo_pro_server.py --help > /dev/null && echo "[ai] Odoo MCP Bridge: OK" || echo "[ai] Odoo MCP Bridge: ERROR"
+
+## ai-odoo-sync: Fully synchronize Odoo mission lanes and reclaim tasks
+ai-odoo-sync:
+	python scripts/business/mcp_odoo_pro_server.py ensure_lanes
+	python scripts/business/mcp_odoo_pro_server.py reclaim_tasks
+
+ai-preflight:
+	@"C:\Users\StudioPC\AppData\Local\Programs\Ollama\ollama.exe" run frawo-pro "Analysiere den aktuellen Status von LIVE_CONTEXT.md und MASTERPLAN.md. Liste die nächsten 3 Prioritäten auf."
+
+## ai-emergency-audit: Autonomous disaster recovery analysis for the Anker site
+ai-emergency-audit:
+	@"C:\Users\StudioPC\AppData\Local\Programs\Ollama\ollama.exe" run frawo-pro "Die Anker-Site (100.69.179.87) ist seit 2 Stunden offline. Basierend auf dem MASTERPLAN und LIVE_CONTEXT: Was sind die kritischen Risiken und welche 3 Schritte muss der Operator jetzt physisch prüfen? Antworte kurz und präzise."
+
 # ─────────────────────────────────────────────────────────────────────────────
 
 refresh-context:

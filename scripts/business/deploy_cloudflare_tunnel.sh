@@ -17,7 +17,6 @@
 set -euo pipefail
 
 TUNNEL_TOKEN="${1:-}"
-ODOO_INTERNAL="http://odoo_web_1:8069"
 STACKS_DIR="/opt/homeserver2027/stacks/odoo"
 
 if [[ -z "$TUNNEL_TOKEN" ]]; then
@@ -29,6 +28,21 @@ if [[ -z "$TUNNEL_TOKEN" ]]; then
 fi
 
 echo "=== FraWo GbR: Cloudflare Tunnel Deployment ==="
+
+compose=()
+if command -v docker-compose &> /dev/null; then
+  compose=(docker-compose)
+elif docker compose version &> /dev/null; then
+  compose=(docker compose)
+else
+  echo "FEHLER: docker compose ist nicht verfuegbar (docker-compose oder docker compose)."
+  exit 1
+fi
+
+compose_args=(-f docker-compose.yml)
+if [[ -f "$STACKS_DIR/docker-compose.public-edge.yml" ]]; then
+  compose_args+=(-f docker-compose.public-edge.yml)
+fi
 
 # ------------------------------------------------------------------
 # 1. cloudflared installieren
@@ -74,31 +88,29 @@ cat > "$STACKS_DIR/Caddyfile.public" << 'CADDYEOF'
   admin off
 }
 
-# Cloudflare-Tunnel sendet HTTP an Caddy (TLS endet bei Cloudflare)
-# Caddy leitet an Odoo weiter und setzt X-Forwarded Headers
-:80 {
-  # Cloudflare-IP-Vertrauen (Real-IP-Header durchleiten)
-  header_up X-Real-IP {remote_host}
-  header_up X-Forwarded-Proto https
+# Apex redirect (HTTP -> HTTPS @ www)
+http://frawo-tech.de {
+  redir https://www.frawo-tech.de{uri} 308
+}
 
-  # Security Headers
-  header {
-    Strict-Transport-Security "max-age=31536000; includeSubDomains"
-    X-Content-Type-Options nosniff
-    X-Frame-Options SAMEORIGIN
-  }
-
+# Website origin (HTTP-only, TLS ends at Cloudflare)
+http://www.frawo-tech.de {
   reverse_proxy odoo_web_1:8069 {
-    header_up Host www.frawo-tech.de
-    header_up X-Forwarded-For {remote_host}
     header_up X-Forwarded-Proto https
   }
 }
 CADDYEOF
 
-# Caddy-Container neu laden (graceful)
-docker exec caddy-edge caddy reload --config /etc/caddy/Caddyfile 2>/dev/null || \
-  docker restart caddy-edge
+pushd "$STACKS_DIR" >/dev/null
+set +e
+"${compose[@]}" "${compose_args[@]}" exec -T caddy caddy reload --config /etc/caddy/Caddyfile
+reload_rc=$?
+set -e
+if [[ $reload_rc -ne 0 ]]; then
+  "${compose[@]}" "${compose_args[@]}" up -d caddy
+  "${compose[@]}" "${compose_args[@]}" restart caddy
+fi
+popd >/dev/null
 sleep 2
 echo "  ✓ Caddyfile aktualisiert und Caddy neu geladen"
 
@@ -138,7 +150,7 @@ echo "  FraWo GbR: Cloudflare Tunnel Deployment ABGESCHLOSSEN"
 echo "============================================================"
 echo ""
 echo "  Tunnel-Status:  systemctl status cloudflared"
-echo "  Caddy-Status:   docker logs caddy-edge --tail 20"
+echo "  Caddy-Status:   (cd $STACKS_DIR && ${compose[*]} ${compose_args[*]} logs --tail 20 caddy)"
 echo "  Odoo-Log:       docker logs odoo_web_1 --tail 20"
 echo ""
 echo "  Nächster Schritt: https://www.frawo-tech.de im Browser testen"

@@ -1,6 +1,6 @@
 # Release MVP Gate
 
-Decision: `MVP_READY`
+Decision: `BLOCKED`
 
 MVP audit summary: `/mnt/c/WORKSPACE/PROJEKTE/Active/FraWo/artifacts/release_mvp_audit/20260420_152928/summary.tsv`
 Manual evidence: `/mnt/c/WORKSPACE/PROJEKTE/Active/FraWo/manifests/release_mvp_gate/manual_checks.json`
@@ -12,7 +12,7 @@ It is not the same as the public website track or the full internal production s
 
 ## Critical MVP Codex Checks
 
-- `document-ownership-check`: `passed`
+- `document-ownership-check`: `failed`
 - `inventory-check`: `passed`
 - `ansible-ping`: `passed`
 - `qga-check`: `passed`
@@ -37,4 +37,4 @@ It is not the same as the public website track or the full internal production s
 
 ## Blocked Reasons
 
-- none
+- critical MVP Codex check not green: document-ownership-check=failed

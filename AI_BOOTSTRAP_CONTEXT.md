@@ -35,6 +35,7 @@
 - Latest CI/CD delivery factory report: `artifacts/cicd_delivery_factory/latest_report.md`
 - Latest CI/CD delivery factory preflight: `artifacts/cicd_delivery_factory/latest_preflight.md` with current hard limit `repo_side_factory_only`
 - Canonical Local Intelligence Layer: **AI Toolkit for VS Code** (ONNX / DirectML) on `wolfstudiopc`
+- Local Falling-Back / CLI Intelligence: **Ollama (frawo-pro)** on port `11434`
 - Business Intelligence Bridge: **Odoo Professional MCP Server** (scripts/business/mcp_odoo_pro_server.py)
 - Transition note `2026-04-03`: `wolfstudiopc` currently reaches the core services professionally via `toolbox` Tailscale frontdoors on `100.82.26.53:*`; direct StudioPC access to the legacy guest `192.168.2.x` range is not the working path while the UCG migration bridge is active
 

@@ -76,5 +76,3 @@ docker-compose -f docker-compose.yml -f docker-compose.public-edge.yml exec -T c
 "@
 
 & $proxmoxExec -RemoteCommand $remote
-
-& $proxmoxExec -RemoteCommand $remote

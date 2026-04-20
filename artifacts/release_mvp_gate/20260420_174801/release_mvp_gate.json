@@ -1,13 +1,13 @@
 {
-  "decision": "MVP_READY",
+  "decision": "BLOCKED",
   "summary_source": "/mnt/c/WORKSPACE/PROJEKTE/Active/FraWo/artifacts/release_mvp_audit/20260420_152928/summary.tsv",
   "manual_checks_source": "/mnt/c/WORKSPACE/PROJEKTE/Active/FraWo/manifests/release_mvp_gate/manual_checks.json",
   "critical_codex_checks": [
     {
       "id": "document-ownership-check",
-      "status": "passed",
+      "status": "failed",
       "critical": true,
-      "log": "/mnt/c/WORKSPACE/PROJEKTE/Active/FraWo/artifacts/release_mvp_gate/20260420_180812/document-ownership-check.log",
+      "log": "/mnt/c/WORKSPACE/PROJEKTE/Active/FraWo/artifacts/release_mvp_gate/20260420_174801/document-ownership-check.log",
       "executor": "codex",
       "command_or_action": "/usr/bin/python3 ./scripts/document_ownership_check.py"
     },
@@ -166,6 +166,8 @@
       "evidence": "Two physical offline copies verified by operator via !go command."
     }
   ],
-  "blocked_reasons": [],
+  "blocked_reasons": [
+    "critical MVP Codex check not green: document-ownership-check=failed"
+  ],
   "scope_note": "This gate covers the current business MVP only. It is separate from the public website release track and from the full internal production certification."
 }

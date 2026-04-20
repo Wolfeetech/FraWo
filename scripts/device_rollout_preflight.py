@@ -43,18 +43,20 @@ def current_toolbox_frontdoor_ip() -> str:
     return DEFAULT_TOOLBOX_FRONTDOOR_IP
 
 
+# The Tailscale frontdoor is our primary professional path from the StudioPC
 TOOLBOX_FRONTDOOR_IP = current_toolbox_frontdoor_ip()
 
+# We prefer direct IP access for preflight resilience to avoid DNS timeout issues
 START_URLS = [
-    ("surface_laptop_start", "http://portal.hs27.internal/franz/"),
+    ("surface_laptop_start", f"http://{TOOLBOX_FRONTDOOR_IP}:8447/franz/"),
     ("iphone_mobile_start", f"http://{TOOLBOX_FRONTDOOR_IP}:8447/franz/"),
 ]
 
 CORE_TARGETS = [
-    ("nextcloud", "http://cloud.hs27.internal/"),
-    ("paperless", "http://paperless.hs27.internal/accounts/login/"),
-    ("odoo", "http://odoo.hs27.internal/web/login"),
-    ("vaultwarden", "https://vault.hs27.internal/"),
+    ("nextcloud", f"http://{TOOLBOX_FRONTDOOR_IP}:8441/"),          # Tailscale forwarded
+    ("paperless", f"http://{TOOLBOX_FRONTDOOR_IP}:8443/"),           # Tailscale forwarded
+    ("odoo", f"http://{TOOLBOX_FRONTDOOR_IP}:8069/"),                # Direct via Tailscale
+    ("vaultwarden", f"https://{TOOLBOX_FRONTDOOR_IP}:8440/"),        # Direct via Tailscale
 ]
 
 EXPECTED_PAGE_LINKS = {

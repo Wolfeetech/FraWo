@@ -12,19 +12,21 @@
   },
   "glob_rules": [
     {
-      "pattern": "**/*",
+      "pattern": "**/*.md",
       "owner": "codex"
-    },
-    {
-      "pattern": "DOCS/**/*.md",
-      "owner": "gemini"
-    },
-    {
-      "pattern": "apps/**/*.md",
-      "owner": "gemini"
     }
   ],
   "explicit_paths": {
+    "gemini": [
+      "DOCS/FRANZ_IPHONE_ONBOARDING.md",
+      "DOCS/MOBILE_HTTPS_TRUST.md",
+      "DOCS/Task_Archive/CHECKLIST_NEXT_STEPS_WOLF_FRANZ.md",
+      "DOCS/Task_Archive/FRANZ_DEVICE_DEPLOY.md",
+      "DOCS/Task_Archive/MOBILE_SCAN_WORKFLOW.md",
+      "DOCS/Task_Archive/START_HERE_WOLF_FRANZ.md",
+      "DOCS/Task_Archive/WOLF_FRANZ_HANDOUT.md",
+      "OPERATIONS/USER_ONBOARDING_OPERATIONS.md"
+    ],
     "wolfi": [
       "MASTERPLAN.md",
       "MEMORY.md",

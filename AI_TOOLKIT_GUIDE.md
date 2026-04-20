@@ -9,11 +9,16 @@ This guide defines the professional usage of the **AI Toolkit for VS Code** and 
 - **Extensions**: Ensure the **AI Toolkit for VS Code** (`ms-windows.ai-toolkit`) is installed (see Workspace Recommendations).
 - **Python**: The `mcp[cli]` package must be installed in the environment used for business scripts.
 
-### Model Provisioning
+### Model Provisioning (StudioPC)
+#### Option A: GPU Accelerated (DirectML/ONNX)
 1. Open the AI Toolkit (Robot icon in the activity bar).
 2. Browse for **Phi-3-mini-4k-instruct-onnx**.
-3. Download the model to `C:\AI_MODELS\FraWo` (configured in `.vscode/settings.json`).
-4. Select "Load Model" to start the local LLM server.
+3. Download to `C:\AI_MODELS\FraWo`.
+4. Select "Load Model" to activate **DirectML** (accelerated by RTX 4060).
+
+#### Option B: Strategic CLI Layer (Ollama)
+1. Run `ollama run frawo-pro` from any terminal.
+2. This model is briefed on the SSOT, Mission Lanes, and synchronization rules.
 
 ## 2. Model Context Protocol (MCP) Integration
 
@@ -35,6 +40,12 @@ The FraWo estate uses a custom MCP server to bridge AI with our Odoo instance.
 Before performing major infrastructure shifts, use the local AI Toolkit with the Odoo MCP server to:
 1. "Draft the mission lanes for the next rollout."
 2. "Analyze open tasks in Odoo and propose a reclaim strategy."
+
+### Disaster Recovery (Agentic Workflow)
+If the Anker Site or core infrastructure is unreachable:
+1. Run `make ai-emergency-audit`.
+2. The local `frawo-pro` brain will analyze the outage logs and MASTERPLAN.
+3. Follow the generated "Physical Rescue Plan".
 
 ### Satellite Node Usage
 On Satellites (Surface), if local GPU performance is insufficient:

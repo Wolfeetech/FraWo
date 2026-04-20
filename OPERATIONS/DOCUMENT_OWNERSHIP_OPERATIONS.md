@@ -55,9 +55,11 @@ Diese Checks sind harte Gates in:
 1. Jede `.md`-Datei muss genau einem Owner zugeordnet sein.
 2. Doppelte Zuordnung ist nicht erlaubt.
 3. Fehlende Zuordnung ist nicht erlaubt.
-4. Generierte Reports unter `artifacts/**/*.md` gehoeren standardmaessig `codex`.
-5. Bei neuer Datei muss die Ownership im Manifest im selben Arbeitsschritt gesetzt werden.
-6. Eine neue `.md` ohne Owner blockiert bewusst den Workflow.
+4. `explicit_paths` haben Vorrang vor `glob_rules` (damit sind Default-Globs moeglich, ohne explizite Dateien zu verwischen).
+5. Mehrdeutige Matches aus mehreren `glob_rules` sind nicht erlaubt und muessen im Manifest aufgeloest werden.
+6. Generierte Reports unter `artifacts/**/*.md` gehoeren standardmaessig `codex`.
+7. Bei neuer Datei muss die Ownership im Manifest im selben Arbeitsschritt gesetzt werden.
+8. Eine neue `.md` ohne Owner blockiert bewusst den Workflow.
 
 ## Bedeutung
 

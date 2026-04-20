@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FraWo GbR | Veranstaltungstechnik</title>
+    <!-- CSS Integration from Design System -->
+    <style>
+        /* CI font: Poppins */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+
+        :root {
+            --frawo-bg: #081018;
+            --frawo-bg-soft: #0d1720;
+            --frawo-surface: #121d27;
+            --frawo-accent: #84f0c3;
+            --frawo-accent-strong: #49d99d;
+            --frawo-text: #f4f7fb;
+            --frawo-text-soft: #d4dde7;
+            --frawo-text-muted: #98a8b8;
+            --frawo-radius-lg: 24px;
+            --frawo-radius-md: 18px;
+            --frawo-font: 'Poppins', sans-serif;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: var(--frawo-font);
+            background: var(--frawo-bg);
+            color: var(--frawo-text);
+            overflow-x: hidden;
+        }
+
+        .frawo-page {
+            position: relative;
+        }
+
+        /* Hero Section */
+        .frawo-hero {
+            position: relative;
+            min-height: 90vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 24px;
+            background: linear-gradient(180deg, rgba(8, 16, 24, 0.4) 0%, rgba(8, 16, 24, 0.9) 100%),
+                        url('assets/hero-bodensee.jpg') center/cover no-repeat;
+        }
+
+        .frawo-hero-shell {
+            max-width: 1200px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .frawo-label {
+            color: var(--frawo-accent);
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .frawo-display {
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin: 0 0 1.5rem 0;
+            letter-spacing: -0.03em;
+        }
+
+        .frawo-copy {
+            font-size: 1.125rem;
+            line-height: 1.7;
+            color: var(--frawo-text-soft);
+            max-width: 600px;
+            margin-bottom: 2.5rem;
+        }
+
+        .frawo-btn-primary {
+            display: inline-block;
+            background: var(--frawo-accent);
+            color: var(--frawo-bg);
+            padding: 1.2rem 2.4rem;
+            border-radius: 99px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .frawo-btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(132, 240, 195, 0.3);
+        }
+
+        /* Service Cards */
+        .frawo-section {
+            padding: 100px 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .frawo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .frawo-card {
+            background: var(--frawo-surface);
+            padding: 40px;
+            border-radius: var(--frawo-radius-md);
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: 0.3s;
+        }
+
+        .frawo-card:hover {
+            border-color: var(--frawo-accent);
+        }
+
+        .frawo-card h3 {
+            margin: 0 0 1rem 0;
+            font-size: 1.25rem;
+        }
+
+        /* Maintenance Badge */
+        .emergency-badge {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 71, 87, 0.1);
+            color: #ff4757;
+            border: 1px solid #ff4757;
+            padding: 8px 16px;
+            border-radius: 99px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        @media (max-width: 900px) {
+            .frawo-hero-shell { grid-template-columns: 1fr; text-align: center; }
+            .frawo-copy { margin: 0 auto 2.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="emergency-badge">Notfall-System Aktiv</div>
+
+    <div class="frawo-page">
+        <section class="frawo-hero">
+            <div class="frawo-hero-shell">
+                <div class="frawo-hero-copy">
+                    <span class="frawo-label">Eventtechnik · Planung · Support</span>
+                    <h1 class="frawo-display">Technik fuer Veranstaltungen, die einfach laeuft.</h1>
+                    <p class="frawo-copy">
+                        FraWo plant, baut und betreut Ton-, Licht- und Zuspielsysteme fuer Clubnaechte,
+                        Kulturformate und Sonderflaechen. Professionell, verlaesslich und mit klarem Fokus.
+                    </p>
+                    <div class="frawo-actions">
+                        <a href="mailto:info@frawo-tech.de" class="frawo-btn-primary">Anfrage senden</a>
+                    </div>
+                </div>
+                <div class="frawo-hero-visual">
+                    <!-- Placeholder or Logo -->
+                    <img src="assets/logo.png" alt="FraWo Logo" style="max-width: 300px; filter: invert(1);">
+                </div>
+            </div>
+        </section>
+
+        <section class="frawo-section">
+            <span class="frawo-label">Leistungen</span>
+            <h2 style="font-size: 2.5rem; margin: 1rem 0;">Alles im Griff, vor Ort und digital.</h2>
+            
+            <div class="frawo-grid">
+                <article class="frawo-card">
+                    <h3>Technische Planung</h3>
+                    <p>Setup-Planung nach Mass, Signalwege und Zeitmanagement.</p>
+                </article>
+                <article class="frawo-card">
+                    <h3>Betrieb vor Ort</h3>
+                    <p>Umbauten, Zuspielung und technische Rundumbetreuung.</p>
+                </article>
+                <article class="frawo-card">
+                    <h3>Digitale Info</h3>
+                    <p>Besuchersysteme und Ablaufsteuerung fuer moderne Formate.</p>
+                </article>
+            </div>
+        </section>
+
+        <footer style="padding: 60px 24px; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); color: var(--frawo-text-muted);">
+            <p>&copy; 2026 FraWo GbR | info@frawo-tech.de | +49 151 55243164</p>
+        </footer>
+    </div>
+
+</body>
+</html>

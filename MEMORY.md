@@ -76,6 +76,7 @@
 ## Aktive Operator-Aktionen
 
 - [ ] `AKTION VON DIR ERFORDERLICH:` In Tailscale Admin den restricted nameserver fuer `hs27.internal` auf `100.82.26.53` setzen oder lokal den vorbereiteten NRPT-Helfer in erhoehter PowerShell ausfuehren.
+- [ ] `AKTION VON DIR ERFORDERLICH:` Public Edge finalisieren: Cloudflare Tunnel + DNS fuer `frawo-tech.de` / `www.frawo-tech.de` auf `VM220` aktivieren (Runbook: `DOCS/Handover/CLOUDFLARE_TUNNEL_FINALIZATION.md`).
 - [ ] `AKTION VON DIR ERFORDERLICH:` `radio-node` physisch pruefen und wieder online bringen; aktuell keine Antwort auf `192.168.2.155`, `100.64.23.77` oder `:8448`.
 - [ ] `AKTION VON DIR ERFORDERLICH:` Auf `wolfstudiopc` `OpenSSH Server` einschalten oder eine lokale Admin-Session bereitstellen; erst dann ist der Studio-PC als repo-basierter Admin-Pfad sauber steuerbar.
 - [ ] Windows-GUI-Updates spaeter kontrolliert abschliessen, nachdem die blockierenden Prozesse bewusst geschlossen wurden.
