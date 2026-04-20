@@ -84,6 +84,8 @@
 
 ## Chronologische Logs (Auszug)
 
+### 2026-04-19 (FraWo_GbR Transition): Odoo Shape-Up completed. Database renamed from `FraWo_Live_V2` to `FraWo_GbR`. Website domain `www.frawo-tech.de` and proxy mode active. Manual bootstrap backup created on VM 220.
+
 ### 2026-04-14: Anker Blackout & Emergency Recovery (The "Wolf.EE" Incident)
 - Master node "Anker" crashed due to USB stick (Wolf.EE) failure, causing kernel panic.
 - "Stockenweiler" node isolated safely. Thermal panic resolved by disabling `anker-music` NFS mount.

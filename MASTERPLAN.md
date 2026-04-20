@@ -1,4 +1,4 @@
-# FraWo GbR - Homeserver 2027 Masterplan
+# FraWo GbR - Veranstaltungstechnik - Masterplan
 
 ## Zweck
 
@@ -128,9 +128,9 @@ Der Server gilt erst dann als wirklich fertig, wenn alle folgenden Punkte erfuel
 - `VM 220 odoo`: LIVE. Database `FraWo_Live` restored. German UI active.
 - `VM 200 nextcloud`: LIVE.
 - `VM 230 paperless`: LIVE.
-- `CT 110 Storage-Node`: LIVE. SMB Source of Truth verified.
 - **ACTIVE: Lane B Deployment** (Cloudflare Tunnel for Public Edge).
-.
+- **Security-Status**: Infrustruktur gehärtet (Firewall aktiv, Management-Isolation umgesetzt).
+- **Branding-Status**: Website auf Odoo transformiert zu "Veranstaltungstechnik" (2026-04-19).
 
 ### Bewusst getrennt oder aktuell blockiert
 

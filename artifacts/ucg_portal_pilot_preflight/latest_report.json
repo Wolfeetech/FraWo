@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-13 12:15:49",
+  "generated_at": "2026-04-20 15:27:48",
   "pilot": "portal",
   "change_class": "read_only",
   "ready_for_gated_runtime_change": false,
@@ -8,22 +8,22 @@
     {
       "id": "portal_frontdoor_http",
       "ok": true,
-      "evidence": "HTTP 200 via http://100.99.206.128:8447/"
+      "evidence": "HTTP 200 via http://100.82.26.53:8447/"
     },
     {
       "id": "portal_frontdoor_status_json",
       "ok": false,
-      "evidence": "HTTP 200, platform_core=attention, healthy=2/7"
+      "evidence": "HTTP 404, platform_core=unknown, healthy=0/0"
     },
     {
       "id": "portal_internal_hostname",
       "ok": false,
-      "evidence": "HTTP 0 via http://portal.hs27.internal/"
+      "evidence": "HTTP 0 via http://100.82.26.53/"
     },
     {
       "id": "portal_internal_status_json",
       "ok": false,
-      "evidence": "HTTP 0 via http://portal.hs27.internal/status.json"
+      "evidence": "HTTP 0 via http://100.82.26.53/status.json"
     },
     {
       "id": "anker_management_ssh",
@@ -32,8 +32,8 @@
     },
     {
       "id": "stock_management_ssh",
-      "ok": false,
-      "evidence": "Warning: Permanently added '100.91.20.116' (ED25519) to the list of known hosts.\n# Tailscale SSH requires an additional check.\n# To authenticate, visit: https://login.tailscale.com/a/la3313c73ad1a8\nConnection to 100.91.20.116 port 22 timed out"
+      "ok": true,
+      "evidence": "pve; pve-manager/9.1.4/5ac30304265fbd8e (running kernel: 6.17.2-2-pve)"
     },
     {
       "id": "pilot_documentation_present",
@@ -54,34 +54,34 @@
   "portal_frontdoor": {
     "root": {
       "ok": true,
-      "url": "http://100.99.206.128:8447/",
+      "url": "http://100.82.26.53:8447/",
       "http_code": 200,
       "error": ""
     },
     "status_json": {
-      "ok": true,
-      "url": "http://100.99.206.128:8447/status.json",
-      "http_code": 200,
-      "error": ""
+      "ok": false,
+      "url": "http://100.82.26.53:8447/status.json",
+      "http_code": 404,
+      "error": "HTTP Error 404: Not Found"
     },
     "status_payload_summary": {
-      "platform_core": "attention",
-      "healthy_services": 2,
-      "total_services": 7
+      "platform_core": "unknown",
+      "healthy_services": 0,
+      "total_services": 0
     }
   },
   "portal_internal": {
     "root": {
       "ok": false,
-      "url": "http://portal.hs27.internal/",
+      "url": "http://100.82.26.53/",
       "http_code": 0,
-      "error": "<urlopen error [Errno 11001] getaddrinfo failed>"
+      "error": "<urlopen error [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1032)>"
     },
     "status_json": {
       "ok": false,
-      "url": "http://portal.hs27.internal/status.json",
+      "url": "http://100.82.26.53/status.json",
       "http_code": 0,
-      "error": "<urlopen error [Errno 11001] getaddrinfo failed>"
+      "error": "<urlopen error [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1032)>"
     }
   },
   "portal_target_ip": {
@@ -109,9 +109,12 @@
     },
     "stockenweiler": {
       "target": "stock-pve",
-      "ok": false,
-      "stdout_lines": [],
-      "stderr": "Warning: Permanently added '100.91.20.116' (ED25519) to the list of known hosts.\n# Tailscale SSH requires an additional check.\n# To authenticate, visit: https://login.tailscale.com/a/la3313c73ad1a8\nConnection to 100.91.20.116 port 22 timed out"
+      "ok": true,
+      "stdout_lines": [
+        "pve",
+        "pve-manager/9.1.4/5ac30304265fbd8e (running kernel: 6.17.2-2-pve)"
+      ],
+      "stderr": "Warning: Permanently added '100.91.20.116' (ED25519) to the list of known hosts."
     }
   },
   "documentation": {

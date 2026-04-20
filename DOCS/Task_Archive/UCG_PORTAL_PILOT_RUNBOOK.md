@@ -27,7 +27,7 @@ Er ist **nicht**:
 Vor jeder aendernden Ausfuehrung muss zuerst dieser read-only Nachweis gruen sein:
 
 ```powershell
-python "C:\Users\StudioPC\Documents\Homeserver 2027 Workspace\scripts\portal_ucg_pilot_preflight.py"
+python "C:\WORKSPACE\PROJEKTE\Active\FraWo\scripts\portal_ucg_pilot_preflight.py"
 ```
 
 Erwartung:
@@ -62,8 +62,8 @@ Waerend des Piloten gleichzeitig **nicht** tun:
 Direkt nach der Aenderung pruefen:
 
 ```powershell
-python "C:\Users\StudioPC\Documents\Homeserver 2027 Workspace\scripts\portal_ucg_pilot_preflight.py"
-python "C:\Users\StudioPC\Documents\Homeserver 2027 Workspace\scripts\estate_census_audit.py"
+python "C:\WORKSPACE\PROJEKTE\Active\FraWo\scripts\portal_ucg_pilot_preflight.py"
+python "C:\WORKSPACE\PROJEKTE\Active\FraWo\scripts\estate_census_audit.py"
 ```
 
 Erwartung:
@@ -76,8 +76,8 @@ Erwartung:
 ### 4. SSOT direkt nachziehen
 
 ```powershell
-python "C:\Users\StudioPC\Documents\Homeserver 2027 Workspace\scripts\generate_ai_server_handoff.py"
-python "C:\Users\StudioPC\Documents\Homeserver 2027 Workspace\scripts\document_ownership_check.py"
+python "C:\WORKSPACE\PROJEKTE\Active\FraWo\scripts\generate_ai_server_handoff.py"
+python "C:\WORKSPACE\PROJEKTE\Active\FraWo\scripts\document_ownership_check.py"
 ```
 
 ## Rollback

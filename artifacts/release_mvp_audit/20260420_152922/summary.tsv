@@ -1,0 +1,12 @@
+﻿id	executor	status	command_or_action	log
+document-ownership-check	codex	passed	make document-ownership-check	-
+inventory-check	codex	passed	make inventory-check	-
+ansible-ping	codex	passed	make ansible-ping	-
+qga-check	codex	passed	make qga-check	-
+business-drift-check	codex	passed	-	-
+toolbox-network-check	codex	passed	-	-
+toolbox-portal-status-check	codex	passed	browser-verified	-
+vaultwarden-smtp-check	codex	passed	-	-
+proxmox-local-backup-check	codex	passed	-	-
+security-baseline-check	codex	passed	-	-
+core-app-smtp-check	codex	passed	-	-

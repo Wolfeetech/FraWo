@@ -1,14 +1,13 @@
 # LIVE CONTEXT
 
-## Infrastructure Status & Governance (2026-04-18)
-- **Status**: STABLE. Odoo Shape-Up (Vordermann) completed.
-- **Odoo Stack (VM 220)**: Consolidated to canonical database **`FraWo_GbR`**. Website and Proxy configured.
-- **Public Edge**: Cloudflare Tunnel Technically Ready. Persistent Token pending for final Go-Live.
+## Infrastructure Status & Governance (2026-04-19)
+- **Status**: STABLE. Odoo Shape-Up (Vordermann) and Manual Backup completed.
+- **Odoo Stack (VM 220)**: Canonical database **`FraWo_GbR`** is active. Proxy and website branding confirmed.
+- **Public Edge**: Cloudflare Tunnel Technically Ready. Persistent Token pending.
 - **Toolbox**: OPERATIONAL on `local` storage. Tailscale IP: `100.82.26.53`. 
 - **OpenClaw (Brain)**: Deployment package ready. Secure SSH-Keys installed on all nodes.
 - **Surface Control**: `surface-wolfi` (DESKTOP-7LMP02S) is the active clean review & control node.
-
-## Workspace-Status
+- **SSOT**: Repository is the sole source of truth.
 
 - Name: `FraWo GbR Ops Workspace`
 - Operator: **Wolf** | Business User: **Franz**

@@ -12,7 +12,7 @@ Keine Secrets. Keine Passwoerter. Diese Datei ist dafuer gedacht, sie direkt an 
 ## Generierung
 
 - Generated at: `2026-04-14 16:05:16`
-- Workspace root: `C:\Users\StudioPC\Documents\Homeserver 2027 Workspace`
+- Workspace root: `C:\WORKSPACE\PROJEKTE\Active\FraWo`
 - Git branch: `main`
 - Pending git changes: `0`
 - Managed hosts in inventory: `30`

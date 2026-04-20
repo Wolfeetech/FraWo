@@ -18,15 +18,15 @@ LATEST_REPORT_PATH = OUTPUT_ROOT / "latest_report.md"
 LATEST_JSON_PATH = OUTPUT_ROOT / "latest_report.json"
 
 START_URLS = [
-    ("surface_laptop_start", "http://portal.hs27.internal/franz/"),
-    ("iphone_mobile_start", "http://100.99.206.128:8447/franz/"),
+    ("surface_laptop_start", "http://10.1.0.20/franz/"),
+    ("iphone_mobile_start", "http://100.82.26.53:8447/franz/"),
 ]
 
 CORE_TARGETS = [
-    ("nextcloud", "http://cloud.hs27.internal/"),
-    ("paperless", "http://paperless.hs27.internal/accounts/login/"),
-    ("odoo", "http://odoo.hs27.internal/web/login"),
-    ("vaultwarden", "https://vault.hs27.internal/"),
+    ("nextcloud", "http://10.1.0.21/"),
+    ("paperless", "http://10.1.0.23/accounts/login/"),
+    ("odoo", "http://10.1.0.22:8069/web/login"),
+    ("vaultwarden", "https://10.1.0.26/"),
 ]
 
 EXPECTED_PAGE_LINKS = {

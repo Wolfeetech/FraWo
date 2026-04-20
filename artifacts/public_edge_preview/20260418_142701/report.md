@@ -16,23 +16,23 @@ Generated from `public_edge_preview_check.py`.
 - `internal_www_root`: `failed`
   expectation: Host www.frawo-tech.de on 10.1.0.22 should return 200 and the FraWo homepage with radio CTA.
   observed_status: `200`
-  log: `C:\Users\StudioPC\Workspace\FraWo\artifacts\public_edge_preview\20260418_142701\internal_www_root.log`
+  log: `C:\WORKSPACE\PROJEKTE\Active\FraWo\artifacts\public_edge_preview\20260418_142701\internal_www_root.log`
 - `internal_apex_redirect`: `failed`
   expectation: Host frawo-tech.de on 10.1.0.22 should redirect to https://www.frawo-tech.de/.
   observed_status: `200`
-  log: `C:\Users\StudioPC\Workspace\FraWo\artifacts\public_edge_preview\20260418_142701\internal_apex_redirect.log`
+  log: `C:\WORKSPACE\PROJEKTE\Active\FraWo\artifacts\public_edge_preview\20260418_142701\internal_apex_redirect.log`
 - `internal_radio_player`: `failed`
   expectation: Host www.frawo-tech.de on 10.1.0.22 /radio/public/frawo-funk should return the AzuraCast player.
   observed_status: `404`
-  log: `C:\Users\StudioPC\Workspace\FraWo\artifacts\public_edge_preview\20260418_142701\internal_radio_player.log`
+  log: `C:\WORKSPACE\PROJEKTE\Active\FraWo\artifacts\public_edge_preview\20260418_142701\internal_radio_player.log`
 - `global_ipv6_www_root`: `failed`
   expectation: The global IPv6 of VM220 should already serve the FraWo homepage on HTTP with Host www.frawo-tech.de.
   observed_status: `none`
-  log: `C:\Users\StudioPC\Workspace\FraWo\artifacts\public_edge_preview\20260418_142701\global_ipv6_www_root.log`
+  log: `C:\WORKSPACE\PROJEKTE\Active\FraWo\artifacts\public_edge_preview\20260418_142701\global_ipv6_www_root.log`
 - `public_ipv4_hairpin`: `failed`
   expectation: direct HTTP to the current public IPv4 should only pass after router forwarding is active.
   observed_status: `none`
-  log: `C:\Users\StudioPC\Workspace\FraWo\artifacts\public_edge_preview\20260418_142701\public_ipv4_hairpin.log`
+  log: `C:\WORKSPACE\PROJEKTE\Active\FraWo\artifacts\public_edge_preview\20260418_142701\public_ipv4_hairpin.log`
 
 ## Cutover Notes
 
