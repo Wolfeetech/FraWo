@@ -11,10 +11,10 @@ Keine Secrets. Keine Passwoerter. Diese Datei ist dafuer gedacht, sie direkt an 
 
 ## Generierung
 
-- Generated at: `2026-04-20 11:53:08`
+- Generated at: `2026-04-20 12:52:37`
 - Workspace root: `/mnt/c/Users/Admin/Documents/Private_Networking`
 - Git branch: `main`
-- Pending git changes: `6`
+- Pending git changes: `5`
 - Managed hosts in inventory: `31`
 
 ## Source Freshness
@@ -22,13 +22,13 @@ Keine Secrets. Keine Passwoerter. Diese Datei ist dafuer gedacht, sie direkt an 
 - `AI_BOOTSTRAP_CONTEXT.md`: `2026-04-19 22:54:12`
 - `OPS_HOME.md`: `2026-04-09 19:28:38`
 - `DOCS/Task_Archive/OPERATOR_TODO_QUEUE.md`: `2026-04-19 22:54:54`
-- `manifests/work_lanes/current_plan.json`: `2026-04-20 10:55:41`
+- `manifests/work_lanes/current_plan.json`: `2026-04-20 12:51:25`
 - `artifacts/release_mvp_gate/latest_release_mvp_gate.json`: `2026-04-20 11:18:26`
 - `artifacts/public_ipv6_exposure_audit/latest_report.md`: `2026-04-09 19:28:46`
 - `artifacts/estate_census/latest_report.json`: `2026-04-09 17:23:24`
   - stale_for_live_truth: `true` (estate census older than platform health by 8 day(s); estate census frontdoor host set ['100.99.206.128'] does not include current frontdoor 100.82.26.53)
 - `artifacts/ucg_portal_pilot_preflight/latest_report.json`: `2026-04-13 12:15:49`
-  - stale_for_live_truth: `true` (portal pilot preflight older than 1 day (6 day(s)); portal pilot frontdoor host 100.99.206.128 does not match current frontdoor 100.82.26.53)
+  - stale_for_live_truth: `true` (portal pilot preflight older than 1 day (7 day(s)); portal pilot frontdoor host 100.99.206.128 does not match current frontdoor 100.82.26.53)
 - `artifacts/website_release_gate/20260330_161648/website_release_gate.md`: `2026-04-09 19:28:49`
 - `artifacts/production_gate/20260328_072130/production_gate.md`: `2026-04-09 19:28:44`
 - `manifests/control_surface/actions.json`: `2026-04-13 15:31:08`
@@ -185,7 +185,7 @@ Keine Secrets. Keine Passwoerter. Diese Datei ist dafuer gedacht, sie direkt an 
 ## UCG Pilot Snapshot
 
 - Live-truth warning: this portal pilot preflight is stale for current frontdoor/runtime truth.
-  - portal pilot preflight older than 1 day (6 day(s))
+  - portal pilot preflight older than 1 day (7 day(s))
   - portal pilot frontdoor host 100.99.206.128 does not match current frontdoor 100.82.26.53
 - Pilot: `portal`
 - Ready for gated runtime change: `false`
@@ -203,7 +203,7 @@ Keine Secrets. Keine Passwoerter. Diese Datei ist dafuer gedacht, sie direkt an 
   - goal: Hold the recovered platform on a professional baseline while finishing DNS, admin-path, and infrastructure follow-through.
 - `Lane D: Stockenweiler` -> `watch`
   - goal: Keep the support rollout prepared without starting live cutover work too early.
-- `Lane E: Radio/Media` -> `watch`
+- `Lane E: Radio/Media` -> `active`
   - goal: Keep media stable and recover the radio backend without turning the lane into a feature-expansion track.
 
 ## Business MVP Blockers

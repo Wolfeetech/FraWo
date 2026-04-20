@@ -12,7 +12,7 @@ Dieses Lane-Modell ist ab jetzt die verbindliche Arbeitsordnung. Aeltere breite 
 - `Lane B: Website/Public` -> `active` (In deployment, SSL/Tunnel pending)
 - `Lane C: Security/PBS/Infra` -> `active` (Recovery confirmed, Dashboard cleaned)
 - `Lane D: Stockenweiler` -> `watch`
-- `Lane E: Radio/Media` -> `watch` (Media live, Radio durch Offline-Pi blockiert)
+- `Lane E: Radio/Media` -> `active` (Media ready, 1,937 tracks verified in toolbox, Radio blocked by offline Pi)
 
 Regeln (Stand 2026-04-11, nach Lane-A-Abschluss):
 

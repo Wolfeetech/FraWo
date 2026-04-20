@@ -93,7 +93,7 @@
     {
       "id": "lane_e_radio_media",
       "label": "Lane E: Radio/Media",
-      "status": "watch",
+      "status": "active",
       "priority": 5,
       "goal": "Keep media stable and recover the radio backend without turning the lane into a feature-expansion track.",
       "done_when": "Jellyfin remains green and radio-node is back online behind the existing frontdoor.",

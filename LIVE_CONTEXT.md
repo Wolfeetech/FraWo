@@ -5,7 +5,8 @@
 - **Business Stack**: `Portal`, `Odoo`, `Nextcloud`, `Paperless`, `Vaultwarden` and `Media` are back on the recovered `toolbox` frontdoor.
 - **Toolbox**: OPERATIONAL on `local` storage. Runtime `10.1.0.20`, Tailscale/frontdoor `100.82.26.53`, DNS and mobile frontdoor recovered.
 - **Split DNS**: `hs27.internal` resolves correctly through AdGuard on `100.82.26.53`; the only remaining operator step is to set the restricted nameserver to `100.82.26.53` in Tailscale Admin or run the elevated local NRPT helper.
-- **Radio**: still blocked. `radio-node` is offline on both LAN and Tailnet, so `http://100.82.26.53:8448` currently returns `502`.
+- **Radio**: still blocked. `radio-node` is offline on both LAN and Tailscale, so `http://100.82.26.53:8448` currently returns `502`. Physical power-cycle required.
+- **Media**: READY. `CT 100 toolbox` media bind mount restored (mp0). 1,937 curated tracks verified inside `/srv/media-library/music-network/FraWo_Radio_Library/Clean`.
 - **OpenClaw (Brain)**: Deployment package ready. Secure SSH keys installed on all nodes.
 - **Surface Control**: `surface-wolfi` (DESKTOP-7LMP02S) is the active clean review and control node.
 
@@ -124,8 +125,8 @@
 - Shared frontend node `kiosk-frontend` on `192.168.2.154` remains blocked in the live audit; SSH, HTTP and HTTPS are currently closed and the active recommendation is `clean_rebuild_then_apply_bootstrap_surface_go_frontend_playbook`
 - Local media prep is staged on the ZenBook: `/dev/mmcblk0` for Raspberry Pi, `/dev/sdd` is now the ready blue Ventoy install-/image-stick, and `/dev/sdc1` is the ready exFAT Favorites-stick `FRAWO_FAVS`
 - Portable backup / PBS datastore path is currently not verified green in the latest PBS checks; der sichtbare USB-Stick meldet derzeit `No medium found`, und die datentragende USB-SSD bleibt bis zu einer expliziten Freigabe unangetastet
-- Raspberry-Pi radio node remains only partially green: `radio.hs27.internal` and the mobile radio frontdoor answer through the toolbox, but the live audit still shows `rpi_radio_integrated=no` und `rpi_radio_usb_music_ready=no`
-- Radio/AzuraCast is therefore not part of the current business-MVP release decision
+- Radio/AzuraCast is therefore not part of the current business-MVP release decision.
+- **Radio Prep (2026-04-20)**: `radio-node` remains offline, but the media infrastructure is now ready. 1,937 curated tracks are confirmed in the toolbox mount.
 - Media server V1 is now live on `CT 100 toolbox`: Jellyfin is reachable internally on `http://media.hs27.internal`, directly on `http://10.1.0.20:8096`, and through the mobile Tailscale frontdoor on `:8449`; the obsolete local bootstrap sync is retired and Jellyfin reads from the central SMB-backed media path
 - ZenBook remote posture is now stronger: Tailscale joined on `100.76.249.126` and AnyDesk is installed and active as a GUI fallback
 - Remote-only work windows are now codified through `REMOTE_ONLY_WORK_WINDOW.md` and `make remote-only-check`
