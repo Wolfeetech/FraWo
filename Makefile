@@ -129,6 +129,10 @@ openclaw-provision:
 openclaw-shell:
 	powershell.exe -ExecutionPolicy Bypass -File C:\WORKSPACE\OPERATIONS\OpenClaw\start_openclaw.ps1
 
+## openclaw-terminal: Open OpenClaw in Windows Terminal (non-blocking)
+openclaw-terminal:
+	wt.exe -w 0 new-tab --title OpenClaw --startingDirectory C:/WORKSPACE/OPERATIONS/OpenClaw powershell.exe -NoExit -NoProfile -ExecutionPolicy Bypass -File C:/WORKSPACE/OPERATIONS/OpenClaw/start_openclaw.ps1
+
 # ─────────────────────────────────────────────────────────────────────────────
 
 refresh-context:
