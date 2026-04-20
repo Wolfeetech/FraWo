@@ -9,7 +9,7 @@ Diese Datei ist die zentrale Gesamt-Roadmap bis zu einem fertig aufgebauten Home
 Dieses Lane-Modell ist ab jetzt die verbindliche Arbeitsordnung. Aeltere breite Roadmap-Texte bleiben als Kontext erhalten, aber der aktive Takt folgt nur noch dieser Priorisierung:
 
 - `Lane A: MVP Closeout` -> `done` (Data Restored & SSOT Sealed 2026-04-17)
-- `Lane B: Website/Public` -> `active` (In deployment, SSL/Tunnel pending)
+- `Lane B: Website/Public` -> `active` (HTTPS/Public-Edge baseline aktiv; Design/Content duerfen vorlaeufig bleiben)
 - `Lane C: Security/PBS/Infra` -> `active` (Recovery confirmed, Dashboard cleaned)
 - `Lane D: Stockenweiler` -> `watch`
 - `Lane E: Radio/Media` -> `active` (Media ready, 1,937 tracks verified in toolbox, Radio blocked by offline Pi)
@@ -17,7 +17,7 @@ Dieses Lane-Modell ist ab jetzt die verbindliche Arbeitsordnung. Aeltere breite 
 Regeln (Stand 2026-04-11, nach Lane-A-Abschluss):
 
 - `Lane A` ist abgeschlossen. `release-mvp-gate` = `MVP_READY` mit `0` offenen Blockern.
-- `Lane B` ist jetzt der aktive Track: `www.frawo-tech.de` HTTPS/Public-Edge abschliessen.
+- `Lane B` ist jetzt der aktive Track: fuer `www.frawo-tech.de` zuerst die HTTPS/Public-Edge-Baseline abschliessen; Design und Content koennen vorlaeufig bleiben.
 - `Lane C`, `D` und `E` bleiben sichtbar und werden nach Lane-B-Entscheid priorisiert.
 - PBS-Rebuild, Surface-Recovery und Radio-Vollintegration bleiben Vollzertifizierungs-Track.
 
@@ -208,6 +208,9 @@ Der Server gilt erst dann als wirklich fertig, wenn alle folgenden Punkte erfuel
   - HTTP-Redirect gruen
   - HTTPS rot
   - Public-Mail-DNS rot
+- der aktuelle Lane-B-Zielzustand ist bewusst kleiner als ein voller Website-Release:
+  - zuerst gueltiges HTTPS und sauberer Public Edge
+  - Design, Feintuning und Content-Reife duerfen bis spaeter provisorisch bleiben
 - der aktuelle Website-Track ist fachlich nicht mehr am Odoo-Inhalt blockiert, sondern am externen Cutover:
   - `VM220` ist als Public-Origin vorbereitet
   - `STRATO` zeigt jetzt auf den echten Zielpfad
@@ -489,6 +492,7 @@ Ziel:
 Status:
 - parallel zum internen Business-MVP
 - erster geplanter externer Release am `2026-04-01` bleibt website-first ueber die Odoo-Website mit sichtbarer Radio-Praesenz
+- der aktuelle operative Fokus ist aber kleiner: zuerst HTTPS/Public-Edge-Baseline, auch wenn die Website gestalterisch noch nicht final ist
 
 Vorbedingungen:
 - interner Business-MVP ueber `release-mvp-gate` technisch und sichtbar freigabefaehig
@@ -609,6 +613,11 @@ Definition of done:
 - Release ist klein genug, um im Fehlerfall kontrolliert ruecknehmbar zu bleiben
 - voller interner `production-gate` ist fuer diesen Website-Release nicht Voraussetzung
 
+Zwischenziel fuer den laufenden Lane-B-Block:
+- gueltiges HTTPS fuer `frawo-tech.de` und `www.frawo-tech.de`
+- sauberer Public-Edge-Pfad auf `VM220`
+- inhaltlich darf die Website bis zum spaeteren Design-Finishing vorlaeufig bleiben
+
 ### Welle 3 - Stockenweiler / `Rentner OS` v1 vorbereiten
 
 Ziel:
@@ -657,7 +666,7 @@ Lane A und der Recovery-/SSOT-Block sind abgeschlossen. Der echte Rest folgt jet
 
 1. **Split-DNS finalisieren**: restricted nameserver fuer `hs27.internal` im Tailscale-Admin auf `100.82.26.53` setzen.
 2. **Radio-Node wiederbeleben**: Vor-Ort-Recovery fuer `radio-node`, damit `100.82.26.53:8448` nicht mehr `502` liefert.
-3. **HTTPS/TLS Public Edge schliessen**: `www.frawo-tech.de` ueber Cloudflare-Proxy oder einen echten Dual-Stack-/IPv4-Pfad release-faehig machen.
+3. **HTTPS/Public-Edge-Baseline schliessen**: `frawo-tech.de` und `www.frawo-tech.de` ueber Cloudflare-Proxy oder einen echten Dual-Stack-/IPv4-Pfad mit gueltigem HTTPS gruen ziehen; Design/Content duerfen dabei vorlaeufig bleiben.
 4. **`wolfstudiopc`-Adminpfad haerten**: OpenSSH oder einen gleichwertigen lokalen Adminpfad sauber freigeben.
 5. **Stockenweiler vorbereiten**: Tailscale-only Supportpfad weiterziehen und das abgelaufene Zertifikat fuer `home.prinz-stockenweiler.de` erneuern.
 6. **HAOS-USB-Pfad vorbereiten**: Zigbee-/Z-Wave-Hardware stecken, Vendor/Product-ID sauber dokumentieren, dann Passthrough bauen.

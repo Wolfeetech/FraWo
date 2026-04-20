@@ -11,7 +11,7 @@ Keine Secrets. Keine Passwoerter. Diese Datei ist dafuer gedacht, sie direkt an 
 
 ## Generierung
 
-- Generated at: `2026-04-20 12:52:37`
+- Generated at: `2026-04-20 14:05:54`
 - Workspace root: `/mnt/c/Users/Admin/Documents/Private_Networking`
 - Git branch: `main`
 - Pending git changes: `5`
@@ -21,8 +21,8 @@ Keine Secrets. Keine Passwoerter. Diese Datei ist dafuer gedacht, sie direkt an 
 
 - `AI_BOOTSTRAP_CONTEXT.md`: `2026-04-19 22:54:12`
 - `OPS_HOME.md`: `2026-04-09 19:28:38`
-- `DOCS/Task_Archive/OPERATOR_TODO_QUEUE.md`: `2026-04-19 22:54:54`
-- `manifests/work_lanes/current_plan.json`: `2026-04-20 12:51:25`
+- `DOCS/Task_Archive/OPERATOR_TODO_QUEUE.md`: `2026-04-20 13:56:25`
+- `manifests/work_lanes/current_plan.json`: `2026-04-20 14:04:50`
 - `artifacts/release_mvp_gate/latest_release_mvp_gate.json`: `2026-04-20 11:18:26`
 - `artifacts/public_ipv6_exposure_audit/latest_report.md`: `2026-04-09 19:28:46`
 - `artifacts/estate_census/latest_report.json`: `2026-04-09 17:23:24`
@@ -198,7 +198,7 @@ Keine Secrets. Keine Passwoerter. Diese Datei ist dafuer gedacht, sie direkt an 
 - `Lane A: MVP Closeout` -> `done`
   - goal: Keep the internal business MVP closed and documented as the completed first delivery lane.
 - `Lane B: Website/Public` -> `active`
-  - goal: Finish a small, controlled public release for www.frawo-tech.de without exposing internal admin surfaces.
+  - goal: Get a minimal public HTTPS baseline for www.frawo-tech.de so the edge is technically green even while design and content remain provisional.
 - `Lane C: Security/PBS/Infra` -> `active`
   - goal: Hold the recovered platform on a professional baseline while finishing DNS, admin-path, and infrastructure follow-through.
 - `Lane D: Stockenweiler` -> `watch`
@@ -312,15 +312,15 @@ Keine Secrets. Keine Passwoerter. Diese Datei ist dafuer gedacht, sie direkt an 
 - `status`: `blocked`
 - `lane`: Lane B: Website/Public
 - `change_class`: gated_infra
-- `goal`: Finish the smallest safe public HTTPS path for www.frawo-tech.de.
-- `done_when`: www.frawo-tech.de serves the intended website over HTTPS with rollback notes and no public admin exposure.
+- `goal`: Finish the smallest safe public HTTPS baseline for frawo-tech.de and www.frawo-tech.de.
+- `done_when`: frawo-tech.de redirects cleanly and www.frawo-tech.de serves over valid HTTPS with rollback notes and no public admin exposure, even if website design/content is still provisional.
 - `blocked_by`: `public_ipv4_edge_path_missing`, `acme_connection_refused_on_ipv4`
 - `preflight_checks`: `VM220 website origin answers internally on 10.1.0.22`, `Public DNS still points at the intended target`, `No internal admin UI is included in the public scope`
 - `rollback_plan`: If the public cutover fails, keep DNS and proxy on the last known-good HTTP-only state and do not publish a broken HTTPS path as released.
 - `verification_commands`: `python scripts/website_release_gate.py`, `python scripts/public_dualstack_edge_check.py`
 - `last_verified_at`: 2026-04-19
-- `next_operator_action`: Choose and provide the final public edge path, currently Cloudflare proxy or equivalent public IPv4 routing.
-- `next_codex_action`: Keep Lane B focused on the narrow website release and do not mix it with unrelated infra or media work.
+- `next_operator_action`: Choose and provide the final public edge path, currently Cloudflare proxy or equivalent public IPv4 routing, to get HTTPS green first.
+- `next_codex_action`: Keep Lane B focused on the HTTPS-baseline outcome and do not mix it with unrelated infra or media work.
 
 ### `radio_node_recovery`
 

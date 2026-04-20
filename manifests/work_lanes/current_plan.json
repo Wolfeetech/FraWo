@@ -54,14 +54,14 @@
       "label": "Lane B: Website/Public",
       "status": "active",
       "priority": 2,
-      "goal": "Finish a small, controlled public release for www.frawo-tech.de without exposing internal admin surfaces.",
-      "done_when": "www.frawo-tech.de is externally reachable over HTTPS with documented rollback and no admin UI exposure.",
+      "goal": "Get a minimal public HTTPS baseline for www.frawo-tech.de so the edge is technically green even while design and content remain provisional.",
+      "done_when": "frawo-tech.de and www.frawo-tech.de are externally reachable over valid HTTPS through the chosen public edge with documented rollback and no admin UI exposure, even if the website design/content is not final yet.",
       "blocked_by": [
         "public_ipv4_edge_path_missing",
         "tls_issuance_blocked"
       ],
-      "next_operator_action": "Decide and provide the final public edge path, currently Cloudflare proxy or equivalent public IPv4/TLS path.",
-      "next_codex_action": "Keep the website origin, release gate, and rollout docs aligned; as soon as the edge path is chosen, execute the smallest safe release sequence."
+      "next_operator_action": "Decide and provide the final public edge path, currently Cloudflare proxy or equivalent public IPv4/TLS path, so HTTPS can go green even before the website design is final.",
+      "next_codex_action": "Keep the website origin, release gate, and rollout docs aligned around the HTTPS-baseline scope; as soon as the edge path is chosen, execute the smallest safe sequence."
     },
     {
       "id": "lane_c_security_pbs_infra",
@@ -151,14 +151,14 @@
         "python scripts/public_dualstack_edge_check.py"
       ],
       "last_verified_at": "2026-04-19",
-      "goal": "Finish the smallest safe public HTTPS path for www.frawo-tech.de.",
-      "done_when": "www.frawo-tech.de serves the intended website over HTTPS with rollback notes and no public admin exposure.",
+      "goal": "Finish the smallest safe public HTTPS baseline for frawo-tech.de and www.frawo-tech.de.",
+      "done_when": "frawo-tech.de redirects cleanly and www.frawo-tech.de serves over valid HTTPS with rollback notes and no public admin exposure, even if website design/content is still provisional.",
       "blocked_by": [
         "public_ipv4_edge_path_missing",
         "acme_connection_refused_on_ipv4"
       ],
-      "next_operator_action": "Choose and provide the final public edge path, currently Cloudflare proxy or equivalent public IPv4 routing.",
-      "next_codex_action": "Keep Lane B focused on the narrow website release and do not mix it with unrelated infra or media work."
+      "next_operator_action": "Choose and provide the final public edge path, currently Cloudflare proxy or equivalent public IPv4 routing, to get HTTPS green first.",
+      "next_codex_action": "Keep Lane B focused on the HTTPS-baseline outcome and do not mix it with unrelated infra or media work."
     },
     {
       "id": "radio_node_recovery",
