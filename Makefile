@@ -133,6 +133,10 @@ openclaw-shell:
 openclaw-terminal:
 	wt.exe -w 0 new-tab --title OpenClaw --startingDirectory C:/WORKSPACE/OPERATIONS/OpenClaw powershell.exe -NoExit -NoProfile -ExecutionPolicy Bypass -File C:/WORKSPACE/OPERATIONS/OpenClaw/start_openclaw.ps1
 
+## openclaw-sync: Regenerate shared OpenClaw onboard snapshot
+openclaw-sync:
+	powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:/WORKSPACE/OPERATIONS/OpenClaw/start_openclaw.ps1 -Sync
+
 # ─────────────────────────────────────────────────────────────────────────────
 
 refresh-context:
