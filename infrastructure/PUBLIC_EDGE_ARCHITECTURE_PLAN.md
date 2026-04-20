@@ -21,7 +21,7 @@ Stand `2026-03-26` ist der freigegebene Release-Scope fuer `2026-04-01` bewusst 
 - die Website selbst traegt im ersten Release bereits die sichtbare Radio-Praesenz
 - `radio.frawo-tech.de` bleibt fuer spaeter vorbereitet, ist aber nicht die Pflicht-Frontdoor des ersten Releases
 
-## Live Facts 2026-03-30
+## Live Facts 2026-04-20
 
 - `frawo-tech.de` loest oeffentlich jetzt auf `92.211.33.54` und `2a00:1e:ef80:7c01:be24:11ff:feaa:bbcc` auf.
 - `www.frawo-tech.de` folgt aktuell sauber auf `frawo-tech.de`.
@@ -32,8 +32,8 @@ Stand `2026-03-26` ist der freigegebene Release-Scope fuer `2026-04-01` bewusst 
   - `MX` sichtbar
   - `DMARC` sichtbar
   - `SPF` im Live-Check nicht sichtbar
-- letzter Website-Gate-Entscheid: `artifacts/website_release_gate/20260330_154459/website_release_gate.md` = `BLOCKED`
-- letzter Website-Audit: `artifacts/website_release_audit/20260330_154447`
+- letzter Website-Gate-Entscheid: `artifacts/website_release_gate/20260330_161648/website_release_gate.md` = `BLOCKED`
+- letzter Website-Audit: `artifacts/website_release_audit/20260330_161613`
 - letzter Zielpfad-Preview: `artifacts/public_edge_preview/20260330_134359/report.md` = `passed`
 - der Website-Track ist jetzt nativ ohne WSL pruefbar
 - sichtbare Browser-Abnahme bestaetigt den Technikbefund:
@@ -41,14 +41,34 @@ Stand `2026-03-26` ist der freigegebene Release-Scope fuer `2026-04-01` bewusst 
   - Apex-HTTP redirectet korrekt
   - HTTPS endet aktuell mit `ERR_SSL_PROTOCOL_ERROR`
 - `VM220` ist jetzt der klare Public-Origin-Kandidat:
-  - Host `www.frawo-tech.de` auf `192.168.2.22` liefert `Home | FraWo`
-  - Host `frawo-tech.de` auf `192.168.2.22` liefert `308` auf `https://www.frawo-tech.de/`
+  - Host `www.frawo-tech.de` auf `10.1.0.22` liefert `Home | FraWo`
+  - Host `frawo-tech.de` auf `10.1.0.22` liefert `308` auf `https://www.frawo-tech.de/`
   - `/radio/public/frawo-funk` liefert den AzuraCast-Player
 - `VM220` besitzt eine globale IPv6 `2a00:1e:ef80:7c01:be24:11ff:feaa:bbcc`, die fuer Host `www.frawo-tech.de` auf HTTP bereits `200 OK` liefert.
 - `CT100 toolbox` bleibt ein interner Preview- und Infrastrukturpfad; fuer den oeffentlichen First-Class-Cutover ist `VM220` fachlich sauberer.
 - `curl -6` gegen Apex und `www` auf Port `80` ist jetzt gruen; die Website ist damit oeffentlich ueber IPv6 sichtbar.
 - `curl -4` gegen Apex und `www` auf Port `80` ist weiter rot; ein aktiver Router-Forward fuer IPv4 auf `VM220` ist aktuell nicht belegt.
 - Caddy-ACME auf `VM220` versucht Zertifikate jetzt am richtigen Ziel zu ziehen, scheitert aber aktuell mit `92.211.33.54: Connection refused`; der Restblocker ist damit konkret der fehlende IPv4-Pfad fuer `80/443`.
+
+## Decision Stand 2026-04-20
+
+Der bevorzugte Website-Release-Pfad ist jetzt klar:
+
+- primaerer Release-Pfad: `Cloudflare` als oeffentlicher Edge vor `VM220`
+- primaerer Origin: `VM220 odoo` auf `10.1.0.22`
+- primaerer Scope: nur `frawo-tech.de` und `www.frawo-tech.de`
+- primaerer Nutzen: HTTPS wird nicht mehr vom DS-Lite-/IPv4-Forward der EasyBox blockiert
+
+Der alternative Pfad bleibt sichtbar, ist aber nicht mehr die bevorzugte Arbeitsannahme:
+
+- Alternativpfad: echter Dual-Stack-/IPv4-Pfad fuer `80/443` direkt auf `VM220`
+- dieser Pfad ist nur dann sinnvoll, wenn ein belastbarer oeffentlicher IPv4-Forward wirklich verfuegbar gemacht wird
+
+Nicht mehr als aktive Standardannahme behandeln:
+
+- zufaellig mitlaufende direkte Public-Exposition von `VM220`
+- `CT100 toolbox` als primaeres oeffentliches Website-Ziel
+- Alpha-/Ad-hoc-Tunnel als produktiver Dauerzustand
 
 ## Grundsatz
 
@@ -156,10 +176,11 @@ Bevorzugter Zielpfad dafuer:
 
 Cutover-Realitaet Stand jetzt:
 
-- `www` kann nach heutigem Technikstand direkt auf den `VM220`-Edge zeigen.
+- `www` kann fachlich direkt auf den `VM220`-Origin zeigen, aber der direkte IPv4-/ACME-Pfad ist durch DS-Lite weiter blockiert.
 - fuer IPv6 ist das Ziel bereits sichtbar vorbereitet.
 - fuer IPv4 fehlt aktuell noch der nachweisbare Router-Forward auf `VM220`.
-- Zertifikate koennen erst erfolgreich geholt werden, wenn die oeffentlichen A/AAAA-Eintraege nicht mehr auf die `STRATO`-Parking-Ziele zeigen.
+- der bevorzugte Entschaerfungspfad ist deshalb jetzt `Cloudflare` vor `VM220`, nicht weiteres Hoffen auf einen impliziten Router-Fix.
+- Zertifikate koennen auf dem direkten Pfad erst erfolgreich geholt werden, wenn die oeffentlichen A/AAAA-Eintraege nicht mehr auf die `STRATO`-Parking-Ziele zeigen und der IPv4-Pfad real offen ist.
 
 ### Zertifikate
 
@@ -186,10 +207,10 @@ Vor dem ersten Public Rollout muessen gruen sein:
 ## Rollout-Reihenfolge
 
 1. `frawo-tech.de` final dokumentieren
-2. Public DNS-Modell festziehen
+2. Public-Edge-Modell final festziehen: bevorzugt `Cloudflare -> VM220`
 3. Mailboxen und DNS-Mail-Records sauber setzen
-4. Edge-Hostnamen festlegen
-5. TLS-Automation einrichten
+4. Edge-Hostnamen und Redirect-Regeln festlegen
+5. TLS-Automation ueber den gewaehlten Edge-Pfad einrichten
 6. Logging und Uptime-Monitoring festlegen
 7. zuerst Odoo-Website mit sichtbarer Radio-Praesenz veroeffentlichen
 8. erst spaeter eine separate dedizierte Radio-Seite
