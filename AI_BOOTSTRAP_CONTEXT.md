@@ -34,6 +34,8 @@
 - Latest storage optimization audit: `artifacts/storage_optimization/latest_report.md`
 - Latest CI/CD delivery factory report: `artifacts/cicd_delivery_factory/latest_report.md`
 - Latest CI/CD delivery factory preflight: `artifacts/cicd_delivery_factory/latest_preflight.md` with current hard limit `repo_side_factory_only`
+- Canonical Local Intelligence Layer: **AI Toolkit for VS Code** (ONNX / DirectML) on `wolfstudiopc`
+- Business Intelligence Bridge: **Odoo Professional MCP Server** (scripts/business/mcp_odoo_pro_server.py)
 - Transition note `2026-04-03`: `wolfstudiopc` currently reaches the core services professionally via `toolbox` Tailscale frontdoors on `100.82.26.53:*`; direct StudioPC access to the legacy guest `192.168.2.x` range is not the working path while the UCG migration bridge is active
 
 ## Service And Page Map
@@ -131,3 +133,4 @@
 - Do not bloat the portal UI with Media, Radio, Home Assistant, or shared frontend controls before the current business MVP is visibly stable.
 - Do not mark PBS healthy until the guarded rebuild path is actually completed and proven.
 - Do not claim the shared frontend is certified just because the portal exists; it remains an explicit acceptance item.
+- **AI Rule**: Always prefer local intelligence via the **AI Toolkit** for business-logic preflights (Odoo lanes, task reclamation) to ensure SSOT integrity.
