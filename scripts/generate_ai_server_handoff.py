@@ -9,6 +9,7 @@ import subprocess
 from collections import Counter
 from datetime import datetime
 from pathlib import Path
+from urllib.parse import urlparse
 from typing import Iterable
 
 import yaml
@@ -47,6 +48,13 @@ def read_text(path: Path) -> str:
 
 def format_mtime(path: Path) -> str:
     return datetime.fromtimestamp(path.stat().st_mtime).strftime("%Y-%m-%d %H:%M:%S")
+
+
+def format_report_freshness(path: Path, report: dict[str, object]) -> str:
+    generated_at = report.get("generated_at") if isinstance(report, dict) else None
+    if isinstance(generated_at, str) and generated_at.strip():
+        return generated_at.strip()
+    return format_mtime(path)
 
 
 def run_git(*args: str) -> str:
@@ -163,6 +171,105 @@ def load_json(path: Path) -> dict[str, object]:
     return json.loads(read_text(path))
 
 
+def parse_timestamp(value: object) -> datetime | None:
+    if not isinstance(value, str) or not value.strip():
+        return None
+    normalized = value.strip().replace("Z", "+00:00")
+    try:
+        parsed = datetime.fromisoformat(normalized)
+    except ValueError:
+        return None
+    if parsed.tzinfo is not None:
+        return parsed.replace(tzinfo=None)
+    return parsed
+
+
+def extract_frontdoor_hosts(frontdoors: object) -> set[str]:
+    hosts: set[str] = set()
+    if not isinstance(frontdoors, list):
+        return hosts
+    for item in frontdoors:
+        if not isinstance(item, dict):
+            continue
+        url = item.get("url")
+        if not isinstance(url, str):
+            continue
+        host = urlparse(url).hostname
+        if host:
+            hosts.add(host)
+    return hosts
+
+
+def extract_live_frontdoor_ip(markdown: str) -> str | None:
+    patterns = [
+        r"Tailscale/frontdoor\s+`(\d+\.\d+\.\d+\.\d+)`",
+        r"mobile frontdoor(?: truth)? is\s+`(\d+\.\d+\.\d+\.\d+)`",
+        r"http://(\d+\.\d+\.\d+\.\d+):844[2-9]",
+    ]
+    for pattern in patterns:
+        match = re.search(pattern, markdown)
+        if match:
+            return match.group(1)
+    return None
+
+
+def estate_census_is_stale(
+    estate_census_report: dict[str, object],
+    platform_health_report: dict[str, object],
+    current_frontdoor: str | None = None,
+) -> tuple[bool, list[str]]:
+    reasons: list[str] = []
+    estate_generated_at = parse_timestamp(estate_census_report.get("generated_at"))
+    platform_generated_at = parse_timestamp(platform_health_report.get("generated_at"))
+    if estate_generated_at and platform_generated_at:
+        age_delta = platform_generated_at - estate_generated_at
+        if age_delta.days >= 1:
+            reasons.append(
+                f"estate census older than platform health by {age_delta.days} day(s)"
+            )
+
+    estate_hosts = extract_frontdoor_hosts(estate_census_report.get("frontdoors"))
+    platform_frontdoor = current_frontdoor or (
+        platform_health_report.get("access_paths", {}).get("tailscale_frontdoor")
+        if isinstance(platform_health_report.get("access_paths"), dict)
+        else None
+    )
+    if isinstance(platform_frontdoor, str) and platform_frontdoor:
+        if estate_hosts and platform_frontdoor not in estate_hosts:
+            reasons.append(
+                f"estate census frontdoor host set {sorted(estate_hosts)} does not include current frontdoor {platform_frontdoor}"
+            )
+
+    return bool(reasons), reasons
+
+
+def portal_pilot_is_stale(
+    portal_pilot_preflight: dict[str, object],
+    current_frontdoor: str | None = None,
+) -> tuple[bool, list[str]]:
+    reasons: list[str] = []
+    generated_at = parse_timestamp(portal_pilot_preflight.get("generated_at"))
+    if generated_at:
+        age_delta = datetime.now() - generated_at
+        if age_delta.days >= 1:
+            reasons.append(
+                f"portal pilot preflight older than 1 day ({age_delta.days} day(s))"
+            )
+
+    root_url = (
+        portal_pilot_preflight.get("portal_frontdoor", {}).get("root", {}).get("url")
+        if isinstance(portal_pilot_preflight.get("portal_frontdoor"), dict)
+        else None
+    )
+    root_host = urlparse(root_url).hostname if isinstance(root_url, str) else None
+    if current_frontdoor and root_host and root_host != current_frontdoor:
+        reasons.append(
+            f"portal pilot frontdoor host {root_host} does not match current frontdoor {current_frontdoor}"
+        )
+
+    return bool(reasons), reasons
+
+
 def parse_public_ipv6_report(path: Path) -> dict[str, object]:
     text = read_text(path)
     timestamp_match = re.search(r"- timestamp: `([^`]+)`", text)
@@ -245,6 +352,7 @@ def render_task_card(task: dict[str, object]) -> list[str]:
 def main() -> int:
     ai_bootstrap_text = read_text(AI_BOOTSTRAP_CONTEXT_PATH)
     ops_home_text = read_text(OPS_HOME_PATH)
+    live_frontdoor_ip = extract_live_frontdoor_ip(ai_bootstrap_text)
     release_gate = load_release_mvp_gate()
     work_lanes = load_work_lanes()
     website_gate = parse_gate_markdown(latest_gate_file(WEBSITE_RELEASE_GATE_DIR, "website_release_gate.md"))
@@ -289,6 +397,15 @@ def main() -> int:
     estate_blockers = estate_census_report.get("blockers", [])
     estate_recommended_next = estate_census_report.get("recommended_next_order", [])
     estate_transition_sequence = estate_census_report.get("transition_sequence", [])
+    estate_census_stale, estate_census_stale_reasons = estate_census_is_stale(
+        estate_census_report,
+        platform_health_report,
+        live_frontdoor_ip,
+    )
+    portal_pilot_stale, portal_pilot_stale_reasons = portal_pilot_is_stale(
+        portal_pilot_preflight,
+        live_frontdoor_ip,
+    )
 
     branch = run_git("rev-parse", "--abbrev-ref", "HEAD") or "unknown"
     dirty_count = count_git_dirty_files()
@@ -332,9 +449,17 @@ def main() -> int:
     lines.append(f"- `artifacts/release_mvp_gate/latest_release_mvp_gate.json`: `{format_mtime(RELEASE_MVP_GATE_JSON_PATH)}`")
     lines.append(f"- `artifacts/public_ipv6_exposure_audit/latest_report.md`: `{format_mtime(PUBLIC_IPV6_REPORT_PATH)}`")
     if ESTATE_CENSUS_REPORT_PATH.exists():
-        lines.append(f"- `artifacts/estate_census/latest_report.json`: `{format_mtime(ESTATE_CENSUS_REPORT_PATH)}`")
+        lines.append(f"- `artifacts/estate_census/latest_report.json`: `{format_report_freshness(ESTATE_CENSUS_REPORT_PATH, estate_census_report)}`")
+        if estate_census_stale:
+            lines.append(
+                f"  - stale_for_live_truth: `true` ({'; '.join(estate_census_stale_reasons)})"
+            )
     if PORTAL_UCG_PILOT_PREFLIGHT_PATH.exists():
-        lines.append(f"- `artifacts/ucg_portal_pilot_preflight/latest_report.json`: `{format_mtime(PORTAL_UCG_PILOT_PREFLIGHT_PATH)}`")
+        lines.append(f"- `artifacts/ucg_portal_pilot_preflight/latest_report.json`: `{format_report_freshness(PORTAL_UCG_PILOT_PREFLIGHT_PATH, portal_pilot_preflight)}`")
+        if portal_pilot_stale:
+            lines.append(
+                f"  - stale_for_live_truth: `true` ({'; '.join(portal_pilot_stale_reasons)})"
+            )
     if website_source_path:
         lines.append(f"- `{website_source_path.relative_to(ROOT_DIR)}`: `{format_mtime(website_source_path)}`")
     if production_source_path:
@@ -406,6 +531,16 @@ def main() -> int:
     lines.append("")
     if estate_census_report:
         lines.append(f"- Generated at: `{estate_census_report.get('generated_at', 'unknown')}`")
+        if estate_census_stale:
+            lines.append("- Live-truth warning: this estate census is stale for current frontdoor/runtime truth.")
+            current_frontdoor = live_frontdoor_ip or (
+                platform_health_report.get("access_paths", {}).get("tailscale_frontdoor", "unknown")
+                if isinstance(platform_health_report.get("access_paths"), dict)
+                else "unknown"
+            )
+            lines.append(f"- Use it only for topology/peer background; current mobile frontdoor truth is `{current_frontdoor}`.")
+            for reason in estate_census_stale_reasons:
+                lines.append(f"  - {reason}")
         lines.append(
             f"- Tailscale peers: online `{estate_summary.get('online_tailscale_peers', 0)}` / offline `{estate_summary.get('offline_tailscale_peers', 0)}` / routed `{estate_summary.get('routed_tailscale_peers', 0)}`"
         )
@@ -423,7 +558,7 @@ def main() -> int:
                     f"- Local active IPv4 interfaces: `{', '.join(f"{item.get('InterfaceAlias', '-')}: {item.get('IPAddress', '-')}/{item.get('PrefixLength', '-')}`".strip('`') for item in local_ips[:4])}`"
                 )
         degraded_frontdoors = [item for item in estate_frontdoors if item.get("status") != "ok"]
-        if degraded_frontdoors:
+        if degraded_frontdoors and not estate_census_stale:
             lines.append("- Degraded frontdoors:")
             for item in degraded_frontdoors[:3]:
                 lines.append(f"  - `{item.get('name', '-')}` -> HTTP `{item.get('http_code', '000')}` via `{item.get('url', '-')}`")
@@ -504,6 +639,10 @@ def main() -> int:
     lines.append("## UCG Pilot Snapshot")
     lines.append("")
     if portal_pilot_preflight:
+        if portal_pilot_stale:
+            lines.append("- Live-truth warning: this portal pilot preflight is stale for current frontdoor/runtime truth.")
+            for reason in portal_pilot_stale_reasons:
+                lines.append(f"  - {reason}")
         lines.append(f"- Pilot: `{portal_pilot_preflight.get('pilot', 'portal')}`")
         lines.append(
             f"- Ready for gated runtime change: `{str(portal_pilot_preflight.get('ready_for_gated_runtime_change', False)).lower()}`"
@@ -514,8 +653,9 @@ def main() -> int:
         lines.append(
             f"- Portal status snapshot: platform_core `{summary.get('platform_core', '-')}`, healthy `{summary.get('healthy_services', 0)}` / `{summary.get('total_services', 0)}`"
         )
-        for item in portal_pilot_preflight.get('checks', [])[:4]:
-            lines.append(f"  - `{item.get('id', '-')}` -> `{'ok' if item.get('ok') else 'fail'}` / {item.get('evidence', '-')}")
+        if not portal_pilot_stale:
+            for item in portal_pilot_preflight.get('checks', [])[:4]:
+                lines.append(f"  - `{item.get('id', '-')}` -> `{'ok' if item.get('ok') else 'fail'}` / {item.get('evidence', '-')}")
     else:
         lines.append("- No portal pilot preflight artifact yet.")
     lines.append("")
