@@ -22,6 +22,10 @@
 - Backing Store: Das Antigravity-Arbeitsverzeichnis bleibt technisch unverändert.
 - Windows-Bootstrap:
   - `scripts\bootstrap_windows_workspace.cmd` führt die initiale Einrichtung des Alias und des Shortcuts durch.
+  - `scripts\bootstrap_windows_operator_workstation.cmd` richtet die lokale Windows-Operator-Baseline mit Workspace- und Ops-Shortcuts ein.
+  - `scripts\update_windows_operator_workstation.ps1` fuehrt kontrollierte Paketupdates aus und ueberspringt laufende GUI-Blocker standardmaessig.
+  - `scripts\tools\workstation_operator_audit.ps1` erzeugt einen reproduzierbaren lokalen Audit-Report fuer diese Windows-Workstation.
+  - `scripts\tools\repo_credential_scan.ps1` erzeugt einen lokalen High-Risk-Scan fuer eingebettete Klartext-Credentials im Repo.
 
 ## Read Order
 
@@ -31,7 +35,7 @@ Read only this short boot path first:
 2. `AI_BOOTSTRAP_CONTEXT.md`
 3. `LIVE_CONTEXT.md`
 4. `OPS_HOME.md`
-5. `OPERATOR_TODO_QUEUE.md`
+5. `DOCS/Task_Archive/OPERATOR_TODO_QUEUE.md`
 6. `OPERATIONS/TOOLS_OPERATIONS_INDEX.md`
 7. `OPERATIONS/PRODUCTION_READINESS_OPERATIONS.md`
 8. `MASTERPLAN.md`
@@ -116,7 +120,7 @@ After `INTRODUCTION_PROMPT.md`, choose the narrowest specialized prompt that fit
   - canonical start-of-day, close-day and handoff control path
 - `OPERATIONS/USER_ONBOARDING_OPERATIONS.md`
   - canonical operator path for Wolf, Franz and device onboarding
-- `OPERATOR_TODO_QUEUE.md`
+- `DOCS/Task_Archive/OPERATOR_TODO_QUEUE.md`
   - short operator-facing queue for the next manual unblock steps
 - `PBS_VM_240_SETUP_PLAN.md`
   - controlled rollout path and stage gates for the planned PBS VM

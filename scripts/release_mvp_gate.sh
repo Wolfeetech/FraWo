@@ -8,21 +8,44 @@ OUTPUT_ROOT="${ROOT_DIR}/artifacts/release_mvp_gate"
 TIMESTAMP="$(date +%Y%m%d_%H%M%S)"
 
 find_latest_summary() {
-  local latest_dir
-  latest_dir="$(
-    find "${AUDIT_ROOT}" -mindepth 1 -maxdepth 1 -type d 2>/dev/null \
-      | while IFS= read -r dir; do
-          base="$(basename "${dir}")"
-          [[ "${base}" =~ ^[0-9]{8}_[0-9]{6}$ ]] || continue
-          printf '%s\n' "${dir}"
-        done \
-      | sort \
-      | tail -n 1
-  )"
-  if [[ -z "${latest_dir}" ]]; then
-    return 1
-  fi
-  printf '%s/summary.tsv\n' "${latest_dir}"
+  python3 - <<'PY' "${AUDIT_ROOT}"
+import csv
+import sys
+from pathlib import Path
+
+audit_root = Path(sys.argv[1])
+required = {
+    "inventory-check",
+    "ansible-ping",
+    "qga-check",
+    "business-drift-check",
+    "toolbox-network-check",
+    "toolbox-portal-status-check",
+    "vaultwarden-smtp-check",
+    "proxmox-local-backup-check",
+    "security-baseline-check",
+    "core-app-smtp-check",
+}
+
+candidates = sorted(
+    path / "summary.tsv"
+    for path in audit_root.iterdir()
+    if path.is_dir() and path.name[:8].isdigit() and (path / "summary.tsv").is_file()
+)
+
+if not candidates:
+    raise SystemExit(1)
+
+fallback = candidates[-1]
+for candidate in reversed(candidates):
+    rows = list(csv.DictReader(candidate.open("r", encoding="utf-8"), delimiter="\t"))
+    ids = {row["id"] for row in rows}
+    if required.issubset(ids):
+        print(candidate)
+        raise SystemExit(0)
+
+print(fallback)
+PY
 }
 
 SUMMARY_PATH="${1:-}"

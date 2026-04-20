@@ -1,11 +1,20 @@
+import getpass
+import os
+import sys
 import psycopg2
 import json
 
-DB_USER = 'odoo'
-DB_PASS = 'odoo_db_pass_final_v1'
-DB_HOST = 'db'
+DB_USER = os.getenv("ODOO_DB_USER", "odoo")
+DB_PASS = os.getenv("ODOO_DB_PASSWORD")
+DB_HOST = os.getenv("ODOO_DB_HOST", "db")
 SOURCE_DBS = ['FraWo_Live', 'Recovery_DB']
 OUTPUT_FILE = '/tmp/odoo_migration_data.json'
+
+if not DB_PASS:
+    if sys.stdin is not None and sys.stdin.isatty():
+        DB_PASS = getpass.getpass("ODOO_DB_PASSWORD: ")
+    else:
+        raise RuntimeError("Setze ODOO_DB_PASSWORD, bevor du dieses Skript startest.")
 
 data = []
 

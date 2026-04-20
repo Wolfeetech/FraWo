@@ -16,6 +16,34 @@ ARTIFACT_DIR = ROOT / "artifacts" / "ucg_portal_pilot_preflight"
 REPORT_JSON = ARTIFACT_DIR / "latest_report.json"
 REPORT_MD = ARTIFACT_DIR / "latest_report.md"
 UCG_ARCH_PATH = ROOT / "UCG_NETWORK_ARCHITECTURE.md"
+SSH_CONFIG_PATH = ROOT / "Codex" / "ssh_config"
+DEFAULT_TOOLBOX_FRONTDOOR_IP = "100.82.26.53"
+
+
+def current_toolbox_frontdoor_ip() -> str:
+    try:
+        text = SSH_CONFIG_PATH.read_text(encoding="utf-8")
+    except OSError:
+        return DEFAULT_TOOLBOX_FRONTDOOR_IP
+
+    in_toolbox_block = False
+    for raw_line in text.splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("#"):
+            continue
+        lower = line.lower()
+        if lower.startswith("host "):
+            hosts = line.split()[1:]
+            in_toolbox_block = "toolbox" in hosts
+            continue
+        if in_toolbox_block and lower.startswith("hostname "):
+            parts = line.split(None, 1)
+            if len(parts) == 2 and parts[1].strip():
+                return parts[1].strip()
+    return DEFAULT_TOOLBOX_FRONTDOOR_IP
+
+
+TOOLBOX_FRONTDOOR_IP = current_toolbox_frontdoor_ip()
 
 
 def now_local() -> str:
@@ -97,8 +125,8 @@ def documentation_check() -> dict[str, object]:
 
 
 def build_report() -> dict[str, object]:
-    portal_frontdoor = http_probe("http://100.99.206.128:8447/")
-    portal_status = http_probe("http://100.99.206.128:8447/status.json")
+    portal_frontdoor = http_probe(f"http://{TOOLBOX_FRONTDOOR_IP}:8447/")
+    portal_status = http_probe(f"http://{TOOLBOX_FRONTDOOR_IP}:8447/status.json")
     portal_internal = http_probe("http://portal.hs27.internal/")
     portal_internal_status = http_probe("http://portal.hs27.internal/status.json")
     anker_ssh = ssh_probe("root@100.69.179.87", "hostname; pveversion | head -1")

@@ -4,9 +4,41 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 source "${ROOT_DIR}/scripts/toolbox_remote.sh"
 
+toolbox_frontdoor_ip() {
+  awk '
+    /^[[:space:]]*#/ {next}
+    /^[[:space:]]*Host[[:space:]]+/ {
+      in_toolbox=0
+      for (i=2; i<=NF; i++) {
+        if ($i == "toolbox") {
+          in_toolbox=1
+        }
+      }
+      next
+    }
+    in_toolbox && /^[[:space:]]*HostName[[:space:]]+/ {
+      print $2
+      exit
+    }
+  ' "${ROOT_DIR}/Codex/ssh_config"
+}
+
+TOOLBOX_FRONTDOOR_IP="$(toolbox_frontdoor_ip)"
+TOOLBOX_FRONTDOOR_IP="${TOOLBOX_FRONTDOOR_IP:-100.82.26.53}"
+
 extract_http_code() {
   local url="$1"
   curl -s -o /dev/null -w '%{http_code}' --max-time 10 "$url" || true
+}
+
+extract_remote_http_code() {
+  local url="$1"
+  run_toolbox_remote "curl -s -o /dev/null -w '%{http_code}' --max-time 10 '${url}'" 2>/dev/null || true
+}
+
+extract_remote_vhost_http_code() {
+  local host="$1"
+  run_toolbox_remote "curl -s -o /dev/null -w '%{http_code}' --max-time 10 -H 'Host: ${host}' http://127.0.0.1" 2>/dev/null || true
 }
 
 service_status="$(
@@ -30,9 +62,9 @@ except Exception:
 PY' 2>/dev/null || true
 )"
 
-internal_http="$(extract_http_code "http://media.hs27.internal")"
-direct_http="$(extract_http_code "http://10.1.0.20:8096")"
-mobile_http="$(extract_http_code "http://100.99.206.128:8449")"
+internal_http="$(extract_remote_vhost_http_code "media.hs27.internal")"
+direct_http="$(extract_remote_http_code "http://10.1.0.20:8096")"
+mobile_http="$(extract_http_code "http://${TOOLBOX_FRONTDOOR_IP}:8449")"
 
 echo "media_internal_http=${internal_http:-000}"
 echo "media_direct_http=${direct_http:-000}"

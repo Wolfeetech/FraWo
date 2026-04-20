@@ -1,11 +1,20 @@
 # -*- coding: utf-8 -*-
+import sys
 import xmlrpc.client
 import subprocess
+from pathlib import Path
 
-url = 'http://172.21.0.3:8069'
-db = 'FraWo_GbR'
-username = 'wolf@frawo-tech.de'
-password = 'OD-Wolf-2026!'
+SCRIPT_ROOT = Path(__file__).resolve().parents[1]
+sys.path.append(str(SCRIPT_ROOT))
+
+from odoo_env import resolve_connection, resolve_db_password
+
+settings = resolve_connection("http://172.21.0.3:8069", "FraWo_GbR", "wolf@frawo-tech.de")
+db_password = resolve_db_password()
+url = settings.url
+db = settings.db
+username = settings.user
+password = settings.secret
 
 common = xmlrpc.client.ServerProxy(f'{url}/xmlrpc/2/common')
 uid = common.authenticate(db, username, password, {})
@@ -30,7 +39,7 @@ def sql_update_arch(view_id, arch):
         escaped_arch = escaped_arch.replace(char, psql_chr)
     
     sql = f"UPDATE ir_ui_view SET arch_db = '{escaped_arch}' WHERE id = {view_id};"
-    cmd = ["docker", "exec", "-e", "PGPASSWORD=odoo_db_pass_final_v1", "odoo_db_1", "psql", "-U", "odoo", "-d", "FraWo_GbR", "-c", sql]
+    cmd = ["docker", "exec", "-e", f"PGPASSWORD={db_password}", "odoo_db_1", "psql", "-U", "odoo", "-d", db, "-c", sql]
     subprocess.run(cmd, check=True)
 
 # HOMEPAGE

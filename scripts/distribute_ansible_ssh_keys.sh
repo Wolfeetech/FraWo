@@ -4,7 +4,7 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 source "${ROOT_DIR}/scripts/inventory_remote.sh"
 
-DEFAULT_WINDOWS_KEY="/mnt/c/Users/StudioPC/.ssh/id_ed25519_frawo_new"
+DEFAULT_WINDOWS_KEY="/mnt/c/Users/${USER:-Admin}/.ssh/id_ed25519"
 KEY_SOURCE="${HOMESERVER_ANSIBLE_IDENTITY_SOURCE:-${DEFAULT_WINDOWS_KEY}}"
 KEY_CACHE="${HOMESERVER_ANSIBLE_IDENTITY_CACHE_FILE:-${HOME}/.ssh/homeserver2027_ansible_ed25519}"
 KEY_CACHE_PUB="${KEY_CACHE}.pub"
@@ -50,9 +50,14 @@ EOF
 main() {
   local pub_key
   local pub_b64
+  local resolved_key_source="${KEY_SOURCE}"
 
-  log "staging keypair from ${KEY_SOURCE}"
-  stage_keypair "${KEY_SOURCE}"
+  if [[ ! -r "${resolved_key_source}" && -r "/mnt/c/Users/Admin/.ssh/id_ed25519" ]]; then
+    resolved_key_source="/mnt/c/Users/Admin/.ssh/id_ed25519"
+  fi
+
+  log "staging keypair from ${resolved_key_source}"
+  stage_keypair "${resolved_key_source}"
 
   pub_key="$(tr -d '\r\n' < "${KEY_CACHE_PUB}")"
   pub_b64="$(printf '%s' "${pub_key}" | base64 -w0)"

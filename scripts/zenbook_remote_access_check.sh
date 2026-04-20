@@ -1,6 +1,30 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+toolbox_frontdoor_ip() {
+  awk '
+    /^[[:space:]]*#/ {next}
+    /^[[:space:]]*Host[[:space:]]+/ {
+      in_toolbox=0
+      for (i=2; i<=NF; i++) {
+        if ($i == "toolbox") {
+          in_toolbox=1
+        }
+      }
+      next
+    }
+    in_toolbox && /^[[:space:]]*HostName[[:space:]]+/ {
+      print $2
+      exit
+    }
+  ' "${ROOT_DIR}/Codex/ssh_config"
+}
+
+TOOLBOX_FRONTDOOR_IP="$(toolbox_frontdoor_ip)"
+TOOLBOX_FRONTDOOR_IP="${TOOLBOX_FRONTDOOR_IP:-100.82.26.53}"
+
 x_session="${XDG_SESSION_TYPE:-unknown}"
 echo "x_session=${x_session}"
 
@@ -25,14 +49,14 @@ else
   echo "anydesk_installed=no"
 fi
 
-if curl -I --max-time 10 http://100.99.206.128:8447 >/tmp/homeserver2027_portal_headers.txt 2>/dev/null; then
+if curl -I --max-time 10 "http://${TOOLBOX_FRONTDOOR_IP}:8447" >/tmp/homeserver2027_portal_headers.txt 2>/dev/null; then
   portal_http="$(awk 'NR==1{print $2}' /tmp/homeserver2027_portal_headers.txt)"
   echo "toolbox_portal_over_tailscale_http=${portal_http}"
 else
   echo "toolbox_portal_over_tailscale_http=unreachable"
 fi
 
-if curl -I --max-time 10 http://100.99.206.128:8448 >/tmp/homeserver2027_radio_headers.txt 2>/dev/null; then
+if curl -I --max-time 10 "http://${TOOLBOX_FRONTDOOR_IP}:8448" >/tmp/homeserver2027_radio_headers.txt 2>/dev/null; then
   radio_http="$(awk 'NR==1{print $2}' /tmp/homeserver2027_radio_headers.txt)"
   echo "toolbox_radio_over_tailscale_http=${radio_http}"
 else

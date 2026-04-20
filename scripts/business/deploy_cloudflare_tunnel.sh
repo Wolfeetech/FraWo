@@ -111,7 +111,10 @@ import xmlrpc.client, os
 
 url = "http://localhost:8069"
 db  = "FraWo_GbR"
-pw   = open("/run/secrets/odoo_admin_pw", "r").read().strip() if os.path.exists("/run/secrets/odoo_admin_pw") else "OD-Wolf-2026!"
+secret_path = "/run/secrets/odoo_admin_pw"
+if not os.path.exists(secret_path):
+    raise SystemExit("FEHLER: /run/secrets/odoo_admin_pw fehlt. Kein Klartext-Fallback im Repo erlaubt.")
+pw = open(secret_path, "r").read().strip()
 
 common = xmlrpc.client.ServerProxy(f"{url}/xmlrpc/2/common", allow_none=True)
 uid = common.authenticate(db, "admin", pw, {})

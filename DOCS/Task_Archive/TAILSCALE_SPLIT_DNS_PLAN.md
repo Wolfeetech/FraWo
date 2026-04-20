@@ -15,7 +15,8 @@ Zielbild:
 
 - `MagicDNS` bleibt fuer Tailnet-Nodes aktiv
 - `hs27.internal` wird als `restricted nameserver` bzw. `split DNS` ueber Tailscale eingefuehrt
-- `AdGuard Home` auf `10.1.0.20` wird Nameserver nur fuer `hs27.internal`
+- `AdGuard Home` auf `toolbox` wird fuer Tailscale-Clients ueber `100.82.26.53` als Nameserver nur fuer `hs27.internal` angesprochen
+- die eigentlichen Service-Antworten fuer `hs27.internal` bleiben auf der Toolbox-LAN-IP `10.1.0.20`
 - andere DNS-Anfragen bleiben ausserhalb dieses Splits unberuehrt
 
 ## Aktueller Ist-Stand
@@ -23,21 +24,21 @@ Zielbild:
 - `MagicDNS` ist im Tailnet aktiv
 - der ZenBook akzeptiert Tailscale-DNS (`CorpDNS=true`)
 - `toolbox.tail150400.ts.net` ist ueber `100.100.100.100` aufloesbar
-- `hs27.internal` ist direkt ueber AdGuard auf `10.1.0.20` korrekt aufloesbar
+- `hs27.internal` ist fuer entfernte Tailscale-Clients direkt ueber AdGuard auf `100.82.26.53` korrekt aufloesbar und liefert dabei weiter `10.1.0.20` als Frontdoor-Antwort
 - die Toolbox annonciert lokal `10.1.0.0/24` (Tailnet-Approval steht noch aus)
-- der restricted nameserver fuer `hs27.internal` ist noch auf `192.168.2.20` gesetzt und muss auf `10.1.0.20` aktualisiert werden
-- `ha.hs27.internal`, `portal.hs27.internal` und `odoo.hs27.internal` liefern ueber `100.100.100.100` korrekt, sobald Split-DNS auf `10.1.0.20` umgestellt ist
+- der restricted nameserver fuer `hs27.internal` ist noch nicht sauber auf den aktuellen Toolbox-Tailscale-Resolver umgestellt und muss auf `100.82.26.53` aktualisiert werden
+- `ha.hs27.internal`, `portal.hs27.internal` und `odoo.hs27.internal` liefern ueber `100.100.100.100` korrekt, sobald Split-DNS auf `100.82.26.53` umgestellt ist
 
 ## Wichtige Regel
 
-Solange der Nameserver fuer `hs27.internal` die private LAN-IP `10.1.0.20` ist, braucht Tailscale fuer entfernte Clients den funktionierenden Subnet-Router.
+Der restricted Nameserver fuer `hs27.internal` sollte fuer entfernte Tailscale-Clients nicht auf die private LAN-IP `10.1.0.20` zeigen, sondern auf die Toolbox-Tailscale-IP `100.82.26.53`.
 
 Praktisch hiess das fuer die Umsetzung:
 
 - erst Route `10.1.0.0/24` approven
-- dann Split-DNS in der Tailscale-Adminseite setzen
+- dann Split-DNS in der Tailscale-Adminseite auf `100.82.26.53` setzen
 
-Der vorherige `192.168.2.0/24`-Pfad war erfolgreich; der neue `10.1.0.0/24`-Pfad wartet noch auf Tailnet-Approval und DNS-Update.
+Die Frontdoor-Antworten bleiben dabei weiter auf `10.1.0.20`, deshalb braucht der eigentliche Zugriff auf `portal`, `odoo`, `cloud` und die anderen internen Ziele nach wie vor die funktionierende Route `10.1.0.0/24`.
 
 ## Readiness Check
 
@@ -57,7 +58,7 @@ Erwartung fuer echte Umstellung:
 
 ## Exakte Admin-Schritte
 
-Status: Update auf `10.1.0.20` steht noch aus (Route/DNS-Approval).
+Status: Update auf `100.82.26.53` steht noch aus (Route/DNS-Approval).
 
 ### 1. Route zuerst
 
@@ -74,7 +75,7 @@ Status: Update auf `10.1.0.20` steht noch aus (Route/DNS-Approval).
 ### 3. Restricted Nameserver fuer `hs27.internal` anlegen
 
 1. `Add nameserver`
-2. Custom nameserver `10.1.0.20`
+2. Custom nameserver `100.82.26.53`
 3. Restrict to domain `hs27.internal`
 4. Speichern
 
@@ -82,14 +83,14 @@ Status: Update auf `10.1.0.20` steht noch aus (Route/DNS-Approval).
 
 Noch nicht tun:
 
-- keinen globalen Nameserver fuer alles auf `10.1.0.20` setzen
+- keinen globalen Nameserver fuer alles auf `100.82.26.53` setzen
 - `Override DNS servers` nicht als blanket change einschalten, wenn nur `hs27.internal` gebraucht wird
 
 Der saubere erste Schritt ist wirklich nur:
 
 - `restricted nameserver`
 - Domain `hs27.internal`
-- Server `10.1.0.20`
+- Server `100.82.26.53`
 
 ## Validierung nach dem Admin-Schritt
 

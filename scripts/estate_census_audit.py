@@ -13,56 +13,83 @@ ROOT = Path(__file__).resolve().parents[1]
 ARTIFACT_DIR = ROOT / "artifacts" / "estate_census"
 REPORT_JSON = ARTIFACT_DIR / "latest_report.json"
 REPORT_MD = ARTIFACT_DIR / "latest_report.md"
+SSH_CONFIG_PATH = ROOT / "Codex" / "ssh_config"
+DEFAULT_TOOLBOX_FRONTDOOR_IP = "100.82.26.53"
 
 PROXMOX_ANKER = "100.69.179.87"
 STOCK_PVE = "100.91.20.116"
 
+def current_toolbox_frontdoor_ip() -> str:
+    try:
+        text = SSH_CONFIG_PATH.read_text(encoding="utf-8")
+    except OSError:
+        return DEFAULT_TOOLBOX_FRONTDOOR_IP
+
+    in_toolbox_block = False
+    for raw_line in text.splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("#"):
+            continue
+        lower = line.lower()
+        if lower.startswith("host "):
+            hosts = line.split()[1:]
+            in_toolbox_block = "toolbox" in hosts
+            continue
+        if in_toolbox_block and lower.startswith("hostname "):
+            parts = line.split(None, 1)
+            if len(parts) == 2 and parts[1].strip():
+                return parts[1].strip()
+    return DEFAULT_TOOLBOX_FRONTDOOR_IP
+
+
+TOOLBOX_FRONTDOOR_IP = current_toolbox_frontdoor_ip()
+
 TAILSCALE_FRONTDOORS = [
     {
         "name": "vaultwarden",
-        "url": "http://100.99.206.128:8442/alive",
+        "url": f"http://{TOOLBOX_FRONTDOOR_IP}:8442/alive",
         "ok_codes": ["200"],
         "note": "Vaultwarden mobile/frontdoor health",
     },
     {
         "name": "home_assistant",
-        "url": "http://100.99.206.128:8443/",
+        "url": f"http://{TOOLBOX_FRONTDOOR_IP}:8443/",
         "ok_codes": ["200"],
         "note": "Home Assistant mobile/frontdoor",
     },
     {
         "name": "odoo",
-        "url": "http://100.99.206.128:8444/web/login",
+        "url": f"http://{TOOLBOX_FRONTDOOR_IP}:8444/web/login",
         "ok_codes": ["200"],
         "note": "Odoo mobile/frontdoor",
     },
     {
         "name": "nextcloud",
-        "url": "http://100.99.206.128:8445/",
+        "url": f"http://{TOOLBOX_FRONTDOOR_IP}:8445/",
         "ok_codes": ["200", "302"],
         "note": "Nextcloud mobile/frontdoor",
     },
     {
         "name": "paperless",
-        "url": "http://100.99.206.128:8446/accounts/login/",
+        "url": f"http://{TOOLBOX_FRONTDOOR_IP}:8446/accounts/login/",
         "ok_codes": ["200"],
         "note": "Paperless mobile/frontdoor",
     },
     {
         "name": "portal",
-        "url": "http://100.99.206.128:8447/",
+        "url": f"http://{TOOLBOX_FRONTDOOR_IP}:8447/",
         "ok_codes": ["200"],
         "note": "Portal mobile/frontdoor",
     },
     {
         "name": "radio",
-        "url": "http://100.99.206.128:8448/",
+        "url": f"http://{TOOLBOX_FRONTDOOR_IP}:8448/",
         "ok_codes": ["200", "302"],
         "note": "Radio mobile/frontdoor",
     },
     {
         "name": "media",
-        "url": "http://100.99.206.128:8449/",
+        "url": f"http://{TOOLBOX_FRONTDOOR_IP}:8449/",
         "ok_codes": ["200", "302"],
         "note": "Media mobile/frontdoor",
     },
@@ -356,7 +383,7 @@ def build_report() -> dict[str, object]:
         "management_paths": [
             "ssh root@100.69.179.87 (proxmox-anker)",
             "ssh root@100.91.20.116 (stockenweiler-pve)",
-            "Tailscale peer toolbox.tail150400.ts.net / 100.99.206.128",
+            f"Tailscale peer toolbox.tail150400.ts.net / {TOOLBOX_FRONTDOOR_IP}",
         ],
         "service_paths": [item["url"] for item in frontdoors if item["status"] == "ok"],
     }

@@ -2,7 +2,7 @@ param()
 
 $ErrorActionPreference = "Stop"
 
-$workspace = "C:\Users\StudioPC\Documents\Homeserver 2027 Workspace"
+$workspace = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $artifactDir = Join-Path $workspace "artifacts\stockenweiler_inventory"
 New-Item -ItemType Directory -Path $artifactDir -Force | Out-Null
 

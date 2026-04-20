@@ -75,11 +75,10 @@
 
 ## Aktive Operator-Aktionen
 
-- [ ] Radio/Media: Kuration der Bibliothek (Lane E)
-- [x] Website: Go-Live Vorbereitung (Lane B) -> abgeschlossen
-- [ ] Proxmox-Root-SSH-Key hinterlegen (AKTION VON DIR ERFORDERLICH)
-- [ ] `AKTION VON DIR ERFORDERLICH:` In der Tailscale-Adminseite die `toolbox`-Route `10.1.0.0/24` approven und den restricted nameserver `10.1.0.20` fuer `hs27.internal` setzen, damit `wolf_surface` die internen Frontdoors sauber aufloest.
+- [ ] `AKTION VON DIR ERFORDERLICH:` In Tailscale Admin den restricted nameserver fuer `hs27.internal` auf `100.82.26.53` setzen oder lokal den vorbereiteten NRPT-Helfer in erhoehter PowerShell ausfuehren.
+- [ ] `AKTION VON DIR ERFORDERLICH:` `radio-node` physisch pruefen und wieder online bringen; aktuell keine Antwort auf `192.168.2.155`, `100.64.23.77` oder `:8448`.
 - [ ] `AKTION VON DIR ERFORDERLICH:` Auf `wolfstudiopc` `OpenSSH Server` einschalten oder eine lokale Admin-Session bereitstellen; erst dann ist der Studio-PC als repo-basierter Admin-Pfad sauber steuerbar.
+- [ ] Windows-GUI-Updates spaeter kontrolliert abschliessen, nachdem die blockierenden Prozesse bewusst geschlossen wurden.
 - [x] Easy-Box-Geraete autoritativ zuordnen (.141-.144) -> in NETWORK_INVENTORY.md den Family-Phones zugeordnet.
 
 ## Chronologische Logs (Auszug)

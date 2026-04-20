@@ -1,51 +1,98 @@
-# Handover Guide: Cloudflare Tunnel Production Deployment
+# Handover Guide: Cloudflare Public Edge Finalization
 
-This guide describes the final steps to transition the FraWo Public Edge from the ephemeral verification tunnel ("Alpha") to a permanent, production-grade service on VM 220.
+Dieses Dokument beschreibt den bevorzugten Public-Edge-Pfad Stand `2026-04-20`.
 
-## 📌 Preparation Status
+Ziel ist nicht mehr ein alter Alpha-Zwischenstand, sondern ein sauberer kleiner Produktionspfad:
 
-- [x] Odoo service verified reachable via local tunnel.
-- [x] Odoo Hardened: Master Password set to `Winselhalle!!`.
-- [x] Edge VM (220) staged with `docker-compose.public-edge.yml`.
+- `Cloudflare` als oeffentlicher Edge
+- `VM220 odoo` als primaerer Origin
+- `frawo-tech.de` und `www.frawo-tech.de` als einziger Scope
+- keine oeffentlichen Admin-UIs
 
----
+Der aktuelle Lane-B-Arbeitsmodus ist bewusst klein:
 
-## 🚀 Final Activation Steps
+- zuerst HTTPS/Public Edge gruen ziehen
+- die Website darf in Design und Content noch vorlaeufig sein
+- der volle inhaltliche Website-Release ist ein spaeterer Folgeschritt
 
-### 1. Close the Alpha Tunnel
-On your workstation (StudioPC), terminate the ephemeral tunnel process:
-- Stop the running PowerShell script (`start_alpha_tunnel_local.ps1`) or close the terminal window where `cloudflared` is running.
+## Decision Stand
 
-### 2. Inject Production Token
-Once you have the `TunnelToken` from the Cloudflare Dashboard:
-1. SSH into the Proxmox host or VM 220.
-2. Navigate to: `/opt/homeserver2027/stacks/odoo/`
-3. Edit `docker-compose.public-edge.yml`.
-4. Replace the template token with your actual value:
-   ```yaml
-   services:
-     tunnel:
-       image: cloudflare/cloudflared:latest
-       command: tunnel --no-autoupdate run
-       environment:
-         - TUNNEL_TOKEN=YOUR_PRODUCTION_TOKEN_HERE
-   ```
+- bevorzugter HTTPS-/Release-Pfad: `Cloudflare -> VM220`
+- Alternativpfad nur bei echter externer Freigabe: direkter IPv4-/Dual-Stack-Pfad auf `VM220`
+- `CT100 toolbox` bleibt intern und ist nicht das primaere Public-Website-Ziel
 
-### 3. Deploy Persistent Service
-Run the following command within the `/opt/homeserver2027/stacks/odoo/` directory:
-```bash
-docker compose -f docker-compose.yml -f docker-compose.public-edge.yml up -d
-```
+## Repo-Side Preconditions Already Green
 
-### 4. Finalize DNS (Cloudflare Dashboard)
-1. Ensure your Cloudflare Tunnel is configured to route traffic for `frawo-tech.de` to `http://odoo:8069`.
-2. Verify that the DNS records in Cloudflare point `frawo-tech.de` to your tunnel CNAME.
+- Odoo-Website auf `VM220` antwortet intern im Zielpfad
+- Apex-Redirect und `www`-Website sind auf dem Origin vorbereitet
+- Radio-Praesenz auf `/radio/public/frawo-funk` ist im Zielpfad verifiziert
+- Business-MVP ist separat gruen; Website-Track bleibt trotzdem noch `BLOCKED`
+- der direkte IPv4-/ACME-Pfad bleibt durch DS-Lite blockiert, deshalb ist `Cloudflare` jetzt der bevorzugte Entschaerfungspfad
 
----
+## Operator-Side Activation Steps
 
-## 🛡️ Security Check
-The Odoo instance is now protected with the **Master Password** you provided. Any database operations (restore/delete/backup) now require:
-- **Password**: `Winselhalle!!`
+### 1. Create or Choose the Production Cloudflare Edge
 
-> [!TIP]
-> You can now safely archive the `artifacts/repo_consolidation/` directory as all reports have been migrated into the repository.
+- in `Cloudflare Zero Trust` einen produktiven Tunnel fuer FraWo waehlen oder neu anlegen
+- Scope klein halten: nur `frawo-tech.de` und `www.frawo-tech.de`
+- keine internen Admin-Pfade, keine Toolbox-Adminflaechen, keine Business-UIs
+
+### 2. Point Cloudflare Only To VM220
+
+- Origin fuer `www.frawo-tech.de`: `VM220` / Odoo-Website
+- Apex `frawo-tech.de` bleibt Redirect auf `https://www.frawo-tech.de/`
+- keine Vermischung mit `toolbox` als primaerer Website-Origin
+
+### 3. Provide the Production Token Only Out-Of-Band
+
+- den `TunnelToken` nicht in Markdown, nicht in Git und nicht in Klartext-Notizen ablegen
+- Token nur operator-seitig in die Runtime geben
+
+### 4. Deploy the Persistent Edge Runtime
+
+- Zielpfad auf dem Host: `/opt/homeserver2027/stacks/odoo/`
+- relevante Dateien und Skripte:
+  - `docker-compose.public-edge.yml`
+  - `Caddyfile.public`
+  - `scripts/business/deploy_cloudflare_tunnel.sh`
+  - `scripts/deploy_odoo_public_edge_preview.ps1`
+
+Wenn der produktive Token vorliegt, den Runtime-Pfad bewusst nur auf `VM220` aktivieren.
+
+### 5. Finalize DNS In Cloudflare
+
+- `www.frawo-tech.de` auf den produktiven Cloudflare-Zielpfad legen
+- Apex `frawo-tech.de` sauber auf `https://www.frawo-tech.de/` redirecten
+- kein oeffentliches Routing auf Odoo-Admin, Toolbox, Nextcloud, Paperless, HA, PBS oder Proxmox
+
+## Validation After Cutover
+
+Nach Aktivierung muessen sichtbar gruen werden:
+
+1. `http://frawo-tech.de` -> `308` auf `https://www.frawo-tech.de/`
+2. `https://www.frawo-tech.de` liefert die echte FraWo-Website
+3. `https://www.frawo-tech.de/radio/public/frawo-funk` liefert die sichtbare Radio-Praesenz
+4. `make website-release-gate` bleibt der formale Freigabepunkt fuer den spaeteren vollen Website-Release
+
+Minimaler Erfolg fuer den aktuellen Lane-B-Block:
+
+- `frawo-tech.de` und `www.frawo-tech.de` haben gueltiges HTTPS
+- kein Adminpfad ist oeffentlich
+- die Seite darf inhaltlich noch provisorisch sein
+
+Direkter Repo-Check dafuer:
+
+- `powershell -ExecutionPolicy Bypass -File .\scripts\run_https_baseline_track.ps1`
+- Erwartung: `decision=HTTPS_BASELINE_READY`
+
+## Explicit Non-Goals
+
+- kein Public-Cutover fuer `toolbox`
+- kein Public-Cutover fuer Odoo-Admin
+- kein Mitziehen von PBS, Radio-Backend, HA oder Stockenweiler
+- keine Token-/Secret-Ablage im Repo
+
+## Security Note
+
+Das Odoo-Master-Passwort und ein etwaiger Cloudflare-Tunnel-Token bleiben operator-held secrets.
+Sie gehoeren nicht in Markdown, nicht in Skripte mit Repo-Klartext und nicht in Handover-Dateien.

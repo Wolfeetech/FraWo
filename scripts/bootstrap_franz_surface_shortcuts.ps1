@@ -6,6 +6,38 @@ param(
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
+function Get-ToolboxFrontdoorIp {
+  $repoRoot = Split-Path -Parent $PSScriptRoot
+  $sshConfigPath = Join-Path $repoRoot "Codex\\ssh_config"
+  if (-not (Test-Path -LiteralPath $sshConfigPath)) {
+    return "100.82.26.53"
+  }
+
+  $inToolboxBlock = $false
+  foreach ($line in Get-Content -LiteralPath $sshConfigPath) {
+    $trimmed = $line.Trim()
+    if (-not $trimmed -or $trimmed.StartsWith("#")) {
+      continue
+    }
+    if ($trimmed -match '^(?i)Host\s+') {
+      $parts = $trimmed -split '\s+'
+      if ($parts.Length -gt 1) {
+        $inToolboxBlock = $parts[1..($parts.Length - 1)] -contains 'toolbox'
+      } else {
+        $inToolboxBlock = $false
+      }
+      continue
+    }
+    if ($inToolboxBlock -and $trimmed -match '^(?i)HostName\s+(.+)$') {
+      return $Matches[1].Trim()
+    }
+  }
+
+  return "100.82.26.53"
+}
+
+$toolboxFrontdoorIp = Get-ToolboxFrontdoorIp
+
 if ([string]::IsNullOrWhiteSpace($TargetRoot)) {
   $desktopPath = [Environment]::GetFolderPath("Desktop")
   $TargetRoot = Join-Path $desktopPath "FRAWO Franz"
@@ -43,7 +75,7 @@ $links = @(
 
 if ($IncludeMobileLinks) {
   $links += @(
-    @{ Name = "20 - Franz Mobil Start.url"; Url = "http://100.99.206.128:8447/franz/" }
+    @{ Name = "20 - Franz Mobil Start.url"; Url = "http://${toolboxFrontdoorIp}:8447/franz/" }
   )
 }
 

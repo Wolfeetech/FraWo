@@ -11,21 +11,48 @@ ROOT = Path(__file__).resolve().parents[1]
 ARTIFACT_DIR = ROOT / "artifacts" / "platform_health"
 REPORT_JSON = ARTIFACT_DIR / "latest_report.json"
 REPORT_MD = ARTIFACT_DIR / "latest_report.md"
+SSH_CONFIG_PATH = ROOT / "Codex" / "ssh_config"
+DEFAULT_TOOLBOX_FRONTDOOR_IP = "100.82.26.53"
 
 ANKER_SSH_TARGET = "root@100.69.179.87"
 ANKER_NODE = "proxmox-anker"
 STOCK_SSH_TARGET = "stock-pve"
 STOCK_NODE = "pve"
 
+def current_toolbox_frontdoor_ip() -> str:
+    try:
+        text = SSH_CONFIG_PATH.read_text(encoding="utf-8")
+    except OSError:
+        return DEFAULT_TOOLBOX_FRONTDOOR_IP
+
+    in_toolbox_block = False
+    for raw_line in text.splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("#"):
+            continue
+        lower = line.lower()
+        if lower.startswith("host "):
+            hosts = line.split()[1:]
+            in_toolbox_block = "toolbox" in hosts
+            continue
+        if in_toolbox_block and lower.startswith("hostname "):
+            parts = line.split(None, 1)
+            if len(parts) == 2 and parts[1].strip():
+                return parts[1].strip()
+    return DEFAULT_TOOLBOX_FRONTDOOR_IP
+
+
+TOOLBOX_FRONTDOOR_IP = current_toolbox_frontdoor_ip()
+
 TAILSCALE_FRONTDOORS = {
-    "vaultwarden": "http://100.99.206.128:8442/alive",
-    "home_assistant": "http://100.99.206.128:8443/",
-    "odoo": "http://100.99.206.128:8444/web/login",
-    "nextcloud": "http://100.99.206.128:8445/",
-    "paperless": "http://100.99.206.128:8446/accounts/login/",
-    "portal": "http://100.99.206.128:8447/",
-    "radio": "http://100.99.206.128:8448/",
-    "media": "http://100.99.206.128:8449/",
+    "vaultwarden": f"http://{TOOLBOX_FRONTDOOR_IP}:8442/alive",
+    "home_assistant": f"http://{TOOLBOX_FRONTDOOR_IP}:8443/",
+    "odoo": f"http://{TOOLBOX_FRONTDOOR_IP}:8444/web/login",
+    "nextcloud": f"http://{TOOLBOX_FRONTDOOR_IP}:8445/",
+    "paperless": f"http://{TOOLBOX_FRONTDOOR_IP}:8446/accounts/login/",
+    "portal": f"http://{TOOLBOX_FRONTDOOR_IP}:8447/",
+    "radio": f"http://{TOOLBOX_FRONTDOOR_IP}:8448/",
+    "media": f"http://{TOOLBOX_FRONTDOOR_IP}:8449/",
 }
 
 ANKER_DIRECT_CHECKS = {
@@ -373,7 +400,7 @@ def build_report() -> dict[str, object]:
         "access_paths": {
             "anker_management": ANKER_SSH_TARGET,
             "stock_management": STOCK_SSH_TARGET,
-            "tailscale_frontdoor": "100.99.206.128",
+            "tailscale_frontdoor": TOOLBOX_FRONTDOOR_IP,
         },
         "summary": {
             "top_priority_issue": blockers[0] if blockers else "none",

@@ -34,33 +34,33 @@ Wichtig:
 
 ## Aktuelle Admin- und Bootstrap-Logins
 
-Diese Werte sind der aktuelle technische Betriebsstand fuer den internen Zugriff. Sie bleiben relevant, bis alle Finalwerte in Vaultwarden liegen und die temporaeren Bootstrap-Zugaenge abgeloest sind.
+Diese Datei fuehrt nur noch Benutzer und Secret-Referenzen. Klartext-Secrets gehoeren nicht ins Repo. Die Spalte `Secret-Referenz` zeigt den kanonischen Vaultwarden- oder Offline-Handover-Eintrag.
 
-| Service | URL | Benutzer | Passwort | Stand |
+| Service | URL | Benutzer | Secret-Referenz | Stand |
 | --- | --- | --- | --- | --- |
-| Nextcloud Admin | `http://cloud.hs27.internal` | `frawoadmin` | `NC-Frawo-2026!` | bestehender Arbeitsstand |
-| Paperless Admin | `http://paperless.hs27.internal/accounts/login/` | `frawoadmin` | `PL-Frawo-2026!` | bestehender Arbeitsstand |
-| Odoo Admin | `http://odoo.hs27.internal/web/login` | `wolf@frawo-tech.de` | `OD-Wolf-2026!` | live per XML-RPC verifiziert |
-| Home Assistant | `http://ha.hs27.internal` | `wolf` | `HA-Wolf-2026!` | bestehender Arbeitsstand |
-| Jellyfin Admin | `http://media.hs27.internal` | `root` | `JF-Frawo-2026!` | live verifiziert |
-| AzuraCast Admin | `http://radio.hs27.internal/login` | `wolf@frawo-tech.de` | `AZ-Wolf-2026!` | live verifiziert |
-| AdGuard Admin | `127.0.0.1:3000` auf `CT100 toolbox` | `admin` | `AG-Admin-2026!` | live verifiziert |
+| Nextcloud Admin | `http://cloud.hs27.internal` | `frawoadmin` | `NC-ADMIN-PROD` | bestehender Arbeitsstand |
+| Paperless Admin | `http://paperless.hs27.internal/accounts/login/` | `frawoadmin` | `PL-ADMIN-PROD` | bestehender Arbeitsstand |
+| Odoo Admin | `http://odoo.hs27.internal/web/login` | `wolf@frawo-tech.de` | `OD-ADMIN-PROD` | live per XML-RPC verifiziert |
+| Home Assistant | `http://ha.hs27.internal` | `wolf` | `HA-WOLF-PROD` | bestehender Arbeitsstand |
+| Jellyfin Admin | `http://media.hs27.internal` | `root` | `JF-ADMIN-PROD` | live verifiziert |
+| AzuraCast Admin | `http://radio.hs27.internal/login` | `wolf@frawo-tech.de` | `AZ-ADMIN-PROD` | live verifiziert |
+| AdGuard Admin | `127.0.0.1:3000` auf `CT100 toolbox` | `admin` | `AG-ADMIN-PROD` | live verifiziert |
 
 ## Personenbasierte Konten live
 
-| Service | URL | Benutzer | Passwort | Stand |
+| Service | URL | Benutzer | Secret-Referenz | Stand |
 | --- | --- | --- | --- | --- |
-| Nextcloud | `http://cloud.hs27.internal` | `wolf` | `NC-Wolf-2026!` | live per OCS verifiziert |
-| Nextcloud | `http://cloud.hs27.internal` | `franz` | `NC-Franz-2026!` | live per OCS verifiziert |
-| Nextcloud | `http://cloud.hs27.internal` | `frontend` | `NC-Frontend-2026!` | live per OCS verifiziert |
-| Paperless | `http://paperless.hs27.internal/accounts/login/` | `wolf` | `PL-Wolf-2026!` | im Django-Stack gesetzt und geprueft |
-| Paperless | `http://paperless.hs27.internal/accounts/login/` | `franz` | `PL-Franz-2026!` | im Django-Stack gesetzt und geprueft |
-| Paperless | `http://paperless.hs27.internal/accounts/login/` | `frontend` | `PL-Frontend-2026!` | im Django-Stack gesetzt und geprueft |
-| Odoo | `http://odoo.hs27.internal/web/login` | `wolf@frawo-tech.de` | `OD-Wolf-2026!` | live verifiziert |
-| Odoo | `http://odoo.hs27.internal/web/login` | `franz@frawo-tech.de` | `OD-Franz-2026!` | live verifiziert |
-| Jellyfin | `http://media.hs27.internal` | `Wolf` | `JF-Wolf-2026!` | live verifiziert |
-| Jellyfin | `http://media.hs27.internal` | `Franz` | `JF-Franz-2026!` | live verifiziert |
-| Jellyfin | `http://media.hs27.internal` | `TV Wohnzimmer` | `JF-TV-2026!` | live verifiziert |
+| Nextcloud | `http://cloud.hs27.internal` | `wolf` | `NC-WOLF-PROD` | live per OCS verifiziert |
+| Nextcloud | `http://cloud.hs27.internal` | `franz` | `NC-FRANZ-PROD` | live per OCS verifiziert |
+| Nextcloud | `http://cloud.hs27.internal` | `frontend` | `NC-FRONTEND-PROD` | live per OCS verifiziert |
+| Paperless | `http://paperless.hs27.internal/accounts/login/` | `wolf` | `PL-WOLF-PROD` | im Django-Stack gesetzt und geprueft |
+| Paperless | `http://paperless.hs27.internal/accounts/login/` | `franz` | `PL-FRANZ-PROD` | im Django-Stack gesetzt und geprueft |
+| Paperless | `http://paperless.hs27.internal/accounts/login/` | `frontend` | `PL-FRONTEND-PROD` | im Django-Stack gesetzt und geprueft |
+| Odoo | `http://odoo.hs27.internal/web/login` | `wolf@frawo-tech.de` | `OD-WOLF-PROD` | live verifiziert |
+| Odoo | `http://odoo.hs27.internal/web/login` | `franz@frawo-tech.de` | `OD-FRANZ-PROD` | live verifiziert |
+| Jellyfin | `http://media.hs27.internal` | `Wolf` | `JF-WOLF-PROD` | live verifiziert |
+| Jellyfin | `http://media.hs27.internal` | `Franz` | `JF-FRANZ-PROD` | live verifiziert |
+| Jellyfin | `http://media.hs27.internal` | `TV Wohnzimmer` | `JF-TV-PROD` | live verifiziert |
 
 ## Aktueller Betriebsstandard
 
@@ -79,7 +79,7 @@ Diese Werte sind der aktuelle technische Betriebsstand fuer den internen Zugriff
 ### Noch nicht final
 
 - finale Ablage aller aktuellen Passwoerter in `Vaultwarden`
-- Rueckbau dieser Datei von Klartext-Passwoertern auf Eintragsreferenzen
+- Restabgleich aller Secret-Referenzen mit `Vaultwarden` und Offline-Handover
 - optionale PIN-Konfiguration in `Jellyfin`
 - reale STRATO-Mailboxen fuer `wolf`, `franz`, `info`, `noreply`
 
@@ -100,10 +100,10 @@ Reihenfolge:
 2. `wolf@frawo-tech.de` als ersten produktiven Benutzer anlegen
 3. Master-Passwort nur manuell setzen und nur offline sichern
 4. zuerst `STRATO`- und Core-Infra-Zugaenge einpflegen
-5. danach App-Zugaenge aus dieser Datei uebernehmen
-6. erst dann diese Datei auf Referenzen statt Klartext zurueckbauen
+5. danach App-Zugaenge aus dieser Datei uebernehmen und gegen Referenzen pruefen
+6. Klartext-Secrets dauerhaft ausserhalb des Repo halten
 
-Erst wenn die Eintraege dort liegen, darf diese Datei auf Referenzen statt Klartext zurueckgebaut werden.
+Diese Datei bleibt referenzbasiert; Klartext-Secrets werden nicht in Markdown versioniert.
 
 ## Zielbild Identitaeten
 

@@ -4,6 +4,9 @@ $ErrorActionPreference = "Stop"
 
 $wireguardExe = "C:\Program Files\WireGuard\wireguard.exe"
 $profilePath = Join-Path $env:USERPROFILE "wg-studiopc.conf"
+$workspace = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
+$refreshScript = Join-Path $workspace "scripts\refresh_stockenweiler_wireguard_profile.ps1"
+$cleanupScript = Join-Path $workspace "scripts\clean_local_wireguard_legacy.ps1"
 
 if (-not (Test-Path -LiteralPath $wireguardExe)) {
     throw "Missing WireGuard executable: $wireguardExe"
@@ -13,8 +16,16 @@ if (-not (Test-Path -LiteralPath $profilePath)) {
     throw "Missing WireGuard profile: $profilePath"
 }
 
-powershell -ExecutionPolicy Bypass -File "C:\Users\StudioPC\Documents\Homeserver 2027 Workspace\scripts\refresh_stockenweiler_wireguard_profile.ps1" | Out-Null
-powershell -ExecutionPolicy Bypass -File "C:\Users\StudioPC\Documents\Homeserver 2027 Workspace\scripts\clean_local_wireguard_legacy.ps1" | Out-Null
+if (-not (Test-Path -LiteralPath $refreshScript)) {
+    throw "Missing refresh script: $refreshScript"
+}
+
+if (-not (Test-Path -LiteralPath $cleanupScript)) {
+    throw "Missing cleanup script: $cleanupScript"
+}
+
+powershell -ExecutionPolicy Bypass -File $refreshScript | Out-Null
+powershell -ExecutionPolicy Bypass -File $cleanupScript | Out-Null
 
 & $wireguardExe /installtunnelservice $profilePath | Out-Null
 Start-Sleep -Seconds 5

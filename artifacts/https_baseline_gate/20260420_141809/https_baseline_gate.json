@@ -1,0 +1,36 @@
+{
+  "decision": "BLOCKED",
+  "summary_source": "/mnt/c/Users/Admin/Documents/Private_Networking/artifacts/https_baseline_audit/20260420_141723/summary.tsv",
+  "critical_codex_checks": [
+    {
+      "id": "public-dns-check",
+      "status": "failed",
+      "critical": true,
+      "log": "/mnt/c/Users/Admin/Documents/Private_Networking/artifacts/https_baseline_audit/20260420_141723/public-dns-check.log",
+      "executor": "codex",
+      "command_or_action": "/usr/bin/python3 ./scripts/public_dns_check.py"
+    },
+    {
+      "id": "public-http-redirect-check",
+      "status": "failed",
+      "critical": true,
+      "log": "/mnt/c/Users/Admin/Documents/Private_Networking/artifacts/https_baseline_audit/20260420_141723/public-http-redirect-check.log",
+      "executor": "codex",
+      "command_or_action": "/usr/bin/python3 ./scripts/public_http_redirect_check.py"
+    },
+    {
+      "id": "public-https-check",
+      "status": "failed",
+      "critical": true,
+      "log": "/mnt/c/Users/Admin/Documents/Private_Networking/artifacts/https_baseline_audit/20260420_141723/public-https-check.log",
+      "executor": "codex",
+      "command_or_action": "/usr/bin/python3 ./scripts/public_https_check.py"
+    }
+  ],
+  "blocked_reasons": [
+    "critical https-baseline check not green: public-dns-check=failed",
+    "critical https-baseline check not green: public-http-redirect-check=failed",
+    "critical https-baseline check not green: public-https-check=failed"
+  ],
+  "scope_note": "This gate covers only the minimal public HTTPS baseline for frawo-tech.de and www.frawo-tech.de. It is intentionally smaller than the full website release gate."
+}

@@ -62,7 +62,7 @@
   - running as the current shared storage node on Proxmox
 - `CT120 vaultwarden`:
   - Vaultwarden service
-  - direct container health path on `192.168.2.26:8080`
+  - direct container health path on `10.1.0.26:8080`
   - productive entry through internal HTTPS
 - `VM200 nextcloud`:
   - Nextcloud
@@ -83,24 +83,24 @@
 - Portal: `http://portal.hs27.internal`
 - Franz portal: `http://portal.hs27.internal/franz/`
 - Vaultwarden: `https://vault.hs27.internal`
-- Vaultwarden health: `http://192.168.2.26:8080/alive`
+- Vaultwarden health: `http://10.1.0.26:8080/alive`
 - Nextcloud: `http://cloud.hs27.internal`
 - Paperless: `http://paperless.hs27.internal`
 - Odoo: `http://odoo.hs27.internal`
 - Home Assistant: `http://ha.hs27.internal`
 - Jellyfin browser path: `http://media.hs27.internal`
-- Jellyfin TV-safe direct path: `http://192.168.2.20:8096`
+- Jellyfin direct path: `http://10.1.0.20:8096`
 - Radio frontdoor path: `http://radio.hs27.internal`
 
 ## Current Mobile / Tailscale Frontdoor Paths
 
-- Home Assistant: `http://100.99.206.128:8443`
-- Odoo: `http://100.99.206.128:8444`
-- Nextcloud: `http://100.99.206.128:8445`
-- Paperless: `http://100.99.206.128:8446`
-- Portal: `http://100.99.206.128:8447`
-- Radio: `http://100.99.206.128:8448`
-- Jellyfin: `http://100.99.206.128:8449`
+- Home Assistant: `http://100.82.26.53:8443`
+- Odoo: `http://100.82.26.53:8444`
+- Nextcloud: `http://100.82.26.53:8445`
+- Paperless: `http://100.82.26.53:8446`
+- Portal: `http://100.82.26.53:8447`
+- Radio: `http://100.82.26.53:8448`
+- Jellyfin: `http://100.82.26.53:8449`
 
 ## Current Hard-Green Business Facts
 

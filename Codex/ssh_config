@@ -1,33 +1,30 @@
-# FraWo SSH Config – aktualisiert 2026-04-14
+# FraWo SSH Config - updated 2026-04-18
 # Canonical Upstream: https://github.com/Wolfeetech/FraWo
 
-# CT 100 Toolbox (NACH REBUILD – neue Tailscale-IP toolbox-1)
+# CT 100 Toolbox
 Host toolbox
   HostName 100.82.26.53
   User root
-  IdentityFile C:/Users/StudioPC/.ssh/id_ed25519
 
-# Proxmox Anker Host
+# Proxmox Anker host
 Host anker-pve proxmox-anker pve
   HostName 100.69.179.87
   User root
-  IdentityFile C:/Users/StudioPC/.ssh/id_ed25519
 
 # Stockenweiler Proxmox
 Host stockenweiler-pve stockenweiler stock
   HostName 100.91.20.116
   User root
-  IdentityFile C:/Users/StudioPC/.ssh/id_ed25519
 
-# Radio Node (Raspberry Pi)
+# Radio node
 Host radio-node
   HostName 100.64.23.77
   User wolf
-  IdentityFile C:/Users/StudioPC/.ssh/id_ed25519
 
 Host *
+  IdentityFile ~/.ssh/id_ed25519
   IdentitiesOnly yes
   PreferredAuthentications publickey,password
   StrictHostKeyChecking accept-new
-  UserKnownHostsFile c:/Users/Admin/Documents/Private_Networking/Codex/known_hosts
+  UserKnownHostsFile ~/Documents/Private_Networking/Codex/known_hosts
   ConnectTimeout 8

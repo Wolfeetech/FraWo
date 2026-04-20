@@ -28,15 +28,20 @@ function Ensure-WorkspaceAlias {
     [string]$TargetPath
   )
 
-  if (Test-Path -LiteralPath $AliasPath) {
-    $resolvedAlias = (Resolve-Path -LiteralPath $AliasPath).Path
-    if ($resolvedAlias -eq $TargetPath) {
-      return
-    }
+  $normalizedTargetPath = [System.IO.Path]::GetFullPath($TargetPath)
 
+  if (Test-Path -LiteralPath $AliasPath) {
     $aliasItem = Get-Item -LiteralPath $AliasPath -Force
     if (($aliasItem.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0) {
-      Remove-Item -LiteralPath $AliasPath -Force
+      $currentTargets = @($aliasItem.Target) |
+        Where-Object { -not [string]::IsNullOrWhiteSpace($_) } |
+        ForEach-Object { [System.IO.Path]::GetFullPath($_) }
+
+      if ($currentTargets -contains $normalizedTargetPath) {
+        return
+      }
+
+      [System.IO.Directory]::Delete($AliasPath)
     } else {
       throw "Alias path already exists and is not a junction or symlink: $AliasPath"
     }
