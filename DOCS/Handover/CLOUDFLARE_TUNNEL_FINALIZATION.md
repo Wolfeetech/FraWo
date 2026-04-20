@@ -80,6 +80,11 @@ Minimaler Erfolg fuer den aktuellen Lane-B-Block:
 - kein Adminpfad ist oeffentlich
 - die Seite darf inhaltlich noch provisorisch sein
 
+Direkter Repo-Check dafuer:
+
+- `powershell -ExecutionPolicy Bypass -File .\scripts\run_https_baseline_track.ps1`
+- Erwartung: `decision=HTTPS_BASELINE_READY`
+
 ## Explicit Non-Goals
 
 - kein Public-Cutover fuer `toolbox`

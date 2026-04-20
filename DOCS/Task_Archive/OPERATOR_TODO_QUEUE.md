@@ -13,7 +13,7 @@ Stand: `2026-04-20` | Aktualisiert von: Codex
 | `radio_node_recovery` | `radio-node` antwortet weder auf `192.168.2.155` noch auf `100.64.23.77`; Frontdoor `:8448` liefert `502` | Pi physisch pruefen: Strom, LAN, Boot |
 | `split_dns_finalization` | `hs27.internal` ist technisch vorbereitet, aber der restricted nameserver ist im Tailscale Admin noch nicht final gesetzt | `100.82.26.53` in Tailscale Admin DNS eintragen oder lokalen NRPT-Helfer erhoeht ausfuehren |
 | `wolfstudiopc_repo_path` | `wolfstudiopc` ist online, aber `SSH` auf `22/tcp` ist geschlossen | Windows OpenSSH aktivieren oder lokale Admin-Session bereitstellen |
-| `public_edge_https_release` | direkter IPv4-/ACME-Pfad auf `VM220` bleibt durch DS-Lite blockiert; HTTPS-Baseline fuer die Website ist deshalb noch rot | Cloudflare-Proxy/Tunnel fuer `frawo-tech.de` und `www.frawo-tech.de` auf `VM220` final entscheiden und aktivieren |
+| `public_edge_https_release` | direkter IPv4-/ACME-Pfad auf `VM220` bleibt durch DS-Lite blockiert; HTTPS-Baseline fuer die Website ist deshalb noch rot | Cloudflare-Proxy/Tunnel fuer `frawo-tech.de` und `www.frawo-tech.de` auf `VM220` final entscheiden und aktivieren; danach `scripts/run_https_baseline_track.ps1` gruen ziehen |
 
 ### Next
 
