@@ -121,12 +121,13 @@ ai-emergency-audit:
 
 ## openclaw-provision: Install and configure the local high-performance runtime
 openclaw-provision:
-	powershell -ExecutionPolicy Bypass -Command "mkdir C:\WORKSPACE\OPERATIONS\OpenClaw\bin -Force; mkdir C:\WORKSPACE\OPERATIONS\OpenClaw\config -Force; mkdir C:\WORKSPACE\OPERATIONS\OpenClaw\logs -Force"
-	cmd /c "copy DOCS\Task_Archive\OPENCLAW_SYSTEM_PROMPT.md C:\WORKSPACE\OPERATIONS\OpenClaw\config\system_prompt.md && copy Codex\openclaw_id_ed25519 C:\WORKSPACE\OPERATIONS\OpenClaw\config\id_ed25519"
+	powershell.exe -ExecutionPolicy Bypass -Command "mkdir C:\WORKSPACE\OPERATIONS\OpenClaw\bin -Force; mkdir C:\WORKSPACE\OPERATIONS\OpenClaw\config -Force; mkdir C:\WORKSPACE\OPERATIONS\OpenClaw\logs -Force"
+	cmd.exe /c "copy DOCS\Task_Archive\OPENCLAW_SYSTEM_PROMPT.md C:\WORKSPACE\OPERATIONS\OpenClaw\config\system_prompt.md && copy Codex\openclaw_id_ed25519 C:\WORKSPACE\OPERATIONS\OpenClaw\config\id_ed25519"
+	cmd.exe /c "icacls C:\WORKSPACE\OPERATIONS\OpenClaw\config\id_ed25519 /inheritance:r /grant:r %COMPUTERNAME%\\%USERNAME%:(F) /grant:r *S-1-5-18:(F) /grant:r *S-1-5-32-544:(F)"
 
 ## openclaw-shell: Start the specialized OpenClaw agent session
 openclaw-shell:
-	powershell -ExecutionPolicy Bypass -File C:\WORKSPACE\OPERATIONS\OpenClaw\start_openclaw.ps1
+	powershell.exe -ExecutionPolicy Bypass -File C:\WORKSPACE\OPERATIONS\OpenClaw\start_openclaw.ps1
 
 # ─────────────────────────────────────────────────────────────────────────────
 

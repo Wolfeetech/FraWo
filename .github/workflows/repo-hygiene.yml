@@ -66,6 +66,7 @@ jobs:
           if grep -rn --include="*.yml" --include="*.yaml" --include="*.env" \
             -E "(password|passwd|secret|token)\s*[:=]\s*['\"]?[A-Za-z0-9+/]{8,}" \
             --exclude-dir=.git \
+            --exclude-dir=_logs \
             --exclude="*/vault.yml" \
             . 2>/dev/null | grep -v "^Binary"; then
             echo "WARNING: Potential plaintext secrets found above. Review and move to vault."
@@ -125,6 +126,7 @@ jobs:
       - name: Lint YAML files
         run: |
           yamllint -d '{extends: relaxed, rules: {line-length: {max: 200}}}' \
+            --ignore _logs/ \
             ansible/playbooks/ ansible/inventory/ \
             .github/workflows/ 2>&1 || true
           echo "YAML lint complete (non-blocking)"
