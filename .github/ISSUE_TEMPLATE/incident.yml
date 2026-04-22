@@ -1,0 +1,41 @@
+name: Incident / Regression
+description: Track a broken service, restore issue, or user-visible regression.
+title: "[incident] "
+labels: []
+body:
+  - type: input
+    id: service
+    attributes:
+      label: Service
+      description: Affected service or domain.
+      placeholder: cloud.hs27.internal
+    validations:
+      required: true
+  - type: textarea
+    id: observed
+    attributes:
+      label: Observed Behavior
+      description: What happened? Include exact error text when safe.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What should happen instead?
+    validations:
+      required: true
+  - type: textarea
+    id: suspected_cause
+    attributes:
+      label: Suspected Cause
+      description: Current hypothesis, if known.
+    validations:
+      required: false
+  - type: textarea
+    id: verification
+    attributes:
+      label: Verification Plan
+      description: How will we prove it is fixed?
+    validations:
+      required: true

@@ -1,0 +1,14 @@
+# FraWo repo ownership.
+#
+# The operator remains the final approver for security, infrastructure,
+# storage, networking, and production-facing changes.
+
+* @Wolfeetech
+
+/AGENTS.md @Wolfeetech
+/COMMUNICATION/ @Wolfeetech
+/OPERATIONS/ @Wolfeetech
+/ansible/ @Wolfeetech
+/.github/ @Wolfeetech
+/manifests/ @Wolfeetech
+/scripts/ @Wolfeetech

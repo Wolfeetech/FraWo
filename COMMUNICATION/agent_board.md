@@ -13,6 +13,7 @@ Other paths are aliases, archives, or local-only legacy material.
 | Area | Current owner | Status | Notes |
 |------|---------------|--------|-------|
 | Workspace consolidation | Codex | active | Canonical path and junctions established on 2026-04-22. |
+| GitHub operations | Codex | active | Issue/PR templates and repo hygiene workflow being professionalized. |
 | Infra hardening | open | queued | VM 210/220 firewall reapply remains blocked until tested. |
 | Odoo app setup | open | queued | Sender email and ACL warning remain open. |
 | Nextcloud desktop login | open | queued | HTTPS callback/overwrite settings need fixing. |
@@ -26,6 +27,13 @@ Other paths are aliases, archives, or local-only legacy material.
 - `C:\WORKSPACE\FraWo` is a junction to the canonical checkout.
 - Previous real `C:\Users\Admin\Workspace\FraWo` checkout was moved to quarantine because it contained ignored local OpenClaw key files.
 - `C:\Users\Admin\Documents\Private_Networking` remains a dirty legacy checkout and must not be used as canonical project truth.
+
+### 2026-04-22 - GitHub Operations
+
+- GitHub is being promoted from remote backup to operational work center.
+- New issues should mirror active work from `todo.md`.
+- PRs should use the repo template and link issues where possible.
+- `gh` CLI is not installed locally; use the connected GitHub app for issue writes where possible.
 
 ## Collision Notes
 

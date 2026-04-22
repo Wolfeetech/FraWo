@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: FraWo Agent Contract
+    url: https://github.com/Wolfeetech/FraWo/blob/main/AGENTS.md
+    about: Read this before starting agent work.
+  - name: Operator Todo Queue
+    url: https://github.com/Wolfeetech/FraWo/blob/main/todo.md
+    about: Canonical short-form work queue.

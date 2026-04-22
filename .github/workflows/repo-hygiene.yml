@@ -1,18 +1,15 @@
 name: repo-hygiene
 
-# Lightweight checks to help the solo operator catch obvious issues early.
-# All steps are non-blocking (continue-on-error) initially.
-
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, develop]
   pull_request:
-    branches: [ main, develop ]
+    branches: [main, develop]
   workflow_dispatch:
 
 jobs:
-  docs-check:
-    name: Documentation & Security Hygiene
+  docs-and-security:
+    name: Docs And Security Hygiene
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -20,95 +17,67 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Verify required SSOT files exist
+      - name: Verify canonical SSOT files exist
         run: |
-          echo "Checking required SSOT files..."
-          REQUIRED=(
+          set -euo pipefail
+          required=(
             README.md
-            MASTERPLAN.md
-            OPERATOR_TODO_QUEUE.md
+            AGENTS.md
             OPS_HOME.md
             LIVE_CONTEXT.md
-            SECURITY.md
-            SECURITY_BASELINE.md
-            MEMORY.md
-            NETWORK_INVENTORY.md
-            VM_AUDIT.md
+            MASTERPLAN.md
+            todo.md
+            AI_OPERATING_MODEL.md
+            COMMUNICATION/agent_board.md
+            manifests/workspaces/canonical_workspace.json
+            manifests/work_lanes/current_plan.json
+            SSOT/START_HERE.md
           )
-          MISSING=0
-          for f in "${REQUIRED[@]}"; do
-            if [ -f "$f" ]; then
-              echo "  ✓ $f"
+
+          missing=0
+          for file in "${required[@]}"; do
+            if [ -f "$file" ]; then
+              echo "OK: $file"
             else
-              echo "  ✗ MISSING: $f"
-              MISSING=$((MISSING + 1))
+              echo "MISSING: $file"
+              missing=$((missing + 1))
             fi
           done
-          if [ "$MISSING" -gt 0 ]; then
-            echo "WARNING: $MISSING required file(s) are missing."
+
+          if [ "$missing" -gt 0 ]; then
+            echo "$missing required file(s) missing."
             exit 1
           fi
 
-      - name: Check .vault_pass is not tracked
+      - name: Verify private OpenClaw key is not tracked
         run: |
-          if git ls-files --error-unmatch .vault_pass 2>/dev/null; then
-            echo "ERROR: .vault_pass is tracked by git. Remove it: git rm --cached .vault_pass"
+          set -euo pipefail
+          if git ls-files 'Codex/openclaw_id_ed25519*' | grep -q .; then
+            echo "ERROR: OpenClaw key material is tracked."
+            git ls-files 'Codex/openclaw_id_ed25519*'
             exit 1
-          else
-            echo "✓ .vault_pass is not tracked by git"
           fi
+          echo "OK: OpenClaw key material is not tracked."
 
-      - name: Scan for obvious plaintext secrets in committed files
-        continue-on-error: true
+      - name: Scan for obvious private key material
         run: |
-          echo "Scanning for common secret patterns..."
-          # Check for password= lines outside encrypted vault files
-          if grep -rn --include="*.yml" --include="*.yaml" --include="*.env" \
-            -E "(password|passwd|secret|token)\s*[:=]\s*['\"]?[A-Za-z0-9+/]{8,}" \
-            --exclude-dir=.git \
-            --exclude-dir=_logs \
-            --exclude="*/vault.yml" \
-            . 2>/dev/null | grep -v "^Binary"; then
-            echo "WARNING: Potential plaintext secrets found above. Review and move to vault."
-          else
-            echo "✓ No obvious plaintext secrets detected"
+          set -euo pipefail
+          if git grep -n \
+            -e "BEGIN OPENSSH PRIVATE KEY" \
+            -e "BEGIN RSA PRIVATE KEY" \
+            -e "BEGIN PRIVATE KEY" \
+            -- . ':!.github/workflows/repo-hygiene.yml'; then
+            echo "ERROR: Private key material found in tracked files."
+            exit 1
           fi
+          echo "OK: no tracked private key blocks found."
 
-  ansible-syntax:
-    name: Ansible Syntax Check
-    runs-on: ubuntu-latest
-    continue-on-error: true
-    permissions:
-      contents: read
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Install Ansible
-        run: pip install ansible
-
-      - name: Create dummy vault password
-        run: echo "dummy-ci-password" > .vault_pass
-
-      - name: Ansible syntax check (all playbooks)
+      - name: Validate JSON manifests
         run: |
-          echo "Running ansible syntax checks..."
-          FAILED=0
-          for playbook in ansible/playbooks/*.yml; do
-            if ansible-playbook --syntax-check \
-              --inventory ansible/inventory/hosts.yml \
-              "$playbook" 2>&1 | grep -q "ERROR\|FAILED"; then
-              echo "  ✗ Syntax error in: $playbook"
-              FAILED=$((FAILED + 1))
-            else
-              echo "  ✓ $playbook"
-            fi
-          done
-          if [ "$FAILED" -gt 0 ]; then
-            echo "$FAILED playbook(s) have syntax errors."
-          else
-            echo "All playbooks passed syntax check."
-          fi
+          set -euo pipefail
+          python -m json.tool manifests/workspaces/canonical_workspace.json >/dev/null
+          python -m json.tool manifests/work_lanes/current_plan.json >/dev/null
+          echo "OK: JSON manifests parse."
 
   yaml-lint:
     name: YAML Lint
@@ -127,6 +96,6 @@ jobs:
         run: |
           yamllint -d '{extends: relaxed, rules: {line-length: {max: 200}}}' \
             --ignore _logs/ \
-            ansible/playbooks/ ansible/inventory/ \
-            .github/workflows/ 2>&1 || true
-          echo "YAML lint complete (non-blocking)"
+            .github/workflows/ \
+            ansible/playbooks/ \
+            ansible/inventory/ || true

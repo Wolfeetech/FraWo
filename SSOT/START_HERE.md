@@ -7,6 +7,7 @@ The canonical operating state remains in the root and operations documents below
 
 - [Agent Contract](../AGENTS.md) - mandatory start rules for every AI agent.
 - [Agent Board](../COMMUNICATION/agent_board.md) - shared handoffs, ownership, and collision notes.
+- [GitHub Operations](../OPERATIONS/GITHUB_OPERATIONS.md) - issue, branch, PR, and review workflow.
 - [Live Context](../LIVE_CONTEXT.md) - current infrastructure state, last incidents, and active risks.
 - [Operator Home](../OPS_HOME.md) - operator entrypoint for running the system.
 - [Todo Queue](../todo.md) - actionable queue and blocked follow-ups.

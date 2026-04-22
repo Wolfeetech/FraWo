@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-04-22",
+  "repository": "Wolfeetech/FraWo",
+  "source": "todo.md",
+  "items": [
+    {
+      "key": "openclaw_key_rotation_after_repo_cleanup",
+      "title": "[security] Rotate OpenClaw SSH key after repo cleanup",
+      "lane": "Lane C: Security/PBS/Infra"
+    },
+    {
+      "key": "vm_firewall_hardening_reapply",
+      "title": "[infra] Reapply VM 210/220 firewall hardening safely",
+      "lane": "Lane C: Security/PBS/Infra"
+    },
+    {
+      "key": "post_restore_backup_proof",
+      "title": "[backup] Produce post-restore backup proof and rclone fallback",
+      "lane": "Lane C: Security/PBS/Infra"
+    },
+    {
+      "key": "nextcloud_desktop_https_callback",
+      "title": "[incident] Fix Nextcloud desktop HTTPS callback",
+      "lane": "Lane B/C: Website/Public + Security/PBS/Infra"
+    },
+    {
+      "key": "odoo_sender_email_for_document_mail",
+      "title": "[odoo] Configure sender email for document mail",
+      "lane": "Lane A: MVP Closeout"
+    },
+    {
+      "key": "split_dns_finalization",
+      "title": "[dns] Finalize hs27.internal DNS without hosts-file workaround",
+      "lane": "Lane C: Security/PBS/Infra"
+    },
+    {
+      "key": "pve_host_exposure_audit",
+      "title": "[security] Audit PVE host exposed services",
+      "lane": "Lane C: Security/PBS/Infra"
+    },
+    {
+      "key": "ct100_storage_migration",
+      "title": "[infra] Migrate CT 100 storage to ssd2tb",
+      "lane": "Lane C: Security/PBS/Infra"
+    }
+  ]
+}

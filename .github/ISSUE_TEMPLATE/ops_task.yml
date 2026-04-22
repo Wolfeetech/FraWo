@@ -1,0 +1,48 @@
+name: Ops Task
+description: Track operational, infrastructure, or SSOT work.
+title: "[ops] "
+labels: []
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal
+      description: What should be true when this is done?
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Current observed state, links, and constraints.
+    validations:
+      required: true
+  - type: textarea
+    id: next
+    attributes:
+      label: Next Action
+      description: The next concrete operator or agent action.
+    validations:
+      required: true
+  - type: dropdown
+    id: lane
+    attributes:
+      label: Lane
+      options:
+        - Lane A - MVP Closeout
+        - Lane B - Website/Public
+        - Lane C - Security/PBS/Infra
+        - Lane D - Stockenweiler
+        - Lane E - Radio/Media
+        - Cross-lane
+    validations:
+      required: true
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety
+      options:
+        - label: No secrets are included in this issue.
+          required: true
+        - label: Runtime changes are gated if they affect security, network, storage, or backups.
+          required: true
