@@ -42,6 +42,9 @@ current_caddy_utf8.txt
 id_rsa
 id_ed25519
 *.pem
+Codex/*_id_ed25519
+Codex/*_id_ed25519.pub
+Codex/openclaw_id_ed25519*
 
 # Local-only remediation scratch files
 scripts/remediations/frawo_professionalization_v2.py

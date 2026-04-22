@@ -122,7 +122,8 @@ ai-emergency-audit:
 ## openclaw-provision: Install and configure the local high-performance runtime
 openclaw-provision:
 	powershell.exe -ExecutionPolicy Bypass -Command "mkdir C:\WORKSPACE\OPERATIONS\OpenClaw\bin -Force; mkdir C:\WORKSPACE\OPERATIONS\OpenClaw\config -Force; mkdir C:\WORKSPACE\OPERATIONS\OpenClaw\logs -Force"
-	cmd.exe /c "copy DOCS\Task_Archive\OPENCLAW_SYSTEM_PROMPT.md C:\WORKSPACE\OPERATIONS\OpenClaw\config\system_prompt.md && copy Codex\openclaw_id_ed25519 C:\WORKSPACE\OPERATIONS\OpenClaw\config\id_ed25519"
+	cmd.exe /c "copy DOCS\Task_Archive\OPENCLAW_SYSTEM_PROMPT.md C:\WORKSPACE\OPERATIONS\OpenClaw\config\system_prompt.md"
+	powershell.exe -ExecutionPolicy Bypass -Command "$$src='C:\Users\Admin\Documents\Private_Networking\Codex\openclaw_id_ed25519'; if (!(Test-Path $$src)) { throw 'OpenClaw private key missing from local-only Private_Networking path. Never commit private keys to this repo.' }; Copy-Item $$src C:\WORKSPACE\OPERATIONS\OpenClaw\config\id_ed25519 -Force"
 	cmd.exe /c "icacls C:\WORKSPACE\OPERATIONS\OpenClaw\config\id_ed25519 /inheritance:r /grant:r %COMPUTERNAME%\\%USERNAME%:(F) /grant:r *S-1-5-18:(F) /grant:r *S-1-5-32-544:(F)"
 
 ## openclaw-shell: Start the specialized OpenClaw agent session
