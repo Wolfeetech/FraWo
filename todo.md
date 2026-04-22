@@ -27,6 +27,7 @@ Diese Datei ist die kurze manuelle Unblock-Queue. Strategische Wahrheit steht im
 ### `post_restore_backup_proof` [BLOCKED]
 
 - `lane`: `Lane C: Security/PBS/Infra`
+- `github_issue`: `#9`
 - `goal`: Nach CT-100-Restore, Caddy-Fixes und Firewall-Aenderungen wieder einen nachweisbaren Sicherungsstand erzeugen.
 - `next_operator_action`: Wartungsfenster bestaetigen, falls ein grosser Backup-/Restore-Proof laenger laufen darf.
 - `next_codex_action`: Backup-Ziel pruefen, `ssd2tb` Fallback einrichten, rclone-Rate-Limit beruecksichtigen und Proof dokumentieren.
@@ -34,6 +35,7 @@ Diese Datei ist die kurze manuelle Unblock-Queue. Strategische Wahrheit steht im
 ### `vm_firewall_hardening_reapply` [BLOCKED]
 
 - `lane`: `Lane C: Security/PBS/Infra`
+- `github_issue`: `#8`
 - `goal`: VM 210 und VM 220 wieder mit sauber getesteter Proxmox-Firewall betreiben, ohne CT 100 -> HA/Odoo zu brechen.
 - `current_state`: `firewall=0` auf VM 210 und VM 220, weil `firewall=1` im Test CT100-Verkehr geblockt hat.
 - `next_operator_action`: Keine manuelle Aktion noetig, aber Reaktivierung nur als bewusstes Wartungsfenster freigeben.
@@ -42,6 +44,7 @@ Diese Datei ist die kurze manuelle Unblock-Queue. Strategische Wahrheit steht im
 ### `pve_host_exposure_audit` [ACTIVE]
 
 - `lane`: `Lane C: Security/PBS/Infra`
+- `github_issue`: `#13`
 - `goal`: NFS/RPC/SSH/PVE-UI Exposure des Proxmox Hosts auf notwendige Netze begrenzen.
 - `observed`: NFS/RPC Ports lauschen auf `0.0.0.0`; Cluster-Firewall ist aktiv, aber Host-Service-Exposure braucht explizite Pruefung.
 - `next_codex_action`: Host-Firewall-Regeln und NFS-Bind/Export-Modell pruefen, ohne Storage-Node-Betrieb zu brechen.
@@ -49,6 +52,7 @@ Diese Datei ist die kurze manuelle Unblock-Queue. Strategische Wahrheit steht im
 ### `openclaw_key_rotation_after_repo_cleanup` [BLOCKED]
 
 - `lane`: `Lane C: Security/PBS/Infra`
+- `github_issue`: `#7`
 - `goal`: OpenClaw SSH-Key rotieren, weil der alte private Key historisch im GitHub-Repo enthalten war.
 - `current_state`: Key ist aus dem aktuellen Repo-HEAD entfernt und per `.gitignore` blockiert; historische Git-Exposition bleibt als Sicherheitsbefund bestehen.
 - `next_operator_action`: Kurzes Rotationsfenster freigeben.
@@ -57,6 +61,7 @@ Diese Datei ist die kurze manuelle Unblock-Queue. Strategische Wahrheit steht im
 ### `split_dns_finalization` [BLOCKED]
 
 - `lane`: `Lane C: Security/PBS/Infra`
+- `github_issue`: `#12`
 - `goal`: `hs27.internal` loest sauber ohne Windows Hosts-Datei.
 - `blocked_by`: UniFi/Tailscale Admin-Aktion.
 - `next_operator_action`: UniFi DNS bzw. Tailscale restricted nameserver fuer `hs27.internal` final setzen.
@@ -65,6 +70,7 @@ Diese Datei ist die kurze manuelle Unblock-Queue. Strategische Wahrheit steht im
 ### `nextcloud_desktop_https_callback` [ACTIVE]
 
 - `lane`: `Lane B/C: Website/Public + Security/PBS/Infra`
+- `github_issue`: `#10`
 - `goal`: Nextcloud Desktop Client Login ueber `https://cloud.hs27.internal` wieder verbinden.
 - `observed`: Desktop Client meldet, dass die vom Server zurueckgegebene Server-URL nicht mit HTTPS beginnt, obwohl die Anmeldung per HTTPS gestartet wurde.
 - `likely_cause`: Nextcloud erkennt Caddy/CT100 nicht sauber als HTTPS-Reverse-Proxy; vermutlich fehlen oder passen `overwriteprotocol`, `overwritehost`, `overwrite.cli.url` oder `trusted_proxies` in der Nextcloud-Konfiguration.
@@ -74,6 +80,7 @@ Diese Datei ist die kurze manuelle Unblock-Queue. Strategische Wahrheit steht im
 ### `ct100_storage_migration` [WATCH]
 
 - `lane`: `Lane C: Security/PBS/Infra`
+- `github_issue`: `#14`
 - `goal`: CT 100 Disk kontrolliert auf `ssd2tb` migrieren.
 - `current_state`: CT 100 laeuft wieder, aber Migration bleibt sinnvoll, um NVMe/local-lvm Druck zu reduzieren.
 - `next_operator_action`: Kurzes Wartungsfenster fuer Toolbox/Caddy-Downtime freigeben.
@@ -87,6 +94,7 @@ Diese Datei ist die kurze manuelle Unblock-Queue. Strategische Wahrheit steht im
 ### `odoo_sender_email_for_document_mail` [ACTIVE]
 
 - `lane`: `Lane A: MVP Closeout`
+- `github_issue`: `#11`
 - `goal`: Odoo kann Angebots-/Auftragsmails und Storno-Mails mit gueltiger Absenderadresse senden.
 - `observed`: Beim Stornieren von Angebot `S00001` erscheint `Ungueltiger Vorgang`: Die Nachricht kann nicht gesendet werden, weil die E-Mail-Adresse des Absenders nicht konfiguriert ist.
 - `likely_cause`: Benutzer-, Firmen- oder Mail-Alias-Absender in Odoo ist leer bzw. nicht mit dem ausgehenden Mailserver abgestimmt.

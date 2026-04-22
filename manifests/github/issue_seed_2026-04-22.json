@@ -7,42 +7,58 @@
     {
       "key": "openclaw_key_rotation_after_repo_cleanup",
       "title": "[security] Rotate OpenClaw SSH key after repo cleanup",
-      "lane": "Lane C: Security/PBS/Infra"
+      "lane": "Lane C: Security/PBS/Infra",
+      "issue_number": 7,
+      "url": "https://github.com/Wolfeetech/FraWo/issues/7"
     },
     {
       "key": "vm_firewall_hardening_reapply",
       "title": "[infra] Reapply VM 210/220 firewall hardening safely",
-      "lane": "Lane C: Security/PBS/Infra"
+      "lane": "Lane C: Security/PBS/Infra",
+      "issue_number": 8,
+      "url": "https://github.com/Wolfeetech/FraWo/issues/8"
     },
     {
       "key": "post_restore_backup_proof",
       "title": "[backup] Produce post-restore backup proof and rclone fallback",
-      "lane": "Lane C: Security/PBS/Infra"
+      "lane": "Lane C: Security/PBS/Infra",
+      "issue_number": 9,
+      "url": "https://github.com/Wolfeetech/FraWo/issues/9"
     },
     {
       "key": "nextcloud_desktop_https_callback",
       "title": "[incident] Fix Nextcloud desktop HTTPS callback",
-      "lane": "Lane B/C: Website/Public + Security/PBS/Infra"
+      "lane": "Lane B/C: Website/Public + Security/PBS/Infra",
+      "issue_number": 10,
+      "url": "https://github.com/Wolfeetech/FraWo/issues/10"
     },
     {
       "key": "odoo_sender_email_for_document_mail",
       "title": "[odoo] Configure sender email for document mail",
-      "lane": "Lane A: MVP Closeout"
+      "lane": "Lane A: MVP Closeout",
+      "issue_number": 11,
+      "url": "https://github.com/Wolfeetech/FraWo/issues/11"
     },
     {
       "key": "split_dns_finalization",
       "title": "[dns] Finalize hs27.internal DNS without hosts-file workaround",
-      "lane": "Lane C: Security/PBS/Infra"
+      "lane": "Lane C: Security/PBS/Infra",
+      "issue_number": 12,
+      "url": "https://github.com/Wolfeetech/FraWo/issues/12"
     },
     {
       "key": "pve_host_exposure_audit",
       "title": "[security] Audit PVE host exposed services",
-      "lane": "Lane C: Security/PBS/Infra"
+      "lane": "Lane C: Security/PBS/Infra",
+      "issue_number": 13,
+      "url": "https://github.com/Wolfeetech/FraWo/issues/13"
     },
     {
       "key": "ct100_storage_migration",
       "title": "[infra] Migrate CT 100 storage to ssd2tb",
-      "lane": "Lane C: Security/PBS/Infra"
+      "lane": "Lane C: Security/PBS/Infra",
+      "issue_number": 14,
+      "url": "https://github.com/Wolfeetech/FraWo/issues/14"
     }
   ]
 }

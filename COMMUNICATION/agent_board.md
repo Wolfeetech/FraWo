@@ -34,6 +34,15 @@ Other paths are aliases, archives, or local-only legacy material.
 - New issues should mirror active work from `todo.md`.
 - PRs should use the repo template and link issues where possible.
 - `gh` CLI is not installed locally; use the connected GitHub app for issue writes where possible.
+- Seeded active operational issues:
+  - `#7` OpenClaw key rotation
+  - `#8` VM 210/220 firewall hardening
+  - `#9` Post-restore backup proof
+  - `#10` Nextcloud desktop HTTPS callback
+  - `#11` Odoo sender email
+  - `#12` Split DNS finalization
+  - `#13` PVE host exposure audit
+  - `#14` CT100 storage migration
 
 ## Collision Notes
 
