@@ -45,7 +45,8 @@ When finishing work, commit/push the relevant repo truth immediately.
 - Small SSOT/doc corrections may go directly to `main` while the repo remains solo-operated.
 - PRs must use `.github/PULL_REQUEST_TEMPLATE.md`.
 - New issues should use `.github/ISSUE_TEMPLATE/ops_task.yml` or `.github/ISSUE_TEMPLATE/incident.yml`.
-- If `gh` is unavailable, use the connected GitHub app where possible and document any manual GitHub action in `COMMUNICATION/agent_board.md`.
+- If `gh` is unavailable or unauthenticated, use the connected GitHub app where possible and document any manual GitHub action in `COMMUNICATION/agent_board.md`.
+- GitHub CLI helpers live in `scripts/github/`.
 
 ## Workspace Safety
 

@@ -7,6 +7,7 @@ GitHub is the professional coordination layer for FraWo work.
 - GitHub: `Wolfeetech/FraWo`
 - Canonical local checkout: `C:\Users\Admin\Workspace\Repos\FraWo`
 - Default branch: `main`
+- GitHub CLI: installed at `C:\Program Files\GitHub CLI\gh.exe`
 
 ## Work Model
 
@@ -40,7 +41,40 @@ Recommended GitHub settings for `main`:
 - Prevent force pushes.
 - Allow direct maintainer commits for small SSOT updates while the repo is still solo-operated.
 
+## Local Automation
+
+Authentication check:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\github\bootstrap_gh_auth.ps1
+```
+
+Interactive login if needed:
+
+```powershell
+gh auth login --hostname github.com --web --git-protocol https --scopes "repo,read:org,workflow"
+```
+
+Apply solo-safe main protection:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\github\configure_main_protection.ps1
+```
+
+Apply strict PR mode later:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\github\configure_main_protection.ps1 -StrictPullRequestMode
+```
+
+Audit current GitHub setup:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\github\check_github_setup.ps1
+```
+
+Solo-safe mode disables force-push and branch deletion but keeps direct maintainer commits possible for small SSOT updates.
+
 ## Current Limitation
 
-The local Windows environment does not currently have the GitHub CLI installed.
-Git operations work through `git`; issue creation can use the connected GitHub app when available.
+GitHub CLI is installed, but this session is not authenticated yet. Run `gh auth login` once from a normal PowerShell window before applying branch protection through `gh api`.

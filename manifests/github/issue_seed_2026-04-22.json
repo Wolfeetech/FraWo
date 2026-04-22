@@ -59,6 +59,13 @@
       "lane": "Lane C: Security/PBS/Infra",
       "issue_number": 14,
       "url": "https://github.com/Wolfeetech/FraWo/issues/14"
+    },
+    {
+      "key": "github_main_branch_protection",
+      "title": "[github] Authenticate gh and apply main branch protection",
+      "lane": "Lane C: Security/PBS/Infra",
+      "issue_number": 15,
+      "url": "https://github.com/Wolfeetech/FraWo/issues/15"
     }
   ]
 }

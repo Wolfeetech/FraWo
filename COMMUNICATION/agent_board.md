@@ -33,7 +33,8 @@ Other paths are aliases, archives, or local-only legacy material.
 - GitHub is being promoted from remote backup to operational work center.
 - New issues should mirror active work from `todo.md`.
 - PRs should use the repo template and link issues where possible.
-- `gh` CLI is not installed locally; use the connected GitHub app for issue writes where possible.
+- `gh` CLI is installed at `C:\Program Files\GitHub CLI\gh.exe`, but authentication is still required via `gh auth login`.
+- Branch protection automation exists in `scripts/github/configure_main_protection.ps1`.
 - Seeded active operational issues:
   - `#7` OpenClaw key rotation
   - `#8` VM 210/220 firewall hardening
@@ -43,6 +44,7 @@ Other paths are aliases, archives, or local-only legacy material.
   - `#12` Split DNS finalization
   - `#13` PVE host exposure audit
   - `#14` CT100 storage migration
+  - `#15` GitHub CLI auth and main branch protection
 
 ## Collision Notes
 

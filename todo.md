@@ -24,6 +24,15 @@ Diese Datei ist die kurze manuelle Unblock-Queue. Strategische Wahrheit steht im
 - `next_operator_action`: Alte Fenster/IDE-Sessions moeglichst auf `C:\Users\Admin\Workspace\Repos\FraWo` neu oeffnen.
 - `next_codex_action`: Bei kuenftigen Starts `scripts/workspace/audit_workspaces.ps1` laufen lassen, bevor grosse Arbeiten beginnen.
 
+### `github_main_branch_protection` [BLOCKED]
+
+- `lane`: `Lane C: Security/PBS/Infra`
+- `github_issue`: `#15`
+- `goal`: GitHub CLI authentifizieren und solo-safe Branch Protection fuer `main` anwenden.
+- `current_state`: `gh` ist installiert, aber noch nicht authentifiziert; Branch-Protection-Script liegt unter `scripts/github/configure_main_protection.ps1`.
+- `next_operator_action`: `gh auth login --hostname github.com --web --git-protocol https --scopes "repo,read:org,workflow"` in normaler PowerShell ausfuehren.
+- `next_codex_action`: Danach `scripts/github/configure_main_protection.ps1` laufen lassen und Schutzstatus mit `scripts/github/check_github_setup.ps1` dokumentieren.
+
 ### `post_restore_backup_proof` [BLOCKED]
 
 - `lane`: `Lane C: Security/PBS/Infra`

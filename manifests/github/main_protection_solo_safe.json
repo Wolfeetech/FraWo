@@ -1,0 +1,17 @@
+{
+  "repository": "Wolfeetech/FraWo",
+  "branch": "main",
+  "mode": "solo-safe",
+  "intended_effect": [
+    "disable force pushes",
+    "disable branch deletion",
+    "require conversation resolution when pull requests are used",
+    "keep direct maintainer commits possible for small SSOT updates"
+  ],
+  "apply_command": "powershell -ExecutionPolicy Bypass -File scripts\\github\\configure_main_protection.ps1",
+  "strict_mode_command": "powershell -ExecutionPolicy Bypass -File scripts\\github\\configure_main_protection.ps1 -StrictPullRequestMode",
+  "requires": [
+    "GitHub CLI installed",
+    "gh auth login completed with repo and workflow scopes"
+  ]
+}
