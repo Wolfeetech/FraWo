@@ -20,27 +20,11 @@ foreach ($label in $manifest.labels) {
   $description = [string]$label.description
 
   Write-Host "Ensuring label: $name"
-
-  $encodedName = [uri]::EscapeDataString($name)
-  & $Gh api `
-    --method PATCH `
-    -H 'Accept: application/vnd.github+json' `
-    -H 'X-GitHub-Api-Version: 2022-11-28' `
-    "/repos/$Repository/labels/$encodedName" `
-    -f "new_name=$name" `
-    -f "color=$color" `
-    -f "description=$description" *> $null
-
-  if ($LASTEXITCODE -ne 0) {
-    & $Gh api `
-      --method POST `
-      -H 'Accept: application/vnd.github+json' `
-      -H 'X-GitHub-Api-Version: 2022-11-28' `
-      "/repos/$Repository/labels" `
-      -f "name=$name" `
-      -f "color=$color" `
-      -f "description=$description" | Out-Host
-  }
+  & $Gh label create $name `
+    --repo $Repository `
+    --color $color `
+    --description $description `
+    --force | Out-Host
 }
 
 Write-Host 'Labels synchronized.'

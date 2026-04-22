@@ -37,7 +37,7 @@
     },
     {
       "issue": 15,
-      "labels": ["type:ops", "status:blocked", "lane:c-infra", "area:github", "needs:operator"]
+      "labels": ["type:ops", "status:done", "lane:c-infra", "area:github"]
     }
   ]
 }

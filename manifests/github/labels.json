@@ -39,6 +39,11 @@
       "description": "Tracked but not the current active change"
     },
     {
+      "name": "status:done",
+      "color": "cfd3d7",
+      "description": "Completed or closed work"
+    },
+    {
       "name": "lane:a-mvp",
       "color": "c2e0c6",
       "description": "Lane A: MVP Closeout"

@@ -19,7 +19,31 @@ foreach ($item in $manifest.issue_labels) {
   $labels = @($item.labels | ForEach-Object { [string]$_ })
 
   Write-Host "Setting labels on #${issue}: $($labels -join ', ')"
-  & $Gh issue edit $issue --repo $Repository --add-label ($labels -join ',')
+
+  $currentLabels = @(
+    & $Gh issue view $issue `
+      --repo $Repository `
+      --json labels `
+      --jq '.labels[].name'
+  )
+
+  $managedPrefixes = @('type:', 'status:', 'lane:', 'area:', 'needs:', 'risk:')
+  $managedCurrentLabels = @(
+    $currentLabels | Where-Object {
+      $labelName = [string]$_
+      ($managedPrefixes | Where-Object { $labelName.StartsWith($_) }).Count -gt 0
+    }
+  )
+
+  $labelsToRemove = @($managedCurrentLabels | Where-Object { $labels -notcontains $_ })
+  foreach ($labelToRemove in $labelsToRemove) {
+    Write-Host "Removing label from #${issue}: $labelToRemove"
+    & $Gh issue edit $issue --repo $Repository --remove-label $labelToRemove
+  }
+
+  if ($labels.Count -gt 0) {
+    & $Gh issue edit $issue --repo $Repository --add-label ($labels -join ',')
+  }
 }
 
 Write-Host 'Issue labels synchronized.'

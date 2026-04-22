@@ -47,7 +47,9 @@ $payload = [ordered]@{
 }
 
 $payloadFile = Join-Path $env:TEMP "frawo-main-protection-$Branch.json"
-$payload | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $payloadFile -Encoding UTF8
+$payloadJson = $payload | ConvertTo-Json -Depth 10
+$utf8NoBom = New-Object System.Text.UTF8Encoding($false)
+[System.IO.File]::WriteAllText($payloadFile, $payloadJson, $utf8NoBom)
 
 Write-Host "Applying branch protection to $Repository/$Branch"
 & $Gh api `
@@ -56,6 +58,10 @@ Write-Host "Applying branch protection to $Repository/$Branch"
   -H 'X-GitHub-Api-Version: 2022-11-28' `
   "/repos/$Repository/branches/$Branch/protection" `
   --input $payloadFile | Out-Host
+
+if ($LASTEXITCODE -ne 0) {
+  throw 'Branch protection API call failed.'
+}
 
 Write-Host ''
 Write-Host 'Branch protection applied.'

@@ -79,14 +79,32 @@ Synchronize labels and issue labels:
 powershell -ExecutionPolicy Bypass -File scripts\github\bootstrap_professional_github.ps1
 ```
 
+Use existing Git Credential Manager credentials without storing a `gh` login:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\github\bootstrap_professional_github.ps1 -UseGitCredentialManager
+```
+
 Synchronize labels, issue labels, and branch protection in one pass:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File scripts\github\bootstrap_professional_github.ps1 -ApplyBranchProtection
 ```
 
+Same operation through Git Credential Manager:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\github\bootstrap_professional_github.ps1 -UseGitCredentialManager -ApplyBranchProtection
+```
+
 Solo-safe mode disables force-push and branch deletion but keeps direct maintainer commits possible for small SSOT updates.
 
-## Current Limitation
+## Current Auth State
 
-GitHub CLI is installed, but this session is not authenticated yet. Run `gh auth login` once from a normal PowerShell window before applying branch protection through `gh api`.
+GitHub CLI is installed. Persistent `gh auth login` is optional because the local Git Credential Manager credential can be used as a temporary `GH_TOKEN` via `-UseGitCredentialManager`.
+
+Solo-safe branch protection has been applied to `main`:
+
+- force-push disabled,
+- branch deletion disabled,
+- conversation resolution required when pull requests are used.
