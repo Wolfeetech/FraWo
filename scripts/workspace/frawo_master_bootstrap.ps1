@@ -1,25 +1,11 @@
 # frawo_master_bootstrap.ps1 - The one-click solution to unify a FraWo node
-# This script ensures the machine adheres to the Lead-Satellite standard.
-# ASCII ONLY VERSION TO AVOID ENCODING ISSUES
+# FINAL STABLE VERSION
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
-$canonicalRoot = "C:\Users\Admin\Workspace\Repos\FraWo"
-if (-not (Test-Path $canonicalRoot)) {
-    # Fallback for other users
-    $currentUser = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name.Split('\')[1]
-    $canonicalRoot = "C:\Users\$currentUser\Workspace\Repos\FraWo"
-}
-# Final override if C:\WORKSPACE\FraWo already exists
-if (Test-Path "C:\WORKSPACE\FraWo") {
-    # If we are already in the unified path, use it as root
-    $canonicalRoot = (Get-Item "C:\WORKSPACE\FraWo").Target
-    if ($null -eq $canonicalRoot) { $canonicalRoot = "C:\WORKSPACE\FraWo" }
-}
-
-$junctions = @("C:\WORKSPACE\FraWo", "C:\Users\Admin\Workspace\FraWo")
-$legacyPath = "C:\Users\Admin\Documents\Private_Networking"
+# Hardcoded canonical root for StudioPC/Satellite unification
+$canonicalRoot = "C:\WORKSPACE\FraWo"
 
 Write-Host "=========================================" -ForegroundColor Cyan
 Write-Host "   FRAWO MASTER BOOTSTRAP (Windows)" -ForegroundColor Cyan
@@ -42,16 +28,16 @@ if ($sshServer.Status -ne "Running") {
 }
 Write-Host "[OK] OpenSSH Server is ACTIVE." -ForegroundColor Green
 
-# 2. Verify / Create Canonical Path
+# 2. Verify Canonical Root
 Write-Host "[2/4] Verifying Canonical Root..." -ForegroundColor Yellow
 if (-not (Test-Path $canonicalRoot)) {
-    Write-Host "Creating canonical root directory..." -ForegroundColor Cyan
-    New-Item -ItemType Directory -Path $canonicalRoot -Force | Out-Null
+    Write-Error "Repository not found at $canonicalRoot. Please clone it first!"
 }
 Write-Host "[OK] Canonical root: $canonicalRoot" -ForegroundColor Green
 
 # 3. Establish Junctions
 Write-Host "[3/4] Establishing Junctions..." -ForegroundColor Yellow
+$junctions = @("C:\Users\Admin\Workspace\FraWo")
 foreach ($j in $junctions) {
     if (Test-Path $j) {
         $item = Get-Item $j
@@ -71,15 +57,18 @@ foreach ($j in $junctions) {
 
 # 4. Cleanup Legacy Paths
 Write-Host "[4/4] Cleaning up Legacy Paths..." -ForegroundColor Yellow
-if (Test-Path $legacyPath) {
-    $current = Get-Location
-    if ($current.Path -like "$legacyPath*") {
-        Write-Host "!! STILL IN LEGACY PATH. Please 'cd C:\WORKSPACE\FraWo' manually." -ForegroundColor Red
-    } else {
-        $lb = "$legacyPath.old." + (Get-Date -Format "yyyyMMdd")
-        if (-not (Test-Path $lb)) { Rename-Item $legacyPath $lb }
-        New-Item -ItemType Junction -Path $legacyPath -Target $canonicalRoot | Out-Null
-        Write-Host "[OK] Legacy path archived and linked." -ForegroundColor Green
+$legacyPaths = @("C:\Users\Admin\Documents\Private_Networking", "C:\Users\StudioPC\Documents\Private_Networking")
+foreach ($lp in $legacyPaths) {
+    if (Test-Path $lp) {
+        $current = Get-Location
+        if ($current.Path -like "$lp*") {
+            Write-Host "!! STILL IN LEGACY PATH: $lp" -ForegroundColor Red
+        } else {
+            $lb = "$lp.old." + (Get-Date -Format "yyyyMMdd")
+            if (-not (Test-Path $lb)) { Rename-Item $lp $lb }
+            New-Item -ItemType Junction -Path $lp -Target $canonicalRoot | Out-Null
+            Write-Host "[OK] Legacy path linked: $lp" -ForegroundColor Green
+        }
     }
 }
 
