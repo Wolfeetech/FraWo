@@ -54,6 +54,15 @@ Diese Datei ist die kurze manuelle Unblock-Queue. Strategische Wahrheit steht im
 - `next_operator_action`: UniFi DNS bzw. Tailscale restricted nameserver fuer `hs27.internal` final setzen.
 - `next_codex_action`: Danach `dig/nslookup` gegen `portal`, `odoo`, `cloud`, `vault`, `ha`, `paperless`, `media` pruefen.
 
+### `nextcloud_desktop_https_callback` [ACTIVE]
+
+- `lane`: `Lane B/C: Website/Public + Security/PBS/Infra`
+- `goal`: Nextcloud Desktop Client Login ueber `https://cloud.hs27.internal` wieder verbinden.
+- `observed`: Desktop Client meldet, dass die vom Server zurueckgegebene Server-URL nicht mit HTTPS beginnt, obwohl die Anmeldung per HTTPS gestartet wurde.
+- `likely_cause`: Nextcloud erkennt Caddy/CT100 nicht sauber als HTTPS-Reverse-Proxy; vermutlich fehlen oder passen `overwriteprotocol`, `overwritehost`, `overwrite.cli.url` oder `trusted_proxies` in der Nextcloud-Konfiguration.
+- `next_operator_action`: Login im Desktop Client nach Fix erneut starten.
+- `next_codex_action`: Nextcloud `config.php` pruefen, Caddy-Proxy-IP `10.1.0.20` als trusted proxy setzen, HTTPS-Overwrite auf `cloud.hs27.internal` korrigieren, Web/PHP-Dienst neu laden und Desktop-Client-Login testen.
+
 ### `ct100_storage_migration` [WATCH]
 
 - `lane`: `Lane C: Security/PBS/Infra`
