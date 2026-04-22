@@ -1,99 +1,82 @@
 # Operator Todo Queue
 
-Stand: `2026-04-07`
+Stand: `2026-04-22`
 
 ## Zweck
 
-Diese Datei ist ab jetzt nur noch die kurze manuelle Unblock-Queue.
-
-Keine zweite Projektplanung, keine erledigte Historie, keine Nebenstrang-Roadmaps.
-Der aktive Arbeitsfokus liegt in `Lane A: MVP Closeout`.
-
-## Professional-Autopilot Regeln
-
-- Default-Modell: `Aggressive Autopilot`
-- `Codex` fuehrt
-- `Gemini` prueft sichtbar
-- der Operator entscheidet nur an echten Pflicht-Stopps
-
-Pflicht-Stopp vor:
-
-- `Infra/Public`
-- `Netzwerk`
-- `Datenmigration`
-- `Storage/PBS`
-- `Router`
-- `HA/PVE`
-- `Security-Boundary`
-- lokalen Windows-Admin-Token-Eingriffen
-
-Alles andere laeuft standardmaessig im Loop:
-
-1. Truth sammeln
-2. professionell beurteilen
-3. Aenderung klassifizieren
-4. ausfuehren oder eskalieren
-5. verifizieren
-6. SSOT aktualisieren
+Diese Datei ist die kurze manuelle Unblock-Queue. Strategische Wahrheit steht im `MASTERPLAN.md`, Laufzeitwahrheit in `LIVE_CONTEXT.md`, maschinenlesbare Planung in `manifests/work_lanes/current_plan.json`.
 
 ## Lane Status
 
-- `Lane A: MVP Closeout` -> `active`
-- `Lane B: Website/Public` -> `DONE` (Branding & SEO finalized)
-- `Lane C: Security/Infra` -> `PASSED` (PBS restored, 1.8TB HW integrated)
-- `Lane D: Stockenweiler` -> `PASSED` (Nextcloud 100GB Migration complete)
-- `Lane E: Radio/Media` -> `active` (Identified in VM 220)
+- `Lane A: MVP Closeout` -> `sealed`
+- `Lane B: Website/Public` -> `active`
+- `Lane C: Security/PBS/Infra` -> `active`
+- `Lane D: Stockenweiler` -> `watch`
+- `Lane E: Radio/Media` -> `active/watch`
 
 ## Manuelle Unblock-Punkte
 
-### `device_rollout_verified` [PARTIAL]
-
-- `lane`: `Lane A: MVP Closeout`
-- `goal`: Franz `Surface Laptop` und `iPhone` sind sichtbar als releasede MVP-Geraete abgenommen.
-- `status`: iPhone ist verifiziert. Surface Laptop ist durch **Google 2FA** blockiert.
-- `next_operator_action`: Erst den blockierten `2FA`-Pfad nach dem verlorenen Smartphone wiederherstellen, dann Surface Laptop prüfen.
-- `next_codex_action`: Sobald 2FA unblocked: `python scripts/device_rollout_preflight.py`.
-
-### `surface_go_kiosk_mode_verified` [X]
-
-- `lane`: `Lane B: Website/Public Hold`
-- `goal`: Tablet-UI; Lockdown; Kiosk-Autostart
-- `next_codex_action`: Monitor usage metrics on next operator login.
-
-### `vaultwarden_recovery_material_verified` [DONE]
-
-- `lane`: `Lane A: MVP Closeout`
-- `goal`: `Vaultwarden`-Recovery-Material existiert offline in zwei getrennten physischen Kopien.
-- `done_when`: Zwei getrennte Offline-Kopien sind real vorhanden und frisch sichtbar nachgewiesen.
-- `last_status`: `passed` (verifiziert via `!go` am 2026-04-07)
-
-### `tailscale_route_approved_10_1_0_0_24`
+### `post_restore_backup_proof` [BLOCKED]
 
 - `lane`: `Lane C: Security/PBS/Infra`
-- `goal`: Tailnet-Subnet-Route fuer `10.1.0.0/24` ist im Tailscale-Adminpanel freigeschaltet.
-- `done_when`: Tailscale-Admin zeigt die Route als aktiv; Remote-Clients erreichen `10.1.0.20:80` und `10.1.0.20:53`.
-- `blocked_by`: Route ist nur beworben, aber noch nicht im Tailnet freigegeben.
-- `next_operator_action`: In `https://login.tailscale.com/admin/machines` die Route `10.1.0.0/24` bei `toolbox` approven.
-- `next_codex_action`: Nach der Freigabe `tailscale status` + `dig @10.1.0.20 ha.hs27.internal` verifizieren.
+- `goal`: Nach CT-100-Restore, Caddy-Fixes und Firewall-Aenderungen wieder einen nachweisbaren Sicherungsstand erzeugen.
+- `next_operator_action`: Wartungsfenster bestaetigen, falls ein grosser Backup-/Restore-Proof laenger laufen darf.
+- `next_codex_action`: Backup-Ziel pruefen, `ssd2tb` Fallback einrichten, rclone-Rate-Limit beruecksichtigen und Proof dokumentieren.
 
-### `tailscale_split_dns_update`
+### `vm_firewall_hardening_reapply` [BLOCKED]
 
 - `lane`: `Lane C: Security/PBS/Infra`
-- `goal`: Split-DNS fuer `hs27.internal` nutzt `10.1.0.20` als restricted nameserver.
-- `done_when`: `100.100.100.100` liefert `ha.hs27.internal` auf `10.1.0.20`.
-- `next_operator_action`: In `https://login.tailscale.com/admin/dns` den restricted nameserver fuer `hs27.internal` auf `10.1.0.20` umstellen.
+- `goal`: VM 210 und VM 220 wieder mit sauber getesteter Proxmox-Firewall betreiben, ohne CT 100 -> HA/Odoo zu brechen.
+- `current_state`: `firewall=0` auf VM 210 und VM 220, weil `firewall=1` im Test CT100-Verkehr geblockt hat.
+- `next_operator_action`: Keine manuelle Aktion noetig, aber Reaktivierung nur als bewusstes Wartungsfenster freigeben.
+- `next_codex_action`: Regelpfad mit tcpdump/counters testen, ICMP/TCP fuer interne Frontdoor erlauben, dann erst produktiv setzen.
 
-## Nicht In Dieser Queue
+### `pve_host_exposure_audit` [ACTIVE]
 
-- `Lane B: Website/Public Hold` bleibt sichtbar, aber ohne neue Go-Live-Arbeit.
-- `Lane C: Security/PBS/Infra` bleibt sichtbar, aber nur fuer Regressionen und Reapply-Pfade.
-- `Lane D: Stockenweiler` bleibt sichtbar, aber ohne Live-Rollout.
-- `Lane E: Radio/Media` bleibt im Erhaltungsmodus ohne Ausbau.
+- `lane`: `Lane C: Security/PBS/Infra`
+- `goal`: NFS/RPC/SSH/PVE-UI Exposure des Proxmox Hosts auf notwendige Netze begrenzen.
+- `observed`: NFS/RPC Ports lauschen auf `0.0.0.0`; Cluster-Firewall ist aktiv, aber Host-Service-Exposure braucht explizite Pruefung.
+- `next_codex_action`: Host-Firewall-Regeln und NFS-Bind/Export-Modell pruefen, ohne Storage-Node-Betrieb zu brechen.
+
+### `split_dns_finalization` [BLOCKED]
+
+- `lane`: `Lane C: Security/PBS/Infra`
+- `goal`: `hs27.internal` loest sauber ohne Windows Hosts-Datei.
+- `blocked_by`: UniFi/Tailscale Admin-Aktion.
+- `next_operator_action`: UniFi DNS bzw. Tailscale restricted nameserver fuer `hs27.internal` final setzen.
+- `next_codex_action`: Danach `dig/nslookup` gegen `portal`, `odoo`, `cloud`, `vault`, `ha`, `paperless`, `media` pruefen.
+
+### `ct100_storage_migration` [WATCH]
+
+- `lane`: `Lane C: Security/PBS/Infra`
+- `goal`: CT 100 Disk kontrolliert auf `ssd2tb` migrieren.
+- `current_state`: CT 100 laeuft wieder, aber Migration bleibt sinnvoll, um NVMe/local-lvm Druck zu reduzieren.
+- `next_operator_action`: Kurzes Wartungsfenster fuer Toolbox/Caddy-Downtime freigeben.
+
+### `odoo_project_ssot_sync` [ACTIVE]
+
+- `lane`: `Lane A/C`
+- `goal`: Odoo Masterprojekt und Repo-SSOT spiegeln denselben Stand.
+- `next_codex_action`: Odoo Masterprojekt mit den aktuellen Lane-/Projektaufgaben synchronisieren.
+
+### `odoo_acl_res_users_log` [WATCH]
+
+- `lane`: `Lane A`
+- `goal`: Odoo ACL-Warnings auf `res.users.log` klaeren.
+- `next_codex_action`: Odoo-App-Layer pruefen, keine Infra-Mutation.
+
+### `radio_frontdoor_backend` [BLOCKED]
+
+- `lane`: `Lane E: Radio/Media`
+- `goal`: `radio.hs27.internal` erst dann produktiv machen, wenn ein echter Backend-Service verfuegbar ist.
+- `current_state`: Media/Jellyfin ist gruen; Radio ist kein verifizierter Produktivpfad.
 
 ## Kanonische Steuerdateien
 
-- `AI_OPERATING_MODEL.md` fuer das verbindliche AI-Arbeitsmodell
-- `AI_SERVER_HANDOFF.md` fuer externen KI-Handoff
-- `MASTERPLAN.md` fuer die strategische Lane-Reihenfolge
-- `artifacts/release_mvp_gate/latest_release_mvp_gate.md` als einzige Wahrheit fuer die MVP-Entscheidung
-- `manifests/work_lanes/current_plan.json` als maschinenlesbare Lane-Quelle
+- `LIVE_CONTEXT.md`
+- `MASTERPLAN.md`
+- `OPS_HOME.md`
+- `AI_OPERATING_MODEL.md`
+- `AI_SERVER_HANDOFF.md`
+- `manifests/work_lanes/current_plan.json`
+- `artifacts/release_mvp_gate/latest_release_mvp_gate.md`

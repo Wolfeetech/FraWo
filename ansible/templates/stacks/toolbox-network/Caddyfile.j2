@@ -27,7 +27,10 @@
 
 {% endfor %}
 {% for item in toolbox_network_static_file_hosts %}
-http://{{ item.hostname }} {
+{{ item.scheme | default('http') }}://{{ item.hostname }} {
+{% if item.tls_internal | default(false) %}
+  tls internal
+{% endif %}
   root * {{ item.root }}
   header {
     Cache-Control "no-store, max-age=0"
@@ -58,7 +61,10 @@ http://{{ item.hostname }}, https://{{ item.hostname }} {
 
 {% endfor %}
 {% for item in toolbox_network_placeholder_hosts %}
-http://{{ item.hostname }} {
+{{ item.scheme | default('http') }}://{{ item.hostname }} {
+{% if item.tls_internal | default(false) %}
+  tls internal
+{% endif %}
   respond "{{ item.message }}" 503
 }
 

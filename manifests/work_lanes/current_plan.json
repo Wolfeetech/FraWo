@@ -1,7 +1,7 @@
 {
   "version": 2,
-  "updated_at": "2026-04-20",
-  "active_lane": "lane_b_website_public",
+  "updated_at": "2026-04-22",
+  "active_lane": "lane_c_security_pbs_infra",
   "operating_model": {
     "name": "professional_autopilot",
     "autonomy": "aggressive_autopilot",
@@ -47,7 +47,7 @@
       "done_when": "release-mvp-gate stays MVP_READY with no reopened manual blockers.",
       "blocked_by": [],
       "next_operator_action": "Only intervene if a real regression reopens the internal business MVP.",
-      "next_codex_action": "Treat Lane A as sealed baseline truth while newer lanes move forward."
+      "next_codex_action": "Treat Lane A as sealed baseline truth, but keep post-restore regression checks documented."
     },
     {
       "id": "lane_b_website_public",
@@ -68,14 +68,18 @@
       "label": "Lane C: Security/PBS/Infra",
       "status": "active",
       "priority": 3,
-      "goal": "Hold the recovered platform on a professional baseline while finishing DNS, admin-path, and infrastructure follow-through.",
-      "done_when": "Split-DNS is finalized, the current admin path is explicit, and infra follow-up items are tracked without hidden drift.",
+      "goal": "Hold the recovered platform on a professional baseline while finishing firewall hardening, backup proof, DNS, admin-path, and infrastructure follow-through.",
+      "done_when": "Post-restore backup proof is documented, VM firewall hardening is tested before re-enable, Split-DNS is finalized, the current admin path is explicit, and infra follow-up items are tracked without hidden drift.",
       "blocked_by": [
         "restricted_nameserver_not_yet_set",
-        "wolfstudiopc_admin_path_not_yet_reopened"
+        "wolfstudiopc_admin_path_not_yet_reopened",
+        "vm_firewall_policy_unverified",
+        "post_restore_backup_proof_missing",
+        "ct100_storage_migration_pending",
+        "rclone_quota_pressure_observed"
       ],
-      "next_operator_action": "Finalize the restricted nameserver for hs27.internal and provide the chosen admin path for wolfstudiopc.",
-      "next_codex_action": "Keep SSOT, audits, and infra runbooks consistent with the recovered runtime and avoid reopening solved incidents."
+      "next_operator_action": "Approve maintenance windows for firewall reapply, post-restore backup proof, and CT 100 storage migration when requested.",
+      "next_codex_action": "Keep SSOT, audits, backup proof, and infra runbooks consistent with the recovered runtime and avoid reopening solved incidents."
     },
     {
       "id": "lane_d_stockenweiler",
@@ -95,19 +99,127 @@
       "label": "Lane E: Radio/Media",
       "status": "active",
       "priority": 5,
-      "goal": "Keep media stable and recover the radio backend without turning the lane into a feature-expansion track.",
-      "done_when": "Jellyfin remains green and radio-node is back online behind the existing frontdoor.",
+      "goal": "Keep media stable and recover or redeploy the radio backend without turning the lane into a feature-expansion track.",
+      "done_when": "Jellyfin remains green and radio has a verified backend behind the frontdoor.",
       "blocked_by": [
-        "radio_node_offline"
+        "radio_backend_not_verified"
       ],
-      "next_operator_action": "Perform the on-site radio-node recovery steps so the Pi is visible again on LAN or Tailnet.",
-      "next_codex_action": "Keep the media path green, hold the radio truth honest, and resume integration only after the Pi is reachable again."
+      "next_operator_action": "Confirm whether radio should be restored on the Pi or redeployed elsewhere.",
+      "next_codex_action": "Keep the media path green, hold the radio truth honest, and resume integration only after a backend is reachable."
     }
   ],
   "tasks": [
     {
-      "id": "split_dns_finalization",
+      "id": "post_restore_backup_proof",
       "order": 1,
+      "lane": "Lane C: Security/PBS/Infra",
+      "status": "active",
+      "manual": false,
+      "delegable": true,
+      "change_class": "gated_infra",
+      "preflight_checks": [
+        "Caddy frontdoors return expected 200/302 states",
+        "rclone mount is present or local ssd2tb fallback is selected",
+        "backup target storage mapping is verified before starting vzdump"
+      ],
+      "rollback_plan": "If google-drive is throttled, stop remote backup traffic and use local ssd2tb fallback until quota recovers.",
+      "verification_commands": [
+        "df -h / /mnt/ssd2tb /mnt/google-drive",
+        "vzdump --dry-run or storage-target check before live run"
+      ],
+      "last_verified_at": "2026-04-22",
+      "goal": "Create a documented backup proof after the CT100/Caddy/firewall restore work.",
+      "done_when": "A fresh post-restore backup and restore-proof note exists and the runtime remains reachable afterwards.",
+      "blocked_by": [
+        "backup_window_not_yet_selected",
+        "rclone_quota_pressure_observed"
+      ],
+      "next_operator_action": "Approve a backup window if a full VM backup run may impact throughput.",
+      "next_codex_action": "Verify targets, apply rate-limit/fallback rules, run backup proof, and update SSOT."
+    },
+    {
+      "id": "vm_firewall_hardening_reapply",
+      "order": 2,
+      "lane": "Lane C: Security/PBS/Infra",
+      "status": "blocked",
+      "manual": false,
+      "delegable": true,
+      "change_class": "gated_infra",
+      "preflight_checks": [
+        "Document current service-safe state: VM210 firewall=0 and VM220 firewall=0",
+        "Test Proxmox firewall rules with tcpdump and counters before production re-enable",
+        "Confirm CT100 can reach 10.1.0.22:8069 and 10.1.0.24:8123 after any re-enable"
+      ],
+      "rollback_plan": "Immediately set VM210/VM220 net0 firewall=0 and reload pve-firewall if Caddy frontdoors return 502.",
+      "verification_commands": [
+        "pct exec 100 -- curl -s -o /dev/null -w '%{http_code}' http://10.1.0.22:8069/web/login",
+        "pct exec 100 -- curl -s -o /dev/null -w '%{http_code}' http://10.1.0.24:8123/"
+      ],
+      "last_verified_at": "2026-04-22",
+      "goal": "Re-enable VM-level firewall hardening without breaking the toolbox frontdoor.",
+      "done_when": "VM210 and VM220 run with firewall enabled and Odoo/HA frontdoors still return HTTP 200.",
+      "blocked_by": [
+        "proxmox_firewall_bridge_rules_not_yet_proven"
+      ],
+      "next_operator_action": "Treat this as a maintenance-window item, not an emergency quick fix.",
+      "next_codex_action": "Build a tested firewall design and keep the rollback command ready."
+    },
+    {
+      "id": "pve_host_exposure_audit",
+      "order": 3,
+      "lane": "Lane C: Security/PBS/Infra",
+      "status": "active",
+      "manual": false,
+      "delegable": true,
+      "change_class": "gated_infra",
+      "preflight_checks": [
+        "List PVE host listeners",
+        "Identify NFS/RPC consumers before restriction",
+        "Confirm cluster firewall and host service bind model"
+      ],
+      "rollback_plan": "If storage access breaks, revert only the specific NFS/RPC restriction and keep other firewall improvements intact.",
+      "verification_commands": [
+        "ss -tlnp",
+        "cat /etc/pve/firewall/cluster.fw"
+      ],
+      "last_verified_at": "2026-04-22",
+      "goal": "Reduce unnecessary PVE host service exposure without breaking storage-node operations.",
+      "done_when": "NFS/RPC/management exposure is explicitly justified or restricted to trusted internal networks.",
+      "blocked_by": [],
+      "next_operator_action": "No action unless storage or router credentials are needed.",
+      "next_codex_action": "Audit host listeners, propose minimal restrictions, and verify storage consumers."
+    },
+    {
+      "id": "ct100_storage_migration",
+      "order": 4,
+      "lane": "Lane C: Security/PBS/Infra",
+      "status": "watch",
+      "manual": true,
+      "delegable": false,
+      "change_class": "gated_infra",
+      "preflight_checks": [
+        "Fresh backup exists before migration",
+        "ssd2tb has sufficient free space",
+        "Operator accepts short Caddy/DNS downtime"
+      ],
+      "rollback_plan": "Keep original CT100 disk available until post-migration frontdoor tests pass.",
+      "verification_commands": [
+        "pct config 100",
+        "df -h /mnt/ssd2tb",
+        "curl checks for all hs27.internal frontdoors"
+      ],
+      "last_verified_at": "2026-04-22",
+      "goal": "Move CT100 disk from NVMe/local-lvm pressure path to ssd2tb in a controlled window.",
+      "done_when": "CT100 boots from the intended storage and all frontdoors return expected status codes.",
+      "blocked_by": [
+        "maintenance_window_not_approved"
+      ],
+      "next_operator_action": "Approve a short maintenance window.",
+      "next_codex_action": "Prepare exact migration and rollback sequence."
+    },
+    {
+      "id": "split_dns_finalization",
+      "order": 5,
       "lane": "Lane C: Security/PBS/Infra",
       "status": "blocked",
       "manual": true,
@@ -134,7 +246,7 @@
     },
     {
       "id": "public_edge_https_release",
-      "order": 2,
+      "order": 6,
       "lane": "Lane B: Website/Public",
       "status": "blocked",
       "manual": true,
@@ -162,7 +274,7 @@
     },
     {
       "id": "radio_node_recovery",
-      "order": 3,
+      "order": 7,
       "lane": "Lane E: Radio/Media",
       "status": "blocked",
       "manual": true,
@@ -189,7 +301,7 @@
     },
     {
       "id": "wolfstudiopc_admin_path",
-      "order": 4,
+      "order": 8,
       "lane": "Lane C: Security/PBS/Infra",
       "status": "watch",
       "manual": true,
@@ -214,7 +326,7 @@
     },
     {
       "id": "stockenweiler_preparation",
-      "order": 5,
+      "order": 9,
       "lane": "Lane D: Stockenweiler",
       "status": "watch",
       "manual": true,
@@ -240,7 +352,7 @@
     },
     {
       "id": "haos_usb_path",
-      "order": 6,
+      "order": 10,
       "lane": "Lane C: Security/PBS/Infra",
       "status": "watch",
       "manual": true,
@@ -266,7 +378,7 @@
     },
     {
       "id": "pbs_guarded_rebuild",
-      "order": 7,
+      "order": 11,
       "lane": "Lane C: Security/PBS/Infra",
       "status": "watch",
       "manual": true,
@@ -293,7 +405,7 @@
     },
     {
       "id": "windows_gui_updates_closeout",
-      "order": 8,
+      "order": 12,
       "lane": "Lane C: Security/PBS/Infra",
       "status": "watch",
       "manual": true,

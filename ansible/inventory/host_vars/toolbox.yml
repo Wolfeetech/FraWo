@@ -36,24 +36,24 @@ toolbox_network_adguard_rewrites:
 toolbox_network_internal_proxy_hosts:
   - hostname: media.hs27.internal
     upstream: 10.1.0.20:8096
+    scheme: https
+    tls_internal: true
   - hostname: cloud.hs27.internal
     upstream: 10.1.0.21:80
+    scheme: https
+    tls_internal: true
   - hostname: odoo.hs27.internal
     upstream: 10.1.0.22:8069
-    path_redirects:
-      - source: /radio
-        target: /radio/public/frawo-funk
-      - source: /radio/
-        target: /radio/public/frawo-funk
-    path_proxies:
-      - path: /radio/*
-        upstream: 100.64.23.77:80
+    scheme: https
+    tls_internal: true
   - hostname: paperless.hs27.internal
     upstream: 10.1.0.23:8000
+    scheme: https
+    tls_internal: true
   - hostname: ha.hs27.internal
     upstream: "{{ homeserver_haos_current_ip }}:8123"
-  - hostname: radio.hs27.internal
-    upstream: 100.64.23.77:80
+    scheme: https
+    tls_internal: true
   - hostname: vault.hs27.internal
     upstream: 10.1.0.26:8080
     scheme: https
@@ -61,21 +61,19 @@ toolbox_network_internal_proxy_hosts:
 toolbox_network_static_file_hosts:
   - hostname: portal.hs27.internal
     root: /srv/portal
+    scheme: https
+    tls_internal: true
 toolbox_network_public_redirect_hosts:
   - hostname: frawo-tech.de
     target: https://www.frawo-tech.de{uri}
 toolbox_network_public_proxy_hosts:
   - hostname: www.frawo-tech.de
     upstream: 10.1.0.22:8069
-    path_redirects:
-      - source: /radio
-        target: /radio/public/frawo-funk
-      - source: /radio/
-        target: /radio/public/frawo-funk
-    path_proxies:
-      - path: /radio/*
-        upstream: 100.64.23.77:80
-toolbox_network_placeholder_hosts: []
+toolbox_network_placeholder_hosts:
+  - hostname: radio.hs27.internal
+    scheme: https
+    tls_internal: true
+    message: Radio backend not verified after CT100 restore.
 toolbox_network_portal_links:
   - label: Nextcloud
     group: Arbeit
@@ -102,12 +100,12 @@ toolbox_network_status_targets:
   - key: nextcloud
     label: Nextcloud
     check_url: http://10.1.0.21
-    success_codes: [200]
+    success_codes: [200, 302]
     summary: Dateien und Zusammenarbeit
   - key: paperless
     label: Paperless
     check_url: http://10.1.0.23:8000
-    success_codes: [200]
+    success_codes: [200, 302]
     summary: Dokumentenarchiv
   - key: odoo
     label: Odoo

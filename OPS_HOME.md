@@ -101,19 +101,37 @@ Diese Dateien bleiben nur so lange bestehen, bis ihr Inhalt sauber in den Wiki-K
 ## Aktuelle Leitplanken
 
 - Interne Plattform ist betriebsfaehig.
-- Oeffentlich live gehen zum `2026-04-01` soll nur die Website auf `www.frawo-tech.de`.
+- Oeffentlich live gehen soll nur die Website auf `www.frawo-tech.de`; interne Apps bleiben Tailscale-only.
 - Interne Apps bleiben intern oder Tailscale-only.
 - Produktiver Vaultwarden-Login ist nur ueber `https://vault.hs27.internal` freigegeben.
 - Der erste produktive Vaultwarden-Benutzer ist `wolf@frawo-tech.de`.
 - Das Vaultwarden-Master-Passwort wird nur manuell gesetzt und nur offline gesichert.
 - Passwoerter muessen in `Vaultwarden`, nicht dauerhaft in Markdown-Dateien, enden.
 - `Rentner OS` fuer Stockenweiler startet als Managed Support Service, nicht als voll integrierter Zweitstandort.
+- VM-Level-Firewalls auf VM 210/220 bleiben bis zu einem getesteten Proxmox-Firewall-Design deaktiviert. Reaktivierung ohne Test bricht CT 100 -> VM 210/220.
+
+## Aktueller Runtime-Snapshot 2026-04-22
+
+- `portal.hs27.internal` -> `HTTP 200`
+- `odoo.hs27.internal` -> `HTTP 200`
+- `vault.hs27.internal` -> `HTTP 200`
+- `ha.hs27.internal` -> `HTTP 200`
+- `cloud.hs27.internal` -> `HTTP 302` login/HTTPS redirect
+- `paperless.hs27.internal` -> `HTTP 302` login redirect
+- `media.hs27.internal` -> `HTTP 302` Jellyfin login redirect
+- root `/` ~19% used, `ssd2tb` ~4% used, `gdrive:` ~22% used
+- rclone mount is active, but Google API quota/rate limiting was observed during nightly backup traffic
+- SSOT on PVE host `/root/AGENTS_SSOT.md` and repo SSOT are being realigned after the CT 100 restore
 
 ## Offene manuelle Blocker
 
-1. `Vaultwarden` fuer Wolf und Franz sichtbar gegenpruefen.
-2. Wolf- und Franz-Durchlauf fuer `Vault`, `Nextcloud`, `Paperless`, `Odoo` sichtbar abschliessen.
-3. `STRATO`-Send/Receive fuer `webmaster`, `franz`, `noreply` sichtbar verifizieren.
-4. Sichtbare App-Testmails fuer `Nextcloud`, `Paperless`, `Odoo` abschliessen.
-5. Das alte Klartext-Register bleibt nur noch als Desktop-Archiv ausserhalb des Workspaces; im Repo gilt nur noch `ACCESS_REGISTER_VAULTWARDEN_REFERENCES.md`.
-6. Erweiterungen wie `Media`, `Radio`, `surface-go-frontend` und `PBS` erst nach stabilem Arbeits-MVP wieder aufmachen.
+1. Sicherheits-Follow-up: VM 210/220 Firewall-Design testen und erst danach `firewall=1` wieder produktiv setzen.
+2. Backup-Follow-up: nach den Caddy-/Firewall-Aenderungen erneut sichern und einen Restore-Proof dokumentieren.
+3. DNS-Follow-up: UniFi/Tailscale Split-DNS finalisieren, damit Windows Hosts-Datei nicht die Dauerloesung bleibt.
+4. CT 100 Storage-Follow-up: kontrollierte Migration der Toolbox-Disk auf `ssd2tb`.
+5. `Vaultwarden` fuer Wolf und Franz sichtbar gegenpruefen.
+6. Wolf- und Franz-Durchlauf fuer `Vault`, `Nextcloud`, `Paperless`, `Odoo` sichtbar abschliessen.
+7. `STRATO`-Send/Receive fuer `webmaster`, `franz`, `noreply` sichtbar verifizieren.
+8. Sichtbare App-Testmails fuer `Nextcloud`, `Paperless`, `Odoo` abschliessen.
+9. Das alte Klartext-Register bleibt nur noch als Desktop-Archiv ausserhalb des Workspaces; im Repo gilt nur noch `ACCESS_REGISTER_VAULTWARDEN_REFERENCES.md`.
+10. `Radio` bleibt offen, weil aktuell kein sauber verifizierter Backend-Service hinter `radio.hs27.internal` steht.

@@ -1,152 +1,132 @@
 # MASTERPLAN - FraWo Homeserver 2027
 
-Dieses Dokument ist das zentrale Strategiepapier fuer den Aufbau und Betrieb des FraWo Homeservers 2027 (Standort: Anker und Stockenweiler). Es definiert die Lanes, den technologischen Standard und die Freigabemechanismen.
+Dieses Dokument ist das zentrale Strategiepapier fuer Aufbau und Betrieb des FraWo Homeservers 2027 an den Standorten Anker und Stockenweiler. Es definiert die aktiven Lanes, die technische Wahrheit und die naechsten Freigabeschritte.
 
 ---
 
 ## 1. Vision & Strategie
-Der Homeserver 2027 dient als produktive Basis fuer die **FraWo GbR**. Er konsolidiert alle Business-Applikationen (ERP, Cloud, Dokumente) und Sicherheitsinfrastrukturen (Vault, Backups) an zwei Standorten. Der Fokus liegt auf radikaler Stabilisierung, Skalierbarkeit und einer professionellen Operator-Erfahrung.
 
----
+Der Homeserver 2027 ist die produktive Basis der **FraWo GbR**: ERP, Cloud, Dokumente, Vault, Medien, Backups und kontrollierte AI-/Agentenarbeit laufen unter einem gemeinsamen SSOT. Der Standard ist: interne Stabilitaet zuerst, dann oeffentliche Freigabe nur ueber gehaerteten Edge-Pfad.
 
-## 2. Work Lanes (Roadmap)
+## 2. Work Lanes
 
-### Lane A: MVP Pilot (Release Gate) - **[STATUS: SEALED]**
-Der Kern-Arbeitsplatz fuer Wolf und Franz. Alle Basis-Apps sind ueber HTTPS erreichbar. Die Infrastruktur ist dokumentiert und das `release_mvp_gate` ist bestanden.
-- **Ziel**: Stabiler Betrieb fuer ERP (Odoo), Cloud und Vault.
-- **Status**: **ABGESCHLOSSEN (2026-04-20)**.
+### Lane A: MVP Pilot - [STATUS: SEALED]
 
-### Lane B: Website & Public Activation - **[STATUS: ACTIVE]**
-Exponierung der FraWo-Webseite (`www.frawo-tech.de`) an das Internet via Cloudflare Tunnel.
-- **Ziel**: Sichtbarkeit nach Aussen, professionelle Mail-Zustellung (SPF/DKIM/DMARC).
-- **Status**: **IN VORBEREITUNG**. Odoo-Config bereit, Tunnel-Token fehlt.
+- **Ziel**: stabiler interner Arbeitsplatz fuer Wolf und Franz mit Portal, Vaultwarden, Nextcloud, Paperless, Odoo und lokalen Backups.
+- **Status**: abgeschlossen, bleibt aber regressionsueberwacht.
+- **Aktueller Stand 2026-04-22**: alle Kern-Frontdoors sind via Caddy/Tailscale wieder erreichbar.
 
-### Lane C: Security, PBS & Infrastructure - **[STATUS: ACTIVE]**
-Sicherung des MVP durch Proxmox Backup Server (PBS) und Speicher-Optimierung.
-- **Ziel**: Reduzierung des Speicherdrucks (<80%) und automatisierte Life-Cycle-Backups.
-- **Status**: **IN DURCHFUEHRUNG**. Snapshots bereinigt, PBS GC gestartet.
+### Lane B: Website & Public Activation - [STATUS: ACTIVE]
 
-### Lane D: Stockenweiler Integration
-Standort-Koppelung und Site-to-Site VPN fuer den zweiten Knoten.
-- **Ziel**: Nahtloser Zugriff auf `stock-pve` und Remote-Backup-Sync.
+- **Ziel**: `www.frawo-tech.de` ueber einen sauberen HTTPS-Public-Edge freigeben.
+- **Status**: aktiv, aber oeffentlicher Edge/TLS-Pfad ist noch der Blocker.
+- **Wichtig**: interne Admin-UIs und Business-Apps bleiben Tailscale-only.
+
+### Lane C: Security, Backup & Infrastructure - [STATUS: ACTIVE]
+
+- **Ziel**: Restore-Zustand absichern, Backups beweisen, DNS finalisieren und Storage nachhaltig machen.
+- **Status**: hoechste operative Prioritaet nach dem CT-100-Restore.
+- **Aktive Projekte**:
+  - VM 210/220 Firewall-Hardening korrekt testen, bevor `firewall=1` wieder produktiv wird
+  - PVE host NFS/RPC exposure auf vertrauenswuerdige interne Netze begrenzen
+  - rclone rate-limit/backoff und lokales `ssd2tb` Backup-Fallback einrichten
+  - CT 100 Disk kontrolliert von NVMe/local-lvm auf `ssd2tb` migrieren
+  - UniFi/Tailscale Split-DNS finalisieren
+
+### Lane D: Stockenweiler Integration - [STATUS: WATCH]
+
+- **Ziel**: zweiter Standort als Support-/Backup-/Lifeboat-Pfad.
+- **Status**: vorbereitet, aber nicht der aktuelle Fokus.
+
+### Lane E: Radio & Media - [STATUS: ACTIVE/WATCH]
+
+- **Ziel**: Jellyfin stabil halten und Radio erst wieder aktivieren, wenn ein echter Backend-Service verifiziert ist.
+- **Status**: Media ist gruen; `radio.hs27.internal` ist noch kein produktiver Pfad.
 
 ---
 
 ## 3. Infrastruktur & Routing
 
-### Netzwerk-Wahrheit (UCG Ultra)
-Das Netzwerk folgt dem UCG-Standard `10.1.0.0/24`. DNS-Aufloesung erfolgt am Standort Anker ueber AdGuard (CT 100).
+### Netzwerk-Wahrheit
 
-| Dienst | Interner Host | Port | HTTPS | IP (UCG) |
-| :--- | :--- | :--- | :--- | :--- |
-| **Portal** | `portal.hs27.internal` | 8447 | Ja | 10.1.0.20 |
-| **Odoo** | `odoo.hs27.internal` | 8069 | Ja | 10.1.0.22 |
-| **Cloud** | `cloud.hs27.internal` | 443 | Ja | 10.1.0.21 |
-| **Vault** | `vault.hs27.internal` | 443 | Ja | 10.1.0.20 |
-| **Paperless** | `paperless.hs27.internal`| 443 | Ja | 10.1.0.23 |
+- Primaeres Netz: `10.1.0.0/24`
+- Gateway: UCG-Ultra `10.1.0.1`
+- Toolbox / Frontdoor: CT 100 `10.1.0.20`, Tailscale `100.82.26.53`
+- DNS: AdGuard auf CT 100/101, langfristig ueber UniFi/Tailscale Split-DNS statt Windows Hosts-Datei
+- Reverse Proxy: Caddy in CT 100
+- TLS intern: Caddy internal CA fuer `*.hs27.internal`
+
+### Aktuelle Topologie 2026-04-22
+
+| ID | Typ | Dienst | IP | Status |
+| --- | --- | --- | --- | --- |
+| 100 | CT | Toolbox / Caddy / AdGuard / Jellyfin | `10.1.0.20` | LIVE |
+| 101 | CT | AdGuard Slave | `10.1.0.101` | LIVE |
+| 110 | CT | Storage Node / SMB / NFS | `10.1.0.30` | LIVE |
+| 120 | CT | Vaultwarden | `10.1.0.26:8080` | LIVE |
+| 200 | VM | Nextcloud | `10.1.0.21:80` | LIVE |
+| 210 | VM | Home Assistant OS | `10.1.0.24:8123` | LIVE |
+| 220 | VM | Odoo / Website Origin | `10.1.0.22:8069` | LIVE |
+| 230 | VM | Paperless | `10.1.0.23:8000` | LIVE |
+| 240 | VM | PBS | `10.1.0.x` | watch / verify |
+
+### Caddy Frontdoors
+
+| Domain | Backend | Status |
+| --- | --- | --- |
+| `portal.hs27.internal` | local `/srv/portal` | `HTTP 200` |
+| `odoo.hs27.internal` | `10.1.0.22:8069` | `HTTP 200` |
+| `vault.hs27.internal` | `10.1.0.26:8080` | `HTTP 200` |
+| `ha.hs27.internal` | `10.1.0.24:8123` | `HTTP 200` |
+| `cloud.hs27.internal` | `10.1.0.21:80` | `HTTP 302` login/HTTPS redirect |
+| `paperless.hs27.internal` | `10.1.0.23:8000` | `HTTP 302` login redirect |
+| `media.hs27.internal` | `10.1.0.20:8096` | `HTTP 302` Jellyfin login redirect |
 
 ---
 
-<<<<<<< HEAD
-### Node 0: Lead (Admin Orchestrator & SSOT)
-- `wolfstudiopc` (100.98.31.60): **Primärer Lead-Knoten**. Alle Änderungen werden hier zentral konsolidiert. Andere Geräte (z.B. Surface) fungieren als Remote-Satelliten.
+## 4. Restore Notes 2026-04-22
 
-### Node 1: Anker (Business, Automation & AI Layer)
-- `VM 220 odoo`: Zentrale ERP- und FraWo-Website-Instanz.
-- `VM 200 nextcloud`: Zusammengelegte, Single-Source Dokumenten-Instanz.
-- `VM 230 paperless`: Zusammengelegtes, zentrales Dokumentenarchiv.
-- `CT 300 n8n`: Automatisierungs-Backend fuer Workflow-Pipelines.
-- `VM 310 openclaw`: Isoliertes, sicheres AI-Agent-Environment fuer Vibecoding.
-- `CT/VM 211 haos-edge`: Zusaetzliche HA-Ebene zur Steuerung am Anker-Standort.
+- CT 100 was restored and Caddy stack rebuilt.
+- Odoo outage root cause: VM 220 Proxmox NIC firewall blocked CT 100 to `10.1.0.22:8069`.
+- HAOS had the same VM-level firewall problem on VM 210.
+- Temporary service-safe state: VM 210 and VM 220 `net0 firewall=0`.
+- Security follow-up: re-enable only after a tested bridge/firewall design proves CT 100 traffic still reaches Odoo and HAOS.
+- Vaultwarden Caddy upstream was wrong: service is `10.1.0.26:8080`, not `:80`.
+- HAOS Caddy frontdoor was missing and is now `ha.hs27.internal -> 10.1.0.24:8123`.
+- Jellyfin frontdoor is now `media.hs27.internal -> 10.1.0.20:8096`; `localhost` is wrong from inside the Caddy container.
+- rclone Google Drive mount is active; API quota/rate limits were observed during backup traffic.
 
-### Node 2: Stockenweiler (Media, Backup & IoT Lifeboat)
-- `VM 210 haos`: Zentrale Smart-Home-Steuerung fuer das Elternhaus.
-- `CT 100 media`: Strukturierte Medien-Ebene (AzuraCast, Jellyfin, Media-HDD).
-- `CT/VM pbs`: Zentraler Proxmox Backup Server (Anker-Instanz wird obsolet).
+## 5. Security Baseline
 
-### Hardware & Peripherie
-- `wolfstudiopc`: **LEAD** Admin-Geraet & SSOT.
-- `surface-franz`: Remote-Arbeitsgerät (Satellite).
-- `surface-wolfi` (Admin): Remote-Arbeitsgerät (Satellite).
-- `kiosk-frontend`: Touch-Kiosk fuer Franz und Wolf (Rebuild offen).
-- `zenbook_radio_anchor`: Zukuenftiger Radio-Ankerpunkt.
-- `raspberry_pi_radio`: Dedizierter AzuraCast-Node.
-- `iphone-15`: Mobiles Primaergeraet Franz.
-- `pixel-9-pro`: Mobiles Primaergeraet Wolf.
-- `UniFi Cloud Gateway Ultra`: Netzwerkkontrollpunkt & VLANs.
+- No public exposure for internal apps.
+- Passwords and recovery secrets belong in Vaultwarden/offline material, never in repo docs.
+- VM-level firewall reactivation is a gated infra change and needs packet-level validation.
+- PVE host services listening on all interfaces, especially NFS/RPC, need restriction review.
+- SSH authorized keys remain an audit item; OpenClaw infra key is the intended automation path.
 
-## Professioneller Zielstandard
-
-
-Der Server gilt erst dann als wirklich fertig, wenn alle folgenden Punkte erfuellt sind:
-
-1. Alle Zielsysteme sind gebaut, dokumentiert und reproduzierbar ueber IaC pflegbar.
-2. Inventar, IP-Plan, Hostrollen und Verantwortlichkeiten sind eindeutig.
-3. Interne Erreichbarkeit laeuft kontrolliert ueber DNS, Reverse Proxy und Tailscale.
-4. Backups sind nicht nur konfiguriert, sondern mit Restore-Drills praktisch bewiesen.
-5. Sicherheitsbasis ist nachweisbar:
-   - keine unnoetigen Admin-Flaechen im LAN
-   - keine offenen Datenbankports
-   - keine direkte Internet-Exposition von Admin-UIs
-   - saubere Snapshot- und Rollback-Pfade
-6. Der Netzrand ist kontrolliert:
-   - Easy Box nur Uebergang
-   - spaeter UCG-Ultra mit geplantem Cutover
-7. Oeffentliche Freigaben passieren nur ueber einen gehaerteten Edge-Pfad mit DNS, TLS, Auth, Logging und Monitoring.
-
-## Operator Shortcuts
+## 6. Operator Shortcuts
 
 - Operator Home: `OPS_HOME.md`
-- Executive Roadmap: `EXECUTIVE_ROADMAP.md`
-- Gesamtstatus: `PLATFORM_STATUS.md`
-- Identitaetsstandard: `IDENTITY_STANDARD.md`
-- Tool-Betriebsanweisungen: `OPERATIONS/TOOLS_OPERATIONS_INDEX.md`
-- Vaultwarden-Referenzregister: `ACCESS_REGISTER_VAULTWARDEN_REFERENCES.md`
-- Business-MVP-Gate: `artifacts/release_mvp_gate/.../release_mvp_gate.md`
-- Website-Release-Gate: `artifacts/website_release_gate/.../website_release_gate.md`
-- Release-Akte: `RELEASE_READINESS_2026-04-01.md`
-- Mail-Rollout: `MAIL_SYSTEM_ROLLOUT.md`
-- Vaultwarden + STRATO Uebergang: `BITWARDEN_STRATO_EXECUTION_RUNBOOK.md`
-- Mobile-Scan-Workflow: `MOBILE_SCAN_WORKFLOW.md`
-- Stress-Test-Readiness: `STRESS_TEST_READINESS.md`
-- Stockenweiler / Rentner OS: `STOCKENWEILER_REMOTE_SUPPORT_PLAN.md`
-- Anker + Stockenweiler Gesamtpfad: `ANKER_STOCKENWEILER_MARRIAGE_PLAN.md`
-- AI-Arbeitsmodell: `AI_OPERATING_MODEL.md`
-- Hosting-Optionen: `ONLINE_HOSTING_OPTIONS.md`
-- Google-Drive-Plan: `GOOGLE_DRIVE_INTEGRATION_PLAN.md`
-- Odoo-Studio-Entscheidung: `ODOO_STUDIO_DECISION.md`
-- 2-TB-SSD-Bewertung: `TB_SSD_ASSESSMENT.md`
-
-## 4. Operational Insights
-
-### Workstation-Routing Fix (WolfStudioPC)
-- Auf `wolfstudiopc` war ein echter Routing-Fehler aktiv: Tailscale hat das von `toolbox` annoncierte Subnetz `192.168.2.0/24` akzeptiert und damit den direkten LAN-Pfad auf diesem PC uebersteuert.
-- Der Workstation-Fix ist gesetzt: `tailscale set --accept-routes=false`.
-- Damit ist die lokale Route auf diesem Admin-PC wieder priorisiert.
-- Wenn Legacy-Pfade unter `192.168.2.x` trotzdem nicht sauber antworten, ist das als Infrastrukturpfad-Thema zu behandeln, nicht vorschnell als App-Defekt.
-
-### Live-Stand nach Restoration (2026-04-20)
-
-> [!NOTE]
-> **Core System Sealed.** The infrastructure has been successfully cleared of old snapshot data following the 84% storage pressure incident. The system is stable. MTU auf 1280 gehaertet.
-
-- `VM 220 odoo`: LIVE auf `10.1.0.22:8069`. Database **`FraWo_GbR`** active. Public-Edge Ready.
-- `VM 200 nextcloud`: LIVE auf `10.1.0.21`.
-- `VM 230 paperless`: LIVE auf `10.1.0.23`.
-- `VM 210 haos`: LIVE auf `10.1.0.24:8123`.
-- `CT 100 toolbox`: LIVE auf `10.1.0.20`; mobile Frontdoor und Split-DNS laufen wieder ueber `100.82.26.53`. 
-- **ACTIVE: Lane C & E Cleanup** (Node.js/Claude Code installed, Hue Bridges identified).
-- **FIXED**: Odoo "Endless Loading" solved via MTU Alignment (2026-04-20).
-- `CT 110 Storage-Node`: LIVE. SMB Source of Truth verified.
-- **ACTIVE: Lane B Deployment** (Public Edge / HTTPS / Tunnel).
-
-### Bewusst getrennt oder aktuell blockiert
-- **Radio-Node**: Aktuell Offline. Physische Intervention in Stockenweiler erforderlich.
-- **Public Website**: Blockiert durch fehlenden Cloudflare-Token.
+- Live context: `LIVE_CONTEXT.md`
+- Work queue: `todo.md`
+- Machine-readable lane plan: `manifests/work_lanes/current_plan.json`
+- Tool operations: `OPERATIONS/TOOLS_OPERATIONS_INDEX.md`
+- Odoo operations: `OPERATIONS/ODOO_OPERATIONS.md`
+- Proxmox operations: `OPERATIONS/PROXMOX_OPERATIONS.md`
+- Storage operations: `OPERATIONS/STORAGE_INTEGRATION_OPERATIONS.md`
 
 ---
 
-## 5. Governance & Handoff
-Dieses Dokument wird bei jeder signifikanten Aenderung (Lane-Wechsel, Major-Fix) aktualisiert. Handoffs zwischen Agenten (Antigravity -> Claude) muessen zwingend auf diesem Masterplan basieren.
+## 7. Governance & Handoff
 
--- **End of Masterplan** --
+Repo SSOT and Odoo SSOT project must be updated together after material runtime changes. Any agent handoff must include:
+
+1. current runtime truth
+2. files changed
+3. verification commands
+4. rollback or follow-up notes
+5. whether Odoo project tasks were synced
+
+---
+
+**Updated: 2026-04-22**
