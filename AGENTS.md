@@ -47,6 +47,7 @@ When finishing work, commit/push the relevant repo truth immediately.
 - New issues should use `.github/ISSUE_TEMPLATE/ops_task.yml` or `.github/ISSUE_TEMPLATE/incident.yml`.
 - If `gh` is unavailable or unauthenticated, use the connected GitHub app where possible and document any manual GitHub action in `COMMUNICATION/agent_board.md`.
 - GitHub CLI helpers live in `scripts/github/`.
+- GitHub labels and issue-label mapping live in `manifests/github/labels.json` and `manifests/github/issue_labels_2026-04-22.json`.
 
 ## Workspace Safety
 

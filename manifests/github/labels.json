@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-04-22",
+  "repository": "Wolfeetech/FraWo",
+  "labels": [
+    {
+      "name": "type:incident",
+      "color": "d73a4a",
+      "description": "User-visible regression or broken service"
+    },
+    {
+      "name": "type:ops",
+      "color": "0366d6",
+      "description": "Operational or SSOT task"
+    },
+    {
+      "name": "type:security",
+      "color": "b60205",
+      "description": "Security-sensitive work"
+    },
+    {
+      "name": "type:backup",
+      "color": "5319e7",
+      "description": "Backup, restore, or storage-proof work"
+    },
+    {
+      "name": "status:blocked",
+      "color": "e99695",
+      "description": "Waiting on operator, auth, hardware, or maintenance window"
+    },
+    {
+      "name": "status:active",
+      "color": "0e8a16",
+      "description": "Ready for active work"
+    },
+    {
+      "name": "status:watch",
+      "color": "fbca04",
+      "description": "Tracked but not the current active change"
+    },
+    {
+      "name": "lane:a-mvp",
+      "color": "c2e0c6",
+      "description": "Lane A: MVP Closeout"
+    },
+    {
+      "name": "lane:b-public",
+      "color": "bfdadc",
+      "description": "Lane B: Website/Public"
+    },
+    {
+      "name": "lane:c-infra",
+      "color": "f9d0c4",
+      "description": "Lane C: Security/PBS/Infra"
+    },
+    {
+      "name": "lane:e-media",
+      "color": "d4c5f9",
+      "description": "Lane E: Radio/Media"
+    },
+    {
+      "name": "area:github",
+      "color": "24292e",
+      "description": "GitHub workflow, repository hygiene, or branch protection"
+    },
+    {
+      "name": "area:odoo",
+      "color": "875a7b",
+      "description": "Odoo application layer"
+    },
+    {
+      "name": "area:nextcloud",
+      "color": "0082c9",
+      "description": "Nextcloud configuration or client behavior"
+    },
+    {
+      "name": "area:dns",
+      "color": "1d76db",
+      "description": "DNS, split DNS, or name resolution"
+    },
+    {
+      "name": "area:proxmox",
+      "color": "ff6c2c",
+      "description": "Proxmox host, VM, CT, firewall, or storage work"
+    },
+    {
+      "name": "needs:operator",
+      "color": "bfe5bf",
+      "description": "Needs a human operator action"
+    },
+    {
+      "name": "risk:runtime",
+      "color": "fef2c0",
+      "description": "Can affect running services"
+    }
+  ]
+}

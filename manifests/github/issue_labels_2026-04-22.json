@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-04-22",
+  "repository": "Wolfeetech/FraWo",
+  "issue_labels": [
+    {
+      "issue": 7,
+      "labels": ["type:security", "status:blocked", "lane:c-infra", "needs:operator"]
+    },
+    {
+      "issue": 8,
+      "labels": ["type:security", "status:blocked", "lane:c-infra", "area:proxmox", "risk:runtime"]
+    },
+    {
+      "issue": 9,
+      "labels": ["type:backup", "status:blocked", "lane:c-infra", "area:proxmox", "risk:runtime"]
+    },
+    {
+      "issue": 10,
+      "labels": ["type:incident", "status:active", "lane:b-public", "area:nextcloud"]
+    },
+    {
+      "issue": 11,
+      "labels": ["type:ops", "status:active", "lane:a-mvp", "area:odoo"]
+    },
+    {
+      "issue": 12,
+      "labels": ["type:ops", "status:blocked", "lane:c-infra", "area:dns", "needs:operator"]
+    },
+    {
+      "issue": 13,
+      "labels": ["type:security", "status:active", "lane:c-infra", "area:proxmox", "risk:runtime"]
+    },
+    {
+      "issue": 14,
+      "labels": ["type:ops", "status:watch", "lane:c-infra", "area:proxmox", "risk:runtime"]
+    },
+    {
+      "issue": 15,
+      "labels": ["type:ops", "status:blocked", "lane:c-infra", "area:github", "needs:operator"]
+    }
+  ]
+}

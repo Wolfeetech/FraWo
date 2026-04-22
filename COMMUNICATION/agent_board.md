@@ -35,6 +35,7 @@ Other paths are aliases, archives, or local-only legacy material.
 - PRs should use the repo template and link issues where possible.
 - `gh` CLI is installed at `C:\Program Files\GitHub CLI\gh.exe`, but authentication is still required via `gh auth login`.
 - Branch protection automation exists in `scripts/github/configure_main_protection.ps1`.
+- Full GitHub bootstrap automation exists in `scripts/github/bootstrap_professional_github.ps1` and will sync labels, issue labels, and optionally branch protection after auth.
 - Seeded active operational issues:
   - `#7` OpenClaw key rotation
   - `#8` VM 210/220 firewall hardening

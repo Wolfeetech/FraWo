@@ -73,6 +73,18 @@ Audit current GitHub setup:
 powershell -ExecutionPolicy Bypass -File scripts\github\check_github_setup.ps1
 ```
 
+Synchronize labels and issue labels:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\github\bootstrap_professional_github.ps1
+```
+
+Synchronize labels, issue labels, and branch protection in one pass:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\github\bootstrap_professional_github.ps1 -ApplyBranchProtection
+```
+
 Solo-safe mode disables force-push and branch deletion but keeps direct maintainer commits possible for small SSOT updates.
 
 ## Current Limitation
