@@ -1,74 +1,84 @@
 <!--
-  FraWo GbR - Contact page block
-  Stand: 2026-04-10
+  FraWo GbR – Kontaktseite v2
+  Redesign: 2026-04-22
 -->
 
-<div class="frawo-contact-page">
-  <div class="frawo-contact-shell">
-    <div class="frawo-contact-hero">
-      <div>
-        <p class="frawo-label">Kontakt</p>
-        <h1 class="frawo-display" style="font-size:clamp(2.4rem,4.8vw,4.2rem); margin:1rem 0 1rem 0; max-width:720px;">
-          Technik kurz anreissen. Rest klaeren wir.
-        </h1>
-        <p class="frawo-copy" style="max-width:620px; font-size:1.06rem;">
-          Schreib uns kurz, worum es geht: Veranstaltung, Termin, Ort, Publikum oder die offene Baustelle.
-          Kein Formular, kein Pitchdeck, keine Textwand.
-        </p>
-      </div>
+<section class="fw-contact-page" aria-labelledby="fw-contact-heading">
+  <div class="fw-wrap">
+    <span class="fw-label">Kontakt</span>
+    <h1 class="fw-h1" id="fw-contact-heading" style="max-width:720px;">
+      Schreiben Sie uns. Wir antworten schnell.
+    </h1>
+    <p class="fw-lead">
+      Kein Formular, kein Briefing-Template. Eine kurze Nachricht reicht —
+      Termin, Ort und was technisch gebraucht wird.
+    </p>
 
-      <div class="frawo-contact-card frawo-contact-primary">
-        <h3>Direkter Weg</h3>
-        <p style="margin:0 0 1rem 0;">Wenn ein Termin drueckt, ist Mail der schnellste Einstieg. Telefon geht fuer die kurze Rueckfrage oder wenn waehrend der Planung etwas blockiert.</p>
-        <div style="display:grid; gap:0.95rem;">
+    <div class="fw-contact-grid">
+
+      <!-- Direktkontakt -->
+      <div>
+        <h2 class="fw-h2" style="font-size:1.4rem; margin-bottom:0.5rem;">Direkter Weg</h2>
+        <p class="fw-body" style="margin-bottom:1.5rem;">
+          Wenn ein Termin drückt, ist Mail der schnellste Einstieg.
+          Telefon geht für die kurze Rückfrage oder wenn während
+          der Planung etwas blockiert.
+        </p>
+        <div class="fw-contact-direct">
           <a href="mailto:info@frawo-tech.de">info@frawo-tech.de</a>
           <a href="tel:+4915155243164">+49 151 55243164</a>
         </div>
-        <p class="frawo-muted" style="margin:1.2rem 0 0 0; font-size:0.88rem; line-height:1.65;">
+        <p class="fw-body" style="margin-top:1.2rem; color:var(--fw-text-3); font-size:0.88rem;">
           Werktags melden wir uns in der Regel am selben Tag.
-          Wenn wir im Aufbau stehen, spaetestens am naechsten Morgen.
+          Wenn wir im Aufbau stehen, spätestens am nächsten Morgen.
         </p>
       </div>
+
+      <!-- Ergänzende Infos -->
+      <div>
+        <div class="fw-contact-card" style="margin-bottom:16px;">
+          <h3>Für die erste Mail hilfreich</h3>
+          <ul class="fw-list">
+            <li>Datum oder Zeitraum der Veranstaltung</li>
+            <li>Ort und ungefähre Größe des Formats</li>
+            <li>Was technisch schon steht und was noch offen ist</li>
+            <li>Ob nur Aufbau, nur Betrieb oder beides gebraucht wird</li>
+          </ul>
+        </div>
+        <div class="fw-contact-card">
+          <h3>Was nicht nötig ist</h3>
+          <ul class="fw-list">
+            <li>Kein fertiges Briefing-Dokument</li>
+            <li>Keine vollständige Materialliste vorab</li>
+            <li>Keine langen Erklärungen — zwei Sätze reichen oft</li>
+          </ul>
+        </div>
+      </div>
+
     </div>
 
-    <div class="frawo-contact-grid">
-      <div class="frawo-contact-card">
+    <!-- Service-Karten -->
+    <div class="fw-contact-cards">
+
+      <div class="fw-contact-card">
         <h3>Typische Anfragen</h3>
-        <ul class="frawo-list-clean">
-          <li>Clubnacht, Konzert, Kulturformat oder Sonderflaeche mit Ton- und Lichtbedarf</li>
-          <li>Technische Betreuung fuer laufende Reihen oder einzelne Produktionen</li>
-          <li>Umbauten, Zuspielung oder Signalwege, die vor Ort sauber organisiert werden muessen</li>
-          <li>Eventseite, Ablaufhinweise oder digitale Besucherinformation rund um die Veranstaltung</li>
+        <ul class="fw-list">
+          <li>Clubnacht, Konzert oder Kulturformat mit Ton- und Lichtbedarf</li>
+          <li>Technische Betreuung für laufende Reihen oder Einzelproduktionen</li>
+          <li>Umbauten und Signalwege, die vor Ort sauber organisiert sein müssen</li>
+          <li>Digitale Besucherinformation rund um die Veranstaltung</li>
         </ul>
       </div>
 
-      <div class="frawo-contact-card">
-        <h3>Fuer die erste Mail hilfreich</h3>
-        <ul class="frawo-list-clean">
-          <li>Datum oder Zeitraum</li>
-          <li>Ort und ungefaehre Groesse des Formats</li>
-          <li>Was technisch schon steht und was noch offen ist</li>
-          <li>Ob nur Setup, nur Betrieb oder beides gebraucht wird</li>
-        </ul>
-      </div>
-
-      <div class="frawo-contact-card">
-        <h3>Womit wir arbeiten koennen</h3>
-        <p style="margin:0;">
-          Eine kurze, klare Nachricht reicht. Zwei Saetze sind meistens hilfreicher als ein halbfertiges
-          PDF mit zu vielen offenen Annahmen.
+      <div class="fw-contact-card">
+        <h3>Womit wir arbeiten können</h3>
+        <p style="margin:0; font-size:0.94rem; line-height:1.75; color:var(--fw-text-2);">
+          Eine kurze, klare Nachricht reicht. Zwei Sätze sind meistens
+          hilfreicher als ein halbfertiges PDF mit zu vielen offenen Annahmen.
+          Wir stellen die richtigen Fragen — das ist unser Job.
         </p>
       </div>
 
-      <div class="frawo-contact-card">
-        <h3>Was nicht noetig ist</h3>
-        <ul class="frawo-list-clean">
-          <li>Kein fertiges Briefing</li>
-          <li>Kein ausgefuelltes Standardformular</li>
-          <li>Kein Marketingtext ueber das Event</li>
-          <li>Keine perfekte Materialliste vor dem ersten Gespraech</li>
-        </ul>
-      </div>
     </div>
   </div>
-</div>
+</section>
