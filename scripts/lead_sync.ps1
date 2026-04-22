@@ -20,7 +20,7 @@ git -C $repoRoot push origin main --quiet
 Write-Host "[2/3] Attempting Remote Sync on Lead Node ($leadIP)..." -ForegroundColor Yellow
 if (Test-NetConnection -ComputerName $leadIP -Port 22 -InformationLevel Quiet) {
     Write-Host "SSH is OPEN. Triggering remote pull on Lead..." -ForegroundColor Green
-    ssh wolf@$leadIP "cd Documents/Private_Networking && git pull origin main"
+    ssh wolf@$leadIP "cd C:/WORKSPACE/FraWo && git pull origin main"
 } else {
     Write-Host "SSH is CLOSED. Please run 'git pull' manually on the StudioPC." -ForegroundColor Red
 }

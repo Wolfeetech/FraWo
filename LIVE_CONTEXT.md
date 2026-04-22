@@ -13,6 +13,7 @@
   - `media.hs27.internal` -> `HTTP 302` Jellyfin login redirect
 - **Toolbox**: OPERATIONAL on `10.1.0.20`, Tailscale IP `100.82.26.53`. Caddy, AdGuard and Jellyfin are running.
 - **Odoo (VM 220)**: LIVE on `10.1.0.22:8069`. The restore issue was not Docker-in-LXC; VM-level Proxmox firewall blocked CT 100 to VM 220.
+- **Odoo app mail**: Sender error for sales cancellation was server-side fixed on `2026-04-22`: `wolf@frawo-tech.de` now has a partner email and `admin` uses `noreply@frawo-tech.de`. Template `Sales: Order Cancellation` renders `S00001` from `"Wolf Admin" <wolf@frawo-tech.de>`. Browser retest is still required before closing GitHub issue `#11`.
 - **Home Assistant (VM 210)**: LIVE on `10.1.0.24:8123`. `trusted_proxies` includes `10.1.0.0/24` and `172.30.32.0/23`.
 - **Vaultwarden (CT 120)**: LIVE on `10.1.0.26:8080`. Caddy upstream corrected from `:80` to `:8080`.
 - **Media**: Jellyfin LIVE on host-network port `10.1.0.20:8096`; Caddy upstream corrected away from container-local `localhost`.
@@ -53,7 +54,8 @@
    - migrate CT 100 disk from `local-lvm`/NVMe to `ssd2tb` in a controlled maintenance window
 5. **Odoo application layer**
    - update the Odoo SSOT project and pending project tasks
+   - browser-retest quote cancellation mail after sender fix, then close GitHub `#11`
    - resolve `res.users.log` ACL warnings and finalize productive user/project setup
 
 ---
-*Updated: 2026-04-22 13:30 Europe/Berlin*
+*Updated: 2026-04-22 16:12 Europe/Berlin*

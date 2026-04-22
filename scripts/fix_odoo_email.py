@@ -1,0 +1,5 @@
+company = env['res.company'].search([], limit=1)
+company.write({'email': 'noreply@frawo-tech.de'})
+admin = env['res.users'].search([('login', '=', 'admin')], limit=1)
+admin.write({'email': 'wolf@frawo-tech.de'})
+env.cr.commit()

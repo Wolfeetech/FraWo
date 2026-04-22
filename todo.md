@@ -107,9 +107,11 @@ Diese Datei ist die kurze manuelle Unblock-Queue. Strategische Wahrheit steht im
 - `github_issue`: `#11`
 - `goal`: Odoo kann Angebots-/Auftragsmails und Storno-Mails mit gueltiger Absenderadresse senden.
 - `observed`: Beim Stornieren von Angebot `S00001` erscheint `Ungueltiger Vorgang`: Die Nachricht kann nicht gesendet werden, weil die E-Mail-Adresse des Absenders nicht konfiguriert ist.
-- `likely_cause`: Benutzer-, Firmen- oder Mail-Alias-Absender in Odoo ist leer bzw. nicht mit dem ausgehenden Mailserver abgestimmt.
-- `next_operator_action`: Gewuenschte produktive Absenderadresse bestaetigen, z. B. `office@frawo-tech.de`.
-- `next_codex_action`: Odoo Firma/User/Mail-Alias und ausgehenden Mailserver pruefen, Sender-Adresse setzen, Testmail/Angebotsmail senden und danach Storno-Workflow erneut testen.
+- `root_cause_verified`: Angebote `S00001` und `S00002` nutzen `wolf@frawo-tech.de` als Verkaeufer, aber der zugehoerige Odoo-Partner hatte keine E-Mail-Adresse.
+- `server_fix_2026-04-22`: Odoo-Partner fuer `wolf@frawo-tech.de` auf `wolf@frawo-tech.de` gesetzt; technischer `admin` auf `noreply@frawo-tech.de` gesetzt; Odoo-Webcontainer neu gestartet.
+- `verification_2026-04-22`: Odoo rendert die Storno-Mail-Vorlage fuer `S00001` jetzt mit `"Wolf Admin" <wolf@frawo-tech.de>` als `email_from`; Caddy-Frontdoor `odoo.hs27.internal/web/login` antwortet `HTTP 200`.
+- `next_operator_action`: Storno-Dialog in Odoo einmal im Browser erneut ausfuehren und bestaetigen, dass die Fehlermeldung verschwunden ist.
+- `next_codex_action`: Nach Browser-Abnahme GitHub Issue `#11` schliessen; optional echte sichtbare Odoo-Testmail gegen STRATO-Inbox pruefen.
 
 ### `odoo_acl_res_users_log` [WATCH]
 

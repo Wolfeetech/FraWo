@@ -152,7 +152,7 @@ Saubere Wege:
 | --- | --- | --- | --- |
 | Nextcloud | `noreply@frawo-tech.de` | Freigaben, Hinweise, Passwortflows | pending |
 | Paperless | `noreply@frawo-tech.de` | Benachrichtigungen | pending |
-| Odoo | `noreply@frawo-tech.de` | Prozess- und Systemmail | pending |
+| Odoo | `noreply@frawo-tech.de` / user sender where workflow-specific | Prozess- und Systemmail | server-side sender fixed; browser retest pending |
 | AzuraCast | `noreply@frawo-tech.de` | System- und Admin-Hinweise | pending |
 | Website / Kontakt | `info@frawo-tech.de` | Inbound / Kontaktformular | pending |
 | Paperless Inbound | `documents@frawo-tech.de` | Dokumente per IMAP importieren | later |
@@ -167,6 +167,7 @@ Saubere Wege:
 - `Nextcloud` nutzt live `mail_from_address=noreply`, `mail_domain=frawo-tech.de`, `smtp.strato.de:587`, Login `webmaster@frawo-tech.de`
 - `Paperless` nutzt live `PAPERLESS_EMAIL_FROM=noreply@frawo-tech.de`, `smtp.strato.de:587`, Login `webmaster@frawo-tech.de`
 - `Odoo`-Mailserver `Strato SMPT` ist live auf `smtp.strato.de` mit Login `webmaster@frawo-tech.de` und `from_filter=noreply@frawo-tech.de` ausgerichtet
+- `Odoo`-Absender-Regression nach Restore am `2026-04-22` serverseitig behoben: `wolf@frawo-tech.de` hatte als Verkaeufer keinen Partner-Emailwert; Storno-Vorlage fuer `S00001` rendert jetzt `"Wolf Admin" <wolf@frawo-tech.de>`. Browser-Retest bleibt offen.
 - `noreply@frawo-tech.de` wurde am `2026-03-30` als echter sichtbarer SMTP-Absender ueber den produktiven STRATO-Backbone an `franz@frawo-tech.de` gesendet
 - der sichtbare Inbox-Nachweis bei `Franz` ist am `2026-03-31` read-only per IMAP erbracht worden:
   - `franz@frawo-tech.de` INBOX enthaelt den Betreff `HS27 noreply SMTP proof 2026-03-30 23:37`

@@ -1,0 +1,3 @@
+sed -i "s|'overwrite.cli.url' => 'http://|'overwrite.cli.url' => 'https://|g" /var/lib/docker/volumes/nextcloud_nextcloud/_data/config/config.php
+grep -q "overwriteprotocol" /var/lib/docker/volumes/nextcloud_nextcloud/_data/config/config.php || sed -i "/'overwrite.cli.url'/a \  'overwriteprotocol' => 'https'," /var/lib/docker/volumes/nextcloud_nextcloud/_data/config/config.php
+grep -q "trusted_proxies" /var/lib/docker/volumes/nextcloud_nextcloud/_data/config/config.php || sed -i "/'overwriteprotocol'/a \  'trusted_proxies' => array('10.1.0.20')," /var/lib/docker/volumes/nextcloud_nextcloud/_data/config/config.php
