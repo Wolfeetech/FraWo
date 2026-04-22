@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-04-22",
+  "github_repository": "Wolfeetech/FraWo",
+  "canonical_checkout": "C:\\Users\\Admin\\Workspace\\Repos\\FraWo",
+  "canonical_branch": "main",
+  "junction_aliases": [
+    "C:\\Users\\Admin\\Workspace\\FraWo",
+    "C:\\WORKSPACE\\FraWo"
+  ],
+  "legacy_local_only_paths": [
+    "C:\\Users\\Admin\\Documents\\Private_Networking",
+    "C:\\Users\\Admin\\Documents\\Private_Networking_Local\\quarantine"
+  ],
+  "communication_files": [
+    "AGENTS.md",
+    "COMMUNICATION\\agent_board.md",
+    "todo.md",
+    "LIVE_CONTEXT.md",
+    "manifests\\work_lanes\\current_plan.json"
+  ],
+  "rules": {
+    "single_writer_checkout": true,
+    "do_not_commit_secrets": true,
+    "pull_before_work": true,
+    "push_after_completed_work": true,
+    "legacy_private_networking_is_not_canonical": true
+  }
+}

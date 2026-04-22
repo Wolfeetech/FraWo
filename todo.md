@@ -16,6 +16,14 @@ Diese Datei ist die kurze manuelle Unblock-Queue. Strategische Wahrheit steht im
 
 ## Manuelle Unblock-Punkte
 
+### `workspace_drift_guard` [WATCH]
+
+- `lane`: `Lane C: Security/PBS/Infra`
+- `goal`: Alle Agenten arbeiten dauerhaft im selben FraWo-Projekt und koordinieren ueber Repo-Dateien statt ueber verstreute Workspaces.
+- `current_state`: `C:\Users\Admin\Workspace\Repos\FraWo` ist kanonisch; `C:\Users\Admin\Workspace\FraWo` und `C:\WORKSPACE\FraWo` sind Junctions dorthin; Agentenvertrag und Board sind im Repo.
+- `next_operator_action`: Alte Fenster/IDE-Sessions moeglichst auf `C:\Users\Admin\Workspace\Repos\FraWo` neu oeffnen.
+- `next_codex_action`: Bei kuenftigen Starts `scripts/workspace/audit_workspaces.ps1` laufen lassen, bevor grosse Arbeiten beginnen.
+
 ### `post_restore_backup_proof` [BLOCKED]
 
 - `lane`: `Lane C: Security/PBS/Infra`

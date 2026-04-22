@@ -4,6 +4,17 @@
 
 Diese Datei ist die zentrale Operator-Startseite fuer den aktuellen Plattformstand, die Release-Vorbereitung und die naechsten Arbeitspakete.
 
+## Kanonischer Workspace
+
+- Einziger schreibender Checkout: `C:\Users\Admin\Workspace\Repos\FraWo`
+- Bequeme Alias-Pfade:
+  - `C:\Users\Admin\Workspace\FraWo` -> Junction auf den kanonischen Checkout
+  - `C:\WORKSPACE\FraWo` -> Junction auf den kanonischen Checkout
+- Agenten-Startvertrag: `AGENTS.md`
+- Agenten-Kommunikation: `COMMUNICATION/agent_board.md`
+- Workspace-Manifest: `manifests/workspaces/canonical_workspace.json`
+- Audit: `powershell -ExecutionPolicy Bypass -File scripts/workspace/audit_workspaces.ps1`
+
 ## Kanonischer Wiki-Stand
 
 Diese Dateien sind ab jetzt die Zielstruktur, in die wir offene Arbeit und Wissen Schritt fuer Schritt zusammenziehen:
@@ -51,6 +62,8 @@ Diese Dateien bleiben nur so lange bestehen, bis ihr Inhalt sauber in den Wiki-K
 
 ## Jetzt zuerst lesen
 
+- `AGENTS.md`
+- `COMMUNICATION/agent_board.md`
 - `INTRODUCTION_PROMPT.md`
 - `BUSINESS_MVP_PROMPT.md` oder `WEBSITE_RELEASE_PROMPT.md` oder `FULL_CERTIFICATION_PROMPT.md` je nach Arbeitsmodus
 - `GEMINI_BROWSER_MVP_ACCEPTANCE_PROMPT.md` fuer die offenen Browser-Abnahmen im MVP

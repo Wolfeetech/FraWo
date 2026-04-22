@@ -6,13 +6,15 @@ Keine Secrets. Keine Passwoerter. Diese Datei ist dafuer gedacht, sie direkt an 
 ## Nutzung
 
 - Primaerer Read-First fuer eine andere KI: diese Datei
-- Wenn tieferer Repo-Kontext noetig ist: `INTRODUCTION_PROMPT.md`, `OPS_HOME.md`, `DOCS/Task_Archive/OPERATOR_TODO_QUEUE.md`
+- Wenn tieferer Repo-Kontext noetig ist: `AGENTS.md`, `COMMUNICATION/agent_board.md`, `INTRODUCTION_PROMPT.md`, `OPS_HOME.md`, `todo.md`
 - Diese Datei neu erzeugen mit: `python scripts/generate_ai_server_handoff.py`
 
 ## Generierung
 
 - Generated at: `2026-04-20 14:16:53`
-- Workspace root: `/mnt/c/Users/Admin/Documents/Private_Networking`
+- Workspace root: `C:\Users\Admin\Workspace\Repos\FraWo`
+- Canonical aliases: `C:\Users\Admin\Workspace\FraWo`, `C:\WORKSPACE\FraWo`
+- Legacy workspace warning: `C:\Users\Admin\Documents\Private_Networking` is local-only legacy material and not project truth.
 - Git branch: `main`
 - Pending git changes: `9`
 - Managed hosts in inventory: `31`
