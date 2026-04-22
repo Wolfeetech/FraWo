@@ -5,6 +5,7 @@
 > Alle technischen Fakten, Automatisierungen und Dokumentationen in diesem Repository sind die absolute Wahrheit für das FraWo-Estate.
 >
 > **Canonical Upstream**: [https://github.com/Wolfeetech/FraWo](https://github.com/Wolfeetech/FraWo)
+> **Canonical Local Workspace**: `C:\Users\Admin\Workspace\Repos\FraWo`
 
 ---
 
@@ -35,10 +36,12 @@ Read only this short boot path first:
 2. `AI_BOOTSTRAP_CONTEXT.md`
 3. `LIVE_CONTEXT.md`
 4. `OPS_HOME.md`
-5. `DOCS/Task_Archive/OPERATOR_TODO_QUEUE.md`
-6. `OPERATIONS/TOOLS_OPERATIONS_INDEX.md`
-7. `OPERATIONS/PRODUCTION_READINESS_OPERATIONS.md`
-8. `MASTERPLAN.md`
+5. `todo.md`
+6. `COMMUNICATION/agent_board.md`
+7. `OPERATIONS/GITHUB_OPERATIONS.md`
+8. `OPERATIONS/TOOLS_OPERATIONS_INDEX.md`
+9. `OPERATIONS/PRODUCTION_READINESS_OPERATIONS.md`
+10. `MASTERPLAN.md`
 
 Only then open the service- or topic-specific canonical file you actually need.
 Do not treat the rest of the workspace as mandatory boot reading.
@@ -76,12 +79,12 @@ After `INTRODUCTION_PROMPT.md`, choose the narrowest specialized prompt that fit
   - generic agent rules for any AI collaborator
 - `MEMORY.md`
   - long-lived project knowledge base
-- `NETWORK_INVENTORY.md`
-  - canonical LAN inventory
-- `VM_AUDIT.md`
+- `DOCS/Task_Archive/NETWORK_INVENTORY.md`
+  - archived LAN inventory; verify against current `LIVE_CONTEXT.md` before use
+- `infrastructure/VM_AUDIT.md`
   - verified runtime state and remediation notes
-- `BACKUP_RESTORE_PROOF.md`
-  - latest verified local backup and restore proof until PBS is live
+- `DOCS/Task_Archive/BACKUP_RESTORE_PROOF.md`
+  - archived backup and restore proof; current backup follow-up is tracked in `todo.md` and GitHub issue `#9`
 - `CAPACITY_REVIEW.md`
   - current sizing decision for host, toolbox and VMs based on live runtime data
 - `RIGHTSIZING_MAINTENANCE_PLAN.md`
@@ -120,12 +123,14 @@ After `INTRODUCTION_PROMPT.md`, choose the narrowest specialized prompt that fit
   - canonical start-of-day, close-day and handoff control path
 - `OPERATIONS/USER_ONBOARDING_OPERATIONS.md`
   - canonical operator path for Wolf, Franz and device onboarding
-- `DOCS/Task_Archive/OPERATOR_TODO_QUEUE.md`
+- `todo.md`
   - short operator-facing queue for the next manual unblock steps
 - `PBS_VM_240_SETUP_PLAN.md`
   - controlled rollout path and stage gates for the planned PBS VM
-- `SECURITY_BASELINE.md`
-  - current repeatable security posture and daily security checks
+- `SECURITY.md`
+  - current security policy and reporting rules
+- `DOCS/Task_Archive/SECURITY_BASELINE.md`
+  - archived repeatable security posture and daily security checks
 - `ansible/inventory/hosts.yml`
   - machine-readable infrastructure inventory
 - `ansible/inventory/group_vars/all/vault.yml`

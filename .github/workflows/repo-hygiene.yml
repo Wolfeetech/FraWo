@@ -22,13 +22,17 @@ jobs:
           set -euo pipefail
           required=(
             README.md
+            SECURITY.md
+            CONTRIBUTING.md
             AGENTS.md
             OPS_HOME.md
             LIVE_CONTEXT.md
             MASTERPLAN.md
             todo.md
             AI_OPERATING_MODEL.md
+            OPERATIONS/GITHUB_OPERATIONS.md
             COMMUNICATION/agent_board.md
+            .github/dependabot.yml
             manifests/workspaces/canonical_workspace.json
             manifests/work_lanes/current_plan.json
             SSOT/START_HERE.md
