@@ -76,6 +76,15 @@ Diese Datei ist die kurze manuelle Unblock-Queue. Strategische Wahrheit steht im
 - `goal`: Odoo Masterprojekt und Repo-SSOT spiegeln denselben Stand.
 - `next_codex_action`: Odoo Masterprojekt mit den aktuellen Lane-/Projektaufgaben synchronisieren.
 
+### `odoo_sender_email_for_document_mail` [ACTIVE]
+
+- `lane`: `Lane A: MVP Closeout`
+- `goal`: Odoo kann Angebots-/Auftragsmails und Storno-Mails mit gueltiger Absenderadresse senden.
+- `observed`: Beim Stornieren von Angebot `S00001` erscheint `Ungueltiger Vorgang`: Die Nachricht kann nicht gesendet werden, weil die E-Mail-Adresse des Absenders nicht konfiguriert ist.
+- `likely_cause`: Benutzer-, Firmen- oder Mail-Alias-Absender in Odoo ist leer bzw. nicht mit dem ausgehenden Mailserver abgestimmt.
+- `next_operator_action`: Gewuenschte produktive Absenderadresse bestaetigen, z. B. `office@frawo-tech.de`.
+- `next_codex_action`: Odoo Firma/User/Mail-Alias und ausgehenden Mailserver pruefen, Sender-Adresse setzen, Testmail/Angebotsmail senden und danach Storno-Workflow erneut testen.
+
 ### `odoo_acl_res_users_log` [WATCH]
 
 - `lane`: `Lane A`
