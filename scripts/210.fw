@@ -1,0 +1,13 @@
+[OPTIONS]
+enable: 1
+
+[RULES]
+# Allow internal Control Plane (Toolbox, Host, Gateway)
+IN ACCEPT -source 10.1.0.20 -p tcp -dport 8123 -log info
+IN ACCEPT -source 10.1.0.92 -p tcp -dport 8123 -log info
+IN ACCEPT -source 10.1.0.1 -p tcp -dport 8123 -log info
+# Allow internal LAN Subnet
+IN ACCEPT -source 10.1.0.0/24 -p tcp -dport 8123
+# Matter & mDNS
+IN ACCEPT -source 10.1.0.0/24 -p udp -dport 5353
+IN ACCEPT -source 10.1.0.0/24 -p tcp -dport 21064

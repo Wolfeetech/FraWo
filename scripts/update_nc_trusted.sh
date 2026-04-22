@@ -1,0 +1,1 @@
+qm guest exec 200 -- bash -c "sed -i \"s/'trusted_proxies' => array('10.1.0.20'),/'trusted_proxies' => array('10.1.0.20', '10.1.0.92', '10.1.0.1'),/g\" /var/lib/docker/volumes/nextcloud_nextcloud/_data/config/config.php"

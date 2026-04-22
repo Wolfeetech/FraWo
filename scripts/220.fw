@@ -1,0 +1,15 @@
+[OPTIONS]
+enable: 1
+
+[RULES]
+# Allow internal Control Plane (Toolbox, Host, Gateway)
+IN ACCEPT -source 10.1.0.20 -p tcp -dport 8069 -log info
+IN ACCEPT -source 10.1.0.92 -p tcp -dport 8069 -log info
+IN ACCEPT -source 10.1.0.1 -p tcp -dport 8069 -log info
+# Allow internal LAN Subnet
+IN ACCEPT -source 10.1.0.0/24 -p tcp -dport 8069
+IN ACCEPT -source 10.1.0.0/24 -p tcp -dport 8072
+# SSH for Management
+IN ACCEPT -source 10.1.0.0/24 -p tcp -dport 22
+# Tailscale access
+IN ACCEPT -source 100.64.0.0/10 -p tcp -dport 8069
