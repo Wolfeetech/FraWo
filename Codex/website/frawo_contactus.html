@@ -1,84 +1,60 @@
-<!--
-  FraWo GbR – Kontaktseite v2
-  Redesign: 2026-04-22
--->
-
-<section class="fw-contact-page" aria-labelledby="fw-contact-heading">
-  <div class="fw-wrap">
-    <span class="fw-label">Kontakt</span>
-    <h1 class="fw-h1" id="fw-contact-heading" style="max-width:720px;">
-      Schreiben Sie uns. Wir antworten schnell.
-    </h1>
-    <p class="fw-lead">
-      Kein Formular, kein Briefing-Template. Eine kurze Nachricht reicht —
-      Termin, Ort und was technisch gebraucht wird.
-    </p>
-
-    <div class="fw-contact-grid">
-
-      <!-- Direktkontakt -->
-      <div>
-        <h2 class="fw-h2" style="font-size:1.4rem; margin-bottom:0.5rem;">Direkter Weg</h2>
-        <p class="fw-body" style="margin-bottom:1.5rem;">
-          Wenn ein Termin drückt, ist Mail der schnellste Einstieg.
-          Telefon geht für die kurze Rückfrage oder wenn während
-          der Planung etwas blockiert.
-        </p>
-        <div class="fw-contact-direct">
-          <a href="mailto:info@frawo-tech.de">info@frawo-tech.de</a>
-          <a href="tel:+4915155243164">+49 151 55243164</a>
-        </div>
-        <p class="fw-body" style="margin-top:1.2rem; color:var(--fw-text-3); font-size:0.88rem;">
-          Werktags melden wir uns in der Regel am selben Tag.
-          Wenn wir im Aufbau stehen, spätestens am nächsten Morgen.
-        </p>
-      </div>
-
-      <!-- Ergänzende Infos -->
-      <div>
-        <div class="fw-contact-card" style="margin-bottom:16px;">
-          <h3>Für die erste Mail hilfreich</h3>
-          <ul class="fw-list">
-            <li>Datum oder Zeitraum der Veranstaltung</li>
-            <li>Ort und ungefähre Größe des Formats</li>
-            <li>Was technisch schon steht und was noch offen ist</li>
-            <li>Ob nur Aufbau, nur Betrieb oder beides gebraucht wird</li>
-          </ul>
-        </div>
-        <div class="fw-contact-card">
-          <h3>Was nicht nötig ist</h3>
-          <ul class="fw-list">
-            <li>Kein fertiges Briefing-Dokument</li>
-            <li>Keine vollständige Materialliste vorab</li>
-            <li>Keine langen Erklärungen — zwei Sätze reichen oft</li>
-          </ul>
-        </div>
-      </div>
-
+<div itemscope="itemscope" itemtype="https://schema.org/ContactPage">
+  <section class="fw-content-hero">
+    <div class="fw-container">
+      <h1>Kontakt aufnehmen.</h1>
+      <p class="lead">
+        Keine Warteschleifen, kein Ticketsystem. Schreib uns eine Mail oder ruf uns an. 
+        Wir klären den Rest direkt und persönlich.
+      </p>
     </div>
+  </section>
 
-    <!-- Service-Karten -->
-    <div class="fw-contact-cards">
+  <section class="fw-section">
+    <div class="fw-container">
+      <div class="fw-split-grid" style="margin-top: 0;">
+        
+        <div class="fw-split-card">
+          <h3 style="border-bottom: 2px solid var(--fw-primary); display: inline-block; padding-bottom: 8px; margin-bottom: 24px;">Privatkunden (B2C)</h3>
+          <p>Für Heimkino, Smart Home und private Installationen.</p>
+          <ul class="fw-list mt-3" style="font-size: 1.1rem;">
+            <li style="margin-bottom: 16px;">
+              <strong style="color: var(--fw-text); display:block;">E-Mail</strong>
+              <a href="mailto:info@frawo-tech.de">info@frawo-tech.de</a>
+            </li>
+            <li>
+              <strong style="color: var(--fw-text); display:block;">Telefon</strong>
+              <a href="tel:+4915155243164">+49 151 55243164</a>
+            </li>
+          </ul>
+        </div>
 
-      <div class="fw-contact-card">
-        <h3>Typische Anfragen</h3>
-        <ul class="fw-list">
-          <li>Clubnacht, Konzert oder Kulturformat mit Ton- und Lichtbedarf</li>
-          <li>Technische Betreuung für laufende Reihen oder Einzelproduktionen</li>
-          <li>Umbauten und Signalwege, die vor Ort sauber organisiert sein müssen</li>
-          <li>Digitale Besucherinformation rund um die Veranstaltung</li>
-        </ul>
+        <div class="fw-split-card b2b">
+          <h3 style="border-bottom: 2px solid var(--fw-secondary); display: inline-block; padding-bottom: 8px; margin-bottom: 24px;">Gewerbekunden (B2B)</h3>
+          <p>Für Eventtechnik, Konzert- und Club-Betreuung.</p>
+          <ul class="fw-list b2b mt-3" style="font-size: 1.1rem;">
+            <li style="margin-bottom: 16px;">
+              <strong style="color: var(--fw-text); display:block;">E-Mail</strong>
+              <a href="mailto:info@frawo-tech.de" style="color: var(--fw-secondary);">info@frawo-tech.de</a>
+            </li>
+            <li>
+              <strong style="color: var(--fw-text); display:block;">Telefon</strong>
+              <a href="tel:+4915155243164" style="color: var(--fw-secondary);">+49 151 55243164</a>
+            </li>
+          </ul>
+        </div>
+
       </div>
 
-      <div class="fw-contact-card">
-        <h3>Womit wir arbeiten können</h3>
-        <p style="margin:0; font-size:0.94rem; line-height:1.75; color:var(--fw-text-2);">
-          Eine kurze, klare Nachricht reicht. Zwei Sätze sind meistens
-          hilfreicher als ein halbfertiges PDF mit zu vielen offenen Annahmen.
-          Wir stellen die richtigen Fragen — das ist unser Job.
+      <div style="margin-top: 60px; background: var(--fw-bg-surface); padding: 40px; border-radius: var(--fw-radius); border: 1px solid var(--fw-border);">
+        <h3 style="margin-bottom: 16px;">FraWo GbR</h3>
+        <p style="margin-bottom: 0;">
+          Rothkreuz 14<br/>
+          88138 Weißensberg<br/>
+          Deutschland
         </p>
       </div>
 
     </div>
-  </div>
-</section>
+  </section>
+</div>
+
