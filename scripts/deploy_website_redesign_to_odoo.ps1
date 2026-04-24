@@ -20,6 +20,7 @@ $b64HeroBodensee = [Convert]::ToBase64String([IO.File]::ReadAllBytes((Join-Path 
 $b64ReferenceEvent = [Convert]::ToBase64String([IO.File]::ReadAllBytes((Join-Path $imgDir "reference-event.jpg")))
 $b64ServiceAudio = [Convert]::ToBase64String([IO.File]::ReadAllBytes((Join-Path $imgDir "service-audio.jpg")))
 $b64ServiceStage = [Convert]::ToBase64String([IO.File]::ReadAllBytes((Join-Path $imgDir "service-stage.jpg")))
+$b64Logo = [Convert]::ToBase64String([IO.File]::ReadAllBytes((Join-Path $imgDir "logo.png")))
 
 Write-Host "Reading python template..."
 $pyContent = Get-Content -Path $injectScriptTpl -Raw -Encoding UTF8
@@ -39,6 +40,7 @@ $images = @{
     "reference-event.jpg" = $b64ReferenceEvent
     "service-audio.jpg" = $b64ServiceAudio
     "service-stage.jpg" = $b64ServiceStage
+    "logo.png" = $b64Logo
 }
 
 $chunkSize = 60000
@@ -57,8 +59,11 @@ foreach ($img in $images.GetEnumerator()) {
         $chunk = $imgB64.Substring($i, $len)
         & $proxmoxExec -RemoteCommand "qm guest exec 220 -- bash -c `"echo -n '$chunk' >> /tmp/$imgName.b64`""
     }
+
+    # 3. Copy to Odoo
+    & $proxmoxExec -RemoteCommand "qm guest exec 220 -- bash -c 'docker cp /tmp/$imgName.b64 odoo-web-1:/tmp/$imgName.b64'"
     
-    # 3. Create python deploy script
+    # 4. Create python deploy script
     $pyImgContent = @"
 Attachment = env['ir.attachment']
 with open('/tmp/$imgName.b64', 'r') as f:
@@ -72,7 +77,7 @@ if not att:
         'datas': b64_data,
         'public': True,
         'res_model': 'ir.ui.view',
-        'mimetype': 'image/jpeg',
+        'mimetype': 'image/png' if '$imgName'.endswith('.png') else 'image/jpeg',
     })
 else:
     att.write({'datas': b64_data})
@@ -92,6 +97,7 @@ $pyContent = $pyContent.Replace('"""__B64_HERO_BODENSEE__"""', "False")
 $pyContent = $pyContent.Replace('"""__B64_REFERENCE_EVENT__"""', "False")
 $pyContent = $pyContent.Replace('"""__B64_SERVICE_AUDIO__"""', "False")
 $pyContent = $pyContent.Replace('"""__B64_SERVICE_STAGE__"""', "False")
+$pyContent = $pyContent.Replace('"""__B64_LOGO__"""', "False")
 
 $pyBase64 = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($pyContent))
 
