@@ -39,9 +39,21 @@ def create_or_update_view(key, name, arch, is_page=False, url=None):
 def deploy_website():
     print("Starting deployment of Website Redesign...")
 
-    def ensure_image(name, b64_data):
+    def ensure_image(name, fallback_b64=None):
         Attachment = env['ir.attachment']
         att = Attachment.search([('name', '=', name), ('res_model', '=', 'ir.ui.view')], limit=1)
+        mimetype = 'image/png' if name.endswith('.png') else 'image/jpeg'
+        
+        # Read from chunked file uploaded by powershell
+        b64_data = fallback_b64
+        try:
+            with open(f'/tmp/{name}.b64', 'r') as f:
+                content = f.read().strip()
+                if content:
+                    b64_data = content
+        except Exception as e:
+            pass
+            
         if not att:
             print(f"Uploading new image: {name}")
             att = Attachment.create({
@@ -50,9 +62,9 @@ def deploy_website():
                 'datas': b64_data,
                 'public': True,
                 'res_model': 'ir.ui.view',
-                'mimetype': 'image/jpeg',
+                'mimetype': mimetype,
             })
-        elif b64_data:
+        elif b64_data and len(b64_data) > 100:
             att.write({'datas': b64_data})
         return f"/web/image/{att.id}"
 
@@ -73,10 +85,12 @@ def deploy_website():
     img_reference_event = ensure_image("reference-event.jpg", """__B64_REFERENCE_EVENT__""")
     img_service_audio = ensure_image("service-audio.jpg", """__B64_SERVICE_AUDIO__""")
     img_service_stage = ensure_image("service-stage.jpg", """__B64_SERVICE_STAGE__""")
+    img_logo = ensure_image("logo.png", """__B64_LOGO__""")
 
     home_content = home_content.replace('__IMG_HERO_BODENSEE__', img_hero_bodensee).replace('__IMG_REFERENCE_EVENT__', img_reference_event).replace('__IMG_SERVICE_AUDIO__', img_service_audio)
     b2b_content = b2b_content.replace('__IMG_ABOUT_CONSOLE__', img_about_console)
     b2c_content = b2c_content.replace('__IMG_SERVICE_STAGE__', img_service_stage)
+    css_content = css_content.replace('__IMG_LOGO__', img_logo)
 
     # 1. Custom CSS
     css_arch = f"<style>\n{css_content}\n</style>"
