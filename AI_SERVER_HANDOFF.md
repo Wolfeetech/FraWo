@@ -11,7 +11,7 @@ Keine Secrets. Keine Passwoerter. Diese Datei ist dafuer gedacht, sie direkt an 
 
 ## Generierung
 
-- Generated at: `2026-04-20 14:16:53`
+- Generated at: `2026-04-26 10:15:00`
 - Workspace root: `C:\Users\Admin\Workspace\Repos\FraWo`
 - Canonical aliases: `C:\Users\Admin\Workspace\FraWo`, `C:\WORKSPACE\FraWo`
 - Legacy workspace warning: `C:\Users\Admin\Documents\Private_Networking` is local-only legacy material and not project truth.
@@ -45,15 +45,15 @@ Keine Secrets. Keine Passwoerter. Diese Datei ist dafuer gedacht, sie direkt an 
 - Proxmox host professional management path: `100.69.179.87` Tailscale, primary runtime `10.1.0.92`
 - Core toolbox/control node: **`10.1.0.20`** (primary), Tailscale/frontdoor `100.82.26.53`
 - Nextcloud VM: **`10.1.0.21`**
-- Odoo VM: **`10.1.0.22`**
+- Odoo VM: **`10.1.0.22`** (Origin for www.frawo-tech.de)
 - Paperless VM: **`10.1.0.23`**
 - Home Assistant OS VM: **`10.1.0.24`**
 - PBS VM 240: `192.168.2.25`, status **`DEGRADED / INACTIVE`** – sauberes Neuaufsetzen geplant, sobald Kernstack stabil; aktuell kein valider Backup-Pfad
 - Vaultwarden CT: `10.1.0.26:8080`, productive entry via `https://vault.hs27.internal`
-- Radio node: `192.168.2.155` and Tailscale `100.64.23.77`
+- Radio node (AzuraCast VM 210): **`192.168.178.210`** (Stockenweiler PVE)
 - Shared frontend node: `surface-go-frontend` on `192.168.2.154`
 - Separate Stockenweiler legacy support LAN exists on `192.168.178.0/24`
-- Internal DNS zone: `hs27.internal`
+- Internal DNS zone: `hs27.internal` (managed via Cloudflare)
 - Tailscale subnet router and internal reverse proxy live on `toolbox`
 - Latest whole-estate census: `artifacts/estate_census/latest_report.md`
 - Latest platform health audit: `artifacts/platform_health/latest_report.md`
@@ -76,8 +76,9 @@ Keine Secrets. Keine Passwoerter. Diese Datei ist dafuer gedacht, sie direkt an 
 - Jellyfin browser path: `http://media.hs27.internal`
 - Jellyfin direct path: `http://10.1.0.20:8096`
 - Jellyfin mobile Tailscale path: `http://100.82.26.53:8449`
-- Radio UI: `http://radio.hs27.internal`
-- Radio mobile Tailscale path: `http://100.82.26.53:8448`
+- Radio UI: `http://radio.hs27.internal` (Internal) / `https://radio.frawo-tech.de` (Planned Public)
+- Radio direct path (Stockenweiler): `http://192.168.178.210`
+- Public Website: `https://www.frawo-tech.de` (LIVE via Cloudflare Tunnel)
 
 ## Current Release State
 
@@ -85,7 +86,7 @@ Keine Secrets. Keine Passwoerter. Diese Datei ist dafuer gedacht, sie direkt an 
 - Business MVP gate: `MVP_READY`
 - Business MVP critical Codex checks: `passed=11` / `non-passed=0`
 - Business MVP manual checks: `passed=8` / `pending_or_failed=0`
-- Public website gate: `BLOCKED`
+- Public website gate: **`ACTIVE / GREEN`** (HTTPS enabled via Cloudflare)
 - Production certification gate: `BLOCKED`
 - Public IPv6 exposure audit: `open_checks=0` / `total_checks=13`
 
@@ -311,18 +312,12 @@ Keine Secrets. Keine Passwoerter. Diese Datei ist dafuer gedacht, sie direkt an 
 
 ### `public_edge_https_release`
 
-- `status`: `blocked`
+- `status`: `done`
 - `lane`: Lane B: Website/Public
-- `change_class`: gated_infra
 - `goal`: Finish the smallest safe public HTTPS baseline for frawo-tech.de and www.frawo-tech.de.
-- `done_when`: frawo-tech.de redirects cleanly and www.frawo-tech.de serves over valid HTTPS with rollback notes and no public admin exposure, even if website design/content is still provisional.
-- `blocked_by`: `public_ipv4_edge_path_missing`, `acme_connection_refused_on_ipv4`
-- `preflight_checks`: `VM220 website origin answers internally on 10.1.0.22`, `Public DNS still points at the intended target`, `No internal admin UI is included in the public scope`
-- `rollback_plan`: If the public cutover fails, keep DNS and proxy on the last known-good HTTP-only state and do not publish a broken HTTPS path as released.
-- `verification_commands`: `python scripts/website_release_gate.py`, `python scripts/public_dualstack_edge_check.py`
-- `last_verified_at`: 2026-04-19
-- `next_operator_action`: Choose and provide the final public edge path, currently Cloudflare proxy or equivalent public IPv4 routing, to get HTTPS green first.
-- `next_codex_action`: Keep Lane B focused on the HTTPS-baseline outcome and do not mix it with unrelated infra or media work.
+- `done_when`: frawo-tech.de redirects cleanly and www.frawo-tech.de serves over valid HTTPS via Cloudflare Tunnel on CT 100.
+- `last_verified_at`: 2026-04-26
+- `next_codex_action`: Maintain the HTTPS-baseline and proceed with Radio integration.
 
 ### `radio_node_recovery`
 

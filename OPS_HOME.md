@@ -127,7 +127,7 @@ Diese Dateien bleiben nur so lange bestehen, bis ihr Inhalt sauber in den Wiki-K
 
 ## Aktueller Runtime-Snapshot 2026-04-22
 
-- `portal.hs27.internal` -> `HTTP 200`
+- `www.frawo-tech.de` -> `HTTPS 200` (Public Live)
 - `odoo.hs27.internal` -> `HTTP 200`
 - `vault.hs27.internal` -> `HTTP 200`
 - `ha.hs27.internal` -> `HTTP 200`
@@ -149,4 +149,4 @@ Diese Dateien bleiben nur so lange bestehen, bis ihr Inhalt sauber in den Wiki-K
 7. `STRATO`-Send/Receive fuer `webmaster`, `franz`, `noreply` sichtbar verifizieren.
 8. Sichtbare App-Testmails fuer `Nextcloud`, `Paperless`, `Odoo` abschliessen.
 9. Das alte Klartext-Register bleibt nur noch als Desktop-Archiv ausserhalb des Workspaces; im Repo gilt nur noch `ACCESS_REGISTER_VAULTWARDEN_REFERENCES.md`.
-10. `Radio` bleibt offen, weil aktuell kein sauber verifizierter Backend-Service hinter `radio.hs27.internal` steht.
+10. `Radio` ist in Wiederherstellung: AzuraCast läuft auf Stockenweiler VM 210 (`192.168.178.210`), DNS-Routing über Tunnel folgt.

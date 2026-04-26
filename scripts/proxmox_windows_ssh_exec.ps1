@@ -14,10 +14,10 @@ if (-not $RemoteCommandBase64) {
 }
 
 $payload = $RemoteCommandBase64
-$remoteShell = "bash -lc 'base64 -d | bash'"
+$remoteShell = "base64 -d -i | bash"
 
 $root = Split-Path -Parent $PSScriptRoot
 $sshConfig = Join-Path $root "Codex\ssh_config"
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
-Write-Output $payload -NoEnumerate | & ssh -T -o BatchMode=yes -F $sshConfig $SshHost $remoteShell
+Write-Output $payload -NoEnumerate | & ssh -T -o BatchMode=yes -o UserKnownHostsFile=/dev/null -F $sshConfig $SshHost $remoteShell
 exit $LASTEXITCODE

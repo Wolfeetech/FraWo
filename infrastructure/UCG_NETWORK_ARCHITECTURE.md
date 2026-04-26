@@ -66,13 +66,19 @@ Internet
 |-----|------|---------|---------|
 | **Management** (VLAN 101) | alle | ✅ komplett | — |
 | **Anker-Lan** (100) | Anker-Server (101) | ✅ Ports 80,443,8123,8069,8443-8449 | Admin-Ports direkt |
+| **Anker-Lan** (100) | **Anker-DMZ-Radio (103)** | **✅ Ports 80,443 (Stream)** | **Admin-Zugriff** |
 | **Anker-Lan** (100) | Internet | ✅ | — |
+| **Anker-DMZ-Radio** (103) | **Anker-Server (101)** | **✅ Ports 445 (SMB), 80, 443** | **—** |
+| **Anker-DMZ-Radio** (103) | **Internet** | **✅ 80,443,123 (NTP),53 (DNS)** | **—** |
+| **Anker-DMZ-Radio** (103) | **Stock-Server (111)** | **✅ 8000,8443 (Cross-Site)** | **—** |
 | **Anker-IoT** (104) | Internet | ✅ 80/443/NTP | ❌ alle internen VLANs |
 | **Anker-Guest** (105) | Internet | ✅ nur | ❌ alles intern |
 | **Stock-Lan** (110) | Anker-Server (101) | ✅ gezielt | — |
 | **Stock-Server** (111) | Anker-Server (101) | ✅ Server-Ports | — |
+| **Stock-Server** (111) | **Anker-DMZ-Radio (103)** | **✅ 8000,8443 (Relay)** | **—** |
 
-> ⚠️ Firewall-Regeln sind noch **nicht** im UCG konfiguriert — nächster Schritt.
+> ⚠️ Firewall-Regeln für VLAN 101/102/104/105 sind noch **nicht** im UCG konfiguriert.
+> ✅ **VLAN 103 (Radio)** Regeln definiert, Deployment ausstehend.
 
 ## Proxmox VLAN-Migration (ausstehend)
 
@@ -96,6 +102,8 @@ Aktuell läuft Proxmox noch ohne VLAN-Trunking (legacy `192.168.2.0/24` Übergan
 | `VM 210 haos` | `192.168.2.24` | `10.1.0.24` | `101 Anker-Server` | move after core business apps |
 | `VM 220 odoo` | `192.168.2.22` | `10.2.0.22` | `102 Anker-DMZ` | published target remains DMZ candidate in this SSOT |
 | `VM 230 paperless` | `192.168.2.23` | `10.1.0.23` | `101 Anker-Server` | core business app |
+| **`Radio Node Anker`** | **`192.168.2.155`** | **`10.3.0.10`** | **`103 Anker-DMZ-Radio`** | **Raspberry Pi 4 AzuraCast, station: frawo-funk, Tailscale: 100.64.23.77, Public: funk.frawo-tech.de** |
+| **`VM 210 AzuraCast Stock`** | **`192.168.178.210`** | **`10.11.0.10`** | **`111 Stock-Server`** | **Legacy AzuraCast at Stockenweiler, station: stock-funk, via VPN, Migration: radio.yourparty.tech → funk.frawo-tech.de** |
 
 ### Laufende Cutover-Reihenfolge
 

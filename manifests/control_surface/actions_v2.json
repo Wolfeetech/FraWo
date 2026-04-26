@@ -75,12 +75,12 @@
       "priority": 50
     },
     {
-      "id": "radio_listen",
-      "label": "Radio hören",
-      "note": "FraWo-Funk live stream",
+      "id": "radio_listen_anker",
+      "label": "Radio Anker",
+      "note": "FraWo-Funk (Anker Station)",
       "group": "Radio",
       "audience": "kiosk-frontend",
-      "target_url": "http://radio.hs27.internal/public/frawo-funk",
+      "target_url": "http://radio-anker.hs27.internal/public/frawo-funk",
       "target_kind": "player",
       "requires_login": false,
       "status": "ready",
@@ -89,18 +89,46 @@
       "priority": 60
     },
     {
-      "id": "radio_control",
-      "label": "Radio Control",
-      "note": "AzuraCast Admin",
+      "id": "radio_listen_stock",
+      "label": "Radio Stock",
+      "note": "Stock-Funk (Stockenweiler)",
       "group": "Radio",
       "audience": "kiosk-frontend",
-      "target_url": "http://radio.hs27.internal/login",
+      "target_url": "http://radio-stock.hs27.internal/public/stock-funk",
+      "target_kind": "player",
+      "requires_login": false,
+      "status": "backlog",
+      "verified": false,
+      "code": "RS",
+      "priority": 61
+    },
+    {
+      "id": "radio_control_anker",
+      "label": "Radio Control Anker",
+      "note": "AzuraCast Admin (Anker)",
+      "group": "Radio",
+      "audience": "kiosk-frontend",
+      "target_url": "http://radio-anker.hs27.internal/login",
       "target_kind": "control_login",
       "requires_login": true,
       "status": "ready",
       "verified": true,
-      "code": "RC",
+      "code": "RCA",
       "priority": 70
+    },
+    {
+      "id": "radio_control_stock",
+      "label": "Radio Control Stock",
+      "note": "AzuraCast Admin (Stock)",
+      "group": "Radio",
+      "audience": "kiosk-frontend",
+      "target_url": "http://radio-stock.hs27.internal/login",
+      "target_kind": "control_login",
+      "requires_login": true,
+      "status": "backlog",
+      "verified": false,
+      "code": "RCS",
+      "priority": 71
     },
     {
       "id": "portal_home",
@@ -233,8 +261,8 @@
     {
       "id": "radio",
       "name": "Radio",
-      "eyebrow": "Audio",
-      "description": "Player und Steuerung für den internen Radiopfad.",
+      "eyebrow": "Audio - Dual Site",
+      "description": "Player und Steuerung für beide Radio-Stationen (Anker + Stockenweiler).",
       "priority": 30
     },
     {
@@ -253,10 +281,25 @@
     }
   ],
   "meta": {
-    "total_actions": 15,
-    "ready_actions": 11,
-    "backlog_actions": 4,
-    "service_status": "all_green",
-    "last_verification": "2026-04-22"
+    "total_actions": 17,
+    "ready_actions": 12,
+    "backlog_actions": 5,
+    "service_status": "dual_site_radio_integration_active",
+    "last_verification": "2026-04-26",
+    "radio_stations": {
+      "anker": {
+        "station_name": "frawo-funk",
+        "internal_url": "http://radio-anker.hs27.internal",
+        "public_url": "https://funk.frawo-tech.de",
+        "status": "active"
+      },
+      "stockenweiler": {
+        "station_name": "stock-funk",
+        "internal_url": "http://radio-stock.hs27.internal",
+        "legacy_url": "http://radio.yourparty.tech",
+        "migration_target": "https://funk.frawo-tech.de",
+        "status": "integration_pending"
+      }
+    }
   }
 }

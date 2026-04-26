@@ -9,10 +9,10 @@ Diese Datei ist die kurze manuelle Unblock-Queue. Strategische Wahrheit steht im
 ## Lane Status
 
 - `Lane A: MVP Closeout` -> `sealed`
-- `Lane B: Website/Public` -> `active`
+- `Lane B: Website/Public` -> `active/prov` (HTTPS live, content pending)
 - `Lane C: Security/PBS/Infra` -> `active`
-- `Lane D: Stockenweiler` -> `watch`
-- `Lane E: Radio/Media` -> `active/watch`
+- `Lane D: Stockenweiler` -> `active` (Radio/HA Parents)
+- `Lane E: Radio/Media` -> `active`
 
 ## Manuelle Unblock-Punkte
 
@@ -119,11 +119,26 @@ Diese Datei ist die kurze manuelle Unblock-Queue. Strategische Wahrheit steht im
 - `goal`: Odoo ACL-Warnings auf `res.users.log` klaeren.
 - `next_codex_action`: Odoo-App-Layer pruefen, keine Infra-Mutation.
 
-### `radio_frontdoor_backend` [BLOCKED]
+### `radio_frontdoor_backend` [ACTIVE]
 
 - `lane`: `Lane E: Radio/Media`
-- `goal`: `radio.hs27.internal` erst dann produktiv machen, wenn ein echter Backend-Service verfuegbar ist.
-- `current_state`: Media/Jellyfin ist gruen; Radio ist kein verifizierter Produktivpfad.
+- `goal`: `radio.frawo-tech.de` über AzuraCast (Stockenweiler) bereitstellen.
+- `current_state`: AzuraCast VM 210 läuft auf `192.168.178.210`.
+- `next_operator_action`: Cloudflare Tunnel Routing für `radio.frawo-tech.de` hinzufügen.
+- `next_codex_action`: AzuraCast Konfiguration validieren und Stream-Test durchführen.
+
+### `ha_eltern_dashboard` [ACTIVE]
+
+- `lane`: `Lane D: Stockenweiler`
+- `goal`: Spezielles Dashboard für Wolfs Eltern (ZDF/ARD Mediatheken, Strom).
+- `current_state`: HA Eltern VM 360 läuft auf `192.168.178.179`.
+- `next_codex_action`: Dashboard YAML-Entwurf erstellen (Mediathek iFrames).
+
+### `website_access_protection` [PROPOSED]
+
+- `lane`: `Lane B: Website/Public`
+- `goal`: "Halb fertige" Seite vor der Öffentlichkeit schützen, aber für Wolf/Franz sichtbar lassen.
+- `next_operator_action`: Entscheidung über Cloudflare Access (Login-Schutz).
 
 ## Kanonische Steuerdateien
 
