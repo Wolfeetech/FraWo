@@ -29,10 +29,15 @@ toolbox_network_adguard_rewrites:
     answer: 10.1.0.20
   - domain: ha.hs27.internal
     answer: 10.1.0.20
-  - domain: radio.hs27.internal
-    answer: 10.1.0.20
   - domain: vault.hs27.internal
     answer: 10.1.0.20
+  # Dual-Site Radio Infrastructure
+  - domain: radio.hs27.internal
+    answer: 10.3.0.10
+  - domain: radio-anker.hs27.internal
+    answer: 10.3.0.10
+  - domain: radio-stock.hs27.internal
+    answer: 10.11.0.10
 toolbox_network_internal_proxy_hosts:
   - hostname: media.hs27.internal
     upstream: 10.1.0.20:8096
@@ -58,6 +63,19 @@ toolbox_network_internal_proxy_hosts:
     upstream: 10.1.0.26:8080
     scheme: https
     tls_internal: true
+  # Dual-Site Radio Infrastructure
+  - hostname: radio.hs27.internal
+    upstream: 10.3.0.10:80
+    scheme: https
+    tls_internal: true
+  - hostname: radio-anker.hs27.internal
+    upstream: 10.3.0.10:80
+    scheme: https
+    tls_internal: true
+  - hostname: radio-stock.hs27.internal
+    upstream: 10.11.0.10:80
+    scheme: https
+    tls_internal: true
 toolbox_network_static_file_hosts:
   - hostname: portal.hs27.internal
     root: /srv/portal
@@ -69,11 +87,8 @@ toolbox_network_public_redirect_hosts:
 toolbox_network_public_proxy_hosts:
   - hostname: www.frawo-tech.de
     upstream: 10.1.0.22:8069
-toolbox_network_placeholder_hosts:
-  - hostname: radio.hs27.internal
-    scheme: https
-    tls_internal: true
-    message: Radio backend not verified after CT100 restore.
+toolbox_network_placeholder_hosts: []
+# Radio placeholder removed - dual-site radio infrastructure active (VLAN 103 + VLAN 111)
 toolbox_network_portal_links:
   - label: Nextcloud
     group: Arbeit
