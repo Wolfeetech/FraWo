@@ -16,11 +16,11 @@ Der Homeserver 2027 ist die produktive Basis der **FraWo GbR**: ERP, Cloud, Doku
 - **Status**: abgeschlossen, bleibt aber regressionsueberwacht.
 - **Aktueller Stand 2026-04-22**: alle Kern-Frontdoors sind via Caddy/Tailscale wieder erreichbar.
 
-### Lane B: Website & Public Activation - [STATUS: ACTIVE]
+### Lane B: Website & Public Activation - [STATUS: ACTIVE/PROV]
 
-- **Ziel**: `www.frawo-tech.de` ueber einen sauberen HTTPS-Public-Edge freigeben.
-- **Status**: aktiv, aber oeffentlicher Edge/TLS-Pfad ist noch der Blocker.
-- **Wichtig**: interne Admin-UIs und Business-Apps bleiben Tailscale-only.
+- **Ziel**: `www.frawo-tech.de` über Cloudflare Tunnel freigeben (technisch erledigt).
+- **Status**: HTTPS ist aktiv. Content ist noch im Aufbau ("halb fertig").
+- **Wichtig**: Optionale Cloudflare Access Rule für Baustellen-Schutz geplant.
 
 ### Lane C: Security, Backup & Infrastructure - [STATUS: ACTIVE]
 
@@ -33,15 +33,16 @@ Der Homeserver 2027 ist die produktive Basis der **FraWo GbR**: ERP, Cloud, Doku
   - CT 100 Disk kontrolliert von NVMe/local-lvm auf `ssd2tb` migrieren
   - UniFi/Tailscale Split-DNS finalisieren
 
-### Lane D: Stockenweiler Integration - [STATUS: WATCH]
+### Lane D: Stockenweiler Integration - [STATUS: ACTIVE]
 
-- **Ziel**: zweiter Standort als Support-/Backup-/Lifeboat-Pfad.
-- **Status**: vorbereitet, aber nicht der aktuelle Fokus.
+- **Ziel**: Zweiter Standort für Radio (AzuraCast) und Eltern-Support (HA).
+- **Status**: Aktiv. VM 210 (Radio) und VM 360 (HA Eltern) sind online.
+- **Domaining**: Integration in den Cloudflare Tunnel von Anker via Tailscale-Bridge.
 
-### Lane E: Radio & Media - [STATUS: ACTIVE/WATCH]
+### Lane E: Radio & Media - [STATUS: ACTIVE]
 
-- **Ziel**: Jellyfin stabil halten und Radio erst wieder aktivieren, wenn ein echter Backend-Service verifiziert ist.
-- **Status**: Media ist gruen; `radio.hs27.internal` ist noch kein produktiver Pfad.
+- **Ziel**: AzuraCast auf Stockenweiler als primärer Radio-Service.
+- **Status**: In Migration/Setup. IP `192.168.178.210`.
 
 ---
 
@@ -129,4 +130,4 @@ Repo SSOT and Odoo SSOT project must be updated together after material runtime 
 
 ---
 
-**Updated: 2026-04-22**
+**Updated: 2026-04-26**
