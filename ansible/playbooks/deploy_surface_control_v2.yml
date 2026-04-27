@@ -1,0 +1,242 @@
+---
+# Deploy Surface Control V2 to Surface Go Frontend
+- name: Deploy Surface Control V2
+  hosts: surface_go_frontend
+  become: no
+  vars:
+    surface_control_source: "{{ playbook_dir }}/../../artifacts/surface_index_v2_with_nowplaying.html"
+    surface_control_dest: "{{ surface_go_portal_dir }}/index.html"
+
+  tasks:
+    - name: Ensure surface control directory exists
+      ansible.builtin.file:
+        path: "{{ surface_go_portal_dir }}"
+        state: directory
+        owner: "{{ surface_go_kiosk_user }}"
+        group: "{{ surface_go_kiosk_user }}"
+        mode: '0755'
+      become: yes
+
+    - name: Deploy Surface Control V2 HTML
+      ansible.builtin.copy:
+        src: "{{ surface_control_source }}"
+        dest: "{{ surface_control_dest }}"
+        owner: "{{ surface_go_kiosk_user }}"
+        group: "{{ surface_go_kiosk_user }}"
+        mode: '0644'
+        backup: yes
+      become: yes
+      notify:
+        - Reload Firefox Kiosk
+
+    - name: Create systemd user directory
+      ansible.builtin.file:
+        path: "/home/{{ surface_go_kiosk_user }}/.config/systemd/user"
+        state: directory
+        owner: "{{ surface_go_kiosk_user }}"
+        group: "{{ surface_go_kiosk_user }}"
+        mode: '0755'
+      become: yes
+
+    - name: Deploy HTTP server systemd service
+      ansible.builtin.copy:
+        dest: "/home/{{ surface_go_kiosk_user }}/.config/systemd/user/surface-http-server.service"
+        owner: "{{ surface_go_kiosk_user }}"
+        group: "{{ surface_go_kiosk_user }}"
+        mode: '0644'
+        content: |
+          [Unit]
+          Description=Surface Control HTTP Server
+          After=network-online.target
+
+          [Service]
+          Type=simple
+          WorkingDirectory={{ surface_go_portal_dir }}
+          ExecStart=/usr/bin/python3 -m http.server {{ surface_go_portal_http_port }} --bind {{ surface_go_portal_bind_address }}
+          Restart=always
+          RestartSec=10
+
+          [Install]
+          WantedBy=default.target
+      become: yes
+      notify:
+        - Reload systemd user
+        - Restart HTTP server
+
+    - name: Deploy Firefox Kiosk systemd service
+      ansible.builtin.copy:
+        dest: "/home/{{ surface_go_kiosk_user }}/.config/systemd/user/firefox-kiosk.service"
+        owner: "{{ surface_go_kiosk_user }}"
+        group: "{{ surface_go_kiosk_user }}"
+        mode: '0644'
+        content: |
+          [Unit]
+          Description=Firefox Kiosk Mode - Surface Control
+          After=surface-http-server.service
+          Requires=surface-http-server.service
+
+          [Service]
+          Type=simple
+          Environment=DISPLAY=:0
+          ExecStartPre=/bin/sleep 3
+          ExecStart={{ surface_go_browser_binary }} --kiosk {{ surface_go_kiosk_start_url }}
+          Restart=always
+          RestartSec=10
+
+          [Install]
+          WantedBy=default.target
+      become: yes
+      notify:
+        - Reload systemd user
+        - Restart Firefox Kiosk
+
+    - name: Deploy auto-update timer
+      ansible.builtin.copy:
+        dest: "/home/{{ surface_go_kiosk_user }}/.config/systemd/user/surface-control-update.timer"
+        owner: "{{ surface_go_kiosk_user }}"
+        group: "{{ surface_go_kiosk_user }}"
+        mode: '0644'
+        content: |
+          [Unit]
+          Description=Surface Control Auto-Update Timer
+
+          [Timer]
+          OnBootSec=5min
+          OnUnitActiveSec=6h
+          Persistent=true
+
+          [Install]
+          WantedBy=timers.target
+      become: yes
+      notify:
+        - Reload systemd user
+        - Enable update timer
+
+    - name: Deploy auto-update service
+      ansible.builtin.copy:
+        dest: "/home/{{ surface_go_kiosk_user }}/.config/systemd/user/surface-control-update.service"
+        owner: "{{ surface_go_kiosk_user }}"
+        group: "{{ surface_go_kiosk_user }}"
+        mode: '0644'
+        content: |
+          [Unit]
+          Description=Surface Control Auto-Update from Git
+          After=network-online.target
+
+          [Service]
+          Type=oneshot
+          WorkingDirectory={{ surface_go_portal_dir }}
+          ExecStart=/usr/bin/git fetch origin
+          ExecStart=/usr/bin/git reset --hard origin/main
+          ExecStartPost=/bin/systemctl --user reload-or-restart firefox-kiosk
+
+          [Install]
+          WantedBy=default.target
+      become: yes
+      notify:
+        - Reload systemd user
+
+    - name: Enable and start HTTP server
+      ansible.builtin.systemd:
+        name: surface-http-server
+        state: started
+        enabled: yes
+        scope: user
+      become: yes
+      become_user: "{{ surface_go_kiosk_user }}"
+      environment:
+        XDG_RUNTIME_DIR: "/run/user/{{ surface_go_kiosk_user_uid | default('1000') }}"
+
+    - name: Enable and start Firefox Kiosk
+      ansible.builtin.systemd:
+        name: firefox-kiosk
+        state: started
+        enabled: yes
+        scope: user
+      become: yes
+      become_user: "{{ surface_go_kiosk_user }}"
+      environment:
+        XDG_RUNTIME_DIR: "/run/user/{{ surface_go_kiosk_user_uid | default('1000') }}"
+
+    - name: Enable auto-update timer
+      ansible.builtin.systemd:
+        name: surface-control-update.timer
+        state: started
+        enabled: yes
+        scope: user
+      become: yes
+      become_user: "{{ surface_go_kiosk_user }}"
+      environment:
+        XDG_RUNTIME_DIR: "/run/user/{{ surface_go_kiosk_user_uid | default('1000') }}"
+
+    - name: Display deployment summary
+      ansible.builtin.debug:
+        msg:
+          - "✅ Surface Control V2 deployed successfully!"
+          - "📍 Location: {{ surface_control_dest }}"
+          - "🌐 URL: {{ surface_go_kiosk_start_url }}"
+          - "🔄 Auto-Update: Enabled (every 6 hours)"
+          - ""
+          - "Features:"
+          - "  - Multi-Node Architecture (Anker + Stock + Mobile)"
+          - "  - Site Auto-Detection"
+          - "  - Intelligent Radio Failover"
+          - "  - Now-Playing Widget (Live · Stock/Mobile)"
+          - "  - Production-Ready Odoo Integration"
+          - ""
+          - "Services:"
+          - "  - HTTP Server: systemctl --user status surface-http-server"
+          - "  - Firefox Kiosk: systemctl --user status firefox-kiosk"
+          - "  - Auto-Update: systemctl --user status surface-control-update.timer"
+
+  handlers:
+    - name: Reload systemd user
+      ansible.builtin.systemd:
+        daemon_reload: yes
+        scope: user
+      become: yes
+      become_user: "{{ surface_go_kiosk_user }}"
+      environment:
+        XDG_RUNTIME_DIR: "/run/user/{{ surface_go_kiosk_user_uid | default('1000') }}"
+
+    - name: Restart HTTP server
+      ansible.builtin.systemd:
+        name: surface-http-server
+        state: restarted
+        scope: user
+      become: yes
+      become_user: "{{ surface_go_kiosk_user }}"
+      environment:
+        XDG_RUNTIME_DIR: "/run/user/{{ surface_go_kiosk_user_uid | default('1000') }}"
+
+    - name: Restart Firefox Kiosk
+      ansible.builtin.systemd:
+        name: firefox-kiosk
+        state: restarted
+        scope: user
+      become: yes
+      become_user: "{{ surface_go_kiosk_user }}"
+      environment:
+        XDG_RUNTIME_DIR: "/run/user/{{ surface_go_kiosk_user_uid | default('1000') }}"
+
+    - name: Reload Firefox Kiosk
+      ansible.builtin.systemd:
+        name: firefox-kiosk
+        state: reloaded
+        scope: user
+      become: yes
+      become_user: "{{ surface_go_kiosk_user }}"
+      environment:
+        XDG_RUNTIME_DIR: "/run/user/{{ surface_go_kiosk_user_uid | default('1000') }}"
+      failed_when: false
+
+    - name: Enable update timer
+      ansible.builtin.systemd:
+        name: surface-control-update.timer
+        state: started
+        enabled: yes
+        scope: user
+      become: yes
+      become_user: "{{ surface_go_kiosk_user }}"
+      environment:
+        XDG_RUNTIME_DIR: "/run/user/{{ surface_go_kiosk_user_uid | default('1000') }}"
