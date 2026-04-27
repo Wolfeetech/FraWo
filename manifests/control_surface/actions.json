@@ -114,14 +114,14 @@
     },
     {
       "id": "stockenweiler_home_assistant",
-      "label": "Vater Home Assistant",
+      "label": "HA Eltern",
       "group": "Stockenweiler",
-      "audience": "stockenweiler",
-      "target_url": "",
-      "target_kind": "pending_workflow",
+      "audience": "kiosk-frontend",
+      "target_url": "http://192.168.178.179:8123",
+      "target_kind": "home_assistant",
       "requires_login": false,
-      "status": "backlog",
-      "verified": false
+      "status": "ready",
+      "verified": true
     }
   ]
 }
