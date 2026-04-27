@@ -90,15 +90,15 @@
     },
     {
       "id": "radio_listen_stock",
-      "label": "Radio Stock",
-      "note": "Stock-Funk (Stockenweiler)",
+      "label": "Radio4yourparty",
+      "note": "Stockenweiler Station (320kbps)",
       "group": "Radio",
       "audience": "kiosk-frontend",
-      "target_url": "http://radio-stock.hs27.internal/public/stock-funk",
+      "target_url": "http://radio-stock.hs27.internal/public/radio.yourparty",
       "target_kind": "player",
       "requires_login": false,
-      "status": "backlog",
-      "verified": false,
+      "status": "ready",
+      "verified": true,
       "code": "RS",
       "priority": 61
     },
@@ -118,15 +118,15 @@
     },
     {
       "id": "radio_control_stock",
-      "label": "Radio Control Stock",
-      "note": "AzuraCast Admin (Stock)",
+      "label": "Radio4yourparty Control",
+      "note": "AzuraCast Admin (Stockenweiler)",
       "group": "Radio",
       "audience": "kiosk-frontend",
       "target_url": "http://radio-stock.hs27.internal/login",
       "target_kind": "control_login",
       "requires_login": true,
-      "status": "backlog",
-      "verified": false,
+      "status": "ready",
+      "verified": true,
       "code": "RCS",
       "priority": 71
     },
@@ -282,10 +282,10 @@
   ],
   "meta": {
     "total_actions": 17,
-    "ready_actions": 12,
-    "backlog_actions": 5,
-    "service_status": "dual_site_radio_integration_active",
-    "last_verification": "2026-04-26",
+    "ready_actions": 14,
+    "backlog_actions": 3,
+    "service_status": "dual_site_radio_live",
+    "last_verification": "2026-04-27",
     "radio_stations": {
       "anker": {
         "station_name": "frawo-funk",
@@ -294,11 +294,20 @@
         "status": "active"
       },
       "stockenweiler": {
-        "station_name": "stock-funk",
+        "station_name": "Radio4yourparty",
+        "station_shortcode": "radio.yourparty",
         "internal_url": "http://radio-stock.hs27.internal",
-        "legacy_url": "http://radio.yourparty.tech",
+        "public_player_url": "http://radio-stock.hs27.internal/public/radio.yourparty",
+        "legacy_domain": "radio.yourparty.tech",
         "migration_target": "https://funk.frawo-tech.de",
-        "status": "integration_pending"
+        "streaming": {
+          "primary": "320kbps MP3",
+          "light": "192kbps MP3",
+          "hls": true
+        },
+        "playlists": ["Wolfarites", "Wolf Lounge"],
+        "library_size": "283GB",
+        "status": "live_streaming_verified"
       }
     }
   }

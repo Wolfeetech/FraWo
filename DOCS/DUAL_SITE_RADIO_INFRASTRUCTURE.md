@@ -62,18 +62,26 @@
 - **Library Size**: ~70GB (curated)
 - **Status**: ✅ **LIVE** with AutoDJ
 
-### Station 2: Stock-Funk (Integration Pending)
-- **Name**: Stock - Funk
-- **Shortcode**: `stock-funk`
+### Station 2: Radio4yourparty (LIVE - Stockenweiler)
+- **Name**: Radio4yourparty
+- **Shortcode**: `radio.yourparty`
 - **Internal URL**: `http://radio-stock.hs27.internal`
-- **Public URL**: `https://funk.frawo-tech.de` (unified)
-- **Legacy URL**: `http://radio.yourparty.tech` (migration planned)
+- **Public Player**: `http://radio-stock.hs27.internal/public/radio.yourparty`
+- **Legacy Domain**: `radio.yourparty.tech` (active)
+- **Migration Target**: `https://funk.frawo-tech.de`
 - **Platform**: AzuraCast on VM 210
-- **Network**: VLAN 111 (Stock-Server) via VPN
+- **Backend**: Liquidsoap
+- **Frontend**: Icecast
+- **Network**: VLAN 111 (Stock-Server) via Tailscale VPN
 - **Target IP**: `10.11.0.10` (VPN-routed)
-- **Local IP**: `192.168.178.210` (fallback)
+- **Local IP**: `192.168.178.210` (direct access)
+- **Streaming**: 320kbps MP3 (primary) + 192kbps MP3 (light)
+- **HLS**: Enabled (`/hls/radio.yourparty/live.m3u8`)
 - **Media Library**: `/mnt/music_hdd/yourparty_Libary` (283GB)
-- **Status**: ⚠️ **Payload Backup Required** before integration
+- **Active Playlists**: "Wolfarites", "Wolf Lounge"
+- **Now Playing**: ✅ Live (Farley 'Jackmaster' Funk - Love Can't Turn Around)
+- **Listeners**: 0 (available for streaming)
+- **Status**: 🟢 **LIVE & STREAMING** (verified 2026-04-27)
 
 ## Network Configuration
 

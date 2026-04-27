@@ -103,7 +103,7 @@ Aktuell läuft Proxmox noch ohne VLAN-Trunking (legacy `192.168.2.0/24` Übergan
 | `VM 220 odoo` | `192.168.2.22` | `10.2.0.22` | `102 Anker-DMZ` | published target remains DMZ candidate in this SSOT |
 | `VM 230 paperless` | `192.168.2.23` | `10.1.0.23` | `101 Anker-Server` | core business app |
 | **`Radio Node Anker`** | **`192.168.2.155`** | **`10.3.0.10`** | **`103 Anker-DMZ-Radio`** | **Raspberry Pi 4 AzuraCast, station: frawo-funk, Tailscale: 100.64.23.77, Public: funk.frawo-tech.de** |
-| **`VM 210 AzuraCast Stock`** | **`192.168.178.210`** | **`10.11.0.10`** | **`111 Stock-Server`** | **Legacy AzuraCast at Stockenweiler, station: stock-funk, via VPN, Migration: radio.yourparty.tech → funk.frawo-tech.de** |
+| **`VM 210 AzuraCast Stock`** | **`192.168.178.210`** | **`10.11.0.10`** | **`111 Stock-Server`** | **LIVE: Radio4yourparty (radio.yourparty), 320kbps MP3, Liquidsoap+Icecast, 283GB library, Migration: radio.yourparty.tech → funk.frawo-tech.de** |
 
 ### Laufende Cutover-Reihenfolge
 
