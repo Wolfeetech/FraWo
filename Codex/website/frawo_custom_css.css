@@ -77,12 +77,33 @@ header#top .nav-link:hover, header#top .nav-link.active {
 }
 
 /* Custom Logo (Fix) */
+.navbar-brand.logo img, .navbar-brand.logo span {
+  display: none !important;
+}
 .navbar-brand.logo {
-  font-family: var(--fw-font-head);
-  font-weight: 800;
-  font-size: 1.8rem;
-  color: #fff !important;
-  letter-spacing: -0.05em;
+  display: flex !important;
+  align-items: center;
+}
+.navbar-brand.logo::before {
+  content: "";
+  display: inline-block;
+  width: 180px;
+  height: 45px;
+  background-image: url('/web/image/936');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: left center;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--fw-bg); }
+::-webkit-scrollbar-thumb { background: var(--fw-surface-accent); border: 2px solid var(--fw-bg); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--fw-accent); }
+
+::selection {
+  background: var(--fw-accent);
+  color: #000;
 }
 
 /* Layout & Spacing */
