@@ -254,28 +254,14 @@
   </style>
 </head>
 <body>
-  {% set all_actions = surface_go_actions_manifest.actions | default([]) %}
-  {% set ready_actions = all_actions | selectattr('status', 'equalto', 'ready') | list %}
   
-  {# Define groups to display #}
-  {% set groups = [
-    {'id': 'Dokumente', 'title': 'Dokumente', 'icon': '📂'},
-    {'id': 'Odoo', 'title': 'Business & Odoo', 'icon': '💼'},
-    {'id': 'Radio', 'title': 'Media & Radio', 'icon': '📻'},
-    {'id': 'Stockenweiler', 'title': 'Stockenweiler', 'icon': '🏠'}
-  ] %}
+  
+  
+  
+  
 
-  {# Mapping for icons and custom notes #}
-  {% set action_meta = {
-    'nextcloud_inbox': {'icon': '📥', 'note': 'Upload'},
-    'paperless_archive': {'icon': '📑', 'note': 'Archiv'},
-    'odoo_tasks': {'icon': '✅', 'note': 'Aufgaben'},
-    'odoo_projects': {'icon': '🏗️', 'note': 'Projekte'},
-    'odoo_calendar': {'icon': '📅', 'note': 'Kalender'},
-    'radio_listen': {'icon': '🔊', 'note': 'Player'},
-    'radio_control': {'icon': '🎛️', 'note': 'Regie'},
-    'stockenweiler_home_assistant': {'icon': '🎮', 'note': 'HA Eltern'}
-  } %}
+  
+  
 
   <div class="app-container">
     <header>
@@ -287,54 +273,171 @@
     </header>
 
     <main aria-label="Command Center Grid">
-      {% for group in groups %}
-        {% set group_actions = ready_actions | selectattr('group', 'equalto', group.id) | list %}
-        {% if group_actions %}
+      
+        
+        
           <section class="group-section">
             <div class="group-header">
-              <span>{{ group.icon }}</span>
-              <span>{{ group.title }}</span>
+              <span>📂</span>
+              <span>Dokumente</span>
             </div>
             <div class="action-grid">
-              {% for action in group_actions %}
-                {% set meta = action_meta.get(action.id, {'icon': '🚀', 'note': 'App'}) %}
-                {% if action.id == 'radio_player_special' %}
-                  <div class="action-card" style="grid-column: 1 / -1; border-color: rgba(16, 185, 129, 0.4);">
-                    <div style="display: flex; align-items: center; gap: 20px;">
-                      <div class="card-icon" style="background: var(--accent-primary); color: white; width: 60px; height: 60px;">📻</div>
-                      <div style="flex: 1;">
-                        <h2 style="margin-bottom: 2px;">Radio4yourparty</h2>
-                        <p id="now-playing">Live aus Stockenweiler • 192kbps MP3</p>
-                        <audio id="radio-player" style="margin-top: 15px; width: 100%; height: 35px; filter: invert(1) hue-rotate(90deg) brightness(1.5);">
-                          <source src="https://radio.yourparty.tech/listen/radio.yourparty/radio.mp3" type="audio/mpeg">
-                          Dein Browser unterstützt kein Audio-Streaming.
-                        </audio>
-                      </div>
-                      <button onclick="document.getElementById('radio-player').paused ? document.getElementById('radio-player').play() : document.getElementById('radio-player').pause()" 
-                              style="background: transparent; border: 2px solid var(--accent-primary); color: var(--accent-primary); border-radius: 50%; width: 60px; height: 60px; font-size: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
-                        ⏯️
-                      </button>
-                    </div>
-                  </div>
-                {% else %}
-                <a href="{{ action.target_url }}" class="action-card">
-                  <div class="icon-box">{{ meta.icon }}</div>
+              
+                
+                
+                <a href="http://cloud.hs27.internal/apps/files/files?dir=/Paperless/Eingang" class="action-card">
+                  <div class="icon-box">📥</div>
                   <div class="action-info">
-                    <div class="action-title">{{ action.label }}</div>
-                    <div class="action-desc">{{ meta.note }}</div>
+                    <div class="action-title">Nextcloud Eingang</div>
+                    <div class="action-desc">Upload</div>
                   </div>
-                  {% if action.requires_login %}
+                  
                     <div class="status-tag login">Login</div>
-                  {% else %}
-                    <div class="status-tag">Direkt</div>
-                  {% endif %}
+                  
                 </a>
-                {% endif %}
-              {% endfor %}
+                
+              
+                
+                
+                <a href="http://paperless.hs27.internal/dashboard" class="action-card">
+                  <div class="icon-box">📑</div>
+                  <div class="action-info">
+                    <div class="action-title">Paperless</div>
+                    <div class="action-desc">Archiv</div>
+                  </div>
+                  
+                    <div class="status-tag login">Login</div>
+                  
+                </a>
+                
+              
             </div>
           </section>
-        {% endif %}
-      {% endfor %}
+        
+      
+        
+        
+          <section class="group-section">
+            <div class="group-header">
+              <span>💼</span>
+              <span>Business & Odoo</span>
+            </div>
+            <div class="action-grid">
+              
+                
+                
+                <a href="http://odoo.hs27.internal/web#action=118&active_id=8&model=project.task&view_type=kanban&menu_id=352" class="action-card">
+                  <div class="icon-box">✅</div>
+                  <div class="action-info">
+                    <div class="action-title">Odoo Aufgaben</div>
+                    <div class="action-desc">Aufgaben</div>
+                  </div>
+                  
+                    <div class="status-tag login">Login</div>
+                  
+                </a>
+                
+              
+                
+                
+                <a href="http://odoo.hs27.internal/web#action=252&model=project.project&view_type=kanban&menu_id=141" class="action-card">
+                  <div class="icon-box">🏗️</div>
+                  <div class="action-info">
+                    <div class="action-title">Odoo Projekte</div>
+                    <div class="action-desc">Projekte</div>
+                  </div>
+                  
+                    <div class="status-tag login">Login</div>
+                  
+                </a>
+                
+              
+                
+                
+                <a href="http://odoo.hs27.internal/web#action=517&model=project.task&view_type=calendar&menu_id=357" class="action-card">
+                  <div class="icon-box">📅</div>
+                  <div class="action-info">
+                    <div class="action-title">Odoo Kalender</div>
+                    <div class="action-desc">Kalender</div>
+                  </div>
+                  
+                    <div class="status-tag login">Login</div>
+                  
+                </a>
+                
+              
+            </div>
+          </section>
+        
+      
+        
+        
+          <section class="group-section">
+            <div class="group-header">
+              <span>📻</span>
+              <span>Media & Radio</span>
+            </div>
+            <div class="action-grid">
+              
+                
+                
+                <a href="http://radio.hs27.internal/public/frawo-funk" class="action-card">
+                  <div class="icon-box">🔊</div>
+                  <div class="action-info">
+                    <div class="action-title">Radio hoeren</div>
+                    <div class="action-desc">Player</div>
+                  </div>
+                  
+                    <div class="status-tag">Direkt</div>
+                  
+                </a>
+                
+              
+                
+                
+                <a href="http://radio.hs27.internal/login" class="action-card">
+                  <div class="icon-box">🎛️</div>
+                  <div class="action-info">
+                    <div class="action-title">Radio Control</div>
+                    <div class="action-desc">Regie</div>
+                  </div>
+                  
+                    <div class="status-tag login">Login</div>
+                  
+                </a>
+                
+              
+            </div>
+          </section>
+        
+      
+        
+        
+          <section class="group-section">
+            <div class="group-header">
+              <span>🏠</span>
+              <span>Stockenweiler</span>
+            </div>
+            <div class="action-grid">
+              
+                
+                
+                <a href="http://192.168.178.179:8123" class="action-card">
+                  <div class="icon-box">🎮</div>
+                  <div class="action-info">
+                    <div class="action-title">HA Eltern</div>
+                    <div class="action-desc">HA Eltern</div>
+                  </div>
+                  
+                    <div class="status-tag">Direkt</div>
+                  
+                </a>
+                
+              
+            </div>
+          </section>
+        
+      
     </main>
 
     <footer>

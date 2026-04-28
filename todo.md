@@ -140,6 +140,13 @@ Diese Datei ist die kurze manuelle Unblock-Queue. Strategische Wahrheit steht im
 - `goal`: "Halb fertige" Seite vor der Öffentlichkeit schützen, aber für Wolf/Franz sichtbar lassen.
 - `next_operator_action`: Entscheidung über Cloudflare Access (Login-Schutz).
 
+### `frawo_control_board_update` [PROCESSED]
+
+- `lane`: `Lane D: Stockenweiler`
+- `goal`: Update auf V2 Design und Stockenweiler Integration.
+- `current_state`: Design V2 (Emerald/Obsidian) erstellt, Stockenweiler (HA Eltern) integriert, Code auf GitHub gepusht.
+- `next_operator_action`: Führe `Deploy_Surface_V2.bat` auf dem Desktop aus, um das Update zu aktivieren (Passworteingabe für User 'frontend' erforderlich).
+
 ## Kanonische Steuerdateien
 
 - `LIVE_CONTEXT.md`
