@@ -1,291 +1,247 @@
-/* FraWo GbR — Corporate Identity Design System
-   Professional, Dark, Clean, SEO-Optimized
-   Fonts: Poppins for headings, Inter for body
+/* 
+  FraWo GbR — Professional Design System v3.1 (State-of-the-Art Edition)
+  Editorial, High-Contrast, Brutalist-Elegance
 */
 
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@300;400;500;700&display=swap');
 
 :root {
-  --fw-bg: #0d1117;
-  --fw-bg-surface: #161b22;
-  --fw-text: #ffffff;
-  --fw-text-muted: #94a3b8;
-  --fw-primary: #a855f7;       /* FraWo Purple */
-  --fw-secondary: #064e3b;     /* FraWo Green */
-  --fw-border: rgba(255, 255, 255, 0.1);
-  --fw-font-head: 'Poppins', sans-serif;
+  --fw-bg: #050505;
+  --fw-surface: #0a0a0a;
+  --fw-surface-accent: #111111;
+  --fw-text: #fdfdfc;
+  --fw-text-muted: #888888;
+  --fw-accent: #ff6b1a;
+  --fw-accent-rgb: 255, 107, 26;
+  --fw-font-head: 'Outfit', sans-serif;
   --fw-font-body: 'Inter', sans-serif;
-  --fw-radius: 8px;
-  --fw-max: 1200px;
+  --fw-border: rgba(255, 255, 255, 0.05);
+  --fw-max-width: 1400px;
+  --fw-transition: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Base Overrides for Odoo */
+/* Global Reset & Typography */
 body, #wrapwrap, #wrap {
   background-color: var(--fw-bg) !important;
   color: var(--fw-text) !important;
   font-family: var(--fw-font-body) !important;
+  -webkit-font-smoothing: antialiased;
+  scroll-behavior: smooth;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1, h2, h3, h4, .fw-h1, .fw-h2 {
   font-family: var(--fw-font-head) !important;
-  color: var(--fw-text);
-  font-weight: 600;
-  margin-bottom: 1rem;
+  font-weight: 800 !important;
+  text-transform: uppercase;
+  letter-spacing: -0.04em;
+  line-height: 0.85;
+  margin-bottom: 2rem;
 }
 
-p {
-  line-height: 1.7;
+.fw-h1 { font-size: clamp(4rem, 12vw, 10rem); }
+.fw-h2 { font-size: clamp(2.5rem, 8vw, 5rem); }
+
+p, .lead {
+  font-size: 1.2rem;
+  line-height: 1.6;
   color: var(--fw-text-muted);
+  max-width: 60ch;
 }
 
-a {
-  color: var(--fw-primary);
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
-
-a:hover {
-  color: #c084fc;
-  text-decoration: underline;
-}
-
-/* Navbar & Footer */
-header#top, .o_main_navbar, footer, .o_footer {
-  background-color: var(--fw-bg) !important;
+/* Custom Navbar (State-of-the-Art) */
+header#top {
+  background-color: rgba(5, 5, 5, 0.95) !important;
+  backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--fw-border);
-}
-header#top .nav-link, footer a {
-  color: var(--fw-text-muted) !important;
-  font-weight: 500;
-}
-header#top .nav-link:hover, footer a:hover {
-  color: var(--fw-text) !important;
-}
-
-/* Force Custom Logo Injection */
-.navbar-brand.logo img, .navbar-brand.logo span {
-  display: none !important;
-}
-.navbar-brand.logo {
-  display: flex !important;
+  height: 100px;
+  display: flex;
   align-items: center;
 }
-.navbar-brand.logo::before {
-  content: "";
-  display: inline-block;
-  width: 180px;
-  height: 45px;
-  background-image: url('__IMG_LOGO__');
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: left center;
+
+header#top .navbar {
+  padding: 0 40px !important;
 }
 
-/* Layout Utilities */
+header#top .nav-link {
+  font-family: var(--fw-font-head) !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.1em !important;
+  font-size: 0.9rem !important;
+  color: var(--fw-text-muted) !important;
+  transition: color 0.3s var(--fw-transition) !important;
+}
+
+header#top .nav-link:hover, header#top .nav-link.active {
+  color: var(--fw-accent) !important;
+}
+
+/* Custom Logo (Fix) */
+.navbar-brand.logo {
+  font-family: var(--fw-font-head);
+  font-weight: 800;
+  font-size: 1.8rem;
+  color: #fff !important;
+  letter-spacing: -0.05em;
+}
+
+/* Layout & Spacing */
 .fw-container {
-  max-width: var(--fw-max);
+  max-width: var(--fw-max-width);
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 60px;
 }
 
 .fw-section {
-  padding: 80px 0;
+  padding: 180px 0; /* Aggressive Whitespace */
 }
 
-/* Split Hero (Homepage) */
-.fw-split-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 32px;
-  margin-top: 40px;
-}
-
-@media (max-width: 768px) {
-  .fw-split-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.fw-split-card {
-  background: var(--fw-bg-surface);
-  border: 1px solid var(--fw-border);
-  border-radius: var(--fw-radius);
-  padding: 40px;
-  text-align: left;
-  transition: transform 0.2s, border-color 0.2s;
+/* Split Hero (Refined) */
+.fw-split-hero {
   display: flex;
-  flex-direction: column;
-}
-
-.fw-split-card:hover {
-  transform: translateY(-4px);
-  border-color: var(--fw-primary);
-}
-
-.fw-split-card.b2b:hover {
-  border-color: var(--fw-secondary);
-}
-
-.fw-split-card h2 {
-  font-size: 1.8rem;
-  margin-bottom: 16px;
-}
-
-.fw-split-card p {
-  flex-grow: 1;
-  font-size: 1.05rem;
-}
-
-/* Buttons */
-.fw-btn {
-  display: inline-block;
-  padding: 12px 24px;
-  border-radius: var(--fw-radius);
-  font-family: var(--fw-font-head);
-  font-weight: 600;
-  text-align: center;
-  text-decoration: none !important;
-  transition: all 0.2s ease;
-  cursor: pointer;
-  border: 2px solid transparent;
-}
-
-.fw-btn-primary {
-  background-color: var(--fw-primary);
-  color: #fff !important;
-}
-
-.fw-btn-primary:hover {
-  background-color: transparent;
-  border-color: var(--fw-primary);
-  color: var(--fw-primary) !important;
-}
-
-.fw-btn-secondary {
-  background-color: var(--fw-secondary);
-  color: #fff !important;
-}
-
-.fw-btn-secondary:hover {
-  background-color: transparent;
-  border-color: var(--fw-secondary);
-  color: var(--fw-secondary) !important;
-}
-
-/* Content Hero (B2B/B2C) */
-.fw-hero-banner {
-  position: relative;
-  min-height: 70vh;
-  display: flex;
-  align-items: center;
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  padding: 80px 0;
+  min-height: 85vh;
   border-bottom: 1px solid var(--fw-border);
 }
 
-.fw-hero-overlay {
+.fw-hero-panel {
+  flex: 1;
+  padding: 100px 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  position: relative;
+  overflow: hidden;
+  transition: flex 0.8s var(--fw-transition);
+  border-right: 1px solid var(--fw-border);
+  background-size: cover;
+  background-position: center;
+}
+
+.fw-hero-panel:hover {
+  flex: 1.8;
+}
+
+.fw-hero-panel::before {
+  content: '';
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: linear-gradient(to right, rgba(13, 17, 23, 0.95) 0%, rgba(13, 17, 23, 0.4) 100%);
+  background: rgba(0, 0, 0, 0.4); /* Dark Overlay for Legibility */
+  transition: background 0.5s var(--fw-transition);
   z-index: 1;
 }
 
-.fw-hero-banner .fw-container {
-  position: relative;
+.fw-hero-panel:hover::before {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.fw-hero-panel::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(0deg, rgba(5,5,5,1) 0%, rgba(5,5,5,0) 60%);
   z-index: 2;
-  width: 100%;
 }
 
-.fw-glass-panel {
-  background: rgba(22, 27, 34, 0.6);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 56px;
-  border-radius: var(--fw-radius);
-  max-width: 850px;
+.fw-hero-content {
+  position: relative;
+  z-index: 3;
+  transform: translateY(20px);
+  transition: transform 0.5s var(--fw-transition);
 }
 
-.fw-hero-banner h1 {
-  font-size: clamp(2.5rem, 6vw, 4.5rem);
-  font-weight: 800;
-  line-height: 1.1;
-  margin-bottom: 24px;
+.fw-hero-panel:hover .fw-hero-content {
+  transform: translateY(0);
 }
 
-.fw-hero-banner .lead {
-  font-size: 1.25rem;
-  line-height: 1.6;
-  color: var(--fw-text-muted);
-}
-
-/* Images */
-.fw-img-wrapper {
-  border-radius: var(--fw-radius);
-  overflow: hidden;
-  border: 1px solid var(--fw-border);
-  margin: 40px 0;
-}
-
-.fw-img-wrapper img {
-  width: 100%;
-  height: auto;
-  display: block;
-}
-
-/* Services Grid */
-.fw-services {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 24px;
-  margin-top: 40px;
-}
-
-.fw-service-item {
-  background: var(--fw-bg-surface);
-  border: 1px solid var(--fw-border);
-  padding: 32px;
-  border-radius: var(--fw-radius);
-}
-
-.fw-service-item h3 {
-  font-size: 1.3rem;
-  color: #fff;
-  border-bottom: 2px solid var(--fw-primary);
-  padding-bottom: 12px;
-  margin-bottom: 16px;
+/* Buttons (Premium) */
+.fw-btn {
   display: inline-block;
+  padding: 24px 48px;
+  background: var(--fw-accent);
+  color: #000 !important;
+  font-family: var(--fw-font-head);
+  font-weight: 800;
+  text-transform: uppercase;
+  text-decoration: none !important;
+  transition: all 0.4s var(--fw-transition);
+  border: 1px solid var(--fw-accent);
+  cursor: pointer;
 }
 
-.fw-service-item.b2b h3 {
-  border-color: var(--fw-secondary);
+.fw-btn:hover {
+  background: #fff;
+  border-color: #fff;
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.5);
 }
 
-/* Lists */
+/* List Styling (Professional) */
 .fw-list {
   list-style: none;
   padding: 0;
-  margin: 0;
 }
 
 .fw-list li {
   position: relative;
-  padding-left: 20px;
-  margin-bottom: 12px;
+  padding-left: 30px;
+  margin-bottom: 15px;
   color: var(--fw-text-muted);
+  font-size: 1.1rem;
 }
 
 .fw-list li::before {
-  content: "■";
+  content: '';
   position: absolute;
   left: 0;
-  top: 2px;
-  color: var(--fw-primary);
-  font-size: 0.8rem;
+  top: 12px;
+  width: 15px;
+  height: 2px;
+  background: var(--fw-accent);
 }
 
-.fw-list.b2b li::before {
-  color: var(--fw-secondary);
+/* Sticky Player (Persistent & Refined) */
+.fw-player {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: #000;
+  border-top: 1px solid var(--fw-border);
+  z-index: 3000;
+  display: flex;
+  align-items: center;
+  padding: 0 40px;
+}
+
+.fw-player-info {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  color: var(--fw-accent);
+}
+
+.fw-player-status {
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  background: rgba(255, 107, 26, 0.1);
+  padding: 6px 12px;
+  border: 1px solid rgba(255, 107, 26, 0.3);
+}
+
+/* Nuke Odoo Defaults */
+.o_footer, #footer, .o_main_navbar {
+  display: none !important;
+}
+
+/* Micro-Animations */
+@keyframes reveal {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fw-reveal {
+  animation: reveal 1s var(--fw-transition) forwards;
 }

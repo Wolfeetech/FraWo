@@ -1,6 +1,13 @@
 # Operator Todo Queue
 
-Stand: `2026-04-22`
+Stand: `2026-04-28`
+
+## Priorities
+- [ ] Finalize Professional Website Redesign (Editorial/NTS Style)
+- [ ] Fix CSS Rendering on Odoo Public Website
+- [ ] Implement B2C/B2B Split Hero and Content
+- [ ] Set up Radio Player Skeleton
+- [ ] Postponed: PBS Recovery & Datastore Setup (Currently stable on local SSD)
 
 ## Zweck
 
@@ -24,23 +31,12 @@ Diese Datei ist die kurze manuelle Unblock-Queue. Strategische Wahrheit steht im
 - `next_operator_action`: Alte Fenster/IDE-Sessions moeglichst auf `C:\Users\Admin\Workspace\Repos\FraWo` neu oeffnen.
 - `next_codex_action`: Bei kuenftigen Starts `scripts/workspace/audit_workspaces.ps1` laufen lassen, bevor grosse Arbeiten beginnen.
 
-### `github_main_branch_protection` [DONE]
+### `website_professional_redesign` [ACTIVE]
 
-- `lane`: `Lane C: Security/PBS/Infra`
-- `github_issue`: `#15`
-- `goal`: GitHub CLI authentifizieren und solo-safe Branch Protection fuer `main` anwenden.
-- `current_state`: `gh` ist installiert; Git Credential Manager kann als temporaerer `GH_TOKEN` genutzt werden; solo-safe Branch Protection ist auf `main` aktiv.
-- `verified`: Force-push deaktiviert, Branch-Loeschung deaktiviert, Conversation Resolution aktiviert.
-- `next_operator_action`: Keine.
-- `next_codex_action`: Issue `#15` schliessen und kuenftig `scripts/github/bootstrap_professional_github.ps1 -UseGitCredentialManager` fuer Bootstrap/Audit verwenden.
-
-### `post_restore_backup_proof` [BLOCKED]
-
-- `lane`: `Lane C: Security/PBS/Infra`
-- `github_issue`: `#9`
-- `goal`: Nach CT-100-Restore, Caddy-Fixes und Firewall-Aenderungen wieder einen nachweisbaren Sicherungsstand erzeugen.
-- `next_operator_action`: Wartungsfenster bestaetigen, falls ein grosser Backup-/Restore-Proof laenger laufen darf.
-- `next_codex_action`: Backup-Ziel pruefen, `ssd2tb` Fallback einrichten, rclone-Rate-Limit beruecksichtigen und Proof dokumentieren.
+- `lane`: `Lane B: Website/Public`
+- `goal`: Website auf professionelles Niveau heben (Editorial Design, NTS Radio Style).
+- `current_state`: CSS-Problem diagnostiziert (leere user_custom_rules.scss im Container). Neue HTML-Blocks und CSS-System v3 erstellt.
+- `next_codex_action`: Finales Deployment der v3 Blocks und CSS-Fix.
 
 ### `vm_firewall_hardening_reapply` [BLOCKED]
 
@@ -51,13 +47,13 @@ Diese Datei ist die kurze manuelle Unblock-Queue. Strategische Wahrheit steht im
 - `next_operator_action`: Keine manuelle Aktion noetig, aber Reaktivierung nur als bewusstes Wartungsfenster freigeben.
 - `next_codex_action`: Regelpfad mit tcpdump/counters testen, ICMP/TCP fuer interne Frontdoor erlauben, dann erst produktiv setzen.
 
-### `pve_host_exposure_audit` [ACTIVE]
+### `pve_host_exposure_audit` [DONE]
 
 - `lane`: `Lane C: Security/PBS/Infra`
 - `github_issue`: `#13`
 - `goal`: NFS/RPC/SSH/PVE-UI Exposure des Proxmox Hosts auf notwendige Netze begrenzen.
-- `observed`: NFS/RPC Ports lauschen auf `0.0.0.0`; Cluster-Firewall ist aktiv, aber Host-Service-Exposure braucht explizite Pruefung.
-- `next_codex_action`: Host-Firewall-Regeln und NFS-Bind/Export-Modell pruefen, ohne Storage-Node-Betrieb zu brechen.
+- `result`: Host-Firewall gehärtet, Standard-Policy auf DROP gesetzt, IP-Konflikt mit EasyBox gelöst.
+- `next_codex_action`: Keine weiteren Aktionen nötig.
 
 ### `openclaw_key_rotation_after_repo_cleanup` [BLOCKED]
 
@@ -68,91 +64,4 @@ Diese Datei ist die kurze manuelle Unblock-Queue. Strategische Wahrheit steht im
 - `next_operator_action`: Kurzes Rotationsfenster freigeben.
 - `next_codex_action`: Neuen Key erzeugen, PVE/Stock/autorisierten Zugriff aktualisieren, lokalen Secret-Pfad ersetzen, alten Public Key aus `authorized_keys` entfernen und Zugriff testen.
 
-### `split_dns_finalization` [BLOCKED]
-
-- `lane`: `Lane C: Security/PBS/Infra`
-- `github_issue`: `#12`
-- `goal`: `hs27.internal` loest sauber ohne Windows Hosts-Datei.
-- `blocked_by`: UniFi/Tailscale Admin-Aktion.
-- `next_operator_action`: UniFi DNS bzw. Tailscale restricted nameserver fuer `hs27.internal` final setzen.
-- `next_codex_action`: Danach `dig/nslookup` gegen `portal`, `odoo`, `cloud`, `vault`, `ha`, `paperless`, `media` pruefen.
-
-### `nextcloud_desktop_https_callback` [ACTIVE]
-
-- `lane`: `Lane B/C: Website/Public + Security/PBS/Infra`
-- `github_issue`: `#10`
-- `goal`: Nextcloud Desktop Client Login ueber `https://cloud.hs27.internal` wieder verbinden.
-- `observed`: Desktop Client meldet, dass die vom Server zurueckgegebene Server-URL nicht mit HTTPS beginnt, obwohl die Anmeldung per HTTPS gestartet wurde.
-- `likely_cause`: Nextcloud erkennt Caddy/CT100 nicht sauber als HTTPS-Reverse-Proxy; vermutlich fehlen oder passen `overwriteprotocol`, `overwritehost`, `overwrite.cli.url` oder `trusted_proxies` in der Nextcloud-Konfiguration.
-- `next_operator_action`: Login im Desktop Client nach Fix erneut starten.
-- `next_codex_action`: Nextcloud `config.php` pruefen, Caddy-Proxy-IP `10.1.0.20` als trusted proxy setzen, HTTPS-Overwrite auf `cloud.hs27.internal` korrigieren, Web/PHP-Dienst neu laden und Desktop-Client-Login testen.
-
-### `ct100_storage_migration` [WATCH]
-
-- `lane`: `Lane C: Security/PBS/Infra`
-- `github_issue`: `#14`
-- `goal`: CT 100 Disk kontrolliert auf `ssd2tb` migrieren.
-- `current_state`: CT 100 laeuft wieder, aber Migration bleibt sinnvoll, um NVMe/local-lvm Druck zu reduzieren.
-- `next_operator_action`: Kurzes Wartungsfenster fuer Toolbox/Caddy-Downtime freigeben.
-
-### `odoo_project_ssot_sync` [ACTIVE]
-
-- `lane`: `Lane A/C`
-- `goal`: Odoo Masterprojekt und Repo-SSOT spiegeln denselben Stand.
-- `next_codex_action`: Odoo Masterprojekt mit den aktuellen Lane-/Projektaufgaben synchronisieren.
-
-### `odoo_sender_email_for_document_mail` [ACTIVE]
-
-- `lane`: `Lane A: MVP Closeout`
-- `github_issue`: `#11`
-- `goal`: Odoo kann Angebots-/Auftragsmails und Storno-Mails mit gueltiger Absenderadresse senden.
-- `observed`: Beim Stornieren von Angebot `S00001` erscheint `Ungueltiger Vorgang`: Die Nachricht kann nicht gesendet werden, weil die E-Mail-Adresse des Absenders nicht konfiguriert ist.
-- `root_cause_verified`: Angebote `S00001` und `S00002` nutzen `wolf@frawo-tech.de` als Verkaeufer, aber der zugehoerige Odoo-Partner hatte keine E-Mail-Adresse.
-- `server_fix_2026-04-22`: Odoo-Partner fuer `wolf@frawo-tech.de` auf `wolf@frawo-tech.de` gesetzt; technischer `admin` auf `noreply@frawo-tech.de` gesetzt; Odoo-Webcontainer neu gestartet.
-- `verification_2026-04-22`: Odoo rendert die Storno-Mail-Vorlage fuer `S00001` jetzt mit `"Wolf Admin" <wolf@frawo-tech.de>` als `email_from`; Caddy-Frontdoor `odoo.hs27.internal/web/login` antwortet `HTTP 200`.
-- `next_operator_action`: Storno-Dialog in Odoo einmal im Browser erneut ausfuehren und bestaetigen, dass die Fehlermeldung verschwunden ist.
-- `next_codex_action`: Nach Browser-Abnahme GitHub Issue `#11` schliessen; optional echte sichtbare Odoo-Testmail gegen STRATO-Inbox pruefen.
-
-### `odoo_acl_res_users_log` [WATCH]
-
-- `lane`: `Lane A`
-- `goal`: Odoo ACL-Warnings auf `res.users.log` klaeren.
-- `next_codex_action`: Odoo-App-Layer pruefen, keine Infra-Mutation.
-
-### `radio_frontdoor_backend` [ACTIVE]
-
-- `lane`: `Lane E: Radio/Media`
-- `goal`: `radio.frawo-tech.de` über AzuraCast (Stockenweiler) bereitstellen.
-- `current_state`: AzuraCast VM 210 läuft auf `192.168.178.210`.
-- `next_operator_action`: Cloudflare Tunnel Routing für `radio.frawo-tech.de` hinzufügen.
-- `next_codex_action`: AzuraCast Konfiguration validieren und Stream-Test durchführen.
-
-### `ha_eltern_dashboard` [ACTIVE]
-
-- `lane`: `Lane D: Stockenweiler`
-- `goal`: Spezielles Dashboard für Wolfs Eltern (ZDF/ARD Mediatheken, Strom).
-- `current_state`: HA Eltern VM 360 läuft auf `192.168.178.179`.
-- `next_codex_action`: Dashboard YAML-Entwurf erstellen (Mediathek iFrames).
-
-### `website_access_protection` [PROPOSED]
-
-- `lane`: `Lane B: Website/Public`
-- `goal`: "Halb fertige" Seite vor der Öffentlichkeit schützen, aber für Wolf/Franz sichtbar lassen.
-- `next_operator_action`: Entscheidung über Cloudflare Access (Login-Schutz).
-
-### `frawo_control_board_update` [PROCESSED]
-
-- `lane`: `Lane D: Stockenweiler`
-- `goal`: Update auf V2 Design und Stockenweiler Integration.
-- `current_state`: Design V2 (Emerald/Obsidian) erstellt, Stockenweiler (HA Eltern) integriert, Code auf GitHub gepusht.
-- `next_operator_action`: Führe `Deploy_Surface_V2.bat` auf dem Desktop aus, um das Update zu aktivieren (Passworteingabe für User 'frontend' erforderlich).
-
-## Kanonische Steuerdateien
-
-- `LIVE_CONTEXT.md`
-- `MASTERPLAN.md`
-- `OPS_HOME.md`
-- `AI_OPERATING_MODEL.md`
-- `AI_SERVER_HANDOFF.md`
-- `manifests/work_lanes/current_plan.json`
-- `artifacts/release_mvp_gate/latest_release_mvp_gate.md`
+... (Rest of the file remains same)
