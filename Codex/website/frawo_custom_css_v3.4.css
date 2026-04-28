@@ -1,0 +1,289 @@
+/* FraWo GbR — Custom CSS v3.4 — NTS-Inspired + Logo Fix */
+/* CI Colors: Forest Green (#064e3b) + UV Purple (#a855f7) */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  /* CI Colors */
+  --fw-forest: #064e3b;
+  --fw-forest-dark: #052e16;
+  --fw-uv: #a855f7;
+  --fw-uv-dim: rgba(168, 85, 247, 0.6);
+
+  /* Neutrals - Minimal Contrast */
+  --fw-bg: #0a0a0a;
+  --fw-surface: #121212;
+  --fw-border: #1a1a1a;
+  --fw-text: #e0e0e0;
+  --fw-text-dim: #888888;
+  --fw-text-dimmer: #555555;
+}
+
+/* Global */
+body, #wrap, header, footer, .navbar {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+  background: var(--fw-bg) !important;
+  color: var(--fw-text) !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Inter', sans-serif !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.02em !important;
+}
+
+/* Header - Minimal, No Color */
+header#top, .o_header_standard, .o_header_affixed, .navbar, .navbar-light {
+  background-color: var(--fw-bg) !important;
+  background: var(--fw-bg) !important;
+  border-bottom: 1px solid var(--fw-border) !important;
+}
+
+.nav-link, .navbar-light .navbar-nav .nav-link {
+  color: var(--fw-text-dim) !important;
+  font-weight: 400 !important;
+  font-size: 0.9rem !important;
+  transition: color 0.2s ease !important;
+}
+
+.nav-link:hover {
+  color: var(--fw-text) !important;
+}
+
+.navbar-brand {
+  color: var(--fw-text) !important;
+  font-weight: 600 !important;
+}
+
+/* Logo Fix - Blend Mode für transparentes PNG */
+.fw-logo-img, img[alt*="logo"], img[src*="logo"], .navbar-brand img {
+  height: 32px !important;
+  width: auto !important;
+  filter: none !important;
+  /* Entferne hellen Hintergrund durch Mix-Blend-Mode */
+  mix-blend-mode: screen !important;
+  opacity: 0.9 !important;
+}
+
+.navbar-brand img:hover {
+  opacity: 1 !important;
+}
+
+/* Footer - Subtle */
+footer, .o_footer {
+  background-color: var(--fw-surface) !important;
+  color: var(--fw-text-dim) !important;
+  padding: 2rem 0 !important;
+  border-top: 1px solid var(--fw-border) !important;
+}
+
+.o_footer .o_footer_copyright {
+  display: none !important;
+}
+
+/* Hero - Minimal, No Gradients */
+.fw-hero {
+  padding: 80px 0 60px;
+  background: var(--fw-bg);
+  border-bottom: 1px solid var(--fw-border);
+}
+
+.fw-eyebrow {
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fw-text-dimmer);
+  margin-bottom: 1.5rem;
+}
+
+.fw-h1 {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--fw-text);
+  margin-bottom: 1rem;
+  letter-spacing: -0.03em;
+}
+
+.fw-lead {
+  color: var(--fw-text-dim);
+  font-size: 1rem;
+  line-height: 1.6;
+  max-width: 38rem;
+  margin-bottom: 2rem;
+  font-weight: 400;
+}
+
+/* Buttons - Minimal */
+.fw-btn-primary {
+  background: var(--fw-text) !important;
+  border: none !important;
+  border-radius: 0 !important;
+  padding: 12px 24px !important;
+  font-weight: 500 !important;
+  font-size: 0.9rem !important;
+  color: var(--fw-bg) !important;
+  transition: all 0.2s ease !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+}
+
+.fw-btn-primary:hover {
+  background: var(--fw-uv) !important;
+}
+
+.fw-btn-ghost {
+  background: transparent !important;
+  border: 1px solid var(--fw-border) !important;
+  border-radius: 0 !important;
+  padding: 12px 24px !important;
+  font-weight: 500 !important;
+  font-size: 0.9rem !important;
+  color: var(--fw-text) !important;
+  transition: all 0.2s ease !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+}
+
+.fw-btn-ghost:hover {
+  border-color: var(--fw-text) !important;
+}
+
+/* Split Layout - NO COLOR BLOCKS */
+.fw-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  border-bottom: 1px solid var(--fw-border);
+}
+
+@media (max-width: 768px) {
+  .fw-split {
+    grid-template-columns: 1fr;
+  }
+}
+
+.fw-split-pane {
+  padding: 60px 40px;
+  border-right: 1px solid var(--fw-border);
+}
+
+.fw-split-pane:last-child {
+  border-right: none;
+}
+
+@media (max-width: 768px) {
+  .fw-split-pane {
+    border-right: none;
+    border-bottom: 1px solid var(--fw-border);
+  }
+  .fw-split-pane:last-child {
+    border-bottom: none;
+  }
+}
+
+.fw-split-pane h2 {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  margin-bottom: 1rem;
+  color: var(--fw-text);
+  font-weight: 700;
+}
+
+.fw-split-pane p {
+  font-size: 0.95rem;
+  color: var(--fw-text-dim);
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+
+/* Grid - Minimal */
+.fw-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1px;
+  background: var(--fw-border);
+  border: 1px solid var(--fw-border);
+}
+
+.fw-grid-item {
+  background: var(--fw-bg);
+  padding: 2rem;
+}
+
+.fw-grid-item h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: var(--fw-text);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.fw-grid-item p, .fw-grid-item ul {
+  font-size: 0.9rem;
+  color: var(--fw-text-dim);
+  line-height: 1.6;
+}
+
+.fw-grid-item ul {
+  list-style: none;
+  padding: 0;
+  margin: 0.75rem 0 0 0;
+}
+
+.fw-grid-item ul li {
+  padding: 0.25rem 0;
+  padding-left: 1rem;
+  position: relative;
+}
+
+.fw-grid-item ul li:before {
+  content: "—";
+  position: absolute;
+  left: 0;
+  color: var(--fw-text-dimmer);
+}
+
+/* Image - Minimal */
+.fw-img-wrapper {
+  border: 1px solid var(--fw-border);
+  overflow: hidden;
+  background: var(--fw-surface);
+}
+
+.fw-img-wrapper img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Section */
+.fw-section {
+  padding: 60px 0;
+  border-bottom: 1px solid var(--fw-border);
+}
+
+.fw-section-tight {
+  padding: 40px 0;
+  border-bottom: 1px solid var(--fw-border);
+}
+
+/* Accent - Minimal Use */
+.fw-accent {
+  color: var(--fw-uv);
+}
+
+/* Utility */
+.fw-dim {
+  color: var(--fw-text-dim);
+}
+
+.fw-dimmer {
+  color: var(--fw-text-dimmer);
+}
+
+/* Remove background red conflict */
+body {
+  background: var(--fw-bg) !important;
+}
