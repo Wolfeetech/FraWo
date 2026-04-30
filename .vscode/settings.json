@@ -1,0 +1,148 @@
+{
+  // FraWo GbR - Zentrale VS Code Workspace Settings
+  // Diese Settings gelten für ALLE Rechner im Netzwerk
+  // Letzte Aktualisierung: 2026-04-30
+
+  // ===== EDITOR BASICS =====
+  "editor.fontSize": 13,
+  "editor.fontFamily": "'Cascadia Code', 'Fira Code', Consolas, monospace",
+  "editor.fontLigatures": true,
+  "editor.tabSize": 4,
+  "editor.insertSpaces": true,
+  "editor.wordWrap": "on",
+  "editor.minimap.enabled": true,
+  "editor.bracketPairColorization.enabled": true,
+  "editor.guides.bracketPairs": true,
+  "editor.formatOnSave": false,
+  "editor.rulers": [80, 120],
+
+  // ===== FILES & ENCODING =====
+  "files.encoding": "utf8",
+  "files.eol": "\n",
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+  "files.autoSave": "afterDelay",
+  "files.autoSaveDelay": 2000,
+
+  // ===== EXCLUDE PATTERNS =====
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/*.pyc": true,
+    "**/.git": true,
+    "**/node_modules": true,
+    "**/.venv": true,
+    "**/*.egg-info": true
+  },
+
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/__pycache__": true,
+    "**/venv": true,
+    "**/.venv": true,
+    "**/dist": true,
+    "**/build": true
+  },
+
+  // ===== PYTHON =====
+  "python.defaultInterpreterPath": "python",
+  "python.analysis.typeCheckingMode": "basic",
+  "python.analysis.autoImportCompletions": true,
+  "python.linting.enabled": true,
+  "python.linting.pylintEnabled": false,
+  "python.linting.flake8Enabled": false,
+  "python.formatting.provider": "none",
+  "[python]": {
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true,
+    "editor.rulers": [88, 120],
+    "editor.formatOnSave": false
+  },
+
+  // ===== POWERSHELL =====
+  "[powershell]": {
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true,
+    "editor.formatOnSave": false
+  },
+
+  // ===== YAML/JSON =====
+  "[yaml]": {
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true,
+    "editor.autoIndent": "advanced"
+  },
+  "[json]": {
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true
+  },
+  "[jsonc]": {
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true
+  },
+
+  // ===== MARKDOWN =====
+  "[markdown]": {
+    "editor.wordWrap": "on",
+    "editor.quickSuggestions": {
+      "comments": "off",
+      "strings": "off",
+      "other": "off"
+    }
+  },
+
+  // ===== HTML/CSS =====
+  "[html]": {
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true,
+    "editor.formatOnSave": false
+  },
+  "[css]": {
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true
+  },
+
+  // ===== JAVASCRIPT/TYPESCRIPT =====
+  "[javascript]": {
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true
+  },
+  "[typescript]": {
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true
+  },
+
+  // ===== GIT =====
+  "git.autofetch": true,
+  "git.confirmSync": false,
+  "git.enableSmartCommit": true,
+  "git.postCommitCommand": "none",
+
+  // ===== TERMINAL =====
+  "terminal.integrated.fontSize": 12,
+  "terminal.integrated.defaultProfile.windows": "PowerShell",
+  "terminal.integrated.defaultProfile.linux": "bash",
+  "terminal.integrated.scrollback": 10000,
+
+  // ===== WORKSPACE-SPECIFIC =====
+  "workbench.colorTheme": "Default Dark Modern",
+  "workbench.iconTheme": "vs-seti",
+  "workbench.startupEditor": "none",
+
+  // ===== CSPELL (Spell Checker) =====
+  "cSpell.enabled": true,
+  "cSpell.language": "en,de",
+
+  // ===== ANSIBLE =====
+  "ansible.python.interpreterPath": "python",
+
+  // ===== REMOTE DEVELOPMENT =====
+  "remote.SSH.remotePlatform": {
+    "proxmox-anker": "linux",
+    "toolbox": "linux",
+    "odoo": "linux"
+  },
+
+  // ===== SECURITY =====
+  "security.workspace.trust.enabled": true,
+  "security.workspace.trust.untrustedFiles": "open"
+}

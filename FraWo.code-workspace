@@ -1,0 +1,117 @@
+{
+  "folders": [
+    {
+      "name": "🏠 FraWo (Root)",
+      "path": "."
+    },
+    {
+      "name": "📜 Scripts",
+      "path": "scripts"
+    },
+    {
+      "name": "📚 DOCS",
+      "path": "DOCS"
+    },
+    {
+      "name": "🌐 Website (Codex)",
+      "path": "Codex/website"
+    },
+    {
+      "name": "🤖 Ansible",
+      "path": "ansible"
+    },
+    {
+      "name": "📦 Manifests",
+      "path": "manifests"
+    }
+  ],
+  "settings": {
+    // Diese Settings überschreiben die globalen Settings
+    // aber nur für diesen Workspace
+
+    "files.associations": {
+      "*.fw": "plaintext",
+      "*.yml": "yaml",
+      "Dockerfile*": "dockerfile"
+    },
+
+    "search.exclude": {
+      "**/artifacts/archive/**": true,
+      "**/DOCS/archive/**": true,
+      "**/scripts/archive/**": true,
+      "**/apps/node_modules/**": true
+    },
+
+    // Git-spezifisch für dieses Repo
+    "git.branchPrefix": "feature/",
+    "git.defaultCloneDirectory": "C:/WORKSPACE",
+
+    // Python für dieses Projekt
+    "python.analysis.extraPaths": [
+      "./scripts"
+    ],
+
+    // Terminal startet immer im Root
+    "terminal.integrated.cwd": "${workspaceFolder:🏠 FraWo (Root)}"
+  },
+  "extensions": {
+    "recommendations": [
+      "ms-python.python",
+      "ms-python.vscode-pylance",
+      "ms-vscode.powershell",
+      "eamodio.gitlens",
+      "redhat.ansible",
+      "streetsidesoftware.code-spell-checker",
+      "streetsidesoftware.code-spell-checker-german"
+    ]
+  },
+  "launch": {
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Python: Current File",
+        "type": "python",
+        "request": "launch",
+        "program": "${file}",
+        "console": "integratedTerminal",
+        "cwd": "${workspaceFolder:🏠 FraWo (Root)}",
+        "env": {
+          "PYTHONPATH": "${workspaceFolder:🏠 FraWo (Root)}/scripts"
+        }
+      },
+      {
+        "name": "PowerShell: Current Script",
+        "type": "PowerShell",
+        "request": "launch",
+        "script": "${file}",
+        "cwd": "${workspaceFolder:🏠 FraWo (Root)}"
+      }
+    ]
+  },
+  "tasks": {
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "Git: Pull & Sync",
+        "type": "shell",
+        "command": "git pull && git status",
+        "problemMatcher": [],
+        "group": "none"
+      },
+      {
+        "label": "Python: Run Script",
+        "type": "shell",
+        "command": "python ${file}",
+        "problemMatcher": [],
+        "group": "build"
+      },
+      {
+        "label": "Ansible: Check Inventory",
+        "type": "shell",
+        "command": "ansible-inventory -i ansible/inventory/hosts.yml --list",
+        "problemMatcher": [],
+        "group": "none"
+      }
+    ]
+  }
+}

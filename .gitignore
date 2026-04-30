@@ -1,6 +1,15 @@
 .DS_Store
 .idea/
-.vscode/
+
+# VS Code - nur persönliche Settings ignorieren, nicht workspace settings
+.vscode/*.code-snippets
+.vscode/.history/
+.vscode/launch.json.local
+# Aber folgende SOLLEN committed werden:
+# .vscode/settings.json
+# .vscode/extensions.json
+# .vscode/cspell.json
+
 *.swp
 *.swo
 *~

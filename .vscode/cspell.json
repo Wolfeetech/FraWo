@@ -1,0 +1,44 @@
+{
+  "version": "0.2",
+  "language": "de,en",
+  "words": [
+    "frawo",
+    "odoo",
+    "proxmox",
+    "tailscale",
+    "caddy",
+    "cloudflared",
+    "azuracast",
+    "jellyfin",
+    "vaultwarden",
+    "paperless",
+    "nextcloud",
+    "wrapwrap",
+    "contactus",
+    "datas",
+    "qweb",
+    "ilike",
+    "endswith",
+    "bodensee",
+    "Rothkreuz",
+    "Weißensberg",
+    "LASTEXITCODE",
+    "anker"
+  ],
+  "ignorePaths": [
+    "*.md",
+    "*.json",
+    "*.yml",
+    "*.yaml",
+    "node_modules",
+    ".git"
+  ],
+  "enabledLanguageIds": [
+    "html",
+    "css",
+    "python",
+    "powershell",
+    "javascript",
+    "typescript"
+  ]
+}

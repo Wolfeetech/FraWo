@@ -1,0 +1,54 @@
+{
+  // FraWo GbR - Empfohlene VS Code Extensions
+  // Diese Extensions werden für ALLE Teammitglieder empfohlen
+  // Letzte Aktualisierung: 2026-04-30
+
+  "recommendations": [
+    // === ESSENTIALS ===
+    "ms-python.python",
+    "ms-python.vscode-pylance",
+    "ms-vscode.powershell",
+
+    // === GIT & VERSION CONTROL ===
+    "eamodio.gitlens",
+    "mhutchie.git-graph",
+
+    // === REMOTE DEVELOPMENT ===
+    "ms-vscode-remote.remote-ssh",
+    "ms-vscode-remote.remote-ssh-edit",
+
+    // === LANGUAGE SUPPORT ===
+    "redhat.ansible",
+    "redhat.vscode-yaml",
+    "ms-azuretools.vscode-docker",
+
+    // === WEB DEVELOPMENT ===
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "ecmel.vscode-html-css",
+
+    // === MARKDOWN & DOCUMENTATION ===
+    "yzhang.markdown-all-in-one",
+    "davidanson.vscode-markdownlint",
+
+    // === UTILITIES ===
+    "streetsidesoftware.code-spell-checker",
+    "streetsidesoftware.code-spell-checker-german",
+    "editorconfig.editorconfig",
+    "gruntfuggly.todo-tree",
+
+    // === ODOO DEVELOPMENT ===
+    "jigar-patel.odoosnippets",
+
+    // === PRODUCTIVITY ===
+    "usernamehw.errorlens",
+    "christian-kohler.path-intellisense",
+    "formulahendry.code-runner"
+  ],
+
+  "unwantedRecommendations": [
+    // Extensions die NICHT installiert werden sollten
+    "ms-vscode.cpptools",
+    "ms-dotnettools.csharp"
+  ]
+}
