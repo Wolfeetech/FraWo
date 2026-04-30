@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FraWo Funk</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      width: 100%;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .logo {
+      width: 120px;
+      height: 120px;
+      margin: 0 auto 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      font-weight: bold;
+      box-shadow: 0 10px 40px rgba(102, 126, 234, 0.3);
+    }
+
+    h1 {
+      font-size: 42px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .tagline {
+      font-size: 18px;
+      color: #a0a0b0;
+      font-weight: 300;
+    }
+
+    .stations {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+
+    .station {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 30px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .station:hover {
+      transform: translateY(-5px);
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(102, 126, 234, 0.5);
+      box-shadow: 0 20px 60px rgba(102, 126, 234, 0.2);
+    }
+
+    .station.active {
+      background: rgba(102, 126, 234, 0.15);
+      border-color: #667eea;
+      box-shadow: 0 20px 60px rgba(102, 126, 234, 0.4);
+    }
+
+    .station-icon {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      margin-bottom: 20px;
+    }
+
+    .station-name {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .station-location {
+      font-size: 14px;
+      color: #a0a0b0;
+      margin-bottom: 15px;
+    }
+
+    .nowplaying {
+      font-size: 14px;
+      color: #667eea;
+      font-style: italic;
+      min-height: 40px;
+    }
+
+    .status-badge {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      width: 12px;
+      height: 12px;
+      background: #4ade80;
+      border-radius: 50%;
+      box-shadow: 0 0 10px rgba(74, 222, 128, 0.6);
+      animation: pulse 2s infinite;
+    }
+
+    .status-badge.offline {
+      background: #ef4444;
+      animation: none;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .player-controls {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 30px;
+      text-align: center;
+    }
+
+    .play-button {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border: none;
+      border-radius: 50%;
+      color: white;
+      font-size: 32px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 10px 40px rgba(102, 126, 234, 0.4);
+      margin: 0 auto 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .play-button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 15px 50px rgba(102, 126, 234, 0.6);
+    }
+
+    .play-button:active {
+      transform: scale(0.95);
+    }
+
+    .volume-control {
+      max-width: 300px;
+      margin: 0 auto;
+    }
+
+    audio {
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    @media (max-width: 768px) {
+      h1 { font-size: 32px; }
+      .stations { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="logo">🎵</div>
+      <h1>FraWo Funk</h1>
+      <p class="tagline">Live Radio Network</p>
+    </div>
+
+    <div class="stations">
+      <div class="station" data-station="frawo-funk" data-url="http://radio.hs27.internal">
+        <div class="status-badge"></div>
+        <div class="station-icon">📻</div>
+        <div class="station-name">FraWo Funk</div>
+        <div class="station-location">📍 Anker, Rothkreuz</div>
+        <div class="nowplaying" id="nowplaying-frawo-funk">Loading...</div>
+      </div>
+
+      <div class="station" data-station="radio.yourparty" data-url="https://radio.yourparty.tech">
+        <div class="status-badge offline"></div>
+        <div class="station-icon">🎧</div>
+        <div class="station-name">Radio YourParty</div>
+        <div class="station-location">📍 Stockenweiler</div>
+        <div class="nowplaying" id="nowplaying-yourparty">Storage voll - Migration läuft</div>
+      </div>
+    </div>
+
+    <div class="player-controls">
+      <button class="play-button" id="playButton">▶</button>
+      <div class="volume-control">
+        <audio id="audioPlayer" controls preload="none"></audio>
+      </div>
+      <p id="currentStation" style="margin-top: 15px; color: #a0a0b0;">Wähle eine Station</p>
+    </div>
+  </div>
+
+  <script>
+    const stations = document.querySelectorAll('.station');
+    const audioPlayer = document.getElementById('audioPlayer');
+    const playButton = document.getElementById('playButton');
+    const currentStation = document.getElementById('currentStation');
+
+    let activeStation = null;
+
+    // Station click handler
+    stations.forEach(station => {
+      station.addEventListener('click', () => {
+        const stationId = station.dataset.station;
+        const stationUrl = station.dataset.url;
+        const stationName = station.querySelector('.station-name').textContent;
+
+        // Update active state
+        stations.forEach(s => s.classList.remove('active'));
+        station.classList.add('active');
+
+        // Set stream URL (needs to be updated with actual stream endpoints)
+        if (stationId === 'frawo-funk') {
+          audioPlayer.src = `${stationUrl}/listen/frawo-funk/radio.mp3`;
+        } else if (stationId === 'radio.yourparty') {
+          audioPlayer.src = `${stationUrl}/listen/yourparty/radio.mp3`;
+        }
+
+        activeStation = stationName;
+        currentStation.textContent = `▶ ${stationName}`;
+        audioPlayer.play();
+        playButton.textContent = '⏸';
+      });
+    });
+
+    // Play/Pause button
+    playButton.addEventListener('click', () => {
+      if (audioPlayer.paused) {
+        audioPlayer.play();
+        playButton.textContent = '⏸';
+      } else {
+        audioPlayer.pause();
+        playButton.textContent = '▶';
+      }
+    });
+
+    // Update nowplaying info
+    async function updateNowPlaying() {
+      try {
+        // FraWo Funk (Anker)
+        const frawoResponse = await fetch('http://radio.hs27.internal/api/nowplaying/frawo-funk');
+        const frawoData = await frawoResponse.json();
+        if (frawoData.now_playing) {
+          const np = document.getElementById('nowplaying-frawo-funk');
+          np.textContent = `🎵 ${frawoData.now_playing.song.artist} - ${frawoData.now_playing.song.title}`;
+        }
+      } catch (e) {
+        console.log('Could not fetch nowplaying for FraWo Funk');
+      }
+
+      // Update every 15 seconds
+      setTimeout(updateNowPlaying, 15000);
+    }
+
+    // Start nowplaying updates
+    updateNowPlaying();
+  </script>
+</body>
+</html>
