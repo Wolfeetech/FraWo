@@ -33,9 +33,9 @@ toolbox_network_adguard_rewrites:
     answer: 10.1.0.20
   # Dual-Site Radio Infrastructure
   - domain: radio.hs27.internal
-    answer: 10.3.0.10
+    answer: 10.3.0.9
   - domain: radio-anker.hs27.internal
-    answer: 10.3.0.10
+    answer: 10.3.0.9
   - domain: radio-stock.hs27.internal
     answer: 10.11.0.10
 toolbox_network_internal_proxy_hosts:
@@ -65,11 +65,11 @@ toolbox_network_internal_proxy_hosts:
     tls_internal: true
   # Dual-Site Radio Infrastructure
   - hostname: radio.hs27.internal
-    upstream: 10.3.0.10:80
+    upstream: 10.3.0.9:80
     scheme: https
     tls_internal: true
   - hostname: radio-anker.hs27.internal
-    upstream: 10.3.0.10:80
+    upstream: 10.3.0.9:80
     scheme: https
     tls_internal: true
   - hostname: radio-stock.hs27.internal
@@ -160,7 +160,7 @@ toolbox_network_tailscale_mobile_proxies:
     host_header: portal.hs27.internal
   - name: radio_mobile
     listen_port: 8448
-    upstream: 100.64.23.77:80
+    upstream: 10.3.0.9:80
     host_header: radio.hs27.internal
   - name: media_mobile
     listen_port: 8449
@@ -208,7 +208,7 @@ toolbox_media_curation_dirs:
   - quarantine
 toolbox_media_radio_sync_key_path: /root/.ssh/homeserver2027_media_sync
 toolbox_media_radio_sync_source_user: wolf
-toolbox_media_radio_sync_source_host: 100.64.23.77
+toolbox_media_radio_sync_source_host: 10.3.0.9
 toolbox_media_radio_sync_source_path: /srv/radio-library/music-network/yourparty_Libary/
 toolbox_media_radio_sync_target_path: /srv/media-library/music-network/yourparty_Libary/
 toolbox_media_radio_sync_log_path: /var/log/homeserver2027-media-sync.log

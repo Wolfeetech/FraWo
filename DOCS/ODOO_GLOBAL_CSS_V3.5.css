@@ -1,0 +1,110 @@
+/*
+=============================================================================
+FraWo GbR — Global CSS v3.5 Ultra Minimal (NTS-Inspired)
+=============================================================================
+
+ANLEITUNG FÜR ODOO:
+
+1. Gehe zu https://www.frawo-tech.de und logge dich ein
+2. Klicke auf "Website" → "Configuration" → "Settings"
+3. Scrolle runter zu "Custom Code"
+4. Füge diesen GESAMTEN Code in "Head Code" ein
+5. Klicke auf "Save"
+
+Diese CSS steuert:
+- Header (transparent, minimal)
+- Footer (subtle)
+- Globale Fonts (Inter)
+- Logo (klein, mix-blend-mode)
+- Navigation
+
+Die Content-CSS ist separat in der Homepage-Datei!
+
+=============================================================================
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --fw-bg: #0a0a0a;
+  --fw-text: #e0e0e0;
+  --fw-text-dim: #888888;
+  --fw-text-dimmer: #555555;
+  --fw-border: #1a1a1a;
+  --fw-uv: #a855f7;
+}
+
+/* Global */
+body, #wrap, header, footer, .navbar {
+  font-family: 'Inter', -apple-system, sans-serif !important;
+  background: var(--fw-bg) !important;
+  color: var(--fw-text) !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Inter', sans-serif !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.02em !important;
+}
+
+/* HEADER - ULTRA MINIMAL (NTS-Style) */
+header#top, .o_header_standard, .o_header_affixed, .navbar, .navbar-light {
+  background-color: transparent !important;  /* NO BACKGROUND */
+  background: transparent !important;
+  border-bottom: none !important;            /* NO BORDER */
+  padding: 1.5rem 0 !important;             /* Generous spacing */
+}
+
+.navbar-brand {
+  color: var(--fw-text) !important;
+  font-weight: 400 !important;              /* Lighter weight */
+  font-size: 0.95rem !important;           /* Smaller, subtle */
+  text-transform: uppercase !important;
+  letter-spacing: 0.15em !important;       /* Generous tracking */
+}
+
+/* Logo - Tiny, Subtle */
+.navbar-brand img {
+  height: 18px !important;                 /* Much smaller */
+  width: auto !important;
+  filter: none !important;
+  mix-blend-mode: screen !important;
+  opacity: 0.7 !important;
+}
+
+.navbar-brand img:hover {
+  opacity: 1 !important;
+}
+
+/* Nav Items - Minimal, Lots of Breathing Room */
+.nav-link, .navbar-light .navbar-nav .nav-link {
+  color: var(--fw-text-dim) !important;
+  font-weight: 400 !important;
+  font-size: 0.85rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.1em !important;
+  padding: 0.5rem 1.5rem !important;        /* Generous spacing */
+  transition: color 0.15s ease !important;
+}
+
+.nav-link:hover {
+  color: var(--fw-text) !important;
+}
+
+/* Footer - Subtle */
+footer, .o_footer {
+  background-color: transparent !important;
+  color: var(--fw-text-dimmer) !important;
+  padding: 3rem 0 2rem !important;
+  border-top: 1px solid var(--fw-border) !important;
+  margin-top: 4rem !important;
+}
+
+.o_footer .o_footer_copyright {
+  display: none !important;
+}
+
+/* Remove all background conflicts */
+body {
+  background: var(--fw-bg) !important;
+}

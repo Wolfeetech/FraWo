@@ -9,11 +9,16 @@
     rpi_radio_media_share_password: "{{ homeserver_vault_storage_share_password | default(lookup('env', 'HOMESERVER_STORAGE_SHARE_PASSWORD') | default('', true)) }}"
 
   pre_tasks:
-    - name: Assert SMB share password is provided
+    - name: Check whether SMB credential file already exists
+      ansible.builtin.stat:
+        path: "{{ rpi_radio_media_credentials_file }}"
+      register: rpi_radio_media_credentials_stat
+
+    - name: Assert SMB share password is provided (or credentials file exists)
       ansible.builtin.assert:
         that:
-          - rpi_radio_media_share_password | length > 0
-        fail_msg: "Set HOMESERVER_STORAGE_SHARE_PASSWORD or homeserver_vault_storage_share_password before mounting the SMB media share."
+          - rpi_radio_media_share_password | length > 0 or rpi_radio_media_credentials_stat.stat.exists
+        fail_msg: "Set HOMESERVER_STORAGE_SHARE_PASSWORD (or homeserver_vault_storage_share_password), or pre-provision {{ rpi_radio_media_credentials_file }} before mounting the SMB media share."
 
   tasks:
     - name: Ensure SMB credential directory exists
@@ -35,6 +40,7 @@
           password={{ rpi_radio_media_share_password }}
       no_log: true
       register: rpi_radio_media_credentials
+      when: rpi_radio_media_share_password | length > 0
 
     - name: Ensure SMB media mountpoint exists
       ansible.builtin.file:
@@ -79,7 +85,10 @@
         cmd: docker compose up -d
       args:
         chdir: /var/azuracast
-      when: rpi_radio_media_mount.changed or rpi_radio_override.changed or rpi_radio_media_credentials.changed
+      when: >-
+        rpi_radio_media_mount.changed
+        or rpi_radio_override.changed
+        or (rpi_radio_media_credentials is defined and rpi_radio_media_credentials.changed)
 
     - name: Wait for AzuraCast web UI after SMB media integration
       ansible.builtin.uri:
@@ -103,16 +112,16 @@
           - (rpi_radio_media_file_count.stdout | trim | int) > 0
         fail_msg: "No music files are visible inside {{ rpi_radio_station_media_path }} after SMB integration."
 
-    - name: Trigger AzuraCast sync after SMB media integration
+    - name: Trigger AzuraCast media scan after SMB media integration
       ansible.builtin.command:
-        cmd: docker exec azuracast azuracast_cli azuracast:sync:run
+        cmd: docker exec azuracast azuracast_cli azuracast:sync:task --force CheckMediaTask
       changed_when: true
 
     - name: Resolve station ID for frawo-funk
       ansible.builtin.command:
         cmd: >-
           docker exec azuracast azuracast_cli dbal:run-sql --force-fetch
-          "SELECT id FROM station WHERE shortcode = '{{ rpi_radio_station_shortcode }}' LIMIT 1;"
+          "SELECT id FROM station WHERE short_name = '{{ rpi_radio_station_shortcode }}' LIMIT 1;"
       register: rpi_radio_station_id_query
       changed_when: false
 
@@ -130,7 +139,7 @@
       ansible.builtin.command:
         cmd: >-
           docker exec azuracast azuracast_cli dbal:run-sql --force-fetch
-          "SELECT sp.id FROM station_playlist sp WHERE sp.station_id = {{ rpi_radio_station_id }} ORDER BY sp.id LIMIT 1;"
+          "SELECT sp.id FROM station_playlists sp WHERE sp.station_id = {{ rpi_radio_station_id }} ORDER BY sp.id LIMIT 1;"
       register: rpi_radio_playlist_id_query
       changed_when: false
 
@@ -144,11 +153,29 @@
           - rpi_radio_default_playlist_id | length > 0
         fail_msg: "Unable to resolve a playlist ID for station {{ rpi_radio_station_shortcode }}."
 
+    - name: Resolve station media storage location ID
+      ansible.builtin.command:
+        cmd: >-
+          docker exec azuracast azuracast_cli dbal:run-sql --force-fetch
+          "SELECT media_storage_location_id FROM station WHERE id = {{ rpi_radio_station_id }} LIMIT 1;"
+      register: rpi_radio_station_storage_location_id_query
+      changed_when: false
+
+    - name: Extract station media storage location ID from SQL output
+      ansible.builtin.set_fact:
+        rpi_radio_station_storage_location_id: "{{ rpi_radio_station_storage_location_id_query.stdout_lines | select('match', '^[[:space:]]*[0-9]+[[:space:]]*$') | map('trim') | first }}"
+
+    - name: Assert station storage location ID was resolved
+      ansible.builtin.assert:
+        that:
+          - rpi_radio_station_storage_location_id | length > 0
+        fail_msg: "Unable to resolve media storage location ID for station {{ rpi_radio_station_shortcode }}."
+
     - name: Count station media records after SMB media sync
       ansible.builtin.command:
         cmd: >-
           docker exec azuracast azuracast_cli dbal:run-sql --force-fetch
-          "SELECT COUNT(*) AS media_count FROM station_media sm WHERE sm.station_id = {{ rpi_radio_station_id }};"
+          "SELECT COUNT(*) AS media_count FROM station_media sm WHERE sm.storage_location_id = {{ rpi_radio_station_storage_location_id }};"
       register: rpi_radio_station_media_count
       changed_when: false
 
@@ -161,19 +188,21 @@
           FROM station_media sm
           LEFT JOIN station_playlist_media spm
             ON spm.playlist_id = {{ rpi_radio_default_playlist_id }} AND spm.media_id = sm.id
-          WHERE sm.station_id = {{ rpi_radio_station_id }} AND spm.id IS NULL;"
+          WHERE sm.storage_location_id = {{ rpi_radio_station_storage_location_id }} AND spm.id IS NULL;"
       changed_when: true
 
     - name: Restart AzuraCast radio services after playlist association
       ansible.builtin.command:
-        cmd: docker exec azuracast azuracast_cli azuracast:radio:restart "{{ rpi_radio_station_id }}"
+        cmd: docker exec azuracast azuracast_cli azuracast:radio:restart "{{ rpi_radio_station_shortcode }}"
       changed_when: true
 
     - name: Wait for station nowplaying endpoint after radio restart
-      ansible.builtin.command:
-        cmd: >-
-          docker exec azuracast sh -lc
-          "curl -s http://127.0.0.1/api/nowplaying | jq -r '.[0].station.shortcode'"
+      ansible.builtin.shell: >-
+        set -euo pipefail;
+        curl -s http://127.0.0.1/api/nowplaying/{{ rpi_radio_station_id }}
+        | jq -r '.station.shortcode'
+      args:
+        executable: /bin/bash
       register: rpi_radio_nowplaying_check
       changed_when: false
       retries: 20

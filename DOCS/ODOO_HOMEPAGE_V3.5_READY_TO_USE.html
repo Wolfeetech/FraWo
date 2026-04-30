@@ -1,157 +1,215 @@
-<!-- FraWo GbR Homepage v3.5 — Ultra Minimal + Radio Player -->
+<!--
+=============================================================================
+FraWo GbR Homepage v3.5 — Ultra Minimal (NTS-Inspired) + Radio Player
+=============================================================================
 
-<section class="fw-hero">
-  <div class="container">
-    <div class="row align-items-center g-5">
-      <div class="col-lg-6">
-        <div class="fw-eyebrow">FraWo GbR</div>
-        <h1 class="fw-h1">Veranstaltungstechnik<br/>& Event-Infrastruktur</h1>
-        <p class="fw-lead">
-          Ton, Licht, Automation. Vom Bodensee. Für Events, Clubs, Firmen, Privathaushalte.
-        </p>
-        <div class="d-flex flex-wrap gap-3">
-          <a class="fw-btn-primary btn" href="/contactus">Kontakt</a>
-          <a class="fw-btn-ghost btn" href="#services">Services</a>
-        </div>
-      </div>
-      <div class="col-lg-6">
-        <div class="fw-img-wrapper">
-          <img src="__IMG_HERO_BODENSEE__" alt="Line-Array Setup am Bodensee"/>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+ANLEITUNG FÜR ODOO-EDITOR:
 
-<!-- Split: B2C / B2B -->
-<section class="fw-split">
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-6">
-        <div class="fw-split-pane">
-          <div class="fw-eyebrow">Privatkunden</div>
-          <h2>Smart Home,<br/>Heimkino, Licht</h2>
-          <p>
-            Home Assistant Installationen, Heimkino-Systeme, Lichtplanung.
-          </p>
-          <a class="fw-btn-ghost btn btn-sm" href="/b2c">Details →</a>
-        </div>
-      </div>
+1. Gehe zu https://www.frawo-tech.de und logge dich ein
+2. Klicke oben auf "Website" → "Pages"
+3. Wähle die Homepage aus (oder erstelle eine neue Page mit URL "/")
+4. Klicke auf "Edit" → "HTML/XML Editor" (Code-Symbol </>)
+5. Kopiere den GESAMTEN Inhalt dieser Datei
+6. Füge ihn in den Odoo-Editor ein
+7. Klicke auf "Save"
+8. Fertig!
 
-      <div class="col-lg-6">
-        <div class="fw-split-pane">
-          <div class="fw-eyebrow">Business</div>
-          <h2>Events, Konzerte,<br/>Corporate</h2>
-          <p>
-            Line-Arrays, FOH, Streaming. Clubs, Open Airs, Firmenveranstaltungen.
-          </p>
-          <a class="fw-btn-ghost btn btn-sm" href="/b2b">Details →</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+AB DANN KANNST DU:
+- Bilder austauschen (einfach auf Bild klicken → "Replace")
+- Text bearbeiten (einfach draufklicken)
+- Sections hinzufügen/löschen
+- Alles im WYSIWYG-Editor anpassen
 
-<!-- Services Grid -->
-<section class="fw-section" id="services">
-  <div class="container">
-    <div class="fw-grid">
-      <div class="fw-grid-item">
-        <h3>Event-Infrastruktur</h3>
-        <p>
-          Line-Arrays, Stage-Monitoring, FOH-Mixing. 50–500 Personen.
-        </p>
-        <ul>
-          <li>d&b, L-Acoustics Line-Arrays</li>
-          <li>Midas M32, Behringer X32</li>
-          <li>DMX-Lichtsteuerung</li>
-          <li>Live-Streaming (320kbps)</li>
-        </ul>
-      </div>
+WICHTIG FÜR CSS:
+- Die CSS unten in diesem File ist NUR für den Content
+- Die GLOBALE CSS (Header, Footer, Fonts) muss separat eingefügt werden
+- Gehe dafür zu: Website → Configuration → Settings
+- Scrolle zu "Custom Code" → "Head Code"
+- Füge dort die CSS aus "ODOO_GLOBAL_CSS_V3.5.css" ein
 
-      <div class="fw-grid-item">
-        <h3>Smart Home</h3>
-        <p>
-          Home Assistant, Philips Hue, Shelly. Lokal, kein Cloud-Zwang.
-        </p>
-        <ul>
-          <li>Home Assistant Installation</li>
-          <li>Philips Hue Multi-Bridge</li>
-          <li>Shelly-Automatisierung</li>
-          <li>Bluetooth-Gateways</li>
-        </ul>
-      </div>
+=============================================================================
+-->
 
-      <div class="fw-grid-item">
-        <h3>Heimkino & Akustik</h3>
-        <p>
-          Raumakustik-Messung, Speaker-Kalibrierung, Verkabelung.
-        </p>
-        <ul>
-          <li>Schallpegelmessung</li>
-          <li>Stereo bis 5.1 Heimkino</li>
-          <li>Clean Installation</li>
-          <li>Hardware-agnostisch</li>
-        </ul>
-      </div>
-
-      <div class="fw-grid-item">
-        <h3>Radio & Streaming</h3>
-        <p>
-          AzuraCast, Liquidsoap, Icecast. Eigene Infrastruktur: Radio4yourparty, FraWo Funk.
-        </p>
-        <ul>
-          <li>AzuraCast-Installation</li>
-          <li>HLS + MP3 Streaming</li>
-          <li>192–320kbps</li>
-          <li>283GB Music Library</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Reference -->
-<section class="fw-section-tight">
-  <div class="container">
-    <div class="fw-img-wrapper">
-      <img src="__IMG_REFERENCE_EVENT__" alt="FOH-Setup Woodstockenweiler"/>
-    </div>
-    <p style="text-align: center; color: var(--fw-text-dimmer); margin-top: 1rem; font-size: 0.85rem;">
-      FOH-Setup, Woodstockenweiler — Ehrenamtlicher Bühnendienst, Midas M32
-    </p>
-  </div>
-</section>
-
-<!-- Info -->
-<section class="fw-section">
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-6">
-        <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Verfügbarkeit</h3>
-        <p style="color: var(--fw-text-dim); font-size: 0.95rem; line-height: 1.6;">
-          Aktuell: Projekte für Sommer 2026.<br/>
-          Mail: Was, wann, größte Sorge.<br/>
-          Antwort: innerhalb 2 Werktage.
-        </p>
-      </div>
-      <div class="col-lg-6">
-        <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Kontakt</h3>
-        <p style="color: var(--fw-text-dim); font-size: 0.95rem; line-height: 1.6;">
-          <a href="mailto:info@frawo-tech.de" style="color: var(--fw-text); text-decoration: none;">info@frawo-tech.de</a><br/>
-          Wolf Prinz & Fabian Bienert<br/>
-          Rothkreuz 14, 88138 Weißensberg
-        </p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Radio Player (Sticky Footer) -->
-__RADIO_PLAYER__
-<!-- FraWo Funk Radio Player — Sticky Footer -->
-
+<!-- CSS für Content-Blöcke (gehört IN die Page) -->
 <style>
+/* Hero - Breathing Room */
+.fw-hero {
+  padding: 100px 0 80px;
+  background: var(--fw-bg);
+}
+
+.fw-eyebrow {
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--fw-text-dimmer);
+  margin-bottom: 2rem;
+}
+
+.fw-h1 {
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: 700;
+  line-height: 1.05;
+  color: var(--fw-text);
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.03em;
+}
+
+.fw-lead {
+  color: var(--fw-text-dim);
+  font-size: 1.05rem;
+  line-height: 1.7;
+  max-width: 42rem;
+  margin-bottom: 2.5rem;
+  font-weight: 400;
+}
+
+/* Buttons - Minimal */
+.fw-btn-primary {
+  background: var(--fw-text) !important;
+  border: none !important;
+  border-radius: 0 !important;
+  padding: 14px 28px !important;
+  font-weight: 500 !important;
+  font-size: 0.8rem !important;
+  color: var(--fw-bg) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.1em !important;
+  transition: opacity 0.2s ease !important;
+}
+
+.fw-btn-primary:hover {
+  opacity: 0.9 !important;
+}
+
+.fw-btn-ghost {
+  background: transparent !important;
+  border: 1px solid var(--fw-border) !important;
+  border-radius: 0 !important;
+  padding: 14px 28px !important;
+  font-weight: 500 !important;
+  font-size: 0.8rem !important;
+  color: var(--fw-text-dim) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.1em !important;
+  transition: all 0.2s ease !important;
+}
+
+.fw-btn-ghost:hover {
+  border-color: var(--fw-text) !important;
+  color: var(--fw-text) !important;
+}
+
+/* Split - NO BORDERS, Just Spacing */
+.fw-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  padding: 80px 0;
+  border-top: 1px solid var(--fw-border);
+  border-bottom: 1px solid var(--fw-border);
+}
+
+@media (max-width: 768px) {
+  .fw-split {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+}
+
+.fw-split-pane {
+  padding: 0;
+}
+
+.fw-split-pane h2 {
+  font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+  margin-bottom: 1rem;
+  color: var(--fw-text);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.fw-split-pane p {
+  font-size: 1rem;
+  color: var(--fw-text-dim);
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+/* Grid - 1px Borders */
+.fw-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1px;
+  background: var(--fw-border);
+  border: 1px solid var(--fw-border);
+}
+
+.fw-grid-item {
+  background: var(--fw-bg);
+  padding: 2.5rem;
+}
+
+.fw-grid-item h3 {
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--fw-text);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.fw-grid-item p, .fw-grid-item ul {
+  font-size: 0.9rem;
+  color: var(--fw-text-dim);
+  line-height: 1.7;
+}
+
+.fw-grid-item ul {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0 0;
+}
+
+.fw-grid-item ul li {
+  padding: 0.35rem 0;
+  padding-left: 1rem;
+  position: relative;
+}
+
+.fw-grid-item ul li:before {
+  content: "—";
+  position: absolute;
+  left: 0;
+  color: var(--fw-text-dimmer);
+}
+
+/* Image */
+.fw-img-wrapper {
+  border: 1px solid var(--fw-border);
+  overflow: hidden;
+  background: var(--fw-bg);
+}
+
+.fw-img-wrapper img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Section */
+.fw-section {
+  padding: 80px 0;
+  border-bottom: 1px solid var(--fw-border);
+}
+
+.fw-section-tight {
+  padding: 50px 0;
+  border-bottom: 1px solid var(--fw-border);
+}
+
+/* Radio Player - Sticky Footer */
 .fw-radio-player {
   position: fixed;
   bottom: 0;
@@ -273,6 +331,155 @@ __RADIO_PLAYER__
 }
 </style>
 
+<!-- Hero Section -->
+<section class="fw-hero">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6">
+        <div class="fw-eyebrow">FraWo GbR</div>
+        <h1 class="fw-h1">Veranstaltungstechnik<br/>& Event-Infrastruktur</h1>
+        <p class="fw-lead">
+          Ton, Licht, Automation. Vom Bodensee. Für Events, Clubs, Firmen, Privathaushalte.
+        </p>
+        <div class="d-flex flex-wrap gap-3">
+          <a class="fw-btn-primary btn" href="/contactus">Kontakt</a>
+          <a class="fw-btn-ghost btn" href="#services">Services</a>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="fw-img-wrapper">
+          <img src="/web/image/hero-bodensee.jpg" alt="Line-Array Setup am Bodensee" class="img-fluid"/>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Split: B2C / B2B -->
+<section class="fw-split">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="fw-split-pane">
+          <div class="fw-eyebrow">Privatkunden</div>
+          <h2>Smart Home,<br/>Heimkino, Licht</h2>
+          <p>
+            Home Assistant Installationen, Heimkino-Systeme, Lichtplanung.
+          </p>
+          <a class="fw-btn-ghost btn btn-sm" href="/b2c">Details →</a>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="fw-split-pane">
+          <div class="fw-eyebrow">Business</div>
+          <h2>Events, Konzerte,<br/>Corporate</h2>
+          <p>
+            Line-Arrays, FOH, Streaming. Clubs, Open Airs, Firmenveranstaltungen.
+          </p>
+          <a class="fw-btn-ghost btn btn-sm" href="/b2b">Details →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Services Grid -->
+<section class="fw-section" id="services">
+  <div class="container">
+    <div class="fw-grid">
+      <div class="fw-grid-item">
+        <h3>Event-Infrastruktur</h3>
+        <p>
+          Line-Arrays, Stage-Monitoring, FOH-Mixing. 50–500 Personen.
+        </p>
+        <ul>
+          <li>d&b, L-Acoustics Line-Arrays</li>
+          <li>Midas M32, Behringer X32</li>
+          <li>DMX-Lichtsteuerung</li>
+          <li>Live-Streaming (320kbps)</li>
+        </ul>
+      </div>
+
+      <div class="fw-grid-item">
+        <h3>Smart Home</h3>
+        <p>
+          Home Assistant, Philips Hue, Shelly. Lokal, kein Cloud-Zwang.
+        </p>
+        <ul>
+          <li>Home Assistant Installation</li>
+          <li>Philips Hue Multi-Bridge</li>
+          <li>Shelly-Automatisierung</li>
+          <li>Bluetooth-Gateways</li>
+        </ul>
+      </div>
+
+      <div class="fw-grid-item">
+        <h3>Heimkino & Akustik</h3>
+        <p>
+          Raumakustik-Messung, Speaker-Kalibrierung, Verkabelung.
+        </p>
+        <ul>
+          <li>Schallpegelmessung</li>
+          <li>Stereo bis 5.1 Heimkino</li>
+          <li>Clean Installation</li>
+          <li>Hardware-agnostisch</li>
+        </ul>
+      </div>
+
+      <div class="fw-grid-item">
+        <h3>Radio & Streaming</h3>
+        <p>
+          AzuraCast, Liquidsoap, Icecast. Eigene Infrastruktur: Radio4yourparty, FraWo Funk.
+        </p>
+        <ul>
+          <li>AzuraCast-Installation</li>
+          <li>HLS + MP3 Streaming</li>
+          <li>192–320kbps</li>
+          <li>283GB Music Library</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Reference -->
+<section class="fw-section-tight">
+  <div class="container">
+    <div class="fw-img-wrapper">
+      <img src="/web/image/reference-event.jpg" alt="FOH-Setup Woodstockenweiler" class="img-fluid"/>
+    </div>
+    <p style="text-align: center; color: var(--fw-text-dimmer); margin-top: 1rem; font-size: 0.85rem;">
+      FOH-Setup, Woodstockenweiler — Ehrenamtlicher Bühnendienst, Midas M32
+    </p>
+  </div>
+</section>
+
+<!-- Info -->
+<section class="fw-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-6">
+        <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Verfügbarkeit</h3>
+        <p style="color: var(--fw-text-dim); font-size: 0.95rem; line-height: 1.6;">
+          Aktuell: Projekte für Sommer 2026.<br/>
+          Mail: Was, wann, größte Sorge.<br/>
+          Antwort: innerhalb 2 Werktage.
+        </p>
+      </div>
+      <div class="col-lg-6">
+        <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Kontakt</h3>
+        <p style="color: var(--fw-text-dim); font-size: 0.95rem; line-height: 1.6;">
+          <a href="mailto:info@frawo-tech.de" style="color: var(--fw-text); text-decoration: none;">info@frawo-tech.de</a><br/>
+          Wolf Prinz & Fabian Bienert<br/>
+          Rothkreuz 14, 88138 Weißensberg
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Radio Player (Sticky Footer) -->
 <div class="fw-radio-player" id="frawo-radio-player" style="display: none;">
   <div class="fw-radio-player-inner">
     <div class="fw-radio-station">FraWo Funk</div>
