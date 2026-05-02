@@ -29,7 +29,7 @@ jobs:
           tags: local/radio-player-frontend:${{ github.sha }}
           outputs: type=oci,dest=/tmp/radio-player-frontend.oci.tar
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: radio-player-frontend-oci
           path: /tmp/radio-player-frontend.oci.tar
