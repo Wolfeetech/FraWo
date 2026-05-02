@@ -41,8 +41,13 @@ Der Homeserver 2027 ist die produktive Basis der **FraWo GbR**: ERP, Cloud, Doku
 
 ### Lane E: Radio & Media - [STATUS: ACTIVE]
 
-- **Ziel**: AzuraCast auf Stockenweiler als primärer Radio-Service.
+- **Ziel**: AzuraCast auf Stockenweiler als primärer Radio-Service, Anker als Relay/Backup.
 - **Status**: In Migration/Setup. IP `192.168.178.210`.
+- **Roadmap**:
+  1. [ ] AzuraCast Core-Dienste auf Stockenweiler VM 210 absichern.
+  2. [ ] Media-Library Sync via Tailscale (Rethink: `rclone` vs `syncthing`).
+  3. [ ] Icecast Relay auf Anker für Redundanz konfigurieren.
+  4. [ ] Integration in das Odoo-CRM für Supporter-Management.
 
 ---
 

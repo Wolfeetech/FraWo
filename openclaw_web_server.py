@@ -44,30 +44,50 @@ SKILLS = {
         "cmd": ["python", "scripts/sync_lane_c_to_odoo.py"],
         "desc": "Synchronisiert Lane-C Aufgaben (Security/PBS) mit dem Odoo Backend."
     },
-    "kiosk_check": {
-        "cmd": ["python", "scripts/control_surface_actions_check.py"],
-        "desc": "Überprüft die Funktionalität des Surface Go Portals."
+    "restart_kiosk": {
+        "cmd": ["python", "c:/Users/StudioPC/.gemini/antigravity/scratch/restart_surface_kiosk.py"],
+        "desc": "Startet den Firefox-Kiosk auf dem Surface Go neu."
     },
-    "refresh_context": {
-        "cmd": ["bash", "scripts/refresh_live_context.sh"],
-        "desc": "Aktualisiert den KI-Kontext durch Einlesen der neuesten Logs und Status."
+    "list_files": {
+        "cmd": ["powershell", "Get-ChildItem -Path . -Recurse -Include *.md,*.txt,todo.md,*.py,*.sh | Select-Object -ExpandProperty FullName"],
+        "desc": "Listet alle relevanten Projektdateien im Workspace auf."
+    },
+    "read_file": {
+        "cmd": ["python", "-c", "import sys; print(open(sys.argv[1], 'r', encoding='utf-8').read())"],
+        "desc": "Liest den Inhalt einer Datei. Beispiel: [RUN: read_file todo.md]"
+    },
+    "write_file": {
+        "cmd": ["python", "-c", "import sys; f=open(sys.argv[1], 'w', encoding='utf-8'); f.write(sys.argv[2]); f.close(); print('Erfolgreich geschrieben.')"],
+        "desc": "Schreibt oder überschreibt eine Datei. Beispiel: [RUN: write_file path 'inhalt']"
+    },
+    "sync_masterplan": {
+        "cmd": ["python", "scripts/sync_lane_c_to_odoo.py"], # We will make this more generic later
+        "desc": "Überträgt den aktuellen Masterplan in das Odoo Projektboard."
+    },
+    "plan_azuracast": {
+        "cmd": ["python", "-c", "f=open('AZURACAST_PLAN.md', 'w'); f.write('# AzuraCast Implementation Plan\\n- Lane E: Radio & Media\\n- Ziel: Stabilisierung auf Stockenweiler\\n- Status: In Planung'); f.close(); print('Plan erstellt.')"],
+        "desc": "Erstellt einen initialen Implementierungsplan für AzuraCast."
     }
 }
 
 AGENT_SYSTEM_PROMPT = """
-ZUSÄTZLICHE FÄHIGKEITEN:
-Du hast Zugriff auf operative 'Skills' (Skripte). Um ein Problem zu lösen, kannst du ein Skript aufrufen.
-Format für Skill-Aufruf: [RUN: skill_name]
+PROJEKT-LEITUNG & INFRASTRUKTUR:
+Du bist der OpenClaw Project Lead. Deine Mission ist es, den FraWo-Stack stabil zu halten und Pläne in Odoo zu spiegeln.
+
+Format für Skill-Aufruf: [RUN: skill_name arg1 arg2]
 
 Verfügbare Skills:
-- health_audit: Systemweiter Check.
-- fix_network: Netzwerk-Reparatur.
-- sync_tasks: Odoo Task-Synchronisation.
-- kiosk_check: Portal-Validierung.
-- refresh_context: Kontext-Update.
+- health_audit: System-Check.
+- fix_network: Netzwerk-Fix.
+- sync_tasks: Aufgaben-Sync.
+- sync_masterplan: Masterplan -> Odoo.
+- list_files: Workspace Übersicht.
+- read_file [pfad]: Dokumente lesen.
+- write_file [pfad] [inhalt]: Dokumente erstellen/ändern.
+- plan_azuracast: AzuraCast Strategie entwerfen.
+- restart_kiosk: Kiosk-Reset.
 
-WENN du einen Skill aufrufst, wird das Ergebnis automatisch in die Konversation eingefügt. 
-Antworte erst mit dem Aufruf und warte auf das Ergebnis, bevor du die finale Lösung präsentierst.
+Aufgabe: Fixe Surface-Themen (Design/Konnektivität), schiebe den Masterplan ins Projektboard und plane die AzuraCast Umsetzung.
 """
 
 class OpenClawAPIHandler(BaseHTTPRequestHandler):
@@ -146,29 +166,39 @@ class OpenClawAPIHandler(BaseHTTPRequestHandler):
         
         try:
             import urllib.request
+            import shlex
+            import re
             
             # --- Turn 1: Thought & Potential Action ---
             resp_data = self.call_ollama(message)
             ai_response = resp_data.get('response', '')
             
-            # Check for [RUN: skill_name]
-            import re
-            match = re.search(r"\[RUN:\s*(\w+)\]", ai_response)
+            # Check for [RUN: skill_name args]
+            match = re.search(r"\[RUN:\s*(\w+)(?:\s+(.*))?\]", ai_response)
             
             if match:
                 skill_name = match.group(1)
-                logger.info(f"Agent requested skill: {skill_name}")
+                raw_args = match.group(2) or ""
+                logger.info(f"Agent requested skill: {skill_name} with args: {raw_args[:50]}...")
                 
                 if skill_name in SKILLS:
                     skill = SKILLS[skill_name]
                     try:
-                        logger.info(f"Executing: {skill['cmd']}")
+                        # Parse arguments safely
+                        try:
+                            parsed_args = shlex.split(raw_args)
+                        except Exception as e:
+                            parsed_args = raw_args.split() # Fallback
+                        
+                        full_cmd = skill['cmd'] + parsed_args
+                        
+                        logger.info(f"Executing: {full_cmd}")
                         result = subprocess.run(
-                            skill['cmd'], 
+                            full_cmd, 
                             capture_output=True, 
                             text=True, 
-                            timeout=60,
-                            cwd="c:\\WORKSPACE\\FraWo" # Explicit CWD
+                            timeout=180,
+                            cwd="c:\\WORKSPACE\\FraWo"
                         )
                         output = f"Result of {skill_name}:\nSTDOUT: {result.stdout}\nSTDERR: {result.stderr}"
                     except Exception as e:

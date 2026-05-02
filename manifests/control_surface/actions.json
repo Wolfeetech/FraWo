@@ -122,6 +122,17 @@
       "requires_login": false,
       "status": "ready",
       "verified": true
+    },
+    {
+      "id": "openclaw_agent",
+      "label": "OpenClaw AI",
+      "group": "Agent",
+      "audience": "kiosk-frontend",
+      "target_url": "http://100.98.31.60:5555/api/status",
+      "target_kind": "ai_agent",
+      "requires_login": false,
+      "status": "ready",
+      "verified": true
     }
   ]
 }
