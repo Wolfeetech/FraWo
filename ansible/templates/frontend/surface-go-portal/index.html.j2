@@ -1,396 +1,507 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <title>FraWo Control | Command Center</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg: #03070a;
-      --card-bg: rgba(13, 20, 28, 0.7);
-      --card-border: rgba(255, 255, 255, 0.08);
-      --accent: #00ffa3; /* Brand Emeraldish */
-      --accent-glow: rgba(0, 255, 163, 0.3);
-      --secondary: #9b8eff; /* Brand Purple */
-      --text-main: #ffffff;
-      --text-muted: #8a9ba8;
-      --success: #00ffa3;
-      --warning: #ffb800;
-      --danger: #ff4b4b;
-      --font-heading: 'Outfit', sans-serif;
-      --font-body: 'Inter', sans-serif;
-    }
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+    <title>OpenClaw Control Center 3.1</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #050505;
+            --sidebar-bg: rgba(10, 10, 15, 0.98);
+            --accent: #00d4ff;
+            --accent-glow: rgba(0, 212, 255, 0.5);
+            --secondary: #ff00ff;
+            --success: #00ff88;
+            --error: #ff3b3b;
+            --text-main: #ffffff;
+            --text-muted: #aaaaaa;
+            --font-heading: 'Outfit', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --card-bg: rgba(25, 25, 30, 0.9);
+            --border: rgba(255, 255, 255, 0.15);
+            --touch-target: 60px;
+        }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      cursor: none; /* Optimized for Touch/Kiosk */
-    }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
 
-    body {
-      min-height: 100vh;
-      background: var(--bg);
-      background-image: 
-        radial-gradient(circle at 0% 0%, rgba(0, 255, 163, 0.05) 0%, transparent 50%),
-        radial-gradient(circle at 100% 100%, rgba(155, 142, 255, 0.05) 0%, transparent 50%);
-      color: var(--text-main);
-      font-family: var(--font-body);
-      overflow: hidden; /* Kiosk mode */
-      user-select: none;
-    }
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            display: flex;
+        }
 
-    .app-container {
-      display: grid;
-      grid-template-rows: auto 1fr auto;
-      height: 100vh;
-      padding: 1.5rem;
-      gap: 1.5rem;
-    }
+        /* Large Sidebar for Touch */
+        .sidebar {
+            width: 100px;
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 25px 0;
+            z-index: 1000;
+        }
 
-    /* Header Section */
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-bottom: 1rem;
-      border-bottom: 1px solid var(--card-border);
-    }
+        .nav-item {
+            width: 70px;
+            height: 70px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 25px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            color: var(--text-muted);
+            border: 1px solid transparent;
+            background: rgba(255, 255, 255, 0.03);
+        }
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
+        .nav-item:active {
+            transform: scale(0.9);
+            background: rgba(0, 212, 255, 0.2);
+        }
 
-    .logo-glow {
-      width: 12px;
-      height: 12px;
-      background: var(--accent);
-      border-radius: 50%;
-      box-shadow: 0 0 15px var(--accent);
-      animation: pulse 2s infinite;
-    }
+        .nav-item.active, .nav-item:hover {
+            color: var(--accent);
+            border-color: var(--accent-glow);
+            box-shadow: 0 0 20px var(--accent-glow);
+            background: rgba(0, 212, 255, 0.1);
+        }
 
-    @keyframes pulse {
-      0% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.3); opacity: 0.7; }
-      100% { transform: scale(1); opacity: 1; }
-    }
+        .nav-item.home-btn {
+            background: linear-gradient(135deg, var(--accent), #0088cc);
+            color: #000;
+            margin-bottom: 40px;
+        }
 
-    h1 {
-      font-family: var(--font-heading);
-      font-size: 1.5rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-    }
+        .nav-spacer { flex: 1; }
 
-    .system-clock {
-      font-family: var(--font-heading);
-      font-size: 2.5rem;
-      font-weight: 600;
-      color: var(--text-main);
-    }
+        /* Main Stage */
+        .stage {
+            flex: 1;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
 
-    /* Main Content */
-    main {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 1.5rem;
-      overflow-y: auto;
-      padding-right: 0.5rem;
-    }
+        header {
+            height: 80px;
+            padding: 0 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            background: rgba(5, 5, 5, 0.8);
+            backdrop-filter: blur(20px);
+        }
 
-    main::-webkit-scrollbar {
-      width: 4px;
-    }
+        .logo {
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+        }
 
-    main::-webkit-scrollbar-thumb {
-      background: var(--card-border);
-      border-radius: 10px;
-    }
+        .logo span { color: var(--accent); }
 
-    .group-section {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
+        .system-status {
+            display: flex;
+            gap: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
 
-    .group-header {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-family: var(--font-heading);
-      font-size: 0.9rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--text-muted);
-    }
+        .status-pill {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+        }
 
-    .action-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 0.75rem;
-    }
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--error);
+            box-shadow: 0 0 8px var(--error);
+        }
 
-    .action-card {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      padding: 1.25rem;
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 1.25rem;
-      text-decoration: none;
-      color: inherit;
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-      backdrop-filter: blur(10px);
-    }
+        .dot.online { background: var(--success); box-shadow: 0 0 10px var(--success); }
 
-    .action-card:active {
-      transform: scale(0.97);
-      background: rgba(255, 255, 255, 0.05);
-      border-color: var(--accent);
-    }
+        /* View Container */
+        .view-container {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 40px;
+        }
 
-    .icon-box {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 48px;
-      height: 48px;
-      background: rgba(255, 255, 255, 0.03);
-      border-radius: 1rem;
-      font-size: 1.25rem;
-      color: var(--accent);
-      border: 1px solid var(--card-border);
-    }
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            align-content: start;
+        }
 
-    .action-info {
-      flex: 1;
-    }
+        .service-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 35px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            text-align: center;
+        }
 
-    .action-title {
-      font-weight: 600;
-      font-size: 1.1rem;
-      margin-bottom: 0.25rem;
-    }
+        .service-card:active {
+            transform: scale(0.96);
+            border-color: var(--accent);
+            background: rgba(0, 212, 255, 0.1);
+        }
 
-    .action-desc {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-    }
+        .service-icon { font-size: 3rem; }
+        .service-name { font-family: var(--font-heading); font-size: 1.4rem; font-weight: 700; }
+        .service-desc { color: var(--text-muted); font-size: 1rem; }
 
-    .status-tag {
-      padding: 0.25rem 0.6rem;
-      border-radius: 0.5rem;
-      font-size: 0.7rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--card-border);
-    }
+        /* AI Chat Panel */
+        .chat-panel {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            height: calc(100vh - 160px);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
 
-    .status-tag.login {
-      color: var(--secondary);
-      border-color: rgba(155, 142, 255, 0.3);
-    }
+        .chat-header {
+            padding: 20px 25px;
+            background: rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid var(--border);
+            font-weight: 700;
+            font-family: var(--font-heading);
+            letter-spacing: 1px;
+        }
 
-    /* Footer */
-    footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-top: 1rem;
-      border-top: 1px solid var(--card-border);
-    }
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
 
-    .footer-actions {
-      display: flex;
-      gap: 1rem;
-    }
+        .msg {
+            padding: 15px 20px;
+            border-radius: 18px;
+            font-size: 1.05rem;
+            max-width: 90%;
+            line-height: 1.5;
+        }
 
-    .btn {
-      padding: 0.75rem 1.5rem;
-      border-radius: 1rem;
-      border: 1px solid var(--card-border);
-      background: var(--card-bg);
-      color: var(--text-muted);
-      font-family: inherit;
-      font-weight: 600;
-      font-size: 0.9rem;
-      cursor: none;
-      transition: all 0.2s;
-    }
+        .msg.user { background: var(--accent); color: #000; align-self: flex-end; font-weight: 500; }
+        .msg.bot { background: rgba(255, 255, 255, 0.07); border: 1px solid var(--border); align-self: flex-start; }
 
-    .btn:active {
-      background: var(--accent);
-      color: var(--bg);
-      border-color: var(--accent);
-    }
+        .chat-input-area {
+            padding: 25px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 15px;
+        }
 
-    .system-meta {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      text-align: right;
-    }
+        .chat-input {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 18px;
+            color: #fff;
+            font-size: 1.1rem;
+            outline: none;
+        }
 
-    /* Responsive */
-    @media (max-width: 768px) {
-      .app-container {
-        padding: 1rem;
-      }
-      .system-clock {
-        font-size: 1.8rem;
-      }
-      main {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
+        .chat-input:focus { border-color: var(--accent); }
+
+        /* Iframe Layer */
+        .iframe-layer {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #000;
+            z-index: 5000;
+            display: none;
+        }
+
+        .iframe-layer iframe { width: 100%; height: 100%; border: none; }
+
+        /* Floating Nav for Iframe */
+        .floating-nav {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 6000;
+            padding: 15px 30px;
+            background: rgba(10, 10, 15, 0.85);
+            backdrop-filter: blur(15px);
+            border-radius: 40px;
+            border: 1px solid var(--accent);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+        }
+
+        .f-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            border: 1px solid var(--border);
+            transition: all 0.2s;
+        }
+
+        .f-btn:active { transform: scale(0.85); background: var(--accent); color: #000; }
+
+        .f-btn.home { background: var(--accent); color: #000; }
+
+        /* Loading Overlay */
+        #loader {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .spinner {
+            width: 60px; height: 60px;
+            border: 5px solid var(--border);
+            border-top: 5px solid var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+    </style>
 </head>
 <body>
-  {% set all_actions = surface_go_actions_manifest.actions | default([]) %}
-  {% set ready_actions = all_actions | selectattr('status', 'equalto', 'ready') | list %}
-  
-  {# Define groups to display #}
-  {% set groups = [
-    {'id': 'Dokumente', 'title': 'Dokumente', 'icon': '📂'},
-    {'id': 'Odoo', 'title': 'Business & Odoo', 'icon': '💼'},
-    {'id': 'Radio', 'title': 'Media & Radio', 'icon': '📻'},
-    {'id': 'Stockenweiler', 'title': 'Stockenweiler', 'icon': '🏠'}
-  ] %}
+    <div id="loader"><div class="spinner"></div><div style="font-weight:bold; letter-spacing:2px;">LOADING SERVICE...</div></div>
 
-  {# Mapping for icons and custom notes #}
-  {% set action_meta = {
-    'nextcloud_inbox': {'icon': '📥', 'note': 'Upload'},
-    'paperless_archive': {'icon': '📑', 'note': 'Archiv'},
-    'odoo_tasks': {'icon': '✅', 'note': 'Aufgaben'},
-    'odoo_projects': {'icon': '🏗️', 'note': 'Projekte'},
-    'odoo_calendar': {'icon': '📅', 'note': 'Kalender'},
-    'radio_listen': {'icon': '🔊', 'note': 'Player'},
-    'radio_control': {'icon': '🎛️', 'note': 'Regie'},
-    'stockenweiler_home_assistant': {'icon': '🎮', 'note': 'HA Eltern'}
-  } %}
+    <nav class="sidebar">
+        <div class="nav-item home-btn active" onclick="showDashboard()">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        </div>
+        <div class="nav-item" onclick="toggleChat()">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+        </div>
+        <div class="nav-spacer"></div>
+        <div class="nav-item" onclick="window.location.reload()">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+        </div>
+    </nav>
 
-  <div class="app-container">
-    <header>
-      <div class="brand">
-        <div class="logo-glow"></div>
-        <h1>FRAWO CONTROL <span style="color: var(--text-muted); font-weight: 400; margin-left: 0.5rem;">V2.0</span></h1>
-      </div>
-      <div class="system-clock" id="clock">12:00</div>
-    </header>
-
-    <main aria-label="Command Center Grid">
-      {% for group in groups %}
-        {% set group_actions = ready_actions | selectattr('group', 'equalto', group.id) | list %}
-        {% if group_actions %}
-          <section class="group-section">
-            <div class="group-header">
-              <span>{{ group.icon }}</span>
-              <span>{{ group.title }}</span>
+    <div class="stage">
+        <header>
+            <div class="logo">OPEN<span>CLAW</span> 3.1</div>
+            <div class="system-status">
+                <div class="status-pill"><div class="dot online" id="s-brain"></div> STUDIO</div>
+                <div class="status-pill"><div class="dot online" id="s-cloud"></div> CLOUD</div>
+                <div id="clock" style="font-size: 1.4rem; font-weight: 700; color: var(--accent);">00:00</div>
             </div>
-            <div class="action-grid">
-              {% for action in group_actions %}
-                {% set meta = action_meta.get(action.id, {'icon': '🚀', 'note': 'App'}) %}
-                {% if action.id == 'radio_player_special' or action.id == 'radio_listen' %}
-                  <div class="action-card" style="grid-column: 1 / -1; border-color: var(--secondary); background: linear-gradient(135deg, rgba(13, 20, 28, 0.9) 0%, rgba(20, 15, 40, 0.9) 100%);">
-                    <div style="display: flex; align-items: center; gap: 2rem; width: 100%;">
-                      <div class="radio-visualizer" style="display: flex; gap: 3px; align-items: flex-end; height: 40px;">
-                        <div style="width: 4px; height: 60%; background: var(--accent); animation: bar-pulse 1.2s infinite ease-in-out;"></div>
-                        <div style="width: 4px; height: 90%; background: var(--accent); animation: bar-pulse 0.8s infinite ease-in-out 0.2s;"></div>
-                        <div style="width: 4px; height: 40%; background: var(--accent); animation: bar-pulse 1.5s infinite ease-in-out 0.1s;"></div>
-                        <div style="width: 4px; height: 75%; background: var(--accent); animation: bar-pulse 1.0s infinite ease-in-out 0.4s;"></div>
-                      </div>
-                      <div style="flex: 1;">
-                        <div style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--accent); margin-bottom: 0.5rem; font-weight: 700;">ON AIR · LIVE</div>
-                        <h2 style="font-size: 1.5rem; margin-bottom: 0.25rem;">Radio4yourparty</h2>
-                        <div id="now-playing" style="font-size: 0.9rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.5rem;">
-                          <span class="status-dot" style="width: 8px; height: 8px; background: #ff4b4b; border-radius: 50%; box-shadow: 0 0 8px #ff4b4b;"></span>
-                          Funk Stockenweiler · 320kbps
-                        </div>
-                        <audio id="radio-player">
-                          <source src="https://radio.yourparty.tech/listen/radio.yourparty/radio.mp3" type="audio/mpeg">
-                        </audio>
-                      </div>
-                      <div class="player-controls" style="display: flex; gap: 1rem;">
-                        <button class="btn-play" onclick="toggleRadio()" style="background: var(--accent); color: var(--bg); border: none; width: 64px; height: 64px; border-radius: 50%; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 20px var(--accent-glow); cursor: pointer; transition: transform 0.2s;">
-                          <span id="play-icon">▶️</span>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  <style>
-                    @keyframes bar-pulse {
-                      0%, 100% { height: 30%; }
-                      50% { height: 100%; }
-                    }
-                    .btn-play:active { transform: scale(0.9); }
-                  </style>
-                  <script>
-                    function toggleRadio() {
-                      const player = document.getElementById('radio-player');
-                      const icon = document.getElementById('play-icon');
-                      if (player.paused) {
-                        player.play();
-                        icon.textContent = '⏸️';
-                      } else {
-                        player.pause();
-                        icon.textContent = '▶️';
-                      }
-                    }
-                  </script>
-                {% else %}
-                <a href="{{ action.target_url }}" class="action-card">
-                  <div class="icon-box">{{ meta.icon }}</div>
-                  <div class="action-info">
-                    <div class="action-title">{{ action.label }}</div>
-                    <div class="action-desc">{{ meta.note }}</div>
-                  </div>
-                  {% if action.requires_login %}
-                    <div class="status-tag login">Login</div>
-                  {% else %}
-                    <div class="status-tag">Direkt</div>
-                  {% endif %}
-                </a>
-                {% endif %}
-              {% endfor %}
+        </header>
+
+        <div class="view-container" id="main-view">
+            <div class="dashboard-grid">
+                <!-- Arbeit -->
+                <div class="service-card" onclick="openService('http://100.82.26.53:8445')">
+                    <div class="service-icon">☁️</div>
+                    <div class="service-name">Nextcloud</div>
+                    <div class="service-desc">Dateien & Team</div>
+                </div>
+                <div class="service-card" onclick="openService('http://100.82.26.53:8446')">
+                    <div class="service-icon">📑</div>
+                    <div class="service-name">Paperless</div>
+                    <div class="service-desc">Dokumentenarchiv</div>
+                </div>
+                <div class="service-card" onclick="openService('http://100.82.26.53:8444/web/login')">
+                    <div class="service-icon">💼</div>
+                    <div class="service-name">Odoo</div>
+                    <div class="service-desc">Business ERP</div>
+                </div>
+
+                <!-- Automation -->
+                <div class="service-card" onclick="openService('http://100.82.26.53:8443')">
+                    <div class="service-icon">🏠</div>
+                    <div class="service-name">Home Assistant</div>
+                    <div class="service-desc">Smart Home</div>
+                </div>
+
+                <!-- Media -->
+                <div class="service-card" onclick="openService('http://100.82.26.53:8448')">
+                    <div class="service-icon">📻</div>
+                    <div class="service-name">AzuraCast</div>
+                    <div class="service-desc">Radio Regie</div>
+                </div>
+                <div class="service-card" onclick="openService('http://100.82.26.53:8449')">
+                    <div class="service-icon">🎬</div>
+                    <div class="service-name">Jellyfin</div>
+                    <div class="service-desc">Mediathek</div>
+                </div>
             </div>
-          </section>
-        {% endif %}
-      {% endfor %}
-    </main>
 
-    <footer>
-      <div class="footer-actions">
-        <button class="btn" onclick="window.location.reload()">REFRESH</button>
-        <button class="btn" onclick="window.location.href='http://portal.hs27.internal'">PORTAL</button>
-      </div>
-      <div class="system-meta">
-        <div>HOMESERVER 2027 NODE: SURFACE-GO-FRONTEND</div>
-        <div style="color: var(--accent);">STATUS: CONNECTED (LAN)</div>
-      </div>
-    </footer>
-  </div>
+            <div class="chat-panel" id="chat-panel">
+                <div class="chat-header">🦞 OPENCLAW AGENT</div>
+                <div class="chat-messages" id="chat-msgs">
+                    <div class="msg bot">Bereit. Wie kann ich die RTX-Power heute nutzen?</div>
+                </div>
+                <div class="chat-input-area">
+                    <input type="text" class="chat-input" id="chat-in" placeholder="Nachricht..." onkeypress="handleChat(event)">
+                    <button class="nav-item" style="width:60px; height:60px; margin:0;" onclick="sendChat()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
 
-  <script>
-    function updateClock() {
-      const now = new Date();
-      document.getElementById("clock").textContent = now.toLocaleTimeString("de-DE", {
-        hour: "2-digit",
-        minute: "2-digit"
-      });
-    }
-    updateClock();
-    setInterval(updateClock, 1000);
+        <div class="iframe-layer" id="iframe-layer">
+            <div class="floating-nav">
+                <div class="f-btn" onclick="iframeBack()" title="Zurück">
+                    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                </div>
+                <div class="f-btn home" onclick="showDashboard()" title="Home">
+                    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+                </div>
+                <div class="f-btn" onclick="iframeReload()" title="Reload">
+                    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+                </div>
+            </div>
+            <iframe id="main-frame" src=""></iframe>
+        </div>
+    </div>
 
-    // Disable context menu for kiosk feel
-    document.addEventListener('contextmenu', event => event.preventDefault());
-  </script>
+    <script>
+        const API_BASE = "http://100.98.31.60:5555";
+
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clock').textContent = now.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        function openService(url) {
+            const layer = document.getElementById('iframe-layer');
+            const iframe = document.getElementById('main-frame');
+            iframe.src = url;
+            layer.style.display = 'block';
+            document.getElementById('main-view').style.filter = 'blur(10px)';
+            document.getElementById('loader').style.display = 'flex';
+            
+            iframe.onload = () => {
+                document.getElementById('loader').style.display = 'none';
+            };
+        }
+
+        function showDashboard() {
+            const layer = document.getElementById('iframe-layer');
+            layer.style.display = 'none';
+            document.getElementById('main-view').style.filter = 'none';
+            document.getElementById('main-frame').src = '';
+        }
+
+        function iframeBack() {
+            const iframe = document.getElementById('main-frame');
+            try {
+                iframe.contentWindow.history.back();
+            } catch(e) {
+                console.error("Cannot go back across origins");
+            }
+        }
+
+        function iframeReload() {
+            const iframe = document.getElementById('main-frame');
+            iframe.src = iframe.src;
+        }
+
+        function toggleChat() {
+            const panel = document.getElementById('chat-panel');
+            panel.style.display = panel.style.display === 'none' ? 'flex' : 'none';
+        }
+
+        async function sendChat() {
+            const input = document.getElementById('chat-in');
+            const msg = input.value.trim();
+            if (!msg) return;
+
+            appendMsg('user', msg);
+            input.value = '';
+
+            try {
+                const res = await fetch(`${API_BASE}/api/chat`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: msg })
+                });
+                const data = await res.json();
+                appendMsg('bot', data.response || "Agent antwortet nicht.");
+            } catch (e) {
+                appendMsg('bot', "Fehler: Verbindung zum StudioPC fehlgeschlagen.");
+            }
+        }
+
+        function handleChat(e) { if (e.key === 'Enter') sendChat(); }
+
+        function appendMsg(role, text) {
+            const chat = document.getElementById('chat-msgs');
+            const div = document.createElement('div');
+            div.className = `msg ${role}`;
+            div.textContent = text;
+            chat.appendChild(div);
+            chat.scrollTop = chat.scrollHeight;
+        }
+
+        async function refreshSystem() {
+            try {
+                const res = await fetch(`${API_BASE}/api/status`);
+                const data = await res.json();
+                console.log("System Status:", data);
+            } catch (e) { console.error("Status fetch failed"); }
+        }
+
+        // Prevent context menu
+        document.addEventListener('contextmenu', e => e.preventDefault());
+    </script>
 </body>
 </html>
