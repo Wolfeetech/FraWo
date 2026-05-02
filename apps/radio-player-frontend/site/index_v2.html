@@ -201,7 +201,7 @@
     </div>
 
     <div class="stations">
-      <div class="station" data-station="frawo-funk" data-url="http://radio.hs27.internal">
+      <div class="station" data-station="frawo-funk" data-stream-url="http://radio-anker.hs27.internal/listen/frawo-funk/radio.mp3" data-nowplaying-url="http://radio-anker.hs27.internal/api/nowplaying/frawo-funk">
         <div class="status-badge"></div>
         <div class="station-icon">📻</div>
         <div class="station-name">FraWo Funk</div>
@@ -209,12 +209,12 @@
         <div class="nowplaying" id="nowplaying-frawo-funk">Loading...</div>
       </div>
 
-      <div class="station" data-station="radio.yourparty" data-url="https://radio.yourparty.tech">
-        <div class="status-badge offline"></div>
+      <div class="station" data-station="yourparty" data-stream-url="http://radio-stock.hs27.internal/listen/yourparty/radio.mp3" data-nowplaying-url="http://radio-stock.hs27.internal/api/nowplaying">
+        <div class="status-badge" id="status-yourparty"></div>
         <div class="station-icon">🎧</div>
         <div class="station-name">Radio YourParty</div>
         <div class="station-location">📍 Stockenweiler</div>
-        <div class="nowplaying" id="nowplaying-yourparty">Storage voll - Migration läuft</div>
+        <div class="nowplaying" id="nowplaying-yourparty">Verbinde mit Stockenweiler...</div>
       </div>
     </div>
 
@@ -238,20 +238,14 @@
     // Station click handler
     stations.forEach(station => {
       station.addEventListener('click', () => {
-        const stationId = station.dataset.station;
-        const stationUrl = station.dataset.url;
+        const streamUrl = station.dataset.streamUrl;
         const stationName = station.querySelector('.station-name').textContent;
 
         // Update active state
         stations.forEach(s => s.classList.remove('active'));
         station.classList.add('active');
 
-        // Set stream URL (needs to be updated with actual stream endpoints)
-        if (stationId === 'frawo-funk') {
-          audioPlayer.src = `${stationUrl}/listen/frawo-funk/radio.mp3`;
-        } else if (stationId === 'radio.yourparty') {
-          audioPlayer.src = `${stationUrl}/listen/yourparty/radio.mp3`;
-        }
+        audioPlayer.src = streamUrl;
 
         activeStation = stationName;
         currentStation.textContent = `▶ ${stationName}`;
@@ -271,19 +265,46 @@
       }
     });
 
+    function setStationStatus(stationId, isOnline) {
+      const badgeId = stationId === 'frawo-funk' ? null : `status-${stationId}`;
+      const badge = badgeId ? document.getElementById(badgeId) : document.querySelector(`[data-station="${stationId}"] .status-badge`);
+
+      if (!badge) {
+        return;
+      }
+
+      badge.classList.toggle('offline', !isOnline);
+    }
+
+    async function updateStationNowPlaying(station) {
+      const stationId = station.dataset.station;
+      const nowPlayingUrl = station.dataset.nowplayingUrl;
+      const target = document.getElementById(`nowplaying-${stationId}`);
+
+      try {
+        const response = await fetch(nowPlayingUrl);
+        const payload = await response.json();
+        const data = Array.isArray(payload) ? payload[0] : payload;
+
+        if (!data || !data.now_playing || !data.now_playing.song) {
+          throw new Error('Missing now playing payload');
+        }
+
+        const artist = data.now_playing.song.artist || 'Unbekannt';
+        const title = data.now_playing.song.title || 'Unbekannt';
+        target.textContent = `🎵 ${artist} - ${title}`;
+        setStationStatus(stationId, true);
+      } catch (e) {
+        target.textContent = stationId === 'yourparty'
+          ? 'Stockenweiler momentan nicht erreichbar'
+          : 'FraWo Funk momentan nicht erreichbar';
+        setStationStatus(stationId, false);
+      }
+    }
+
     // Update nowplaying info
     async function updateNowPlaying() {
-      try {
-        // FraWo Funk (Anker)
-        const frawoResponse = await fetch('http://radio.hs27.internal/api/nowplaying/frawo-funk');
-        const frawoData = await frawoResponse.json();
-        if (frawoData.now_playing) {
-          const np = document.getElementById('nowplaying-frawo-funk');
-          np.textContent = `🎵 ${frawoData.now_playing.song.artist} - ${frawoData.now_playing.song.title}`;
-        }
-      } catch (e) {
-        console.log('Could not fetch nowplaying for FraWo Funk');
-      }
+      await Promise.all(Array.from(stations).map(updateStationNowPlaying));
 
       // Update every 15 seconds
       setTimeout(updateNowPlaying, 15000);

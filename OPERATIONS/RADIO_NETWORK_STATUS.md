@@ -8,7 +8,9 @@
 ## Executive Summary
 
 ✅ **Radio Player V2 ERSTELLT** - Minimalistisch, touch-optimiert, multi-station
+🟢 **Frontdoor live korrigiert** - `radio.hs27.internal` zeigt wieder auf Anker; Stockenweiler ist separat auf `radio-stock.hs27.internal`
 🔴 **Stocki Storage KRITISCH** - NFS 100% voll (1.9T/1.9T)
+🔴 **Storage-Node zu klein für Vollmigration** - `//10.1.0.30/Media` steht aktuell bei `98G` total / `88G` genutzt
 🟡 **Deployment BLOCKIERT** - Stream-URLs müssen verifiziert werden
 🟡 **Credentials UNGEKLÄRT** - Einheitlicher Admin-Zugang fehlt
 
@@ -65,6 +67,39 @@
 ---
 
 ## CRITICAL ISSUES
+
+### 0. Toolbox Frontdoor-Drift wurde live korrigiert 🟢
+
+**Befund:**
+- laufende `toolbox`-Caddy-Konfiguration zeigte `radio.hs27.internal` zuvor auf `192.168.178.210`
+- der mobile Radio-Port `:8448` zeigte dadurch ebenfalls auf Stockenweiler
+- `radio-node` lieferte seine Listen-URL bereits über `100.82.26.53:8448` aus und landete damit logisch auf dem falschen Ziel
+
+**Korrektur:**
+- `radio.hs27.internal` und `radio-anker.hs27.internal` zeigen jetzt auf den Anker-Pi (`10.3.0.9`)
+- `radio-stock.hs27.internal` zeigt separat auf Stockenweiler
+- `:8448` dient jetzt nur noch als Anker-Mobile-Frontdoor
+- Stockenweiler läuft intern als HTTPS-Upstream mit lokalem Zertifikats-Bypass, damit `/`, `/login`, `/public/radio.yourparty` und `/api/nowplaying` sauber erreichbar sind
+
+**Resultat:**
+- Anker ist wieder der Default-Radiohost
+- Stockenweiler bleibt explizit adressierbar
+- Radio Player und interne Hostnamen koennen jetzt sauber pro Site getrennt werden
+
+### 0b. Zentrale Medienmigration aktuell nicht aufnehmbar 🔴
+
+**Problem:**
+- `radio-node` mountet bereits `//10.1.0.30/Media`
+- diese CIFS-Freigabe meldet aktuell nur `98G` total und `88G` genutzt (`90%`)
+- Stockenweiler braucht allein für `yourparty_Libary` rund `283G`
+
+**Impact:**
+- die geplante Stocki-zu-Storage-Node-Migration kann jetzt nicht vollständig gelingen
+- die Dual-Site-Heirat muss kurzfristig über Frontdoor und Hostnames passieren, nicht über eine voll gemeinsame Library
+
+**Fix:**
+- Storage Node erweitern oder neues Zielvolume bereitstellen
+- erst danach die `yourparty_Libary` vollständig zentralisieren
 
 ### 1. Stocki NFS Storage 100% voll 🔴
 

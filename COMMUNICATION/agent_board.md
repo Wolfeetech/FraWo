@@ -16,6 +16,7 @@ Other paths are aliases, archives, or local-only legacy material.
 | GitHub operations | Codex | active | Issue/PR templates and repo hygiene workflow being professionalized. |
 | Infra hardening | open | queued | VM 210/220 firewall reapply remains blocked until tested. |
 | Odoo app setup | Codex | active | Sender email server-side fixed; browser retest and ACL warning remain open. |
+| Radio dual-site frontdoor | Codex | active | Align `toolbox` runtime with dual-site radio hostnames; default host returns to Anker, Stockenweiler stays explicit. |
 | Nextcloud desktop login | open | queued | HTTPS callback/overwrite settings need fixing. |
 
 ## Handoff Log
@@ -55,6 +56,14 @@ Other paths are aliases, archives, or local-only legacy material.
 - Verified via Odoo shell: cancellation template now renders `email_from` as `"Wolf Admin" <wolf@frawo-tech.de>`.
 - Odoo frontdoor remains green (`odoo.hs27.internal/web/login` -> `HTTP 200`).
 - Keep GitHub issue `#11` open until Wolf confirms the browser cancellation dialog no longer errors.
+
+### 2026-05-02 - Radio Dual-Site Frontdoor
+
+- Live drift confirmed on `toolbox`: `radio.hs27.internal` still proxies to Stockenweiler (`192.168.178.210`) instead of the Anker Pi (`10.3.0.9`).
+- Runtime corrected on `2026-05-02`: `radio.hs27.internal` and `radio-anker.hs27.internal` now proxy to Anker; `radio-stock.hs27.internal` proxies to Stockenweiler via HTTPS backend with local trust bypass.
+- `radio-node` is reachable on `10.3.0.9`; AzuraCast is running and its SMB media mount to `//10.1.0.30/Media` is active.
+- Stockenweiler VM 210 is running and reachable via Proxmox guest agent; its music storage is still `192.168.178.25:/mnt/music_hdd` at `100%`.
+- The central media share currently exposes only `98G` total with `88G` used, so it cannot absorb the `283G` Stockenweiler library without a separate storage expansion step.
 
 ## Collision Notes
 

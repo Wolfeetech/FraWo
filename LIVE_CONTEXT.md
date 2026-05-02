@@ -35,7 +35,7 @@
 - **Lane A**: internal MVP remains sealed, but post-restore regression checks continue.
 - **Lane B**: public website/HTTPS remains active and blocked by public edge/TLS path.
 - **Lane C**: active priority for security audit, backups, DNS and storage sustainability.
-- **Lane E**: media is green; radio remains deferred until a real backend is available.
+- **Lane E**: media is green; the radio dual-site frontdoor is corrected live and now separates Anker (`radio.hs27.internal`, `radio-anker.hs27.internal`) from Stockenweiler (`radio-stock.hs27.internal`).
 
 ## Immediate Next Projects
 
@@ -56,6 +56,10 @@
    - update the Odoo SSOT project and pending project tasks
    - browser-retest quote cancellation mail after sender fix, then close GitHub `#11`
    - resolve `res.users.log` ACL warnings and finalize productive user/project setup
+6. **Radio dual-site stabilization**
+   - keep `toolbox` on the corrected split: Anker default host plus explicit Stockenweiler host
+   - expand the central media target before attempting any full `283G` Stockenweiler library migration
+   - normalize AzuraCast credentials and public listen URLs across both radio nodes
 
 ---
-*Updated: 2026-04-22 16:12 Europe/Berlin*
+*Updated: 2026-05-02 12:20 Europe/Berlin*
