@@ -8,16 +8,16 @@ The canonical operating state remains in the root and operations documents below
 - [Agent Contract](../AGENTS.md) - mandatory start rules for every AI agent.
 - [Agent Board](../COMMUNICATION/agent_board.md) - shared handoffs, ownership, and collision notes.
 - [GitHub Operations](../OPERATIONS/GITHUB_OPERATIONS.md) - issue, branch, PR, and review workflow.
+- `🚀 Homeserver 2027: Masterplan` in Odoo - canonical task queue, priority, blocker, and ownership truth.
+- [Odoo Operations](../OPERATIONS/ODOO_OPERATIONS.md) - local contract for Odoo task SSOT and business operations notes.
 - [Live Context](../LIVE_CONTEXT.md) - current infrastructure state, last incidents, and active risks.
 - [Operator Home](../OPS_HOME.md) - operator entrypoint for running the system.
-- [Todo Queue](../todo.md) - actionable queue and blocked follow-ups.
-- [Current Work Lanes](../manifests/work_lanes/current_plan.json) - machine-readable lane status.
+- [Current Work Lanes](../manifests/work_lanes/current_plan.json) - machine-readable lane status snapshot, not the canonical task board.
 
 ## Strategy And Operations
 
 - [Masterplan](../MASTERPLAN.md) - long-range roadmap and milestone framing.
 - [Tools Operations Index](../OPERATIONS/TOOLS_OPERATIONS_INDEX.md) - operational tool ownership and access.
-- [Odoo Operations](../OPERATIONS/ODOO_OPERATIONS.md) - Odoo-specific operations notes.
 - [Latest MVP Release Gate](../artifacts/release_mvp_gate/latest_release_mvp_gate.md) - current release gate snapshot.
 
 ## Commercial SSOT

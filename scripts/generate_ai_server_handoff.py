@@ -19,7 +19,7 @@ ROOT_DIR = Path(__file__).resolve().parents[1]
 OUTPUT_PATH = ROOT_DIR / "AI_SERVER_HANDOFF.md"
 AI_BOOTSTRAP_CONTEXT_PATH = ROOT_DIR / "AI_BOOTSTRAP_CONTEXT.md"
 OPS_HOME_PATH = ROOT_DIR / "OPS_HOME.md"
-OPERATOR_TODO_QUEUE_PATH = ROOT_DIR / "DOCS" / "Task_Archive" / "OPERATOR_TODO_QUEUE.md"
+ODOO_OPERATIONS_PATH = ROOT_DIR / "OPERATIONS" / "ODOO_OPERATIONS.md"
 MARRIAGE_PLAN_PATH = ROOT_DIR / "ANKER_STOCKENWEILER_MARRIAGE_PLAN.md"
 AI_OPERATING_MODEL_PATH = ROOT_DIR / "AI_OPERATING_MODEL.md"
 WORK_LANES_PATH = ROOT_DIR / "manifests" / "work_lanes" / "current_plan.json"
@@ -429,7 +429,7 @@ def main() -> int:
     lines.append("## Nutzung")
     lines.append("")
     lines.append("- Primaerer Read-First fuer eine andere KI: diese Datei")
-    lines.append("- Wenn tieferer Repo-Kontext noetig ist: `INTRODUCTION_PROMPT.md`, `OPS_HOME.md`, `DOCS/Task_Archive/OPERATOR_TODO_QUEUE.md`")
+    lines.append("- Wenn tieferer Repo-Kontext noetig ist: `AGENTS.md`, `COMMUNICATION/agent_board.md`, `OPERATIONS/ODOO_OPERATIONS.md`, `INTRODUCTION_PROMPT.md`, `OPS_HOME.md`")
     lines.append("- Diese Datei neu erzeugen mit: `python scripts/generate_ai_server_handoff.py`")
     lines.append("")
     lines.append("## Generierung")
@@ -444,7 +444,7 @@ def main() -> int:
     lines.append("")
     lines.append(f"- `AI_BOOTSTRAP_CONTEXT.md`: `{format_mtime(AI_BOOTSTRAP_CONTEXT_PATH)}`")
     lines.append(f"- `OPS_HOME.md`: `{format_mtime(OPS_HOME_PATH)}`")
-    lines.append(f"- `DOCS/Task_Archive/OPERATOR_TODO_QUEUE.md`: `{format_mtime(OPERATOR_TODO_QUEUE_PATH)}`")
+    lines.append(f"- `OPERATIONS/ODOO_OPERATIONS.md`: `{format_mtime(ODOO_OPERATIONS_PATH)}`")
     lines.append(f"- `manifests/work_lanes/current_plan.json`: `{format_mtime(WORK_LANES_PATH)}`")
     lines.append(f"- `artifacts/release_mvp_gate/latest_release_mvp_gate.json`: `{format_mtime(RELEASE_MVP_GATE_JSON_PATH)}`")
     lines.append(f"- `artifacts/public_ipv6_exposure_audit/latest_report.md`: `{format_mtime(PUBLIC_IPV6_REPORT_PATH)}`")

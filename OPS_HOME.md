@@ -4,6 +4,12 @@
 
 Diese Datei ist die zentrale Operator-Startseite fuer den aktuellen Plattformstand, die Release-Vorbereitung und die naechsten Arbeitspakete.
 
+## Aufgaben-SSOT
+
+- Operative Aufgaben, Prioritaeten, Owner, Blocker und Abschlussstatus leben kanonisch im Odoo-Projektboard `🚀 Homeserver 2027: Masterplan`.
+- Repo-Dateien bleiben technische Wahrheit fuer Runtime, Infrastruktur, Handoffs, Audits und Runbooks.
+- `todo.md` ist nur noch Legacy-Referenz und keine aktive Aufgabenquelle mehr.
+
 ## Kanonischer Workspace
 
 - Einziger schreibender Checkout: `C:\Users\Admin\Workspace\Repos\FraWo`
@@ -71,7 +77,8 @@ Diese Dateien bleiben nur so lange bestehen, bis ihr Inhalt sauber in den Wiki-K
 - `GEMINI_BROWSER_MVP_ACCEPTANCE_PROMPT.md` fuer die offenen Browser-Abnahmen im MVP
 - `AI_BOOTSTRAP_CONTEXT.md`
 - `AI_SERVER_HANDOFF.md`
-- `todo.md`
+- `OPERATIONS/ODOO_OPERATIONS.md`
+- Odoo-Projektboard `🚀 Homeserver 2027: Masterplan`
 - Release-MVP-Gate: `artifacts/release_mvp_gate/latest_release_mvp_gate.md`
 - Produktions-Gate: `OPERATIONS/PRODUCTION_READINESS_OPERATIONS.md`
 - Dokument-Ownership: `OPERATIONS/DOCUMENT_OWNERSHIP_OPERATIONS.md`

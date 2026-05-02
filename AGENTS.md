@@ -18,22 +18,24 @@ Agents must not treat any other checkout as writable project truth.
 2. `git status -sb`
 3. Read:
    - `AGENTS.md`
+   - `OPERATIONS/ODOO_OPERATIONS.md`
    - `OPS_HOME.md`
    - `LIVE_CONTEXT.md`
-   - `todo.md`
    - `COMMUNICATION/agent_board.md`
-4. Pull before work if the tree is clean.
-5. If the current directory is not the canonical checkout, stop and switch to it.
+4. Confirm the current active task, priority, and blocker state in the Odoo project board `🚀 Homeserver 2027: Masterplan` before making planning assumptions.
+5. Pull before work if the tree is clean.
+6. If the current directory is not the canonical checkout, stop and switch to it.
 
 ## Communication Rule
 
 Agents talk through repo-tracked state:
 
-- `todo.md` for actionable operator and agent work.
+- Odoo project board `🚀 Homeserver 2027: Masterplan` for actionable operator and agent work, priority, ownership, blocker state, and completion status.
 - `LIVE_CONTEXT.md` for current runtime truth.
 - `COMMUNICATION/agent_board.md` for short handoffs, active ownership, and collision warnings.
-- `manifests/work_lanes/current_plan.json` for machine-readable lane state.
+- `manifests/work_lanes/current_plan.json` for machine-readable lane state when it is refreshed; it does not replace Odoo as task SSOT.
 - `OPERATIONS/GITHUB_OPERATIONS.md` for GitHub issue, branch, PR, and review workflow.
+- `todo.md` is legacy-only reference material and must not be treated as active task truth.
 
 When starting substantial work, add or update a short entry in `COMMUNICATION/agent_board.md`.
 When finishing work, commit/push the relevant repo truth immediately.

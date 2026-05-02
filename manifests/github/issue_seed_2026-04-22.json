@@ -2,7 +2,7 @@
   "schema_version": 1,
   "updated_at": "2026-04-22",
   "repository": "Wolfeetech/FraWo",
-  "source": "todo.md",
+  "source": "odoo_project_board_plus_repo_runtime_ssot",
   "items": [
     {
       "key": "openclaw_key_rotation_after_repo_cleanup",

@@ -263,8 +263,8 @@ Nach erfolgreichem Deployment:
    - Surface Go Frontend: Running V2 (deployed YYYY-MM-DD)
    ```
 
-2. **Update todo.md**
-   - Markiere Surface-bezogene Todos als completed
+2. **Update Odoo-Projektboard**
+   - Markiere die Surface-bezogene Aufgabe im Projekt `🚀 Homeserver 2027: Masterplan` als erledigt oder passe den Status an
 
 3. **GitHub Issue schließen** (falls vorhanden)
 

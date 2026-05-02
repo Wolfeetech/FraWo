@@ -14,7 +14,7 @@ GitHub is the professional coordination layer for FraWo work.
 1. Small SSOT/doc updates may be committed directly to `main`.
 2. Risky implementation work uses a branch named `codex/<short-topic>` or `ops/<short-topic>`.
 3. User-visible bugs and incidents get GitHub Issues.
-4. Every issue mirrors or references the canonical repo truth in `todo.md`, `LIVE_CONTEXT.md`, or `COMMUNICATION/agent_board.md`.
+4. Every issue mirrors or references the canonical task truth in the Odoo project board plus the canonical repo runtime truth in `LIVE_CONTEXT.md`, `COMMUNICATION/agent_board.md`, or the relevant operations runbook.
 5. Completed work is committed and pushed immediately.
 
 ## Issue Types
