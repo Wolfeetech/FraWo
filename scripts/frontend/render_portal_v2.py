@@ -5,7 +5,7 @@ import os
 # Paths
 TEMPLATE_FILE = "ansible/templates/frontend/surface-go-portal/index.html.j2"
 ACTIONS_FILE = "manifests/control_surface/actions.json"
-OUTPUT_FILE = "manifests/control_surface/index.html"
+OUTPUT_FILE = "artifacts/surface_index_v2_with_nowplaying.html"
 
 # Meta data for actions
 ACTION_META = {
@@ -17,19 +17,8 @@ ACTION_META = {
 }
 
 def render():
-    with open(ACTIONS_FILE, "r") as f:
+    with open(ACTIONS_FILE, "r", encoding="utf-8") as f:
         actions_data = json.load(f)
-
-    # Mocking the Ansible variables used in the template
-    group_actions = []
-    for action_id in actions_data["actions"]:
-        target_url = "#"
-        if action_id == "stockenweiler_home_assistant": target_url = "http://192.168.178.179:8123"
-        elif action_id == "homeserver_home_assistant": target_url = "http://haos.hs27.internal:8123"
-        elif action_id == "frawo_odoo": target_url = "https://odoo.frawo-tech.de"
-        elif action_id == "proxmox_ve": target_url = "http://proxmox.hs27.internal:8006"
-        
-        group_actions.append({"id": action_id, "target_url": target_url})
 
     env = jinja2.Environment(loader=jinja2.FileSystemLoader("."))
     template = env.get_template(TEMPLATE_FILE)
@@ -37,15 +26,16 @@ def render():
     # Provide ALL variables the template might expect
     context = {
         "surface_go_actions_manifest": actions_data,
-        "group_actions": group_actions,
-        "action_meta": ACTION_META,
-        "accent_primary": "#10b981",
-        "bg_dark": "#0a0a0a",
+        "accent_primary": "#00ffa3",
+        "bg_dark": "#03070a",
         "surface_go_target_hostname": "surface-go-frontend",
-        "surface_go_status": "online"
+        "surface_go_status": "CONNECTED (LAN)"
     }
     
     html = template.render(**context)
+
+    # Ensure output directory exists
+    os.makedirs(os.path.dirname(OUTPUT_FILE), exist_ok=True)
 
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
         f.write(html)

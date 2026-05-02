@@ -3,723 +3,492 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <title>FraWo Control Surface</title>
+  <title>FraWo Control | Command Center</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #0b1320;
-      --bg-alt: #101a2b;
-      --panel: rgba(12, 23, 38, 0.92);
-      --panel-soft: rgba(17, 31, 49, 0.86);
-      --border: rgba(146, 166, 193, 0.18);
-      --text: #f4f7fb;
-      --muted: #97a7bc;
-      --accent: #5aa8ff;
-      --accent-soft: rgba(90, 168, 255, 0.16);
-      --ok: #56c288;
-      --warning: #f59e0b;
-      --shadow: 0 24px 60px rgba(1, 8, 18, 0.42);
-      --radius-lg: 1.2rem;
-      --radius-md: 1rem;
-      --radius-sm: 0.85rem;
+      --bg: #03070a;
+      --card-bg: rgba(13, 20, 28, 0.7);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --accent: #00ffa3; /* Brand Emeraldish */
+      --accent-glow: rgba(0, 255, 163, 0.3);
+      --secondary: #9b8eff; /* Brand Purple */
+      --text-main: #ffffff;
+      --text-muted: #8a9ba8;
+      --success: #00ffa3;
+      --warning: #ffb800;
+      --danger: #ff4b4b;
+      --font-heading: 'Outfit', sans-serif;
+      --font-body: 'Inter', sans-serif;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      cursor: none; /* Optimized for Touch/Kiosk */
+    }
 
     body {
       min-height: 100vh;
-      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
-      background:
-        radial-gradient(circle at top left, rgba(90, 168, 255, 0.14), transparent 32%),
-        radial-gradient(circle at bottom right, rgba(53, 99, 173, 0.18), transparent 40%),
-        linear-gradient(180deg, var(--bg) 0%, #09111b 100%);
-      color: var(--text);
+      background: var(--bg);
+      background-image: 
+        radial-gradient(circle at 0% 0%, rgba(0, 255, 163, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 100% 100%, rgba(155, 142, 255, 0.05) 0%, transparent 50%);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      overflow: hidden; /* Kiosk mode */
       user-select: none;
-      -webkit-user-select: none;
-      -webkit-tap-highlight-color: transparent;
     }
 
-    .shell {
-      min-height: 100vh;
-      padding: 1rem;
+    .app-container {
       display: grid;
       grid-template-rows: auto 1fr auto;
+      height: 100vh;
+      padding: 1.5rem;
+      gap: 1.5rem;
+    }
+
+    /* Header Section */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
       gap: 1rem;
     }
 
-    .topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.75rem;
-      flex-wrap: wrap;
-    }
-
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.45rem;
-      padding: 0.4rem 0.75rem;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: rgba(255, 255, 255, 0.04);
-      color: var(--muted);
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-    }
-
-    .eyebrow::before {
-      content: "";
-      width: 0.55rem;
-      height: 0.55rem;
+    .logo-glow {
+      width: 12px;
+      height: 12px;
+      background: var(--accent);
       border-radius: 50%;
-      background: var(--ok);
-      box-shadow: 0 0 10px rgba(86, 194, 136, 0.8);
-      animation: pulse 2s ease-in-out infinite;
+      box-shadow: 0 0 15px var(--accent);
+      animation: pulse 2s infinite;
     }
 
     @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.6; }
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.3); opacity: 0.7; }
+      100% { transform: scale(1); opacity: 1; }
     }
 
-    .hero {
-      display: grid;
-      gap: 0.45rem;
-      flex: 1;
-    }
-
-    .hero h1 {
-      font-size: clamp(1.9rem, 4vw, 2.8rem);
-      line-height: 1.02;
-      letter-spacing: -0.04em;
-    }
-
-    .hero p {
-      max-width: 38rem;
-      color: var(--muted);
-      font-size: 0.92rem;
-      line-height: 1.5;
-    }
-
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 0.65rem;
-    }
-
-    .status-badge {
-      padding: 0.48rem 0.9rem;
-      border-radius: 999px;
-      background: rgba(86, 194, 136, 0.15);
-      border: 1px solid rgba(86, 194, 136, 0.3);
-      color: var(--ok);
-      font-size: 0.78rem;
+    h1 {
+      font-family: var(--font-heading);
+      font-size: 1.5rem;
       font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-
-    .clock {
-      font-size: 1.1rem;
-      font-variant-numeric: tabular-nums;
-      font-weight: 600;
-      color: var(--text);
-    }
-
-    .groups {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
-      gap: 1.2rem;
-      align-items: start;
-    }
-
-    .group-card {
-      position: relative;
-      display: grid;
-      gap: 0.9rem;
-      padding: 1.4rem;
-      border-radius: var(--radius-lg);
-      border: 1px solid var(--border);
-      background: var(--panel);
-      backdrop-filter: blur(16px);
-      box-shadow: var(--shadow);
-    }
-
-    .group-card h2 {
-      font-size: 1.45rem;
-      line-height: 1.2;
       letter-spacing: -0.02em;
     }
 
-    .group-card > div:nth-child(2) {
-      display: grid;
-      gap: 0.35rem;
+    .system-clock {
+      font-family: var(--font-heading);
+      font-size: 2.5rem;
+      font-weight: 600;
+      color: var(--text-main);
     }
 
-    .group-card p {
-      color: var(--muted);
-      font-size: 0.86rem;
-      line-height: 1.4;
+    /* Main Content */
+    main {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+      overflow-y: auto;
+      padding-right: 0.5rem;
     }
 
-    .group-actions {
+    main::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    main::-webkit-scrollbar-thumb {
+      background: var(--card-border);
+      border-radius: 10px;
+    }
+
+    .group-section {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .group-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--font-heading);
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+    }
+
+    .action-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 0.85rem;
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
     }
 
     .action-card {
-      position: relative;
-      display: grid;
-      grid-template-columns: auto 1fr auto;
+      display: flex;
       align-items: center;
-      gap: 0.85rem;
-      padding: 0.95rem;
-      border-radius: var(--radius-md);
-      border: 1px solid var(--border);
-      background: var(--panel-soft);
-      color: var(--text);
+      gap: 1rem;
+      padding: 1.25rem;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 1.25rem;
       text-decoration: none;
-      cursor: pointer;
+      color: inherit;
       transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-      min-height: 4rem;
-    }
-
-    .action-card:hover {
-      transform: translateY(-2px);
-      border-color: rgba(90, 168, 255, 0.4);
-      background: rgba(18, 37, 61, 0.92);
-      box-shadow: 0 8px 24px rgba(90, 168, 255, 0.15);
+      backdrop-filter: blur(10px);
     }
 
     .action-card:active {
-      transform: scale(0.98);
-      border-color: rgba(90, 168, 255, 0.6);
+      transform: scale(0.97);
+      background: rgba(255, 255, 255, 0.05);
+      border-color: var(--accent);
     }
 
-    .action-code {
-      min-width: 2.6rem;
-      min-height: 2.6rem;
-      padding: 0.35rem;
-      display: inline-flex;
+    .icon-box {
+      display: flex;
       align-items: center;
       justify-content: center;
-      border-radius: var(--radius-sm);
-      background: var(--accent-soft);
-      color: var(--accent);
-      font-size: 0.82rem;
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-
-    .action-copy {
-      display: grid;
-      gap: 0.22rem;
-      min-width: 0;
-    }
-
-    .action-label {
-      font-size: 1rem;
-      font-weight: 700;
-      line-height: 1.2;
-    }
-
-    .action-note {
-      color: var(--muted);
-      font-size: 0.84rem;
-      line-height: 1.35;
-    }
-
-    .action-meta {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0.28rem 0.55rem;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      font-size: 0.7rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      white-space: nowrap;
-    }
-
-    .action-meta.direct {
-      border-color: rgba(86, 194, 136, 0.3);
-      background: rgba(86, 194, 136, 0.1);
-      color: var(--ok);
-    }
-
-    /* Now Playing Widget */
-    .nowplaying-widget {
-      grid-column: 1 / -1;
-      display: grid;
-      grid-template-columns: auto 1fr;
-      gap: 1rem;
-      padding: 1.2rem;
-      border-radius: var(--radius-md);
-      border: 1px solid rgba(90, 168, 255, 0.25);
-      background: linear-gradient(135deg, rgba(18, 37, 61, 0.8), rgba(12, 23, 38, 0.6));
-      backdrop-filter: blur(12px);
-    }
-
-    .nowplaying-art {
-      width: 80px;
-      height: 80px;
-      border-radius: var(--radius-sm);
-      background: var(--panel);
-      object-fit: cover;
-      border: 1px solid var(--border);
-    }
-
-    .nowplaying-info {
-      display: grid;
-      gap: 0.4rem;
-      align-content: center;
-    }
-
-    .nowplaying-title {
-      font-size: 1.1rem;
-      font-weight: 700;
-      line-height: 1.3;
-      color: var(--text);
-    }
-
-    .nowplaying-artist {
-      font-size: 0.95rem;
-      color: var(--muted);
-      line-height: 1.3;
-    }
-
-    .nowplaying-album {
-      font-size: 0.82rem;
-      color: rgba(151, 167, 188, 0.7);
-      line-height: 1.3;
-    }
-
-    .nowplaying-meta {
-      display: flex;
-      gap: 0.6rem;
-      align-items: center;
-      flex-wrap: wrap;
-      margin-top: 0.2rem;
-    }
-
-    .nowplaying-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.3rem;
-      padding: 0.25rem 0.5rem;
-      border-radius: 999px;
-      background: rgba(90, 168, 255, 0.12);
-      border: 1px solid rgba(90, 168, 255, 0.2);
-      color: var(--accent);
-      font-size: 0.7rem;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-    }
-
-    .nowplaying-badge.live {
-      background: rgba(86, 194, 136, 0.12);
-      border-color: rgba(86, 194, 136, 0.25);
-      color: var(--ok);
-    }
-
-    .nowplaying-badge.live::before {
-      content: "";
-      width: 0.4rem;
-      height: 0.4rem;
-      border-radius: 50%;
-      background: var(--ok);
-      animation: pulse 2s ease-in-out infinite;
-    }
-
-    .footer {
-      display: grid;
-      gap: 0.75rem;
-      padding-top: 0.5rem;
-      border-top: 1px solid rgba(146, 166, 193, 0.12);
-    }
-
-    .footer-links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.55rem;
-    }
-
-    .footer-links a,
-    .footer-links button {
-      border: 1px solid var(--border);
-      border-radius: 999px;
+      width: 48px;
+      height: 48px;
       background: rgba(255, 255, 255, 0.03);
-      color: var(--muted);
-      text-decoration: none;
-      padding: 0.5rem 0.85rem;
-      font: inherit;
-      font-size: 0.78rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-
-    .footer-links a:hover,
-    .footer-links button:hover {
-      background: rgba(90, 168, 255, 0.15);
-      border-color: rgba(90, 168, 255, 0.4);
+      border-radius: 1rem;
+      font-size: 1.25rem;
       color: var(--accent);
+      border: 1px solid var(--card-border);
     }
 
-    .footer-note {
-      color: var(--muted);
-      font-size: 0.78rem;
-      line-height: 1.4;
+    .action-info {
+      flex: 1;
     }
 
-    .footer-status {
+    .action-title {
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .action-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .status-tag {
+      padding: 0.25rem 0.6rem;
+      border-radius: 0.5rem;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+    }
+
+    .status-tag.login {
+      color: var(--secondary);
+      border-color: rgba(155, 142, 255, 0.3);
+    }
+
+    /* Footer */
+    footer {
       display: flex;
-      gap: 0.5rem;
-      flex-wrap: wrap;
+      justify-content: space-between;
       align-items: center;
-      font-size: 0.75rem;
-      color: var(--muted);
+      padding-top: 1rem;
+      border-top: 1px solid var(--card-border);
     }
 
-    .footer-status span {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.3rem;
+    .footer-actions {
+      display: flex;
+      gap: 1rem;
     }
 
-    .footer-status .dot {
-      width: 0.35rem;
-      height: 0.35rem;
-      border-radius: 50%;
-      background: currentColor;
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border-radius: 1rem;
+      border: 1px solid var(--card-border);
+      background: var(--card-bg);
+      color: var(--text-muted);
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: none;
+      transition: all 0.2s;
     }
 
-    .footer-status .active {
-      color: var(--ok);
+    .btn:active {
+      background: var(--accent);
+      color: var(--bg);
+      border-color: var(--accent);
     }
 
-    @media (max-width: 980px) {
-      .groups {
+    .system-meta {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-align: right;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .app-container {
+        padding: 1rem;
+      }
+      .system-clock {
+        font-size: 1.8rem;
+      }
+      main {
         grid-template-columns: 1fr;
-      }
-
-      .group-actions {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-    }
-
-    @media (max-width: 640px) {
-      .shell {
-        padding: 0.85rem;
-      }
-
-      .topbar {
-        flex-direction: column;
-        align-items: start;
-      }
-
-      .header-actions {
-        width: 100%;
-        justify-content: space-between;
-      }
-
-      .clock {
-        text-align: left;
-      }
-
-      .group-actions {
-        grid-template-columns: 1fr;
-      }
-
-      .action-card {
-        grid-template-columns: auto 1fr;
-      }
-
-      .action-meta {
-        grid-column: 2;
-        justify-self: start;
-        margin-top: 0.3rem;
-      }
-
-      .nowplaying-widget {
-        grid-template-columns: 1fr;
-      }
-
-      .nowplaying-art {
-        width: 100%;
-        height: 140px;
-      }
-    }
-
-    /* Touch optimizations */
-    @media (pointer: coarse) {
-      .action-card {
-        padding: 1.1rem;
-        min-height: 4.5rem;
-      }
-
-      .action-code {
-        min-width: 3rem;
-        min-height: 3rem;
-      }
-
-      .footer-links a,
-      .footer-links button {
-        padding: 0.65rem 1rem;
-        min-height: 2.75rem;
       }
     }
   </style>
 </head>
 <body>
+  
+  
+  
+  
+  
 
-  <div class="shell">
-    <header class="topbar">
-      <div class="hero">
-        <span class="eyebrow">Interne Aktionskonsole</span>
-        <h1>FraWo Control Surface</h1>
-        <p>Echte Aktionen für Dokumente, Odoo und Radio. Kein Dashboard, keine Statusprosa, keine Fake-Buttons.</p>
+  
+  
+
+  <div class="app-container">
+    <header>
+      <div class="brand">
+        <div class="logo-glow"></div>
+        <h1>FRAWO CONTROL <span style="color: var(--text-muted); font-weight: 400; margin-left: 0.5rem;">V2.0</span></h1>
       </div>
-      <div class="header-actions">
-        <span class="status-badge">Live</span>
-        <div class="clock" id="clock">00:00</div>
-      </div>
+      <div class="system-clock" id="clock">12:00</div>
     </header>
 
-    <main class="groups" aria-label="Surface Control V2">
-
-      <!-- Dokumente -->
-      <section class="group-card" aria-labelledby="group-dokumente">
-        <div>
-          <span class="eyebrow">Dokumente</span>
-        </div>
-        <div>
-          <h2 id="group-dokumente">Dokumente</h2>
-          <p>Eingang und Archiv ohne Zusatzballast.</p>
-        </div>
-        <div class="group-actions">
-
-          <a class="action-card" href="http://cloud.hs27.internal/apps/files/files?dir=/Paperless/Eingang">
-            <span class="action-code">NC</span>
-            <span class="action-copy">
-              <span class="action-label">Nextcloud Eingang</span>
-              <span class="action-note">Dokumente hochladen</span>
-            </span>
-            <span class="action-meta">Login</span>
-          </a>
-
-          <a class="action-card" href="http://paperless.hs27.internal/dashboard">
-            <span class="action-code">PL</span>
-            <span class="action-copy">
-              <span class="action-label">Paperless Dashboard</span>
-              <span class="action-note">Archiv durchsuchen</span>
-            </span>
-            <span class="action-meta">Login</span>
-          </a>
-
-        </div>
-      </section>
-
-      <!-- Odoo -->
-      <section class="group-card" aria-labelledby="group-odoo">
-        <div>
-          <span class="eyebrow">Aufgaben & Projekte</span>
-        </div>
-        <div>
-          <h2 id="group-odoo">Odoo</h2>
-          <p>Aufgaben, Projekte und Kalender ohne Umwege.</p>
-        </div>
-        <div class="group-actions">
-
-          <a class="action-card" href="http://odoo.hs27.internal/web" data-odoo-action="tasks" aria-label="Odoo Aufgaben öffnen">
-            <span class="action-code" aria-hidden="true">OD</span>
-            <span class="action-copy">
-              <span class="action-label">Aufgaben</span>
-              <span class="action-note">Taskboard öffnen</span>
-            </span>
-            <span class="action-meta">Login</span>
-          </a>
-
-          <a class="action-card" href="http://odoo.hs27.internal/web" data-odoo-action="projects" aria-label="Odoo Projekte öffnen">
-            <span class="action-code" aria-hidden="true">OD</span>
-            <span class="action-copy">
-              <span class="action-label">Projekte</span>
-              <span class="action-note">Projektboard öffnen</span>
-            </span>
-            <span class="action-meta">Login</span>
-          </a>
-
-          <a class="action-card" href="http://odoo.hs27.internal/web" data-odoo-action="calendar" aria-label="Odoo Kalender öffnen">
-            <span class="action-code" aria-hidden="true">OD</span>
-            <span class="action-copy">
-              <span class="action-label">Kalender</span>
-              <span class="action-note">Terminübersicht öffnen</span>
-            </span>
-            <span class="action-meta">Login</span>
-          </a>
-
-          <a class="action-card" href="http://odoo.hs27.internal/web/login" aria-label="Odoo Dashboard öffnen">
-            <span class="action-code" aria-hidden="true">OD</span>
-            <span class="action-copy">
-              <span class="action-label">Odoo Dashboard</span>
-              <span class="action-note">Hauptmenü öffnen</span>
-            </span>
-            <span class="action-meta">Login</span>
-          </a>
-
-        </div>
-      </section>
-
-      <!-- Radio -->
-      <section class="group-card" aria-labelledby="group-radio">
-        <div>
-          <span class="eyebrow">Audio - Dual Site</span>
-        </div>
-        <div>
-          <h2 id="group-radio">Radio</h2>
-          <p>Player und Steuerung für beide Radio-Stationen (Anker + Stockenweiler).</p>
-        </div>
-        <div class="group-actions">
-
-          <!-- Now Playing Widget -->
-          <div class="nowplaying-widget" id="nowplaying-widget" style="display: none;">
-            <img class="nowplaying-art" id="np-art" src="" alt="Album Art">
-            <div class="nowplaying-info">
-              <div class="nowplaying-title" id="np-title">Lädt...</div>
-              <div class="nowplaying-artist" id="np-artist">—</div>
-              <div class="nowplaying-album" id="np-album">—</div>
-              <div class="nowplaying-meta">
-                <span class="nowplaying-badge live" id="np-status">
-                  <span>LIVE</span>
-                </span>
-                <span class="nowplaying-badge" id="np-playlist">—</span>
-              </div>
+    <main aria-label="Command Center Grid">
+      
+        
+        
+          <section class="group-section">
+            <div class="group-header">
+              <span>📂</span>
+              <span>Dokumente</span>
             </div>
-          </div>
-
-          <a class="action-card" href="http://radio-anker.hs27.internal/public/frawo-funk">
-            <span class="action-code">RA</span>
-            <span class="action-copy">
-              <span class="action-label">Radio Anker</span>
-              <span class="action-note">FraWo-Funk (Anker Station)</span>
-            </span>
-            <span class="action-meta direct">Direkt</span>
-          </a>
-
-          <a class="action-card" href="http://192.168.178.210/public/radio.yourparty">
-            <span class="action-code">RS</span>
-            <span class="action-copy">
-              <span class="action-label">Radio4yourparty</span>
-              <span class="action-note">Stockenweiler Station (320kbps)</span>
-            </span>
-            <span class="action-meta direct">Direkt</span>
-          </a>
-
-          <a class="action-card" href="http://radio-anker.hs27.internal/login">
-            <span class="action-code">RCA</span>
-            <span class="action-copy">
-              <span class="action-label">Radio Control Anker</span>
-              <span class="action-note">AzuraCast Admin (Anker)</span>
-            </span>
-            <span class="action-meta">Login</span>
-          </a>
-
-          <a class="action-card" href="http://192.168.178.210/login">
-            <span class="action-code">RCS</span>
-            <span class="action-copy">
-              <span class="action-label">Radio4yourparty Control</span>
-              <span class="action-note">AzuraCast Admin (Stockenweiler)</span>
-            </span>
-            <span class="action-meta">Login</span>
-          </a>
-
-        </div>
-      </section>
-
-      <!-- System -->
-      <section class="group-card" aria-labelledby="group-system">
-        <div>
-          <span class="eyebrow">System</span>
-        </div>
-        <div>
-          <h2 id="group-system">System</h2>
-          <p>Zentrale Services und Verwaltung.</p>
-        </div>
-        <div class="group-actions">
-
-          <a class="action-card" href="http://portal.hs27.internal">
-            <span class="action-code">HP</span>
-            <span class="action-copy">
-              <span class="action-label">Portal</span>
-              <span class="action-note">Homeserver Portal</span>
-            </span>
-            <span class="action-meta direct">Direkt</span>
-          </a>
-
-          <a class="action-card" href="http://vault.hs27.internal">
-            <span class="action-code">VW</span>
-            <span class="action-copy">
-              <span class="action-label">Vaultwarden</span>
-              <span class="action-note">Passwort-Manager</span>
-            </span>
-            <span class="action-meta">Login</span>
-          </a>
-
-          <a class="action-card" href="http://ha.hs27.internal">
-            <span class="action-code">HA</span>
-            <span class="action-copy">
-              <span class="action-label">Home Assistant</span>
-              <span class="action-note">Smart Home</span>
-            </span>
-            <span class="action-meta">Login</span>
-          </a>
-
-          <a class="action-card" href="http://media.hs27.internal">
-            <span class="action-code">JF</span>
-            <span class="action-copy">
-              <span class="action-label">Jellyfin</span>
-              <span class="action-note">Media Center</span>
-            </span>
-            <span class="action-meta">Login</span>
-          </a>
-
-        </div>
-      </section>
-
+            <div class="action-grid">
+              
+                
+                
+                <a href="http://cloud.hs27.internal/apps/files/files?dir=/Paperless/Eingang" class="action-card">
+                  <div class="icon-box">📥</div>
+                  <div class="action-info">
+                    <div class="action-title">Nextcloud Eingang</div>
+                    <div class="action-desc">Upload</div>
+                  </div>
+                  
+                    <div class="status-tag login">Login</div>
+                  
+                </a>
+                
+              
+                
+                
+                <a href="http://paperless.hs27.internal/dashboard" class="action-card">
+                  <div class="icon-box">📑</div>
+                  <div class="action-info">
+                    <div class="action-title">Paperless</div>
+                    <div class="action-desc">Archiv</div>
+                  </div>
+                  
+                    <div class="status-tag login">Login</div>
+                  
+                </a>
+                
+              
+            </div>
+          </section>
+        
+      
+        
+        
+          <section class="group-section">
+            <div class="group-header">
+              <span>💼</span>
+              <span>Business & Odoo</span>
+            </div>
+            <div class="action-grid">
+              
+                
+                
+                <a href="http://odoo.hs27.internal/web#action=118&active_id=8&model=project.task&view_type=kanban&menu_id=352" class="action-card">
+                  <div class="icon-box">✅</div>
+                  <div class="action-info">
+                    <div class="action-title">Odoo Aufgaben</div>
+                    <div class="action-desc">Aufgaben</div>
+                  </div>
+                  
+                    <div class="status-tag login">Login</div>
+                  
+                </a>
+                
+              
+                
+                
+                <a href="http://odoo.hs27.internal/web#action=252&model=project.project&view_type=kanban&menu_id=141" class="action-card">
+                  <div class="icon-box">🏗️</div>
+                  <div class="action-info">
+                    <div class="action-title">Odoo Projekte</div>
+                    <div class="action-desc">Projekte</div>
+                  </div>
+                  
+                    <div class="status-tag login">Login</div>
+                  
+                </a>
+                
+              
+                
+                
+                <a href="http://odoo.hs27.internal/web#action=517&model=project.task&view_type=calendar&menu_id=357" class="action-card">
+                  <div class="icon-box">📅</div>
+                  <div class="action-info">
+                    <div class="action-title">Odoo Kalender</div>
+                    <div class="action-desc">Kalender</div>
+                  </div>
+                  
+                    <div class="status-tag login">Login</div>
+                  
+                </a>
+                
+              
+            </div>
+          </section>
+        
+      
+        
+        
+          <section class="group-section">
+            <div class="group-header">
+              <span>📻</span>
+              <span>Media & Radio</span>
+            </div>
+            <div class="action-grid">
+              
+                
+                
+                  <div class="action-card" style="grid-column: 1 / -1; border-color: var(--secondary); background: linear-gradient(135deg, rgba(13, 20, 28, 0.9) 0%, rgba(20, 15, 40, 0.9) 100%);">
+                    <div style="display: flex; align-items: center; gap: 2rem; width: 100%;">
+                      <div class="radio-visualizer" style="display: flex; gap: 3px; align-items: flex-end; height: 40px;">
+                        <div style="width: 4px; height: 60%; background: var(--accent); animation: bar-pulse 1.2s infinite ease-in-out;"></div>
+                        <div style="width: 4px; height: 90%; background: var(--accent); animation: bar-pulse 0.8s infinite ease-in-out 0.2s;"></div>
+                        <div style="width: 4px; height: 40%; background: var(--accent); animation: bar-pulse 1.5s infinite ease-in-out 0.1s;"></div>
+                        <div style="width: 4px; height: 75%; background: var(--accent); animation: bar-pulse 1.0s infinite ease-in-out 0.4s;"></div>
+                      </div>
+                      <div style="flex: 1;">
+                        <div style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--accent); margin-bottom: 0.5rem; font-weight: 700;">ON AIR · LIVE</div>
+                        <h2 style="font-size: 1.5rem; margin-bottom: 0.25rem;">Radio4yourparty</h2>
+                        <div id="now-playing" style="font-size: 0.9rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.5rem;">
+                          <span class="status-dot" style="width: 8px; height: 8px; background: #ff4b4b; border-radius: 50%; box-shadow: 0 0 8px #ff4b4b;"></span>
+                          Funk Stockenweiler · 320kbps
+                        </div>
+                        <audio id="radio-player">
+                          <source src="https://radio.yourparty.tech/listen/radio.yourparty/radio.mp3" type="audio/mpeg">
+                        </audio>
+                      </div>
+                      <div class="player-controls" style="display: flex; gap: 1rem;">
+                        <button class="btn-play" onclick="toggleRadio()" style="background: var(--accent); color: var(--bg); border: none; width: 64px; height: 64px; border-radius: 50%; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 20px var(--accent-glow); cursor: pointer; transition: transform 0.2s;">
+                          <span id="play-icon">▶️</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <style>
+                    @keyframes bar-pulse {
+                      0%, 100% { height: 30%; }
+                      50% { height: 100%; }
+                    }
+                    .btn-play:active { transform: scale(0.9); }
+                  </style>
+                  <script>
+                    function toggleRadio() {
+                      const player = document.getElementById('radio-player');
+                      const icon = document.getElementById('play-icon');
+                      if (player.paused) {
+                        player.play();
+                        icon.textContent = '⏸️';
+                      } else {
+                        player.pause();
+                        icon.textContent = '▶️';
+                      }
+                    }
+                  </script>
+                
+              
+                
+                
+                <a href="http://radio.hs27.internal/login" class="action-card">
+                  <div class="icon-box">🎛️</div>
+                  <div class="action-info">
+                    <div class="action-title">Radio Control</div>
+                    <div class="action-desc">Regie</div>
+                  </div>
+                  
+                    <div class="status-tag login">Login</div>
+                  
+                </a>
+                
+              
+            </div>
+          </section>
+        
+      
+        
+        
+          <section class="group-section">
+            <div class="group-header">
+              <span>🏠</span>
+              <span>Stockenweiler</span>
+            </div>
+            <div class="action-grid">
+              
+                
+                
+                <a href="http://192.168.178.179:8123" class="action-card">
+                  <div class="icon-box">🎮</div>
+                  <div class="action-info">
+                    <div class="action-title">HA Eltern</div>
+                    <div class="action-desc">HA Eltern</div>
+                  </div>
+                  
+                    <div class="status-tag">Direkt</div>
+                  
+                </a>
+                
+              
+            </div>
+          </section>
+        
+      
     </main>
 
-    <footer class="footer">
-      <div class="footer-links">
-        <a href="http://portal.hs27.internal">Portal</a>
-        <a href="http://portal.hs27.internal/franz/">Franz</a>
-        <button type="button" onclick="window.location.reload()">Neu laden</button>
-        <button type="button" onclick="toggleFullscreen()">Vollbild</button>
+    <footer>
+      <div class="footer-actions">
+        <button class="btn" onclick="window.location.reload()">REFRESH</button>
+        <button class="btn" onclick="window.location.href='http://portal.hs27.internal'">PORTAL</button>
       </div>
-      <div class="footer-status">
-        <span class="active">
-          <span class="dot"></span>
-          Surface Go Frontend
-        </span>
-        <span>•</span>
-        <span>hs27.internal</span>
-        <span>•</span>
-        <span id="status-text">Radio Stock LIVE</span>
-      </div>
-      <div class="footer-note">
-        Website public bleibt bewusst im Hold. Surface zeigt nur den internen Arbeitskern.
+      <div class="system-meta">
+        <div>HOMESERVER 2027 NODE: SURFACE-GO-FRONTEND</div>
+        <div style="color: var(--accent);">STATUS: CONNECTED (LAN)</div>
       </div>
     </footer>
   </div>
 
   <script>
-    // Clock
     function updateClock() {
       const now = new Date();
       document.getElementById("clock").textContent = now.toLocaleTimeString("de-DE", {
@@ -727,438 +496,11 @@
         minute: "2-digit"
       });
     }
-
     updateClock();
     setInterval(updateClock, 1000);
 
-    // Fullscreen toggle
-    function toggleFullscreen() {
-      if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen().catch(err => {
-          console.log(`Error attempting to enable fullscreen: ${err.message}`);
-        });
-      } else {
-        if (document.exitFullscreen) {
-          document.exitFullscreen();
-        }
-      }
-    }
-
-    // Keyboard shortcuts
-    document.addEventListener('keydown', (e) => {
-      // F11 or Alt+Enter for fullscreen
-      if (e.key === 'F11' || (e.altKey && e.key === 'Enter')) {
-        e.preventDefault();
-        toggleFullscreen();
-      }
-      // F5 for reload
-      if (e.key === 'F5') {
-        e.preventDefault();
-        window.location.reload();
-      }
-    });
-
-    // Touch feedback
-    document.querySelectorAll('.action-card').forEach(card => {
-      card.addEventListener('touchstart', () => {
-        card.style.transform = 'scale(0.98)';
-      });
-      card.addEventListener('touchend', () => {
-        card.style.transform = '';
-      });
-    });
-
-    // ========================================
-    // Multi-Node Architecture Configuration
-    // ========================================
-    const SERVICE_NODES = {
-      // Anker Server (10.1.0.0/24) - Upload/Musik/Dokumente
-      anker: {
-        probe: 'http://10.1.0.20',
-        network: '10.1.0.0/24',
-        services: {
-          odoo: 'http://odoo.hs27.internal',
-          odoo_direct: 'http://10.1.0.22:8069',
-          nextcloud: 'http://cloud.hs27.internal',
-          paperless: 'http://paperless.hs27.internal',
-          portal: 'http://portal.hs27.internal',
-          vault: 'http://vault.hs27.internal',
-          ha: 'http://ha.hs27.internal',
-          jellyfin: 'http://media.hs27.internal'
-        }
-      },
-      // Stockenweiler Server (192.168.178.0/24) - Hauptlast Radio
-      stock: {
-        probe: 'http://192.168.178.210',
-        network: '192.168.178.0/24',
-        services: {
-          radio_player: 'http://192.168.178.210/public/radio.yourparty',
-          radio_control: 'http://192.168.178.210/login',
-          radio_api: 'https://192.168.178.210/api/station/1/nowplaying',
-          radio_api_http: 'http://192.168.178.210/api/station/1/nowplaying'
-        }
-      },
-      // Mobile Funk Pi - Events/DJ/Backup
-      mobile: {
-        probe: 'http://10.3.0.10',
-        probe_tailscale: 'http://100.64.23.77',
-        network: 'mobile/vlan103',
-        services: {
-          radio_player: 'http://radio-anker.hs27.internal/public/frawo-funk',
-          radio_control: 'http://radio-anker.hs27.internal/login',
-          radio_direct: 'http://10.3.0.10',
-          radio_tailscale: 'http://100.64.23.77'
-        }
-      }
-    };
-
-    // Current site detection result
-    let currentSite = {
-      detected: false,
-      location: 'unknown',
-      nodes: {
-        anker: false,
-        stock: false,
-        mobile: false
-      }
-    };
-
-    // Site Detection
-    async function detectSite() {
-      console.log('🔍 Detecting current site...');
-
-      const probes = [
-        { name: 'anker', url: SERVICE_NODES.anker.probe },
-        { name: 'stock', url: SERVICE_NODES.stock.probe },
-        { name: 'mobile', url: SERVICE_NODES.mobile.probe },
-        { name: 'mobile_ts', url: SERVICE_NODES.mobile.probe_tailscale }
-      ];
-
-      const results = await Promise.allSettled(
-        probes.map(async ({ name, url }) => {
-          try {
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 2000);
-
-            await fetch(url, {
-              method: 'HEAD',
-              mode: 'no-cors',
-              signal: controller.signal
-            });
-
-            clearTimeout(timeoutId);
-            return { name, reachable: true };
-          } catch {
-            return { name, reachable: false };
-          }
-        })
-      );
-
-      // Process results
-      results.forEach((result) => {
-        if (result.status === 'fulfilled') {
-          const { name, reachable } = result.value;
-          if (name === 'anker') currentSite.nodes.anker = reachable;
-          if (name === 'stock') currentSite.nodes.stock = reachable;
-          if (name === 'mobile' || name === 'mobile_ts') {
-            currentSite.nodes.mobile = currentSite.nodes.mobile || reachable;
-          }
-        }
-      });
-
-      // Determine location
-      if (currentSite.nodes.anker && !currentSite.nodes.stock) {
-        currentSite.location = 'anker';
-      } else if (currentSite.nodes.stock && !currentSite.nodes.anker) {
-        currentSite.location = 'stockenweiler';
-      } else if (currentSite.nodes.anker && currentSite.nodes.stock) {
-        currentSite.location = 'anker'; // Prefer Anker if both reachable (Tailscale)
-      } else if (currentSite.nodes.mobile) {
-        currentSite.location = 'mobile';
-      } else {
-        currentSite.location = 'isolated';
-      }
-
-      currentSite.detected = true;
-
-      console.log('📍 Site detected:', currentSite.location);
-      console.log('🔗 Node availability:', currentSite.nodes);
-
-      return currentSite;
-    }
-
-    // Get best available endpoint for a service
-    async function getBestEndpoint(service) {
-      // Radio endpoints with intelligent fallback
-      if (service === 'radio_api') {
-        const endpoints = [
-          SERVICE_NODES.stock.services.radio_api,        // HTTPS Stock (primary)
-          SERVICE_NODES.stock.services.radio_api_http,   // HTTP Stock (fallback)
-        ];
-
-        // Add mobile if available
-        if (currentSite.nodes.mobile) {
-          endpoints.push(SERVICE_NODES.mobile.services.radio_direct + '/api/nowplaying');
-        }
-
-        for (const endpoint of endpoints) {
-          try {
-            const response = await fetch(endpoint, {
-              method: 'HEAD',
-              mode: 'cors',
-              signal: AbortSignal.timeout(3000)
-            });
-            if (response.ok) {
-              console.log('✅ Radio API endpoint:', endpoint);
-              return endpoint;
-            }
-          } catch {}
-        }
-
-        // Default to Stock HTTPS
-        return SERVICE_NODES.stock.services.radio_api;
-      }
-
-      // Odoo endpoints
-      if (service === 'odoo') {
-        return currentSite.nodes.anker
-          ? SERVICE_NODES.anker.services.odoo
-          : SERVICE_NODES.anker.services.odoo_direct;
-      }
-
-      // Generic service lookup
-      for (const node of ['anker', 'stock', 'mobile']) {
-        if (currentSite.nodes[node] && SERVICE_NODES[node].services[service]) {
-          return SERVICE_NODES[node].services[service];
-        }
-      }
-
-      return null;
-    }
-
-    // Odoo deep link handler
-    document.querySelectorAll('a[data-odoo-action]').forEach(link => {
-      link.addEventListener('click', (e) => {
-        const action = e.currentTarget.getAttribute('data-odoo-action');
-        const odooUrls = {
-          tasks: 'http://odoo.hs27.internal/web#action=118&active_id=8&model=project.task&view_type=kanban&menu_id=352',
-          projects: 'http://odoo.hs27.internal/web#action=252&model=project.project&view_type=kanban&menu_id=141',
-          calendar: 'http://odoo.hs27.internal/web#action=517&model=project.task&view_type=calendar&menu_id=357'
-        };
-
-        if (action && odooUrls[action]) {
-          e.preventDefault();
-          // Try deep link first, fallback to base URL on error
-          window.location.href = odooUrls[action];
-        }
-      });
-    });
-
-    // Now Playing updater with intelligent endpoint selection
-    let nowPlayingErrors = 0;
-    const MAX_ERRORS = 3;
-    let activeRadioEndpoint = null;
-
-    async function updateNowPlaying() {
-      try {
-        // Get best available radio API endpoint
-        if (!activeRadioEndpoint) {
-          activeRadioEndpoint = await getBestEndpoint('radio_api');
-        }
-
-        let response;
-        try {
-          response = await fetch(activeRadioEndpoint, {
-            mode: 'cors',
-            credentials: 'omit',
-            signal: AbortSignal.timeout(8000)
-          });
-        } catch (primaryError) {
-          // Fallback to HTTP if HTTPS failed
-          if (activeRadioEndpoint.startsWith('https://')) {
-            const httpEndpoint = activeRadioEndpoint.replace('https://', 'http://');
-            response = await fetch(httpEndpoint, {
-              mode: 'cors',
-              credentials: 'omit',
-              signal: AbortSignal.timeout(8000)
-            });
-            activeRadioEndpoint = httpEndpoint; // Remember working endpoint
-          } else {
-            throw primaryError;
-          }
-        }
-
-        if (!response.ok) throw new Error('API fetch failed');
-
-        const data = await response.json();
-        const np = data.now_playing;
-        const song = np.song;
-
-        // Reset error counter on success
-        nowPlayingErrors = 0;
-
-        // Update widget
-        document.getElementById('np-title').textContent = song.title || 'Unbekannter Titel';
-        document.getElementById('np-artist').textContent = song.artist || 'Unbekannter Künstler';
-        document.getElementById('np-album').textContent = song.album || '';
-        document.getElementById('np-playlist').textContent = np.playlist || 'Playlist';
-
-        // Update album art with error handling
-        const artImg = document.getElementById('np-art');
-        if (song.art) {
-          artImg.onerror = () => {
-            artImg.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="80" height="80"%3E%3Crect fill="%230b1320" width="80" height="80"/%3E%3Ctext x="50%25" y="50%25" text-anchor="middle" dy=".3em" fill="%2397a7bc" font-family="Arial" font-size="24"%3E♪%3C/text%3E%3C/svg%3E';
-          };
-          artImg.src = song.art;
-        }
-
-        // Show widget
-        document.getElementById('nowplaying-widget').style.display = 'grid';
-
-        // Update status with source info
-        const statusBadge = document.getElementById('np-status');
-        if (data.is_online) {
-          const source = activeRadioEndpoint.includes('192.168.178.210') ? 'Stock' : 'Mobile';
-          statusBadge.innerHTML = `<span>LIVE · ${source}</span>`;
-          statusBadge.classList.add('live');
-        } else {
-          statusBadge.innerHTML = '<span>OFFLINE</span>';
-          statusBadge.classList.remove('live');
-        }
-
-      } catch (e) {
-        nowPlayingErrors++;
-        console.log(`Now Playing update failed (${nowPlayingErrors}/${MAX_ERRORS}):`, e.message);
-
-        // Try to find alternative endpoint
-        if (nowPlayingErrors === 2) {
-          console.log('🔄 Searching for alternative radio endpoint...');
-          activeRadioEndpoint = null; // Reset to trigger re-detection
-        }
-
-        // Hide widget only after multiple consecutive failures
-        if (nowPlayingErrors >= MAX_ERRORS) {
-          document.getElementById('nowplaying-widget').style.display = 'none';
-          console.log('❌ All radio endpoints failed, hiding widget');
-        }
-      }
-    }
-
-    // Service health monitoring
-    const serviceHealth = {
-      odoo: false,
-      radio: false,
-      portal: false
-    };
-
-    async function checkServiceHealth(name, url, timeout = 5000) {
-      try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), timeout);
-
-        const response = await fetch(url, {
-          method: 'HEAD',
-          mode: 'no-cors',
-          signal: controller.signal
-        });
-
-        clearTimeout(timeoutId);
-        serviceHealth[name] = true;
-        return true;
-      } catch (e) {
-        serviceHealth[name] = false;
-        return false;
-      }
-    }
-
-    async function checkServices() {
-      try {
-        // Check key services
-        await Promise.all([
-          checkServiceHealth('odoo', 'http://odoo.hs27.internal/web/login'),
-          checkServiceHealth('radio', 'http://192.168.178.210'),
-          checkServiceHealth('portal', 'http://portal.hs27.internal')
-        ]);
-
-        // Update status text with site info
-        const statusText = document.getElementById('status-text');
-        const healthyCount = Object.values(serviceHealth).filter(v => v).length;
-
-        let statusMsg = '';
-        if (currentSite.detected) {
-          const locationMap = {
-            'anker': '📍 Anker',
-            'stockenweiler': '📍 Stockenweiler',
-            'mobile': '📍 Mobil/Event',
-            'isolated': '⚠️ Isoliert',
-            'unknown': '❓ Unbekannt'
-          };
-          statusMsg = locationMap[currentSite.location] || currentSite.location;
-
-          // Add service count
-          const nodeCount = Object.values(currentSite.nodes).filter(v => v).length;
-          if (nodeCount > 0) {
-            statusMsg += ` · ${nodeCount} Knoten`;
-          }
-        } else if (serviceHealth.radio) {
-          statusMsg = 'Radio Stock LIVE';
-        } else if (healthyCount > 0) {
-          statusMsg = `${healthyCount} Services online`;
-        } else {
-          statusMsg = 'Services prüfen...';
-        }
-
-        statusText.textContent = statusMsg;
-      } catch (e) {
-        console.log('Service check error:', e.message);
-      }
-    }
-
-    // Enhanced initialization
-    async function initialize() {
-      console.log('🚀 Surface Control V2 initializing...');
-      console.log('📦 Multi-Node Architecture: Anker + Stock + Mobile');
-
-      // Step 1: Detect current site
-      await detectSite();
-
-      // Step 2: Check services
-      await checkServices();
-
-      // Step 3: Start now playing updates
-      updateNowPlaying();
-
-      console.log('✅ Surface Control V2 ready');
-      console.log('🎯 Active location:', currentSite.location);
-      console.log('🔗 Available nodes:', Object.entries(currentSite.nodes)
-        .filter(([_, v]) => v)
-        .map(([k, _]) => k)
-        .join(', ') || 'none');
-    }
-
-    // Periodic site re-detection (every 5 minutes)
-    setInterval(async () => {
-      const oldLocation = currentSite.location;
-      await detectSite();
-      if (currentSite.location !== oldLocation) {
-        console.log(`📍 Location changed: ${oldLocation} → ${currentSite.location}`);
-        await checkServices();
-        // Reset radio endpoint to trigger re-detection
-        activeRadioEndpoint = null;
-      }
-    }, 300000); // 5 minutes
-
-    // Initial checks with site detection
-    setTimeout(initialize, 1000);
-
-    // Update now playing every 15 seconds
-    setInterval(updateNowPlaying, 15000);
-
-    // Update service health every 60 seconds
-    setInterval(checkServices, 60000);
-
-    // Update now playing every 15 seconds
-    setInterval(updateNowPlaying, 15000);
+    // Disable context menu for kiosk feel
+    document.addEventListener('contextmenu', event => event.preventDefault());
   </script>
 </body>
 </html>

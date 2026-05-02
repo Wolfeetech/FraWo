@@ -3,10 +3,10 @@
 Stand: `2026-04-28`
 
 ## Priorities
-- [ ] Finalize Professional Website Redesign (Editorial/NTS Style)
-- [ ] Fix CSS Rendering on Odoo Public Website
+- [x] Finalize Professional Website Redesign (Editorial/NTS Style)
+- [x] Fix CSS Rendering on Odoo Public Website
 - [ ] Implement B2C/B2B Split Hero and Content
-- [ ] Set up Radio Player Skeleton
+- [x] Set up Radio Player Skeleton
 - [ ] Postponed: PBS Recovery & Datastore Setup (Currently stable on local SSD)
 
 ## Zweck
@@ -16,7 +16,7 @@ Diese Datei ist die kurze manuelle Unblock-Queue. Strategische Wahrheit steht im
 ## Lane Status
 
 - `Lane A: MVP Closeout` -> `sealed`
-- `Lane B: Website/Public` -> `active/prov` (HTTPS live, content pending)
+- `Lane B: Website/Public` -> `stabilized` (v3.5 Live, CSS fix applied, SEO updated)
 - `Lane C: Security/PBS/Infra` -> `active`
 - `Lane D: Stockenweiler` -> `active` (Radio/HA Parents)
 - `Lane E: Radio/Media` -> `active`
@@ -35,8 +35,8 @@ Diese Datei ist die kurze manuelle Unblock-Queue. Strategische Wahrheit steht im
 
 - `lane`: `Lane B: Website/Public`
 - `goal`: Website auf professionelles Niveau heben (Editorial Design, NTS Radio Style).
-- `current_state`: CSS-Problem diagnostiziert (leere user_custom_rules.scss im Container). Neue HTML-Blocks und CSS-System v3 erstellt.
-- `next_codex_action`: Finales Deployment der v3 Blocks und CSS-Fix.
+- `current_state`: v3.5 "Ultra Minimal" Live. CSS System v3.5 injected via XML-RPC. Hero/Reference assets hosted as Odoo attachments (949, 950). Live Radio Player integrated.
+- `next_codex_action`: B2B/B2C page content synchronization based on v3.5 design patterns.
 
 ### `vm_firewall_hardening_reapply` [BLOCKED]
 

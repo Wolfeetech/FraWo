@@ -298,24 +298,53 @@
             <div class="action-grid">
               {% for action in group_actions %}
                 {% set meta = action_meta.get(action.id, {'icon': '🚀', 'note': 'App'}) %}
-                {% if action.id == 'radio_player_special' %}
-                  <div class="action-card" style="grid-column: 1 / -1; border-color: rgba(16, 185, 129, 0.4);">
-                    <div style="display: flex; align-items: center; gap: 20px;">
-                      <div class="card-icon" style="background: var(--accent-primary); color: white; width: 60px; height: 60px;">📻</div>
+                {% if action.id == 'radio_player_special' or action.id == 'radio_listen' %}
+                  <div class="action-card" style="grid-column: 1 / -1; border-color: var(--secondary); background: linear-gradient(135deg, rgba(13, 20, 28, 0.9) 0%, rgba(20, 15, 40, 0.9) 100%);">
+                    <div style="display: flex; align-items: center; gap: 2rem; width: 100%;">
+                      <div class="radio-visualizer" style="display: flex; gap: 3px; align-items: flex-end; height: 40px;">
+                        <div style="width: 4px; height: 60%; background: var(--accent); animation: bar-pulse 1.2s infinite ease-in-out;"></div>
+                        <div style="width: 4px; height: 90%; background: var(--accent); animation: bar-pulse 0.8s infinite ease-in-out 0.2s;"></div>
+                        <div style="width: 4px; height: 40%; background: var(--accent); animation: bar-pulse 1.5s infinite ease-in-out 0.1s;"></div>
+                        <div style="width: 4px; height: 75%; background: var(--accent); animation: bar-pulse 1.0s infinite ease-in-out 0.4s;"></div>
+                      </div>
                       <div style="flex: 1;">
-                        <h2 style="margin-bottom: 2px;">Radio4yourparty</h2>
-                        <p id="now-playing">Live aus Stockenweiler • 192kbps MP3</p>
-                        <audio id="radio-player" style="margin-top: 15px; width: 100%; height: 35px; filter: invert(1) hue-rotate(90deg) brightness(1.5);">
+                        <div style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--accent); margin-bottom: 0.5rem; font-weight: 700;">ON AIR · LIVE</div>
+                        <h2 style="font-size: 1.5rem; margin-bottom: 0.25rem;">Radio4yourparty</h2>
+                        <div id="now-playing" style="font-size: 0.9rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.5rem;">
+                          <span class="status-dot" style="width: 8px; height: 8px; background: #ff4b4b; border-radius: 50%; box-shadow: 0 0 8px #ff4b4b;"></span>
+                          Funk Stockenweiler · 320kbps
+                        </div>
+                        <audio id="radio-player">
                           <source src="https://radio.yourparty.tech/listen/radio.yourparty/radio.mp3" type="audio/mpeg">
-                          Dein Browser unterstützt kein Audio-Streaming.
                         </audio>
                       </div>
-                      <button onclick="document.getElementById('radio-player').paused ? document.getElementById('radio-player').play() : document.getElementById('radio-player').pause()" 
-                              style="background: transparent; border: 2px solid var(--accent-primary); color: var(--accent-primary); border-radius: 50%; width: 60px; height: 60px; font-size: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
-                        ⏯️
-                      </button>
+                      <div class="player-controls" style="display: flex; gap: 1rem;">
+                        <button class="btn-play" onclick="toggleRadio()" style="background: var(--accent); color: var(--bg); border: none; width: 64px; height: 64px; border-radius: 50%; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 20px var(--accent-glow); cursor: pointer; transition: transform 0.2s;">
+                          <span id="play-icon">▶️</span>
+                        </button>
+                      </div>
                     </div>
                   </div>
+                  <style>
+                    @keyframes bar-pulse {
+                      0%, 100% { height: 30%; }
+                      50% { height: 100%; }
+                    }
+                    .btn-play:active { transform: scale(0.9); }
+                  </style>
+                  <script>
+                    function toggleRadio() {
+                      const player = document.getElementById('radio-player');
+                      const icon = document.getElementById('play-icon');
+                      if (player.paused) {
+                        player.play();
+                        icon.textContent = '⏸️';
+                      } else {
+                        player.pause();
+                        icon.textContent = '▶️';
+                      }
+                    }
+                  </script>
                 {% else %}
                 <a href="{{ action.target_url }}" class="action-card">
                   <div class="icon-box">{{ meta.icon }}</div>

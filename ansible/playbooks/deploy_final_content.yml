@@ -1,0 +1,15 @@
+- name: Deploy Odoo Content
+  hosts: odoo_vm
+  tasks:
+    - name: Copy injection script
+      copy:
+        src: "../../scratch/remote_mega_inject.py"
+        dest: "/tmp/mega_inject.py"
+    
+    - name: Execute injection script
+      shell: "cat /tmp/mega_inject.py | docker exec -i odoo-web-1 odoo shell -d FraWo_GbR --db_host=db --db_user=odoo --db_password=odoo_db_pass_final_v1"
+      register: inject_out
+    
+    - name: Show output
+      debug:
+        var: inject_out.stdout
