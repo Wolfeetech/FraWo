@@ -36,12 +36,13 @@ Read only this short boot path first:
 2. `AI_BOOTSTRAP_CONTEXT.md`
 3. `LIVE_CONTEXT.md`
 4. `OPS_HOME.md`
-5. `todo.md`
-6. `COMMUNICATION/agent_board.md`
-7. `OPERATIONS/GITHUB_OPERATIONS.md`
-8. `OPERATIONS/TOOLS_OPERATIONS_INDEX.md`
-9. `OPERATIONS/PRODUCTION_READINESS_OPERATIONS.md`
-10. `MASTERPLAN.md`
+5. `OPERATIONS/ODOO_OPERATIONS.md`
+6. Odoo project board `🚀 Homeserver 2027: Masterplan`
+7. `COMMUNICATION/agent_board.md`
+8. `OPERATIONS/GITHUB_OPERATIONS.md`
+9. `OPERATIONS/TOOLS_OPERATIONS_INDEX.md`
+10. `OPERATIONS/PRODUCTION_READINESS_OPERATIONS.md`
+11. `MASTERPLAN.md`
 
 Only then open the service- or topic-specific canonical file you actually need.
 Do not treat the rest of the workspace as mandatory boot reading.
@@ -84,7 +85,7 @@ After `INTRODUCTION_PROMPT.md`, choose the narrowest specialized prompt that fit
 - `infrastructure/VM_AUDIT.md`
   - verified runtime state and remediation notes
 - `DOCS/Task_Archive/BACKUP_RESTORE_PROOF.md`
-  - archived backup and restore proof; current backup follow-up is tracked in `todo.md` and GitHub issue `#9`
+  - archived backup and restore proof; current backup follow-up is tracked in the Odoo project board and GitHub issue `#9`
 - `CAPACITY_REVIEW.md`
   - current sizing decision for host, toolbox and VMs based on live runtime data
 - `RIGHTSIZING_MAINTENANCE_PLAN.md`
@@ -124,7 +125,7 @@ After `INTRODUCTION_PROMPT.md`, choose the narrowest specialized prompt that fit
 - `OPERATIONS/USER_ONBOARDING_OPERATIONS.md`
   - canonical operator path for Wolf, Franz and device onboarding
 - `todo.md`
-  - short operator-facing queue for the next manual unblock steps
+  - deprecated legacy queue; do not treat it as active task truth
 - `PBS_VM_240_SETUP_PLAN.md`
   - controlled rollout path and stage gates for the planned PBS VM
 - `SECURITY.md`

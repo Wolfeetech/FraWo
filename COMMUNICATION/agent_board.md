@@ -1,7 +1,7 @@
 # Agent Board
 
 This is the shared coordination board for Codex, Claude, Gemini, OpenClaw, and any future agent.
-Keep entries short. Put durable tasks in `todo.md`; put runtime truth in `LIVE_CONTEXT.md`.
+Keep entries short. Put durable tasks in the Odoo project board `🚀 Homeserver 2027: Masterplan`; put runtime truth in `LIVE_CONTEXT.md`.
 
 ## Current Rule
 
@@ -32,7 +32,7 @@ Other paths are aliases, archives, or local-only legacy material.
 ### 2026-04-22 - GitHub Operations
 
 - GitHub is being promoted from remote backup to operational work center.
-- New issues should mirror active work from `todo.md`.
+- New issues should mirror active work from the Odoo project board plus the relevant repo runtime truth.
 - PRs should use the repo template and link issues where possible.
 - `gh` CLI is installed at `C:\Program Files\GitHub CLI\gh.exe`.
 - Full GitHub bootstrap automation exists in `scripts/github/bootstrap_professional_github.ps1`.
@@ -65,7 +65,13 @@ Other paths are aliases, archives, or local-only legacy material.
 - Stockenweiler VM 210 is running and reachable via Proxmox guest agent; its music storage is still `192.168.178.25:/mnt/music_hdd` at `100%`.
 - The central media share currently exposes only `98G` total with `88G` used, so it cannot absorb the `283G` Stockenweiler library without a separate storage expansion step.
 
+### 2026-05-02 - Odoo Task SSOT Governance
+
+- Odoo project board `🚀 Homeserver 2027: Masterplan` is the canonical task SSOT for priorities, ownership, blocker state, and completion tracking.
+- `todo.md` remains only as deprecated legacy reference and must not be used as live task truth for new work.
+- `manifests/work_lanes/current_plan.json` may remain as a lane snapshot, but it does not overrule Odoo task state.
+
 ## Collision Notes
 
-- Before editing shared docs (`todo.md`, `LIVE_CONTEXT.md`, `OPS_HOME.md`, `AGENTS.md`), run `git status -sb`.
+- Before editing shared docs (`LIVE_CONTEXT.md`, `OPS_HOME.md`, `AGENTS.md`, `OPERATIONS/ODOO_OPERATIONS.md`), run `git status -sb`.
 - If another agent has uncommitted changes, document the conflict here before proceeding.

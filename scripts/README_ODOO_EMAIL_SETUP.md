@@ -156,17 +156,17 @@ Verkauf → Angebote → [Angebot auswählen] → Per E-Mail senden
 - **Vollständige Anleitung**: `DOCS/ODOO_SENDER_EMAIL_FIX.md`
 - **Quick Reference**: `artifacts/odoo_email_fix_quickref.md`
 - **Mail Operations**: `OPERATIONS/MAIL_OPERATIONS.md`
-- **Todo**: `todo.md` → `odoo_sender_email_for_document_mail`
+- **Task SSOT**: Odoo-Projektboard `🚀 Homeserver 2027: Masterplan` → passende Mail-/Odoo-Aufgabe
 
 ## Related Issues
 
 - GitHub Issue: `#11`
-- Todo: `odoo_sender_email_for_document_mail` [ACTIVE]
+- Odoo-Aufgabe: passende Mail-/Odoo-Aufgabe im Projektboard
 
 ## Nächste Schritte nach dem Fix
 
 1. ✅ Teste Angebot versenden
 2. ✅ Teste Angebot stornieren
 3. ✅ Teste Auftragsbestätigung
-4. ✅ Aktualisiere `todo.md` Status
+4. ✅ Aktualisiere den Odoo-Aufgabenstatus
 5. ✅ Schließe GitHub Issue #11

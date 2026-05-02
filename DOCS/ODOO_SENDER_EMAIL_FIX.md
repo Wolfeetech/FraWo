@@ -145,17 +145,17 @@ Nach dem Fix:
 1. ✅ Teste Angebot versenden
 2. ✅ Teste Angebot stornieren
 3. ✅ Teste Auftragsbestätigung versenden
-4. ✅ Dokumentiere den erfolgreichen Test im `todo.md`
+4. ✅ Dokumentiere den erfolgreichen Test im Odoo-Projektboard `🚀 Homeserver 2027: Masterplan`
 5. ✅ Aktualisiere `LIVE_CONTEXT.md`
 
 ## Quellen
 
-- `todo.md:79-86` - Odoo sender email issue
+- Odoo-Projektboard `🚀 Homeserver 2027: Masterplan` - Odoo sender email task state
 - `OPERATIONS/MAIL_OPERATIONS.md:149-159` - App-SMTP Standard
 - `OPERATIONS/MAIL_OPERATIONS.md:169` - Odoo SMTP Konfiguration
 - Odoo Dokumentation: https://www.odoo.com/knowledge/article/758
 
 ## Related Issues
 
-- `odoo_sender_email_for_document_mail` [ACTIVE] in `todo.md`
+- passende Mail-/Odoo-Aufgabe im Projektboard `🚀 Homeserver 2027: Masterplan`
 - `strato_mail_model_verified` ist `passed` seit 2026-03-30

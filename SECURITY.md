@@ -38,7 +38,7 @@ Changes that affect network, firewall, backup, storage, DNS, or public exposure 
 - explicit task or issue,
 - rollback/verification notes,
 - post-change service verification,
-- SSOT update in `todo.md`, `LIVE_CONTEXT.md`, or `COMMUNICATION/agent_board.md`.
+- SSOT update in the Odoo project board plus `LIVE_CONTEXT.md` or `COMMUNICATION/agent_board.md`.
 
 ## Current Security Follow-Ups
 

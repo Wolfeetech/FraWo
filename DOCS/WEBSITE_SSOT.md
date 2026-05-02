@@ -70,7 +70,7 @@ Die Website wird primär über automatisierte Skripte verwaltet. Manuelle Änder
 Die operativen Aufgaben werden in Odoo im Projekt **"FraWo Website v3.5 & Infrastructure"** gespiegelt.
 
 - **Sync-Logik**: `scripts/remediations/odoo_project_sync.py` (via `odoo shell`).
-- **Abgleich**: Die Tasks entsprechen den Priorities im `todo.md` und `current_plan.json`.
+- **Abgleich**: Die Tasks entsprechen der Odoo-Projektwahrheit; `current_plan.json` bleibt nur ein Lane-Snapshot.
 - **Status-Tracking**: Meilensteine in Odoo werden automatisch aktualisiert, wenn Skripte erfolgreich durchlaufen.
 
 ---

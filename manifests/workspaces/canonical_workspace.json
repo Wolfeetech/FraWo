@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-04-22",
+  "updated_at": "2026-05-02",
   "github_repository": "Wolfeetech/FraWo",
   "canonical_checkout": "C:\\Users\\Admin\\Workspace\\Repos\\FraWo",
   "canonical_branch": "main",
@@ -12,10 +12,15 @@
     "C:\\Users\\Admin\\Documents\\Private_Networking",
     "C:\\Users\\Admin\\Documents\\Private_Networking_Local\\quarantine"
   ],
+  "task_ssot": {
+    "system": "odoo_projects",
+    "project": "🚀 Homeserver 2027: Masterplan",
+    "local_reference": "OPERATIONS\\ODOO_OPERATIONS.md"
+  },
   "communication_files": [
     "AGENTS.md",
     "COMMUNICATION\\agent_board.md",
-    "todo.md",
+    "OPERATIONS\\ODOO_OPERATIONS.md",
     "LIVE_CONTEXT.md",
     "manifests\\work_lanes\\current_plan.json"
   ],

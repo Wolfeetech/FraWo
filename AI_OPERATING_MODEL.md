@@ -14,16 +14,17 @@ Agents coordinate through repo-tracked state:
 
 1. `AGENTS.md` for the mandatory agent contract.
 2. `COMMUNICATION/agent_board.md` for active handoffs and collision warnings.
-3. `todo.md` for actionable work.
-4. `LIVE_CONTEXT.md` for runtime truth.
-5. `manifests/work_lanes/current_plan.json` for machine-readable lane state.
+3. `OPERATIONS/ODOO_OPERATIONS.md` for the local contract around Odoo task governance.
+4. Odoo project board `🚀 Homeserver 2027: Masterplan` for actionable work, owner state, and blockers.
+5. `LIVE_CONTEXT.md` for runtime truth.
+6. `manifests/work_lanes/current_plan.json` for machine-readable lane state when refreshed.
 
 ## 3. Synchronization Policy
 To prevent divergence, follows these rules:
 1. **Canonical-Path-First**: Always switch to `C:\Users\Admin\Workspace\Repos\FraWo` before editing.
 2. **Pull-First**: Always run `git pull` on the current machine before starting a session if the tree is clean.
 2. **Push-Immediate**: Every completed task must be committed and pushed immediately.
-3. **Board-Update**: Substantial work must update `COMMUNICATION/agent_board.md` or `todo.md` before/after execution.
+3. **Board-Update**: Substantial work must update `COMMUNICATION/agent_board.md` and keep the relevant Odoo project task in sync before/after execution.
 4. **No Legacy Writes**: Never write project truth in `Documents\Private_Networking`.
 
 ## 4. Deployment Workflow
@@ -40,5 +41,5 @@ To prevent divergence, follows these rules:
 
 ---
 *Created: 2026-04-20*
-*Updated: 2026-04-22*
+*Updated: 2026-05-02*
 *Status: Active*

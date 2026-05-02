@@ -109,8 +109,8 @@ Der Homeserver 2027 ist die produktive Basis der **FraWo GbR**: ERP, Cloud, Doku
 
 - Operator Home: `OPS_HOME.md`
 - Live context: `LIVE_CONTEXT.md`
-- Work queue: `todo.md`
-- Machine-readable lane plan: `manifests/work_lanes/current_plan.json`
+- Task board: Odoo project `🚀 Homeserver 2027: Masterplan`
+- Machine-readable lane plan: `manifests/work_lanes/current_plan.json` (lane snapshot, not task SSOT)
 - Tool operations: `OPERATIONS/TOOLS_OPERATIONS_INDEX.md`
 - Odoo operations: `OPERATIONS/ODOO_OPERATIONS.md`
 - Proxmox operations: `OPERATIONS/PROXMOX_OPERATIONS.md`

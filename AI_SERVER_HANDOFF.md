@@ -6,34 +6,32 @@ Keine Secrets. Keine Passwoerter. Diese Datei ist dafuer gedacht, sie direkt an 
 ## Nutzung
 
 - Primaerer Read-First fuer eine andere KI: diese Datei
-- Wenn tieferer Repo-Kontext noetig ist: `AGENTS.md`, `COMMUNICATION/agent_board.md`, `INTRODUCTION_PROMPT.md`, `OPS_HOME.md`, `todo.md`
+- Wenn tieferer Repo-Kontext noetig ist: `AGENTS.md`, `COMMUNICATION/agent_board.md`, `OPERATIONS/ODOO_OPERATIONS.md`, `INTRODUCTION_PROMPT.md`, `OPS_HOME.md`
 - Diese Datei neu erzeugen mit: `python scripts/generate_ai_server_handoff.py`
 
 ## Generierung
 
-- Generated at: `2026-04-26 10:15:00`
-- Workspace root: `C:\Users\Admin\Workspace\Repos\FraWo`
-- Canonical aliases: `C:\Users\Admin\Workspace\FraWo`, `C:\WORKSPACE\FraWo`
-- Legacy workspace warning: `C:\Users\Admin\Documents\Private_Networking` is local-only legacy material and not project truth.
+- Generated at: `2026-05-02 14:12:16`
+- Workspace root: `/mnt/c/Users/StudioPC/OneDrive/Dokumente/GitHub/FraWo`
 - Git branch: `main`
 - Pending git changes: `9`
-- Managed hosts in inventory: `31`
+- Managed hosts in inventory: `34`
 
 ## Source Freshness
 
-- `AI_BOOTSTRAP_CONTEXT.md`: `2026-04-19 22:54:12`
-- `OPS_HOME.md`: `2026-04-09 19:28:38`
-- `DOCS/Task_Archive/OPERATOR_TODO_QUEUE.md`: `2026-04-20 14:13:46`
-- `manifests/work_lanes/current_plan.json`: `2026-04-20 14:04:50`
-- `artifacts/release_mvp_gate/latest_release_mvp_gate.json`: `2026-04-20 11:18:26`
-- `artifacts/public_ipv6_exposure_audit/latest_report.md`: `2026-04-09 19:28:46`
-- `artifacts/estate_census/latest_report.json`: `2026-04-09 17:23:24`
-  - stale_for_live_truth: `true` (estate census older than platform health by 8 day(s); estate census frontdoor host set ['100.99.206.128'] does not include current frontdoor 100.82.26.53)
-- `artifacts/ucg_portal_pilot_preflight/latest_report.json`: `2026-04-13 12:15:49`
-  - stale_for_live_truth: `true` (portal pilot preflight older than 1 day (7 day(s)); portal pilot frontdoor host 100.99.206.128 does not match current frontdoor 100.82.26.53)
-- `artifacts/website_release_gate/20260330_161648/website_release_gate.md`: `2026-04-09 19:28:49`
-- `artifacts/production_gate/20260328_072130/production_gate.md`: `2026-04-09 19:28:44`
-- `manifests/control_surface/actions.json`: `2026-04-13 15:31:08`
+- `AI_BOOTSTRAP_CONTEXT.md`: `2026-04-22 16:27:51`
+- `OPS_HOME.md`: `2026-05-02 14:11:37`
+- `OPERATIONS/ODOO_OPERATIONS.md`: `2026-04-22 16:27:51`
+- `manifests/work_lanes/current_plan.json`: `2026-04-22 16:27:52`
+- `artifacts/release_mvp_gate/latest_release_mvp_gate.json`: `2026-04-22 16:27:52`
+- `artifacts/public_ipv6_exposure_audit/latest_report.md`: `2026-04-22 16:27:52`
+- `artifacts/estate_census/latest_report.json`: `2026-04-20 15:28:52`
+  - stale_for_live_truth: `true` (estate census frontdoor host set ['100.99.206.128'] does not include current frontdoor 100.82.26.53)
+- `artifacts/ucg_portal_pilot_preflight/latest_report.json`: `2026-04-20 15:27:48`
+  - stale_for_live_truth: `true` (portal pilot preflight older than 1 day (11 day(s)))
+- `artifacts/website_release_gate/20260330_161648/website_release_gate.md`: `2026-04-22 16:27:52`
+- `artifacts/production_gate/20260328_072130/production_gate.md`: `2026-04-22 16:27:52`
+- `manifests/control_surface/actions.json`: `2026-04-28 02:55:56`
 
 ## Estate Snapshot
 
@@ -45,21 +43,24 @@ Keine Secrets. Keine Passwoerter. Diese Datei ist dafuer gedacht, sie direkt an 
 - Proxmox host professional management path: `100.69.179.87` Tailscale, primary runtime `10.1.0.92`
 - Core toolbox/control node: **`10.1.0.20`** (primary), Tailscale/frontdoor `100.82.26.53`
 - Nextcloud VM: **`10.1.0.21`**
-- Odoo VM: **`10.1.0.22`** (Origin for www.frawo-tech.de)
+- Odoo VM: **`10.1.0.22`**
 - Paperless VM: **`10.1.0.23`**
 - Home Assistant OS VM: **`10.1.0.24`**
 - PBS VM 240: `192.168.2.25`, status **`DEGRADED / INACTIVE`** – sauberes Neuaufsetzen geplant, sobald Kernstack stabil; aktuell kein valider Backup-Pfad
 - Vaultwarden CT: `10.1.0.26:8080`, productive entry via `https://vault.hs27.internal`
-- Radio node (AzuraCast VM 210): **`192.168.178.210`** (Stockenweiler PVE)
+- Radio node: `192.168.2.155` and Tailscale `100.64.23.77`
 - Shared frontend node: `surface-go-frontend` on `192.168.2.154`
 - Separate Stockenweiler legacy support LAN exists on `192.168.178.0/24`
-- Internal DNS zone: `hs27.internal` (managed via Cloudflare)
+- Internal DNS zone: `hs27.internal`
 - Tailscale subnet router and internal reverse proxy live on `toolbox`
 - Latest whole-estate census: `artifacts/estate_census/latest_report.md`
 - Latest platform health audit: `artifacts/platform_health/latest_report.md`
 - Latest storage optimization audit: `artifacts/storage_optimization/latest_report.md`
 - Latest CI/CD delivery factory report: `artifacts/cicd_delivery_factory/latest_report.md`
 - Latest CI/CD delivery factory preflight: `artifacts/cicd_delivery_factory/latest_preflight.md` with current hard limit `repo_side_factory_only`
+- Canonical Local Intelligence Layer: **AI Toolkit for VS Code** (ONNX / DirectML) on `wolfstudiopc`
+- Local Falling-Back / CLI Intelligence: **Ollama (frawo-pro)** on port `11434`
+- Business Intelligence Bridge: **Odoo Professional MCP Server** (scripts/business/mcp_odoo_pro_server.py)
 - Transition note `2026-04-03`: `wolfstudiopc` currently reaches the core services professionally via `toolbox` Tailscale frontdoors on `100.82.26.53:*`; direct StudioPC access to the legacy guest `192.168.2.x` range is not the working path while the UCG migration bridge is active
 
 ## Core Service Map
@@ -76,9 +77,8 @@ Keine Secrets. Keine Passwoerter. Diese Datei ist dafuer gedacht, sie direkt an 
 - Jellyfin browser path: `http://media.hs27.internal`
 - Jellyfin direct path: `http://10.1.0.20:8096`
 - Jellyfin mobile Tailscale path: `http://100.82.26.53:8449`
-- Radio UI: `http://radio.hs27.internal` (Internal) / `https://radio.frawo-tech.de` (Planned Public)
-- Radio direct path (Stockenweiler): `http://192.168.178.210`
-- Public Website: `https://www.frawo-tech.de` (LIVE via Cloudflare Tunnel)
+- Radio UI: `http://radio.hs27.internal`
+- Radio mobile Tailscale path: `http://100.82.26.53:8448`
 
 ## Current Release State
 
@@ -86,7 +86,7 @@ Keine Secrets. Keine Passwoerter. Diese Datei ist dafuer gedacht, sie direkt an 
 - Business MVP gate: `MVP_READY`
 - Business MVP critical Codex checks: `passed=11` / `non-passed=0`
 - Business MVP manual checks: `passed=8` / `pending_or_failed=0`
-- Public website gate: **`ACTIVE / GREEN`** (HTTPS enabled via Cloudflare)
+- Public website gate: `BLOCKED`
 - Production certification gate: `BLOCKED`
 - Public IPv6 exposure audit: `open_checks=0` / `total_checks=13`
 
@@ -124,21 +124,20 @@ Keine Secrets. Keine Passwoerter. Diese Datei ist dafuer gedacht, sie direkt an 
 
 ## Estate Census Snapshot
 
-- Generated at: `2026-04-09 17:23:24`
+- Generated at: `2026-04-20 15:28:52`
 - Live-truth warning: this estate census is stale for current frontdoor/runtime truth.
 - Use it only for topology/peer background; current mobile frontdoor truth is `100.82.26.53`.
-  - estate census older than platform health by 8 day(s)
   - estate census frontdoor host set ['100.99.206.128'] does not include current frontdoor 100.82.26.53
-- Tailscale peers: online `5` / offline `6` / routed `2`
-- Running estate nodes: anker containers `3`, anker VMs `4`, stock containers `6`, stock VMs `1`
-- Working toolbox frontdoors: `5` / `8`; Stockenweiler public legacy hosts green `0` / `4`
-- Local active IPv4 interfaces: `vEthernet (WSL (Hyper-V firewall)): 172.24.176.1/20, Tailscale: 100.98.31.60/32, WLAN: 192.168.2.161/24, wg-studiopc: 10.0.0.2/32`
+- Tailscale peers: online `4` / offline `7` / routed `2`
+- Running estate nodes: anker containers `4`, anker VMs `5`, stock containers `7`, stock VMs `2`
+- Working toolbox frontdoors: `0` / `8`; Stockenweiler public legacy hosts green `0` / `4`
+- Local active IPv4 interfaces: `vEthernet (WSL (Hyper-V firewall)): 172.24.176.1/20, WLAN: 192.168.2.161/24, Tailscale: 100.98.31.60/32, Ethernet: 10.1.0.254/24`
 - Current estate blockers:
   - Home Assistant mobile/frontdoor is still degraded and returns HTTP 400 through toolbox.
   - StudioPC direct access to legacy guest 192.168.2.x is not the working path during the UCG transition because the same subnet exists on two different L2 domains.
   - Stockenweiler has inactive storage targets: anker-music.
   - Stockenweiler public legacy endpoints are still broken: https://home.prinz-stockenweiler.de, https://papierkram.prinz-stockenweiler.de/dashboard, https://cloud.prinz-stockenweiler.de/apps/dashboard/, https://pve.prinz-stockenweiler.de.
-  - Some expected Tailscale peers are offline: iphone-15.tail150400.ts.net, pixel-8a.tail150400.ts.net, radio-node.tail150400.ts.net, surface-go-frontend.tail150400.ts.net, wohnzimmertv.tail150400.ts.net, wolf-zenbook-ux325ea-ux325ea.tail150400.ts.net.
+  - Some expected Tailscale peers are offline: iphone-15.tail150400.ts.net, pixel-8a.tail150400.ts.net, pixel-9-pro.tail150400.ts.net, radio-node.tail150400.ts.net, surface-go-frontend.tail150400.ts.net, wohnzimmertv.tail150400.ts.net, wolf-zenbook-ux325ea-ux325ea.tail150400.ts.net.
 - Current working order:
   - Treat Tailscale as the only professional operator path; stop depending on direct StudioPC-to-legacy 192.168.2.x reachability during migration.
   - Freeze the current working transition state: Proxmox on 10.1.0.92, toolbox frontdoors 8/8 green, guests still isolated behind the transition router.
@@ -172,7 +171,7 @@ Keine Secrets. Keine Passwoerter. Diese Datei ist dafuer gedacht, sie direkt an 
 
 - Delivery factory status: `defined_not_deployed`
 - Safe scope now: `repo_side_factory_only`
-- Verified start state: workflows `3`, Dockerfiles `1`, ready apps `1`
+- Verified start state: workflows `4`, Dockerfiles `2`, ready apps `1`
 - Open factory prerequisites: `4`
 - CD controller role: `Coolify as delivery-only layer`
 - Registry contract: `GHCR v1` for `ghcr.io/wolfeetech/frawo/radio-player-frontend`
@@ -188,13 +187,12 @@ Keine Secrets. Keine Passwoerter. Diese Datei ist dafuer gedacht, sie direkt an 
 ## UCG Pilot Snapshot
 
 - Live-truth warning: this portal pilot preflight is stale for current frontdoor/runtime truth.
-  - portal pilot preflight older than 1 day (7 day(s))
-  - portal pilot frontdoor host 100.99.206.128 does not match current frontdoor 100.82.26.53
+  - portal pilot preflight older than 1 day (11 day(s))
 - Pilot: `portal`
 - Ready for gated runtime change: `false`
 - Recommendation: `fix_preflight_findings_before_any_runtime_portal_cutover`
 - Runtime runbook: `UCG_PORTAL_PILOT_RUNBOOK.md`
-- Portal status snapshot: platform_core `attention`, healthy `2` / `7`
+- Portal status snapshot: platform_core `unknown`, healthy `0` / `0`
 
 ## Current Lane Model
 
@@ -203,11 +201,11 @@ Keine Secrets. Keine Passwoerter. Diese Datei ist dafuer gedacht, sie direkt an 
 - `Lane B: Website/Public` -> `active`
   - goal: Get a minimal public HTTPS baseline for www.frawo-tech.de so the edge is technically green even while design and content remain provisional.
 - `Lane C: Security/PBS/Infra` -> `active`
-  - goal: Hold the recovered platform on a professional baseline while finishing DNS, admin-path, and infrastructure follow-through.
+  - goal: Hold the recovered platform on a professional baseline while finishing firewall hardening, backup proof, DNS, admin-path, and infrastructure follow-through.
 - `Lane D: Stockenweiler` -> `watch`
   - goal: Keep the support rollout prepared without starting live cutover work too early.
 - `Lane E: Radio/Media` -> `active`
-  - goal: Keep media stable and recover the radio backend without turning the lane into a feature-expansion track.
+  - goal: Keep media stable and recover or redeploy the radio backend without turning the lane into a feature-expansion track.
 
 ## Business MVP Blockers
 
@@ -267,8 +265,8 @@ Keine Secrets. Keine Passwoerter. Diese Datei ist dafuer gedacht, sie direkt an 
 
 ## Surface Control V1
 
-- Ready actions: `7`
-- Ready groups: `Dokumente, Odoo, Radio`
+- Ready actions: `8`
+- Ready groups: `Dokumente, Odoo, Radio, Stockenweiler`
 - `Nextcloud Eingang` -> `http://cloud.hs27.internal/apps/files/files?dir=/Paperless/Eingang`
 - `Paperless` -> `http://paperless.hs27.internal/dashboard`
 - `Odoo Aufgaben` -> `http://odoo.hs27.internal/web#action=118&active_id=8&model=project.task&view_type=kanban&menu_id=352`
@@ -276,11 +274,11 @@ Keine Secrets. Keine Passwoerter. Diese Datei ist dafuer gedacht, sie direkt an 
 - `Odoo Kalender` -> `http://odoo.hs27.internal/web#action=517&model=project.task&view_type=calendar&menu_id=357`
 - `Radio hoeren` -> `http://radio.hs27.internal/public/frawo-funk`
 - `Radio Control` -> `http://radio.hs27.internal/login`
+- `HA Eltern` -> `http://192.168.178.179:8123`
 - Backlog-only actions remain hidden:
   - `Dokument scannen` (`Dokumente`)
   - `TV / Magenta Hilfe` (`Stockenweiler`)
   - `Fernhilfe` (`Stockenweiler`)
-  - `Vater Home Assistant` (`Stockenweiler`)
 
 ## Access And Secret Rules
 
@@ -294,6 +292,21 @@ Keine Secrets. Keine Passwoerter. Diese Datei ist dafuer gedacht, sie direkt an 
 - The `FraWo GbR` organization is the master identity for all business collections.
 
 ## Current Operator Queue
+
+### `ct100_storage_migration`
+
+- `status`: `watch`
+- `lane`: Lane C: Security/PBS/Infra
+- `change_class`: gated_infra
+- `goal`: Move CT100 disk from NVMe/local-lvm pressure path to ssd2tb in a controlled window.
+- `done_when`: CT100 boots from the intended storage and all frontdoors return expected status codes.
+- `blocked_by`: `maintenance_window_not_approved`
+- `preflight_checks`: `Fresh backup exists before migration`, `ssd2tb has sufficient free space`, `Operator accepts short Caddy/DNS downtime`
+- `rollback_plan`: Keep original CT100 disk available until post-migration frontdoor tests pass.
+- `verification_commands`: `pct config 100`, `df -h /mnt/ssd2tb`, `curl checks for all hs27.internal frontdoors`
+- `last_verified_at`: 2026-04-22
+- `next_operator_action`: Approve a short maintenance window.
+- `next_codex_action`: Prepare exact migration and rollback sequence.
 
 ### `split_dns_finalization`
 
@@ -312,12 +325,18 @@ Keine Secrets. Keine Passwoerter. Diese Datei ist dafuer gedacht, sie direkt an 
 
 ### `public_edge_https_release`
 
-- `status`: `done`
+- `status`: `blocked`
 - `lane`: Lane B: Website/Public
+- `change_class`: gated_infra
 - `goal`: Finish the smallest safe public HTTPS baseline for frawo-tech.de and www.frawo-tech.de.
-- `done_when`: frawo-tech.de redirects cleanly and www.frawo-tech.de serves over valid HTTPS via Cloudflare Tunnel on CT 100.
-- `last_verified_at`: 2026-04-26
-- `next_codex_action`: Maintain the HTTPS-baseline and proceed with Radio integration.
+- `done_when`: frawo-tech.de redirects cleanly and www.frawo-tech.de serves over valid HTTPS with rollback notes and no public admin exposure, even if website design/content is still provisional.
+- `blocked_by`: `public_ipv4_edge_path_missing`, `acme_connection_refused_on_ipv4`
+- `preflight_checks`: `VM220 website origin answers internally on 10.1.0.22`, `Public DNS still points at the intended target`, `No internal admin UI is included in the public scope`
+- `rollback_plan`: If the public cutover fails, keep DNS and proxy on the last known-good HTTP-only state and do not publish a broken HTTPS path as released.
+- `verification_commands`: `python scripts/website_release_gate.py`, `python scripts/public_dualstack_edge_check.py`
+- `last_verified_at`: 2026-04-19
+- `next_operator_action`: Choose and provide the final public edge path, currently Cloudflare proxy or equivalent public IPv4 routing, to get HTTPS green first.
+- `next_codex_action`: Keep Lane B focused on the HTTPS-baseline outcome and do not mix it with unrelated infra or media work.
 
 ### `radio_node_recovery`
 
@@ -411,10 +430,54 @@ Keine Secrets. Keine Passwoerter. Diese Datei ist dafuer gedacht, sie direkt an 
 
 ## Visible Side Strands
 
-- none
+### `post_restore_backup_proof`
+
+- `status`: `active`
+- `lane`: Lane C: Security/PBS/Infra
+- `change_class`: gated_infra
+- `goal`: Create a documented backup proof after the CT100/Caddy/firewall restore work.
+- `done_when`: A fresh post-restore backup and restore-proof note exists and the runtime remains reachable afterwards.
+- `blocked_by`: `backup_window_not_yet_selected`, `rclone_quota_pressure_observed`
+- `preflight_checks`: `Caddy frontdoors return expected 200/302 states`, `rclone mount is present or local ssd2tb fallback is selected`, `backup target storage mapping is verified before starting vzdump`
+- `rollback_plan`: If google-drive is throttled, stop remote backup traffic and use local ssd2tb fallback until quota recovers.
+- `verification_commands`: `df -h / /mnt/ssd2tb /mnt/google-drive`, `vzdump --dry-run or storage-target check before live run`
+- `last_verified_at`: 2026-04-22
+- `next_operator_action`: Approve a backup window if a full VM backup run may impact throughput.
+- `next_codex_action`: Verify targets, apply rate-limit/fallback rules, run backup proof, and update SSOT.
+
+### `vm_firewall_hardening_reapply`
+
+- `status`: `blocked`
+- `lane`: Lane C: Security/PBS/Infra
+- `change_class`: gated_infra
+- `goal`: Re-enable VM-level firewall hardening without breaking the toolbox frontdoor.
+- `done_when`: VM210 and VM220 run with firewall enabled and Odoo/HA frontdoors still return HTTP 200.
+- `blocked_by`: `proxmox_firewall_bridge_rules_not_yet_proven`
+- `preflight_checks`: `Document current service-safe state: VM210 firewall=0 and VM220 firewall=0`, `Test Proxmox firewall rules with tcpdump and counters before production re-enable`, `Confirm CT100 can reach 10.1.0.22:8069 and 10.1.0.24:8123 after any re-enable`
+- `rollback_plan`: Immediately set VM210/VM220 net0 firewall=0 and reload pve-firewall if Caddy frontdoors return 502.
+- `verification_commands`: `pct exec 100 -- curl -s -o /dev/null -w '%{http_code}' http://10.1.0.22:8069/web/login`, `pct exec 100 -- curl -s -o /dev/null -w '%{http_code}' http://10.1.0.24:8123/`
+- `last_verified_at`: 2026-04-22
+- `next_operator_action`: Treat this as a maintenance-window item, not an emergency quick fix.
+- `next_codex_action`: Build a tested firewall design and keep the rollback command ready.
+
+### `pve_host_exposure_audit`
+
+- `status`: `active`
+- `lane`: Lane C: Security/PBS/Infra
+- `change_class`: gated_infra
+- `goal`: Reduce unnecessary PVE host service exposure without breaking storage-node operations.
+- `done_when`: NFS/RPC/management exposure is explicitly justified or restricted to trusted internal networks.
+- `blocked_by`: `none`
+- `preflight_checks`: `List PVE host listeners`, `Identify NFS/RPC consumers before restriction`, `Confirm cluster firewall and host service bind model`
+- `rollback_plan`: If storage access breaks, revert only the specific NFS/RPC restriction and keep other firewall improvements intact.
+- `verification_commands`: `ss -tlnp`, `cat /etc/pve/firewall/cluster.fw`
+- `last_verified_at`: 2026-04-22
+- `next_operator_action`: No action unless storage or router credentials are needed.
+- `next_codex_action`: Audit host listeners, propose minimal restrictions, and verify storage consumers.
 
 ## Recommended Next Planning Order
 
+- First close `ct100_storage_migration` in `Lane C: Security/PBS/Infra`.
 - First close `split_dns_finalization` in `Lane C: Security/PBS/Infra`.
 - First close `public_edge_https_release` in `Lane B: Website/Public`.
 - First close `radio_node_recovery` in `Lane E: Radio/Media`.
@@ -423,21 +486,25 @@ Keine Secrets. Keine Passwoerter. Diese Datei ist dafuer gedacht, sie direkt an 
 - First close `haos_usb_path` in `Lane C: Security/PBS/Infra`.
 - First close `pbs_guarded_rebuild` in `Lane C: Security/PBS/Infra`.
 - First close `windows_gui_updates_closeout` in `Lane C: Security/PBS/Infra`.
+- Keep `post_restore_backup_proof` visible in `Lane C: Security/PBS/Infra` without promoting it into active delivery.
+- Keep `vm_firewall_hardening_reapply` visible in `Lane C: Security/PBS/Infra` without promoting it into active delivery.
+- Keep `pve_host_exposure_audit` visible in `Lane C: Security/PBS/Infra` without promoting it into active delivery.
 
 ## Canonical Files To Read Next
 
+- `AI_OPERATING_MODEL.md`
+- `AGENTS.md`
+- `COMMUNICATION/agent_board.md`
+- `OPERATIONS/GITHUB_OPERATIONS.md`
 - `INTRODUCTION_PROMPT.md`
 - `BUSINESS_MVP_PROMPT.md` oder `WEBSITE_RELEASE_PROMPT.md` oder `FULL_CERTIFICATION_PROMPT.md` je nach Arbeitsmodus
 - `GEMINI_BROWSER_MVP_ACCEPTANCE_PROMPT.md` fuer die offenen Browser-Abnahmen im MVP
 - `AI_BOOTSTRAP_CONTEXT.md`
 - `AI_SERVER_HANDOFF.md`
-- `OPERATOR_TODO_QUEUE.md`
+- `OPERATIONS/ODOO_OPERATIONS.md`
+- Odoo-Projektboard `🚀 Homeserver 2027: Masterplan`
 - Release-MVP-Gate: `artifacts/release_mvp_gate/latest_release_mvp_gate.md`
 - Produktions-Gate: `OPERATIONS/PRODUCTION_READINESS_OPERATIONS.md`
-- Dokument-Ownership: `OPERATIONS/DOCUMENT_OWNERSHIP_OPERATIONS.md`
-- Benutzer-Onboarding: `OPERATIONS/USER_ONBOARDING_OPERATIONS.md`
-- Operator-Routinen: `OPERATIONS/OPERATOR_ROUTINES.md`
-- Vaultwarden Start: `VAULTWARDEN_SELFHOST_START.md`
 
 ## Generator Notes
 
