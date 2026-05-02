@@ -1,7 +1,7 @@
 import subprocess
 import os
 
-key_path = r"c:\Users\Admin\Documents\Private_Networking\Codex\openclaw_id_ed25519"
+key_path = r"c:\Users\StudioPC\.ssh\openclaw_id_ed25519"
 # Delete existing if any (unlikely but safe)
 if os.path.exists(key_path):
     os.remove(key_path)

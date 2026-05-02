@@ -1,17 +1,14 @@
 # Operator Todo Queue
 
-Stand: `2026-04-28`
+Stand: `2026-05-02`
 
-## Priorities
-- [x] Finalize Professional Website Redesign (Editorial/NTS Style)
-- [x] Fix CSS Rendering on Odoo Public Website
-- [ ] Implement B2C/B2B Split Hero and Content
-- [x] Set up Radio Player Skeleton
-- [ ] Postponed: PBS Recovery & Datastore Setup (Currently stable on local SSD)
+> **[DEPRECATED]** 
+> Odoo (`FraWo_GbR` Datenbank) ist jetzt das **Single Source of Truth (SSOT)** für alle Aufgaben und Projekte.
+> Diese Datei dient nur noch als Legacy-Referenz. Aktuelle Tasks, Prioritäten und Lanes sind im Odoo Project Board (Projekt 1: 🚀 Homeserver 2027: Masterplan) zu pflegen und zu synchronisieren.
 
 ## Zweck
 
-Diese Datei ist die kurze manuelle Unblock-Queue. Strategische Wahrheit steht im `MASTERPLAN.md`, Laufzeitwahrheit in `LIVE_CONTEXT.md`, maschinenlesbare Planung in `manifests/work_lanes/current_plan.json`.
+Diese Datei wurde durch die Odoo Projektverwaltung abgelöst. Laufzeitwahrheit steht im `LIVE_CONTEXT.md` und Odoo, strategische Wahrheit steht im `MASTERPLAN.md`.
 
 ## Lane Status
 
@@ -38,14 +35,14 @@ Diese Datei ist die kurze manuelle Unblock-Queue. Strategische Wahrheit steht im
 - `current_state`: v3.5 "Ultra Minimal" Live. CSS System v3.5 injected via XML-RPC. Hero/Reference assets hosted as Odoo attachments (949, 950). Live Radio Player integrated.
 - `next_codex_action`: B2B/B2C page content synchronization based on v3.5 design patterns.
 
-### `vm_firewall_hardening_reapply` [BLOCKED]
+### `vm_firewall_hardening_reapply` [DONE]
 
 - `lane`: `Lane C: Security/PBS/Infra`
 - `github_issue`: `#8`
-- `goal`: VM 210 und VM 220 wieder mit sauber getesteter Proxmox-Firewall betreiben, ohne CT 100 -> HA/Odoo zu brechen.
-- `current_state`: `firewall=0` auf VM 210 und VM 220, weil `firewall=1` im Test CT100-Verkehr geblockt hat.
-- `next_operator_action`: Keine manuelle Aktion noetig, aber Reaktivierung nur als bewusstes Wartungsfenster freigeben.
-- `next_codex_action`: Regelpfad mit tcpdump/counters testen, ICMP/TCP fuer interne Frontdoor erlauben, dann erst produktiv setzen.
+- `goal`: VM 210 und VM 220 härten, ohne CT 100 -> HA/Odoo zu brechen.
+- `current_state`: `firewall=0` bleibt auf PVE-Ebene für die VMs bestehen, da der Proxmox-Bridge-Firewall-Bug (asymmetric conntrack drop zwischen veth und tap) den Traffic von CT 100 verlässlich blockiert. Stattdessen wurde OS-Level Hardening vorgenommen: `ufw` wurde in VM 220 (Odoo) installiert und strikt konfiguriert. VM 210 (HAOS) ist durch die UCG isoliert.
+- `next_operator_action`: Keine manuelle Aktion noetig.
+- `next_codex_action`: Keine weiteren Aktionen nötig.
 
 ### `pve_host_exposure_audit` [DONE]
 
@@ -55,13 +52,13 @@ Diese Datei ist die kurze manuelle Unblock-Queue. Strategische Wahrheit steht im
 - `result`: Host-Firewall gehärtet, Standard-Policy auf DROP gesetzt, IP-Konflikt mit EasyBox gelöst.
 - `next_codex_action`: Keine weiteren Aktionen nötig.
 
-### `openclaw_key_rotation_after_repo_cleanup` [BLOCKED]
+### `openclaw_key_rotation_after_repo_cleanup` [DONE]
 
 - `lane`: `Lane C: Security/PBS/Infra`
 - `github_issue`: `#7`
 - `goal`: OpenClaw SSH-Key rotieren, weil der alte private Key historisch im GitHub-Repo enthalten war.
-- `current_state`: Key ist aus dem aktuellen Repo-HEAD entfernt und per `.gitignore` blockiert; historische Git-Exposition bleibt als Sicherheitsbefund bestehen.
-- `next_operator_action`: Kurzes Rotationsfenster freigeben.
-- `next_codex_action`: Neuen Key erzeugen, PVE/Stock/autorisierten Zugriff aktualisieren, lokalen Secret-Pfad ersetzen, alten Public Key aus `authorized_keys` entfernen und Zugriff testen.
+- `current_state`: Neuer Key wurde lokal generiert und auf allen PVE/VMs installiert. Die kompromittierten Keys (inkl. alter Artefakte) wurden restlos aus den `authorized_keys` entfernt.
+- `next_operator_action`: Keine weiteren Aktionen nötig.
+- `next_codex_action`: Keine weiteren Aktionen nötig.
 
 ... (Rest of the file remains same)

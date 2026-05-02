@@ -1,5 +1,5 @@
 #!/bin/bash
-NEW_PUBKEY="ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILto3AU9QMBUk7rMbABL9RngHMMyp679eZBuIGhgAyNp openclaw@frawo-hostinger-secure"
+NEW_PUBKEY="ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKBiNeqSZ+aBXsmwKoFAmxEmvliATcKIhMr/LqxRL8WM openclaw@frawo-hostinger-secure"
 
 install_key() {
     local dest="$1"
