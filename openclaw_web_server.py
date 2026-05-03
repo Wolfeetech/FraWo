@@ -5,6 +5,9 @@ import json
 import datetime
 import urllib.request
 import urllib.parse
+import subprocess
+import re
+import shlex
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from urllib.parse import urlparse
 
@@ -49,45 +52,68 @@ SKILLS = {
         "desc": "Startet den Firefox-Kiosk auf dem Surface Go neu."
     },
     "list_files": {
-        "cmd": ["powershell", "Get-ChildItem -Path . -Recurse -Include *.md,*.txt,todo.md,*.py,*.sh | Select-Object -ExpandProperty FullName"],
-        "desc": "Listet alle relevanten Projektdateien im Workspace auf."
+        "cmd": ["powershell", "Get-ChildItem -Path . -Recurse -Include *.md,*.txt,todo.md,*.py,*.sh,*.ps1 | Select-Object -ExpandProperty FullName"],
+        "desc": "Listet Dateien im Workspace auf."
     },
     "read_file": {
         "cmd": ["python", "-c", "import sys; print(open(sys.argv[1], 'r', encoding='utf-8').read())"],
-        "desc": "Liest den Inhalt einer Datei. Beispiel: [RUN: read_file todo.md]"
+        "desc": "Liest eine Datei. [RUN: read_file pfad]"
     },
     "write_file": {
-        "cmd": ["python", "-c", "import sys; f=open(sys.argv[1], 'w', encoding='utf-8'); f.write(sys.argv[2]); f.close(); print('Erfolgreich geschrieben.')"],
-        "desc": "Schreibt oder überschreibt eine Datei. Beispiel: [RUN: write_file path 'inhalt']"
+        "cmd": ["python", "-c", "import sys; f=open(sys.argv[1], 'w', encoding='utf-8'); f.write(sys.argv[2]); f.close(); print('Datei gespeichert.')"],
+        "desc": "Erstellt/Überschreibt eine Datei. [RUN: write_file pfad 'inhalt']"
+    },
+    "exec_shell": {
+        "cmd": ["powershell", "-Command"],
+        "desc": "Führt einen Shell-Befehl lokal aus. [RUN: exec_shell 'dir']"
+    },
+    "exec_python": {
+        "cmd": ["python"],
+        "desc": "Führt Python-Code lokal aus. [RUN: exec_python -c 'print(1+1)']"
+    },
+    "remote_exec": {
+        "cmd": ["ssh", "-F", "Codex/ssh_config", "-o", "BatchMode=yes"],
+        "desc": "Führt einen Befehl auf einem Remote-Host aus. [RUN: remote_exec pve-stock 'uptime']"
     },
     "sync_masterplan": {
-        "cmd": ["python", "scripts/sync_lane_c_to_odoo.py"], # We will make this more generic later
-        "desc": "Überträgt den aktuellen Masterplan in das Odoo Projektboard."
-    },
-    "plan_azuracast": {
-        "cmd": ["python", "-c", "f=open('AZURACAST_PLAN.md', 'w'); f.write('# AzuraCast Implementation Plan\\n- Lane E: Radio & Media\\n- Ziel: Stabilisierung auf Stockenweiler\\n- Status: In Planung'); f.close(); print('Plan erstellt.')"],
-        "desc": "Erstellt einen initialen Implementierungsplan für AzuraCast."
+        "cmd": ["python", "scripts/sync_lane_c_to_odoo.py"],
+        "desc": "Synchronisiert den Masterplan mit Odoo."
     }
 }
 
 AGENT_SYSTEM_PROMPT = """
-PROJEKT-LEITUNG & INFRASTRUKTUR:
-Du bist der OpenClaw Project Lead. Deine Mission ist es, den FraWo-Stack stabil zu halten und Pläne in Odoo zu spiegeln.
+PROJEKT-LEITUNG & INFRASTRUKTUR-SICHERHEIT:
+Du bist der OpenClaw Project Lead. Deine Mission ist die Stabilität des FraWo-Stacks.
 
-Format für Skill-Aufruf: [RUN: skill_name arg1 arg2]
+⚠️ SICHERHEITS-REGELN (Kritisch):
+1. KEINE destruktiven Befehle (rm, docker rm, etc.) ohne vorherige Auflistung und explizite Bestätigung.
+2. KEINE Wildcards (*) in Löschbefehlen.
+3. Erst ANALYSIEREN (ls, ps, pct list, qm list), dann VORSCHLAGEN, dann AUSFÜHREN.
+4. Schütze die Radio-Infrastruktur (AzuraCast) um jeden Preis.
+
+INFRA-WISSEN:
+- Proxmox Befehle (pct, qm): Diese MÜSSEN via 'remote_exec [host] "[command]"' ausgeführt werden, da du auf dem StudioPC läufst.
+- Hosts: pve-stock (Stockenweiler), pve-anker (Anker).
+- Beispiel: [RUN: remote_exec pve-stock "pct list"]
+
+STRENGE REGEL FÜR SKILLS:
+1. NUR EIN SKILL-AUFRUF PRO ANTWORT.
+2. Format: [RUN: skill_name args]
+3. Antworte NUR mit dem Skill-Aufruf.
+4. Simuliere NIEMALS [SYSTEM] Antworten oder Erfolge.
+5. Warte auf das echte Feedback vom [SYSTEM], bevor du weitermachst.
 
 Verfügbare Skills:
-- health_audit: System-Check.
-- fix_network: Netzwerk-Fix.
-- sync_tasks: Aufgaben-Sync.
-- sync_masterplan: Masterplan -> Odoo.
-- list_files: Workspace Übersicht.
-- read_file [pfad]: Dokumente lesen.
-- write_file [pfad] [inhalt]: Dokumente erstellen/ändern.
-- plan_azuracast: AzuraCast Strategie entwerfen.
-- restart_kiosk: Kiosk-Reset.
-
-Aufgabe: Fixe Surface-Themen (Design/Konnektivität), schiebe den Masterplan ins Projektboard und plane die AzuraCast Umsetzung.
+- health_audit: System-Check (PVE, Network).
+- fix_network: Netzwerk-Fix (StudioPC).
+- sync_masterplan: Masterplan -> Odoo Board.
+- list_files: Übersicht aller Dokumente/Skripte.
+- read_file [pfad]: Inhalt einer Datei lesen.
+- write_file [pfad] [inhalt]: Datei erstellen oder aktualisieren.
+- exec_shell [cmd]: Lokalen PowerShell/CMD Befehl ausführen.
+- exec_python [code]: Lokalen Python Code direkt ausführen.
+- remote_exec [host] [cmd]: Remote-Befehl via SSH ausführen (Hosts: pve-anker, pve-stock, toolbox).
+- restart_kiosk: Kiosk-Reset (Surface Go).
 """
 
 class OpenClawAPIHandler(BaseHTTPRequestHandler):
@@ -112,18 +138,28 @@ class OpenClawAPIHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         parsed = urlparse(self.path)
         if parsed.path == "/api/status":
+            health_summary = {}
+            try:
+                report_path = "artifacts/platform_health/latest_report.json"
+                if os.path.exists(report_path):
+                    with open(report_path, "r") as f:
+                        health_data = json.load(f)
+                        health_summary = {
+                            "blockers": health_data.get("blockers_count", 0),
+                            "stock_swap_usage": health_data.get("stock_swap_usage", 0)
+                        }
+            except: pass
+
             self.send_response(200)
             self.send_header("Content-type", "application/json")
             self.end_headers()
             self.wfile.write(json.dumps({
                 "status": "online",
                 "model": OLLAMA_MODEL,
-                "backend": "ollama",
                 "agent_version": "3.1-agentic",
+                "health": health_summary,
                 "timestamp": datetime.datetime.now().isoformat()
             }).encode())
-        else:
-            self.send_error(404)
 
     def do_POST(self):
         parsed = urlparse(self.path)
@@ -169,49 +205,58 @@ class OpenClawAPIHandler(BaseHTTPRequestHandler):
             import shlex
             import re
             
-            # --- Turn 1: Thought & Potential Action ---
-            resp_data = self.call_ollama(message)
-            ai_response = resp_data.get('response', '')
+            history = message
+            max_turns = 5
+            turn = 0
             
-            # Check for [RUN: skill_name args]
-            match = re.search(r"\[RUN:\s*(\w+)(?:\s+(.*))?\]", ai_response)
-            
-            if match:
-                skill_name = match.group(1)
-                raw_args = match.group(2) or ""
-                logger.info(f"Agent requested skill: {skill_name} with args: {raw_args[:50]}...")
+            while turn < max_turns:
+                turn += 1
+                logger.info(f"--- Agent Turn {turn} ---")
                 
-                if skill_name in SKILLS:
-                    skill = SKILLS[skill_name]
-                    try:
-                        # Parse arguments safely
+                # --- Get AI Thought/Action ---
+                resp_data = self.call_ollama(history, system_extension=f"Turn {turn}/{max_turns}. Antworte präzise.")
+                ai_response = resp_data.get('response', '')
+                
+                # Check for [RUN: skill_name args] or RUN: skill_name args
+                match = re.search(r"\[?RUN:\s*(\w+)(?:\s+(.*))?\]?", ai_response)
+                
+                if match:
+                    skill_name = match.group(1)
+                    raw_args = match.group(2) or ""
+                    logger.info(f"Agent Action: {skill_name} ({raw_args[:50]}...)")
+                    
+                    if skill_name in SKILLS:
+                        skill = SKILLS[skill_name]
                         try:
-                            parsed_args = shlex.split(raw_args)
+                            try:
+                                parsed_args = shlex.split(raw_args)
+                            except:
+                                parsed_args = raw_args.split()
+                            
+                            full_cmd = skill['cmd'] + parsed_args
+                            logger.info(f"Executing: {full_cmd}")
+                            
+                            result = subprocess.run(
+                                full_cmd, 
+                                capture_output=True, 
+                                text=True, 
+                                timeout=300,
+                                cwd="c:\\WORKSPACE\\FraWo"
+                            )
+                            observation = f"[SYSTEM: Result of {skill_name} (Code {result.returncode})]\nSTDOUT: {result.stdout}\nSTDERR: {result.stderr}"
                         except Exception as e:
-                            parsed_args = raw_args.split() # Fallback
+                            observation = f"[SYSTEM: Error executing {skill_name}: {str(e)}]"
                         
-                        full_cmd = skill['cmd'] + parsed_args
-                        
-                        logger.info(f"Executing: {full_cmd}")
-                        result = subprocess.run(
-                            full_cmd, 
-                            capture_output=True, 
-                            text=True, 
-                            timeout=180,
-                            cwd="c:\\WORKSPACE\\FraWo"
-                        )
-                        output = f"Result of {skill_name}:\nSTDOUT: {result.stdout}\nSTDERR: {result.stderr}"
-                    except Exception as e:
-                        output = f"Error executing {skill_name}: {str(e)}"
-                    
-                    logger.info(f"Skill result: {output[:100]}...")
-                    
-                    # --- Turn 2: Final Answer with Result ---
-                    final_prompt = f"{message}\n\n[SYSTEM: {output}]"
-                    final_resp_data = self.call_ollama(final_prompt, system_extension="Integriere das Ergebnis des Skills in deine finale Antwort.")
-                    ai_response = final_resp_data.get('response', '⚠️ Fehler bei der Finalisierung.')
+                        logger.info(f"Observation received ({len(observation)} chars)")
+                        # Append to history for next turn
+                        history += f"\n\nAssistant: {ai_response}\n\n{observation}"
+                    else:
+                        error_msg = f"[SYSTEM: Skill '{skill_name}' nicht gefunden.]"
+                        history += f"\n\nAssistant: {ai_response}\n\n{error_msg}"
                 else:
-                    ai_response += f"\n\n(Hinweis: Skill '{skill_name}' ist nicht im Katalog registriert.)"
+                    # No tool call found, this is the final answer
+                    logger.info("Agent provided final answer.")
+                    break
             
             self.send_response(200)
             self.send_header("Content-type", "application/json")

@@ -7,35 +7,25 @@ Host toolbox
   User root
 
 # Proxmox Anker host
-Host anker-pve proxmox-anker pve
+Host anker-pve proxmox-anker pve-anker
   HostName 100.69.179.87
   User root
+  IdentityFile ~/.ssh/homeserver2027_proxmox_ed25519
 
 # Stockenweiler Proxmox
-Host stockenweiler-pve stockenweiler stock
+Host stockenweiler-pve stockenweiler pve-stock
   HostName 100.91.20.116
   User root
+  IdentityFile ~/.ssh/homeserver2027_proxmox_ed25519
 
 # Radio node
 Host radio-node
   HostName 100.64.23.77
   User wolf
 
-# OpenClaw Professional Agent Identity
-Host openclaw-anker
-  HostName 100.69.179.87
-  User root
-  IdentityFile C:/WORKSPACE/OPERATIONS/OpenClaw/config/id_ed25519
-
-Host openclaw-stock
-  HostName 100.91.20.116
-  User root
-  IdentityFile C:/WORKSPACE/OPERATIONS/OpenClaw/config/id_ed25519
-
 Host *
-  IdentityFile ~/.ssh/id_ed25519
+  IdentityFile ~/.ssh/hs27_ops_ed25519
   IdentitiesOnly yes
-  PreferredAuthentications publickey,password
+  PreferredAuthentications publickey
   StrictHostKeyChecking accept-new
-  UserKnownHostsFile ~/Documents/Private_Networking/Codex/known_hosts
-  ConnectTimeout 8
+  ConnectTimeout 10

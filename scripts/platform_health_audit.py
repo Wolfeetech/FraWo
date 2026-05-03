@@ -14,9 +14,9 @@ REPORT_MD = ARTIFACT_DIR / "latest_report.md"
 SSH_CONFIG_PATH = ROOT / "Codex" / "ssh_config"
 DEFAULT_TOOLBOX_FRONTDOOR_IP = "100.82.26.53"
 
-ANKER_SSH_TARGET = "root@100.69.179.87"
+ANKER_SSH_TARGET = "pve-anker"
 ANKER_NODE = "proxmox-anker"
-STOCK_SSH_TARGET = "stock-pve"
+STOCK_SSH_TARGET = "pve-stock"
 STOCK_NODE = "pve"
 
 def current_toolbox_frontdoor_ip() -> str:
@@ -76,7 +76,7 @@ def run_cmd(argv: list[str], timeout: int = 60, input_text: str | None = None) -
 
 
 def ssh_script(target: str, script: str, timeout: int = 120) -> tuple[int, str, str]:
-    argv = ["ssh", "-o", "BatchMode=yes", target, "bash", "-s"]
+    argv = ["ssh", "-F", str(SSH_CONFIG_PATH), "-o", "BatchMode=yes", target, "bash", "-s"]
     return run_cmd(argv, timeout=timeout, input_text=script.replace("\r\n", "\n"))
 
 

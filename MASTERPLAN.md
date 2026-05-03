@@ -10,11 +10,11 @@ Der Homeserver 2027 ist die produktive Basis der **FraWo GbR**: ERP, Cloud, Doku
 
 ## 2. Work Lanes
 
-### Lane A: MVP Pilot - [STATUS: SEALED]
+### Lane A: OpenClaw Agent & Control - [STATUS: ACTIVE]
 
-- **Ziel**: stabiler interner Arbeitsplatz fuer Wolf und Franz mit Portal, Vaultwarden, Nextcloud, Paperless, Odoo und lokalen Backups.
-- **Status**: abgeschlossen, bleibt aber regressionsueberwacht.
-- **Aktueller Stand 2026-04-22**: alle Kern-Frontdoors sind via Caddy/Tailscale wieder erreichbar.
+- **Ziel**: Autonomer Project-Lead für die FraWo Infrastruktur.
+- **Status**: V3.1 Agentic active. Multi-turn ReAct loops operational.
+- **Features**: Odoo Sync, Autonomous Remediation, Safety Guardian.
 
 ### Lane B: Website & Public Activation - [STATUS: ACTIVE/PROV]
 
@@ -37,7 +37,9 @@ Der Homeserver 2027 ist die produktive Basis der **FraWo GbR**: ERP, Cloud, Doku
 
 - **Ziel**: Zweiter Standort für Radio (AzuraCast) und Eltern-Support (HA).
 - **Status**: Aktiv. VM 210 (Radio) und VM 360 (HA Eltern) sind online.
-- **Domaining**: Integration in den Cloudflare Tunnel von Anker via Tailscale-Bridge.
+- **Memory Pressure**: Swap 99% (7.9Gi/8.0Gi). Kritisch.
+- **Running Services**: PBS (109), n8n (110), Vaultwarden (108), AdGuard (101).
+- **Aktion**: Rightsizing von PBS und n8n erforderlich.
 
 ### Lane E: Radio & Media - [STATUS: ACTIVE]
 
@@ -45,7 +47,7 @@ Der Homeserver 2027 ist die produktive Basis der **FraWo GbR**: ERP, Cloud, Doku
 - **Status**: In Migration/Setup. IP `192.168.178.210`.
 - **Roadmap**:
   1. [ ] AzuraCast Core-Dienste auf Stockenweiler VM 210 absichern.
-  2. [ ] Media-Library Sync via Tailscale (Rethink: `rclone` vs `syncthing`).
+  2. [ ] Media-Library Sync via Tailscale (rclone).
   3. [ ] Icecast Relay auf Anker für Redundanz konfigurieren.
   4. [ ] Integration in das Odoo-CRM für Supporter-Management.
 
@@ -123,15 +125,13 @@ Der Homeserver 2027 ist die produktive Basis der **FraWo GbR**: ERP, Cloud, Doku
 
 ---
 
-## 7. Governance & Handoff
+## 7. Governance & Safety
 
-Repo SSOT and Odoo SSOT project must be updated together after material runtime changes. Any agent handoff must include:
-
-1. current runtime truth
-2. files changed
-3. verification commands
-4. rollback or follow-up notes
-5. whether Odoo project tasks were synced
+### Agentic Control Policy (V1.0)
+- **Analyze-First:** Jeder Agent muss vor einer Änderung den Ist-Zustand dokumentieren.
+- **No-Wildcard:** Destruktive Befehle dürfen keine Wildcards enthalten.
+- **Handoff SSOT:** Jede Runtime-Änderung muss im Repo SSOT (MASTERPLAN.md) und Odoo reflektiert werden.
+- **Guardian:** Antigravity überwacht OpenClaw bei kritischen Infrastruktur-Eingriffen.
 
 ---
 

@@ -1,43 +1,44 @@
 # Platform Health Audit
 
-- Generated at: `2026-04-18T11:25:05+02:00`
-- Anker management path: `root@100.69.179.87`
-- Stockenweiler management path: `stock-pve`
+- Generated at: `2026-05-03T15:24:46+02:00`
+- Anker management path: `pve-anker`
+- Stockenweiler management path: `pve-stock`
 
 ## Summary
 
-- Top priority issue: Stockenweiler host is under real memory pressure: swap used `5.64 GiB` / `8.0 GiB`.
-- Frontdoors green: `0` / `8`
-- Odoo runtime green: `false`
-- Blockers: `4` / optimization candidates: `3` / strategic recommendations: `4`
+- Top priority issue: Stockenweiler host is under real memory pressure: swap used `7.95 GiB` / `8.0 GiB`.
+- Frontdoors green: `3` / `8`
+- Odoo runtime green: `true`
+- Blockers: `1` / optimization candidates: `5` / strategic recommendations: `4`
 
 ## Anker Host
 
-- Host: `proxmox-anker` / `pve-manager/9.1.6/71482d1833ded40a`
-- Memory used: `11.82 GiB` / `15.46 GiB` (`76.4%`) 
-- Rootfs used: `20.28 GiB` / `67.61 GiB` (`30.0%`) 
-- Swap used: `5.01 GiB` / `8.0 GiB` (`62.6%`) 
+- Host: `proxmox-anker` / `pve-manager/9.1.9/ee7bad0a3d1546c9`
+- Memory used: `10.09 GiB` / `15.46 GiB` (`65.3%`) 
+- Rootfs used: `28.17 GiB` / `67.61 GiB` (`41.7%`) 
+- Swap used: `2.29 GiB` / `8.0 GiB` (`28.6%`) 
 - Storages:
-  - `local-lvm` `lvmthin` active=`true` used=`71.4%`
-  - `stockenweiler-data` `nfs` active=`true` used=`30.4%`
-  - `local` `dir` active=`true` used=`30.0%`
-  - `google-drive` `dir` active=`true` used=`20.9%`
+  - `local-lvm` `lvmthin` active=`true` used=`89.5%`
+  - `local` `dir` active=`true` used=`41.7%`
+  - `pbs-usb` `dir` active=`true` used=`41.7%`
+  - `stockenweiler-data` `nfs` active=`true` used=`31.7%`
+  - `google-drive` `dir` active=`true` used=`28.0%`
 
 ## Stockenweiler Host
 
 - Host: `pve` / `pve-manager/9.1.4/5ac30304265fbd8e`
-- Memory used: `9.64 GiB` / `15.5 GiB` (`62.2%`) 
-- Rootfs used: `20.59 GiB` / `67.73 GiB` (`30.4%`) 
-- Swap used: `5.64 GiB` / `8.0 GiB` (`70.6%`) 
+- Memory used: `12.33 GiB` / `15.5 GiB` (`79.6%`) 
+- Rootfs used: `21.45 GiB` / `67.73 GiB` (`31.7%`) 
+- Swap used: `7.95 GiB` / `8.0 GiB` (`99.4%`) 
 - Storages:
-  - `hdd-backup` `dir` active=`true` used=`85.6%`
-  - `local-lvm` `lvmthin` active=`true` used=`64.8%`
-  - `local` `dir` active=`true` used=`30.4%`
+  - `hdd-backup` `dir` active=`true` used=`76.0%`
+  - `local-lvm` `lvmthin` active=`true` used=`56.6%`
+  - `local` `dir` active=`true` used=`31.7%`
   - `anker-music` `nfs` active=`false` used=`0.0%`
 
 ## Runtime Notes
 
-- Odoo direct HTTP: `200` / frontdoor HTTP: `000`
+- Odoo direct HTTP: `200` / frontdoor HTTP: `200`
 - Odoo assessment: `runtime_green_but_production_profile_pending`
 - AzuraCast role: `frawo_hobby_media_engine`
 - Listener binding recommendation: Use Odoo for CRM, website, portal, newsletters, sponsors, and supporter flows; keep AzuraCast as streaming/schedule/metadata engine.
@@ -51,16 +52,15 @@
 
 ## Blockers
 
-- Stockenweiler host is under real memory pressure: swap used `5.64 GiB` / `8.0 GiB`.
-- Stockenweiler storage `hdd-backup` is at `85.6%` and should not receive new backup or migration load yet.
-- VM 240 PBS is still stopped, so there is no current green dedicated PBS runtime on Anker.
-- Odoo frontdoor is not green from StudioPC: HTTP `000`.
+- Stockenweiler host is under real memory pressure: swap used `7.95 GiB` / `8.0 GiB`.
 
 ## Optimization Candidates
 
-- Anker guest `toolbox` (`100`) runs at only `3.9%` RAM use and is a later rightsizing candidate.
-- Anker guest `storage-node` (`110`) runs at only `3.1%` RAM use and is a later rightsizing candidate.
+- Anker guest `PBS-FraWo` (`240`) runs at only `1.0%` RAM use and is a later rightsizing candidate.
+- Anker guest `storage-node` (`110`) runs at only `4.1%` RAM use and is a later rightsizing candidate.
 - Anker guest `vaultwarden` (`120`) runs at only `5.9%` RAM use and is a later rightsizing candidate.
+- Stockenweiler guest `homeassistant-eltern` (`360`) is at `93.8%` RAM use and should be reviewed before adding workloads.
+- Stockenweiler guest `azuracast-vm` (`210`) is at `86.1%` RAM use and should be reviewed before adding workloads.
 
 ## Strategic Recommendations
 

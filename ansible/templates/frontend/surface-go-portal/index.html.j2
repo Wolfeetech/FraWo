@@ -7,21 +7,21 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #020204;
-            --sidebar-bg: rgba(8, 8, 12, 0.8);
+            --bg: #030406;
+            --sidebar-bg: rgba(6, 8, 12, 0.85);
             --accent: #00e5ff;
             --accent-glow: rgba(0, 229, 255, 0.4);
-            --secondary: #ff00ea;
+            --secondary: #00ffa2;
             --success: #00ffa2;
-            --error: #ff4d4d;
-            --text-main: #f0f0f5;
-            --text-muted: #888899;
+            --error: #ff3d71;
+            --text-main: #f0f4f8;
+            --text-muted: #94a3b8;
             --font-heading: 'Outfit', sans-serif;
-            --font-body: 'Inter', sans-serif;
-            --card-bg: rgba(20, 20, 25, 0.6);
+            --font-body: 'Outfit', sans-serif;
+            --card-bg: rgba(15, 23, 42, 0.6);
             --border: rgba(255, 255, 255, 0.08);
-            --touch-target: 64px;
-            --glass: blur(25px) saturate(180%);
+            --touch-target: 72px;
+            --glass: blur(30px) saturate(200%);
         }
 
         * {
@@ -33,7 +33,7 @@
         }
 
         body {
-            background: radial-gradient(circle at 50% -20%, #1a1a2e 0%, var(--bg) 70%);
+            background: radial-gradient(circle at 20% 0%, #0f172a 0%, var(--bg) 60%);
             color: var(--text-main);
             font-family: var(--font-body);
             height: 100vh;
@@ -229,6 +229,33 @@
             line-height: 1.4;
         }
 
+        /* Alerts */
+        #alerts-container {
+            grid-column: 1 / -1;
+            margin-bottom: 20px;
+        }
+        .alert {
+            padding: 20px 30px;
+            border-radius: 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            backdrop-filter: var(--glass);
+            border: 1px solid var(--border);
+            animation: slideDown 0.5s ease-out;
+        }
+        .alert.critical {
+            background: rgba(255, 61, 113, 0.15);
+            border-color: var(--error);
+            color: var(--error);
+            box-shadow: 0 0 30px rgba(255, 61, 113, 0.2);
+        }
+        @keyframes slideDown {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
         /* AI Chat Panel - Professional */
         .chat-panel {
             background: rgba(15, 15, 20, 0.4);
@@ -401,8 +428,11 @@
     <div id="loader"><div class="spinner"></div><div style="font-weight:bold; letter-spacing:2px;">LOADING SERVICE...</div></div>
 
     <nav class="sidebar">
-        <div class="nav-item home-btn active" onclick="showDashboard()">
+        <div class="nav-item" onclick="showDashboard()">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        </div>
+        <div class="nav-item" onclick="showMonitor()">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
         </div>
         <div class="nav-item" onclick="toggleChat()">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
@@ -415,15 +445,20 @@
 
     <div class="stage">
         <header>
-            <div class="logo">OPEN<span>CLAW</span> 3.1</div>
+            <div class="logo">OPEN<span style="color: var(--accent); text-shadow: 0 0 20px var(--accent-glow);">CLAW</span> <small style="font-size: 0.8rem; opacity: 0.6; margin-left: 10px;">V3.1 AGENTIC</small></div>
             <div class="system-status">
-                <div class="status-pill"><div class="dot online" id="s-brain"></div> STUDIO</div>
-                <div class="status-pill"><div class="dot online" id="s-cloud"></div> CLOUD</div>
-                <div id="clock" style="font-size: 1.4rem; font-weight: 700; color: var(--accent);">00:00</div>
+                <div class="status-pill"><div class="dot online" id="s-brain"></div> STUDIO-PC</div>
+                <div class="status-pill"><div class="dot online" id="s-cloud"></div> ANKER-NODE</div>
+                <div id="clock" style="font-size: 1.4rem; font-weight: 700; color: var(--accent); margin-left: 20px;">00:00</div>
             </div>
         </header>
 
         <div class="view-container" id="main-view">
+            <div id="alerts-container">
+                <div class="alert critical" id="mem-alert" style="display: none;">
+                    ⚠️ STOCKENWEILER MEMORY PRESSURE: Swap 99% - Optimization required!
+                </div>
+            </div>
             <div class="dashboard-grid">
                 {% for action in surface_go_actions_manifest.actions %}
                 {% if action.status == 'ready' %}
@@ -440,6 +475,41 @@
                 </div>
                 {% endif %}
                 {% endfor %}
+            </div>
+
+            <!-- Monitor View (Hidden by Default) -->
+            <div id="monitor-view" style="display: none; grid-column: 1 / -1;">
+                <div class="dashboard-grid" style="grid-template-columns: repeat(2, 1fr);">
+                    <div class="service-card" style="text-align: left; align-items: flex-start;">
+                        <div class="service-name" style="color: var(--accent);">📡 SITE: ANKER</div>
+                        <div style="width: 100%; margin-top: 20px;">
+                            <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>CPU Load</span><span>24%</span></div>
+                            <div style="width:100%; height:8px; background:rgba(255,255,255,0.1); border-radius:4px;"><div style="width:24%; height:100%; background:var(--accent); border-radius:4px; box-shadow: 0 0 10px var(--accent);"></div></div>
+                        </div>
+                        <div style="width: 100%; margin-top: 20px;">
+                            <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>RAM Usage</span><span>10.4 GB</span></div>
+                            <div style="width:100%; height:8px; background:rgba(255,255,255,0.1); border-radius:4px;"><div style="width:67%; height:100%; background:var(--secondary); border-radius:4px;"></div></div>
+                        </div>
+                    </div>
+                    <div class="service-card" style="text-align: left; align-items: flex-start;">
+                        <div class="service-name" style="color: #ff00ff;">📡 SITE: STOCKENWEILER</div>
+                        <div style="width: 100%; margin-top: 20px;">
+                            <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>Swap Pressure</span><span id="mon-swap">7.8 GB</span></div>
+                            <div style="width:100%; height:8px; background:rgba(255,255,255,0.1); border-radius:4px;"><div id="mon-swap-bar" style="width:97%; height:100%; background:#ff00ff; border-radius:4px; box-shadow: 0 0 10px #ff00ff;"></div></div>
+                        </div>
+                        <div style="width: 100%; margin-top: 20px;">
+                            <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>Media Sync</span><span>ACTIVE</span></div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted);">rclone: anker -> stock (320 kbps MP3)</div>
+                        </div>
+                    </div>
+                    <div class="service-card" style="grid-column: 1 / -1; text-align: left;">
+                        <div class="service-name">📋 ODOO LIVE TASKS</div>
+                        <div id="odoo-tasks-live" style="margin-top:20px; display:flex; flex-direction:column; gap:10px;">
+                            <div style="padding:10px; background:rgba(255,255,255,0.03); border-left:4px solid var(--accent);">[Lane E] Radio & Media - Synchronizing Library...</div>
+                            <div style="padding:10px; background:rgba(255,255,255,0.03); border-left:4px solid var(--secondary);">[Lane D] Stockenweiler - Memory Remediation Done</div>
+                        </div>
+                    </div>
+                </div>
             </div>
             </div>
 
@@ -501,6 +571,15 @@
             layer.style.display = 'none';
             document.getElementById('main-view').style.filter = 'none';
             document.getElementById('main-frame').src = '';
+            document.querySelector('.dashboard-grid').style.display = 'grid';
+            document.getElementById('monitor-view').style.display = 'none';
+        }
+
+        function showMonitor() {
+            document.querySelector('.dashboard-grid').style.display = 'none';
+            document.getElementById('monitor-view').style.display = 'block';
+            document.getElementById('iframe-layer').style.display = 'none';
+            document.getElementById('main-view').style.filter = 'none';
         }
 
         function iframeBack() {
@@ -566,6 +645,15 @@
                 } else {
                     brainDot.classList.remove('online');
                 }
+
+                // Handle Health Alerts
+                const memAlert = document.getElementById('mem-alert');
+                if (data.health && data.health.blockers > 0) {
+                    memAlert.style.display = 'flex';
+                } else {
+                    memAlert.style.display = 'none';
+                }
+
             } catch (e) { 
                 console.error("Status fetch failed"); 
                 document.getElementById('s-brain').classList.remove('online');
