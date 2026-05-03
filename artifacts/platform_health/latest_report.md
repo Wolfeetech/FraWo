@@ -1,12 +1,12 @@
 # Platform Health Audit
 
-- Generated at: `2026-05-03T15:24:46+02:00`
+- Generated at: `2026-05-03T15:45:33+02:00`
 - Anker management path: `pve-anker`
 - Stockenweiler management path: `pve-stock`
 
 ## Summary
 
-- Top priority issue: Stockenweiler host is under real memory pressure: swap used `7.95 GiB` / `8.0 GiB`.
+- Top priority issue: Stockenweiler host is under real memory pressure: swap used `7.99 GiB` / `8.0 GiB`.
 - Frontdoors green: `3` / `8`
 - Odoo runtime green: `true`
 - Blockers: `1` / optimization candidates: `5` / strategic recommendations: `4`
@@ -14,9 +14,9 @@
 ## Anker Host
 
 - Host: `proxmox-anker` / `pve-manager/9.1.9/ee7bad0a3d1546c9`
-- Memory used: `10.09 GiB` / `15.46 GiB` (`65.3%`) 
+- Memory used: `10.08 GiB` / `15.46 GiB` (`65.2%`) 
 - Rootfs used: `28.17 GiB` / `67.61 GiB` (`41.7%`) 
-- Swap used: `2.29 GiB` / `8.0 GiB` (`28.6%`) 
+- Swap used: `2.28 GiB` / `8.0 GiB` (`28.6%`) 
 - Storages:
   - `local-lvm` `lvmthin` active=`true` used=`89.5%`
   - `local` `dir` active=`true` used=`41.7%`
@@ -27,9 +27,9 @@
 ## Stockenweiler Host
 
 - Host: `pve` / `pve-manager/9.1.4/5ac30304265fbd8e`
-- Memory used: `12.33 GiB` / `15.5 GiB` (`79.6%`) 
+- Memory used: `12.32 GiB` / `15.5 GiB` (`79.5%`) 
 - Rootfs used: `21.45 GiB` / `67.73 GiB` (`31.7%`) 
-- Swap used: `7.95 GiB` / `8.0 GiB` (`99.4%`) 
+- Swap used: `7.99 GiB` / `8.0 GiB` (`99.9%`) 
 - Storages:
   - `hdd-backup` `dir` active=`true` used=`76.0%`
   - `local-lvm` `lvmthin` active=`true` used=`56.6%`
@@ -52,15 +52,15 @@
 
 ## Blockers
 
-- Stockenweiler host is under real memory pressure: swap used `7.95 GiB` / `8.0 GiB`.
+- Stockenweiler host is under real memory pressure: swap used `7.99 GiB` / `8.0 GiB`.
 
 ## Optimization Candidates
 
 - Anker guest `PBS-FraWo` (`240`) runs at only `1.0%` RAM use and is a later rightsizing candidate.
-- Anker guest `storage-node` (`110`) runs at only `4.1%` RAM use and is a later rightsizing candidate.
+- Anker guest `storage-node` (`110`) runs at only `3.7%` RAM use and is a later rightsizing candidate.
 - Anker guest `vaultwarden` (`120`) runs at only `5.9%` RAM use and is a later rightsizing candidate.
-- Stockenweiler guest `homeassistant-eltern` (`360`) is at `93.8%` RAM use and should be reviewed before adding workloads.
-- Stockenweiler guest `azuracast-vm` (`210`) is at `86.1%` RAM use and should be reviewed before adding workloads.
+- Stockenweiler guest `homeassistant-eltern` (`360`) is at `94.0%` RAM use and should be reviewed before adding workloads.
+- Stockenweiler guest `azuracast-vm` (`210`) is at `86.3%` RAM use and should be reviewed before adding workloads.
 
 ## Strategic Recommendations
 

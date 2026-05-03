@@ -460,21 +460,13 @@
                 </div>
             </div>
             <div class="dashboard-grid">
-                {% for action in surface_go_actions_manifest.actions %}
-                {% if action.status == 'ready' %}
-                <div class="service-card" onclick="openService('{{ action.target_url }}')">
-                    <div class="service-icon">
-                        {% if action.group == 'Dokumente' %}☁️
-                        {% elif action.group == 'Odoo' %}💼
-                        {% elif action.group == 'Radio' %}📻
-                        {% elif action.group == 'Stockenweiler' %}🏠
-                        {% else %}🚀{% endif %}
-                    </div>
-                    <div class="service-name">{{ action.label }}</div>
-                    <div class="service-desc">{{ action.group }}</div>
-                </div>
-                {% endif %}
-                {% endfor %}
+                
+                
+                
+                
+                
+                
+                
             </div>
 
             <!-- Monitor View (Hidden by Default) -->

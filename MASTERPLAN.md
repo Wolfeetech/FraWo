@@ -66,29 +66,29 @@ Der Homeserver 2027 ist die produktive Basis der **FraWo GbR**: ERP, Cloud, Doku
 
 ### Aktuelle Topologie 2026-04-22
 
-| ID | Typ | Dienst | IP | Status |
-| --- | --- | --- | --- | --- |
-| 100 | CT | Toolbox / Caddy / AdGuard / Jellyfin | `10.1.0.20` | LIVE |
-| 101 | CT | AdGuard Slave | `10.1.0.101` | LIVE |
-| 110 | CT | Storage Node / SMB / NFS | `10.1.0.30` | LIVE |
-| 120 | CT | Vaultwarden | `10.1.0.26:8080` | LIVE |
-| 200 | VM | Nextcloud | `10.1.0.21:80` | LIVE |
-| 210 | VM | Home Assistant OS | `10.1.0.24:8123` | LIVE |
-| 220 | VM | Odoo / Website Origin | `10.1.0.22:8069` | LIVE |
-| 230 | VM | Paperless | `10.1.0.23:8000` | LIVE |
-| 240 | VM | PBS | `10.1.0.x` | watch / verify |
+| ID  | Typ | Dienst                               | IP               | Status         |
+| --- | --- | ------------------------------------ | ---------------- | -------------- |
+| 100 | CT  | Toolbox / Caddy / AdGuard / Jellyfin | `10.1.0.20`      | LIVE           |
+| 101 | CT  | AdGuard Slave                        | `10.1.0.101`     | LIVE           |
+| 110 | CT  | Storage Node / SMB / NFS             | `10.1.0.30`      | LIVE           |
+| 120 | CT  | Vaultwarden                          | `10.1.0.26:8080` | LIVE           |
+| 200 | VM  | Nextcloud                            | `10.1.0.21:80`   | LIVE           |
+| 210 | VM  | Home Assistant OS                    | `10.1.0.24:8123` | LIVE           |
+| 220 | VM  | Odoo / Website Origin                | `10.1.0.22:8069` | LIVE           |
+| 230 | VM  | Paperless                            | `10.1.0.23:8000` | LIVE           |
+| 240 | VM  | PBS                                  | `10.1.0.x`       | watch / verify |
 
 ### Caddy Frontdoors
 
-| Domain | Backend | Status |
-| --- | --- | --- |
-| `portal.hs27.internal` | local `/srv/portal` | `HTTP 200` |
-| `odoo.hs27.internal` | `10.1.0.22:8069` | `HTTP 200` |
-| `vault.hs27.internal` | `10.1.0.26:8080` | `HTTP 200` |
-| `ha.hs27.internal` | `10.1.0.24:8123` | `HTTP 200` |
-| `cloud.hs27.internal` | `10.1.0.21:80` | `HTTP 302` login/HTTPS redirect |
-| `paperless.hs27.internal` | `10.1.0.23:8000` | `HTTP 302` login redirect |
-| `media.hs27.internal` | `10.1.0.20:8096` | `HTTP 302` Jellyfin login redirect |
+| Domain                    | Backend             | Status                             |
+| ------------------------- | ------------------- | ---------------------------------- |
+| `portal.hs27.internal`    | local `/srv/portal` | `HTTP 200`                         |
+| `odoo.hs27.internal`      | `10.1.0.22:8069`    | `HTTP 200`                         |
+| `vault.hs27.internal`     | `10.1.0.26:8080`    | `HTTP 200`                         |
+| `ha.hs27.internal`        | `10.1.0.24:8123`    | `HTTP 200`                         |
+| `cloud.hs27.internal`     | `10.1.0.21:80`      | `HTTP 302` login/HTTPS redirect    |
+| `paperless.hs27.internal` | `10.1.0.23:8000`    | `HTTP 302` login redirect          |
+| `media.hs27.internal`     | `10.1.0.20:8096`    | `HTTP 302` Jellyfin login redirect |
 
 ---
 
