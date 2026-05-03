@@ -1,6 +1,6 @@
 # Platform Health Audit
 
-- Generated at: `2026-05-03T15:46:21+02:00`
+- Generated at: `2026-05-03T16:02:43+02:00`
 - Anker management path: `pve-anker`
 - Stockenweiler management path: `pve-stock`
 
@@ -16,20 +16,20 @@
 - Host: `proxmox-anker` / `pve-manager/9.1.9/ee7bad0a3d1546c9`
 - Memory used: `10.07 GiB` / `15.46 GiB` (`65.1%`) 
 - Rootfs used: `28.17 GiB` / `67.61 GiB` (`41.7%`) 
-- Swap used: `2.28 GiB` / `8.0 GiB` (`28.6%`) 
+- Swap used: `2.28 GiB` / `8.0 GiB` (`28.5%`) 
 - Storages:
   - `local-lvm` `lvmthin` active=`true` used=`89.5%`
-  - `pbs-usb` `dir` active=`true` used=`41.7%`
   - `local` `dir` active=`true` used=`41.7%`
+  - `pbs-usb` `dir` active=`true` used=`41.7%`
   - `stockenweiler-data` `nfs` active=`true` used=`31.7%`
   - `google-drive` `dir` active=`true` used=`28.0%`
 
 ## Stockenweiler Host
 
 - Host: `pve` / `pve-manager/9.1.4/5ac30304265fbd8e`
-- Memory used: `12.38 GiB` / `15.5 GiB` (`79.9%`) 
+- Memory used: `12.34 GiB` / `15.5 GiB` (`79.6%`) 
 - Rootfs used: `21.45 GiB` / `67.73 GiB` (`31.7%`) 
-- Swap used: `7.99 GiB` / `8.0 GiB` (`99.9%`) 
+- Swap used: `7.99 GiB` / `8.0 GiB` (`99.8%`) 
 - Storages:
   - `hdd-backup` `dir` active=`true` used=`76.0%`
   - `local-lvm` `lvmthin` active=`true` used=`56.6%`
@@ -57,10 +57,10 @@
 ## Optimization Candidates
 
 - Anker guest `PBS-FraWo` (`240`) runs at only `1.0%` RAM use and is a later rightsizing candidate.
-- Anker guest `storage-node` (`110`) runs at only `3.9%` RAM use and is a later rightsizing candidate.
+- Anker guest `storage-node` (`110`) runs at only `4.2%` RAM use and is a later rightsizing candidate.
 - Anker guest `vaultwarden` (`120`) runs at only `5.9%` RAM use and is a later rightsizing candidate.
-- Stockenweiler guest `homeassistant-eltern` (`360`) is at `94.0%` RAM use and should be reviewed before adding workloads.
-- Stockenweiler guest `azuracast-vm` (`210`) is at `87.1%` RAM use and should be reviewed before adding workloads.
+- Stockenweiler guest `homeassistant-eltern` (`360`) is at `94.1%` RAM use and should be reviewed before adding workloads.
+- Stockenweiler guest `azuracast-vm` (`210`) is at `86.6%` RAM use and should be reviewed before adding workloads.
 
 ## Strategic Recommendations
 

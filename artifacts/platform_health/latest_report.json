@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-03T15:46:21+02:00",
+  "generated_at": "2026-05-03T16:02:43+02:00",
   "access_paths": {
     "anker_management": "pve-anker",
     "stock_management": "pve-stock",
@@ -19,7 +19,7 @@
       "hostname": "proxmox-anker",
       "pve_version": "pve-manager/9.1.9/ee7bad0a3d1546c9",
       "loadavg": [
-        "0.18",
+        "0.20",
         "0.18",
         "0.18"
       ],
@@ -28,7 +28,7 @@
       "memory_used_pct": 65.1,
       "swap_used_gib": 2.28,
       "swap_total_gib": 8.0,
-      "swap_used_pct": 28.6,
+      "swap_used_pct": 28.5,
       "rootfs_used_gib": 28.17,
       "rootfs_total_gib": 67.61,
       "rootfs_used_pct": 41.7
@@ -47,18 +47,6 @@
         "content": "rootdir,images"
       },
       {
-        "storage": "pbs-usb",
-        "type": "dir",
-        "active": true,
-        "enabled": true,
-        "shared": false,
-        "used_gib": 28.17,
-        "avail_gib": 35.96,
-        "total_gib": 67.61,
-        "used_pct": 41.7,
-        "content": "rootdir,images,backup"
-      },
-      {
         "storage": "local",
         "type": "dir",
         "active": true,
@@ -71,6 +59,18 @@
         "content": "images,rootdir"
       },
       {
+        "storage": "pbs-usb",
+        "type": "dir",
+        "active": true,
+        "enabled": true,
+        "shared": false,
+        "used_gib": 28.17,
+        "avail_gib": 35.96,
+        "total_gib": 67.61,
+        "used_pct": 41.7,
+        "content": "backup,rootdir,images"
+      },
+      {
         "storage": "stockenweiler-data",
         "type": "nfs",
         "active": true,
@@ -80,7 +80,7 @@
         "avail_gib": 42.79,
         "total_gib": 67.73,
         "used_pct": 31.7,
-        "content": "iso,backup,images"
+        "content": "images,iso,backup"
       },
       {
         "storage": "google-drive",
@@ -92,7 +92,7 @@
         "avail_gib": 3709.92,
         "total_gib": 5150.0,
         "used_pct": 28.0,
-        "content": "images,iso,backup"
+        "content": "backup,iso,images"
       },
       {
         "storage": "ssd2tb",
@@ -104,7 +104,7 @@
         "avail_gib": 1686.24,
         "total_gib": 1832.7,
         "used_pct": 2.9,
-        "content": "iso,rootdir,snippets,backup,vztmpl,images"
+        "content": "iso,snippets,images,vztmpl,rootdir,backup"
       }
     ],
     "resources": [
@@ -113,14 +113,14 @@
         "name": "toolbox",
         "type": "lxc",
         "status": "running",
-        "cpu": 0.3,
-        "mem_used_gib": 0.81,
+        "cpu": 0.5,
+        "mem_used_gib": 0.89,
         "mem_max_gib": 2.0,
-        "mem_used_pct": 40.4,
+        "mem_used_pct": 44.4,
         "disk_used_gib": 11.98,
         "disk_max_gib": 12.69,
         "disk_used_pct": 94.4,
-        "uptime_seconds": 375484
+        "uptime_seconds": 376462
       },
       {
         "vmid": 101,
@@ -141,56 +141,56 @@
         "name": "storage-node",
         "type": "lxc",
         "status": "running",
-        "cpu": 0.0,
+        "cpu": 0.1,
         "mem_used_gib": 0.04,
         "mem_max_gib": 1.0,
-        "mem_used_pct": 3.9,
+        "mem_used_pct": 4.2,
         "disk_used_gib": 82.11,
         "disk_max_gib": 97.87,
         "disk_used_pct": 83.9,
-        "uptime_seconds": 375487
+        "uptime_seconds": 376465
       },
       {
         "vmid": 120,
         "name": "vaultwarden",
         "type": "lxc",
         "status": "running",
-        "cpu": 0.1,
+        "cpu": 0.0,
         "mem_used_gib": 0.06,
         "mem_max_gib": 1.0,
         "mem_used_pct": 5.9,
         "disk_used_gib": 1.27,
         "disk_max_gib": 7.78,
         "disk_used_pct": 16.3,
-        "uptime_seconds": 375484
+        "uptime_seconds": 376462
       },
       {
         "vmid": 200,
         "name": "nextcloud",
         "type": "qemu",
         "status": "running",
-        "cpu": 3.3,
-        "mem_used_gib": 1.51,
+        "cpu": 1.2,
+        "mem_used_gib": 1.53,
         "mem_max_gib": 3.0,
-        "mem_used_pct": 50.2,
+        "mem_used_pct": 50.9,
         "disk_used_gib": 0.0,
         "disk_max_gib": 32.0,
         "disk_used_pct": 0.0,
-        "uptime_seconds": 375483
+        "uptime_seconds": 376462
       },
       {
         "vmid": 210,
         "name": "haos",
         "type": "qemu",
         "status": "running",
-        "cpu": 0.3,
+        "cpu": 0.4,
         "mem_used_gib": 2.25,
         "mem_max_gib": 3.0,
         "mem_used_pct": 75.0,
         "disk_used_gib": 0.0,
         "disk_max_gib": 32.0,
         "disk_used_pct": 0.0,
-        "uptime_seconds": 375482
+        "uptime_seconds": 376460
       },
       {
         "vmid": 220,
@@ -204,35 +204,35 @@
         "disk_used_gib": 0.0,
         "disk_max_gib": 32.0,
         "disk_used_pct": 0.0,
-        "uptime_seconds": 121454
+        "uptime_seconds": 122432
       },
       {
         "vmid": 230,
         "name": "paperless",
         "type": "qemu",
         "status": "running",
-        "cpu": 1.5,
-        "mem_used_gib": 2.07,
+        "cpu": 2.1,
+        "mem_used_gib": 2.06,
         "mem_max_gib": 3.0,
-        "mem_used_pct": 69.0,
+        "mem_used_pct": 68.6,
         "disk_used_gib": 0.0,
         "disk_max_gib": 32.0,
         "disk_used_pct": 0.0,
-        "uptime_seconds": 375474
+        "uptime_seconds": 376453
       },
       {
         "vmid": 240,
         "name": "PBS-FraWo",
         "type": "qemu",
         "status": "running",
-        "cpu": 3.7,
+        "cpu": 3.8,
         "mem_used_gib": 0.02,
         "mem_max_gib": 2.0,
         "mem_used_pct": 1.0,
         "disk_used_gib": 0.0,
         "disk_max_gib": 32.0,
         "disk_used_pct": 0.0,
-        "uptime_seconds": 277644
+        "uptime_seconds": 278622
       }
     ],
     "direct_checks": {
@@ -247,16 +247,16 @@
       "hostname": "pve",
       "pve_version": "pve-manager/9.1.4/5ac30304265fbd8e",
       "loadavg": [
-        "0.79",
-        "0.83",
-        "0.89"
+        "1.29",
+        "1.33",
+        "1.08"
       ],
-      "memory_used_gib": 12.38,
+      "memory_used_gib": 12.34,
       "memory_total_gib": 15.5,
-      "memory_used_pct": 79.9,
+      "memory_used_pct": 79.6,
       "swap_used_gib": 7.99,
       "swap_total_gib": 8.0,
-      "swap_used_pct": 99.9,
+      "swap_used_pct": 99.8,
       "rootfs_used_gib": 21.45,
       "rootfs_total_gib": 67.73,
       "rootfs_used_pct": 31.7
@@ -272,7 +272,7 @@
         "avail_gib": 223.88,
         "total_gib": 931.48,
         "used_pct": 76.0,
-        "content": "rootdir,images,backup"
+        "content": "images,backup,rootdir"
       },
       {
         "storage": "local-lvm",
@@ -284,7 +284,7 @@
         "avail_gib": 68.16,
         "total_gib": 157.23,
         "used_pct": 56.6,
-        "content": "rootdir,images"
+        "content": "images,rootdir"
       },
       {
         "storage": "local",
@@ -308,7 +308,7 @@
         "avail_gib": 0.0,
         "total_gib": 0.0,
         "used_pct": 0.0,
-        "content": "vztmpl,snippets,images,iso,backup,rootdir"
+        "content": "images,backup,rootdir,iso,snippets,vztmpl"
       }
     ],
     "resources": [
@@ -320,25 +320,25 @@
         "cpu": 0.0,
         "mem_used_gib": 0.11,
         "mem_max_gib": 0.5,
-        "mem_used_pct": 21.9,
+        "mem_used_pct": 21.8,
         "disk_used_gib": 4.12,
         "disk_max_gib": 7.78,
         "disk_used_pct": 53.0,
-        "uptime_seconds": 1040682
+        "uptime_seconds": 1041672
       },
       {
         "vmid": 103,
         "name": "npm",
         "type": "lxc",
         "status": "running",
-        "cpu": 0.4,
+        "cpu": 0.3,
         "mem_used_gib": 0.16,
         "mem_max_gib": 0.5,
-        "mem_used_pct": 31.6,
-        "disk_used_gib": 2.66,
+        "mem_used_pct": 31.8,
+        "disk_used_gib": 2.77,
         "disk_max_gib": 9.75,
-        "disk_used_pct": 27.3,
-        "uptime_seconds": 1040682
+        "disk_used_pct": 28.5,
+        "uptime_seconds": 1041672
       },
       {
         "vmid": 106,
@@ -352,21 +352,21 @@
         "disk_used_gib": 2.01,
         "disk_max_gib": 4.84,
         "disk_used_pct": 41.4,
-        "uptime_seconds": 1040682
+        "uptime_seconds": 1041672
       },
       {
         "vmid": 108,
         "name": "vaultwarden",
         "type": "lxc",
         "status": "running",
-        "cpu": 0.2,
+        "cpu": 0.3,
         "mem_used_gib": 0.05,
         "mem_max_gib": 0.5,
         "mem_used_pct": 9.6,
         "disk_used_gib": 1.86,
         "disk_max_gib": 9.75,
         "disk_used_pct": 19.1,
-        "uptime_seconds": 1040682
+        "uptime_seconds": 1041672
       },
       {
         "vmid": 109,
@@ -457,28 +457,28 @@
         "name": "azuracast-vm",
         "type": "qemu",
         "status": "running",
-        "cpu": 12.0,
-        "mem_used_gib": 3.48,
+        "cpu": 11.5,
+        "mem_used_gib": 3.46,
         "mem_max_gib": 4.0,
-        "mem_used_pct": 87.1,
+        "mem_used_pct": 86.6,
         "disk_used_gib": 0.0,
         "disk_max_gib": 64.0,
         "disk_used_pct": 0.0,
-        "uptime_seconds": 769731
+        "uptime_seconds": 770720
       },
       {
         "vmid": 360,
         "name": "homeassistant-eltern",
         "type": "qemu",
         "status": "running",
-        "cpu": 1.9,
+        "cpu": 2.0,
         "mem_used_gib": 3.76,
         "mem_max_gib": 4.0,
-        "mem_used_pct": 94.0,
+        "mem_used_pct": 94.1,
         "disk_used_gib": 0.0,
         "disk_max_gib": 42.0,
         "disk_used_pct": 0.0,
-        "uptime_seconds": 1040721
+        "uptime_seconds": 1041711
       }
     ],
     "selected_pct_configs": {
@@ -502,47 +502,47 @@
       "curl_exit_code": 0,
       "http_code": "400",
       "remote_ip": "100.82.26.53",
-      "time_total": "0.052125",
+      "time_total": "0.052263",
       "stderr": ""
     },
     "home_assistant": {
       "url": "http://100.82.26.53:8443/",
       "curl_exit_code": 7,
       "http_code": "000",
-      "remote_ip": "2.164183",
+      "remote_ip": "2.169206",
       "time_total": "",
-      "stderr": "curl: (7) Failed to connect to 100.82.26.53 port 8443 after 2164 ms: Could not connect to server"
+      "stderr": "curl: (7) Failed to connect to 100.82.26.53 port 8443 after 2169 ms: Could not connect to server"
     },
     "odoo": {
       "url": "http://100.82.26.53:8444/web/login",
       "curl_exit_code": 0,
       "http_code": "200",
       "remote_ip": "100.82.26.53",
-      "time_total": "0.125132",
+      "time_total": "0.124354",
       "stderr": ""
     },
     "nextcloud": {
       "url": "http://100.82.26.53:8445/",
       "curl_exit_code": 7,
       "http_code": "000",
-      "remote_ip": "2.192765",
+      "remote_ip": "2.182409",
       "time_total": "",
-      "stderr": "curl: (7) Failed to connect to 100.82.26.53 port 8445 after 2192 ms: Could not connect to server"
+      "stderr": "curl: (7) Failed to connect to 100.82.26.53 port 8445 after 2182 ms: Could not connect to server"
     },
     "paperless": {
       "url": "http://100.82.26.53:8446/accounts/login/",
       "curl_exit_code": 7,
       "http_code": "000",
-      "remote_ip": "2.353778",
+      "remote_ip": "2.179729",
       "time_total": "",
-      "stderr": "curl: (7) Failed to connect to 100.82.26.53 port 8446 after 2354 ms: Could not connect to server"
+      "stderr": "curl: (7) Failed to connect to 100.82.26.53 port 8446 after 2179 ms: Could not connect to server"
     },
     "portal": {
       "url": "http://100.82.26.53:8447/",
       "curl_exit_code": 0,
       "http_code": "200",
       "remote_ip": "100.82.26.53",
-      "time_total": "0.052950",
+      "time_total": "0.054705",
       "stderr": ""
     },
     "radio": {
@@ -550,16 +550,16 @@
       "curl_exit_code": 0,
       "http_code": "302",
       "remote_ip": "100.82.26.53",
-      "time_total": "0.108528",
+      "time_total": "0.088725",
       "stderr": ""
     },
     "media": {
       "url": "http://100.82.26.53:8449/",
       "curl_exit_code": 7,
       "http_code": "000",
-      "remote_ip": "2.174419",
+      "remote_ip": "2.167326",
       "time_total": "",
-      "stderr": "curl: (7) Failed to connect to 100.82.26.53 port 8449 after 2174 ms: Could not connect to server"
+      "stderr": "curl: (7) Failed to connect to 100.82.26.53 port 8449 after 2167 ms: Could not connect to server"
     }
   },
   "blockers": [
@@ -567,10 +567,10 @@
   ],
   "optimization_candidates": [
     "Anker guest `PBS-FraWo` (`240`) runs at only `1.0%` RAM use and is a later rightsizing candidate.",
-    "Anker guest `storage-node` (`110`) runs at only `3.9%` RAM use and is a later rightsizing candidate.",
+    "Anker guest `storage-node` (`110`) runs at only `4.2%` RAM use and is a later rightsizing candidate.",
     "Anker guest `vaultwarden` (`120`) runs at only `5.9%` RAM use and is a later rightsizing candidate.",
-    "Stockenweiler guest `homeassistant-eltern` (`360`) is at `94.0%` RAM use and should be reviewed before adding workloads.",
-    "Stockenweiler guest `azuracast-vm` (`210`) is at `87.1%` RAM use and should be reviewed before adding workloads."
+    "Stockenweiler guest `homeassistant-eltern` (`360`) is at `94.1%` RAM use and should be reviewed before adding workloads.",
+    "Stockenweiler guest `azuracast-vm` (`210`) is at `86.6%` RAM use and should be reviewed before adding workloads."
   ],
   "strategic_recommendations": [
     "Odoo is runtime-green, but production-ready should mean a defined module/profile rollout, customer portal scope, backup/restore path, and mail/identity workflow, not only HTTP 200.",

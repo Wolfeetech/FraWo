@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #030406;
+            --bg: #1a0b2e;
             --sidebar-bg: rgba(6, 8, 12, 0.85);
             --accent: #00e5ff;
             --accent-glow: rgba(0, 229, 255, 0.4);
@@ -180,6 +180,50 @@
             gap: 30px;
             align-content: start;
         }
+
+        .monitor-sites {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .monitor-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 10px;
+        }
+        .site-name { font-weight: 700; font-size: 1.2rem; color: var(--accent); }
+        .site-metrics { display: flex; gap: 20px; margin-bottom: 15px; }
+        .metric label { display: block; font-size: 0.7rem; opacity: 0.6; text-transform: uppercase; }
+        .metric .value { font-size: 1.4rem; font-weight: 600; }
+        .metric.critical .value { color: #ff4444; text-shadow: 0 0 10px rgba(255,68,68,0.4); }
+        
+        .vm-list { font-family: 'Inter', sans-serif; font-size: 0.85rem; }
+        .vm-row { 
+            display: flex; 
+            justify-content: space-between; 
+            padding: 8px 0; 
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+        .vm-name { flex: 1; font-weight: 500; }
+        .vm-status { 
+            padding: 2px 8px; 
+            border-radius: 10px; 
+            font-size: 0.7rem; 
+            margin: 0 10px;
+            text-transform: uppercase;
+        }
+        .vm-status.running { background: rgba(0, 255, 157, 0.2); color: #00ff9d; }
+        .vm-metrics { opacity: 0.6; font-variant-numeric: tabular-nums; }
 
         .service-card {
             background: var(--card-bg);
@@ -471,39 +515,16 @@
 
             <!-- Monitor View (Hidden by Default) -->
             <div id="monitor-view" style="display: none; grid-column: 1 / -1;">
-                <div class="dashboard-grid" style="grid-template-columns: repeat(2, 1fr);">
-                    <div class="service-card" style="text-align: left; align-items: flex-start;">
-                        <div class="service-name" style="color: var(--accent);">📡 SITE: ANKER</div>
-                        <div style="width: 100%; margin-top: 20px;">
-                            <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>CPU Load</span><span>24%</span></div>
-                            <div style="width:100%; height:8px; background:rgba(255,255,255,0.1); border-radius:4px;"><div style="width:24%; height:100%; background:var(--accent); border-radius:4px; box-shadow: 0 0 10px var(--accent);"></div></div>
-                        </div>
-                        <div style="width: 100%; margin-top: 20px;">
-                            <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>RAM Usage</span><span>10.4 GB</span></div>
-                            <div style="width:100%; height:8px; background:rgba(255,255,255,0.1); border-radius:4px;"><div style="width:67%; height:100%; background:var(--secondary); border-radius:4px;"></div></div>
-                        </div>
-                    </div>
-                    <div class="service-card" style="text-align: left; align-items: flex-start;">
-                        <div class="service-name" style="color: #ff00ff;">📡 SITE: STOCKENWEILER</div>
-                        <div style="width: 100%; margin-top: 20px;">
-                            <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>Swap Pressure</span><span id="mon-swap">7.8 GB</span></div>
-                            <div style="width:100%; height:8px; background:rgba(255,255,255,0.1); border-radius:4px;"><div id="mon-swap-bar" style="width:97%; height:100%; background:#ff00ff; border-radius:4px; box-shadow: 0 0 10px #ff00ff;"></div></div>
-                        </div>
-                        <div style="width: 100%; margin-top: 20px;">
-                            <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>Media Sync</span><span>ACTIVE</span></div>
-                            <div style="font-size: 0.8rem; color: var(--text-muted);">rclone: anker -> stock (320 kbps MP3)</div>
-                        </div>
-                    </div>
-                    <div class="service-card" style="grid-column: 1 / -1; text-align: left;">
-                        <div class="service-name">📋 ODOO LIVE TASKS</div>
-                        <div id="odoo-tasks-live" style="margin-top:20px; display:flex; flex-direction:column; gap:10px;">
-                            <div style="padding:10px; background:rgba(255,255,255,0.03); border-left:4px solid var(--accent);">[Lane E] Radio & Media - Synchronizing Library...</div>
-                            <div style="padding:10px; background:rgba(255,255,255,0.03); border-left:4px solid var(--secondary);">[Lane D] Stockenweiler - Memory Remediation Done</div>
-                        </div>
+                <div class="monitor-sites" id="monitor-sites-grid">
+                    <!-- Site Cards are rendered dynamically -->
+                </div>
+                <div class="service-card" style="grid-column: 1 / -1; text-align: left;">
+                    <div class="service-name">📋 ODOO LIVE TASKS</div>
+                    <div id="monitor-task-list" style="margin-top:20px; display:flex; flex-direction:column; gap:10px;">
                     </div>
                 </div>
             </div>
-            </div>
+        </div>
 
             <div class="chat-panel" id="chat-panel">
                 <div class="chat-header">🦞 OPENCLAW AGENT</div>
@@ -546,16 +567,17 @@
         updateClock();
 
         function openService(url) {
-            const layer = document.getElementById('iframe-layer');
-            const iframe = document.getElementById('main-frame');
-            iframe.src = url;
-            layer.style.display = 'block';
-            document.getElementById('main-view').style.filter = 'blur(10px)';
-            document.getElementById('loader').style.display = 'flex';
-            
-            iframe.onload = () => {
-                document.getElementById('loader').style.display = 'none';
-            };
+            if (!url) return;
+            // Use iframe for most, direct for Odoo/Cloud
+            if (url.includes('100.82.26.53')) {
+                const layer = document.getElementById('iframe-layer');
+                const iframe = document.getElementById('main-frame');
+                iframe.src = url;
+                layer.style.display = 'block';
+                document.getElementById('main-view').style.filter = 'blur(10px)';
+            } else {
+                window.location.href = url;
+            }
         }
 
         function showDashboard() {
@@ -652,30 +674,73 @@
             }
         }
 
-        async function fetchMonitor() {
-            try {
-                const res = await fetch(`${API_BASE}/api/monitor`);
-                const data = await res.json();
-                
-                // Update Stockenweiler Swap
-                document.getElementById('mon-swap').textContent = data.sites.stockenweiler.swap;
-                const swapVal = parseInt(data.sites.stockenweiler.swap);
-                document.getElementById('mon-swap-bar').style.width = `${swapVal}%`;
-                
-                // Update Task List
-                const taskList = document.getElementById('odoo-tasks-live');
-                taskList.innerHTML = data.tasks.map(t => `
-                    <div style="padding:10px; background:rgba(255,255,255,0.03); border-left:4px solid var(--accent); animation:fadeIn 0.3s;">${t}</div>
-                `).join('');
-                
-            } catch (e) { console.error("Monitor fetch failed"); }
+        function updateMonitor() {
+            fetch(`${API_BASE}/api/monitor`)
+                .then(r => r.json())
+                .then(data => {
+                    try {
+                        // Update Site Cards
+                        const sitesGrid = document.getElementById('monitor-sites-grid');
+                        if (sitesGrid) {
+                            sitesGrid.innerHTML = '';
+                            if (data.sites) {
+                                for (const [id, site] of Object.entries(data.sites)) {
+                                    const card = document.createElement('div');
+                                    card.className = 'monitor-card';
+                                    
+                                    let vmHtml = '';
+                                    if (site.vms) {
+                                        vmHtml = `
+                                            <div class="vm-list">
+                                                ${site.vms.map(vm => `
+                                                    <div class="vm-row">
+                                                        <span class="vm-name">${vm.name}</span>
+                                                        <span class="vm-status ${vm.status}">${vm.status}</span>
+                                                        <span class="vm-metrics">${vm.cpu || '0%'} CPU</span>
+                                                    </div>
+                                                `).join('')}
+                                            </div>
+                                        `;
+                                    }
+
+                                    card.innerHTML = `
+                                        <div class="card-header">
+                                            <span class="site-name">${String(id).toUpperCase()}</span>
+                                            <span class="site-status online">ONLINE</span>
+                                        </div>
+                                        <div class="site-metrics">
+                                            <div class="metric">
+                                                <label>CPU Last</label>
+                                                <div class="value">${site.load || site.cpu || '0%'}</div>
+                                            </div>
+                                            ${site.swap ? `
+                                            <div class="metric ${parseInt(site.swap) > 90 ? 'critical' : ''}">
+                                                <label>SWAP</label>
+                                                <div class="value">${site.swap}</div>
+                                            </div>
+                                            ` : ''}
+                                        </div>
+                                        ${vmHtml}
+                                    `;
+                                    sitesGrid.appendChild(card);
+                                }
+                            }
+                        }
+                        
+                        // Update Task List
+                        const taskList = document.getElementById('monitor-task-list');
+                        if (taskList && data.tasks) {
+                            taskList.innerHTML = data.tasks.map(t => `<div style="padding:10px; background:rgba(255,255,255,0.03); border-left:4px solid var(--accent); animation:fadeIn 0.3s;">${t}</div>`).join('');
+                        }
+                    } catch (err) { console.error("Update UI failed", err); }
+                }).catch(e => console.error("Monitor fetch failed", e));
         }
 
         // Initial check and periodic refresh
         refreshSystem();
-        fetchMonitor();
+        updateMonitor();
         setInterval(refreshSystem, 30000);
-        setInterval(fetchMonitor, 10000);
+        setInterval(updateMonitor, 10000);
 
         // Prevent context menu
         document.addEventListener('contextmenu', e => e.preventDefault());
