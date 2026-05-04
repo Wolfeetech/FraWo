@@ -1,0 +1,11 @@
+[Unit]
+Description=Run HS27 Nextcloud Alias Router
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=5min
+Persistent=true
+Unit=hs27-nextcloud-alias-router.service
+
+[Install]
+WantedBy=timers.target

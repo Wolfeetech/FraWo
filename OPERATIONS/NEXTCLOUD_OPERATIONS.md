@@ -21,7 +21,7 @@ Die Storage-Integrationsregeln dazu stehen in `OPERATIONS/STORAGE_INTEGRATION_OP
 - der Shared-Posteingang `webmaster@frawo-tech.de` wird fuer Alias-Adressen nicht mehr als flache Sammel-INBOX belassen:
   - `Aliases.Agent`
   - `Aliases.Info`
-- auf `VM 200` laeuft dafuer jetzt lokal der leichte Timer `hs27-nextcloud-alias-router.timer`, der neue Alias-Mails aus `INBOX` nach Header-Adressierung in diese Ordner verschiebt
+- historisch war dafuer auf `VM 200` der lokale Timer `hs27-nextcloud-alias-router.timer` dokumentiert; die Live-Probe vom `2026-05-03` fand diesen Unit aktuell nicht mehr. Die Alias-Ordner bleiben das Zielmodell, der Router muss aber vor produktiver Nutzung neu validiert oder erneut ausgerollt werden.
 - `wolf@frawo-tech.de` bleibt bewusst in der Haupt-`INBOX`, damit der persoenliche Lesefluss nicht in einen Extra-Ordner zerlegt wird
 
 ## Normalbetrieb
@@ -52,6 +52,7 @@ Die Storage-Integrationsregeln dazu stehen in `OPERATIONS/STORAGE_INTEGRATION_OP
 - `Odoo`-Anhaenge sollen spaeter nicht ueber einen gemeinsamen Live-Filestore, sondern ueber einen kontrollierten Export-/Mirror-Pfad in Nextcloud sichtbar werden
 - der zentrale Medienpfad kann spaeter read-only ueber `Nextcloud External Storage` sichtbar gemacht werden; das ist nicht dasselbe wie ein Umzug des Nextcloud-Datadirs
 - Reachability-Fix `2026-04-09`: `VM 200 nextcloud` war auf Proxmox per Cloud-Init auf `10.1.0.24/24` gedriftet und kollidierte damit mit `HAOS`; Sollpfad ist wieder `10.1.0.21/24`, danach liefern `cloud.hs27.internal/status.php` und die mobile Frontdoor `:8445/status.php` wieder `HTTP 200`
+- externer IMAP/DNS-Pfad auf `VM 200` ist aktuell nicht belastbar verifiziert; `getent hosts imap.strato.de` blieb in der Live-Probe vom `2026-05-03` leer
 
 ## Nie Tun
 

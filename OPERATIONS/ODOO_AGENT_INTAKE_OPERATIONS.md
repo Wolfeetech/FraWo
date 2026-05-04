@@ -53,6 +53,30 @@ Dieser Runbook-Pfad beschreibt den sichere(re)n Intake fuer `agent@frawo-tech.de
   - Stage `Backlog`
   - Owner `wolf@frawo-tech.de` plus `agent@frawo-tech.de`
 
+## Runtime Drift 2026-05-03
+
+- Live-Probe via `qm guest exec 200` fand aktuell nur `homeserver-compose-nextcloud.service`.
+- Die dokumentierten Runtime-Dateien und Units fuer Alias-Router und Odoo-Intake sind auf `VM 200` derzeit nicht mehr auffindbar:
+  - `hs27-nextcloud-alias-router.service`
+  - `hs27-nextcloud-alias-router.timer`
+  - `hs27-odoo-agent-intake.service`
+  - `hs27-odoo-agent-intake.timer`
+  - `/opt/homeserver2027/tools/nextcloud_imap_alias_router.py`
+  - `/opt/homeserver2027/tools/odoo_rpc_client.py`
+  - `/opt/homeserver2027/tools/odoo_agent_intake_bridge.py`
+  - `/usr/local/sbin/nextcloud_alias_router_runner.sh`
+  - `/usr/local/sbin/odoo_agent_intake_runner.sh`
+  - `/root/.config/homeserver2027/odoo_agent_rpc.env`
+- Odoo-Board-Sync am `2026-05-03` lief deshalb direkt auf `VM 220` ueber den internen Odoo-Shell-Pfad und nicht ueber diesen `VM 200`-Intake.
+- Odoo-seitiger Faktencheck auf `VM 220`:
+  - `agent@frawo-tech.de` existiert weiterhin als Benutzer.
+  - `api_key_count` steht aktuell bei `0`; die fruehere Annahme eines vorhandenen API-Keys ist damit veraltet.
+- DNS wirkt auf `VM 200` nur oberflaechlich gesund:
+  - `resolvectl status` zeigt weiterhin `10.1.0.20` und `hs27.internal`
+  - `getent hosts imap.strato.de` lieferte leer zurueck
+  - ein direkter IMAP-Probeversuch scheiterte mit `gaierror Temporary failure in name resolution`
+- Konsequenz: dieser Runbook-Pfad ist aktuell ein Restore-Ziel und kein verifiziert produktiver Betriebsweg.
+
 ## Sicherheitsregeln
 
 - keine produktive Verarbeitung direkt aus `INBOX`
@@ -111,6 +135,8 @@ python odoo_agent_intake_bridge.py `
 - keine direkte Odoo-Fetchmail-Freigabe auf dem Shared-Postfach
 - keine automatische Klassifizierung ueber Lanes ohne echten Bedarf
 - API-Key-only-RPC blieb fuer `agent@` in dieser Session nicht belastbar; der produktive V1-Pfad nutzt deshalb vorerst einen dedizierten bot-only RPC-Secret-Pfad ausserhalb des Repos
+- vor dem naechsten echten `--apply` auf `VM 200` muessen Runtime-Dateien, root-only Secret-Pfad, IMAP-DNS-Aufloesung und ein belastbarer `agent@`-Credential-Pfad wiederhergestellt werden
+- Restore-Checkliste: `OPERATIONS/ODOO_AGENT_INTAKE_RESTORE_2026-05-03.md`
 
 ## Definition Of Done fuer den Intake
 

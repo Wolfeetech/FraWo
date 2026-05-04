@@ -1,0 +1,11 @@
+[Unit]
+Description=Run HS27 Odoo Agent Intake
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=5min
+Persistent=true
+Unit=hs27-odoo-agent-intake.service
+
+[Install]
+WantedBy=timers.target

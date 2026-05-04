@@ -475,6 +475,13 @@
   - initialer Proof-Lauf davor: `created=1`, `moved=1`
 - Zweck:
   - Odoo liest fuer `agent@` nicht die gesamte Shared-INBOX, sondern nur den bereits getrennten Ordner `Aliases.Agent`
+- Drift-Check `2026-05-03`:
+  - Live-Probe auf `VM 200` fand aktuell nur `homeserver-compose-nextcloud.service`; die dokumentierten Alias-Router- und Odoo-Intake-Units sind derzeit nicht mehr sichtbar
+  - unter `/opt/homeserver2027` ist live nur noch `stacks/nextcloud` auffindbar; die dokumentierten Runtime-Dateien fuer Alias-Router und Odoo-Intake fehlen aktuell
+  - Proxmox-Metadaten bleiben korrekt auf `10.1.0.21/24`, `nameserver 10.1.0.20` und `searchdomain hs27.internal`
+  - trotz nominell korrekter Resolver-Konfiguration blieb `getent hosts imap.strato.de` in der Live-Probe leer; der IMAP-Pfad auf `VM 200` ist damit aktuell nicht belastbar
+  - Odoo-seitig existiert `agent@frawo-tech.de` weiter, hat aber aktuell `0` API-Keys
+  - Schlussfolgerung: der am `2026-04-09` verifizierte Intake-Pfad ist aktuell nicht mehr in der damals dokumentierten Form produktiv vorhanden und muss vor Wiederverwendung gezielt restauriert werden
 
 ## Media / Wolf.EE Snapshot 2026-04-09
 

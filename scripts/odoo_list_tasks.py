@@ -1,46 +1,95 @@
+from __future__ import annotations
+
+import sys
 import xmlrpc.client
-import os
-from pathlib import Path
+from collections import Counter
+from typing import Any
 
-# Config
-ROOT = Path("c:/WORKSPACE/FraWo")
-SSH_CONFIG_PATH = ROOT / "Codex" / "ssh_config"
-DEFAULT_TOOLBOX_IP = "100.82.26.53"
+from odoo_env import resolve_connection
 
-def get_toolbox_ip():
+
+DEFAULT_URL = "http://100.82.26.53:8444"
+DEFAULT_DB = "FraWo_GbR"
+DEFAULT_USER = "wolf@frawo-tech.de"
+PROJECT_NAME_NEEDLE = "Homeserver 2027: Masterplan"
+
+
+def xmlrpc_call(
+    models: xmlrpc.client.ServerProxy,
+    db: str,
+    uid: int,
+    secret: str,
+    model: str,
+    method: str,
+    args: list[Any] | None = None,
+    kwargs: dict[str, Any] | None = None,
+) -> Any:
+    return models.execute_kw(db, uid, secret, model, method, args or [], kwargs or {})
+
+
+def format_stage(stage_value: Any) -> str:
+    if isinstance(stage_value, list) and len(stage_value) >= 2:
+        return str(stage_value[1])
+    return "-"
+
+
+def main() -> int:
     try:
-        text = SSH_CONFIG_PATH.read_text(encoding="utf-8")
-        in_block = False
-        for line in text.splitlines():
-            if line.strip().lower().startswith("host toolbox"): in_block = True
-            elif in_block and line.strip().lower().startswith("hostname "):
-                return line.split()[1].strip()
-            elif in_block and line.strip().lower().startswith("host "): in_block = False
-    except: pass
-    return DEFAULT_TOOLBOX_IP
+        settings = resolve_connection(DEFAULT_URL, DEFAULT_DB, DEFAULT_USER)
+    except Exception as exc:
+        print(exc, file=sys.stderr)
+        return 1
 
-URL = f"http://{get_toolbox_ip()}:8444"
-PASSWORD = os.environ.get("ODOO_PASSWORD") or "FraWo2027!"
+    common = xmlrpc.client.ServerProxy(f"{settings.url}/xmlrpc/2/common", allow_none=True)
+    uid = common.authenticate(settings.db, settings.user, settings.secret, {})
+    if not uid:
+        print("Authentifizierung fehlgeschlagen.", file=sys.stderr)
+        return 1
 
-def list_tasks():
-    print(f"Connecting to Odoo at {URL}...")
-    try:
-        common = xmlrpc.client.ServerProxy(f"{URL}/xmlrpc/2/common")
-        uid = common.authenticate("postgres", "wolf@frawo-tech.de", PASSWORD, {})
-        if not uid:
-            print("Authentication failed.")
-            return
-        
-        models = xmlrpc.client.ServerProxy(f"{URL}/xmlrpc/2/object")
-        tasks = models.execute_kw("postgres", uid, PASSWORD, 'project.task', 'search_read', 
-                                  [[['project_id', '=', 1]]], {'fields': ['name', 'stage_id']})
-        
-        print(f"\nAktuelle Aufgaben im Projekt 'Homeserver 2027':")
-        for t in tasks:
-            print(f"- {t['name']} (Stage: {t['stage_id'][1]})")
-                
-    except Exception as e:
-        print(f"Error: {e}")
+    models = xmlrpc.client.ServerProxy(f"{settings.url}/xmlrpc/2/object", allow_none=True)
+    project = xmlrpc_call(
+        models,
+        settings.db,
+        uid,
+        settings.secret,
+        "project.project",
+        "search_read",
+        [[["name", "ilike", PROJECT_NAME_NEEDLE]]],
+        {"fields": ["name"], "limit": 1},
+    )
+    if not project:
+        print(f"Projekt mit Name-Needle '{PROJECT_NAME_NEEDLE}' nicht gefunden.", file=sys.stderr)
+        return 1
+
+    project_record = project[0]
+    tasks = xmlrpc_call(
+        models,
+        settings.db,
+        uid,
+        settings.secret,
+        "project.task",
+        "search_read",
+        [[["project_id", "=", project_record["id"]]]],
+        {
+            "fields": ["name", "stage_id", "priority", "date_deadline", "write_date"],
+            "order": "priority desc, write_date desc",
+        },
+    )
+
+    print(f"Projekt: {project_record['name']} ({len(tasks)} Tasks)")
+    stage_counter = Counter(format_stage(task.get("stage_id")) for task in tasks)
+    for stage_name, count in sorted(stage_counter.items()):
+        print(f"- {stage_name}: {count}")
+
+    print("\nTasks:")
+    for task in tasks:
+        stage_name = format_stage(task.get("stage_id"))
+        deadline = task.get("date_deadline") or "-"
+        updated = task.get("write_date") or "-"
+        print(f"- {task['name']} | Stage: {stage_name} | Deadline: {deadline} | Updated: {updated}")
+
+    return 0
+
 
 if __name__ == "__main__":
-    list_tasks()
+    raise SystemExit(main())

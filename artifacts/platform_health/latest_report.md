@@ -1,38 +1,38 @@
 # Platform Health Audit
 
-- Generated at: `2026-05-03T16:02:43+02:00`
+- Generated at: `2026-05-04T09:18:47+02:00`
 - Anker management path: `pve-anker`
 - Stockenweiler management path: `pve-stock`
 
 ## Summary
 
-- Top priority issue: Stockenweiler host is under real memory pressure: swap used `7.99 GiB` / `8.0 GiB`.
-- Frontdoors green: `3` / `8`
+- Top priority issue: none
+- Frontdoors green: `4` / `8`
 - Odoo runtime green: `true`
-- Blockers: `1` / optimization candidates: `5` / strategic recommendations: `4`
+- Blockers: `0` / optimization candidates: `5` / strategic recommendations: `4`
 
 ## Anker Host
 
 - Host: `proxmox-anker` / `pve-manager/9.1.9/ee7bad0a3d1546c9`
-- Memory used: `10.07 GiB` / `15.46 GiB` (`65.1%`) 
-- Rootfs used: `28.17 GiB` / `67.61 GiB` (`41.7%`) 
-- Swap used: `2.28 GiB` / `8.0 GiB` (`28.5%`) 
+- Memory used: `9.1 GiB` / `15.46 GiB` (`58.9%`) 
+- Rootfs used: `28.46 GiB` / `67.61 GiB` (`42.1%`) 
+- Swap used: `0.0 GiB` / `8.0 GiB` (`0.0%`) 
 - Storages:
-  - `local-lvm` `lvmthin` active=`true` used=`89.5%`
-  - `local` `dir` active=`true` used=`41.7%`
-  - `pbs-usb` `dir` active=`true` used=`41.7%`
+  - `local-lvm` `lvmthin` active=`true` used=`89.4%`
+  - `local` `dir` active=`true` used=`42.1%`
+  - `pbs-usb` `dir` active=`true` used=`42.1%`
   - `stockenweiler-data` `nfs` active=`true` used=`31.7%`
   - `google-drive` `dir` active=`true` used=`28.0%`
 
 ## Stockenweiler Host
 
 - Host: `pve` / `pve-manager/9.1.4/5ac30304265fbd8e`
-- Memory used: `12.34 GiB` / `15.5 GiB` (`79.6%`) 
-- Rootfs used: `21.45 GiB` / `67.73 GiB` (`31.7%`) 
-- Swap used: `7.99 GiB` / `8.0 GiB` (`99.8%`) 
+- Memory used: `8.43 GiB` / `15.5 GiB` (`54.4%`) 
+- Rootfs used: `21.49 GiB` / `67.73 GiB` (`31.7%`) 
+- Swap used: `3.77 GiB` / `8.0 GiB` (`47.1%`) 
 - Storages:
   - `hdd-backup` `dir` active=`true` used=`76.0%`
-  - `local-lvm` `lvmthin` active=`true` used=`56.6%`
+  - `local-lvm` `lvmthin` active=`true` used=`57.7%`
   - `local` `dir` active=`true` used=`31.7%`
   - `anker-music` `nfs` active=`false` used=`0.0%`
 
@@ -52,15 +52,14 @@
 
 ## Blockers
 
-- Stockenweiler host is under real memory pressure: swap used `7.99 GiB` / `8.0 GiB`.
 
 ## Optimization Candidates
 
-- Anker guest `PBS-FraWo` (`240`) runs at only `1.0%` RAM use and is a later rightsizing candidate.
-- Anker guest `storage-node` (`110`) runs at only `4.2%` RAM use and is a later rightsizing candidate.
-- Anker guest `vaultwarden` (`120`) runs at only `5.9%` RAM use and is a later rightsizing candidate.
-- Stockenweiler guest `homeassistant-eltern` (`360`) is at `94.1%` RAM use and should be reviewed before adding workloads.
-- Stockenweiler guest `azuracast-vm` (`210`) is at `86.6%` RAM use and should be reviewed before adding workloads.
+- Anker guest `toolbox` (`100`) runs at only `16.2%` RAM use and is a later rightsizing candidate.
+- Anker guest `PBS-FraWo` (`240`) runs at only `1.5%` RAM use and is a later rightsizing candidate.
+- Anker guest `storage-node` (`110`) runs at only `3.7%` RAM use and is a later rightsizing candidate.
+- Stockenweiler guest `homeassistant-eltern` (`360`) is at `93.8%` RAM use and should be reviewed before adding workloads.
+- Stockenweiler guest `azuracast-vm` (`210`) is at `85.8%` RAM use and should be reviewed before adding workloads.
 
 ## Strategic Recommendations
 

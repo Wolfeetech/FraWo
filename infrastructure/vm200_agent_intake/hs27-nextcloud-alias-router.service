@@ -1,0 +1,11 @@
+[Unit]
+Description=HS27 Nextcloud Alias Router
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/nextcloud_alias_router_runner.sh
+
+[Install]
+WantedBy=multi-user.target
