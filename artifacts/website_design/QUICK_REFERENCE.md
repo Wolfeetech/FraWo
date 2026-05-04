@@ -25,6 +25,27 @@
 
 ---
 
+## 📻 Radio Player (NEU!)
+
+### Quick Installation
+
+1. **Kopiere Code:** Öffne `frawo_radio_player_sticky.html` und kopiere alles
+2. **In Odoo:** Website → Theme → Footer → HTML bearbeiten → Code einfügen
+3. **Stream-URLs anpassen:** Suche nach `data-stream="..."` und ersetze mit deinen URLs
+4. **Fertig!** Player erscheint sticky am unteren Bildschirmrand
+
+**Features:**
+- ✅ Sticky Bottom Player (immer sichtbar)
+- ✅ Multi-Station Support
+- ✅ Now Playing Info (AzuraCast API)
+- ✅ Volume Control
+- ✅ Mobile-optimiert
+- ✅ Collapsible (minimieren/maximieren)
+
+**Details:** Siehe `RADIO_PLAYER_GUIDE.md`
+
+---
+
 ## 🎨 Farben ändern (Copy & Paste)
 
 ```css
@@ -174,6 +195,7 @@
 
 ## ✅ Checkliste vor Go-Live
 
+### Website Basics
 - [ ] Alle Bilder komprimiert (< 500 KB)
 - [ ] Alt-Texte für alle Bilder gesetzt
 - [ ] Links funktionieren (keine 404)
@@ -183,6 +205,13 @@
 - [ ] Google Analytics eingebunden (optional)
 - [ ] Cookie-Banner eingerichtet (DSGVO)
 - [ ] Impressum & Datenschutz vorhanden
+
+### Radio Player (falls aktiviert)
+- [ ] Stream-URLs aktualisiert und getestet
+- [ ] AzuraCast API erreichbar
+- [ ] Now Playing funktioniert
+- [ ] Mobile-Test (iOS + Android)
+- [ ] Lautstärke-Regelung funktioniert
 
 ---
 
@@ -194,11 +223,14 @@
 | Layout bricht auf Mobile | Odoo Grid nutzen (`col-lg-6`) |
 | CSS wird nicht geladen | Assets regenerieren (Odoo Backend) |
 | Bilder laden langsam | Bilder komprimieren |
+| Radio Player lädt nicht | Stream-URL prüfen, CORS aktivieren |
+| Player überdeckt Content | `body { padding-bottom: 80px; }` |
 
 ---
 
 ## 📞 Quick-Links
 
+- **Radio Player Guide:** `RADIO_PLAYER_GUIDE.md` 📻 **NEU!**
 - **Vollständige Anleitung:** `ODOO_WEBSITE_CUSTOMIZATION_GUIDE.md`
 - **Design-System CSS:** `frawo_design_system.css`
 - **Homepage Template:** `frawo_homepage_template.html`

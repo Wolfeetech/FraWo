@@ -1,0 +1,535 @@
+<!--
+  FraWo Radio Player - Sticky Bottom Player
+  Integrates seamlessly with FraWo Design System
+
+  USAGE IN ODOO:
+  1. Add this code to your Odoo theme footer
+  2. Or copy into a separate "Building Block"
+  3. Player sticks to bottom of page
+  4. Auto-collapses when not playing
+
+  STREAM URLS:
+  - Update the streamUrl variables below with your actual AzuraCast URLs
+  - Test streams before deployment
+-->
+
+<!-- Radio Player Sticky Component -->
+<div id="fw-radio-player" class="fw-radio-sticky">
+    <div class="fw-radio-container">
+        <!-- Collapsed State: Mini Bar -->
+        <div class="fw-radio-mini">
+            <button class="fw-radio-expand" onclick="fwRadioToggleExpand()" aria-label="Radio öffnen">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" fill="currentColor"/>
+                </svg>
+                <span class="fw-radio-mini-text">FraWo Funk</span>
+            </button>
+
+            <!-- Now Playing (Mini) -->
+            <div class="fw-radio-mini-nowplaying">
+                <span id="fw-radio-mini-song">-- Wähle einen Sender --</span>
+            </div>
+
+            <!-- Quick Controls -->
+            <div class="fw-radio-mini-controls">
+                <button class="fw-radio-btn-mini" onclick="fwRadioPlayPause()" id="fw-play-pause-mini" aria-label="Abspielen/Pause">
+                    <svg class="fw-icon-play" width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <path d="M8 5v14l11-7z" fill="currentColor"/>
+                    </svg>
+                    <svg class="fw-icon-pause" width="20" height="20" viewBox="0 0 24 24" fill="none" style="display:none;">
+                        <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" fill="currentColor"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Expanded State: Full Player -->
+        <div class="fw-radio-expanded" style="display:none;">
+            <div class="fw-radio-header">
+                <div class="fw-radio-logo">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                        <path d="M8 12L16 7v10l-8-5z" fill="currentColor"/>
+                    </svg>
+                    <span class="fw-radio-title">FraWo Funk</span>
+                </div>
+                <button class="fw-radio-close" onclick="fwRadioToggleExpand()" aria-label="Schließen">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Station Selection -->
+            <div class="fw-radio-stations">
+                <button class="fw-radio-station" data-stream="https://radio.hs27.internal/listen/frawo_bodensee/stream" data-name="FraWo Bodensee" onclick="fwRadioSelectStation(this)">
+                    <div class="fw-station-icon">🌊</div>
+                    <div class="fw-station-info">
+                        <div class="fw-station-name">FraWo Bodensee</div>
+                        <div class="fw-station-genre">Vibes vom See</div>
+                    </div>
+                    <div class="fw-station-status">
+                        <span class="fw-status-badge"></span>
+                    </div>
+                </button>
+
+                <button class="fw-radio-station" data-stream="https://radio-stock.hs27.internal/listen/yourparty_hardstyle/stream" data-name="YourParty Hardstyle" onclick="fwRadioSelectStation(this)">
+                    <div class="fw-station-icon">⚡</div>
+                    <div class="fw-station-info">
+                        <div class="fw-station-name">YourParty Hardstyle</div>
+                        <div class="fw-station-genre">Hard & Fast</div>
+                    </div>
+                    <div class="fw-station-status">
+                        <span class="fw-status-badge"></span>
+                    </div>
+                </button>
+
+                <button class="fw-radio-station" data-stream="https://radio.hs27.internal/listen/frawo_chill/stream" data-name="FraWo Chill" onclick="fwRadioSelectStation(this)">
+                    <div class="fw-station-icon">☁️</div>
+                    <div class="fw-station-info">
+                        <div class="fw-station-name">FraWo Chill</div>
+                        <div class="fw-station-genre">Lounge & Ambient</div>
+                    </div>
+                    <div class="fw-station-status">
+                        <span class="fw-status-badge"></span>
+                    </div>
+                </button>
+            </div>
+
+            <!-- Now Playing Display -->
+            <div class="fw-radio-nowplaying">
+                <div class="fw-nowplaying-label">Jetzt läuft:</div>
+                <div class="fw-nowplaying-song" id="fw-nowplaying-song">-- Wähle einen Sender --</div>
+                <div class="fw-nowplaying-artist" id="fw-nowplaying-artist"></div>
+            </div>
+
+            <!-- Player Controls -->
+            <div class="fw-radio-controls">
+                <button class="fw-radio-btn" onclick="fwRadioPlayPause()" id="fw-play-pause" aria-label="Abspielen/Pause">
+                    <svg class="fw-icon-play" width="32" height="32" viewBox="0 0 24 24" fill="none">
+                        <path d="M8 5v14l11-7z" fill="currentColor"/>
+                    </svg>
+                    <svg class="fw-icon-pause" width="32" height="32" viewBox="0 0 24 24" fill="none" style="display:none;">
+                        <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" fill="currentColor"/>
+                    </svg>
+                </button>
+
+                <div class="fw-radio-volume">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z" fill="currentColor"/>
+                    </svg>
+                    <input type="range" id="fw-volume" min="0" max="100" value="70" onchange="fwRadioSetVolume(this.value)" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Radio Player Styles -->
+<style>
+.fw-radio-sticky {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: var(--fw-z-sticky, 1020);
+    background: linear-gradient(135deg, var(--fw-primary) 0%, var(--fw-primary-dark) 100%);
+    color: white;
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+}
+
+.fw-radio-container {
+    max-width: var(--fw-container-xl, 1280px);
+    margin: 0 auto;
+    padding: 0;
+}
+
+/* Mini Bar (Collapsed) */
+.fw-radio-mini {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 1.5rem;
+}
+
+.fw-radio-expand {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: var(--fw-radius-md, 0.5rem);
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.fw-radio-expand:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.fw-radio-mini-nowplaying {
+    flex: 1;
+    font-size: 0.875rem;
+    opacity: 0.9;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.fw-radio-mini-controls {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.fw-radio-btn-mini {
+    width: 36px;
+    height: 36px;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 50%;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.fw-radio-btn-mini:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+/* Expanded Player */
+.fw-radio-expanded {
+    padding: 1.5rem;
+}
+
+.fw-radio-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.fw-radio-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.fw-radio-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.fw-radio-close {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 50%;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.fw-radio-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Stations */
+.fw-radio-stations {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.fw-radio-station {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid transparent;
+    border-radius: var(--fw-radius-lg, 0.75rem);
+    padding: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    transition: all 0.2s;
+    color: white;
+    text-align: left;
+}
+
+.fw-radio-station:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+}
+
+.fw-radio-station.active {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.fw-station-icon {
+    font-size: 2rem;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--fw-radius-md, 0.5rem);
+}
+
+.fw-station-info {
+    flex: 1;
+}
+
+.fw-station-name {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.fw-station-genre {
+    font-size: 0.75rem;
+    opacity: 0.8;
+}
+
+.fw-status-badge {
+    width: 8px;
+    height: 8px;
+    background: #4ade80;
+    border-radius: 50%;
+    display: inline-block;
+    animation: fw-pulse 2s infinite;
+}
+
+@keyframes fw-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+}
+
+/* Now Playing */
+.fw-radio-nowplaying {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: var(--fw-radius-lg, 0.75rem);
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.fw-nowplaying-label {
+    font-size: 0.75rem;
+    opacity: 0.7;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+}
+
+.fw-nowplaying-song {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.fw-nowplaying-artist {
+    font-size: 0.875rem;
+    opacity: 0.8;
+}
+
+/* Controls */
+.fw-radio-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+}
+
+.fw-radio-btn {
+    width: 64px;
+    height: 64px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.fw-radio-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+.fw-radio-volume {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+#fw-volume {
+    width: 120px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+    outline: none;
+    -webkit-appearance: none;
+}
+
+#fw-volume::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    background: white;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+#fw-volume::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    background: white;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .fw-radio-stations {
+        grid-template-columns: 1fr;
+    }
+
+    .fw-radio-mini-nowplaying {
+        display: none;
+    }
+}
+</style>
+
+<!-- Radio Player JavaScript -->
+<script>
+// Global Audio Object
+let fwAudio = null;
+let fwCurrentStation = null;
+let fwIsExpanded = false;
+
+// Initialize Audio
+function fwRadioInit() {
+    fwAudio = new Audio();
+    fwAudio.volume = 0.7;
+
+    // Event Listeners
+    fwAudio.addEventListener('play', fwRadioOnPlay);
+    fwAudio.addEventListener('pause', fwRadioOnPause);
+    fwAudio.addEventListener('error', fwRadioOnError);
+
+    // Optional: Load Now Playing Info
+    setInterval(fwRadioUpdateNowPlaying, 30000); // Every 30 seconds
+}
+
+// Select Station
+function fwRadioSelectStation(btn) {
+    const streamUrl = btn.getAttribute('data-stream');
+    const stationName = btn.getAttribute('data-name');
+
+    // Update Active State
+    document.querySelectorAll('.fw-radio-station').forEach(s => s.classList.remove('active'));
+    btn.classList.add('active');
+
+    // Set Stream
+    fwCurrentStation = { url: streamUrl, name: stationName };
+    fwAudio.src = streamUrl;
+    fwAudio.play();
+
+    // Update UI
+    document.getElementById('fw-radio-mini-song').textContent = stationName;
+    document.getElementById('fw-nowplaying-song').textContent = stationName;
+}
+
+// Play/Pause Toggle
+function fwRadioPlayPause() {
+    if (!fwCurrentStation) {
+        alert('Bitte wähle zuerst einen Sender aus!');
+        fwRadioToggleExpand(); // Open player
+        return;
+    }
+
+    if (fwAudio.paused) {
+        fwAudio.play();
+    } else {
+        fwAudio.pause();
+    }
+}
+
+// Toggle Expand/Collapse
+function fwRadioToggleExpand() {
+    fwIsExpanded = !fwIsExpanded;
+    const mini = document.querySelector('.fw-radio-mini');
+    const expanded = document.querySelector('.fw-radio-expanded');
+
+    if (fwIsExpanded) {
+        mini.style.display = 'none';
+        expanded.style.display = 'block';
+    } else {
+        mini.style.display = 'flex';
+        expanded.style.display = 'none';
+    }
+}
+
+// Set Volume
+function fwRadioSetVolume(value) {
+    fwAudio.volume = value / 100;
+}
+
+// Event Handlers
+function fwRadioOnPlay() {
+    document.querySelectorAll('.fw-icon-play').forEach(el => el.style.display = 'none');
+    document.querySelectorAll('.fw-icon-pause').forEach(el => el.style.display = 'block');
+}
+
+function fwRadioOnPause() {
+    document.querySelectorAll('.fw-icon-play').forEach(el => el.style.display = 'block');
+    document.querySelectorAll('.fw-icon-pause').forEach(el => el.style.display = 'none');
+}
+
+function fwRadioOnError(e) {
+    console.error('Radio Stream Error:', e);
+    alert('Stream konnte nicht geladen werden. Bitte versuche es später erneut.');
+}
+
+// Update Now Playing (Optional - requires AzuraCast API)
+function fwRadioUpdateNowPlaying() {
+    if (!fwCurrentStation) return;
+
+    // Example: Fetch from AzuraCast API
+    // Replace with your actual API endpoint
+    const apiUrl = fwCurrentStation.url.replace('/stream', '/nowplaying');
+
+    fetch(apiUrl)
+        .then(res => res.json())
+        .then(data => {
+            if (data.now_playing) {
+                const song = data.now_playing.song;
+                document.getElementById('fw-nowplaying-song').textContent = song.title || 'Unbekannt';
+                document.getElementById('fw-nowplaying-artist').textContent = song.artist || '';
+                document.getElementById('fw-radio-mini-song').textContent =
+                    `${song.artist} - ${song.title}` || fwCurrentStation.name;
+            }
+        })
+        .catch(err => console.warn('NowPlaying API Error:', err));
+}
+
+// Initialize on Load
+document.addEventListener('DOMContentLoaded', fwRadioInit);
+</script>
