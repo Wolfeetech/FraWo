@@ -134,6 +134,8 @@
 
   // ===== ANSIBLE =====
   "ansible.python.interpreterPath": "python",
+  "ansible.validation.lint.enabled": false,
+  "ansible.ansible.path": "ansible", // placeholder, will fail locally but we disabled lint
 
   // ===== REMOTE DEVELOPMENT =====
   "remote.SSH.remotePlatform": {

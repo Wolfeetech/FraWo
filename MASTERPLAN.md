@@ -32,14 +32,15 @@ Der Homeserver 2027 ist die produktive Basis der **FraWo GbR**: ERP, Cloud, Doku
   - rclone rate-limit/backoff und lokales `ssd2tb` Backup-Fallback einrichten
   - CT 100 Disk kontrolliert von NVMe/local-lvm auf `ssd2tb` migrieren
   - UniFi/Tailscale Split-DNS finalisieren
+  - Stockenweiler-Monitoringpfad wieder auf einen echten Metrics-Sink ziehen; `outputs.discard` auf `pve-stock` ist nur die sichere Zwischenmassnahme nach dem Swap-Fix
 
 ### Lane D: Stockenweiler Integration - [STATUS: ACTIVE]
 
 - **Ziel**: Zweiter Standort für Radio (AzuraCast) und Eltern-Support (HA).
-- **Status**: Aktiv. VM 210 (Radio) und VM 360 (HA Eltern) sind online.
-- **Memory Pressure**: Swap 99% (7.9Gi/8.0Gi). Kritisch.
-- **Running Services**: PBS (109), n8n (110), Vaultwarden (108), AdGuard (101).
-- **Aktion**: Rightsizing von PBS und n8n erforderlich.
+- **Status**: Aktiv. VM 210 (Radio) und VM 360 (HA Eltern) sind online; der Swap-Notfall vom `2026-05-03` ist behoben.
+- **Runtime 2026-05-03**: Host-Swap wieder `0.0GiB / 8.0GiB`. Root Cause war nicht AzuraCast selbst, sondern `telegraf`, das mehrere GiB Metriken gegen das tote Ziel `192.168.178.168:8086` gepuffert hat.
+- **Running Services**: AzuraCast VM `210`, Home Assistant Eltern VM `360`, Vaultwarden CT `108`, AdGuard CT `101`. `PBS` (`109`) und `n8n` (`110`) sind aktuell nicht der laufende Arbeitspfad.
+- **Aktion**: Monitoring-Sink sauber wiederherstellen und danach erst VM-Rightsizing anhand frischer Daten entscheiden.
 
 ### Lane E: Radio & Media - [STATUS: ACTIVE]
 
@@ -104,6 +105,13 @@ Der Homeserver 2027 ist die produktive Basis der **FraWo GbR**: ERP, Cloud, Doku
 - Jellyfin frontdoor is now `media.hs27.internal -> 10.1.0.20:8096`; `localhost` is wrong from inside the Caddy container.
 - rclone Google Drive mount is active; API quota/rate limits were observed during backup traffic.
 
+### Runtime Note 2026-05-03
+
+- `pve-stock` lief in einen Host-Swap-Notfall, weil `telegraf` ueber Tage mehrere GiB Metriken gegen das unerreichbare InfluxDB-Ziel `http://192.168.178.168:8086` gepuffert hat.
+- Remediation: `telegraf` gestoppt, `outputs.influxdb` in `/etc/telegraf/telegraf.conf` temporaer auf `outputs.discard` umgestellt, Originalkonfiguration nach `/etc/telegraf/telegraf.conf.bak.20260503_162434` gesichert, danach `swapoff/swapon`.
+- Verifiziert nach Remediation: Host-Swap auf Stockenweiler wieder `0.0 / 8.0 GiB`; Odoo direct/frontdoor bleiben `HTTP 200`; letzter Platform-Health-Report steht auf `blocker_count = 0`.
+- Follow-up: einen echten erreichbaren Metrics-Sink definieren und den temporaeren `discard`-Pfad wieder abloesen, bevor Monitoring als gruen gilt.
+
 ## 5. Security Baseline
 
 - No public exposure for internal apps.
@@ -120,6 +128,7 @@ Der Homeserver 2027 ist die produktive Basis der **FraWo GbR**: ERP, Cloud, Doku
 - Machine-readable lane plan: `manifests/work_lanes/current_plan.json` (lane snapshot, not task SSOT)
 - Tool operations: `OPERATIONS/TOOLS_OPERATIONS_INDEX.md`
 - Odoo operations: `OPERATIONS/ODOO_OPERATIONS.md`
+- Odoo progress note: `OPERATIONS/ODOO_PROGRESS_2026-05-03.md`
 - Proxmox operations: `OPERATIONS/PROXMOX_OPERATIONS.md`
 - Storage operations: `OPERATIONS/STORAGE_INTEGRATION_OPERATIONS.md`
 
@@ -135,4 +144,4 @@ Der Homeserver 2027 ist die produktive Basis der **FraWo GbR**: ERP, Cloud, Doku
 
 ---
 
-**Updated: 2026-04-26**
+**Updated: 2026-05-03**

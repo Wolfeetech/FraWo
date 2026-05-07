@@ -299,6 +299,7 @@ Der professionelle Zielzustand ist nicht nur `HTTP 200`, sondern ein bewusst def
 - Shared-Mailbox-Strategie fuer `agent@frawo-tech.de` auf `webmaster@frawo-tech.de` festziehen und danach den Odoo-Incoming-Pfad erneut fahren
 - danach den Odoo-nativen Alias-/Nachrichtenpfad pruefen, **ohne** neue Server-Orchestrierungsschicht
 - lokale Odoo-Helferskripte auf secret-sicheren Zugriff standardisieren, bevor Mail- oder n8n-Automation live geht
+- fuer produktive Board-Writes entweder den internen Odoo-Runtime-Pfad auf `VM 220` oder einen verifizierten Runtime-Secret-Pfad nutzen; keine lokalen Klartext-Fallbacks verwenden
 
 ## Nie tun
 
@@ -326,12 +327,12 @@ Der professionelle Zielzustand ist nicht nur `HTTP 200`, sondern ein bewusst def
 - Live verifiziert: neue Homepage-Subline FraWo plant und betreut technische Setups ..., Karten Technische Planung, Livebetrieb & Betreuung, Website & Besucherinfo, Kontaktseite Projektstart ohne Umwege, und kein Handwerk im Renderpfad.
 
 ## Website-Pro-Redesign 2026-04-09
-- Homepage visuell und strukturell auf hoeheren professionellen Standard gezogen: starker dunkler Hero, modulare Leistungsflaechen, redaktionelleres Raster, groeßere Bildflaechen, klarere Eventdienstleister-Positionierung.
+- Homepage visuell und strukturell auf hoeheren professionellen Standard gezogen: starker dunkler Hero, modulare Leistungsflaechen, redaktionelleres Raster, groessere Bildflaechen, klarere Eventdienstleister-Positionierung.
 - Referenzrichtung fuer Anspruch und Dramaturgie bewusst an grossen Medien-/Liveplattformen orientiert, ohne sie zu kopieren.
 - Live verifiziert auf Homepage: FraWo plant und betreut technische Setups ..., Technische Planung, Livebetrieb, Keine Show ueber der Show., Technikfachkraefte und Macher. und kein Handwerk im Renderpfad.
-- Kontaktseite nachgezogen und XML-Syntaxfehler durch unescaped Font-Import-URL behoben; /contactus rendert wieder mit Technik kurz briefing. Rest klaeren wir.`r
+- Kontaktseite nachgezogen und XML-Syntaxfehler durch unescaped Font-Import-URL behoben; /contactus rendert wieder mit `Technik kurz briefing. Rest klaeren wir.`
 
-- Typografie-Update 2026-04-09: Homepage, Kontaktseite und Footer auf Poppins umgestellt. Live verifiziert: amily=Poppins:wght@400;500;600;700;800 rendert auf / und /contactus; Barlow Condensed und Manrope sind aus dem geprueften Renderpfad entfernt.
+- Typografie-Update 2026-04-09: Homepage, Kontaktseite und Footer auf Poppins umgestellt. Live verifiziert: `family=Poppins:wght@400;500;600;700;800` rendert auf `/` und `/contactus`; Barlow Condensed und Manrope sind aus dem geprueften Renderpfad entfernt.
 
 - Typografie-Feinschliff 2026-04-09: Poppins bleibt CI-Schrift, aber Gewichte wurden differenziert. Live verifiziert im Renderpfad: .frawo-display 800, .frawo-heading/.frawo-card h3/.frawo-panel h3 700, .frawo-contact-title 800, Contact-Subheads 700.
 
@@ -339,20 +340,20 @@ Der professionelle Zielzustand ist nicht nur `HTTP 200`, sondern ein bewusst def
 
 ## Agent-Intake-Bridge 2026-04-09
 
-- Der sichere Intake-Pfad fuer gent@frawo-tech.de ist jetzt repo-seitig als eigener Brueckenbaustein vorbereitet:
+- Der sichere Intake-Pfad fuer `agent@frawo-tech.de` ist jetzt repo-seitig als eigener Brueckenbaustein vorbereitet:
   - Script odoo_agent_intake_bridge.py
   - Runbook OPERATIONS/ODOO_AGENT_INTAKE_OPERATIONS.md
 - Leitentscheidung:
   - Odoo liest fuer V1 **nicht** die komplette Shared-Mailbox webmaster@frawo-tech.de
   - stattdessen wird die bereits aktive Alias-Trennung ueber VM 200 genutzt:
-    - gent@ -> Aliases.Agent
+    - agent@ -> Aliases.Agent
     - info@ -> Aliases.Info
     - wolf@ bleibt in INBOX
 - Verhalten des neuen Brueckenpfads:
   - dry-run standardmaessig
   - liest nur den IMAP-Ordner Aliases.Agent
   - baut daraus Odoo-Tasks im Masterprojekt
-  - setzt Standard-Owner auf wolf@frawo-tech.de plus gent@frawo-tech.de
+  - setzt Standard-Owner auf wolf@frawo-tech.de plus `agent@frawo-tech.de`
   - erkennt Duplikate ueber Message-ID
   - verschiebt erfolgreich verarbeitete Mails nach Aliases.Agent.Processed
 - Betriebsregel:
@@ -418,10 +419,14 @@ Der professionelle Zielzustand ist nicht nur `HTTP 200`, sondern ein bewusst def
 
 - Die Odoo-Default-Metadaten wurden live ersetzt.
 - Homepage:
-  - echter Title FraWo | Eventtechnik und technische Betreuung`n  - echte Description fuer Eventtechnik, Zuspielung, Umbauten und digitale Besucherinformation
-  - sauberes Canonical https://www.frawo-tech.de/`n- Kontaktseite:
-  - echter Title Kontakt | FraWo`n  - echte Description fuer den Kontaktpfad
-  - sauberes Canonical https://www.frawo-tech.de/contactus`n- Restpunkt: og:url auf /contactus zieht im Host-Preview noch den internen Hostnamen und braucht einen letzten gezielten Fix.
+  - echter Title `FraWo | Eventtechnik und technische Betreuung`
+  - echte Description fuer Eventtechnik, Zuspielung, Umbauten und digitale Besucherinformation
+  - sauberes Canonical `https://www.frawo-tech.de/`
+- Kontaktseite:
+  - echter Title `Kontakt | FraWo`
+  - echte Description fuer den Kontaktpfad
+  - sauberes Canonical `https://www.frawo-tech.de/contactus`
+- Restpunkt: `og:url` auf `/contactus` zieht im Host-Preview noch den internen Hostnamen und braucht einen letzten gezielten Fix.
 
 
 
@@ -432,3 +437,29 @@ Der professionelle Zielzustand ist nicht nur `HTTP 200`, sondern ein bewusst def
 - Nach Zuordnung auf website_id=1 rendert die Kontaktseite jetzt auch og:url korrekt auf https://www.frawo-tech.de/contactus.
 - Ergebnis: Homepage und Kontaktseite haben jetzt saubere Description-, Canonical- und OG-Basis fuer den oeffentlichen FraWo-Auftritt.
 
+## Monitoring- und Board-Sync-Stand 2026-05-03
+
+- Die Odoo-Anwendung selbst blieb waehrend des Stockenweiler-Incidents gesund:
+  - `http://10.1.0.22:8069/web/login` -> `HTTP 200`
+  - `http://100.99.206.128:8444/web/login` -> `HTTP 200`
+- Der echte Infrastruktur-Blocker lag auf `pve-stock`, nicht in Odoo:
+  - Host-`telegraf` puffert mehrere GiB gegen das tote Influx-Ziel `http://192.168.178.168:8086`
+  - Folge waren hoher RAM-Druck und volle `8.0 / 8.0 GiB` Swap
+- Remediation:
+  - `telegraf` gestoppt, temporaer auf `[[outputs.discard]]` neutralisiert und neu gestartet
+  - Host-Swap via `swapoff -a && swapon -a` geleert
+  - Plattformreport danach wieder gruen mit `top_priority_issue = none` und `blocker_count = 0`
+- Repo-SSOT und Odoo-Vorbereitung:
+  - `MASTERPLAN.md`, `LIVE_CONTEXT.md`, `AI_SERVER_HANDOFF.md` und `OPERATIONS/ODOO_PROGRESS_2026-05-03.md` tragen den Incident jetzt nachvollziehbar
+  - sichere lokale Helfer fuer den Board-Sync liegen in `scripts/odoo_masterplan_sync.py` und `scripts/odoo_progress_sync.py`
+- Live-Board-Write:
+  - der produktive Sync wurde am `2026-05-03` direkt ueber den internen Odoo-Runtime-Pfad auf `VM 220` ausgefuehrt, nicht ueber lokale Klartext-Fallbacks
+  - bestehende Lane-Tasks `121-125` wurden auf den aktuellen MASTERPLAN-Namens- und Stage-Stand gezogen
+  - der Incident wurde als Task `Stockenweiler Monitoring & Host Stability` (`id=126`) in Stage `In Arbeit` im Masterprojekt angelegt
+- Wichtige Drift-Erkenntnis:
+  - die frueher dokumentierte `VM 200 nextcloud`-Runtime fuer den `agent@`-Intake war in der Live-Probe vom `2026-05-03` so nicht mehr vorhanden
+  - sichtbar auf `VM 200` war nur `homeserver-compose-nextcloud.service`; der erwartete Secret-Pfad `/root/.config/homeserver2027/odoo_agent_rpc.env` und die dazugehoerigen Odoo-Intake-Runtime-Dateien waren im aktuellen Dateisystem nicht auffindbar
+  - Konsequenz: kuenftige Runbooks duerfen die `VM 200`-Secret-Verfuegbarkeit erst wieder annehmen, wenn dieser Pfad neu verifiziert oder bewusst neu ausgerollt wurde
+- Naechster Odoo-Follow-up:
+  - Monitoring-Sink fuer `pve-stock` wieder produktiv machen und den Incident-Task danach auf den neuen Laufzeitstand nachziehen
+  - die `agent@`-/`VM 200`-Intake-Doku gegen den realen Deploy-Stand neu validieren

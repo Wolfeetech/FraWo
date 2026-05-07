@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<!--
+  FraWo GbR Professional Homepage Template
+  For use in Odoo Website Builder
+  Version: 1.0.0
+  Date: 2026-05-04
+
+  INSTRUCTIONS FOR ODOO:
+  1. Copy sections individually into Odoo Website Builder
+  2. Replace placeholder images with actual images via Odoo media library
+  3. Update links to match your Odoo page structure
+  4. Customize colors in CSS variables section
+  5. All content is editable directly in Odoo editor
+-->
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FraWo GbR - Veranstaltungstechnik & Event-Infrastruktur vom Bodensee</title>
+    <meta name="description" content="Professionelle Veranstaltungstechnik, Smart Home und Event-Infrastruktur. Ton, Licht, Automation vom Bodensee.">
+
+    <!-- Link to Design System CSS (add this to Odoo theme) -->
+    <link rel="stylesheet" href="frawo_design_system.css">
+</head>
+<body>
+
+<!-- ============================================
+     HERO SECTION - Main Landing
+     Customizable: Headline, description, CTA buttons, hero image
+     ============================================ -->
+<section class="fw-hero">
+    <div class="fw-container">
+        <div class="row align-items-center g-5">
+            <!-- Left Column: Content -->
+            <div class="col-lg-6">
+                <div class="fw-eyebrow">FraWo GbR</div>
+                <h1 class="fw-h1">
+                    Veranstaltungstechnik<br>
+                    & Event-Infrastruktur
+                </h1>
+                <p class="fw-lead">
+                    Ton, Licht, Automation. Vom Bodensee.<br>
+                    Für Events, Clubs, Firmen, Privathaushalte.
+                </p>
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="/contactus" class="fw-btn-primary">
+                        <span>Kontakt aufnehmen</span>
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-left: 8px;">
+                            <path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </a>
+                    <a href="#services" class="fw-btn-ghost">Services entdecken</a>
+                </div>
+
+                <!-- Trust Indicators -->
+                <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--fw-gray-200);">
+                    <div class="fw-caption" style="margin-bottom: 0.5rem;">Vertraut von</div>
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; opacity: 0.6;">
+                        <span style="font-weight: 600;">150+ Events</span>
+                        <span>•</span>
+                        <span style="font-weight: 600;">50+ Kunden</span>
+                        <span>•</span>
+                        <span style="font-weight: 600;">Seit 2015</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Hero Image -->
+            <div class="col-lg-6">
+                <div class="fw-img-wrapper">
+                    <!-- Replace /web/image/949 with your actual image from Odoo media library -->
+                    <img src="/web/image/949" alt="Line-Array Setup am Bodensee" loading="eager">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ============================================
+     FEATURES SPLIT - Business/Private
+     Customizable: Eyebrow, headlines, descriptions, links
+     ============================================ -->
+<section class="fw-section" style="background: var(--fw-gray-50);">
+    <div class="fw-container">
+        <div class="row g-5">
+            <!-- Private Customers Card -->
+            <div class="col-lg-6">
+                <div class="fw-card">
+                    <div class="fw-eyebrow">Privatkunden</div>
+                    <h2 class="fw-h3">
+                        Smart Home,<br>
+                        Heimkino, Licht
+                    </h2>
+                    <p class="fw-body">
+                        Home Assistant Installationen, Heimkino-Systeme, intelligente Lichtplanung.
+                        Lokal gesteuert, kein Cloud-Zwang.
+                    </p>
+                    <ul class="fw-body" style="margin: var(--fw-space-6) 0; padding-left: var(--fw-space-6);">
+                        <li style="margin-bottom: var(--fw-space-2);">Home Assistant Multi-Room Setup</li>
+                        <li style="margin-bottom: var(--fw-space-2);">Philips Hue Multi-Bridge Integration</li>
+                        <li style="margin-bottom: var(--fw-space-2);">Heimkino mit Dolby Atmos</li>
+                        <li style="margin-bottom: var(--fw-space-2);">Shelly-basierte Automation</li>
+                    </ul>
+                    <a href="/b2c" class="fw-btn-link">
+                        Mehr zu Privat-Services
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Business Customers Card -->
+            <div class="col-lg-6">
+                <div class="fw-card" style="background: linear-gradient(135deg, var(--fw-primary) 0%, var(--fw-primary-dark) 100%); color: white;">
+                    <div class="fw-eyebrow" style="color: rgba(255,255,255,0.8);">Business & Events</div>
+                    <h2 class="fw-h3" style="color: white;">
+                        Events, Konzerte,<br>
+                        Corporate
+                    </h2>
+                    <p style="color: rgba(255,255,255,0.9); font-size: var(--fw-text-base); line-height: var(--fw-leading-relaxed);">
+                        Line-Arrays, FOH, Streaming. Von Club-Gigs über Open Airs bis zu
+                        Firmenveranstaltungen mit 500+ Gästen.
+                    </p>
+                    <ul style="margin: var(--fw-space-6) 0; padding-left: var(--fw-space-6); color: rgba(255,255,255,0.9);">
+                        <li style="margin-bottom: var(--fw-space-2);">d&b, L-Acoustics Line-Arrays</li>
+                        <li style="margin-bottom: var(--fw-space-2);">FOH mit Midas M32, X32</li>
+                        <li style="margin-bottom: var(--fw-space-2);">DMX-Lichtsteuerung</li>
+                        <li style="margin-bottom: var(--fw-space-2);">Live-Streaming (320kbps)</li>
+                    </ul>
+                    <a href="/b2b" class="fw-btn-secondary">
+                        Business Services
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ============================================
+     SERVICES GRID - Detailed Service Cards
+     Customizable: Service titles, descriptions, icons
+     ============================================ -->
+<section class="fw-section" id="services">
+    <div class="fw-container">
+        <!-- Section Header -->
+        <div class="fw-text-center" style="max-width: 700px; margin: 0 auto var(--fw-space-16);">
+            <div class="fw-eyebrow">Services</div>
+            <h2 class="fw-h2">Was wir anbieten</h2>
+            <p class="fw-lead">
+                Von der Konzeption bis zur Durchführung – professionelle Technik,
+                die funktioniert.
+            </p>
+        </div>
+
+        <!-- Services Grid -->
+        <div class="fw-grid-3">
+            <!-- Service 1: Event-Infrastruktur -->
+            <div class="fw-card">
+                <div style="width: 56px; height: 56px; background: linear-gradient(135deg, var(--fw-primary) 0%, var(--fw-primary-dark) 100%); border-radius: var(--fw-radius-lg); display: flex; align-items: center; justify-content: center; margin-bottom: var(--fw-space-4);">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M2 17L12 22L22 17" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M2 12L12 17L22 12" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <h3 class="fw-h4">Event-Infrastruktur</h3>
+                <p class="fw-body">
+                    Line-Arrays, Stage-Monitoring, FOH-Mixing für 50–500 Personen.
+                    Hochwertige PA-Systeme für perfekten Sound.
+                </p>
+                <ul class="fw-body" style="margin: var(--fw-space-4) 0; padding-left: var(--fw-space-5); color: var(--fw-gray-600);">
+                    <li style="margin-bottom: var(--fw-space-2);">d&b, L-Acoustics Line-Arrays</li>
+                    <li style="margin-bottom: var(--fw-space-2);">Midas M32, Behringer X32 Mischpulte</li>
+                    <li style="margin-bottom: var(--fw-space-2);">DMX-Lichtsteuerung & Moving Heads</li>
+                    <li>Live-Streaming in CD-Qualität (320kbps)</li>
+                </ul>
+            </div>
+
+            <!-- Service 2: Smart Home -->
+            <div class="fw-card">
+                <div style="width: 56px; height: 56px; background: linear-gradient(135deg, var(--fw-secondary) 0%, var(--fw-secondary-dark) 100%); border-radius: var(--fw-radius-lg); display: flex; align-items: center; justify-content: center; margin-bottom: var(--fw-space-4);">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M9 22V12H15V22" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <h3 class="fw-h4">Smart Home</h3>
+                <p class="fw-body">
+                    Home Assistant, Philips Hue, Shelly. Lokal gesteuert,
+                    100% privatsphäre-freundlich, kein Cloud-Zwang.
+                </p>
+                <ul class="fw-body" style="margin: var(--fw-space-4) 0; padding-left: var(--fw-space-5); color: var(--fw-gray-600);">
+                    <li style="margin-bottom: var(--fw-space-2);">Home Assistant Installation & Setup</li>
+                    <li style="margin-bottom: var(--fw-space-2);">Philips Hue Multi-Bridge Integration</li>
+                    <li style="margin-bottom: var(--fw-space-2);">Shelly-Automatisierung (Schalter, Relais)</li>
+                    <li>Bluetooth-Gateways & Sensoren</li>
+                </ul>
+            </div>
+
+            <!-- Service 3: Heimkino -->
+            <div class="fw-card">
+                <div style="width: 56px; height: 56px; background: linear-gradient(135deg, var(--fw-info) 0%, #2563EB 100%); border-radius: var(--fw-radius-lg); display: flex; align-items: center; justify-content: center; margin-bottom: var(--fw-space-4);">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="2" y="7" width="20" height="15" rx="2" stroke="white" stroke-width="2"/>
+                        <polyline points="17 2 12 7 7 2" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <h3 class="fw-h4">Heimkino & HiFi</h3>
+                <p class="fw-body">
+                    Professionelle Heimkino-Installationen mit Dolby Atmos,
+                    Beamer-Setups, und akustische Optimierung.
+                </p>
+                <ul class="fw-body" style="margin: var(--fw-space-4) 0; padding-left: var(--fw-space-5); color: var(--fw-gray-600);">
+                    <li style="margin-bottom: var(--fw-space-2);">Dolby Atmos 7.1.4 Surround-Systeme</li>
+                    <li style="margin-bottom: var(--fw-space-2);">4K/8K Beamer & Leinwand-Installationen</li>
+                    <li style="margin-bottom: var(--fw-space-2);">Akustik-Optimierung & Raumabstimmung</li>
+                    <li>Kabelmanagement & Clean-Installations</li>
+                </ul>
+            </div>
+
+            <!-- Service 4: Streaming & Recording -->
+            <div class="fw-card">
+                <div style="width: 56px; height: 56px; background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%); border-radius: var(--fw-radius-lg); display: flex; align-items: center; justify-content: center; margin-bottom: var(--fw-space-4);">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="12" cy="12" r="10" stroke="white" stroke-width="2"/>
+                        <polygon points="10 8 16 12 10 16 10 8" fill="white"/>
+                    </svg>
+                </div>
+                <h3 class="fw-h4">Streaming & Recording</h3>
+                <p class="fw-body">
+                    Live-Streaming von Events, Podcast-Recording-Studios,
+                    und Multi-Kamera-Setups.
+                </p>
+                <ul class="fw-body" style="margin: var(--fw-space-4) 0; padding-left: var(--fw-space-5); color: var(--fw-gray-600);">
+                    <li style="margin-bottom: var(--fw-space-2);">YouTube/Twitch Live-Streaming (1080p60)</li>
+                    <li style="margin-bottom: var(--fw-space-2);">Multi-Kamera Setups (ATEM Switcher)</li>
+                    <li style="margin-bottom: var(--fw-space-2);">Podcast Recording (Rode, Shure Mics)</li>
+                    <li>OBS Studio Setup & Automation</li>
+                </ul>
+            </div>
+
+            <!-- Service 5: Lichtplanung -->
+            <div class="fw-card">
+                <div style="width: 56px; height: 56px; background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); border-radius: var(--fw-radius-lg); display: flex; align-items: center; justify-content: center; margin-bottom: var(--fw-space-4);">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2V6M12 18V22M4.93 4.93L7.76 7.76M16.24 16.24L19.07 19.07M2 12H6M18 12H22M4.93 19.07L7.76 16.24M16.24 7.76L19.07 4.93" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="12" cy="12" r="5" stroke="white" stroke-width="2"/>
+                    </svg>
+                </div>
+                <h3 class="fw-h4">Lichtplanung & DMX</h3>
+                <p class="fw-body">
+                    Event-Beleuchtung, architektonische Lichtplanung,
+                    und DMX-Steuerungen für jede Größenordnung.
+                </p>
+                <ul class="fw-body" style="margin: var(--fw-space-4) 0; padding-left: var(--fw-space-5); color: var(--fw-gray-600);">
+                    <li style="margin-bottom: var(--fw-space-2);">Moving Heads & LED-Panels</li>
+                    <li style="margin-bottom: var(--fw-space-2);">DMX512 Steuerung (Chamsys, grandMA)</li>
+                    <li style="margin-bottom: var(--fw-space-2);">Architektonische Fassadenbeleuchtung</li>
+                    <li>Show-Programmierung & Timeline-Sync</li>
+                </ul>
+            </div>
+
+            <!-- Service 6: Beratung -->
+            <div class="fw-card">
+                <div style="width: 56px; height: 56px; background: linear-gradient(135deg, #10B981 0%, #059669 100%); border-radius: var(--fw-radius-lg); display: flex; align-items: center; justify-content: center; margin-bottom: var(--fw-space-4);">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M21 15C21 15.5304 20.7893 16.0391 20.4142 16.4142C20.0391 16.7893 19.5304 17 19 17H7L3 21V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H19C19.5304 3 20.0391 3.21071 20.4142 3.58579C20.7893 3.96086 21 4.46957 21 5V15Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <h3 class="fw-h4">Beratung & Planung</h3>
+                <p class="fw-body">
+                    Vor-Ort-Beratung, Konzeption, und Planung für Ihre
+                    individuellen Anforderungen.
+                </p>
+                <ul class="fw-body" style="margin: var(--fw-space-4) 0; padding-left: var(--fw-space-5); color: var(--fw-gray-600);">
+                    <li style="margin-bottom: var(--fw-space-2);">Kostenlose Erstberatung (30 Min.)</li>
+                    <li style="margin-bottom: var(--fw-space-2);">Vor-Ort Besichtigung & Konzeption</li>
+                    <li style="margin-bottom: var(--fw-space-2);">Budget-Planung & Equipment-Auswahl</li>
+                    <li>Langfristige Support-Verträge</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ============================================
+     TESTIMONIALS / SOCIAL PROOF
+     Customizable: Customer quotes, names, companies
+     ============================================ -->
+<section class="fw-section" style="background: linear-gradient(135deg, var(--fw-primary) 0%, var(--fw-primary-dark) 100%); color: white;">
+    <div class="fw-container">
+        <div class="fw-text-center" style="max-width: 800px; margin: 0 auto var(--fw-space-12);">
+            <div class="fw-eyebrow" style="color: rgba(255,255,255,0.8);">Kundenstimmen</div>
+            <h2 class="fw-h2" style="color: white;">
+                Was unsere Kunden sagen
+            </h2>
+        </div>
+
+        <div class="fw-grid-3">
+            <!-- Testimonial 1 -->
+            <div class="fw-card">
+                <div style="margin-bottom: var(--fw-space-6);">
+                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" style="opacity: 0.2;">
+                        <path d="M10 20C10 20 12.5 15 17.5 15C22.5 15 25 20 25 20C25 20 22.5 25 17.5 25C12.5 25 10 20 10 20Z" fill="var(--fw-primary)"/>
+                    </svg>
+                </div>
+                <p class="fw-body" style="font-size: var(--fw-text-lg); margin-bottom: var(--fw-space-6);">
+                    "Professionelle Arbeit, zuverlässig, top Equipment. Haben unser Open Air technisch perfekt betreut."
+                </p>
+                <div style="display: flex; align-items: center; gap: var(--fw-space-3);">
+                    <div style="width: 48px; height: 48px; background: var(--fw-gray-200); border-radius: var(--fw-radius-full);"></div>
+                    <div>
+                        <div style="font-weight: var(--fw-weight-semibold);">Max Mustermann</div>
+                        <div class="fw-caption">Event-Manager, Summer Open Air</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Testimonial 2 -->
+            <div class="fw-card">
+                <div style="margin-bottom: var(--fw-space-6);">
+                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" style="opacity: 0.2;">
+                        <path d="M10 20C10 20 12.5 15 17.5 15C22.5 15 25 20 25 20C25 20 22.5 25 17.5 25C12.5 25 10 20 10 20Z" fill="var(--fw-primary)"/>
+                    </svg>
+                </div>
+                <p class="fw-body" style="font-size: var(--fw-text-lg); margin-bottom: var(--fw-space-6);">
+                    "Home Assistant Setup läuft perfekt. Alles lokal, schnell, keine Cloud-Abhängigkeit. Genau das was ich wollte!"
+                </p>
+                <div style="display: flex; align-items: center; gap: var(--fw-space-3);">
+                    <div style="width: 48px; height: 48px; background: var(--fw-gray-200); border-radius: var(--fw-radius-full);"></div>
+                    <div>
+                        <div style="font-weight: var(--fw-weight-semibold);">Lisa Schneider</div>
+                        <div class="fw-caption">Privatkundin, Konstanz</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Testimonial 3 -->
+            <div class="fw-card">
+                <div style="margin-bottom: var(--fw-space-6);">
+                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" style="opacity: 0.2;">
+                        <path d="M10 20C10 20 12.5 15 17.5 15C22.5 15 25 20 25 20C25 20 22.5 25 17.5 25C12.5 25 10 20 10 20Z" fill="var(--fw-primary)"/>
+                    </svg>
+                </div>
+                <p class="fw-body" style="font-size: var(--fw-text-lg); margin-bottom: var(--fw-space-6);">
+                    "Streaming-Setup für unsere Firmen-Events ist genial. Multi-Kamera, perfekter Sound, alles automatisiert."
+                </p>
+                <div style="display: flex; align-items: center; gap: var(--fw-space-3);">
+                    <div style="width: 48px; height: 48px; background: var(--fw-gray-200); border-radius: var(--fw-radius-full);"></div>
+                    <div>
+                        <div style="font-weight: var(--fw-weight-semibold);">Thomas Weber</div>
+                        <div class="fw-caption">IT-Leiter, TechCorp GmbH</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ============================================
+     CTA SECTION - Call to Action
+     Customizable: Headline, description, button
+     ============================================ -->
+<section class="fw-section">
+    <div class="fw-container">
+        <div class="fw-card" style="background: linear-gradient(135deg, var(--fw-gray-50) 0%, #ffffff 100%); text-align: center; padding: var(--fw-space-16);">
+            <div style="max-width: 600px; margin: 0 auto;">
+                <h2 class="fw-h2">Bereit für Ihr Projekt?</h2>
+                <p class="fw-lead" style="margin-bottom: var(--fw-space-8);">
+                    Lassen Sie uns über Ihre Anforderungen sprechen.
+                    Kostenlose Erstberatung, unverbindliches Angebot.
+                </p>
+                <div style="display: flex; gap: var(--fw-space-4); justify-content: center; flex-wrap: wrap;">
+                    <a href="/contactus" class="fw-btn-primary fw-btn-lg">
+                        Jetzt Kontakt aufnehmen
+                    </a>
+                    <a href="tel:+49123456789" class="fw-btn-ghost fw-btn-lg">
+                        +49 123 456 789
+                    </a>
+                </div>
+
+                <!-- Contact Info -->
+                <div style="margin-top: var(--fw-space-8); padding-top: var(--fw-space-8); border-top: 1px solid var(--fw-gray-200);">
+                    <div style="display: flex; gap: var(--fw-space-8); justify-content: center; flex-wrap: wrap; color: var(--fw-gray-600);">
+                        <div style="display: flex; align-items: center; gap: var(--fw-space-2);">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M2.5 6.66666L10 11.6667L17.5 6.66666M2.5 6.66666V13.3333C2.5 13.7754 2.67559 14.1993 2.98816 14.5118C3.30072 14.8244 3.72464 15 4.16667 15H15.8333C16.2754 15 16.6993 14.8244 17.0118 14.5118C17.3244 14.1993 17.5 13.7754 17.5 13.3333V6.66666M2.5 6.66666C2.5 6.22463 2.67559 5.80071 2.98816 5.48815C3.30072 5.17558 3.72464 5 4.16667 5H15.8333C16.2754 5 16.6993 5.17558 17.0118 5.48815C17.3244 5.80071 17.5 6.22463 17.5 6.66666" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <span>info@frawo-tech.de</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: var(--fw-space-2);">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M10 17.5C14.1421 17.5 17.5 14.1421 17.5 10C17.5 5.85786 14.1421 2.5 10 2.5C5.85786 2.5 2.5 5.85786 2.5 10C2.5 14.1421 5.85786 17.5 10 17.5Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M10 5V10L13.3333 11.6667" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <span>Mo–Fr 9:00–18:00</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ============================================
+     FOOTER
+     Customizable: Links, social media, copyright
+     ============================================ -->
+<footer style="background: var(--fw-gray-900); color: var(--fw-gray-400); padding: var(--fw-space-12) 0 var(--fw-space-6);">
+    <div class="fw-container">
+        <div class="row g-5">
+            <!-- Company Info -->
+            <div class="col-lg-4">
+                <div style="margin-bottom: var(--fw-space-4);">
+                    <img src="/logo.png" alt="FraWo GbR Logo" style="height: 40px; filter: brightness(0) invert(1);">
+                </div>
+                <p class="fw-caption" style="color: var(--fw-gray-400);">
+                    Professionelle Veranstaltungstechnik<br>
+                    & Smart Home vom Bodensee.
+                </p>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="col-lg-2">
+                <h6 class="fw-h6" style="color: white; margin-bottom: var(--fw-space-4);">Services</h6>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="margin-bottom: var(--fw-space-2);"><a href="/events" style="color: var(--fw-gray-400); text-decoration: none;">Event-Technik</a></li>
+                    <li style="margin-bottom: var(--fw-space-2);"><a href="/smarthome" style="color: var(--fw-gray-400); text-decoration: none;">Smart Home</a></li>
+                    <li style="margin-bottom: var(--fw-space-2);"><a href="/heimkino" style="color: var(--fw-gray-400); text-decoration: none;">Heimkino</a></li>
+                    <li><a href="/streaming" style="color: var(--fw-gray-400); text-decoration: none;">Streaming</a></li>
+                </ul>
+            </div>
+
+            <!-- Company -->
+            <div class="col-lg-2">
+                <h6 class="fw-h6" style="color: white; margin-bottom: var(--fw-space-4);">Unternehmen</h6>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="margin-bottom: var(--fw-space-2);"><a href="/about" style="color: var(--fw-gray-400); text-decoration: none;">Über uns</a></li>
+                    <li style="margin-bottom: var(--fw-space-2);"><a href="/referenzen" style="color: var(--fw-gray-400); text-decoration: none;">Referenzen</a></li>
+                    <li style="margin-bottom: var(--fw-space-2);"><a href="/kontakt" style="color: var(--fw-gray-400); text-decoration: none;">Kontakt</a></li>
+                    <li><a href="/impressum" style="color: var(--fw-gray-400); text-decoration: none;">Impressum</a></li>
+                </ul>
+            </div>
+
+            <!-- Legal -->
+            <div class="col-lg-2">
+                <h6 class="fw-h6" style="color: white; margin-bottom: var(--fw-space-4);">Rechtliches</h6>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="margin-bottom: var(--fw-space-2);"><a href="/privacy" style="color: var(--fw-gray-400); text-decoration: none;">Datenschutz</a></li>
+                    <li style="margin-bottom: var(--fw-space-2);"><a href="/terms" style="color: var(--fw-gray-400); text-decoration: none;">AGB</a></li>
+                    <li><a href="/cookies" style="color: var(--fw-gray-400); text-decoration: none;">Cookie-Policy</a></li>
+                </ul>
+            </div>
+
+            <!-- Social -->
+            <div class="col-lg-2">
+                <h6 class="fw-h6" style="color: white; margin-bottom: var(--fw-space-4);">Folgen Sie uns</h6>
+                <div style="display: flex; gap: var(--fw-space-3);">
+                    <!-- Add your social media links here -->
+                    <a href="#" style="width: 40px; height: 40px; background: var(--fw-gray-800); border-radius: var(--fw-radius-md); display: flex; align-items: center; justify-content: center; color: white; text-decoration: none;">
+                        <!-- Facebook icon placeholder -->
+                        <span>FB</span>
+                    </a>
+                    <a href="#" style="width: 40px; height: 40px; background: var(--fw-gray-800); border-radius: var(--fw-radius-md); display: flex; align-items: center; justify-content: center; color: white; text-decoration: none;">
+                        <!-- Instagram icon placeholder -->
+                        <span>IG</span>
+                    </a>
+                    <a href="#" style="width: 40px; height: 40px; background: var(--fw-gray-800); border-radius: var(--fw-radius-md); display: flex; align-items: center; justify-content: center; color: white; text-decoration: none;">
+                        <!-- LinkedIn icon placeholder -->
+                        <span>LI</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Copyright -->
+        <div style="margin-top: var(--fw-space-12); padding-top: var(--fw-space-6); border-top: 1px solid var(--fw-gray-800); text-align: center;">
+            <p class="fw-caption" style="color: var(--fw-gray-500);">
+                © 2026 FraWo GbR. Alle Rechte vorbehalten.
+            </p>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>

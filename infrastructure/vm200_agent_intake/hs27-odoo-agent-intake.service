@@ -1,0 +1,11 @@
+[Unit]
+Description=HS27 Odoo Agent Intake
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/odoo_agent_intake_runner.sh
+
+[Install]
+WantedBy=multi-user.target
