@@ -1,0 +1,185 @@
+<!-- FraWo Contact Page v4.0 — Mit Formular, DSGVO-konform -->
+
+<section style="padding: 100px 0 80px; background: linear-gradient(135deg, var(--fw-forest-dark) 0%, var(--fw-forest) 55%, var(--fw-forest-light) 100%); position: relative; overflow: hidden;">
+  <!-- Glow Effect -->
+  <div style="position: absolute; top: -20%; right: -10%; width: 500px; height: 500px; border-radius: 50%; background: radial-gradient(circle, var(--fw-uv-glow) 0%, transparent 70%); pointer-events: none;"></div>
+
+  <div class="container position-relative" style="z-index: 1;">
+    <div class="row g-5">
+      <div class="col-lg-5">
+        <div class="fw-eyebrow" style="color: var(--fw-mint);">Kontakt</div>
+        <h1 style="font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 900; color: #fff; line-height: 1.1; margin-bottom: 1.5rem;">
+          Lass uns über<br/>dein Projekt sprechen.
+        </h1>
+        <p style="color: var(--fw-mint); font-size: 1.1rem; line-height: 1.7; margin-bottom: 2rem;">
+          Ob Smart Home, Heimkino, Event-Infrastruktur oder Equipment-Verleih —
+          schreib uns, was du vorhast. Wir melden uns innerhalb von 2 Werktagen.
+        </p>
+
+        <div class="fw-card" style="background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); padding: 1.5rem;">
+          <h3 style="color: #fff; font-weight: 700; font-size: 1rem; margin-bottom: 1rem;">Direktkontakt</h3>
+          <p style="color: var(--fw-mint); margin-bottom: 0.75rem;">
+            <strong>E-Mail:</strong><br>
+            <a href="mailto:info@frawo-tech.de" style="color: #fff; text-decoration: none;">info@frawo-tech.de</a>
+          </p>
+          <p style="color: var(--fw-mint); margin-bottom: 0.75rem;">
+            <strong>Telefon:</strong><br>
+            <a href="tel:+4915155243164" style="color: #fff; text-decoration: none;">+49 1515 524 3164</a>
+          </p>
+          <p style="color: var(--fw-mint); margin: 0;">
+            <strong>Adresse:</strong><br>
+            FraWo GbR<br>
+            Rothkreuz 14<br>
+            88138 Weißensberg
+          </p>
+        </div>
+      </div>
+
+      <div class="col-lg-7">
+        <div class="fw-card" style="background: rgba(255, 255, 255, 0.98); border: none; padding: 2.5rem;">
+          <h3 style="color: var(--fw-forest); font-weight: 800; margin-bottom: 1.5rem;">Anfrage senden</h3>
+
+          <form action="/contactus/submit" method="POST" id="contact-form">
+            <!-- Name -->
+            <div class="mb-3">
+              <label for="name" class="form-label" style="color: var(--fw-forest); font-weight: 600;">Name / Firma *</label>
+              <input type="text" class="form-control" id="name" name="name" required
+                     style="border: 2px solid rgba(6, 78, 59, 0.2); border-radius: 0.5rem; padding: 0.75rem;">
+            </div>
+
+            <!-- E-Mail -->
+            <div class="mb-3">
+              <label for="email" class="form-label" style="color: var(--fw-forest); font-weight: 600;">E-Mail *</label>
+              <input type="email" class="form-control" id="email" name="email" required
+                     style="border: 2px solid rgba(6, 78, 59, 0.2); border-radius: 0.5rem; padding: 0.75rem;">
+            </div>
+
+            <!-- Telefon -->
+            <div class="mb-3">
+              <label for="phone" class="form-label" style="color: var(--fw-forest); font-weight: 600;">Telefon (optional)</label>
+              <input type="tel" class="form-control" id="phone" name="phone"
+                     style="border: 2px solid rgba(6, 78, 59, 0.2); border-radius: 0.5rem; padding: 0.75rem;">
+            </div>
+
+            <!-- Projekt-Art -->
+            <div class="mb-3">
+              <label for="project_type" class="form-label" style="color: var(--fw-forest); font-weight: 600;">Was planst du? *</label>
+              <select class="form-select" id="project_type" name="project_type" required
+                      style="border: 2px solid rgba(6, 78, 59, 0.2); border-radius: 0.5rem; padding: 0.75rem;">
+                <option value="">Bitte wählen...</option>
+                <option value="event">Event-Technik (FOH, Licht, Streaming)</option>
+                <option value="equipment">Equipment-Verleih (Lautsprecher, Licht, Drohne)</option>
+                <option value="smarthome">Smart Home (Home Assistant, Hue, Shelly)</option>
+                <option value="heimkino">Heimkino & Akustik (Messung, Installation)</option>
+                <option value="innenausbau">Innenausbau (Möbel, Racks, Akustikpanels)</option>
+                <option value="studio">Studio Rothkreuz (Interesse voranmelden)</option>
+                <option value="sonstiges">Sonstiges</option>
+              </select>
+            </div>
+
+            <!-- Zeitrahmen -->
+            <div class="mb-3">
+              <label for="timeline" class="form-label" style="color: var(--fw-forest); font-weight: 600;">Wann soll's fertig sein? *</label>
+              <input type="text" class="form-control" id="timeline" name="timeline" placeholder="z.B. 'Juli 2026' oder 'flexibel'" required
+                     style="border: 2px solid rgba(6, 78, 59, 0.2); border-radius: 0.5rem; padding: 0.75rem;">
+            </div>
+
+            <!-- Nachricht -->
+            <div class="mb-3">
+              <label for="message" class="form-label" style="color: var(--fw-forest); font-weight: 600;">Beschreibe dein Projekt *</label>
+              <textarea class="form-control" id="message" name="message" rows="5" required
+                        placeholder="Was willst du machen? Was ist die größte Sorge? Hast du schon Hardware?"
+                        style="border: 2px solid rgba(6, 78, 59, 0.2); border-radius: 0.5rem; padding: 0.75rem;"></textarea>
+              <small class="form-text" style="color: var(--fw-text-3);">
+                Gib uns gerne so viele Details wie möglich — wir fragen nach, was wir brauchen.
+              </small>
+            </div>
+
+            <!-- DSGVO Checkbox -->
+            <div class="mb-4">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="privacy" name="privacy" required
+                       style="border: 2px solid rgba(6, 78, 59, 0.3);">
+                <label class="form-check-label" for="privacy" style="color: var(--fw-text-2); font-size: 0.9rem;">
+                  Ich habe die <a href="/datenschutz" target="_blank" style="color: var(--fw-uv); text-decoration: underline;">Datenschutzerklärung</a>
+                  gelesen und bin damit einverstanden, dass meine Daten zur Bearbeitung meiner Anfrage gespeichert werden. *
+                </label>
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="fw-btn-primary btn" style="width: 100%; padding: 1rem; font-size: 1.1rem;">
+              Anfrage senden
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Info Section -->
+<section style="padding: 80px 0; background: var(--fw-bg);">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 mx-auto">
+        <h2 style="color: var(--fw-text); font-weight: 800; margin-bottom: 1.5rem; text-align: center;">
+          Was du in die Anfrage schreiben solltest
+        </h2>
+        <div style="color: var(--fw-text-2); font-size: 1.05rem; line-height: 1.8;">
+          <p style="margin-bottom: 1.5rem;">
+            Damit wir dir schnell und konkret antworten können, schreib uns am besten:
+          </p>
+          <ul style="line-height: 1.8; margin-bottom: 2rem;">
+            <li><strong>Was willst du machen?</strong> (Event, Smart Home, Heimkino, Verleih, etc.)</li>
+            <li><strong>Wann soll's fertig sein?</strong> (Zeitrahmen, Flexibilität, Termin)</li>
+            <li><strong>Was ist die größte Sorge?</strong> (Budget, Technik, Planung, Zeitdruck)</li>
+            <li><strong>Hast du schon Hardware?</strong> (Falls ja: Was? Falls nein: Kein Problem.)</li>
+          </ul>
+          <p style="color: var(--fw-text-3); font-size: 0.95rem;">
+            Keine Sorge: Du musst nicht alle Details wissen. Wir fragen nach, was wir brauchen.
+            Hauptsache, wir verstehen, was du vorhast. <strong>Antwortzeit: 2 Werktage.</strong>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Verfügbarkeit -->
+<section style="padding: 60px 0; background: var(--fw-surface);">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 mx-auto text-center">
+        <h3 style="color: var(--fw-uv); font-weight: 700; margin-bottom: 1rem;">Verfügbarkeit: Projekte 2026</h3>
+        <p style="color: var(--fw-text-2); font-size: 1.05rem; line-height: 1.7;">
+          Wir haben <strong>begrenzte Kapazitäten</strong> für 2026.
+          Wenn du früher etwas brauchst oder ein größeres Projekt planst — jetzt anfragen für rechtzeitige Planung!
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Map -->
+<section style="padding: 80px 0; background: var(--fw-bg);">
+  <div class="container">
+    <div class="text-center">
+      <h3 style="color: var(--fw-text); font-weight: 700; margin-bottom: 1rem;">Bodensee-Region</h3>
+      <p style="color: var(--fw-text-2); margin-bottom: 2rem;">
+        Weißensberg liegt direkt am Bodensee, zwischen Lindau und Bregenz.
+        Wir arbeiten regional (Bodensee, Allgäu, Vorarlberg) und deutschlandweit für größere Events.
+      </p>
+      <div style="max-width: 800px; margin: 0 auto; border-radius: 1.5rem; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);">
+        <iframe
+          src="https://www.openstreetmap.org/export/embed.html?bbox=9.6,47.55,9.75,47.62&layer=mapnik&marker=47.585,9.675"
+          width="100%"
+          height="400"
+          style="border:0; display:block;"
+          allowfullscreen=""
+          loading="lazy">
+        </iframe>
+      </div>
+    </div>
+  </div>
+</section>
