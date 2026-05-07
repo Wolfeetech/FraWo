@@ -1,7 +1,13 @@
 import getpass
 import os
+import socket
 import xmlrpc.client
 from dataclasses import dataclass
+
+
+# Prevent indefinite hangs on socket handshakes when network hosts are unreachable
+socket.setdefaulttimeout(15.0)
+
 
 
 DEFAULT_ODOO_URL = "http://10.1.0.22:8069"
