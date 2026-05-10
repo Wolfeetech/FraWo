@@ -43,28 +43,28 @@
             <!-- Name -->
             <div class="mb-3">
               <label for="name" class="form-label" style="color: var(--fw-forest); font-weight: 600;">Name / Firma *</label>
-              <input type="text" class="form-control" id="name" name="name" required
-                     style="border: 2px solid rgba(6, 78, 59, 0.2); border-radius: 0.5rem; padding: 0.75rem;">
+              <input type="text" class="form-control" id="name" name="name" required="required"
+                     style="border: 2px solid rgba(6, 78, 59, 0.2); border-radius: 0.5rem; padding: 0.75rem;" />
             </div>
 
             <!-- E-Mail -->
             <div class="mb-3">
               <label for="email" class="form-label" style="color: var(--fw-forest); font-weight: 600;">E-Mail *</label>
-              <input type="email" class="form-control" id="email" name="email" required
-                     style="border: 2px solid rgba(6, 78, 59, 0.2); border-radius: 0.5rem; padding: 0.75rem;">
+              <input type="email" class="form-control" id="email" name="email" required="required"
+                     style="border: 2px solid rgba(6, 78, 59, 0.2); border-radius: 0.5rem; padding: 0.75rem;" />
             </div>
 
             <!-- Telefon -->
             <div class="mb-3">
               <label for="phone" class="form-label" style="color: var(--fw-forest); font-weight: 600;">Telefon (optional)</label>
               <input type="tel" class="form-control" id="phone" name="phone"
-                     style="border: 2px solid rgba(6, 78, 59, 0.2); border-radius: 0.5rem; padding: 0.75rem;">
+                     style="border: 2px solid rgba(6, 78, 59, 0.2); border-radius: 0.5rem; padding: 0.75rem;" />
             </div>
 
             <!-- Projekt-Art -->
             <div class="mb-3">
               <label for="project_type" class="form-label" style="color: var(--fw-forest); font-weight: 600;">Was planst du? *</label>
-              <select class="form-select" id="project_type" name="project_type" required
+              <select class="form-select" id="project_type" name="project_type" required="required"
                       style="border: 2px solid rgba(6, 78, 59, 0.2); border-radius: 0.5rem; padding: 0.75rem;">
                 <option value="">Bitte wählen...</option>
                 <option value="event">Event-Technik (FOH, Licht, Streaming)</option>
@@ -80,14 +80,14 @@
             <!-- Zeitrahmen -->
             <div class="mb-3">
               <label for="timeline" class="form-label" style="color: var(--fw-forest); font-weight: 600;">Wann soll's fertig sein? *</label>
-              <input type="text" class="form-control" id="timeline" name="timeline" placeholder="z.B. 'Juli 2026' oder 'flexibel'" required
-                     style="border: 2px solid rgba(6, 78, 59, 0.2); border-radius: 0.5rem; padding: 0.75rem;">
+              <input type="text" class="form-control" id="timeline" name="timeline" placeholder="z.B. 'Juli 2026' oder 'flexibel'" required="required"
+                     style="border: 2px solid rgba(6, 78, 59, 0.2); border-radius: 0.5rem; padding: 0.75rem;" />
             </div>
 
             <!-- Nachricht -->
             <div class="mb-3">
               <label for="message" class="form-label" style="color: var(--fw-forest); font-weight: 600;">Beschreibe dein Projekt *</label>
-              <textarea class="form-control" id="message" name="message" rows="5" required
+              <textarea class="form-control" id="message" name="message" rows="5" required="required"
                         placeholder="Was willst du machen? Was ist die größte Sorge? Hast du schon Hardware?"
                         style="border: 2px solid rgba(6, 78, 59, 0.2); border-radius: 0.5rem; padding: 0.75rem;"></textarea>
               <small class="form-text" style="color: var(--fw-text-3);">
@@ -98,8 +98,8 @@
             <!-- DSGVO Checkbox -->
             <div class="mb-4">
               <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="privacy" name="privacy" required
-                       style="border: 2px solid rgba(6, 78, 59, 0.3);">
+                <input class="form-check-input" type="checkbox" id="privacy" name="privacy" required="required"
+                       style="border: 2px solid rgba(6, 78, 59, 0.3);" />
                 <label class="form-check-label" for="privacy" style="color: var(--fw-text-2); font-size: 0.9rem;">
                   Ich habe die <a href="/datenschutz" target="_blank" style="color: var(--fw-uv); text-decoration: underline;">Datenschutzerklärung</a>
                   gelesen und bin damit einverstanden, dass meine Daten zur Bearbeitung meiner Anfrage gespeichert werden. *
@@ -172,7 +172,7 @@
       </p>
       <div style="max-width: 800px; margin: 0 auto; border-radius: 1.5rem; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);">
         <iframe
-          src="https://www.openstreetmap.org/export/embed.html?bbox=9.6,47.55,9.75,47.62&layer=mapnik&marker=47.585,9.675"
+          src="https://www.openstreetmap.org/export/embed.html?bbox=9.6,47.55,9.75,47.62&amp;layer=mapnik&amp;marker=47.585,9.675"
           width="100%"
           height="400"
           style="border:0; display:block;"

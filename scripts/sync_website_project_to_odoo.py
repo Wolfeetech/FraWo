@@ -30,7 +30,6 @@ def find_or_create_project(models, db, uid, password, project_name):
     project_id = models.execute_kw(db, uid, password, 'project.project', 'create', [{
         'name': project_name,
         'privacy_visibility': 'followers',
-        'allow_timesheets': True,
     }])
     print(f"✅ Projekt erstellt: {project_name} (ID: {project_id})")
     return project_id
@@ -141,7 +140,7 @@ ODOO_PASSWORD="Wolf2024!Frawo" python scripts/deploy_website_complete.py
 
 **Datei:** frawo_homepage_v4_OPTIMIZED.html
 ''',
-                'priority': '2',
+                'priority': '1',
                 'date_deadline': (today + timedelta(days=2)).strftime('%Y-%m-%d'),
             },
             {
@@ -158,7 +157,7 @@ In Odoo: Website → Konfiguration → Formular-Builder
 **Datei:** frawo_contactus_v4_OPTIMIZED.html
 **Test:** Formular ausfüllen → E-Mail muss ankommen
 ''',
-                'priority': '2',
+                'priority': '1',
                 'date_deadline': (today + timedelta(days=2)).strftime('%Y-%m-%d'),
             },
             {
@@ -177,7 +176,7 @@ In Odoo: Website → Konfiguration → Formular-Builder
 
 **Test:** http://www.frawo-tech.de → sollte zu https:// redirecten
 ''',
-                'priority': '2',
+                'priority': '1',
                 'date_deadline': (today + timedelta(days=1)).strftime('%Y-%m-%d'),
             },
             {
@@ -232,7 +231,7 @@ Einstellungen → Verkauf → AGB-Link: https://www.frawo-tech.de/agb
 - In Rechnungen referenzieren
 - Equipment-Verleih Verträgen beifügen
 ''',
-                'priority': '2',
+                'priority': '1',
                 'date_deadline': (today + timedelta(days=2)).strftime('%Y-%m-%d'),
             },
             {
