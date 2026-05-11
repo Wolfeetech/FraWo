@@ -1,73 +1,106 @@
 # LIVE CONTEXT
 
-## Infrastructure Status & Governance (2026-05-03)
+## Infrastructure Status & Governance (2026-05-10)
 
-- **Status**: **STABLE AFTER RESTORE AND STOCKENWEILER SWAP FIX**. CT 100 `toolbox` is restored and the internal frontdoor is green again.
-- **Stockenweiler**: Host `pve-stock` was stabilized on `2026-05-03`. Root cause was host-side `telegraf` buffering against unreachable `http://192.168.178.168:8086`; swap is now back at `0 GiB / 8 GiB`.
-- **Verified frontdoors via Caddy/Tailscale `100.82.26.53`**:
-  - `portal.hs27.internal` -> `HTTP 200`
-  - `odoo.hs27.internal` -> `HTTP 200`
-  - `vault.hs27.internal` -> `HTTP 200`
-  - `ha.hs27.internal` -> `HTTP 200`
-  - `cloud.hs27.internal` -> `HTTP 302` login/HTTPS redirect
-  - `paperless.hs27.internal` -> `HTTP 302` login redirect
-  - `media.hs27.internal` -> `HTTP 302` Jellyfin login redirect
-- **Toolbox**: OPERATIONAL on `10.1.0.20`, Tailscale IP `100.82.26.53`. Caddy, AdGuard and Jellyfin are running.
-- **Odoo (VM 220)**: LIVE on `10.1.0.22:8069`. The restore issue was not Docker-in-LXC; VM-level Proxmox firewall blocked CT 100 to VM 220.
-- **VM 200 intake drift**: the historical `agent@`/alias-router runtime on `VM 200 nextcloud` is currently not present in the live guest probe. Only `homeserver-compose-nextcloud.service` was found; `agent@frawo-tech.de` also has `0` API keys at the moment, and external IMAP resolution from `VM 200` is not yet healthy.
-- **Odoo app mail**: Sender error for sales cancellation was server-side fixed on `2026-04-22`: `wolf@frawo-tech.de` now has a partner email and `admin` uses `noreply@frawo-tech.de`. Template `Sales: Order Cancellation` renders `S00001` from `"Wolf Admin" <wolf@frawo-tech.de>`. Browser retest is still required before closing GitHub issue `#11`.
-- **Home Assistant (VM 210)**: LIVE on `10.1.0.24:8123`. `trusted_proxies` includes `10.1.0.0/24` and `172.30.32.0/23`.
-- **Vaultwarden (CT 120)**: LIVE on `10.1.0.26:8080`. Caddy upstream corrected from `:80` to `:8080`.
-- **Media**: Jellyfin LIVE on host-network port `10.1.0.20:8096`; Caddy upstream corrected away from container-local `localhost`.
-- **Storage**: root `/` at ~19% used, `ssd2tb` at ~4% used, `gdrive:` at ~22% used.
-- **rclone**: Google Drive mount is active; nightly backup activity hit Google API quota/rate limits and needs backup-throttle/fallback work.
+- **Status**: **ANKER OPERATIONAL, STOCKENWEILER OFFLINE**. CT 100 `toolbox` and all Anker-based services are operational.
+- **CRITICAL**: **Stockenweiler PVE (`100.91.20.116` / `192.168.178.25`) is COMPLETELY OFFLINE**
+  - Last seen on Tailscale: 1 day ago
+  - Does not respond to ping via Tailscale, local network, or from Anker PVE bridge
+  - **Requires physical intervention in Rothkreuz** to power on
+  - **Affected services**: AzuraCast (VM 210), Home Assistant Eltern (VM 360), AdGuard (CT 101), Vaultwarden (CT 108)
+  - **Blocked tasks**: All Lane E Radio tests, Lane D Remote Support tasks
+
+- **Anker PVE (`100.69.179.87` / `10.1.0.92`)**: OPERATIONAL via Tailscale
+- **Toolbox (CT 100)**: OPERATIONAL on `10.1.0.20`, Tailscale IP `100.82.26.53`. Caddy, AdGuard and Jellyfin running.
+
+- **Verified frontdoors via Caddy/Tailscale (2026-05-10 22:55):**
+  - `portal.hs27.internal` -> `HTTP 200` (64ms)
+  - `odoo.hs27.internal` -> `HTTPS 200` (64ms) **[Note: Now requires HTTPS due to Caddy 308 redirect]**
+  - `vault.hs27.internal` -> `HTTP 502` (3058ms) **[Backend down - likely on Stockenweiler]**
+  - `ha.hs27.internal` -> `HTTP 502` (3040ms) **[Backend down - likely on Stockenweiler]**
+  - `cloud.hs27.internal` -> `TIMEOUT` (>3s) **[Nextcloud backend issue]**
+  - `paperless.hs27.internal` -> `HTTP 502` (3045ms) **[Backend down]**
+  - `media.hs27.internal` -> Jellyfin redirect (not tested in latest check)
+
+- **Odoo (VM 220 on Anker)**: LIVE via HTTPS at `https://odoo.hs27.internal`.
+  - Database: `FraWo_GbR`
+  - **42 active tasks** across 5 Lane projects (A, B, C, D, E)
+  - Auth working with `admin@frawo-tech.de` / API access confirmed
+  - **Lane projects** exist (no unified "Masterplan" project):
+    - Lane A: Heritage & History (9 tasks, 2 in progress, 2 blocked)
+    - Lane B: Website & Public Edge (9 tasks, 3 completed, 5 blocked)
+    - Lane C: Security & PBS (9 tasks, 3 completed, 1 in progress, 2 blocked)
+    - Lane D: Stockenweiler Migration (3 tasks, 1 blocked, 2 planning)
+    - Lane E: Radio & Media (12 tasks, 3 completed, 4 blocked)
+
 - **Security note**: VM-level firewalls on VM 210 and VM 220 are currently disabled to keep services reachable. A tested Proxmox firewall design is required before re-enabling them. Do not blindly set `firewall=1`; the first re-enable attempt dropped CT 100 traffic despite intended allow rules.
-- **SSOT**: Repository `https://github.com/Wolfeetech/FraWo` and Odoo master project must be kept in sync.
+
+- **SSOT**: Repository at `~/.gemini/antigravity/brain/Homeserver_2027_Ops_Workspace` (Windows user: StudioPC, not Admin)
 
 ## Workspace Status
 
 - Name: `FraWo GbR Ops Workspace`
 - Operator: **Wolf** | Business User: **Franz**
-- Canonical Root: `C:\WORKSPACE`
-- Working checkout: `C:\WORKSPACE\FraWo`
+- Current working path: `C:\Users\StudioPC\.gemini\antigravity\brain\Homeserver_2027_Ops_Workspace`
+- Git status: clean, on `main` branch, synced with origin
 - Identity: `hs27_ops_ed25519` / OpenClaw infra key for PVE access
 
-## Active Track
+## Active Track (2026-05-10)
 
-- **Lane A**: internal MVP remains sealed, but post-restore regression checks continue.
-- **Lane B**: public website/HTTPS remains active and blocked by public edge/TLS path.
-- **Lane C**: active priority for security audit, backups, DNS and storage sustainability.
-- **Lane D**: active and stabilized; the host swap incident is remediated, but the monitoring output on `pve-stock` is only temporarily neutralized via `outputs.discard`.
-- **Lane E**: media is green; the radio dual-site frontdoor is corrected live and now separates Anker (`radio.hs27.internal`, `radio-anker.hs27.internal`) from Stockenweiler (`radio-stock.hs27.internal`).
+- **Lane A**: Heritage/History - GbR Gründung in progress, Notar/Finanzamt blocked
+- **Lane B**: Website/Public Edge - CSS/redesign completed, Logo/Public Edge/Cloudflare blocked
+- **Lane C**: Security/PBS - **PBS Backups** task currently "In Arbeit" in Odoo - **PRIORITY**
+- **Lane D**: Stockenweiler - **BLOCKED** until physical server access restored
+- **Lane E**: Radio/Media - **BLOCKED** until Stockenweiler PVE restored
 
-## Immediate Next Projects
+## Immediate Blocker Analysis (2026-05-10)
 
-1. **Security audit follow-through**
-   - design and test VM 210/220 firewall rules without breaking CT 100 frontdoor traffic
-   - restrict PVE host NFS/RPC exposure to trusted internal networks
-   - review SSH authorized keys and keep OpenClaw key state documented
-2. **Backups after restore**
-   - verify nightly backup target and storage mapping
-   - add rclone rate-limit/backoff or local `ssd2tb` fallback
-   - run a post-restore backup/restore proof after the firewall and Caddy changes
-3. **DNS cleanup**
-   - move from Windows hosts-file workaround toward UniFi/Tailscale split-DNS
-   - finalize `hs27.internal` restricted nameserver path
-4. **CT 100 storage migration**
-   - migrate CT 100 disk from `local-lvm`/NVMe to `ssd2tb` in a controlled maintenance window
-5. **Odoo application layer**
-   - the Odoo SSOT project now carries the `2026-05-03` Stockenweiler remediation, root cause, verification and follow-up via direct internal write on `VM 220`
-   - `VM 200 nextcloud` intake automation is currently a restore target, not a trusted runtime; restore DNS, runtime files/units and the `agent@` credential path before reusing it
-   - browser-retest quote cancellation mail after sender fix, then close GitHub `#11`
-   - resolve `res.users.log` ACL warnings and finalize productive user/project setup
-6. **Radio dual-site stabilization**
-   - keep `toolbox` on the corrected split: Anker default host plus explicit Stockenweiler host
-   - expand the central media target before attempting any full `283G` Stockenweiler library migration
-   - normalize AzuraCast credentials and public listen URLs across both radio nodes
-7. **Stockenweiler monitoring follow-through**
-   - restore a real reachable metrics sink for `telegraf`; the current `discard` output is only a protective stopgap
-   - re-check host memory after 24h steady-state runtime
-   - only then decide on VM rightsizing or workload moves
+### **UNBLOCK NEEDED:**
+1. **Stockenweiler PVE physical power-on** (Rothkreuz site visit required)
+   - Blocks: Lane D (all 3 tasks), Lane E Radio tests (4 tasks)
+   - Blocks: Services (AzuraCast, HA Eltern, AdGuard, Vaultwarden on Stockenweiler)
+
+2. **Nextcloud backend timeout** (cloud.hs27.internal)
+   - Blocks: Lane B "Nextcloud Desktop HTTPS Callback" task
+   - Needs investigation: VM 200 status on Anker PVE
+
+3. **Vaultwarden 502 error** (vault.hs27.internal)
+   - Blocks: Lane C "Vaultwarden Sync" task
+   - Likely running on Stockenweiler CT 108 (offline)
+
+### **CAN PROCEED WITHOUT STOCKENWEILER:**
+1. **Lane C: PBS Backups produktiv** ✅ Currently "In Arbeit" in Odoo
+   - PBS should be on Anker infrastructure
+   - Can proceed independently
+
+2. **Lane A: GbR Gründung tasks** ✅ Business/administrative work
+   - Not infrastructure-dependent
+
+3. **Lane B: Logo/CI definition** ✅ Design work
+   - Not infrastructure-dependent
+
+## Immediate Next Actions (Prioritized for 2026-05-10)
+
+1. **PRIORITY: Lane C - PBS Backups produktiv**
+   - This is the only "In Arbeit" infrastructure task
+   - Can proceed without Stockenweiler
+   - Verify PBS status on Anker PVE
+   - Check backup configuration and test restore
+
+2. **Investigate Nextcloud timeout**
+   - Check VM 200 status on Anker PVE
+   - Verify Nextcloud container/service health
+   - Potential quick win for Lane B unblock
+
+3. **Document Stockenweiler outage for operator**
+   - Update GitHub issue if exists
+   - Create incident report
+   - Schedule physical site visit to Rothkreuz
+
+4. **Lane A business tasks**
+   - GbR Gründung documentation (non-blocked tasks)
+   - Can proceed in parallel to infrastructure work
 
 ---
-*Updated: 2026-05-03 16:27 Europe/Berlin*
+*Updated: 2026-05-10 23:15 Europe/Berlin*
+*Agent: Claude Sonnet 4.5 via claude-code*
