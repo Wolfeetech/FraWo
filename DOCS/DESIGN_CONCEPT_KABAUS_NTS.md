@@ -18,35 +18,51 @@
 - Persistent Audio Player (sticky)
 - Discovery über kuratorische Elemente
 
+**FraWo CI (v2.0) = Ultra Minimal Dark:**
+- Fast-schwarzer Background (#0a0a0a)
+- Purple (#a855f7) + Dunkelgrün (#0d4d4d) aus Logo
+- Sharp Corners (NO border-radius)
+- 1px Borders überall (#1a1a1a)
+- Inter Font, klare Hierarchie
+
 **FraWo Fusion:**
-> "Professionelle IT-Services mit Radio-Seele"
+> "kabaus-Struktur + NTS-Minimalismus + FraWo Dark CI"
 
 ---
 
-## 🎯 FARBSCHEMA
+## 🎯 FARBSCHEMA (FRAWO CI v2.0)
 
-### Primary Palette (von kabaus.at inspiriert)
+### Primary Palette (FraWo Corporate Identity)
 ```css
---frawo-black: #000000;        /* Basis, Header, Footer */
---frawo-white: #FFFFFF;        /* Content-Background */
---frawo-gray-dark: #1a1a1a;   /* Subtle Borders */
---frawo-gray-mid: #555555;    /* Secondary Text */
---frawo-gray-light: #888888;  /* Tertiary, Icons */
+--fw-bg: #0a0a0a;             /* Haupt-Background (NTS-Stil) */
+--fw-text: #e0e0e0;           /* Primary Text (hell-grau) */
+--fw-text-dim: #888888;       /* Secondary Text (mittel-grau) */
+--fw-text-dimmer: #555555;    /* Tertiary Text (dunkel-grau) */
+--fw-border: #1a1a1a;         /* Subtle Borders & Dividers */
 ```
 
-### Accent Colors (für Radio & CTAs)
+### Accent Colors (Logo-basiert)
 ```css
---frawo-purple: #a855f7;      /* Radio Live-Status (von NTS) */
---frawo-orange: #ff6b35;      /* CTA Buttons, Links (von kabaus) */
---frawo-blue: #0066cc;        /* Alternative CTAs */
+--fw-uv: #a855f7;             /* Purple - Aus Logo! (Radio, Live) */
+--fw-forest: #0d4d4d;         /* Dunkelgrün - Logo-Hauptfarbe */
 ```
 
-### Anwendung
-- **Header/Footer:** Schwarz (#000) mit weißem Text
-- **Hero:** Weiß mit schwarzem Text
-- **Sections:** Alternierend weiß/hellgrau (#f5f5f5)
-- **Radio Player:** Schwarz mit Purple-Akzent (#a855f7)
-- **Buttons:** Orange (#ff6b35) für Primary, Outline für Secondary
+### Button Colors
+```css
+Primary Button BG: #e0e0e0;   /* Hell-grau (Light on Dark) */
+Primary Button Text: #0a0a0a; /* Fast-schwarz */
+Ghost Button Border: #1a1a1a; /* Dunkel-grau */
+Ghost Button Text: #888888;   /* Mittel-grau */
+```
+
+### Anwendung (Dark Theme)
+- **Background:** Fast-schwarz (#0a0a0a) überall
+- **Header/Footer:** Transparent auf #0a0a0a
+- **Text:** Hell-grau (#e0e0e0) für Headlines, Mittel-grau (#888888) für Body
+- **Borders:** Subtil (#1a1a1a), nur 1px
+- **Akzente:** Purple (#a855f7) für Radio/Highlights, Green (#0d4d4d) für Branding
+- **Buttons:** Primary = Hell auf Dunkel, Ghost = Outline subtle
+- **NO:** Bunter Farben, Gradients, Shadows
 
 ---
 
