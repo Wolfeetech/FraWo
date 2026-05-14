@@ -537,15 +537,15 @@ section {
   color: var(--fw-text-dim);
   font-size: 0.9375rem;
   line-height: 1.5;
-  margin-bottom: 0.875rem;
+  margin-bottom: 0.5rem !important;
   position: relative;
   z-index: 1;
 }
 
 .fw-service-list {
   list-style: none;
-  padding: 0;
-  margin: 0 0 1rem 0;
+  padding: 0 !important;
+  margin: 0 0 0.75rem 0 !important;
   flex-grow: 1;
   position: relative;
   z-index: 1;
@@ -554,9 +554,9 @@ section {
 .fw-service-list li {
   color: var(--fw-text-dim);
   font-size: 0.875rem;
-  line-height: 1.5;
-  padding: 0.25rem 0;
-  padding-left: 1.25rem;
+  line-height: 1.4 !important;
+  padding: 0.15rem 0 !important;
+  padding-left: 1.25rem !important;
   position: relative;
   transition: color 0.2s ease;
 }
