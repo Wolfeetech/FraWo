@@ -58,6 +58,26 @@
 | **Mount 2 (Studio)** | 🎧 `/listen/frawo_funk/hifi.mp3` (320kbps MP3 Studio Quality) |
 | **Mount 3 (Mobile)** | 📱 `/listen/frawo_funk/mobile.aac` (64kbps AAC+ HE-v2 für Unterwegs) |
 
+### Sende-Struktur & Kuratierte Shows (Sunshine Live & NTS Standard)
+Das Radio sendet in einem dynamischen, abwechslungsreichen Mix aus vier handverlesenen, professionell bewohnten Show-Formaten, die direkt an die Ordnerstruktur auf dem Netzlaufwerk gekoppelt sind:
+
+1. 🔥 **Show: FraWo Club (Peaktime Tech House / Club Bangers)**
+   * **Pfad:** `/mnt/music/Curated_Shows/FraWo_Club_Peaktime`
+   * **Künstler:** John Summit, Cloonee, ANOTR, Tube & Berger, Green Velvet, CASSIMM.
+   * **Gewichtung:** 4 (Häufigste Rotation für treibende Tages- & Abend-Vibes).
+2. 🌅 **Show: Bodensee Sunrise (Melodic Deep House & Chill)**
+   * **Pfad:** `/mnt/music/Curated_Shows/Bodensee_Sunrise_Lounge`
+   * **Künstler:** Floating Points, Solee, Tebra, Juan Hansen, Cafe De Anatolia, Joris Voorn.
+   * **Gewichtung:** 3 (Für organische, entspannte Morgen- & See-Stunden).
+3. 🎛️ **Show: Underground Currents (NTS Radio Leftfield / Electro)**
+   * **Pfad:** `/mnt/music/Curated_Shows/Underground_NTS_Selects`
+   * **Künstler:** Helena Hauff, INVT, Drexciya, Eris Drew, Palms Trax, Client_03.
+   * **Gewichtung:** 2 (Für anspruchsvolle, eklektische Underground-Selects).
+4. 💎 **Show: Classics & Anthems**
+   * **Pfad:** `/mnt/music/Curated_Shows/Classics_Anthems`
+   * **Künstler:** Daft Punk, Energy 52, Armand Van Helden, Inner City, Jaydee.
+   * **Gewichtung:** 1 (Der legendäre Backkatalog).
+
 ---
 
 ## ✅ WAS ERLEDIGT WURDE
