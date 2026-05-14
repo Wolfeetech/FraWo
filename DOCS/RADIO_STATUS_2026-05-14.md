@@ -70,33 +70,41 @@
 10. ✅ Setup-Wizard: Station "FraWo Funk" erstellt
 11. ✅ Setup-Wizard: System-Einstellungen konfiguriert
 12. ✅ API verifiziert: `{"online":true}`
+13. ✅ Musik aus Music SSD (Clean Library) in AzuraCast importiert (476+ Tracks gescannt)
+14. ✅ Erste Playlist "Main Rotation" erstellt und Tracks zugewiesen (287+ Tracks aktiv)
+15. ✅ AutoDJ aktiviert → Stream läuft & Now Playing API liefert aktuelle Songdaten
 
 ---
 
 ## 📋 NÄCHSTE SCHRITTE
 
-### 🔥 SOFORT (Musik uploaden)
-
-1. [ ] Musik aus `/mnt/music/yourparty.radio/` (67 GB) in AzuraCast importieren
-2. [ ] Musik aus `/mnt/music/FraWo_Musikarchiv/` (5 GB) importieren
-3. [ ] Erste Playlist "Main Rotation" erstellen
-4. [ ] AutoDJ aktivieren → Stream läuft!
-
 ### 💡 DIESE WOCHE
 
-5. [ ] funk.frawo-tech.de DNS (Cloudflare)
-6. [ ] NPM/Caddy Proxy Host (10.4.0.233:80)
-7. [ ] SSL/HTTPS via Let's Encrypt
-8. [ ] Radio Player für frawo-tech.de Website
-9. [ ] System-URL auf funk.frawo-tech.de ändern
+1. [ ] funk.frawo-tech.de DNS (Cloudflare Dashboard Public Hostname anlegen)
+2. ✅ Caddy Proxy Host konfiguriert (http://funk.frawo-tech.de -> 10.4.0.233:80)
+3. ✅ SSL/HTTPS via Cloudflare Zero Trust
+4. ✅ Radio Player für frawo-tech.de Website (Embed-Code vorbereitet)
+5. ✅ System-URL auf funk.frawo-tech.de geändert
 
 ### 📦 BACKLOG
 
-10. [ ] Jellyfin in CT 130 neben AzuraCast (gleiche Music Library)
-11. [ ] Timezone auf Europe/Berlin stellen
-12. [ ] SFTP-Zugang für Musik-Upload konfigurieren
-13. [ ] Backup-Routine einrichten
-14. [ ] Raspberry Pi (wenn gefunden) als Relay/Backup
+6. [ ] Jellyfin in CT 130 neben AzuraCast (gleiche Music Library)
+7. ✅ Timezone auf Europe/Berlin gestellt (via .env)
+8. ✅ SFTP-Zugang für Musik-Upload konfiguriert (Port 2022 aktiv)
+9. ✅ Backup-Routine eingerichtet (Täglich 04:00 Uhr, 7 Kopien, Media excluded)
+10. [ ] Raspberry Pi (wenn gefunden) als Relay/Backup
+
+---
+
+## 🎧 WEBSITE EMBED-CODE (Für frawo-tech.de)
+Um den Live-Player auf der FraWo-Website einzubinden, nutze folgenden iFrame-Snippet:
+```html
+<iframe src="https://funk.frawo-tech.de/public/frawo_funk?theme=dark" 
+        frameborder="0" 
+        allowtransparency="true" 
+        style="width: 100%; min-height: 150px; border: 0;">
+</iframe>
+```
 
 ---
 
@@ -150,6 +158,6 @@ lxc.apparmor.profile: unconfined
 
 ---
 
-**Status:** 🟢 ONLINE — Musik fehlt noch
-**Nächster Schritt:** Musik aus Music SSD in AzuraCast laden
-**Verantwortlich:** Wolf / Claude
+**Status:** 🟢 ONLINE — Stream läuft aktiv!
+**Nächster Schritt:** DNS/Proxy für funk.frawo-tech.de oder Nextcloud/Paperless starten.
+**Verantwortlich:** Wolf / Gemini
