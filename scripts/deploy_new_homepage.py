@@ -368,6 +368,128 @@ HOMEPAGE_HTML = """<t t-call="website.layout">
   </div>
 </section>
 
+<!-- FINAL OVERRIDE - Must be last to override Odoo's compiled CSS -->
+<style>
+/* MAXIMUM SPECIFICITY - Override Bootstrap and Odoo Frontend CSS */
+.fw-services .row.g-4,
+section.fw-services .row.g-4 {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: 1px !important;
+  background: #1a1a1a !important;
+  border: 1px solid #1a1a1a !important;
+  margin: 0 !important;
+}
+
+.fw-services .col-lg-6,
+section.fw-services .col-lg-6 {
+  padding: 0 !important;
+  max-width: none !important;
+  flex: none !important;
+}
+
+.fw-services .fw-service-card,
+section.fw-services .fw-service-card {
+  padding: 0.75rem 1rem !important;
+  min-height: 200px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.3rem !important;
+}
+
+.fw-service-card .fw-h3,
+.fw-service-card h3.fw-h3 {
+  margin: 0 0 0.3rem 0 !important;
+  font-size: 0.75rem !important;
+}
+
+.fw-service-card .fw-service-desc,
+.fw-service-card p.fw-service-desc {
+  margin: 0 0 0.3rem 0 !important;
+  font-size: 0.85rem !important;
+}
+
+.fw-service-card .fw-service-list,
+.fw-service-card ul.fw-service-list {
+  margin: 0 0 0.5rem 0 !important;
+  padding: 0 !important;
+  list-style: none !important;
+}
+
+.fw-service-card .fw-service-list li,
+.fw-service-card ul li {
+  padding: 0.08rem 0 0.08rem 1rem !important;
+  margin: 0 !important;
+  font-size: 0.8rem !important;
+  line-height: 1.3 !important;
+}
+
+/* Referenzen ultra-compact */
+.fw-referenzen .row.g-4,
+section.fw-referenzen .row.g-4 {
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr) !important;
+  gap: 1px !important;
+  background: #1a1a1a !important;
+  border: 1px solid #1a1a1a !important;
+  margin: 0 !important;
+}
+
+.fw-referenzen .col-lg-3,
+.fw-referenzen .col-6,
+section.fw-referenzen .col-lg-3,
+section.fw-referenzen .col-6 {
+  padding: 0 !important;
+  max-width: none !important;
+  flex: none !important;
+}
+
+.fw-referenzen .fw-ref-item,
+section.fw-referenzen .fw-ref-item {
+  padding: 0.75rem 0.5rem !important;
+  min-height: 90px !important;
+  background: #0a0a0a !important;
+}
+
+.fw-ref-item strong {
+  font-size: 0.7rem !important;
+  margin: 0 !important;
+}
+
+.fw-ref-item p {
+  font-size: 0.65rem !important;
+  margin: 0 !important;
+}
+
+/* Section spacing */
+section.fw-services,
+section.fw-referenzen,
+section.fw-projects,
+section.fw-about,
+section.fw-radio-cta,
+section.fw-cta {
+  padding: 40px 0 !important;
+}
+
+section.fw-hero {
+  padding: 80px 0 60px !important;
+}
+
+.fw-section-header {
+  margin-bottom: 25px !important;
+}
+
+/* Mobile override */
+@media (max-width: 991px) {
+  .fw-services .row.g-4 {
+    grid-template-columns: 1fr !important;
+  }
+  .fw-referenzen .row.g-4 {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+</style>
+
     </div>
 </t>"""
 
