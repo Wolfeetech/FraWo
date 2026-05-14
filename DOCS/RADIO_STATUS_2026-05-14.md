@@ -50,8 +50,8 @@
 |------|------|
 | Name | FraWo Funk |
 | Shortcode | `frawo_funk` |
-| Beschreibung | Community Radio. Bodensee. |
-| Genre | Electronic / Alternative / Community |
+| Beschreibung | Das Non-Stop Radio vom Bodensee. |
+| Genre | Electronic / Alternative / Non-Stop |
 | Frontend | Icecast |
 | Backend | Liquidsoap (v2.3+) |
 | **Mount 1 (Standard)** | 📻 `/listen/frawo_funk/radio.mp3` (192kbps MP3) |

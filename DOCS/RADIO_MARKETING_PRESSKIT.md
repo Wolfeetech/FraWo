@@ -9,10 +9,10 @@ Willkommen im offiziellen Marketing- und Press-Kit von **FraWo Funk**. Dieses Do
 ### Kern-Daten
 * **Sendername:** FraWo Funk
 * **Claim / Slogans:** 
-  * *„Dein Community Radio am Bodensee.“*
-  * *„Der Sound der Region – Elektronisch, Alternativ, Unabhängig.“*
+  * *„Das Non-Stop Radio vom Bodensee.“*
+  * *„Der Sound der Region – Elektronisch, Alternativ, Non-Stop.“*
   * *„FraWo Funk: Einschalten. Abtauchen.“*
-* **Positionierung:** Ein modernes, werbefreies und kuratiertes Community-Radio für Musikliebhaber, Kreative und Tech-Enthusiasten in der Bodenseeregion.
+* **Positionierung:** Ein modernes, werbefreies und kuratiertes Non-Stop-Radio für Musikliebhaber, Kreative und Tech-Enthusiasten in der Bodenseeregion.
 * **Musikalische DNA:** Deep House, Melodic Techno, Indie/Alternative, Ambient und lokale Newcomer.
 
 ### Design & Farb-System (Brand Tokens)
@@ -31,19 +31,19 @@ Nutze diese vorgefertigten Texte für Website, Newsletter, Instagram, WhatsApp u
 
 ### 🌐 Website Intro (Für frawo-tech.de / Landing Page)
 > **FraWo Funk — Einschalten und den Bodensee hören.**  
-> Willkommen bei FraWo Funk, dem unabhängigen Community Radio aus der Region. Wir senden rund um die Uhr handverlesene elektronische und alternative Klänge direkt aus unserem Proxmox-gestützten Studio. Keine nervige Werbung, keine Algorithmen – nur echte, kuratierte Musikliebe.  
+> Willkommen bei FraWo Funk, dem unabhängigen Non-Stop Radio aus der Region. Wir senden rund um die Uhr handverlesene elektronische und alternative Klänge direkt aus unserem Proxmox-gestützten Studio. Keine nervige Werbung, keine Moderation – nur echte, kuratierte Musikliebe im Non-Stop-Mix.  
 > 🎧 [Jetzt live streamen](https://funk.frawo-tech.de) | 📱 [Unterwegs hören (Data-Saver)](https://funk.frawo-tech.de/listen/frawo_funk/mobile.aac)
 
 ### 📸 Instagram / Facebook / LinkedIn Launch-Post
 > **WE ARE LIVE! 📻🌊**  
-> Es ist offiziell: **FraWo Funk** geht on air! Dein neues Community Radio am Bodensee liefert dir ab sofort den perfekten Soundtrack für den Tag – von entspannten Morning Vibes über treibende Beats bis zur Late Night Lounge.  
+> Es ist offiziell: **FraWo Funk** geht on air! Dein neues Non-Stop Radio am Bodensee liefert dir ab sofort den perfekten Soundtrack für den Tag – von entspannten Morning Vibes über treibende Beats bis zur Late Night Lounge.  
 > 
-> ✨ 100% Werbefrei  
+> ✨ 100% Werbefrei & Non-Stop  
 > ✨ Studio HiFi-Qualität (320kbps) & Mobile Stream  
 > ✨ Kuratiert von echten Musikliebhabern  
 > 
 > 👉 Link in der Bio: `funk.frawo-tech.de`  
-> #FraWoFunk #Bodensee #CommunityRadio #DeepHouse #Alternative #WeAreLive #WebRadio
+> #FraWoFunk #Bodensee #NonStopRadio #DeepHouse #Alternative #WeAreLive #WebRadio
 
 ### 💬 WhatsApp Community / Telegram Broadcast
 > 📻 *FraWo Funk ist live!* 🌊  
