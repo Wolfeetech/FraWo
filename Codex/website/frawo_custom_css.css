@@ -1,14 +1,32 @@
-/* FraWo GbR — v3.5 Ultra Minimal (NTS-Inspired) — DEPLOYED 2026-04-28 13:36 CEST */
+/* FraWo GbR — v4.0 Professional World-Class — DEPLOYED 2026-05-14 */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 :root {
   --fw-bg: #0a0a0a;
   --fw-text: #e0e0e0;
-  --fw-text-dim: #888888;
-  --fw-text-dimmer: #555555;
+  --fw-text-dim: #a0a0a0;
+  --fw-text-dimmer: #606060;
   --fw-border: #1a1a1a;
   --fw-uv: #a855f7;
+  --fw-forest: #0d4d4d;
+
+  /* Professional spacing scale */
+  --spacing-xs: 0.5rem;
+  --spacing-sm: 1rem;
+  --spacing-md: 2rem;
+  --spacing-lg: 4rem;
+  --spacing-xl: 6rem;
+  --spacing-xxl: 8rem;
+
+  /* Typography scale */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.5rem;
+  --text-2xl: 2rem;
+  --text-3xl: 3rem;
 }
 
 /* Global */
@@ -104,20 +122,21 @@ footer, .o_footer {
 }
 
 .fw-h1 {
-  font-size: clamp(2.5rem, 6vw, 4.5rem);
-  font-weight: 700;
-  line-height: 1.05;
+  font-size: clamp(3rem, 7vw, 5.5rem);
+  font-weight: 800;
+  line-height: 1;
   color: var(--fw-text);
-  margin-bottom: 1.5rem;
-  letter-spacing: -0.03em;
+  margin-bottom: var(--spacing-md);
+  letter-spacing: -0.04em;
+  font-feature-settings: 'ss01' on, 'cv01' on;
 }
 
 .fw-lead {
   color: var(--fw-text-dim);
-  font-size: 1.05rem;
-  line-height: 1.7;
+  font-size: clamp(1.125rem, 2vw, 1.25rem);
+  line-height: 1.6;
   max-width: 42rem;
-  margin-bottom: 2.5rem;
+  margin-bottom: var(--spacing-lg);
   font-weight: 400;
 }
 
@@ -390,26 +409,58 @@ section {
 }
 
 .fw-h3 {
-  font-size: 0.85rem;
+  font-size: 0.8125rem;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   color: var(--fw-text);
-  margin-bottom: 1rem;
+  margin-bottom: var(--spacing-md);
+  position: relative;
+  z-index: 1;
 }
 
 .fw-service-card {
   background: var(--fw-bg);
   border: none;
-  padding: 4rem 3rem;
-  min-height: 450px;
+  padding: var(--spacing-xl) var(--spacing-lg);
+  min-height: 500px;
   display: flex;
   flex-direction: column;
-  transition: background 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.fw-service-card-bg {
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  position: relative;
+}
+
+.fw-service-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, transparent 0%, rgba(168, 85, 247, 0.03) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.fw-service-card:hover::before {
+  opacity: 1;
 }
 
 .fw-service-card:hover {
-  background: rgba(255, 255, 255, 0.03);
+  transform: translateY(-2px);
+}
+
+.fw-service-card-bg:hover {
+  background-color: rgba(255, 255, 255, 0.02);
 }
 
 @media (max-width: 768px) {
@@ -427,46 +478,68 @@ section {
 
 .fw-service-desc {
   color: var(--fw-text-dim);
-  font-size: 1rem;
-  line-height: 1.6;
-  margin-bottom: 1.5rem;
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  margin-bottom: var(--spacing-md);
+  position: relative;
+  z-index: 1;
 }
 
 .fw-service-list {
   list-style: none;
   padding: 0;
-  margin: 0 0 2rem 0;
+  margin: 0 0 var(--spacing-lg) 0;
   flex-grow: 1;
+  position: relative;
+  z-index: 1;
 }
 
 .fw-service-list li {
   color: var(--fw-text-dim);
-  font-size: 0.9rem;
-  line-height: 1.7;
-  padding: 0.35rem 0;
-  padding-left: 1rem;
+  font-size: 0.9375rem;
+  line-height: 1.8;
+  padding: 0.5rem 0;
+  padding-left: 1.25rem;
   position: relative;
+  transition: color 0.2s ease;
+}
+
+.fw-service-list li:hover {
+  color: var(--fw-text);
 }
 
 .fw-service-list li:before {
-  content: "—";
+  content: "→";
   position: absolute;
   left: 0;
-  color: var(--fw-text-dimmer);
+  color: var(--fw-uv);
+  opacity: 0.5;
+  font-size: 0.875rem;
+  transition: opacity 0.2s ease;
+}
+
+.fw-service-list li:hover:before {
+  opacity: 1;
 }
 
 .fw-service-link {
-  color: var(--fw-text-dim);
-  font-size: 0.8rem;
+  color: var(--fw-text);
+  font-size: 0.8125rem;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   text-decoration: none;
-  transition: color 0.2s ease;
+  transition: all 0.2s ease;
   margin-top: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative;
+  z-index: 1;
 }
 
 .fw-service-link:hover {
-  color: var(--fw-text);
+  color: var(--fw-uv);
+  transform: translateX(4px);
 }
 
 /* ===== REFERENZEN GRID ===== */
