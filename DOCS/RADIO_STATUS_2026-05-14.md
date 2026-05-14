@@ -1,135 +1,155 @@
 # Radio / AzuraCast Status - 2026-05-14
 
-**Update:** Diagnostik durch Claude (Radio-Init)
-**Ziel:** funk.frawo-tech.de für AzuraCast einrichten
+**Update:** AzuraCast erfolgreich auf Proxmox Anker deployed (CT 130)
+**Status:** 🟢 ONLINE — Setup abgeschlossen, bereit für Musik
 
 ---
 
-## 🎯 AKTUELLER STATUS: 🔴 OFFLINE — Raspberry Pi physisch nicht erreichbar
+## 🎯 AKTUELLER STATUS: ✅ AZURACAST LIVE
 
-### Infrastruktur
+### Neue Infrastruktur
 
-| Component | IP | Status | Notizen |
-|-----------|-----|--------|---------|
-| **Raspberry Pi 4 (radio-node)** | 192.168.2.155 | ❌ OFFLINE | "Destination host unreachable" von StudioPC |
-| **Raspberry Pi Tailscale** | 100.64.23.77 | ❌ OFFLINE | Nicht in `tailscale status` gelistet, Auth abgelaufen? |
-| **Raspberry Pi VLAN 103** | 10.3.0.9 | ❌ OFFLINE | Legacy-IP, VLAN existiert nicht mehr (10.4.0.x jetzt aktiv) |
-| **Proxmox Anker** | 100.69.179.87 | ✅ ONLINE | Host OK, kein Radio-Container vorhanden |
-| **Proxmox Stockenweiler** | 100.91.20.116 | ❌ OFFLINE | 4+ Tage offline |
-| **Storage Node (CT 110)** | 10.1.0.30 / 10.4.0.30 | ✅ ONLINE | Erreichbar von Proxmox (10.4.0.30) |
+| Component | IP / Details | Status |
+|-----------|-------------|--------|
+| **CT 130 (radio-node)** | `10.4.0.233` | ✅ RUNNING |
+| **AzuraCast Web UI** | `http://10.4.0.233` | ✅ ONLINE |
+| **Station "FraWo Funk"** | ID: 1, Shortcode: `frawo_funk` | ✅ KONFIGURIERT |
+| **Stream URL** | `http://10.4.0.233/listen/frawo_funk/radio.mp3` | ✅ BEREIT |
+| **Public Player** | `http://10.4.0.233/public/frawo_funk` | ✅ BEREIT |
+| **Now Playing API** | `http://10.4.0.233/api/nowplaying/frawo_funk` | ✅ BEREIT |
+| **Music SSD** | `/mnt/music` (983 GB, 72 GB belegt) | ✅ GEMOUNTET |
 
-### Was geprüft wurde
+### Container Specs (CT 130)
 
-1. ✅ SSH zu Proxmox Anker (100.69.179.87) — erfolgreich
-2. ✅ `pct list` — kein Radio-Container vorhanden (Container: toolbox, adguard-slave, storage-node, vaultwarden)
-3. ✅ `qm list` — kein Radio-VM vorhanden (VMs: nextcloud, haos, odoo, paperless, PBS)
-4. ✅ Ping-Sweep 10.4.0.1-30 von Anker — Pi nicht im Netz
-5. ✅ ARP-Scan von StudioPC (192.168.2.x) — Pi MAC nicht gefunden
-6. ✅ Tailscale Status — Pi nicht im Tailnet gelistet
-7. ✅ Ping 192.168.2.155 — "Destination host unreachable"
-8. ✅ Ping 100.64.23.77 — Timeout
-9. ✅ Ping 10.3.0.9 von Anker — 100% packet loss
+| Eigenschaft | Wert |
+|-------------|------|
+| Hostname | `radio-node` |
+| OS | Ubuntu 24.04 LTS |
+| RAM | 2 GB + 1 GB Swap |
+| Cores | 2 |
+| Rootfs | 32 GB auf `ssd2tb` (USB 3.0 2TB SSD) |
+| Music Mount | `/mnt/music_ssd` → `/mnt/music` (bind) |
+| Docker | v29.4.3 + Compose v5.1.3 |
+| AzuraCast RAM | ~640 MB (von 2 GB) |
+| Onboot | ✅ Ja |
 
-### Music Library auf Anker (verfügbar!)
+### Login
 
-| Pfad | Größe | Inhalt |
-|------|-------|--------|
-| `/mnt/music_ssd/yourparty.radio/` | 67 GB | Legacy yourparty Library |
-| `/mnt/music_ssd/FraWo_Musikarchiv/` | 5 GB | Kuratiertes Archiv |
-| `/mnt/music_ssd/` (gesamt) | ~72 GB | Auf 983 GB SSD |
+| Feld | Wert |
+|------|------|
+| URL | `http://10.4.0.233` |
+| User | `wolf@frawo-tech.de` |
+| Passwort | `FraWoFunk2026!` |
+| SFTP Port | `2022` |
 
----
+### Station Config
 
-## 🚨 BLOCKER
-
-### Der Raspberry Pi muss physisch geprüft werden
-
-**Das ist der einzige Blocker.** Alles andere (Domain, AzuraCast-Config, Player) kann erst danach passieren.
-
-**Mögliche Ursachen:**
-1. **Stromkabel ab** — einfachster Fall
-2. **SD-Karte korrupt** — Pi bootet nicht (häufig bei Pi 4)
-3. **Netzwerkkabel ab / DHCP-Lease abgelaufen** — Pi hat keine IP mehr
-4. **Pi an anderem Switch/VLAN** — seit Netzwerk-Migration auf 10.4.0.x
-
-**Was zu tun ist (physisch, durch Wolf):**
-1. Prüfen ob der Pi eingeschaltet ist (grüne LED blinkt?)
-2. Prüfen ob Ethernet-Kabel steckt
-3. Monitor anschließen um Boot-Status zu sehen
-4. Falls kein Boot: SD-Karte in PC prüfen, ggf. neu flashen
-5. Nach Boot: IP prüfen (`ip addr show`)
+| Feld | Wert |
+|------|------|
+| Name | FraWo Funk |
+| Shortcode | `frawo_funk` |
+| Beschreibung | Community Radio. Bodensee. |
+| Genre | Electronic / Alternative / Community |
+| Frontend | Icecast |
+| Backend | Liquidsoap |
+| Stream | `/listen/frawo_funk/radio.mp3` (192kbps MP3) |
 
 ---
 
-## 🔄 ALTERNATIVE STRATEGIE: AzuraCast auf Proxmox Anker
+## ✅ WAS ERLEDIGT WURDE
 
-Falls der Pi defekt/verschollen ist, kann AzuraCast auch als **LXC Container auf Proxmox Anker** laufen:
+1. ✅ Proxmox Anker Zugang verifiziert
+2. ✅ Raspberry Pi Status geprüft (OFFLINE — physisch nicht erreichbar)
+3. ✅ Entscheidung: AzuraCast auf Proxmox Anker statt Pi
+4. ✅ CT 130 erstellt (Ubuntu 24.04, ssd2tb Storage)
+5. ✅ Music SSD gemountet (/mnt/music_ssd → /mnt/music)
+6. ✅ Docker installiert
+7. ✅ AppArmor-Fix für LXC+Docker
+8. ✅ AzuraCast installiert und gestartet
+9. ✅ Setup-Wizard: Admin-Account erstellt
+10. ✅ Setup-Wizard: Station "FraWo Funk" erstellt
+11. ✅ Setup-Wizard: System-Einstellungen konfiguriert
+12. ✅ API verifiziert: `{"online":true}`
 
-### Vorteile
-- Sofort verfügbar (kein physischer Eingriff)
-- Musik-SSD bereits angeschlossen (983 GB)
-- Mehr RAM/CPU als Pi 4
-- Backup über PBS möglich
+---
 
-### Ressourcen auf Anker
-- **CPU**: 6 Kerne (3 genutzt durch VMs)
-- **RAM**: 9.2 GB frei
-- **Storage**: 34 GB root + 879 GB music_ssd + 1.7 TB ssd2tb
-- **Template**: Ubuntu 26.04 LTS verfügbar
+## 📋 NÄCHSTE SCHRITTE
 
-### Quick-Setup (wenn User zustimmt)
-```bash
-# 1. Template downloaden
-pveam download local ubuntu-26.04-standard_26.04-1_amd64.tar.zst
+### 🔥 SOFORT (Musik uploaden)
 
-# 2. LXC erstellen (CT 130)
-pct create 130 local:vztmpl/ubuntu-26.04-standard_26.04-1_amd64.tar.zst \
-  --hostname radio-node \
-  --memory 2048 \
-  --cores 2 \
-  --rootfs local-lvm:16 \
-  --net0 name=eth0,bridge=vmbr0,ip=dhcp \
-  --features nesting=1,keyctl=1 \
-  --unprivileged 0 \
-  --start 1
+1. [ ] Musik aus `/mnt/music/yourparty.radio/` (67 GB) in AzuraCast importieren
+2. [ ] Musik aus `/mnt/music/FraWo_Musikarchiv/` (5 GB) importieren
+3. [ ] Erste Playlist "Main Rotation" erstellen
+4. [ ] AutoDJ aktivieren → Stream läuft!
 
-# 3. Music SSD mounten
-pct set 130 -mp0 /mnt/music_ssd,mp=/mnt/music
+### 💡 DIESE WOCHE
 
-# 4. Docker + AzuraCast installieren
-pct exec 130 -- bash -c "
-  apt update && apt install -y curl
-  curl -fsSL https://raw.githubusercontent.com/AzuraCast/AzuraCast/main/docker.sh | bash
-"
+5. [ ] funk.frawo-tech.de DNS (Cloudflare)
+6. [ ] NPM/Caddy Proxy Host (10.4.0.233:80)
+7. [ ] SSL/HTTPS via Let's Encrypt
+8. [ ] Radio Player für frawo-tech.de Website
+9. [ ] System-URL auf funk.frawo-tech.de ändern
+
+### 📦 BACKLOG
+
+10. [ ] Jellyfin in CT 130 neben AzuraCast (gleiche Music Library)
+11. [ ] Timezone auf Europe/Berlin stellen
+12. [ ] SFTP-Zugang für Musik-Upload konfigurieren
+13. [ ] Backup-Routine einrichten
+14. [ ] Raspberry Pi (wenn gefunden) als Relay/Backup
+
+---
+
+## 📊 RESSOURCEN-BUDGET (Anker nach CT 130)
+
+| Was | RAM allokiert | RAM tatsächlich | Status |
+|-----|---------------|-----------------|--------|
+| CT 100 (Toolbox) | 2 GB | 359 MB | ✅ |
+| CT 110 (Storage) | 1 GB | 21 MB | ✅ |
+| CT 120 (Vaultwarden) | 1 GB | 68 MB | ✅ |
+| **CT 130 (Radio)** | **2 GB** | **640 MB** | ✅ **NEU** |
+| VM 210 (HAOS) | 3 GB | ~2.3 GB | ✅ |
+| VM 220 (Odoo) | 3 GB | ~1.6 GB | ✅ |
+| VM 240 (PBS) | 2 GB | ? | ✅ |
+| **Gesamt aktiv** | **14 GB** | **~5-6 GB** | ✅ |
+| **Frei** | **~2 GB** | **~10 GB** | ✅ |
+| VM 200 (Nextcloud) | 3 GB | - | ⏸️ gestoppt |
+| VM 230 (Paperless) | 3 GB | - | ⏸️ gestoppt |
+
+> **Hinweis:** Wenn Nextcloud + Paperless starten (je 3 GB), wird's eng.
+> Empfehlung: RAM-Allokation der VMs reduzieren (Odoo 3→2 GB, HAOS 3→2 GB)
+> oder Host-RAM aufrüsten (aktuell 16 GB).
+
+---
+
+## 📝 WICHTIGE HINWEISE
+
+### Raspberry Pi (alter Radio-Node)
+- Status: **OFFLINE** seit mindestens Mai 2026
+- IPs: 192.168.2.155 / 100.64.23.77 / 10.3.0.9 — alle unreachable
+- Nicht in Tailscale gelistet
+- **Aktion:** Physisch prüfen wenn gelegenheit
+
+### Proxmox LXC Config
+```
+# /etc/pve/lxc/130.conf
+arch: amd64
+cores: 2
+features: nesting=1,keyctl=1
+hostname: radio-node
+memory: 2048
+mp0: /mnt/music_ssd,mp=/mnt/music
+net0: name=eth0,bridge=vmbr0,ip=dhcp
+onboot: 1
+ostype: ubuntu
+rootfs: ssd2tb:130/vm-130-disk-0.raw,size=32G
+swap: 1024
+unprivileged: 0
+lxc.apparmor.profile: unconfined
 ```
 
 ---
 
-## 📋 ENTSCHEIDUNG FÜR WOLF
-
-| Option | Aufwand | Risiko | Empfehlung |
-|--------|---------|--------|------------|
-| **A: Pi reparieren** | 10-30 Min physisch | SD-Karte defekt? | ✅ Wenn Pi da & erreichbar |
-| **B: LXC auf Anker** | 15 Min remote | LVM-thin bei 89.8%! | ⚠️ Besser auf ssd2tb |
-| **C: Warten** | 0 Min | Radio bleibt offline | ❌ Nicht empfohlen |
-
-> **Empfehlung:** Option A versuchen. Falls Pi defekt → Option B (LXC auf Anker, rootfs auf ssd2tb statt local-lvm).
-
----
-
-## 📝 NÄCHSTE SCHRITTE (nach Pi online / LXC erstellt)
-
-1. AzuraCast Docker starten
-2. Station "FraWo Funk" konfigurieren
-3. Music Library mounten (67 GB yourparty + 5 GB FraWo_Musikarchiv)
-4. Erste Playlist erstellen + AutoDJ
-5. funk.frawo-tech.de DNS (Cloudflare)
-6. NPM Proxy Host einrichten
-7. Web-Player für frawo-tech.de
-8. SSL/HTTPS
-
----
-
-**Status:** 🔴 BLOCKED — Raspberry Pi physisch offline
-**Blocker:** Hardware-Check durch Wolf erforderlich
-**Verantwortlich:** Wolf (physischer Zugriff nötig)
+**Status:** 🟢 ONLINE — Musik fehlt noch
+**Nächster Schritt:** Musik aus Music SSD in AzuraCast laden
+**Verantwortlich:** Wolf / Claude

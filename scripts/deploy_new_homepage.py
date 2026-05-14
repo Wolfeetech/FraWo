@@ -29,6 +29,35 @@ ODOO_PASSWORD = os.getenv('ODOO_PASSWORD')
 HOMEPAGE_HTML = """<t t-call="website.layout">
     <div id="wrap" class="oe_structure">
 
+<!-- Schema.org LocalBusiness Markup -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": "FraWo GbR",
+  "image": "https://www.frawo-tech.de/web/image/993/hero-bodensee.jpg",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Rothkreuz 14",
+    "addressLocality": "Weissensberg",
+    "postalCode": "88138",
+    "addressCountry": "DE"
+  },
+  "description": "Veranstaltungstechnik Bodensee. PA-Systeme, Licht, Ton.",
+  "areaServed": "Bodensee",
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Services",
+    "itemListElement": [
+      {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Licht &amp; Ton"}},
+      {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Verleih"}},
+      {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Stage Service"}},
+      {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Sonderbauten"}}
+    ]
+  }
+}
+</script>
+
 <!-- Hero Section -->
 <section class="fw-hero">
   <div class="container">
