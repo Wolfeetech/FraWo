@@ -25,11 +25,9 @@ ODOO_USER = os.getenv('ODOO_USER')
 ODOO_PASSWORD = os.getenv('ODOO_PASSWORD')
 
 
-# New Homepage HTML
-HOMEPAGE_HTML = """<odoo>
-    <template id="website.homepage" name="Homepage">
-        <t t-call="website.layout">
-            <div id="wrap" class="oe_structure">
+# New Homepage HTML (without <odoo> wrapper - that's added by Odoo)
+HOMEPAGE_HTML = """<t t-call="website.layout">
+    <div id="wrap" class="oe_structure">
 
 <!-- Hero Section -->
 <section class="fw-hero">
@@ -69,7 +67,7 @@ HOMEPAGE_HTML = """<odoo>
       <div class="col-lg-8 offset-lg-2 text-center">
         <div class="fw-eyebrow">Unsere Leistungen</div>
         <h2 class="fw-h2">Was wir anbieten</h2>
-        <p class="fw-lead">Veranstaltungstechnik für kleine bis mittlere Events. Ehrlich: Wir haben kaum professionelle Ausrüstung – aber für kleine Events reicht's!</p>
+        <p class="fw-lead">Veranstaltungstechnik für kleine bis mittlere Events. Pragmatisch. Zuverlässig. Vom Bodensee.</p>
       </div>
     </div>
 
@@ -81,12 +79,12 @@ HOMEPAGE_HTML = """<odoo>
           <div class="fw-service-icon">🎭</div>
           <h3 class="fw-h3">Licht &amp; Ton</h3>
           <p class="fw-service-desc">
-            PA-Sets, Moving Heads, technische Betreuung für kleine Events.
-            Ideal für Vereine, private Feiern, Community-Events.
+            PA-Systeme, Lichttechnik, technische Betreuung.
+            Für kleine bis mittlere Events, Vereine, private Feiern.
           </p>
           <ul class="fw-service-list">
-            <li>Mehrere kleine PA-Systeme</li>
-            <li>Moving Heads (einige vorhanden)</li>
+            <li>PA-Systeme für verschiedene Event-Größen</li>
+            <li>Moving Heads &amp; Lichttechnik</li>
             <li>Technische Betreuung vor Ort</li>
             <li>B2B / Subunternehmer-Service</li>
           </ul>
@@ -100,14 +98,14 @@ HOMEPAGE_HTML = """<odoo>
           <div class="fw-service-icon">⚽</div>
           <h3 class="fw-h3">Equipment Verleih</h3>
           <p class="fw-service-desc">
-            Fußballdart (3×5m), PA-Sets, Lichttechnik.
-            Perfekt für Firmenevents, Stadtfeste, Vereinsfeiern.
+            Fußballdart, PA-Systeme, Lichttechnik.
+            Für Firmenevents, Stadtfeste, Vereinsfeiern.
           </p>
           <ul class="fw-service-list">
             <li>Aufblasbares Fußballdart (3m × 5m × 3m)</li>
-            <li>PA-Sets (kleine bis mittlere Größe)</li>
-            <li>Moving Heads für Club-Atmosphäre</li>
-            <li>Ideal für private Vermieter &amp; Vereine</li>
+            <li>PA-Systeme verschiedene Größen</li>
+            <li>Moving Heads &amp; Lichttechnik</li>
+            <li>Flexibel buchbar für Events aller Art</li>
           </ul>
           <a href="/contactus" class="fw-service-link">Zum Verleih →</a>
         </div>
@@ -224,17 +222,14 @@ HOMEPAGE_HTML = """<odoo>
     <div class="row align-items-center g-5">
       <div class="col-lg-6">
         <div class="fw-eyebrow">Über FraWo</div>
-        <h2 class="fw-h2">Veranstaltungstechniker<br/>+ Zimmermann</h2>
+        <h2 class="fw-h2">Wolf + Franz</h2>
         <p class="fw-lead">
-          <strong>Wolfgang Prinz</strong> (Veranstaltungstechnik) und <strong>Franz Bienert</strong> (Zimmermann + Veranstaltungstechnik).
+          <strong>Wolfgang Prinz</strong> – IHK-Fachkraft Veranstaltungstechnik<br/>
+          <strong>Franz Bienert</strong> – Zimmermanngeselle
         </p>
         <p class="fw-body">
-          Wir sind <strong>KEINE IT-Spezialisten</strong>.<br/>
-          Wir sind <strong>KEINE eingetragenen Elektriker</strong>.<br/>
-          Aber: Wir sind zuverlässige Macher mit pragmatischen Lösungen.
-        </p>
-        <p class="fw-body">
-          Vom Bodensee. Für Events. Ehrlich. Lokal.
+          Veranstaltungstechnik. Sonderbauten. Bodensee-Region.<br/>
+          Zuverlässig. Pragmatisch. Lokal.
         </p>
         <a href="/contactus" class="fw-btn-primary btn mt-3">Kontakt aufnehmen</a>
       </div>
@@ -247,7 +242,7 @@ HOMEPAGE_HTML = """<odoo>
   </div>
 </section>
 
-<!-- Radio (Gadget) -->
+<!-- Radio -->
 <section class="fw-radio-cta">
   <div class="container">
     <div class="row">
@@ -255,10 +250,7 @@ HOMEPAGE_HTML = """<odoo>
         <div class="fw-eyebrow">FraWo Funk</div>
         <h2 class="fw-h2">Community Radio</h2>
         <p class="fw-lead">
-          Radio als <strong>Gadget</strong> (nicht Kerngeschäft!). Community-Aufbau, Musikförderung.
-        </p>
-        <p class="fw-body">
-          Du bist Musiker oder DJ? Bewirb dich gern mit deiner Musik!
+          Online-Radio. Community. Musikförderung.
         </p>
         <a href="https://funk.frawo-tech.de" class="fw-btn-ghost btn mt-3">Zu FraWo Funk →</a>
       </div>
@@ -271,20 +263,18 @@ HOMEPAGE_HTML = """<odoo>
   <div class="container">
     <div class="row">
       <div class="col-lg-8 offset-lg-2 text-center">
-        <h2 class="fw-h2">Bereit für dein Event?</h2>
+        <h2 class="fw-h2">Event geplant?</h2>
         <p class="fw-lead">
-          Lass uns über dein Projekt sprechen. Kostenlose Beratung.
+          Kostenlose Beratung. Bodensee-Region.
         </p>
-        <a href="/contactus" class="fw-btn-primary btn">Jetzt Anfrage senden</a>
+        <a href="/contactus" class="fw-btn-primary btn">Anfrage senden</a>
       </div>
     </div>
   </div>
 </section>
 
-            </div>
-        </t>
-    </template>
-</odoo>"""
+    </div>
+</t>"""
 
 
 def deploy_homepage():
