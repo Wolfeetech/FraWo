@@ -60,15 +60,13 @@ HOMEPAGE_HTML = """<t t-call="website.layout">
   </div>
 </section>
 
-<!-- Services Grid (4 Cards - kabaus-Stil) -->
+<!-- Services Grid -->
 <section class="fw-services" id="services">
   <div class="container">
-    <div class="row mb-5">
-      <div class="col-lg-8 offset-lg-2 text-center">
-        <div class="fw-eyebrow">Unsere Leistungen</div>
-        <h2 class="fw-h2">Was wir anbieten</h2>
-        <p class="fw-lead">Veranstaltungstechnik für kleine bis mittlere Events. Pragmatisch. Zuverlässig. Vom Bodensee.</p>
-      </div>
+    <div class="fw-section-header">
+      <div class="fw-eyebrow">Unsere Leistungen</div>
+      <h2 class="fw-h2">Was wir anbieten</h2>
+      <p class="fw-lead">Veranstaltungstechnik für kleine bis mittlere Events. Pragmatisch. Zuverlässig. Vom Bodensee.</p>
     </div>
 
     <div class="row g-4">
@@ -156,11 +154,9 @@ HOMEPAGE_HTML = """<t t-call="website.layout">
 <!-- Referenzen -->
 <section class="fw-referenzen">
   <div class="container">
-    <div class="row mb-5">
-      <div class="col-lg-8 offset-lg-2 text-center">
-        <div class="fw-eyebrow">Unsere Referenzen</div>
-        <h2 class="fw-h2">Wir haben gearbeitet für</h2>
-      </div>
+    <div class="fw-section-header">
+      <div class="fw-eyebrow">Unsere Referenzen</div>
+      <h2 class="fw-h2">Wir haben gearbeitet für</h2>
     </div>
 
     <div class="row g-4">
@@ -219,11 +215,9 @@ HOMEPAGE_HTML = """<t t-call="website.layout">
 <!-- Projekte -->
 <section class="fw-projects">
   <div class="container">
-    <div class="row mb-5">
-      <div class="col-lg-8 offset-lg-2 text-center">
-        <div class="fw-eyebrow">Unsere Projekte</div>
-        <h2 class="fw-h2">Was wir gebaut haben</h2>
-      </div>
+    <div class="fw-section-header">
+      <div class="fw-eyebrow">Unsere Projekte</div>
+      <h2 class="fw-h2">Was wir gebaut haben</h2>
     </div>
 
     <div class="row g-1">

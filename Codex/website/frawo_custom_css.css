@@ -81,10 +81,17 @@ footer, .o_footer {
   display: none !important;
 }
 
-/* Hero - Breathing Room */
+/* Hero */
 .fw-hero {
-  padding: 100px 0 80px;
+  padding: 140px 0 120px;
   background: var(--fw-bg);
+  border-top: none;
+}
+
+@media (max-width: 768px) {
+  .fw-hero {
+    padding: 80px 0 60px;
+  }
 }
 
 .fw-eyebrow {
@@ -326,25 +333,51 @@ body {
 }
 
 
-/* ===== KABAUS-INSPIRED GRID LAYOUT ===== */
-.fw-services {
-  padding: 80px 0;
-  background: var(--fw-bg);
+/* ===== SECTIONS BASE ===== */
+section {
+  padding: 120px 0;
   border-top: 1px solid var(--fw-border);
 }
 
+@media (max-width: 768px) {
+  section {
+    padding: 60px 0;
+  }
+}
+
+/* Section Headers */
+.fw-section-header {
+  max-width: 800px;
+  margin: 0 auto 80px;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .fw-section-header {
+    margin-bottom: 50px;
+  }
+}
+
+/* ===== SERVICES GRID ===== */
 .fw-services .row.g-4 {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 1px;
   background: var(--fw-border);
   border: 1px solid var(--fw-border);
+  margin: 0;
 }
 
 @media (max-width: 991px) {
   .fw-services .row.g-4 {
     grid-template-columns: 1fr;
   }
+}
+
+.fw-services .col-lg-6 {
+  padding: 0;
+  max-width: none;
+  flex: none;
 }
 
 .fw-h2 {
@@ -368,15 +401,22 @@ body {
 .fw-service-card {
   background: var(--fw-bg);
   border: none;
-  padding: 3rem;
-  height: 100%;
+  padding: 4rem 3rem;
+  min-height: 450px;
   display: flex;
   flex-direction: column;
   transition: background 0.2s ease;
 }
 
 .fw-service-card:hover {
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+@media (max-width: 768px) {
+  .fw-service-card {
+    padding: 3rem 2rem;
+    min-height: auto;
+  }
 }
 
 .fw-service-icon {
@@ -430,18 +470,13 @@ body {
 }
 
 /* ===== REFERENZEN GRID ===== */
-.fw-referenzen {
-  padding: 80px 0;
-  background: var(--fw-bg);
-  border-top: 1px solid var(--fw-border);
-}
-
 .fw-referenzen .row.g-4 {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 1px;
   background: var(--fw-border);
   border: 1px solid var(--fw-border);
+  margin: 0;
 }
 
 @media (max-width: 991px) {
@@ -456,15 +491,27 @@ body {
   }
 }
 
+.fw-referenzen .col-lg-3,
+.fw-referenzen .col-6 {
+  padding: 0;
+  max-width: none;
+  flex: none;
+}
+
 .fw-ref-item {
   text-align: center;
-  padding: 2.5rem 1.5rem;
+  padding: 3rem 2rem;
   background: var(--fw-bg);
   transition: background 0.2s ease;
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .fw-ref-item:hover {
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .fw-ref-item strong {
@@ -484,17 +531,39 @@ body {
 }
 
 /* ===== PROJECTS SECTION ===== */
-.fw-projects {
-  padding: 80px 0;
-  background: var(--fw-bg);
-  border-top: 1px solid var(--fw-border);
+.fw-projects .row.g-1 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--fw-border);
+  border: 1px solid var(--fw-border);
+  margin: 0;
+}
+
+@media (max-width: 991px) {
+  .fw-projects .row.g-1 {
+    grid-template-columns: 1fr;
+  }
+}
+
+.fw-projects .col-lg-4 {
+  padding: 0;
+  max-width: none;
+  flex: none;
 }
 
 .fw-project-card {
   position: relative;
   overflow: hidden;
-  border: 1px solid var(--fw-border);
-  aspect-ratio: 4/3;
+  border: none;
+  aspect-ratio: 1;
+  background: var(--fw-bg);
+}
+
+@media (max-width: 768px) {
+  .fw-project-card {
+    aspect-ratio: 4/3;
+  }
 }
 
 .fw-project-card img {
