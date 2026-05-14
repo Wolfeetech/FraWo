@@ -20,16 +20,16 @@ from datetime import datetime
 COMPANY_DATA = {
     "name": "FraWo GbR",
     "legal_form": "Gesellschaft bürgerlichen Rechts (GbR)",
-    "address": "Stockenweiler 7",
-    "zip": "88662",
-    "city": "Überlingen",
+    "address": "Rothkreuz 14",
+    "zip": "88138",
+    "city": "Weissensberg",
     "country": "Deutschland",
     "email": "info@frawo-tech.de",
     "phone": "+49 (0) 7551 947 9870",
     "register": "Nicht eingetragen (GbR)",
     "representatives": [
         "Wolfgang Prinz",
-        "Franz Prinz"
+        "Franz Bienert"
     ],
     "vat_id": "Noch nicht vorhanden",  # TODO: Update when available
     "website": "https://www.frawo-tech.de",
