@@ -34,12 +34,11 @@ HOMEPAGE_HTML = """<t t-call="website.layout">
   <div class="container">
     <div class="row align-items-center g-5">
       <div class="col-lg-6">
-        <div class="fw-eyebrow">Veranstaltungstechnik Bodensee</div>
-        <h1 class="fw-h1">Licht &amp; Ton<br/>für kleine Events</h1>
+        <div class="fw-eyebrow">Bodensee</div>
+        <h1 class="fw-h1">Licht &amp; Ton<br/>für dein Event</h1>
         <p class="fw-lead">
-          Veranstaltungstechniker + Zimmermann.<br/>
-          Vom Bodensee. Für Events, Vereine, private Feiern.<br/>
-          <strong>Ehrlich. Pragmatisch. Lokal.</strong>
+          Vereine. Feiern. Festivals.<br/>
+          <strong>Bodensee-Region.</strong>
         </p>
         <div class="d-flex flex-wrap gap-3">
           <a class="fw-btn-primary btn" href="/contactus">Jetzt anfragen</a>
@@ -64,9 +63,8 @@ HOMEPAGE_HTML = """<t t-call="website.layout">
 <section class="fw-services" id="services">
   <div class="container">
     <div class="fw-section-header">
-      <div class="fw-eyebrow">Unsere Leistungen</div>
-      <h2 class="fw-h2">Was wir anbieten</h2>
-      <p class="fw-lead">Veranstaltungstechnik für kleine bis mittlere Events. Pragmatisch. Zuverlässig. Vom Bodensee.</p>
+      <div class="fw-eyebrow">Leistungen</div>
+      <h2 class="fw-h2">Was wir machen</h2>
     </div>
 
     <div class="row g-4">
@@ -77,14 +75,13 @@ HOMEPAGE_HTML = """<t t-call="website.layout">
           <div class="fw-service-icon">🎭</div>
           <h3 class="fw-h3">Licht &amp; Ton</h3>
           <p class="fw-service-desc">
-            PA-Systeme, Lichttechnik, technische Betreuung.
-            Für kleine bis mittlere Events, Vereine, private Feiern.
+            PA-Systeme. Lichttechnik. Vor-Ort-Betreuung.
           </p>
           <ul class="fw-service-list">
-            <li>PA-Systeme für verschiedene Event-Größen</li>
-            <li>Moving Heads &amp; Lichttechnik</li>
-            <li>Technische Betreuung vor Ort</li>
-            <li>B2B / Subunternehmer-Service</li>
+            <li>PA-Systeme</li>
+            <li>Moving Heads</li>
+            <li>Technische Betreuung</li>
+            <li>Subunternehmer</li>
           </ul>
           <a href="/contactus" class="fw-service-link">Anfragen →</a>
         </div>
@@ -94,16 +91,15 @@ HOMEPAGE_HTML = """<t t-call="website.layout">
       <div class="col-lg-6">
         <div class="fw-service-card">
           <div class="fw-service-icon">⚽</div>
-          <h3 class="fw-h3">Equipment Verleih</h3>
+          <h3 class="fw-h3">Verleih</h3>
           <p class="fw-service-desc">
-            Fußballdart, PA-Systeme, Lichttechnik.
-            Für Firmenevents, Stadtfeste, Vereinsfeiern.
+            Equipment-Verleih. Tageweise oder Wochenende.
           </p>
           <ul class="fw-service-list">
-            <li>Aufblasbares Fußballdart (3m × 5m × 3m)</li>
-            <li>PA-Systeme verschiedene Größen</li>
-            <li>Moving Heads &amp; Lichttechnik</li>
-            <li>Flexibel buchbar für Events aller Art</li>
+            <li>Fußballdart (3×5m)</li>
+            <li>PA-Systeme</li>
+            <li>Moving Heads</li>
+            <li>Tages-/Wochenmiete</li>
           </ul>
           <a href="/contactus" class="fw-service-link">Zum Verleih →</a>
         </div>
@@ -113,16 +109,15 @@ HOMEPAGE_HTML = """<t t-call="website.layout">
       <div class="col-lg-6">
         <div class="fw-service-card">
           <div class="fw-service-icon">🎪</div>
-          <h3 class="fw-h3">Open Air / Stage Service</h3>
+          <h3 class="fw-h3">Stage Service</h3>
           <p class="fw-service-desc">
-            Aufbau, technische Betreuung, Backline.
-            Als Subunternehmer oder direkt.
+            Aufbau. Betreuung. Backline.
           </p>
           <ul class="fw-service-list">
-            <li>Aufbauhelfer (Crew)</li>
-            <li>Technische Betreuung während Event</li>
-            <li>Backline-Management</li>
-            <li>Licht, Ton, Medien (je nach Setup)</li>
+            <li>Crew</li>
+            <li>Event-Betreuung</li>
+            <li>Backline</li>
+            <li>Open Air</li>
           </ul>
           <a href="/contactus" class="fw-service-link">Anfragen →</a>
         </div>
@@ -134,14 +129,13 @@ HOMEPAGE_HTML = """<t t-call="website.layout">
           <div class="fw-service-icon">🔨</div>
           <h3 class="fw-h3">Sonderbauten</h3>
           <p class="fw-service-desc">
-            Custom Stages, kreative Lösungen.
-            Zimmermann + Veranstaltungstechnik = Einzigartige Kombi!
+            Holzbau trifft Veranstaltungstechnik.
           </p>
           <ul class="fw-service-list">
-            <li>Custom Stage Builds (KuMoP e.V.)</li>
-            <li>Kreative Installationen (Rave on SUP)</li>
-            <li>Zimmermann-Know-how trifft Event-Technik</li>
-            <li>Individuelle Projekte möglich</li>
+            <li>Custom Stages</li>
+            <li>Holzkonstruktionen</li>
+            <li>Zimmermann + Technik</li>
+            <li>Individuelle Projekte</li>
           </ul>
           <a href="/contactus" class="fw-service-link">Projekt anfragen →</a>
         </div>
@@ -155,7 +149,7 @@ HOMEPAGE_HTML = """<t t-call="website.layout">
 <section class="fw-referenzen">
   <div class="container">
     <div class="fw-section-header">
-      <div class="fw-eyebrow">Unsere Referenzen</div>
+      <div class="fw-eyebrow">Referenzen</div>
       <h2 class="fw-h2">Wir haben gearbeitet für</h2>
     </div>
 
@@ -260,12 +254,13 @@ HOMEPAGE_HTML = """<t t-call="website.layout">
         <div class="fw-eyebrow">Über FraWo</div>
         <h2 class="fw-h2">Wolf + Franz</h2>
         <p class="fw-lead">
-          <strong>Wolfgang Prinz</strong> – IHK-Fachkraft Veranstaltungstechnik<br/>
-          <strong>Franz Bienert</strong> – Zimmermanngeselle
+          <strong>Wolfgang Prinz</strong><br/>IHK-Fachkraft Veranstaltungstechnik
+        </p>
+        <p class="fw-lead">
+          <strong>Franz Bienert</strong><br/>Zimmermanngeselle
         </p>
         <p class="fw-body">
-          Veranstaltungstechnik. Sonderbauten. Bodensee-Region.<br/>
-          Zuverlässig. Pragmatisch. Lokal.
+          Bodensee. Lokal. Zuverlässig.
         </p>
         <a href="/contactus" class="fw-btn-primary btn mt-3">Kontakt aufnehmen</a>
       </div>
