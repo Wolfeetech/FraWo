@@ -92,11 +92,26 @@
 
 ### 📦 BACKLOG
 
-6. [ ] Jellyfin in CT 130 neben AzuraCast (gleiche Music Library)
+6. ✅ Navidrome Media Server in CT 130 neben AzuraCast (gleiche Music Library / music-ssd)
 7. ✅ Timezone auf Europe/Berlin gestellt (via .env)
-8. ✅ SFTP-Zugang für Musik-Upload konfiguriert (Port 2022 aktiv)
+8. ✅ Samba & SFTP-Zugänge für Musik-Upload konfiguriert (Samba Share & Port 2022 aktiv)
 9. ✅ Backup-Routine eingerichtet (Täglich 04:00 Uhr, 7 Kopien, Media excluded)
 10. [ ] Raspberry Pi (wenn gefunden) als Relay/Backup
+
+---
+
+## 📂 MUSIK-SORTIERUNG, TAGGING & SYNC (Workflow)
+
+Um die Musikbibliothek professionell zu pflegen, ID3-Tags zu bearbeiten und Playlists zu synchronisieren, stehen zwei dedizierte Zugänge bereit, die direkt mit AzuraCast verknüpft sind:
+
+### 1. Navidrome Web-Medienserver (GUI & Streaming)
+- **URL:** `http://media.hs27.internal` (oder direkt `http://10.4.0.233:4533`)
+- **Funktion:** Visuelles Verwalten, Sortieren, Anhören und Erstellen von Playlists. Navidrome greift auf denselben Speicher (`/mnt/music`) zu. Jede Änderung wird dank automatischer Scan-Routinen sofort in AzuraCast übernommen.
+
+### 2. Samba Netzwerkfreigabe (Für Windows / macOS Desktop-Tools)
+- **Pfad:** `\\10.4.0.233\music` (im Windows Explorer als Netzlaufwerk einbinden)
+- **Zugriff:** Gastzugriff / Ohne Passwort im LAN (oder User `smbuser`, Passwort `FraWoFunk2026!`)
+- **Professioneller Workflow:** Öffne dieses Netzlaufwerk direkt in Tools wie **Mp3tag**, **MusicBrainz Picard** oder **Rekordbox**, um Cover-Bilder, BPM, Key, ISRC und Titel-Tags in den Originaldateien zu normieren.
 
 ---
 
