@@ -71,7 +71,7 @@ HOMEPAGE_HTML = """<t t-call="website.layout">
 
       <!-- Service 1: Licht &amp; Ton -->
       <div class="col-lg-6">
-        <div class="fw-service-card fw-service-card-img" style="background-image: linear-gradient(rgba(10,10,10,0.85), rgba(10,10,10,0.85)), url('/web/image/1000/mikrofon-ton.jpg'); background-size: cover; background-position: center;">
+        <div class="fw-service-card">
           <h3 class="fw-h3">Licht &amp; Ton</h3>
           <p class="fw-service-desc">
             PA-Systeme. Lichttechnik. Vor-Ort-Betreuung.
@@ -88,7 +88,7 @@ HOMEPAGE_HTML = """<t t-call="website.layout">
 
       <!-- Service 2: Verleih -->
       <div class="col-lg-6">
-        <div class="fw-service-card fw-service-card-img" style="background-image: linear-gradient(rgba(10,10,10,0.85), rgba(10,10,10,0.85)), url('/web/image/999/fussballdart.jpg'); background-size: cover; background-position: center;">
+        <div class="fw-service-card">
           <h3 class="fw-h3">Verleih</h3>
           <p class="fw-service-desc">
             Equipment-Verleih. Tageweise oder Wochenende.
@@ -106,7 +106,6 @@ HOMEPAGE_HTML = """<t t-call="website.layout">
       <!-- Service 3: Stage Service -->
       <div class="col-lg-6">
         <div class="fw-service-card">
-          <div class="fw-service-icon">🎪</div>
           <h3 class="fw-h3">Stage Service</h3>
           <p class="fw-service-desc">
             Aufbau. Betreuung. Backline.
@@ -124,7 +123,6 @@ HOMEPAGE_HTML = """<t t-call="website.layout">
       <!-- Service 4: Sonderbauten -->
       <div class="col-lg-6">
         <div class="fw-service-card">
-          <div class="fw-service-icon">🔨</div>
           <h3 class="fw-h3">Sonderbauten</h3>
           <p class="fw-service-desc">
             Holzbau trifft Veranstaltungstechnik.
