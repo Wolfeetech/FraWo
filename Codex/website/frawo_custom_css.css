@@ -1,4 +1,4 @@
-/* FraWo GbR — v4.0 Professional World-Class — DEPLOYED 2026-05-14 */
+/* FraWo GbR — v4.1 Ultra-Compact Professional — DEPLOYED 2026-05-14 */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
@@ -422,13 +422,13 @@ section {
 /* Section Headers */
 .fw-section-header {
   max-width: 800px;
-  margin: 0 auto 80px;
+  margin: 0 auto 50px;
   text-align: center;
 }
 
 @media (max-width: 768px) {
   .fw-section-header {
-    margin-bottom: 50px;
+    margin-bottom: 35px;
   }
 }
 
@@ -469,7 +469,7 @@ section {
   text-transform: uppercase;
   letter-spacing: 0.12em;
   color: var(--fw-text);
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.5rem !important;
   position: relative;
   z-index: 1;
 }
@@ -477,15 +477,15 @@ section {
 .fw-service-card {
   background: var(--fw-bg);
   border: none;
-  padding: 1.25rem 1.5rem;
-  min-height: 280px;
+  padding: 1rem 1.25rem !important;
+  min-height: 240px !important;
   display: flex;
   flex-direction: column;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
   justify-content: flex-start;
-  gap: 0.5rem;
+  gap: 0.4rem !important;
 }
 
 .fw-service-card-bg {
