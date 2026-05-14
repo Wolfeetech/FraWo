@@ -75,7 +75,7 @@
   color: #e0e0e0;
 }
 
-.fw-radio-btn:disabled {
+.fw-radio-btn:disabled="disabled" {
   opacity: 0.3;
   cursor: not-allowed;
 }
@@ -131,8 +131,8 @@
     </div>
 
     <div class="fw-radio-controls">
-      <button class="fw-radio-btn" id="radio-play-btn" disabled>Play</button>
-      <button class="fw-radio-btn" id="radio-pause-btn" disabled style="display: none;">Pause</button>
+      <button class="fw-radio-btn" id="radio-play-btn" disabled="disabled">Play</button>
+      <button class="fw-radio-btn" id="radio-pause-btn" disabled="disabled" style="display: none;">Pause</button>
 
       <div class="fw-radio-volume" id="radio-volume">
         <div class="fw-radio-volume-fill" id="radio-volume-fill"></div>

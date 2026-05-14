@@ -46,29 +46,29 @@ IMPRESSUM_HTML = f"""
 
             <h2 class="h4 mt-4 mb-3">Angaben gemäß § 5 TMG</h2>
             <p>
-                <strong>{COMPANY_DATA['name']}</strong><br>
-                {COMPANY_DATA['legal_form']}<br>
-                {COMPANY_DATA['address']}<br>
-                {COMPANY_DATA['zip']} {COMPANY_DATA['city']}<br>
+                <strong>{COMPANY_DATA['name']}</strong><br/>
+                {COMPANY_DATA['legal_form']}<br/>
+                {COMPANY_DATA['address']}<br/>
+                {COMPANY_DATA['zip']} {COMPANY_DATA['city']}<br/>
                 {COMPANY_DATA['country']}
             </p>
 
             <h2 class="h4 mt-4 mb-3">Vertreten durch</h2>
             <p>
-                {' und '.join(COMPANY_DATA['representatives'])}<br>
+                {' und '.join(COMPANY_DATA['representatives'])}<br/>
                 (Geschäftsführende Gesellschafter)
             </p>
 
             <h2 class="h4 mt-4 mb-3">Kontakt</h2>
             <p>
-                <strong>E-Mail:</strong> <a href="mailto:{COMPANY_DATA['email']}">{COMPANY_DATA['email']}</a><br>
-                <strong>Telefon:</strong> {COMPANY_DATA['phone']}<br>
+                <strong>E-Mail:</strong> <a href="mailto:{COMPANY_DATA['email']}">{COMPANY_DATA['email']}</a><br/>
+                <strong>Telefon:</strong> {COMPANY_DATA['phone']}<br/>
                 <strong>Website:</strong> <a href="{COMPANY_DATA['website']}">{COMPANY_DATA['website']}</a>
             </p>
 
             <h2 class="h4 mt-4 mb-3">Registereintrag</h2>
             <p>
-                {COMPANY_DATA['register']}<br>
+                {COMPANY_DATA['register']}<br/>
                 <small class="text-muted">Als GbR ist keine Eintragung im Handelsregister erforderlich.</small>
             </p>
 
@@ -79,16 +79,16 @@ IMPRESSUM_HTML = f"""
 
             <h2 class="h4 mt-4 mb-3">Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV</h2>
             <p>
-                {COMPANY_DATA['responsible']}<br>
-                {COMPANY_DATA['address']}<br>
-                {COMPANY_DATA['zip']} {COMPANY_DATA['city']}<br>
+                {COMPANY_DATA['responsible']}<br/>
+                {COMPANY_DATA['address']}<br/>
+                {COMPANY_DATA['zip']} {COMPANY_DATA['city']}<br/>
                 E-Mail: <a href="mailto:{COMPANY_DATA['responsible_email']}">{COMPANY_DATA['responsible_email']}</a>
             </p>
 
             <h2 class="h4 mt-4 mb-3">EU-Streitschlichtung</h2>
             <p>
-                Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit:<br>
-                <a href="https://ec.europa.eu/consumers/odr/" target="_blank" rel="noopener">https://ec.europa.eu/consumers/odr/</a><br>
+                Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit:<br/>
+                <a href="https://ec.europa.eu/consumers/odr/" target="_blank" rel="noopener">https://ec.europa.eu/consumers/odr/</a><br/>
                 Unsere E-Mail-Adresse finden Sie oben im Impressum.
             </p>
 
@@ -98,7 +98,7 @@ IMPRESSUM_HTML = f"""
                 Verbraucherschlichtungsstelle teilzunehmen.
             </p>
 
-            <hr class="my-4">
+            <hr class="my-4"/>
             <p class="text-muted small">
                 <strong>Haftungsausschluss:</strong> Trotz sorgfältiger inhaltlicher Kontrolle übernehmen wir
                 keine Haftung für die Inhalte externer Links. Für den Inhalt der verlinkten Seiten sind
@@ -173,10 +173,10 @@ DATENSCHUTZ_HTML = f"""
                 Wir hosten die Inhalte unserer Website bei folgendem Anbieter:
             </p>
             <p>
-                <strong>Selbst-Hosting (On-Premises)</strong><br>
-                Diese Website wird auf eigenen Servern (Proxmox VE) betrieben.<br>
-                Standort: Deutschland<br>
-                Anbieter: {COMPANY_DATA['name']}<br>
+                <strong>Selbst-Hosting (On-Premises)</strong><br/>
+                Diese Website wird auf eigenen Servern (Proxmox VE) betrieben.<br/>
+                Standort: Deutschland<br/>
+                Anbieter: {COMPANY_DATA['name']}<br/>
                 Kontakt: {COMPANY_DATA['email']}
             </p>
 
@@ -194,10 +194,10 @@ DATENSCHUTZ_HTML = f"""
                 Die verantwortliche Stelle für die Datenverarbeitung auf dieser Website ist:
             </p>
             <p>
-                {COMPANY_DATA['name']}<br>
-                {COMPANY_DATA['address']}<br>
-                {COMPANY_DATA['zip']} {COMPANY_DATA['city']}<br>
-                E-Mail: {COMPANY_DATA['email']}<br>
+                {COMPANY_DATA['name']}<br/>
+                {COMPANY_DATA['address']}<br/>
+                {COMPANY_DATA['zip']} {COMPANY_DATA['city']}<br/>
+                E-Mail: {COMPANY_DATA['email']}<br/>
                 Telefon: {COMPANY_DATA['phone']}
             </p>
             <p>
@@ -271,13 +271,13 @@ DATENSCHUTZ_HTML = f"""
 
             <h3 class="h5 mt-3 mb-2">Zuständige Aufsichtsbehörde</h3>
             <p>
-                Der Landesbeauftragte für den Datenschutz und die Informationsfreiheit Baden-Württemberg<br>
-                Lautenschlagerstraße 20<br>
-                70173 Stuttgart<br>
+                Der Landesbeauftragte für den Datenschutz und die Informationsfreiheit Baden-Württemberg<br/>
+                Lautenschlagerstraße 20<br/>
+                70173 Stuttgart<br/>
                 E-Mail: poststelle@lfdi.bwl.de
             </p>
 
-            <hr class="my-4">
+            <hr class="my-4"/>
             <p class="text-muted small">
                 Stand: {datetime.now().strftime('%d.%m.%Y')}
             </p>
