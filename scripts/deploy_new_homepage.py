@@ -29,6 +29,9 @@ ODOO_PASSWORD = os.getenv('ODOO_PASSWORD')
 HOMEPAGE_HTML = """<t t-call="website.layout">
     <div id="wrap" class="oe_structure">
 
+<!-- Skip to Content (Accessibility) -->
+<a href="#main-content" class="skip-to-content">Zum Hauptinhalt springen</a>
+
 <!-- Schema.org LocalBusiness Markup -->
 <script type="application/ld+json">
 {
@@ -36,6 +39,9 @@ HOMEPAGE_HTML = """<t t-call="website.layout">
   "@type": "LocalBusiness",
   "name": "FraWo GbR",
   "image": "https://www.frawo-tech.de/web/image/993/hero-bodensee.jpg",
+  "url": "https://www.frawo-tech.de",
+  "telephone": "+49-8389-9209870",
+  "email": "info@frawo-tech.de",
   "address": {
     "@type": "PostalAddress",
     "streetAddress": "Rothkreuz 14",
@@ -43,8 +49,14 @@ HOMEPAGE_HTML = """<t t-call="website.layout">
     "postalCode": "88138",
     "addressCountry": "DE"
   },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": "47.5833",
+    "longitude": "9.7833"
+  },
   "description": "Veranstaltungstechnik Bodensee. PA-Systeme, Licht, Ton.",
   "areaServed": "Bodensee",
+  "priceRange": "€€",
   "hasOfferCatalog": {
     "@type": "OfferCatalog",
     "name": "Services",
@@ -59,7 +71,7 @@ HOMEPAGE_HTML = """<t t-call="website.layout">
 </script>
 
 <!-- Hero Section -->
-<section class="fw-hero">
+<section class="fw-hero" id="main-content" aria-label="Hauptbereich">
   <div class="container">
     <div class="row align-items-center g-5">
       <div class="col-lg-6">
@@ -70,8 +82,8 @@ HOMEPAGE_HTML = """<t t-call="website.layout">
           <strong>Bodensee-Region.</strong>
         </p>
         <div class="d-flex flex-wrap gap-3">
-          <a class="fw-btn-primary btn" href="/contactus">Jetzt anfragen</a>
-          <a class="fw-btn-ghost btn" href="#services">Unsere Leistungen</a>
+          <a class="fw-btn-primary btn" href="/contactus" aria-label="Jetzt Veranstaltungstechnik anfragen">Jetzt anfragen</a>
+          <a class="fw-btn-ghost btn" href="#services" aria-label="Zu unseren Leistungen springen">Unsere Leistungen</a>
         </div>
         <p class="fw-trust-line">
           ✓ IHK-Fachkraft Veranstaltungstechnik
@@ -81,7 +93,10 @@ HOMEPAGE_HTML = """<t t-call="website.layout">
       </div>
       <div class="col-lg-6">
         <div class="fw-img-wrapper">
-          <img src="/web/image/993/hero-bodensee.jpg" alt="Beach Event Bodensee - FraWo Veranstaltungstechnik"/>
+          <picture>
+            <source srcset="/web/image/1003/hero-bodensee.webp" type="image/webp"/>
+            <img src="/web/image/993/hero-bodensee.jpg" alt="FraWo Veranstaltungstechnik - PA-Anlage und Lichttechnik am Bodensee Beach Event mit Bühnenaufbau"/>
+          </picture>
         </div>
       </div>
     </div>
@@ -89,7 +104,7 @@ HOMEPAGE_HTML = """<t t-call="website.layout">
 </section>
 
 <!-- Services Grid -->
-<section class="fw-services" id="services">
+<section class="fw-services" id="services" aria-label="Unsere Leistungen">
   <div class="container">
     <div class="fw-section-header">
       <div class="fw-eyebrow">Leistungen</div>
@@ -111,7 +126,7 @@ HOMEPAGE_HTML = """<t t-call="website.layout">
             <li>Technische Betreuung</li>
             <li>Subunternehmer</li>
           </ul>
-          <a href="/contactus" class="fw-service-link">Anfragen →</a>
+          <a href="/contactus" class="fw-service-link" aria-label="Licht und Ton Service anfragen">Anfragen →</a>
         </div>
       </div>
 
@@ -128,7 +143,7 @@ HOMEPAGE_HTML = """<t t-call="website.layout">
             <li>Moving Heads</li>
             <li>Tages-/Wochenmiete</li>
           </ul>
-          <a href="/contactus" class="fw-service-link">Zum Verleih →</a>
+          <a href="/contactus" class="fw-service-link" aria-label="Equipment-Verleih anfragen">Zum Verleih →</a>
         </div>
       </div>
 
@@ -145,7 +160,7 @@ HOMEPAGE_HTML = """<t t-call="website.layout">
             <li>Backline</li>
             <li>Open Air</li>
           </ul>
-          <a href="/contactus" class="fw-service-link">Anfragen →</a>
+          <a href="/contactus" class="fw-service-link" aria-label="Stage Service anfragen">Anfragen →</a>
         </div>
       </div>
 
@@ -162,7 +177,7 @@ HOMEPAGE_HTML = """<t t-call="website.layout">
             <li>Zimmermann + Technik</li>
             <li>Individuelle Projekte</li>
           </ul>
-          <a href="/contactus" class="fw-service-link">Projekt anfragen →</a>
+          <a href="/contactus" class="fw-service-link" aria-label="Sonderbau-Projekt anfragen">Projekt anfragen →</a>
         </div>
       </div>
 
@@ -171,7 +186,7 @@ HOMEPAGE_HTML = """<t t-call="website.layout">
 </section>
 
 <!-- Referenzen -->
-<section class="fw-referenzen">
+<section class="fw-referenzen" aria-label="Referenzen">
   <div class="container">
     <div class="fw-section-header">
       <div class="fw-eyebrow">Referenzen</div>
@@ -232,7 +247,7 @@ HOMEPAGE_HTML = """<t t-call="website.layout">
 </section>
 
 <!-- Projekte -->
-<section class="fw-projects">
+<section class="fw-projects" aria-label="Projekte">
   <div class="container">
     <div class="fw-section-header">
       <div class="fw-eyebrow">Unsere Projekte</div>
@@ -242,7 +257,10 @@ HOMEPAGE_HTML = """<t t-call="website.layout">
     <div class="row g-1">
       <div class="col-lg-4">
         <div class="fw-project-card">
-          <img loading="lazy" src="/web/image/997/rave-on-sup.jpg" alt="Rave on SUP"/>
+          <picture>
+            <source srcset="/web/image/1006/rave-on-sup.webp" type="image/webp"/>
+            <img loading="lazy" src="/web/image/997/rave-on-sup.jpg" alt="Rave on SUP Bodensee - Schwimmende PA-Anlage auf Fischerboot für Open-Air Event"/>
+          </picture>
           <div class="fw-project-overlay">
             <h3 class="fw-h3">Rave on SUP</h3>
             <p>Lautsprecher auf Fischerboot</p>
@@ -251,7 +269,10 @@ HOMEPAGE_HTML = """<t t-call="website.layout">
       </div>
       <div class="col-lg-4">
         <div class="fw-project-card">
-          <img loading="lazy" src="/web/image/996/sonderbau-holz.jpg" alt="Holzkonstruktion"/>
+          <picture>
+            <source srcset="/web/image/1005/sonderbau-holz.webp" type="image/webp"/>
+            <img loading="lazy" src="/web/image/996/sonderbau-holz.jpg" alt="Sonderbau Holzkonstruktion - Zimmermann Franz Bienert Holzbühne mit Dekoration"/>
+          </picture>
           <div class="fw-project-overlay">
             <h3 class="fw-h3">Sonderbau</h3>
             <p>Custom Holzkonstruktion</p>
@@ -260,7 +281,10 @@ HOMEPAGE_HTML = """<t t-call="website.layout">
       </div>
       <div class="col-lg-4">
         <div class="fw-project-card">
-          <img loading="lazy" src="/web/image/995/service-stage.jpg" alt="Live Stage"/>
+          <picture>
+            <source srcset="/web/image/1004/service-stage.webp" type="image/webp"/>
+            <img loading="lazy" src="/web/image/995/service-stage.jpg" alt="Live Stage FOH - Wolfgang Prinz am Front of House Mischpult bei Konzert"/>
+          </picture>
           <div class="fw-project-overlay">
             <h3 class="fw-h3">Live Stage</h3>
             <p>Backstage Tech-Betreuung</p>
@@ -272,7 +296,7 @@ HOMEPAGE_HTML = """<t t-call="website.layout">
 </section>
 
 <!-- Über Uns -->
-<section class="fw-about">
+<section class="fw-about" aria-label="Über uns">
   <div class="container">
     <div class="row align-items-center g-5">
       <div class="col-lg-6">
@@ -287,11 +311,26 @@ HOMEPAGE_HTML = """<t t-call="website.layout">
         <p class="fw-body">
           Bodensee. Lokal. Zuverlässig.
         </p>
-        <a href="/contactus" class="fw-btn-primary btn mt-3">Kontakt aufnehmen</a>
+        <a href="/contactus" class="fw-btn-primary btn mt-3" aria-label="Kontakt zu FraWo Veranstaltungstechnik aufnehmen">Kontakt aufnehmen</a>
       </div>
       <div class="col-lg-6">
-        <div class="fw-img-wrapper">
-          <img loading="lazy" src="/web/image/998/buehne-traverse.jpg" alt="FraWo Bühnenaufbau"/>
+        <div class="row g-3">
+          <div class="col-6">
+            <div class="fw-img-wrapper">
+              <picture>
+                <source srcset="/web/image/1004/service-stage.webp" type="image/webp"/>
+                <img loading="lazy" src="/web/image/995/service-stage.jpg" alt="Wolfgang Prinz am Front of House Mischpult - FraWo Stage Service"/>
+              </picture>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="fw-img-wrapper">
+              <picture>
+                <source srcset="/web/image/1007/buehne-traverse.webp" type="image/webp"/>
+                <img loading="lazy" src="/web/image/998/buehne-traverse.jpg" alt="Franz Bienert bei Bühnenaufbau - FraWo Sonderbauten und Holzkonstruktion"/>
+              </picture>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -299,7 +338,7 @@ HOMEPAGE_HTML = """<t t-call="website.layout">
 </section>
 
 <!-- Radio -->
-<section class="fw-radio-cta">
+<section class="fw-radio-cta" aria-label="Radio">
   <div class="container">
     <div class="row">
       <div class="col-lg-8 offset-lg-2 text-center">
@@ -315,7 +354,7 @@ HOMEPAGE_HTML = """<t t-call="website.layout">
 </section>
 
 <!-- CTA -->
-<section class="fw-cta">
+<section class="fw-cta" aria-label="Kontakt">
   <div class="container">
     <div class="row">
       <div class="col-lg-8 offset-lg-2 text-center">
@@ -323,7 +362,7 @@ HOMEPAGE_HTML = """<t t-call="website.layout">
         <p class="fw-lead">
           Kostenlose Beratung. Bodensee-Region.
         </p>
-        <a href="/contactus" class="fw-btn-primary btn">Anfrage senden</a>
+        <a href="/contactus" class="fw-btn-primary btn" aria-label="Veranstaltungstechnik-Anfrage senden">Anfrage senden</a>
       </div>
     </div>
   </div>

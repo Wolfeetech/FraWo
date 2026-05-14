@@ -25,6 +25,10 @@
   --spacing-xl: 6rem;
   --spacing-xxl: 8rem;
 
+  /* Focus indicator */
+  --focus-ring: 0 0 0 3px rgba(157, 78, 221, 0.4);
+  --focus-offset: 2px;
+
   /* Typography scale */
   --text-xs: 0.75rem;
   --text-sm: 0.875rem;
@@ -46,6 +50,46 @@ h1, h2, h3, h4, h5, h6 {
   font-family: 'Inter', sans-serif !important;
   font-weight: 700 !important;
   letter-spacing: -0.02em !important;
+}
+
+/* ACCESSIBILITY - Focus Indicators (WCAG 2.1 AA) */
+*:focus {
+  outline: none;
+}
+
+*:focus-visible {
+  outline: 2px solid var(--fw-purple);
+  outline-offset: var(--focus-offset);
+  box-shadow: var(--focus-ring);
+  transition: outline 0.15s ease, box-shadow 0.15s ease;
+}
+
+a:focus-visible,
+button:focus-visible,
+.btn:focus-visible {
+  outline: 2px solid var(--fw-purple);
+  outline-offset: var(--focus-offset);
+  box-shadow: var(--focus-ring);
+}
+
+/* Skip to content link */
+.skip-to-content {
+  position: absolute;
+  top: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--fw-purple);
+  color: #fff;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 600;
+  z-index: 9999;
+  transition: top 0.2s ease;
+}
+
+.skip-to-content:focus {
+  top: 1rem;
 }
 
 /* HEADER - ULTRA MINIMAL (NTS-Style) */
@@ -107,14 +151,14 @@ footer, .o_footer {
 
 /* Hero */
 .fw-hero {
-  padding: 140px 0 120px;
+  padding: 100px 0 80px;
   background: var(--fw-bg);
   border-top: none;
 }
 
 @media (max-width: 768px) {
   .fw-hero {
-    padding: 80px 0 60px;
+    padding: 60px 0 50px;
   }
 }
 
@@ -273,6 +317,11 @@ footer, .o_footer {
   background: var(--fw-bg);
 }
 
+.fw-img-wrapper picture {
+  display: block;
+  width: 100%;
+}
+
 .fw-img-wrapper img {
   width: 100%;
   height: auto;
@@ -360,13 +409,13 @@ body {
 
 /* ===== SECTIONS BASE ===== */
 section {
-  padding: 120px 0;
+  padding: 70px 0;
   border-top: 1px solid var(--fw-border);
 }
 
 @media (max-width: 768px) {
   section {
-    padding: 60px 0;
+    padding: 45px 0;
   }
 }
 
@@ -420,7 +469,7 @@ section {
   text-transform: uppercase;
   letter-spacing: 0.12em;
   color: var(--fw-text);
-  margin-bottom: var(--spacing-md);
+  margin-bottom: 0.75rem;
   position: relative;
   z-index: 1;
 }
@@ -428,13 +477,15 @@ section {
 .fw-service-card {
   background: var(--fw-bg);
   border: none;
-  padding: 3rem 2.5rem;
-  min-height: 420px;
+  padding: 1.25rem 1.5rem;
+  min-height: 280px;
   display: flex;
   flex-direction: column;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
+  justify-content: flex-start;
+  gap: 0.5rem;
 }
 
 .fw-service-card-bg {
@@ -471,7 +522,7 @@ section {
 
 @media (max-width: 768px) {
   .fw-service-card {
-    padding: 3rem 2rem;
+    padding: 1.75rem 1.5rem;
     min-height: auto;
   }
 }
@@ -484,9 +535,9 @@ section {
 
 .fw-service-desc {
   color: var(--fw-text-dim);
-  font-size: 1.0625rem;
-  line-height: 1.65;
-  margin-bottom: var(--spacing-md);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  margin-bottom: 0.875rem;
   position: relative;
   z-index: 1;
 }
@@ -494,7 +545,7 @@ section {
 .fw-service-list {
   list-style: none;
   padding: 0;
-  margin: 0 0 var(--spacing-lg) 0;
+  margin: 0 0 1rem 0;
   flex-grow: 1;
   position: relative;
   z-index: 1;
@@ -502,9 +553,9 @@ section {
 
 .fw-service-list li {
   color: var(--fw-text-dim);
-  font-size: 0.9375rem;
-  line-height: 1.8;
-  padding: 0.5rem 0;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  padding: 0.25rem 0;
   padding-left: 1.25rem;
   position: relative;
   transition: color 0.2s ease;
@@ -579,14 +630,15 @@ section {
 
 .fw-ref-item {
   text-align: center;
-  padding: 3rem 2rem;
+  padding: 1.75rem 1.25rem;
   background: var(--fw-bg);
   transition: background 0.2s ease;
-  min-height: 180px;
+  min-height: 140px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 0.35rem;
 }
 
 .fw-ref-item:hover {
@@ -594,19 +646,21 @@ section {
 }
 
 .fw-ref-item strong {
-  font-size: 0.85rem;
+  font-size: 0.8125rem;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   color: var(--fw-text);
   display: block;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0;
+  line-height: 1.4;
 }
 
 .fw-ref-item p {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: var(--fw-text-dimmer);
   margin: 0;
+  line-height: 1.5;
 }
 
 /* ===== PROJECTS SECTION ===== */
@@ -645,6 +699,12 @@ section {
   }
 }
 
+.fw-project-card picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 .fw-project-card img {
   width: 100%;
   height: 100%;
@@ -662,7 +722,7 @@ section {
   left: 0;
   right: 0;
   background: linear-gradient(to top, rgba(10,10,10,0.95), transparent);
-  padding: 2rem 1.5rem;
+  padding: 1.5rem 1.25rem;
   transform: translateY(100%);
   transition: transform 0.3s ease;
 }
@@ -672,18 +732,20 @@ section {
 }
 
 .fw-project-overlay h3 {
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.35rem;
+  font-size: 0.8125rem;
 }
 
 .fw-project-overlay p {
   color: var(--fw-text-dim);
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   margin: 0;
+  line-height: 1.5;
 }
 
 /* ===== ABOUT SECTION ===== */
 .fw-about {
-  padding: 80px 0;
+  padding: 70px 0;
   background: var(--fw-bg);
   border-top: 1px solid var(--fw-border);
 }
@@ -697,14 +759,14 @@ section {
 
 /* ===== RADIO CTA ===== */
 .fw-radio-cta {
-  padding: 80px 0;
+  padding: 70px 0;
   background: var(--fw-bg);
   border-top: 1px solid var(--fw-border);
 }
 
 /* ===== CTA SECTION ===== */
 .fw-cta {
-  padding: 80px 0;
+  padding: 70px 0;
   background: var(--fw-bg);
   border-top: 1px solid var(--fw-border);
   border-bottom: 1px solid var(--fw-border);
@@ -721,11 +783,11 @@ section {
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
   .fw-services, .fw-referenzen, .fw-about, .fw-radio-cta, .fw-cta {
-    padding: 50px 0;
+    padding: 45px 0;
   }
 
   .fw-service-card {
-    padding: 2rem;
+    padding: 1.75rem 1.5rem;
   }
 
   .fw-ref-item {
