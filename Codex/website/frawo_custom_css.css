@@ -326,11 +326,25 @@ body {
 }
 
 
-/* ===== SERVICE CARDS (kabaus-inspired) ===== */
+/* ===== KABAUS-INSPIRED GRID LAYOUT ===== */
 .fw-services {
   padding: 80px 0;
   background: var(--fw-bg);
   border-top: 1px solid var(--fw-border);
+}
+
+.fw-services .row.g-4 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1px;
+  background: var(--fw-border);
+  border: 1px solid var(--fw-border);
+}
+
+@media (max-width: 991px) {
+  .fw-services .row.g-4 {
+    grid-template-columns: 1fr;
+  }
 }
 
 .fw-h2 {
@@ -353,16 +367,16 @@ body {
 
 .fw-service-card {
   background: var(--fw-bg);
-  border: 1px solid var(--fw-border);
-  padding: 2.5rem;
+  border: none;
+  padding: 3rem;
   height: 100%;
   display: flex;
   flex-direction: column;
-  transition: border-color 0.2s ease;
+  transition: background 0.2s ease;
 }
 
 .fw-service-card:hover {
-  border-color: var(--fw-text-dimmer);
+  background: rgba(255, 255, 255, 0.02);
 }
 
 .fw-service-icon {
@@ -415,16 +429,42 @@ body {
   color: var(--fw-text);
 }
 
-/* ===== REFERENZEN ===== */
+/* ===== REFERENZEN GRID ===== */
 .fw-referenzen {
   padding: 80px 0;
   background: var(--fw-bg);
   border-top: 1px solid var(--fw-border);
 }
 
+.fw-referenzen .row.g-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--fw-border);
+  border: 1px solid var(--fw-border);
+}
+
+@media (max-width: 991px) {
+  .fw-referenzen .row.g-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 576px) {
+  .fw-referenzen .row.g-4 {
+    grid-template-columns: 1fr;
+  }
+}
+
 .fw-ref-item {
   text-align: center;
-  padding: 2rem 1rem;
+  padding: 2.5rem 1.5rem;
+  background: var(--fw-bg);
+  transition: background 0.2s ease;
+}
+
+.fw-ref-item:hover {
+  background: rgba(255, 255, 255, 0.02);
 }
 
 .fw-ref-item strong {
