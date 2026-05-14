@@ -32,12 +32,14 @@
 | Docker | v29.4.3 + Compose v5.1.3 |
 | AzuraCast RAM | ~640 MB (von 2 GB) |
 | Onboot | ✅ Ja |
+| **Audio Processing** | 🎛️ **master_me** (Multiband Mastering, -14 LUFS, ReplayGain) |
+| **AutoCue** | ⚡ Aktiviert (Nahtlose Cues, Stille-Erkennung) |
 
 ### Login
 
 | Feld | Wert |
 |------|------|
-| URL | `http://10.4.0.233` |
+| URL | `https://funk.frawo-tech.de` |
 | User | `wolf@frawo-tech.de` |
 | Passwort | `FraWoFunk2026!` |
 | SFTP Port | `2022` |
@@ -51,8 +53,10 @@
 | Beschreibung | Community Radio. Bodensee. |
 | Genre | Electronic / Alternative / Community |
 | Frontend | Icecast |
-| Backend | Liquidsoap |
-| Stream | `/listen/frawo_funk/radio.mp3` (192kbps MP3) |
+| Backend | Liquidsoap (v2.3+) |
+| **Mount 1 (Standard)** | 📻 `/listen/frawo_funk/radio.mp3` (192kbps MP3) |
+| **Mount 2 (Studio)** | 🎧 `/listen/frawo_funk/hifi.mp3` (320kbps MP3 Studio Quality) |
+| **Mount 3 (Mobile)** | 📱 `/listen/frawo_funk/mobile.aac` (64kbps AAC+ HE-v2 für Unterwegs) |
 
 ---
 
