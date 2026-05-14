@@ -483,6 +483,56 @@ body {
   margin: 0;
 }
 
+/* ===== PROJECTS SECTION ===== */
+.fw-projects {
+  padding: 80px 0;
+  background: var(--fw-bg);
+  border-top: 1px solid var(--fw-border);
+}
+
+.fw-project-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--fw-border);
+  aspect-ratio: 4/3;
+}
+
+.fw-project-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.fw-project-card:hover img {
+  transform: scale(1.05);
+}
+
+.fw-project-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top, rgba(10,10,10,0.95), transparent);
+  padding: 2rem 1.5rem;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+}
+
+.fw-project-card:hover .fw-project-overlay {
+  transform: translateY(0);
+}
+
+.fw-project-overlay h3 {
+  margin-bottom: 0.5rem;
+}
+
+.fw-project-overlay p {
+  color: var(--fw-text-dim);
+  font-size: 0.85rem;
+  margin: 0;
+}
+
 /* ===== ABOUT SECTION ===== */
 .fw-about {
   padding: 80px 0;

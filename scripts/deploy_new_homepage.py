@@ -53,7 +53,7 @@ HOMEPAGE_HTML = """<t t-call="website.layout">
       </div>
       <div class="col-lg-6">
         <div class="fw-img-wrapper">
-          <img src="/web/image/932/hero-bodensee.jpg" alt="Veranstaltungstechnik am Bodensee" loading="lazy"/>
+          <img src="/web/image/993/hero-bodensee.jpg" alt="Beach Event Bodensee - FraWo Veranstaltungstechnik"/>
         </div>
       </div>
     </div>
@@ -216,6 +216,48 @@ HOMEPAGE_HTML = """<t t-call="website.layout">
   </div>
 </section>
 
+<!-- Projekte -->
+<section class="fw-projects">
+  <div class="container">
+    <div class="row mb-5">
+      <div class="col-lg-8 offset-lg-2 text-center">
+        <div class="fw-eyebrow">Unsere Projekte</div>
+        <h2 class="fw-h2">Was wir gebaut haben</h2>
+      </div>
+    </div>
+
+    <div class="row g-1">
+      <div class="col-lg-4">
+        <div class="fw-project-card">
+          <img src="/web/image/997/rave-on-sup.jpg" alt="Rave on SUP"/>
+          <div class="fw-project-overlay">
+            <h3 class="fw-h3">Rave on SUP</h3>
+            <p>Lautsprecher auf Fischerboot</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="fw-project-card">
+          <img src="/web/image/996/sonderbau-holz.jpg" alt="Holzkonstruktion"/>
+          <div class="fw-project-overlay">
+            <h3 class="fw-h3">Sonderbau</h3>
+            <p>Custom Holzkonstruktion</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="fw-project-card">
+          <img src="/web/image/995/service-stage.jpg" alt="Live Stage"/>
+          <div class="fw-project-overlay">
+            <h3 class="fw-h3">Live Stage</h3>
+            <p>Backstage Tech-Betreuung</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- Über Uns -->
 <section class="fw-about">
   <div class="container">
@@ -235,7 +277,7 @@ HOMEPAGE_HTML = """<t t-call="website.layout">
       </div>
       <div class="col-lg-6">
         <div class="fw-img-wrapper">
-          <img src="/web/image/933/team-placeholder.jpg" alt="FraWo Team" loading="lazy"/>
+          <img src="/web/image/998/buehne-traverse.jpg" alt="FraWo Bühnenaufbau"/>
         </div>
       </div>
     </div>
