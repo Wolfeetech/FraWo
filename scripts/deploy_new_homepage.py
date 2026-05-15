@@ -368,6 +368,41 @@ HOMEPAGE_HTML = """<t t-call="website.layout">
   </div>
 </section>
 
+<!-- Footer -->
+<footer class="fw-footer" style="background: #0a0a0a; border-top: 1px solid #1a1a1a; padding: 3rem 0 2rem 0; color: #888;">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-md-4">
+        <h5 style="color: #e8e8e8; font-size: 0.875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1rem;">FraWo GbR</h5>
+        <p style="font-size: 0.875rem; line-height: 1.6; color: #707070;">
+          Veranstaltungstechnik &amp; Sonderbauten<br/>
+          Bodensee-Region
+        </p>
+      </div>
+      <div class="col-md-4">
+        <h5 style="color: #e8e8e8; font-size: 0.875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1rem;">Rechtliches</h5>
+        <ul style="list-style: none; padding: 0; margin: 0;">
+          <li style="margin-bottom: 0.5rem;"><a href="/impressum" style="color: #707070; text-decoration: none; font-size: 0.875rem; transition: color 0.2s;">Impressum</a></li>
+          <li style="margin-bottom: 0.5rem;"><a href="/datenschutz" style="color: #707070; text-decoration: none; font-size: 0.875rem; transition: color 0.2s;">Datenschutz</a></li>
+        </ul>
+      </div>
+      <div class="col-md-4">
+        <h5 style="color: #e8e8e8; font-size: 0.875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1rem;">Kontakt</h5>
+        <p style="font-size: 0.875rem; line-height: 1.6; color: #707070;">
+          <a href="mailto:info@frawo-tech.de" style="color: #707070; text-decoration: none;">info@frawo-tech.de</a>
+        </p>
+      </div>
+    </div>
+    <div class="row" style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #1a1a1a;">
+      <div class="col-12 text-center">
+        <p style="font-size: 0.8rem; color: #555; margin: 0;">
+          © 2026 FraWo GbR. State-of-the-Art Media &amp; Event.
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
 <!-- FINAL OVERRIDE - Must be last to override Odoo's compiled CSS -->
 <style>
 /* MAXIMUM SPECIFICITY - Override Bootstrap and Odoo Frontend CSS */

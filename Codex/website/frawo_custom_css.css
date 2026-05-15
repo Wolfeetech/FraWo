@@ -1,4 +1,4 @@
-/* FraWo GbR — v4.5 ALL TRANSPARENT — DEPLOYED 2026-05-15 15:52 */
+/* FraWo GbR — v5.1 Hero Spacing Fixed — DEPLOYED 2026-05-15 16:15 */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
@@ -210,19 +210,20 @@ footer, .o_footer {
 
 .fw-btn-ghost {
   background: transparent !important;
-  border: 1px solid var(--fw-border) !important;
+  border: 2px solid var(--fw-text-dimmer) !important;
   border-radius: 0 !important;
   padding: 14px 28px !important;
   font-weight: 500 !important;
   font-size: 0.8rem !important;
-  color: var(--fw-text-dim) !important;
+  color: var(--fw-text) !important;
   text-transform: uppercase !important;
   letter-spacing: 0.1em !important;
   transition: all 0.2s ease !important;
 }
 
 .fw-btn-ghost:hover {
-  border-color: var(--fw-text) !important;
+  border-color: var(--fw-purple) !important;
+  color: var(--fw-purple) !important;
   color: var(--fw-text) !important;
 }
 
@@ -230,7 +231,7 @@ footer, .o_footer {
 .fw-split {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 4rem;                               /* Generous gap, no borders */
+  gap: 2rem;                               /* Balanced gap */
   padding: 80px 0;
   border-top: 1px solid var(--fw-border);
   border-bottom: 1px solid var(--fw-border);
@@ -239,7 +240,7 @@ footer, .o_footer {
 @media (max-width: 768px) {
   .fw-split {
     grid-template-columns: 1fr;
-    gap: 3rem;
+    gap: 2rem;
   }
 }
 
@@ -447,9 +448,10 @@ section {
   margin: 0;
 }
 
-@media (max-width: 991px) {
+@media (max-width: 768px) {
   .fw-services .row.g-4 {
     grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
 }
 
@@ -656,6 +658,7 @@ section {
   align-items: center;
   justify-content: center;
   gap: 0.75rem;
+  overflow: hidden;
 }
 
 .fw-ref-item:hover {
@@ -671,6 +674,8 @@ section {
   display: block;
   margin-bottom: 0;
   line-height: 1.4;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .fw-ref-item p {
@@ -678,6 +683,8 @@ section {
   color: var(--fw-text-dimmer);
   margin: 0;
   line-height: 1.5;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 /* ===== PROJECTS SECTION ===== */
@@ -695,6 +702,13 @@ section {
   .fw-projects .row.g-1 {
     grid-template-columns: 1fr;
     min-height: auto;
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .fw-project-card {
+    margin-bottom: 1rem;
   }
 }
 
@@ -809,10 +823,11 @@ section {
 
 /* ===== TRUST LINE ===== */
 .fw-trust-line {
-  font-size: 0.8rem;
-  color: var(--fw-text-dimmer);
+  font-size: 0.875rem;
+  color: var(--fw-text-dim);
   margin-top: 2rem;
   line-height: 1.8;
+  font-weight: 500;
 }
 
 /* ===== RESPONSIVE ===== */
