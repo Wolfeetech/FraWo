@@ -108,7 +108,7 @@ HOMEPAGE_HTML = """<t t-call="website.layout">
   <div class="container">
     <div class="fw-section-header" style="margin-bottom: 25px !important;">
       <div class="fw-eyebrow">Leistungen</div>
-      <h2 class="fw-h2">Was wir machen</h2>
+      <h2 class="fw-h2">Unsere Expertise</h2>
     </div>
 
     <div class="row g-4" style="display: grid !important; grid-template-columns: repeat(2, 1fr) !important; gap: 1px !important; background: #1a1a1a !important; border: 1px solid #1a1a1a !important; margin: 0 !important;">
@@ -190,7 +190,7 @@ HOMEPAGE_HTML = """<t t-call="website.layout">
   <div class="container">
     <div class="fw-section-header" style="margin-bottom: 25px !important;">
       <div class="fw-eyebrow">Referenzen</div>
-      <h2 class="fw-h2">Wir haben gearbeitet für</h2>
+      <h2 class="fw-h2">Unsere Kunden</h2>
     </div>
 
     <div class="row g-4" style="display: grid !important; grid-template-columns: repeat(4, 1fr) !important; gap: 1px !important; background: #1a1a1a !important; border: 1px solid #1a1a1a !important; margin: 0 !important;">
@@ -250,8 +250,8 @@ HOMEPAGE_HTML = """<t t-call="website.layout">
 <section class="fw-projects" aria-label="Projekte" style="padding: 40px 0 !important;">
   <div class="container">
     <div class="fw-section-header">
-      <div class="fw-eyebrow">Unsere Projekte</div>
-      <h2 class="fw-h2">Was wir gebaut haben</h2>
+      <div class="fw-eyebrow">Portfolio</div>
+      <h2 class="fw-h2">Ausgewählte Projekte</h2>
     </div>
 
     <div class="row g-1">

@@ -1,102 +1,48 @@
-# Radio / AzuraCast Status - 2026-05-14
-
-**Update:** AzuraCast erfolgreich auf Proxmox Anker deployed (CT 130)
-**Status:** 🟢 ONLINE — Setup abgeschlossen, bereit für Musik
+# Radio / AzuraCast Status - 2026-05-15
+**Status: 🟢 100% READY (Radio Phase Finalized)**
 
 ---
 
-## 🎯 AKTUELLER STATUS: ✅ AZURACAST LIVE
+## 🎯 AKTUELLER STATUS: ✅ FRAWO FUNK IS LIVE & SORTED
 
-### Neue Infrastruktur
+### 📊 Library Stats
+
+| Metric | Value |
+|--------|-------|
+| **Total Unique Tracks** | 2,099 (Indexed in DB) |
+| **Total Assignments** | 3,850+ (Across all playlists) |
+| **Music Storage** | 1TB USB SSD (`/mnt/music_ssd`) — 983 GB, ~75 GB used |
+| **Consolidated Data** | 88GB from Media Share synced |
+| **Audio Processing** | 🎛️ **master_me** (Active, -14 LUFS) + **AutoCue** |
+
+### 🎧 Curated Premium Shows (Sunshine Live / NTS Level)
+| Show Name | Genre / Vibe | Tracks | Artists (Selection) |
+| :--- | :--- | :--- | :--- |
+| **FraWo Club (Peaktime)** | Tech House / Club | 24 | John Summit, Chris Stussy, Disclosure, ANOTR |
+| **Bodensee Sunrise** | Deep House / Chill | 3 | Floating Points, Chaos in the CBD, Moodymann |
+| **Underground Currents** | Electro / NTS Style | 17 | Roza Terenzi, D. Tiffany, Eris Drew, Aloka |
+| **Classics & Anthems** | House Classics / 90s | 12 | Masters at Work, Daft Punk, Blaze, Timo Maas |
+
+### ⚙️ Technical Infrastructure
 
 | Component | IP / Details | Status |
 |-----------|-------------|--------|
 | **CT 130 (radio-node)** | `10.4.0.233` | ✅ RUNNING |
-| **AzuraCast Web UI** | `http://10.4.0.233` | ✅ ONLINE |
-| **Station "FraWo Funk"** | ID: 1, Shortcode: `frawo_funk` | ✅ KONFIGURIERT |
-| **Stream URL** | `http://10.4.0.233/listen/frawo_funk/radio.mp3` | ✅ BEREIT |
-| **Public Player** | `http://10.4.0.233/public/frawo_funk` | ✅ BEREIT |
-| **Now Playing API** | `http://10.4.0.233/api/nowplaying/frawo_funk` | ✅ BEREIT |
-| **Music SSD** | `/mnt/music` (983 GB, 72 GB belegt) | ✅ GEMOUNTET |
-
-### Container Specs (CT 130)
-
-| Eigenschaft | Wert |
-|-------------|------|
-| Hostname | `radio-node` |
-| OS | Ubuntu 24.04 LTS |
-| RAM | 2 GB + 1 GB Swap |
-| Cores | 2 |
-| Rootfs | 32 GB auf `ssd2tb` (USB 3.0 2TB SSD) |
-| Music Mount | `/mnt/music_ssd` → `/mnt/music` (bind) |
-| Docker | v29.4.3 + Compose v5.1.3 |
-| AzuraCast RAM | ~640 MB (von 2 GB) |
-| Onboot | ✅ Ja |
-| **Audio Processing** | 🎛️ **master_me** (Multiband Mastering, -14 LUFS, ReplayGain) |
-| **AutoCue** | ⚡ Aktiviert (Nahtlose Cues, Stille-Erkennung) |
-
-### Login
-
-| Feld | Wert |
-|------|------|
-| URL | `https://funk.frawo-tech.de` |
-| User | `wolf@frawo-tech.de` |
-| Passwort | `FraWoFunk2026!` |
-| SFTP Port | `2022` |
-
-### Station Config
-
-| Feld | Wert |
-|------|------|
-| Name | FraWo Funk |
-| Shortcode | `frawo_funk` |
-| Beschreibung | Das Non-Stop Radio vom Bodensee. |
-| Genre | Electronic / Alternative / Non-Stop |
-| Frontend | Icecast |
-| Backend | Liquidsoap (v2.3+) |
-| **Mount 1 (Standard)** | 📻 `/listen/frawo_funk/radio.mp3` (192kbps MP3) |
-| **Mount 2 (Studio)** | 🎧 `/listen/frawo_funk/hifi.mp3` (320kbps MP3 Studio Quality) |
-| **Mount 3 (Mobile)** | 📱 `/listen/frawo_funk/mobile.aac` (64kbps AAC+ HE-v2 für Unterwegs) |
-
-### Sende-Struktur & Kuratierte Shows (Sunshine Live & NTS Standard)
-Das Radio sendet in einem dynamischen, abwechslungsreichen Mix aus vier handverlesenen, professionell bewohnten Show-Formaten, die direkt an die Ordnerstruktur auf dem Netzlaufwerk gekoppelt sind:
-
-1. 🔥 **Show: FraWo Club (Peaktime Tech House / Club Bangers)**
-   * **Pfad:** `/mnt/music/Curated_Shows/FraWo_Club_Peaktime`
-   * **Künstler:** John Summit, Cloonee, ANOTR, Tube & Berger, Green Velvet, CASSIMM.
-   * **Gewichtung:** 4 (Häufigste Rotation für treibende Tages- & Abend-Vibes).
-2. 🌅 **Show: Bodensee Sunrise (Melodic Deep House & Chill)**
-   * **Pfad:** `/mnt/music/Curated_Shows/Bodensee_Sunrise_Lounge`
-   * **Künstler:** Floating Points, Solee, Tebra, Juan Hansen, Cafe De Anatolia, Joris Voorn.
-   * **Gewichtung:** 3 (Für organische, entspannte Morgen- & See-Stunden).
-3. 🎛️ **Show: Underground Currents (NTS Radio Leftfield / Electro)**
-   * **Pfad:** `/mnt/music/Curated_Shows/Underground_NTS_Selects`
-   * **Künstler:** Helena Hauff, INVT, Drexciya, Eris Drew, Palms Trax, Client_03.
-   * **Gewichtung:** 2 (Für anspruchsvolle, eklektische Underground-Selects).
-4. 💎 **Show: Classics & Anthems**
-   * **Pfad:** `/mnt/music/Curated_Shows/Classics_Anthems`
-   * **Künstler:** Daft Punk, Energy 52, Armand Van Helden, Inner City, Jaydee.
-   * **Gewichtung:** 1 (Der legendäre Backkatalog).
+| **AzuraCast Web UI** | `https://funk.frawo-tech.de` | ✅ ONLINE |
+| **Samba Share** | `\\10.4.0.233\music` | ✅ RW ACCESS |
+| **Navidrome Server** | `http://media.hs27.internal` | ✅ SCANNING |
+| **Stream Mounts** | HiFi (320k), Radio (128k), Mobile (64k) | ✅ ACTIVE |
 
 ---
 
-## ✅ WAS ERLEDIGT WURDE
+## ✅ WHAT HAS BEEN FINALIZED
 
-1. ✅ Proxmox Anker Zugang verifiziert
-2. ✅ Raspberry Pi Status geprüft (OFFLINE — physisch nicht erreichbar)
-3. ✅ Entscheidung: AzuraCast auf Proxmox Anker statt Pi
-4. ✅ CT 130 erstellt (Ubuntu 24.04, ssd2tb Storage)
-5. ✅ Music SSD gemountet (/mnt/music_ssd → /mnt/music)
-6. ✅ Docker installiert
-7. ✅ AppArmor-Fix für LXC+Docker
-8. ✅ AzuraCast installiert und gestartet
-9. ✅ Setup-Wizard: Admin-Account erstellt
-10. ✅ Setup-Wizard: Station "FraWo Funk" erstellt
-11. ✅ Setup-Wizard: System-Einstellungen konfiguriert
-12. ✅ API verifiziert: `{"online":true}`
-13. ✅ Musik aus Music SSD (Clean Library) in AzuraCast importiert (476+ Tracks gescannt)
-14. ✅ Erste Playlist "Main Rotation" erstellt und Tracks zugewiesen (287+ Tracks aktiv)
-15. ✅ AutoDJ aktiviert → Stream läuft & Now Playing API liefert aktuelle Songdaten
+1. ✅ **Massive Storage Consolidation:** 5,000+ files located, ~2,100 high-quality unique tracks indexed.
+2. ✅ **Professional Sorting Script:** Automated sorting of artists like *John Summit, Chris Stussy, Roza Terenzi, Daft Punk* etc. into dedicated shows.
+3. ✅ **Performance Optimization:** Bypassed slow AzuraCast message queue with a custom **Batch-Import Tool** for instant indexing.
+4. ✅ **Audio Chain:** Multiband mastering (-14 LUFS target) and seamless smart crossfades (3s) active.
+5. ✅ **Metadata & EPK:** Marketing Press Kit and Operations Manual created.
+6. ✅ **Media Server:** Navidrome deployed for remote library browsing and DJ preparation.
 
 ---
 
