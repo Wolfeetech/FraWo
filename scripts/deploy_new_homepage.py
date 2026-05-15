@@ -111,71 +111,71 @@ HOMEPAGE_HTML = """<t t-call="website.layout">
       <h2 class="fw-h2">Unsere Expertise</h2>
     </div>
 
-    <div class="row g-4" style="display: grid !important; grid-template-columns: repeat(2, 1fr) !important; gap: 1px !important; background: #1a1a1a !important; border: 1px solid #1a1a1a !important; margin: 0 !important;">
+    <div class="row g-4">
 
       <!-- Service 1: Licht &amp; Ton -->
-      <div class="col-lg-6" style="padding: 0 !important; max-width: none !important; flex: none !important;">
-        <div class="fw-service-card fw-service-card-bg" style="background-image: linear-gradient(rgba(10,10,10,0.88), rgba(10,10,10,0.88)), url('/web/image/1000/mikrofon-ton.jpg'); padding: 0.75rem 1rem !important; min-height: 200px !important; display: flex; flex-direction: column; gap: 0.3rem !important;">
-          <h3 class="fw-h3" style="margin: 0 0 0.3rem 0 !important; font-size: 0.75rem !important;">Licht &amp; Ton</h3>
-          <p class="fw-service-desc" style="margin: 0 0 0.3rem 0 !important; font-size: 0.85rem !important;">
+      <div class="col-lg-6">
+        <div class="fw-service-card fw-service-card-bg" style="background-image: linear-gradient(rgba(10,10,10,0.88), rgba(10,10,10,0.88)), url('/web/image/1000/mikrofon-ton.jpg');">
+          <h3 class="fw-h3">Licht &amp; Ton</h3>
+          <p class="fw-service-desc">
             PA-Systeme. Lichttechnik. Vor-Ort-Betreuung.
           </p>
-          <ul class="fw-service-list" style="margin: 0 0 0.5rem 0 !important; padding: 0 !important; list-style: none;">
-            <li style="padding: 0.08rem 0 0.08rem 1rem !important; margin: 0 !important; font-size: 0.8rem !important; line-height: 1.3 !important;">PA-Systeme</li>
-            <li style="padding: 0.08rem 0 0.08rem 1rem !important; margin: 0 !important; font-size: 0.8rem !important; line-height: 1.3 !important;">Moving Heads</li>
-            <li style="padding: 0.08rem 0 0.08rem 1rem !important; margin: 0 !important; font-size: 0.8rem !important; line-height: 1.3 !important;">Technische Betreuung</li>
-            <li style="padding: 0.08rem 0 0.08rem 1rem !important; margin: 0 !important; font-size: 0.8rem !important; line-height: 1.3 !important;">Subunternehmer</li>
+          <ul class="fw-service-list">
+            <li>PA-Systeme</li>
+            <li>Moving Heads</li>
+            <li>Technische Betreuung</li>
+            <li>Subunternehmer</li>
           </ul>
           <a href="/contactus" class="fw-service-link" aria-label="Licht und Ton Service anfragen">Anfragen →</a>
         </div>
       </div>
 
       <!-- Service 2: Verleih -->
-      <div class="col-lg-6" style="padding: 0 !important; max-width: none !important; flex: none !important;">
-        <div class="fw-service-card fw-service-card-bg" style="background-image: linear-gradient(rgba(10,10,10,0.88), rgba(10,10,10,0.88)), url('/web/image/999/fussballdart.jpg'); padding: 0.75rem 1rem !important; min-height: 200px !important; display: flex; flex-direction: column; gap: 0.3rem !important;">
-          <h3 class="fw-h3" style="margin: 0 0 0.3rem 0 !important; font-size: 0.75rem !important;">Verleih</h3>
-          <p class="fw-service-desc" style="margin: 0 0 0.3rem 0 !important; font-size: 0.85rem !important;">
+      <div class="col-lg-6">
+        <div class="fw-service-card fw-service-card-bg" style="background-image: linear-gradient(rgba(10,10,10,0.88), rgba(10,10,10,0.88)), url('/web/image/999/fussballdart.jpg')">
+          <h3 class="fw-h3">Verleih</h3>
+          <p class="fw-service-desc">
             Equipment-Verleih. Tageweise oder Wochenende.
           </p>
-          <ul class="fw-service-list" style="margin: 0 0 0.5rem 0 !important; padding: 0 !important; list-style: none;">
-            <li style="padding: 0.08rem 0 0.08rem 1rem !important; margin: 0 !important; font-size: 0.8rem !important; line-height: 1.3 !important;">Fußballdart (3×5m)</li>
-            <li style="padding: 0.08rem 0 0.08rem 1rem !important; margin: 0 !important; font-size: 0.8rem !important; line-height: 1.3 !important;">PA-Systeme</li>
-            <li style="padding: 0.08rem 0 0.08rem 1rem !important; margin: 0 !important; font-size: 0.8rem !important; line-height: 1.3 !important;">Moving Heads</li>
-            <li style="padding: 0.08rem 0 0.08rem 1rem !important; margin: 0 !important; font-size: 0.8rem !important; line-height: 1.3 !important;">Tages-/Wochenmiete</li>
+          <ul class="fw-service-list">
+            <li>Fußballdart (3×5m)</li>
+            <li>PA-Systeme</li>
+            <li>Moving Heads</li>
+            <li>Tages-/Wochenmiete</li>
           </ul>
           <a href="/contactus" class="fw-service-link" aria-label="Equipment-Verleih anfragen">Zum Verleih →</a>
         </div>
       </div>
 
       <!-- Service 3: Stage Service -->
-      <div class="col-lg-6" style="padding: 0 !important; max-width: none !important; flex: none !important;">
-        <div class="fw-service-card fw-service-card-bg" style="background-image: linear-gradient(rgba(10,10,10,0.88), rgba(10,10,10,0.88)), url('/web/image/995/service-stage.jpg'); padding: 0.75rem 1rem !important; min-height: 200px !important; display: flex; flex-direction: column; gap: 0.3rem !important;">
-          <h3 class="fw-h3" style="margin: 0 0 0.3rem 0 !important; font-size: 0.75rem !important;">Stage Service</h3>
-          <p class="fw-service-desc" style="margin: 0 0 0.3rem 0 !important; font-size: 0.85rem !important;">
+      <div class="col-lg-6">
+        <div class="fw-service-card fw-service-card-bg" style="background-image: linear-gradient(rgba(10,10,10,0.88), rgba(10,10,10,0.88)), url('/web/image/995/service-stage.jpg')">
+          <h3 class="fw-h3">Stage Service</h3>
+          <p class="fw-service-desc">
             Aufbau. Betreuung. Backline.
           </p>
-          <ul class="fw-service-list" style="margin: 0 0 0.5rem 0 !important; padding: 0 !important; list-style: none;">
-            <li style="padding: 0.08rem 0 0.08rem 1rem !important; margin: 0 !important; font-size: 0.8rem !important; line-height: 1.3 !important;">Crew</li>
-            <li style="padding: 0.08rem 0 0.08rem 1rem !important; margin: 0 !important; font-size: 0.8rem !important; line-height: 1.3 !important;">Event-Betreuung</li>
-            <li style="padding: 0.08rem 0 0.08rem 1rem !important; margin: 0 !important; font-size: 0.8rem !important; line-height: 1.3 !important;">Backline</li>
-            <li style="padding: 0.08rem 0 0.08rem 1rem !important; margin: 0 !important; font-size: 0.8rem !important; line-height: 1.3 !important;">Open Air</li>
+          <ul class="fw-service-list">
+            <li>Crew</li>
+            <li>Event-Betreuung</li>
+            <li>Backline</li>
+            <li>Open Air</li>
           </ul>
           <a href="/contactus" class="fw-service-link" aria-label="Stage Service anfragen">Anfragen →</a>
         </div>
       </div>
 
       <!-- Service 4: Sonderbauten -->
-      <div class="col-lg-6" style="padding: 0 !important; max-width: none !important; flex: none !important;">
-        <div class="fw-service-card fw-service-card-bg" style="background-image: linear-gradient(rgba(10,10,10,0.88), rgba(10,10,10,0.88)), url('/web/image/996/sonderbau-holz.jpg'); padding: 0.75rem 1rem !important; min-height: 200px !important; display: flex; flex-direction: column; gap: 0.3rem !important;">
-          <h3 class="fw-h3" style="margin: 0 0 0.3rem 0 !important; font-size: 0.75rem !important;">Sonderbauten</h3>
-          <p class="fw-service-desc" style="margin: 0 0 0.3rem 0 !important; font-size: 0.85rem !important;">
+      <div class="col-lg-6">
+        <div class="fw-service-card fw-service-card-bg" style="background-image: linear-gradient(rgba(10,10,10,0.88), rgba(10,10,10,0.88)), url('/web/image/996/sonderbau-holz.jpg')">
+          <h3 class="fw-h3">Sonderbauten</h3>
+          <p class="fw-service-desc">
             Holzbau trifft Veranstaltungstechnik.
           </p>
-          <ul class="fw-service-list" style="margin: 0 0 0.5rem 0 !important; padding: 0 !important; list-style: none;">
-            <li style="padding: 0.08rem 0 0.08rem 1rem !important; margin: 0 !important; font-size: 0.8rem !important; line-height: 1.3 !important;">Custom Stages</li>
-            <li style="padding: 0.08rem 0 0.08rem 1rem !important; margin: 0 !important; font-size: 0.8rem !important; line-height: 1.3 !important;">Holzkonstruktionen</li>
-            <li style="padding: 0.08rem 0 0.08rem 1rem !important; margin: 0 !important; font-size: 0.8rem !important; line-height: 1.3 !important;">Zimmermann + Technik</li>
-            <li style="padding: 0.08rem 0 0.08rem 1rem !important; margin: 0 !important; font-size: 0.8rem !important; line-height: 1.3 !important;">Individuelle Projekte</li>
+          <ul class="fw-service-list">
+            <li>Custom Stages</li>
+            <li>Holzkonstruktionen</li>
+            <li>Zimmermann + Technik</li>
+            <li>Individuelle Projekte</li>
           </ul>
           <a href="/contactus" class="fw-service-link" aria-label="Sonderbau-Projekt anfragen">Projekt anfragen →</a>
         </div>
@@ -186,60 +186,60 @@ HOMEPAGE_HTML = """<t t-call="website.layout">
 </section>
 
 <!-- Referenzen -->
-<section class="fw-referenzen" aria-label="Referenzen" style="padding: 40px 0 !important;">
+<section class="fw-referenzen" aria-label="Referenzen">
   <div class="container">
-    <div class="fw-section-header" style="margin-bottom: 25px !important;">
+    <div class="fw-section-header">
       <div class="fw-eyebrow">Referenzen</div>
       <h2 class="fw-h2">Unsere Kunden</h2>
     </div>
 
-    <div class="row g-4" style="display: grid !important; grid-template-columns: repeat(4, 1fr) !important; gap: 1px !important; background: #1a1a1a !important; border: 1px solid #1a1a1a !important; margin: 0 !important;">
-      <div class="col-lg-3 col-6" style="padding: 0 !important; max-width: none !important; flex: none !important;">
-        <div class="fw-ref-item" style="padding: 0.75rem 0.5rem !important; min-height: 90px !important; display: flex; flex-direction: column; justify-content: center; gap: 0.2rem; background: #0a0a0a !important;">
-          <strong style="font-size: 0.7rem !important; margin: 0 !important;">L.H. Veranstaltungstechnik</strong>
-          <p style="font-size: 0.65rem !important; margin: 0 !important;">Subunternehmer</p>
+    <div class="row g-4">
+      <div class="col-lg-3 col-6">
+        <div class="fw-ref-item">
+          <strong>L.H. Veranstaltungstechnik</strong>
+          <p>Subunternehmer</p>
         </div>
       </div>
-      <div class="col-lg-3 col-6" style="padding: 0 !important; max-width: none !important; flex: none !important;">
-        <div class="fw-ref-item" style="padding: 0.75rem 0.5rem !important; min-height: 90px !important; display: flex; flex-direction: column; justify-content: center; gap: 0.2rem; background: #0a0a0a !important;">
-          <strong style="font-size: 0.7rem !important; margin: 0 !important;">Baas TV</strong>
-          <p style="font-size: 0.65rem !important; margin: 0 !important;">Technische Unterstützung</p>
+      <div class="col-lg-3 col-6">
+        <div class="fw-ref-item">
+          <strong>Baas TV</strong>
+          <p>Technische Unterstützung</p>
         </div>
       </div>
-      <div class="col-lg-3 col-6" style="padding: 0 !important; max-width: none !important; flex: none !important;">
-        <div class="fw-ref-item" style="padding: 0.75rem 0.5rem !important; min-height: 90px !important; display: flex; flex-direction: column; justify-content: center; gap: 0.2rem; background: #0a0a0a !important;">
-          <strong style="font-size: 0.7rem !important; margin: 0 !important;">Club Vaudeville e.V.</strong>
-          <p style="font-size: 0.65rem !important; margin: 0 !important;">Veranstaltungstechnik</p>
+      <div class="col-lg-3 col-6">
+        <div class="fw-ref-item">
+          <strong>Club Vaudeville e.V.</strong>
+          <p>Veranstaltungstechnik</p>
         </div>
       </div>
-      <div class="col-lg-3 col-6" style="padding: 0 !important; max-width: none !important; flex: none !important;">
-        <div class="fw-ref-item" style="padding: 0.75rem 0.5rem !important; min-height: 90px !important; display: flex; flex-direction: column; justify-content: center; gap: 0.2rem; background: #0a0a0a !important;">
-          <strong style="font-size: 0.7rem !important; margin: 0 !important;">Inselhalle Lindau</strong>
-          <p style="font-size: 0.65rem !important; margin: 0 !important;">Event Support</p>
+      <div class="col-lg-3 col-6">
+        <div class="fw-ref-item">
+          <strong>Inselhalle Lindau</strong>
+          <p>Event Support</p>
         </div>
       </div>
-      <div class="col-lg-3 col-6" style="padding: 0 !important; max-width: none !important; flex: none !important;">
-        <div class="fw-ref-item" style="padding: 0.75rem 0.5rem !important; min-height: 90px !important; display: flex; flex-direction: column; justify-content: center; gap: 0.2rem; background: #0a0a0a !important;">
-          <strong style="font-size: 0.7rem !important; margin: 0 !important;">KuMoP e.V.</strong>
-          <p style="font-size: 0.65rem !important; margin: 0 !important;">Bühnenaufbau &amp; Technik</p>
+      <div class="col-lg-3 col-6">
+        <div class="fw-ref-item">
+          <strong>KuMoP e.V.</strong>
+          <p>Bühnenaufbau &amp; Technik</p>
         </div>
       </div>
-      <div class="col-lg-3 col-6" style="padding: 0 !important; max-width: none !important; flex: none !important;">
-        <div class="fw-ref-item" style="padding: 0.75rem 0.5rem !important; min-height: 90px !important; display: flex; flex-direction: column; justify-content: center; gap: 0.2rem; background: #0a0a0a !important;">
-          <strong style="font-size: 0.7rem !important; margin: 0 !important;">LaGo e.V.</strong>
-          <p style="font-size: 0.65rem !important; margin: 0 !important;">Veranstaltungsunterstützung</p>
+      <div class="col-lg-3 col-6">
+        <div class="fw-ref-item">
+          <strong>LaGo e.V.</strong>
+          <p>Veranstaltungsunterstützung</p>
         </div>
       </div>
-      <div class="col-lg-3 col-6" style="padding: 0 !important; max-width: none !important; flex: none !important;">
-        <div class="fw-ref-item" style="padding: 0.75rem 0.5rem !important; min-height: 90px !important; display: flex; flex-direction: column; justify-content: center; gap: 0.2rem; background: #0a0a0a !important;">
-          <strong style="font-size: 0.7rem !important; margin: 0 !important;">Spring Spring Hooray</strong>
-          <p style="font-size: 0.65rem !important; margin: 0 !important;">Wasserburg (Open Air)</p>
+      <div class="col-lg-3 col-6">
+        <div class="fw-ref-item">
+          <strong>Spring Spring Hooray</strong>
+          <p>Wasserburg (Open Air)</p>
         </div>
       </div>
-      <div class="col-lg-3 col-6" style="padding: 0 !important; max-width: none !important; flex: none !important;">
-        <div class="fw-ref-item" style="padding: 0.75rem 0.5rem !important; min-height: 90px !important; display: flex; flex-direction: column; justify-content: center; gap: 0.2rem; background: #0a0a0a !important;">
-          <strong style="font-size: 0.7rem !important; margin: 0 !important;">Leichte Liebe</strong>
-          <p style="font-size: 0.65rem !important; margin: 0 !important;">Bregenz (Open Air)</p>
+      <div class="col-lg-3 col-6">
+        <div class="fw-ref-item">
+          <strong>Leichte Liebe</strong>
+          <p>Bregenz (Open Air)</p>
         </div>
       </div>
     </div>
@@ -275,7 +275,7 @@ HOMEPAGE_HTML = """<t t-call="website.layout">
           </picture>
           <div class="fw-project-overlay">
             <h3 class="fw-h3">Sonderbau</h3>
-            <p>Custom Holzkonstruktion</p>
+            <p>Open Air Bühne (Jun. 2024)</p>
           </div>
         </div>
       </div>
