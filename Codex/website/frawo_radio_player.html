@@ -261,7 +261,7 @@
 
     <!-- Controls -->
     <div class="fw-radio-controls">
-      <button class="fw-play-btn" id="fw-player-play-btn" aria-label="Play">
+      <button class="fw-play-btn" id="fw-player-play-btn" aria-label="Play" onclick="window.togglePlay()">
         <!-- Play Icon -->
         <svg id="fw-svg-play" viewBox="0 0 24 24">
           <path d="M8 5v14l11-7z"/>
@@ -291,147 +291,146 @@
 
 <script>
 //<![CDATA[
-(function() {
-  const streamUrl = 'https://funk.frawo-tech.de/listen/frawo_funk/radio.mp3'; // Öffentlicher Stream
-  const apiUrl = 'https://funk.frawo-tech.de/api/nowplaying/frawo_funk'; // Öffentliche API
+console.log('FraWo Player Script Tag Parsed');
 
-  const playerEl = document.getElementById('frawo-radio-player');
+// Define global function immediately
+window.togglePlay = function() {
+  console.log('Toggle play clicked!');
+  
+  const streamUrl = 'https://funk.frawo-tech.de/listen/frawo_funk/radio.mp3';
+  const titleEl = document.getElementById('fw-player-title');
+  const artistEl = document.getElementById('fw-player-artist');
   const playBtn = document.getElementById('fw-player-play-btn');
   const svgPlay = document.getElementById('fw-svg-play');
   const svgPause = document.getElementById('fw-svg-pause');
   const volumeSlider = document.getElementById('fw-player-volume');
+  const playerEl = document.getElementById('frawo-radio-player');
+
+  if (titleEl) titleEl.textContent = 'Verbinde...';
+  if (artistEl) artistEl.textContent = 'Stream wird geladen';
+
+  if (!window.fwAudio) {
+    window.fwAudio = new Audio(streamUrl);
+    window.fwAudio.crossOrigin = "anonymous";
+    if (volumeSlider) window.fwAudio.volume = volumeSlider.value;
+    window.fwIsPlaying = false;
+    
+    // Volume control
+    if (volumeSlider) {
+      volumeSlider.addEventListener('input', function() {
+        window.fwAudio.volume = volumeSlider.value;
+      });
+    }
+    
+    // Setup Visualizer
+    setupVisualizer();
+  }
+
+  if (!window.fwIsPlaying) {
+    if (window.fwAudioContext && window.fwAudioContext.state === 'suspended') {
+      window.fwAudioContext.resume();
+    }
+    
+    window.fwAudio.play().then(() => {
+      window.fwIsPlaying = true;
+      if (playerEl) playerEl.classList.add('playing');
+      if (svgPlay) svgPlay.style.display = 'none';
+      if (svgPause) svgPause.style.display = 'block';
+    }).catch(err => {
+      console.error('Playback failed:', err);
+      if (titleEl) titleEl.textContent = 'Fehler beim Abspielen';
+      if (artistEl) artistEl.textContent = 'Bitte erneut versuchen';
+    });
+  } else {
+    window.fwAudio.pause();
+    window.fwIsPlaying = false;
+    if (playerEl) playerEl.classList.remove('playing');
+    if (svgPlay) svgPlay.style.display = 'block';
+    if (svgPause) svgPause.style.display = 'none';
+  }
+};
+
+// Visualizer Setup
+let analyser;
+function setupVisualizer() {
+  const canvas = document.getElementById('fw-visualizer-canvas');
+  if (!canvas || !window.fwAudio) return;
+  
+  const ctx = canvas.getContext('2d');
+  canvas.width = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
+
+  try {
+    window.fwAudioContext = new (window.AudioContext || window.webkitAudioContext)();
+    analyser = window.fwAudioContext.createAnalyser();
+    const source = window.fwAudioContext.createMediaElementSource(window.fwAudio);
+    source.connect(analyser);
+    analyser.connect(window.fwAudioContext.destination);
+    analyser.fftSize = 64;
+    
+    function drawVisualizer() {
+      requestAnimationFrame(drawVisualizer);
+      const bufferLength = analyser.frequencyBinCount;
+      const dataArray = new Uint8Array(bufferLength);
+      analyser.getByteFrequencyData(dataArray);
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const barWidth = (canvas.width / bufferLength) * 2.5;
+      let x = 0;
+
+      for (let i = 0; i < bufferLength; i++) {
+        const barHeight = (dataArray[i] / 255) * canvas.height;
+        const gradient = ctx.createLinearGradient(0, canvas.height, 0, 0);
+        gradient.addColorStop(0, 'rgba(138, 43, 226, 0.2)');
+        gradient.addColorStop(1, 'rgba(0, 255, 255, 0.8)');
+        ctx.fillStyle = gradient;
+        ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
+        x += barWidth + 1;
+      }
+    }
+    drawVisualizer();
+  } catch(e) {
+    console.log('Web Audio API not supported or blocked:', e);
+  }
+}
+
+// Polling for Now Playing
+function updateNowPlaying() {
+  const apiUrl = 'https://funk.frawo-tech.de/api/nowplaying/frawo_funk';
   const titleEl = document.getElementById('fw-player-title');
   const artistEl = document.getElementById('fw-player-artist');
   const artEl = document.getElementById('fw-player-art');
-  const closeBtn = document.getElementById('fw-player-close-btn');
-  const canvas = document.getElementById('fw-visualizer-canvas');
-  const ctx = canvas.getContext('2d');
 
-  let audio = null;
-  let isPlaying = false;
-  let audioContext = null;
-  let analyser = null;
-  let source = null;
-
-  // Set canvas size
-  function resizeCanvas() {
-    canvas.width = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
-  }
-  window.addEventListener('resize', resizeCanvas);
-  resizeCanvas();
-
-  // Play/Pause
-  playBtn.addEventListener('click', function() {
-    if (!audio) {
-      audio = new Audio(streamUrl);
-      audio.crossOrigin = "anonymous";
-      audio.volume = volumeSlider.value;
-      
-      // Setup Web Audio API for visualizer
-      try {
-        audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        analyser = audioContext.createAnalyser();
-        source = audioContext.createMediaElementSource(audio);
-        source.connect(analyser);
-        analyser.connect(audioContext.destination);
-        analyser.fftSize = 64;
-        drawVisualizer();
-      } catch(e) {
-        console.log('Web Audio API not supported or blocked:', e);
-      }
-    }
-
-    if (!isPlaying) {
-      if (audioContext &amp;&amp; audioContext.state === 'suspended') {
-        audioContext.resume();
-      }
-      audio.play().then(() => {
-        isPlaying = true;
-        playerEl.classList.add('playing');
-        svgPlay.style.display = 'none';
-        svgPause.style.display = 'block';
-      }).catch(err => {
-        console.error('Playback failed:', err);
-        titleEl.textContent = 'Fehler beim Abspielen';
-        artistEl.textContent = 'Bitte erneut versuchen';
-      });
-    } else {
-      audio.pause();
-      isPlaying = false;
-      playerEl.classList.remove('playing');
-      svgPlay.style.display = 'block';
-      svgPause.style.display = 'none';
-    }
-  });
-
-  // Volume
-  volumeSlider.addEventListener('input', function() {
-    if (audio) {
-      audio.volume = volumeSlider.value;
-    }
-  });
-
-  // Close
-  closeBtn.addEventListener('click', function() {
-    if (audio) {
-      audio.pause();
-    }
-    playerEl.style.display = 'none';
-  });
-
-  // Visualizer Loop
-  function drawVisualizer() {
-    if (!analyser) return;
-    requestAnimationFrame(drawVisualizer);
-
-    const bufferLength = analyser.frequencyBinCount;
-    const dataArray = new Uint8Array(bufferLength);
-    analyser.getByteFrequencyData(dataArray);
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    const barWidth = (canvas.width / bufferLength) * 2.5;
-    let x = 0;
-
-    for (let i = 0; i < bufferLength; i++) {
-      const barHeight = (dataArray[i] / 255) * canvas.height;
-      
-      // Gradient
-      const gradient = ctx.createLinearGradient(0, canvas.height, 0, 0);
-      gradient.addColorStop(0, 'rgba(138, 43, 226, 0.2)');
-      gradient.addColorStop(1, 'rgba(0, 255, 255, 0.8)');
-
-      ctx.fillStyle = gradient;
-      ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
-
-      x += barWidth + 1;
-    }
-  }
-
-  // API Fetch Now Playing
-  function updateNowPlaying() {
-    fetch(apiUrl)
-      .then(response => response.json())
-      .then(data => {
-        if (data.now_playing &amp;&amp; data.now_playing.song) {
-          titleEl.textContent = data.now_playing.song.title || 'Live Stream';
-          artistEl.textContent = data.now_playing.song.artist || 'FraWo Funk';
-          if (data.now_playing.song.art) {
-            artEl.src = data.now_playing.song.art;
-          }
+  fetch(apiUrl)
+    .then(response => response.json())
+    .then(data => {
+      if (data.now_playing && data.now_playing.song) {
+        if (titleEl) titleEl.textContent = data.now_playing.song.title || 'Live Stream';
+        if (artistEl) artistEl.textContent = data.now_playing.song.artist || 'FraWo Funk';
+        if (artEl && data.now_playing.song.art) {
+          artEl.src = data.now_playing.song.art;
         }
-      })
-      .catch(err => {
-        console.error('API Error:', err);
-        titleEl.textContent = 'FraWo Funk Live';
-        artistEl.textContent = 'Musik für Macher';
-      });
-  }
+      }
+    })
+    .catch(err => {
+      console.error('API Error:', err);
+    });
+}
 
-  // Poll API every 10 seconds
-  setInterval(updateNowPlaying, 10000);
-  updateNowPlaying();
-})();
+setInterval(updateNowPlaying, 10000);
+updateNowPlaying();
+
+// Close button
+setTimeout(() => {
+  const closeBtn = document.getElementById('fw-player-close-btn');
+  const playerEl = document.getElementById('frawo-radio-player');
+  if (closeBtn && playerEl) {
+    closeBtn.addEventListener('click', function() {
+      if (window.fwAudio) window.fwAudio.pause();
+      playerEl.style.display = 'none';
+    });
+  }
+}, 1000);
+
 //]]>
 </script>

@@ -141,6 +141,58 @@ footer, .o_footer {
   display: none !important;
 }
 
+/* Header - Hidden to create custom header */
+header, .o_header {
+  display: none !important;
+}
+
+/* Custom Header */
+.fw-custom-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: rgba(10, 10, 15, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 10000;
+  padding: 1rem 0;
+}
+
+.fw-custom-header .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.fw-nav a {
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  margin-left: 2rem;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.fw-nav a:hover {
+  color: #00ffff; /* neon-blue */
+}
+
+.fw-btn-header {
+  background: linear-gradient(135deg, #8a2be2, #ff007f);
+  color: white !important;
+  padding: 0.5rem 1.5rem;
+  border-radius: 50px;
+  box-shadow: 0 0 15px rgba(138, 43, 226, 0.5);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.fw-btn-header:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 25px rgba(138, 43, 226, 0.8);
+}
+
 /* Hero */
 .fw-hero {
   padding: 100px 0 80px;
