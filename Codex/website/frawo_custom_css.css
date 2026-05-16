@@ -136,16 +136,8 @@ header#top, .o_header_standard, .o_header_affixed, .navbar, .navbar-light {
   color: var(--fw-text) !important;
 }
 
-/* Footer - Subtle */
+/* Footer - Hidden to remove Odoo placeholders */
 footer, .o_footer {
-  background-color: transparent !important;
-  color: var(--fw-text-dimmer) !important;
-  padding: 3rem 0 2rem !important;
-  border-top: 1px solid var(--fw-border) !important;
-  margin-top: 4rem !important;
-}
-
-.o_footer .o_footer_copyright {
   display: none !important;
 }
 

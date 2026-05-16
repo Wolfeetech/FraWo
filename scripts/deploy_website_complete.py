@@ -32,17 +32,12 @@ def wrap_in_odoo_template(title, content, add_container=True):
     """Wickelt HTML-Content in Odoo Website Template"""
     if add_container:
         content = f'<div class="container my-5">{content}</div>'
-
-    return f'''<?xml version="1.0"?>
-<odoo>
-    <template id="website.{title.lower().replace(" ", "_")}" name="{title}">
-        <t t-call="website.layout">
+ 
+    return f'''<t t-call="website.layout">
             <div id="wrap" class="oe_structure oe_empty">
                 {content}
             </div>
-        </t>
-    </template>
-</odoo>'''
+        </t>'''
 
 def create_or_update_page(models, db, uid, password, url, name, content, menu=True):
     """Erstellt oder aktualisiert eine Odoo Website Page"""
@@ -193,16 +188,16 @@ def deploy_website_content(models, db, uid, password):
         html_content = html_content.replace('__IMG_REFERENCE_EVENT__', '/web/image/website.placeholder_image')
         
         # Read Radio Player
-        # radio_player_path = WEBSITE_DIR / 'frawo_radio_player.html'
-        # if radio_player_path.exists():
-        #     with open(radio_player_path, 'r', encoding='utf-8') as f:
-        #         radio_player_content = f.read()
-        #     print("    Injected premium radio player into homepage.")
-        # else:
-        #     radio_player_content = '<!-- Radio Player not found -->'
-        #     print("    Warning: frawo_radio_player.html not found!")
+        radio_player_path = WEBSITE_DIR / 'frawo_radio_player.html'
+        if radio_player_path.exists():
+            with open(radio_player_path, 'r', encoding='utf-8') as f:
+                radio_player_content = f.read()
+            print("    Injected premium radio player into homepage.")
+        else:
+            radio_player_content = '<!-- Radio Player not found -->'
+            print("    Warning: frawo_radio_player.html not found!")
 
-        html_content = html_content.replace('__RADIO_PLAYER__', '<!-- Radio Player Removed for Debugging -->')
+        html_content = html_content.replace('__RADIO_PLAYER__', radio_player_content)
 
         # Wrappe in Odoo Template
         odoo_content = wrap_in_odoo_template(config['name'], html_content, add_container=False)
