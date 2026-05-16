@@ -255,8 +255,8 @@
     <!-- Info -->
     <div class="fw-track-info">
       <div class="fw-station-name">FraWo Funk Live</div>
-      <div class="fw-track-title" id="fw-player-title">Lade...</div>
-      <div class="fw-track-artist" id="fw-player-artist">...</div>
+      <div class="fw-track-title" id="fw-player-title">Stream bereit</div>
+      <div class="fw-track-artist" id="fw-player-artist">Klick auf Play</div>
     </div>
 
     <!-- Controls -->
@@ -353,6 +353,8 @@
         svgPause.style.display = 'block';
       }).catch(err => {
         console.error('Playback failed:', err);
+        titleEl.textContent = 'Fehler beim Abspielen';
+        artistEl.textContent = 'Bitte erneut versuchen';
       });
     } else {
       audio.pause();
