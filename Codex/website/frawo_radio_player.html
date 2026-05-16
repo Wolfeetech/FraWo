@@ -1,262 +1,435 @@
-<!-- FraWo Funk Radio Player — Sticky Footer -->
+<!-- FraWo Funk Radio Player — Premium Glassmorphism Edition -->
 
 <style>
+/*<![CDATA[*/
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&amp;display=swap');
+
+:root {
+  --neon-purple: #8a2be2;
+  --neon-blue: #00ffff;
+  --neon-pink: #ff007f;
+  --glass-bg: rgba(10, 10, 15, 0.75);
+  --glass-border: rgba(255, 255, 255, 0.1);
+}
+
 .fw-radio-player {
   position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: #000;
-  border-top: 1px solid var(--fw-border, #1a1a1a);
-  padding: 1rem 0;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 40px);
+  max-width: 1000px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  padding: 1.2rem;
   z-index: 9999;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Outfit', sans-serif;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4),
+              inset 0 1px 0 var(--glass-border);
+  overflow: hidden;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.fw-radio-player::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(138, 43, 226, 0.15) 0%, transparent 60%),
+              radial-gradient(circle at 80% 20%, rgba(0, 255, 255, 0.15) 0%, transparent 50%);
+  z-index: -1;
+  animation: bgGlow 10s infinite alternate ease-in-out;
+}
+
+@keyframes bgGlow {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(-5%, 5%) scale(1.05); }
 }
 
 .fw-radio-player-inner {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 2rem;
   display: grid;
   grid-template-columns: auto 1fr auto auto;
-  gap: 2rem;
+  gap: 1.5rem;
   align-items: center;
+  position: relative;
+  z-index: 2;
 }
 
-.fw-radio-station {
+/* Album Art */
+.fw-radio-art-container {
+  width: 60px;
+  height: 60px;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.1);
+  position: relative;
+}
+
+.fw-radio-art {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.fw-radio-player.playing .fw-radio-art {
+  animation: slowRotate 20s linear infinite;
+}
+
+@keyframes slowRotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Track Info */
+.fw-track-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+}
+
+.fw-station-name {
   font-size: 0.75rem;
   text-transform: uppercase;
-  letter-spacing: 0.15em;
-  color: #888;
-  font-weight: 500;
+  letter-spacing: 0.2em;
+  color: var(--neon-blue);
+  font-weight: 700;
+  margin-bottom: 0.2rem;
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
 }
 
-.fw-radio-status {
-  font-size: 0.8rem;
-  color: #555;
+.fw-track-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.fw-radio-status.live {
-  color: #a855f7;
+.fw-track-artist {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.fw-radio-status.live:before {
-  content: "●";
-  margin-right: 0.5rem;
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
-}
-
+/* Controls */
 .fw-radio-controls {
   display: flex;
-  gap: 1rem;
+  gap: 1.2rem;
   align-items: center;
 }
 
-.fw-radio-btn {
-  background: transparent;
-  border: 1px solid #1a1a1a;
-  color: #888;
-  padding: 0.5rem 1rem;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
+.fw-play-btn {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--neon-purple), var(--neon-pink));
+  border: none;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  transition: all 0.2s ease;
-  font-weight: 500;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 15px rgba(138, 43, 226, 0.5);
 }
 
-.fw-radio-btn:hover {
-  border-color: #888;
-  color: #e0e0e0;
+.fw-play-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 25px rgba(138, 43, 226, 0.8),
+              0 0 35px rgba(255, 0, 127, 0.5);
 }
 
-.fw-radio-btn:disabled="disabled" {
-  opacity: 0.3;
-  cursor: not-allowed;
+.fw-play-btn svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+  transition: transform 0.2s ease;
 }
 
-.fw-radio-volume {
+/* Volume */
+.fw-volume-container {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.fw-volume-slider {
+  -webkit-appearance: none;
   width: 80px;
-  height: 2px;
-  background: #1a1a1a;
-  position: relative;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  outline: none;
   cursor: pointer;
 }
 
-.fw-radio-volume-fill {
-  height: 100%;
-  background: #888;
-  width: 70%;
-  transition: width 0.1s ease;
+.fw-volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--neon-blue);
+  box-shadow: 0 0 10px var(--neon-blue);
+  cursor: pointer;
 }
 
-.fw-radio-close {
+/* Visualizer Canvas */
+.fw-visualizer-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 30px;
+  z-index: 1;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.fw-visualizer {
+  width: 100%;
+  height: 100%;
+}
+
+/* Close Btn */
+.fw-close-btn {
   background: none;
   border: none;
-  color: #555;
-  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.4);
   cursor: pointer;
   padding: 0.5rem;
-  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: color 0.2s ease;
 }
 
-.fw-radio-close:hover {
-  color: #888;
+.fw-close-btn:hover {
+  color: #ffffff;
 }
 
+/* Responsive */
 @media (max-width: 768px) {
-  .fw-radio-player-inner {
-    grid-template-columns: 1fr;
-    gap: 1rem;
+  .fw-radio-player {
+    bottom: 10px;
+    left: 10px;
+    transform: none;
+    width: calc(100% - 20px);
+    border-radius: 16px;
+    padding: 0.8rem;
   }
 
-  .fw-radio-controls {
-    justify-content: center;
+  .fw-radio-player-inner {
+    grid-template-columns: auto 1fr auto;
+    gap: 0.8rem;
+  }
+
+  .fw-volume-container {
+    display: none;
   }
 }
+/*]]>*/
 </style>
 
-<div class="fw-radio-player" id="frawo-radio-player" style="display: none;">
-  <div class="fw-radio-player-inner">
-    <div class="fw-radio-station">FraWo Funk</div>
+<div class="fw-radio-player" id="frawo-radio-player">
+  <div class="fw-visualizer-container">
+    <canvas id="fw-visualizer-canvas" class="fw-visualizer"></canvas>
+  </div>
 
-    <div class="fw-radio-status" id="radio-status">
-      Coming Soon
+  <div class="fw-radio-player-inner">
+    <!-- Art -->
+    <div class="fw-radio-art-container">
+      <img src="https://via.placeholder.com/150" alt="Cover" class="fw-radio-art" id="fw-player-art" />
     </div>
 
-    <div class="fw-radio-controls">
-      <button class="fw-radio-btn" id="radio-play-btn" disabled="disabled">Play</button>
-      <button class="fw-radio-btn" id="radio-pause-btn" disabled="disabled" style="display: none;">Pause</button>
+    <!-- Info -->
+    <div class="fw-track-info">
+      <div class="fw-station-name">FraWo Funk Live</div>
+      <div class="fw-track-title" id="fw-player-title">Lade...</div>
+      <div class="fw-track-artist" id="fw-player-artist">...</div>
+    </div>
 
-      <div class="fw-radio-volume" id="radio-volume">
-        <div class="fw-radio-volume-fill" id="radio-volume-fill"></div>
+    <!-- Controls -->
+    <div class="fw-radio-controls">
+      <button class="fw-play-btn" id="fw-player-play-btn" aria-label="Play">
+        <!-- Play Icon -->
+        <svg id="fw-svg-play" viewBox="0 0 24 24">
+          <path d="M8 5v14l11-7z"/>
+        </svg>
+        <!-- Pause Icon (Hidden initially) -->
+        <svg id="fw-svg-pause" viewBox="0 0 24 24" style="display:none;">
+          <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+        </svg>
+      </button>
+
+      <div class="fw-volume-container">
+        <svg style="width:18px;height:18px;fill:rgba(255,255,255,0.6);" viewBox="0 0 24 24">
+          <path d="M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.03,19.86 21,16.28 21,12C21,7.72 18.03,4.14 14,3.23M16.5,12C16.5,10.23 15.5,8.71 14,7.97V16C15.5,15.29 16.5,13.77 16.5,12M3,9V15H7L12,20V4L7,9H3Z"/>
+        </svg>
+        <input type="range" class="fw-volume-slider" id="fw-player-volume" min="0" max="1" step="0.05" value="0.7" />
       </div>
     </div>
 
-    <button class="fw-radio-close" id="radio-close-btn">&times;</button>
+    <!-- Close -->
+    <button class="fw-close-btn" id="fw-player-close-btn" aria-label="Close">
+      <svg style="width:18px;height:18px;fill:currentColor;" viewBox="0 0 24 24">
+        <path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L12,12L19,6.41Z"/>
+      </svg>
+    </button>
   </div>
 </div>
 
 <script>
+//<![CDATA[
 (function() {
-  // Radio Player State
-  const player = {
-    element: document.getElementById('frawo-radio-player'),
-    audio: null,
-    streamUrl: '/radio/listen/frawo_funk/radio.mp3', // AzuraCast stream
-    isPlaying: false,
-    volume: 0.7,
-    isAvailable: false // Set to true when AzuraCast is ready
-  };
+  const streamUrl = 'http://10.4.0.233:8000/radio.mp3'; // Lokaler Icecast Stream
+  const apiUrl = 'http://10.4.0.233/api/nowplaying/frawo_funk'; // Lokale API
 
-  // Show player on page load
-  if (player.element) {
-    player.element.style.display = 'block';
+  const playerEl = document.getElementById('frawo-radio-player');
+  const playBtn = document.getElementById('fw-player-play-btn');
+  const svgPlay = document.getElementById('fw-svg-play');
+  const svgPause = document.getElementById('fw-svg-pause');
+  const volumeSlider = document.getElementById('fw-player-volume');
+  const titleEl = document.getElementById('fw-player-title');
+  const artistEl = document.getElementById('fw-player-artist');
+  const artEl = document.getElementById('fw-player-art');
+  const closeBtn = document.getElementById('fw-player-close-btn');
+  const canvas = document.getElementById('fw-visualizer-canvas');
+  const ctx = canvas.getContext('2d');
+
+  let audio = null;
+  let isPlaying = false;
+  let audioContext = null;
+  let analyser = null;
+  let source = null;
+
+  // Set canvas size
+  function resizeCanvas() {
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
   }
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
 
-  // Initialize Audio (when enabled)
-  function initAudio() {
-    if (!player.audio) {
-      player.audio = new Audio(player.streamUrl);
-      player.audio.volume = player.volume;
+  // Play/Pause
+  playBtn.addEventListener('click', function() {
+    if (!audio) {
+      audio = new Audio(streamUrl);
+      audio.crossOrigin = "anonymous";
+      audio.volume = volumeSlider.value;
+      
+      // Setup Web Audio API for visualizer
+      try {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        analyser = audioContext.createAnalyser();
+        source = audioContext.createMediaElementSource(audio);
+        source.connect(analyser);
+        analyser.connect(audioContext.destination);
+        analyser.fftSize = 64;
+        drawVisualizer();
+      } catch(e) {
+        console.log('Web Audio API not supported or blocked:', e);
+      }
     }
-  }
 
-  // Play/Pause Controls
-  const playBtn = document.getElementById('radio-play-btn');
-  const pauseBtn = document.getElementById('radio-pause-btn');
-
-  if (playBtn) {
-    playBtn.addEventListener('click', function() {
-      if (!player.isAvailable) return;
-
-      initAudio();
-      player.audio.play();
-      player.isPlaying = true;
-      playBtn.style.display = 'none';
-      pauseBtn.style.display = 'inline-block';
-      updateStatus('live');
-    });
-  }
-
-  if (pauseBtn) {
-    pauseBtn.addEventListener('click', function() {
-      if (player.audio) {
-        player.audio.pause();
-        player.isPlaying = false;
-        pauseBtn.style.display = 'none';
-        playBtn.style.display = 'inline-block';
-        updateStatus('paused');
+    if (!isPlaying) {
+      if (audioContext &amp;&amp; audioContext.state === 'suspended') {
+        audioContext.resume();
       }
-    });
-  }
-
-  // Volume Control
-  const volumeBar = document.getElementById('radio-volume');
-  const volumeFill = document.getElementById('radio-volume-fill');
-
-  if (volumeBar) {
-    volumeBar.addEventListener('click', function(e) {
-      if (!player.isAvailable) return;
-
-      const rect = volumeBar.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const width = rect.width;
-      const volume = Math.max(0, Math.min(1, x / width));
-
-      player.volume = volume;
-      volumeFill.style.width = (volume * 100) + '%';
-
-      if (player.audio) {
-        player.audio.volume = volume;
-      }
-    });
-  }
-
-  // Close Button
-  const closeBtn = document.getElementById('radio-close-btn');
-  if (closeBtn) {
-    closeBtn.addEventListener('click', function() {
-      if (player.audio) {
-        player.audio.pause();
-      }
-      player.element.style.display = 'none';
-      // Save state to localStorage
-      localStorage.setItem('frawo-radio-closed', 'true');
-    });
-  }
-
-  // Status Update
-  function updateStatus(status) {
-    const statusEl = document.getElementById('radio-status');
-    if (!statusEl) return;
-
-    if (status === 'live') {
-      statusEl.textContent = 'Live';
-      statusEl.classList.add('live');
-    } else if (status === 'paused') {
-      statusEl.textContent = 'Paused';
-      statusEl.classList.remove('live');
+      audio.play().then(() => {
+        isPlaying = true;
+        playerEl.classList.add('playing');
+        svgPlay.style.display = 'none';
+        svgPause.style.display = 'block';
+      }).catch(err => {
+        console.error('Playback failed:', err);
+      });
     } else {
-      statusEl.textContent = 'Coming Soon';
-      statusEl.classList.remove('live');
+      audio.pause();
+      isPlaying = false;
+      playerEl.classList.remove('playing');
+      svgPlay.style.display = 'block';
+      svgPause.style.display = 'none';
+    }
+  });
+
+  // Volume
+  volumeSlider.addEventListener('input', function() {
+    if (audio) {
+      audio.volume = volumeSlider.value;
+    }
+  });
+
+  // Close
+  closeBtn.addEventListener('click', function() {
+    if (audio) {
+      audio.pause();
+    }
+    playerEl.style.display = 'none';
+  });
+
+  // Visualizer Loop
+  function drawVisualizer() {
+    if (!analyser) return;
+    requestAnimationFrame(drawVisualizer);
+
+    const bufferLength = analyser.frequencyBinCount;
+    const dataArray = new Uint8Array(bufferLength);
+    analyser.getByteFrequencyData(dataArray);
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const barWidth = (canvas.width / bufferLength) * 2.5;
+    let x = 0;
+
+    for (let i = 0; i < bufferLength; i++) {
+      const barHeight = (dataArray[i] / 255) * canvas.height;
+      
+      // Gradient
+      const gradient = ctx.createLinearGradient(0, canvas.height, 0, 0);
+      gradient.addColorStop(0, 'rgba(138, 43, 226, 0.2)');
+      gradient.addColorStop(1, 'rgba(0, 255, 255, 0.8)');
+
+      ctx.fillStyle = gradient;
+      ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
+
+      x += barWidth + 1;
     }
   }
 
-  // Check if player was previously closed
-  if (localStorage.getItem('frawo-radio-closed') === 'true') {
-    player.element.style.display = 'none';
+  // API Fetch Now Playing
+  function updateNowPlaying() {
+    fetch(apiUrl)
+      .then(response => response.json())
+      .then(data => {
+        if (data.now_playing &amp;&amp; data.now_playing.song) {
+          titleEl.textContent = data.now_playing.song.title || 'Live Stream';
+          artistEl.textContent = data.now_playing.song.artist || 'FraWo Funk';
+          if (data.now_playing.song.art) {
+            artEl.src = data.now_playing.song.art;
+          }
+        }
+      })
+      .catch(err => {
+        console.error('API Error:', err);
+        titleEl.textContent = 'FraWo Funk Live';
+        artistEl.textContent = 'Musik für Macher';
+      });
   }
 
-  // TODO: Enable when AzuraCast is ready
-  // player.isAvailable = true;
-  // playBtn.disabled = false;
-  // pauseBtn.disabled = false;
+  // Poll API every 10 seconds
+  setInterval(updateNowPlaying, 10000);
+  updateNowPlaying();
 })();
+//]]>
 </script>

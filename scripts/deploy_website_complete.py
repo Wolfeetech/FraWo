@@ -191,7 +191,18 @@ def deploy_website_content(models, db, uid, password):
         html_content = html_content.replace('__IMG_HERO_BODENSEE__', '/web/image/website.placeholder_image')
         html_content = html_content.replace('__IMG_TEAM_OR_REFERENCE__', '/web/image/website.placeholder_image')
         html_content = html_content.replace('__IMG_REFERENCE_EVENT__', '/web/image/website.placeholder_image')
-        html_content = html_content.replace('__RADIO_PLAYER__', '<!-- Radio Player: TBD -->')
+        
+        # Read Radio Player
+        # radio_player_path = WEBSITE_DIR / 'frawo_radio_player.html'
+        # if radio_player_path.exists():
+        #     with open(radio_player_path, 'r', encoding='utf-8') as f:
+        #         radio_player_content = f.read()
+        #     print("    Injected premium radio player into homepage.")
+        # else:
+        #     radio_player_content = '<!-- Radio Player not found -->'
+        #     print("    Warning: frawo_radio_player.html not found!")
+
+        html_content = html_content.replace('__RADIO_PLAYER__', '<!-- Radio Player Removed for Debugging -->')
 
         # Wrappe in Odoo Template
         odoo_content = wrap_in_odoo_template(config['name'], html_content, add_container=False)
