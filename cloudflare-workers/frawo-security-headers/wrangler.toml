@@ -1,0 +1,9 @@
+name = "frawo"
+main = "worker.js"
+compatibility_date = "2024-01-01"
+workers_dev = false
+
+# Route configuration
+routes = [
+  { pattern = "www.frawo-tech.de/*", zone_name = "frawo-tech.de" }
+]
