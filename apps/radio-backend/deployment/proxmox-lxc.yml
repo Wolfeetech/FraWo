@@ -1,0 +1,74 @@
+# Proxmox LXC Container Configuration for FraWo Radio Backend
+# Deploy on Anker PVE
+
+# Container Specification
+container:
+  name: radio-backend
+  hostname: radio-backend.hs27.internal
+  ct_id: 105  # Choose available CT ID on Anker PVE
+
+  # Resources
+  cores: 2
+  memory: 2048  # MB
+  swap: 512     # MB
+  disk: 10      # GB
+
+  # Network
+  network:
+    bridge: vmbr0
+    ip: dhcp  # or static: 10.1.0.105/24
+    gateway: 10.1.0.1
+
+  # OS Template
+  ostemplate: local:vztmpl/debian-12-standard_12.2-1_amd64.tar.zst
+
+  # Features
+  features:
+    - nesting=1
+    - keyctl=1
+
+  # Storage
+  storage: local-lvm
+
+  # Startup
+  onboot: true
+  startup: order=3,up=60
+
+# Post-creation setup commands
+setup_commands:
+  - apt-get update
+  - apt-get install -y curl git docker.io docker-compose
+  - systemctl enable docker
+  - systemctl start docker
+  - mkdir -p /opt/radio-backend
+  - chown -R 1000:1000 /opt/radio-backend
+
+# Environment
+environment:
+  APP_ENV: production
+  DATABASE_URL: postgresql+asyncpg://radio:CHANGE_ME@localhost:5432/frawo_radio
+  REDIS_URL: redis://localhost:6379/0
+  SECRET_KEY: GENERATE_RANDOM_SECRET_KEY
+  AZURACAST_API_URL: http://radio-anker.hs27.internal/api
+  CORS_ORIGINS: '["https://frawo-funk.com","https://radio.hs27.internal"]'
+
+# Firewall Rules
+firewall:
+  enabled: false  # Enable after testing
+  rules:
+    - direction: in
+      action: ACCEPT
+      proto: tcp
+      dport: 8000
+      comment: "Radio Backend API"
+    - direction: in
+      action: ACCEPT
+      proto: tcp
+      dport: 9090
+      comment: "Prometheus Metrics"
+
+# Backup
+backup:
+  enabled: true
+  schedule: "daily at 02:00"
+  retention: 7

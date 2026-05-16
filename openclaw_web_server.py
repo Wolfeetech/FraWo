@@ -99,9 +99,10 @@ INFRA-WISSEN:
 STRENGE REGEL FÜR SKILLS:
 1. NUR EIN SKILL-AUFRUF PRO ANTWORT.
 2. Format: [RUN: skill_name args]
-3. Antworte NUR mit dem Skill-Aufruf.
-4. Simuliere NIEMALS [SYSTEM] Antworten oder Erfolge.
-5. Warte auf das echte Feedback vom [SYSTEM], bevor du weitermachst.
+3. Wenn du denkst, dass ein Skill (wie 'health_audit') nötig ist, führe ihn NICHT sofort aus! Frage den Benutzer erst im Chat um Erlaubnis (z.B. 'Soll ich ein Audit machen?'). Erst wenn der Benutzer zustimmt, verwende im nächsten Schritt das Format [RUN: skill_name args].
+4. Antworte IMMER auf Deutsch, es sei denn der Benutzer spricht Englisch.
+5. Simuliere NIEMALS [SYSTEM] Antworten oder Erfolge.
+6. Warte auf das echte Feedback vom [SYSTEM], bevor du weitermachst.
 
 Verfügbare Skills:
 - health_audit: System-Check (PVE, Network).
@@ -297,6 +298,14 @@ class OpenClawAPIHandler(BaseHTTPRequestHandler):
                             except:
                                 parsed_args = raw_args.split()
                             
+                            # Security Check (Best Practice)
+                            dangerous_keywords = ['rm ', 'del ', 'format ', 'mkfs ', 'dd ']
+                            if any(kw in raw_args for kw in dangerous_keywords) or '*' in raw_args:
+                                logger.warning(f"Sicherheitsblockade: Gefährlicher Befehl erkannt in {raw_args!r}")
+                                observation = f"[SYSTEM: Fehler: Der Befehl enthält potenziell destruktive Elemente (Löschbefehle oder Wildcards) und wurde aus Sicherheitsgründen blockiert.]"
+                                history += f"\n\nAssistant: {ai_response}\n\n{observation}"
+                                continue
+                                
                             full_cmd = skill['cmd'] + parsed_args
                             logger.info(f"Executing: {full_cmd}")
                             
@@ -305,7 +314,7 @@ class OpenClawAPIHandler(BaseHTTPRequestHandler):
                                 capture_output=True, 
                                 text=True, 
                                 timeout=300,
-                                cwd="c:\\WORKSPACE\\FraWo"
+                                cwd=os.path.dirname(os.path.abspath(__file__))
                             )
                             observation = f"[SYSTEM: Result of {skill_name} (Code {result.returncode})]\nSTDOUT: {result.stdout}\nSTDERR: {result.stderr}"
                         except Exception as e:
@@ -346,7 +355,7 @@ class OpenClawAPIHandler(BaseHTTPRequestHandler):
 def run():
     logger.info(f"Starting OpenClaw AGENT on port {PORT} (Ollama: {OLLAMA_MODEL})...")
     try:
-        server = HTTPServer(('0.0.0.0', PORT), OpenClawAPIHandler)
+        server = HTTPServer(('127.0.0.1', PORT), OpenClawAPIHandler)
         server.serve_forever()
     except Exception as e:
         logger.critical(f"Server failed to start: {e}")

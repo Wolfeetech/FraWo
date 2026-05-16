@@ -1,0 +1,42 @@
+# Caddy configuration for FraWo Radio Backend
+# Add this to your toolbox Caddy configuration
+
+radio-api.hs27.internal {
+    # Reverse proxy to radio backend container
+    reverse_proxy http://10.1.0.105:8000 {
+        header_up X-Real-IP {remote_host}
+        header_up X-Forwarded-For {remote_host}
+        header_up X-Forwarded-Proto {scheme}
+    }
+
+    # WebSocket support
+    @websocket {
+        path /api/ws/*
+    }
+    reverse_proxy @websocket http://10.1.0.105:8000 {
+        header_up Upgrade {>Upgrade}
+        header_up Connection {>Connection}
+    }
+
+    # Logging
+    log {
+        output file /var/log/caddy/radio-api.log
+        format json
+    }
+}
+
+# Metrics endpoint (internal only)
+metrics.radio.hs27.internal {
+    reverse_proxy http://10.1.0.105:9090
+
+    # Optional: Restrict to internal network
+    @internal {
+        remote_ip 10.0.0.0/8 192.168.0.0/16 100.0.0.0/8
+    }
+    handle @internal {
+        reverse_proxy http://10.1.0.105:9090
+    }
+    handle {
+        respond "Access denied" 403
+    }
+}
