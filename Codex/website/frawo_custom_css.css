@@ -234,39 +234,43 @@ header, .o_header {
 }
 
 /* Buttons - Minimal */
-.fw-btn-primary {
-  background: var(--fw-text) !important;
+a.fw-btn-primary.btn {
+  background: var(--fw-purple) !important;
   border: none !important;
-  border-radius: 0 !important;
+  border-radius: 4px !important;
   padding: 14px 28px !important;
-  font-weight: 500 !important;
-  font-size: 0.8rem !important;
-  color: var(--fw-bg) !important;
+  font-weight: 600 !important;
+  font-size: 0.85rem !important;
+  color: #ffffff !important;
   text-transform: uppercase !important;
   letter-spacing: 0.1em !important;
-  transition: opacity 0.2s ease !important;
+  transition: background-color 0.2s ease !important;
+  display: inline-block !important;
+  text-decoration: none !important;
 }
 
-.fw-btn-primary:hover {
-  opacity: 0.9 !important;
+a.fw-btn-primary.btn:hover {
+  background: var(--fw-purple-light) !important;
 }
 
-.fw-btn-ghost {
+a.fw-btn-ghost.btn {
   background: transparent !important;
-  border: 2px solid var(--fw-text-dimmer) !important;
-  border-radius: 0 !important;
+  border: 2px solid var(--fw-purple) !important;
+  border-radius: 4px !important;
   padding: 14px 28px !important;
-  font-weight: 500 !important;
-  font-size: 0.8rem !important;
+  font-weight: 600 !important;
+  font-size: 0.85rem !important;
   color: var(--fw-text) !important;
   text-transform: uppercase !important;
   letter-spacing: 0.1em !important;
   transition: all 0.2s ease !important;
+  display: inline-block !important;
+  text-decoration: none !important;
 }
 
-.fw-btn-ghost:hover {
-  border-color: var(--fw-purple) !important;
-  color: var(--fw-purple) !important;
+a.fw-btn-ghost.btn:hover {
+  border-color: var(--fw-purple-light) !important;
+  color: var(--fw-purple-light) !important;
   background: rgba(157, 78, 237, 0.05) !important;
 }
 
@@ -402,6 +406,8 @@ body {
 /* Container max-width for ultra-wide displays */
 .container {
   max-width: 1400px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
 }
 
 @media (min-width: 1920px) {
