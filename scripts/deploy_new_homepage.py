@@ -523,6 +523,48 @@ section.fw-hero {
     grid-template-columns: repeat(2, 1fr) !important;
   }
 }
+
+/* Added fixes for premium design */
+.container {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+a.fw-btn-primary.btn {
+  background: #9d4edd !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 4px !important;
+  padding: 14px 28px !important;
+  display: inline-block !important;
+  text-decoration: none !important;
+  font-weight: 600 !important;
+}
+a.fw-btn-ghost.btn {
+  background: transparent !important;
+  border: 2px solid #9d4edd !important;
+  border-radius: 4px !important;
+  padding: 14px 28px !important;
+  color: #ffffff !important;
+  display: inline-block !important;
+  text-decoration: none !important;
+  font-weight: 600 !important;
+}
+.fw-img-wrapper {
+  position: relative !important;
+}
+.fw-img-wrapper::after {
+  content: '' !important;
+  position: absolute !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 40% !important;
+  background: linear-gradient(to top, #0a0a0a, transparent) !important;
+  pointer-events: none !important;
+}
+.fw-about .fw-img-wrapper {
+  max-height: 400px !important;
+}
 </style>
 
     </div>

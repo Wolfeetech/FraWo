@@ -193,6 +193,23 @@ header, .o_header {
   box-shadow: 0 0 25px rgba(138, 43, 226, 0.8);
 }
 
+@media (max-width: 576px) {
+  .fw-nav a {
+    margin-left: 1rem;
+    font-size: 0.9rem;
+  }
+  .fw-btn-header {
+    padding: 0.4rem 1rem !important;
+    font-size: 0.9rem !important;
+  }
+}
+
+@media (max-width: 400px) {
+  .fw-nav a:not(.fw-btn-header) {
+    display: none;
+  }
+}
+
 /* Hero */
 .fw-hero {
   padding: 140px 0 100px;
@@ -276,19 +293,9 @@ a.fw-btn-ghost.btn:hover {
 
 /* Split - NO BORDERS, Just Spacing */
 .fw-split {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;                               /* Balanced gap */
   padding: 100px 0;
   border-top: 1px solid var(--fw-border);
   border-bottom: 1px solid var(--fw-border);
-}
-
-@media (max-width: 768px) {
-  .fw-split {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-  }
 }
 
 .fw-split-pane {
@@ -363,9 +370,21 @@ a.fw-btn-ghost.btn:hover {
   overflow: hidden;
   background: #000;
   aspect-ratio: 16/9 !important;
+  max-height: 450px !important;
   border-radius: 4px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
   position: relative;
+}
+
+.fw-img-wrapper::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 40%; /* Fade bottom 40% */
+  background: linear-gradient(to top, var(--fw-bg), transparent) !important;
+  pointer-events: none;
 }
 
 .fw-img-wrapper picture {
@@ -377,7 +396,7 @@ a.fw-btn-ghost.btn:hover {
 .fw-img-wrapper img {
   width: 100% !important;
   height: 100% !important;
-  object-fit: cover !important;
+  object-fit: contain !important;
   object-position: center !important;
   display: block !important;
   transition: transform 0.3s ease;
@@ -391,6 +410,7 @@ a.fw-btn-ghost.btn:hover {
 .fw-section {
   padding: 100px 0;
   border-bottom: 1px solid var(--fw-border);
+  background: var(--fw-bg) !important;
 }
 
 .fw-section-tight {
@@ -895,14 +915,14 @@ section {
 
 .fw-about .fw-img-wrapper {
   aspect-ratio: auto !important;
-  min-height: auto !important;
+  max-height: 400px !important;
   border: 1px solid var(--fw-border) !important;
 }
 
 .fw-about .fw-img-wrapper img {
   width: 100% !important;
-  height: auto !important;
-  object-fit: contain !important;
+  height: 100% !important;
+  object-fit: cover !important;
   object-position: center !important;
 }
 
