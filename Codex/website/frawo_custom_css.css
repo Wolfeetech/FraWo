@@ -4,9 +4,9 @@
 
 :root {
   --fw-bg: #0a0a0a;
-  --fw-text: #e8e8e8;
-  --fw-text-dim: #b0b0b0;
-  --fw-text-dimmer: #707070;
+  --fw-text: #ffffff;
+  --fw-text-dim: #dcdcdc;
+  --fw-text-dimmer: #aaaaaa;
   --fw-border: #1a1a1a;
 
   /* Main Brand Colors - Purple Primary, Tundra Grey Accent */
@@ -36,6 +36,7 @@
   --text-lg: 1.125rem;
   --text-xl: 1.5rem;
   --text-2xl: 2rem;
+}
   --text-3xl: 3rem;
 }
 
@@ -212,15 +213,19 @@ header, .o_header {
 
 /* Hero */
 .fw-hero {
-  padding: 140px 0 100px;
-  background: var(--fw-bg);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(rgba(10, 10, 10, 0.7), rgba(10, 10, 10, 0.9)), url('/web/image/1003/hero-bodensee.webp') no-repeat center center;
+  background-size: cover;
+  background-attachment: fixed; /* Parallax effect */
+  padding: 0;
   border-top: none;
 }
 
-@media (max-width: 768px) {
-  .fw-hero {
-    padding: 60px 0 50px;
-  }
+.fw-hero .container {
+  width: 100%;
 }
 
 .fw-eyebrow {
@@ -322,7 +327,7 @@ a.fw-btn-ghost.btn:hover {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1px;
-  background: var(--fw-border);
+  background: #0a0a0a; /* Remove grey borders */
   border: 1px solid var(--fw-border);
 }
 
@@ -369,7 +374,7 @@ a.fw-btn-ghost.btn:hover {
 .fw-img-wrapper {
   overflow: hidden;
   background: #000;
-  aspect-ratio: 16/9 !important;
+  aspect-ratio: 1/1 !important; /* Square images */
   max-height: 450px !important;
   border-radius: 4px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
@@ -396,7 +401,7 @@ a.fw-btn-ghost.btn:hover {
 .fw-img-wrapper img {
   width: 100% !important;
   height: 100% !important;
-  object-fit: contain !important;
+  object-fit: cover !important; /* Clever crop */
   object-position: center !important;
   display: block !important;
   transition: transform 0.3s ease;
