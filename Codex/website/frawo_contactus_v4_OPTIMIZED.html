@@ -39,18 +39,19 @@
         <div class="fw-card" style="background: rgba(255, 255, 255, 0.98); border: none; padding: 2.5rem;">
           <h3 style="color: var(--fw-forest); font-weight: 800; margin-bottom: 1.5rem;">Anfrage senden</h3>
 
-          <form action="/contactus/submit" method="POST" id="contact-form">
+          <form action="/website/form/" method="POST" id="contact-form" data-model_name="crm.lead">
+            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
             <!-- Name -->
             <div class="mb-3">
-              <label for="name" class="form-label" style="color: var(--fw-forest); font-weight: 600;">Name / Firma *</label>
-              <input type="text" class="form-control" id="name" name="name" required="required"
+              <label for="contact_name" class="form-label" style="color: var(--fw-forest); font-weight: 600;">Name / Firma *</label>
+              <input type="text" class="form-control" id="contact_name" name="contact_name" required="required"
                      style="border: 2px solid rgba(6, 78, 59, 0.2); border-radius: 0.5rem; padding: 0.75rem;" />
             </div>
 
             <!-- E-Mail -->
             <div class="mb-3">
-              <label for="email" class="form-label" style="color: var(--fw-forest); font-weight: 600;">E-Mail *</label>
-              <input type="email" class="form-control" id="email" name="email" required="required"
+              <label for="email_from" class="form-label" style="color: var(--fw-forest); font-weight: 600;">E-Mail *</label>
+              <input type="email" class="form-control" id="email_from" name="email_from" required="required"
                      style="border: 2px solid rgba(6, 78, 59, 0.2); border-radius: 0.5rem; padding: 0.75rem;" />
             </div>
 
@@ -61,19 +62,19 @@
                      style="border: 2px solid rgba(6, 78, 59, 0.2); border-radius: 0.5rem; padding: 0.75rem;" />
             </div>
 
-            <!-- Projekt-Art -->
+            <!-- Projekt-Art (Maps to Lead Subject) -->
             <div class="mb-3">
-              <label for="project_type" class="form-label" style="color: var(--fw-forest); font-weight: 600;">Was planst du? *</label>
-              <select class="form-select" id="project_type" name="project_type" required="required"
+              <label for="name" class="form-label" style="color: var(--fw-forest); font-weight: 600;">Was planst du? *</label>
+              <select class="form-select" id="name" name="name" required="required"
                       style="border: 2px solid rgba(6, 78, 59, 0.2); border-radius: 0.5rem; padding: 0.75rem;">
                 <option value="">Bitte wählen...</option>
-                <option value="event">Event-Technik (FOH, Licht, Streaming)</option>
-                <option value="equipment">Equipment-Verleih (Lautsprecher, Licht, Drohne)</option>
-                <option value="smarthome">Smart Home (Home Assistant, Hue, Shelly)</option>
-                <option value="heimkino">Heimkino &amp; Akustik (Messung, Installation)</option>
-                <option value="innenausbau">Innenausbau (Möbel, Racks, Akustikpanels)</option>
-                <option value="studio">Studio Rothkreuz (Interesse voranmelden)</option>
-                <option value="sonstiges">Sonstiges</option>
+                <option value="Event-Technik">Event-Technik (FOH, Licht, Streaming)</option>
+                <option value="Equipment-Verleih">Equipment-Verleih (Lautsprecher, Licht, Drohne)</option>
+                <option value="Smart Home">Smart Home (Home Assistant, Hue, Shelly)</option>
+                <option value="Heimkino">Heimkino &amp; Akustik (Messung, Installation)</option>
+                <option value="Innenausbau">Innenausbau (Möbel, Racks, Akustikpanels)</option>
+                <option value="Studio Interesse">Studio Rothkreuz (Interesse voranmelden)</option>
+                <option value="Sonstiges">Sonstiges</option>
               </select>
             </div>
 
@@ -84,10 +85,10 @@
                      style="border: 2px solid rgba(6, 78, 59, 0.2); border-radius: 0.5rem; padding: 0.75rem;" />
             </div>
 
-            <!-- Nachricht -->
+            <!-- Nachricht (Maps to Lead Description) -->
             <div class="mb-3">
-              <label for="message" class="form-label" style="color: var(--fw-forest); font-weight: 600;">Beschreibe dein Projekt *</label>
-              <textarea class="form-control" id="message" name="message" rows="5" required="required"
+              <label for="description" class="form-label" style="color: var(--fw-forest); font-weight: 600;">Beschreibe dein Projekt *</label>
+              <textarea class="form-control" id="description" name="description" rows="5" required="required"
                         placeholder="Was willst du machen? Was ist die größte Sorge? Hast du schon Hardware?"
                         style="border: 2px solid rgba(6, 78, 59, 0.2); border-radius: 0.5rem; padding: 0.75rem;"></textarea>
               <small class="form-text" style="color: var(--fw-text-3);">
