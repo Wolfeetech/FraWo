@@ -14,7 +14,7 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 sys.path.append(str(SCRIPT_DIR))
 from odoo_env import resolve_connection
 
-DEFAULT_URL = "http://localhost:8070"
+DEFAULT_URL = "http://10.4.0.22:8069"
 DEFAULT_DB = "FraWo_GbR"
 DEFAULT_USER = "admin"
 
