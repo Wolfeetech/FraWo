@@ -105,11 +105,11 @@ def build_report() -> dict[str, object]:
     stock_ssh = ssh_probe("stock-pve", "hostname; pveversion | head -1")
     toolbox_target_ip = ssh_capture(
         "root@100.69.179.87",
-        "pct exec 100 -- sh -lc \"ip -4 addr show dev eth0 | grep -F '10.1.0.20/24'\"",
+        "pct exec 100 -- sh -lc \"ip -4 addr show dev eth0 | grep -F '10.4.0.20/24'\"",
     )
     portal_target_status = ssh_capture(
         "root@100.69.179.87",
-        "pct exec 100 -- sh -lc \"curl -fsS -H 'Host: portal.hs27.internal' http://10.1.0.20/status.json\"",
+        "pct exec 100 -- sh -lc \"curl -fsS -H 'Host: portal.hs27.internal' http://10.4.0.20/status.json\"",
     )
     doc = documentation_check()
 
@@ -211,7 +211,7 @@ def build_report() -> dict[str, object]:
             "status_json": {k: v for k, v in portal_internal_status.items() if k != "body"},
         },
         "portal_target_ip": {
-            "target_ip": "10.1.0.20",
+            "target_ip": "10.4.0.20",
             "alias_probe": {k: v for k, v in toolbox_target_ip.items() if k != "target"},
             "status_payload_summary": {
                 "platform_core": target_platform_core,

@@ -14,7 +14,7 @@ def reset_odoo_password():
     vmid = "220"
     target_user = "wolf@frawo-tech.de"
     db_name = "FraWo_Live"
-    sql_cmd = "UPDATE res_users SET lang='de_DE' WHERE login='wolf@frawo-tech.de'; UPDATE ir_config_parameter SET value='http://10.1.0.22:8069' WHERE key='web.base.url';"
+    sql_cmd = "UPDATE res_users SET lang='de_DE' WHERE login='wolf@frawo-tech.de'; UPDATE ir_config_parameter SET value='http://10.4.0.22:8069' WHERE key='web.base.url';"
     
     # Wrap for Guest Agent
     # We use base64 inside the VM to avoid ANY char issues

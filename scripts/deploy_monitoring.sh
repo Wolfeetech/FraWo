@@ -20,7 +20,7 @@ EOF"
 pct exec 100 -- bash -c "cd /opt/homeserver2027/stacks/monitoring && docker compose up -d"
 
 # Update Caddyfile to add status.frawo-tech.de and status.hs27.internal
-pct exec 100 -- bash -c "grep -q 'status.frawo-tech.de' /opt/homeserver2027/stacks/toolbox-network/Caddyfile || echo -e '\nstatus.frawo-tech.de, status.hs27.internal {\n    reverse_proxy 10.1.0.20:3001\n}\n' >> /opt/homeserver2027/stacks/toolbox-network/Caddyfile"
+pct exec 100 -- bash -c "grep -q 'status.frawo-tech.de' /opt/homeserver2027/stacks/toolbox-network/Caddyfile || echo -e '\nstatus.frawo-tech.de, status.hs27.internal {\n    reverse_proxy 10.4.0.20:3001\n}\n' >> /opt/homeserver2027/stacks/toolbox-network/Caddyfile"
 
 # Reload Caddy
 pct exec 100 -- bash -c "cd /opt/homeserver2027/stacks/toolbox-network && docker compose exec -T caddy caddy reload -c /etc/caddy/Caddyfile"

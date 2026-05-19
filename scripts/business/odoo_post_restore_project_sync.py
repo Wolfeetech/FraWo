@@ -186,7 +186,7 @@ upsert_task(
     lane_e,
     "Jellyfin Media Frontdoor Verified",
     "done",
-    "<p>media.hs27.internal routes to Jellyfin on 10.1.0.20:8096 and returns the expected login redirect.</p>",
+    "<p>media.hs27.internal routes to Jellyfin on 10.4.0.20:8096 and returns the expected login redirect.</p>",
 )
 upsert_task(
     lane_e,

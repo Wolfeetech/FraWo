@@ -15,11 +15,11 @@ toolbox_network_adguard_upstream_dns:
   - "9.9.9.9"
 toolbox_network_adguard_allowed_clients:
   - "192.168.2.0/24"
-  - "10.1.0.0/24"
+  - "10.4.0.0/24"
   - "100.64.0.0/10"
   - "fd7a:115c:a1e0::/48"
 toolbox_network_adguard_local_ptr_upstreams:
-  - "10.1.0.1"
+  - "10.4.0.1"
 toolbox_network_adguard_rewrites:
   - domain: portal.hs27.internal
     answer: "{{ toolbox_network_frontdoor_ip }}"
@@ -44,19 +44,19 @@ toolbox_network_adguard_rewrites:
     answer: "{{ toolbox_network_frontdoor_ip }}"
 toolbox_network_internal_proxy_hosts:
   - hostname: media.hs27.internal
-    upstream: 10.1.0.20:8096
+    upstream: 10.4.0.20:8096
     scheme: https
     tls_internal: true
   - hostname: cloud.hs27.internal
-    upstream: 10.1.0.21:80
+    upstream: 10.4.0.21:80
     scheme: https
     tls_internal: true
   - hostname: odoo.hs27.internal
-    upstream: 10.1.0.22:8069
+    upstream: 10.4.0.22:8069
     scheme: https
     tls_internal: true
   - hostname: paperless.hs27.internal
-    upstream: 10.1.0.23:8000
+    upstream: 10.4.0.23:8000
     scheme: https
     tls_internal: true
   - hostname: ha.hs27.internal
@@ -64,7 +64,7 @@ toolbox_network_internal_proxy_hosts:
     scheme: https
     tls_internal: true
   - hostname: vault.hs27.internal
-    upstream: 10.1.0.26:8080
+    upstream: 10.4.0.26:8080
     scheme: https
     tls_internal: true
   # Dual-Site Radio Infrastructure
@@ -94,7 +94,7 @@ toolbox_network_public_redirect_hosts:
     target: https://www.frawo-tech.de{uri}
 toolbox_network_public_proxy_hosts:
   - hostname: www.frawo-tech.de
-    upstream: 10.1.0.22:8069
+    upstream: 10.4.0.22:8069
 toolbox_network_placeholder_hosts: []
 # Radio placeholder removed - dual-site radio infrastructure active (VLAN 103 + VLAN 111)
 toolbox_network_portal_links:
@@ -122,17 +122,17 @@ toolbox_network_persona_cards: []
 toolbox_network_status_targets:
   - key: nextcloud
     label: Nextcloud
-    check_url: http://10.1.0.21
+    check_url: http://10.4.0.21
     success_codes: [200, 302]
     summary: Dateien und Zusammenarbeit
   - key: paperless
     label: Paperless
-    check_url: http://10.1.0.23:8000
+    check_url: http://10.4.0.23:8000
     success_codes: [200, 302]
     summary: Dokumentenarchiv
   - key: odoo
     label: Odoo
-    check_url: http://10.1.0.22:8069/web/login
+    check_url: http://10.4.0.22:8069/web/login
     success_codes: [200]
     summary: Betrieb und Kunden
   - key: portal
@@ -142,7 +142,7 @@ toolbox_network_status_targets:
     summary: Startseite
   - key: vaultwarden
     label: Vault
-    check_url: http://10.1.0.26:8080/alive
+    check_url: http://10.4.0.26:8080/alive
     success_codes: [200]
     summary: Passworttresor
 toolbox_network_tailscale_mobile_proxies:
@@ -152,15 +152,15 @@ toolbox_network_tailscale_mobile_proxies:
     host_header: ha.hs27.internal
   - name: odoo_mobile
     listen_port: 8444
-    upstream: 10.1.0.22:8069
+    upstream: 10.4.0.22:8069
     host_header: odoo.hs27.internal
   - name: nextcloud_mobile
     listen_port: 8445
-    upstream: 10.1.0.21:80
+    upstream: 10.4.0.21:80
     host_header: cloud.hs27.internal
   - name: paperless_mobile
     listen_port: 8446
-    upstream: 10.1.0.23:8000
+    upstream: 10.4.0.23:8000
     host_header: paperless.hs27.internal
   - name: portal_mobile
     listen_port: 8447
@@ -172,17 +172,17 @@ toolbox_network_tailscale_mobile_proxies:
     host_header: radio.hs27.internal
   - name: media_mobile
     listen_port: 8449
-    upstream: 10.1.0.20:8096
+    upstream: 10.4.0.20:8096
     host_header: media.hs27.internal
   - name: vault_mobile
     listen_port: 8442
-    upstream: 10.1.0.26:8080
+    upstream: 10.4.0.26:8080
     host_header: vault.hs27.internal
 toolbox_tailscale_hostname: toolbox
 toolbox_tailscale_repo_key_url: https://pkgs.tailscale.com/stable/debian/bookworm.noarmor.gpg
 toolbox_tailscale_repo_list_url: https://pkgs.tailscale.com/stable/debian/bookworm.tailscale-keyring.list
 toolbox_tailscale_advertise_routes:
-  - 10.1.0.0/24
+  - 10.4.0.0/24
 toolbox_tailscale_accept_dns: false
 
 toolbox_media_stack_name: toolbox-media
@@ -192,7 +192,7 @@ toolbox_media_stack_dir: "{{ homeserver_compose_root }}/{{ toolbox_media_stack_n
 toolbox_media_library_root: /srv/media-library
 toolbox_media_config_root: /srv/jellyfin
 toolbox_lxc_vmid: 100
-toolbox_media_share: //10.1.0.30/Media
+toolbox_media_share: //10.4.0.30/Media
 toolbox_media_mountpoint: /srv/media-library/music-network
 toolbox_media_subdir: yourparty_Libary
 toolbox_media_credentials_file: /etc/hs27/storage-node-media.credentials
@@ -222,4 +222,4 @@ toolbox_media_radio_sync_target_path: /srv/media-library/music-network/yourparty
 toolbox_media_radio_sync_log_path: /var/log/homeserver2027-media-sync.log
 toolbox_media_radio_sync_exclude_file: /etc/homeserver2027/media-sync-excludes.txt
 toolbox_media_quarantine_root: /srv/media-library/quarantine/bootstrap-review
-toolbox_media_published_server_url: http://10.1.0.20:8096
+toolbox_media_published_server_url: http://10.4.0.20:8096

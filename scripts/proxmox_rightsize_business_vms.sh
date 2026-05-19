@@ -11,8 +11,8 @@ SSH_OPTS=(
 )
 
 TARGETS=(
-  "200|nextcloud|2048|http://10.1.0.21/"
-  "220|odoo|2048|http://10.1.0.22:8069/web/login"
+  "200|nextcloud|2048|http://10.4.0.21/"
+  "220|odoo|2048|http://10.4.0.22:8069/web/login"
 )
 
 log() {

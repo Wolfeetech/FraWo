@@ -7,7 +7,7 @@ set -euo pipefail
 
 STOCKI_VM="192.168.178.210"
 STOCKI_JUMP="stock-pve"
-STORAGE_NODE="10.1.0.30"
+STORAGE_NODE="10.4.0.30"
 STORAGE_SHARE="Media"
 STORAGE_PATH="yourparty_Libary"
 

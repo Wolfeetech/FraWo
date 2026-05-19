@@ -22,7 +22,7 @@ toolbox_frontdoor_ip() {
   ' "${ROOT_DIR}/Codex/ssh_config"
 }
 
-ADGUARD_SERVICE_IP="10.1.0.20"
+ADGUARD_SERVICE_IP="10.4.0.20"
 ADGUARD_RESOLVER_IP="$(toolbox_frontdoor_ip)"
 ADGUARD_RESOLVER_IP="${ADGUARD_RESOLVER_IP:-100.82.26.53}"
 
@@ -93,7 +93,7 @@ else
   adguard_rewrite_cloud="no"
 fi
 
-allowed_lan_clients="$(bool_from_grep '  - "10.1.0.0/24"' "${ROOT_DIR}/ansible/inventory/host_vars/toolbox.yml")"
+allowed_lan_clients="$(bool_from_grep '  - "10.4.0.0/24"' "${ROOT_DIR}/ansible/inventory/host_vars/toolbox.yml")"
 allowed_tailscale_clients="$(bool_from_grep '  - "100.64.0.0/10"' "${ROOT_DIR}/ansible/inventory/host_vars/toolbox.yml")"
 
 pilot_client_primary="wolf-ZenBook-UX325EA-UX325EA"

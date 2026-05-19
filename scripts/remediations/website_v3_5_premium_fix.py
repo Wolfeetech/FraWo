@@ -2,7 +2,7 @@
 import xmlrpc.client
 import base64
 
-url = "http://10.1.0.22:8069"
+url = "http://10.4.0.22:8069"
 db = "FraWo_GbR"
 username = "wolf@frawo-tech.de"
 password = "Wolf2024!Frawo"

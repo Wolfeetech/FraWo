@@ -247,11 +247,11 @@ storage_cfg, _, _ = sh('pct config 110')
 
 http_checks = {}
 for name, url in {
-    'nextcloud': 'http://10.1.0.21/',
-    'odoo': 'http://10.1.0.22:8069/web/login',
-    'paperless': 'http://10.1.0.23/accounts/login/',
-    'haos': 'http://10.1.0.24:8123/',
-    'vaultwarden': 'http://10.1.0.26:8080/alive',
+    'nextcloud': 'http://10.4.0.21/',
+    'odoo': 'http://10.4.0.22:8069/web/login',
+    'paperless': 'http://10.4.0.23/accounts/login/',
+    'haos': 'http://10.4.0.24:8123/',
+    'vaultwarden': 'http://10.4.0.26:8080/alive',
 }.items():
     out, _, _ = sh(f"curl -s -o /dev/null -w '%{{http_code}}' --max-time 4 {url}")
     http_checks[name] = out or '000'
@@ -407,7 +407,7 @@ def build_report() -> dict[str, object]:
 
     recommended_next_order = [
         "Treat Tailscale as the only professional operator path; stop depending on direct StudioPC-to-legacy 192.168.2.x reachability during migration.",
-        "Freeze the current working transition state: Proxmox on 10.1.0.92, toolbox frontdoors 8/8 green, guests still isolated behind the transition router.",
+        "Freeze the current working transition state: Proxmox on 10.4.0.92, toolbox frontdoors 8/8 green, guests still isolated behind the transition router.",
         "Use the existing published UCG VLAN schema as the target network model; do not reopen subnet design unless the SSOT itself changes.",
         "Use a low-risk pilot service after the subnet decision, then migrate business services one by one behind the stable frontdoor names.",
         "Normalize Stockenweiler access and storage facts before any site-marriage or shared-storage work.",

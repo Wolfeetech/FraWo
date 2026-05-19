@@ -81,7 +81,7 @@ tasks = [
         'name': '[DONE] Phase 4: VLAN 101 Migration & DNS Recovery',
         'description': """
         <ul>
-            <li>[x] Alle Core-VMs (Nextcloud, Odoo, Paperless, HA) sind in VLAN 101 (10.1.0.x) migriert.</li>
+            <li>[x] Alle Core-VMs (Nextcloud, Odoo, Paperless, HA) sind in VLAN 101 (10.4.0.x) migriert.</li>
             <li>[x] DNS-Interception der EasyBox via AdGuard Home DoH umgangen.</li>
             <li>[x] Dokumentation (Masterplan, Live-Context, VM-Audit) aktualisiert.</li>
         </ul>
