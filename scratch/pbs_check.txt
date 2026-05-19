@@ -1,0 +1,7 @@
+﻿ssh : root@100.82.26.53: Permission denied (publickey,password).
+In C:\Users\StudioPC\OneDrive\Dokumente\GitHub\FraWo\scripts\run_diagnostics.ps1:11 Zeichen:14
++ ... pbsOutput = ssh -o BatchMode=yes root@100.82.26.53 "qm status 240" 2> ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (root@100.82.26....ckey,password).:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 

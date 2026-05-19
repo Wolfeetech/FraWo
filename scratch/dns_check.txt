@@ -1,0 +1,17 @@
+﻿nslookup : Nicht autorisierende Antwort:
+In C:\Users\StudioPC\OneDrive\Dokumente\GitHub\FraWo\scripts\run_diagnostics.ps1:14 Zeichen:14
++ $dnsOutput = nslookup funk.frawo-tech.de 1.1.1.1 2>&1
++              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Nicht autorisierende Antwort::String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+
+Server:  one.one.one.one
+Address:  1.1.1.1
+
+Name:    funk.frawo-tech.de
+Addresses:  2606:4700:3034::6815:5a44
+	  2606:4700:3035::ac43:c410
+	  104.21.90.68
+	  172.67.196.16
+

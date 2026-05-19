@@ -1,0 +1,7 @@
+﻿ssh : root@100.82.26.53: Permission denied (publickey,password).
+In C:\Users\StudioPC\OneDrive\Dokumente\GitHub\FraWo\scripts\run_diagnostics.ps1:17 Zeichen:16
++ ... dioOutput = ssh -o BatchMode=yes root@100.82.26.53 "pct exec 130 -- d ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (root@100.82.26....ckey,password).:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
