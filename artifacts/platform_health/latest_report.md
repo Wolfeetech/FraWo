@@ -1,40 +1,36 @@
 # Platform Health Audit
 
-- Generated at: `2026-05-04T09:18:47+02:00`
+- Generated at: `2026-05-19T17:45:51+02:00`
 - Anker management path: `pve-anker`
 - Stockenweiler management path: `pve-stock`
 
 ## Summary
 
 - Top priority issue: none
-- Frontdoors green: `4` / `8`
+- Frontdoors green: `7` / `8`
 - Odoo runtime green: `true`
-- Blockers: `0` / optimization candidates: `5` / strategic recommendations: `4`
+- Blockers: `0` / optimization candidates: `3` / strategic recommendations: `4`
 
 ## Anker Host
 
 - Host: `proxmox-anker` / `pve-manager/9.1.9/ee7bad0a3d1546c9`
-- Memory used: `9.1 GiB` / `15.46 GiB` (`58.9%`) 
-- Rootfs used: `28.46 GiB` / `67.61 GiB` (`42.1%`) 
-- Swap used: `0.0 GiB` / `8.0 GiB` (`0.0%`) 
+- Memory used: `10.79 GiB` / `15.46 GiB` (`69.8%`) 
+- Rootfs used: `32.06 GiB` / `67.61 GiB` (`47.4%`) 
+- Swap used: `3.37 GiB` / `8.0 GiB` (`42.1%`) 
 - Storages:
-  - `local-lvm` `lvmthin` active=`true` used=`89.4%`
-  - `local` `dir` active=`true` used=`42.1%`
-  - `pbs-usb` `dir` active=`true` used=`42.1%`
-  - `stockenweiler-data` `nfs` active=`true` used=`31.7%`
-  - `google-drive` `dir` active=`true` used=`28.0%`
+  - `local-lvm` `lvmthin` active=`true` used=`89.9%`
+  - `local` `dir` active=`true` used=`47.4%`
+  - `pbs-usb` `dir` active=`true` used=`47.4%`
+  - `google-drive` `dir` active=`true` used=`33.4%`
+  - `ssd2tb` `dir` active=`true` used=`4.6%`
 
 ## Stockenweiler Host
 
-- Host: `pve` / `pve-manager/9.1.4/5ac30304265fbd8e`
-- Memory used: `8.43 GiB` / `15.5 GiB` (`54.4%`) 
-- Rootfs used: `21.49 GiB` / `67.73 GiB` (`31.7%`) 
-- Swap used: `3.77 GiB` / `8.0 GiB` (`47.1%`) 
+- Host: `pve` / `unknown`
+- Memory used: `0.0 GiB` / `0.0 GiB` (`0.0%`) 
+- Rootfs used: `0.0 GiB` / `0.0 GiB` (`0.0%`) 
+- Swap used: `0.0 GiB` / `0.0 GiB` (`0.0%`) 
 - Storages:
-  - `hdd-backup` `dir` active=`true` used=`76.0%`
-  - `local-lvm` `lvmthin` active=`true` used=`57.7%`
-  - `local` `dir` active=`true` used=`31.7%`
-  - `anker-music` `nfs` active=`false` used=`0.0%`
 
 ## Runtime Notes
 
@@ -55,11 +51,9 @@
 
 ## Optimization Candidates
 
-- Anker guest `toolbox` (`100`) runs at only `16.2%` RAM use and is a later rightsizing candidate.
-- Anker guest `PBS-FraWo` (`240`) runs at only `1.5%` RAM use and is a later rightsizing candidate.
-- Anker guest `storage-node` (`110`) runs at only `3.7%` RAM use and is a later rightsizing candidate.
-- Stockenweiler guest `homeassistant-eltern` (`360`) is at `93.8%` RAM use and should be reviewed before adding workloads.
-- Stockenweiler guest `azuracast-vm` (`210`) is at `85.8%` RAM use and should be reviewed before adding workloads.
+- Anker guest `PBS-FraWo` (`240`) runs at only `1.0%` RAM use and is a later rightsizing candidate.
+- Anker guest `storage-node` (`110`) runs at only `3.4%` RAM use and is a later rightsizing candidate.
+- Anker guest `vaultwarden` (`120`) runs at only `5.7%` RAM use and is a later rightsizing candidate.
 
 ## Strategic Recommendations
 
