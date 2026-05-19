@@ -69,3 +69,22 @@ tunnel_alpha.log
 
 # Local credential scan artifacts
 artifacts/security_inventory/
+
+# Runtime environment secrets (all apps)
+**/.env
+**/.env.local
+**/.env.development
+**/.env.staging
+**/.env.test
+**/.env.prod
+**/.env.production
+**/.env.*.local
+
+# Keep committed environment templates
+!.env.example
+!**/.env.example
+
+# Local credential handoff files (never commit plaintext credentials)
+CREDENTIALS.local.md
+**/CREDENTIALS.local.md
+OPERATIONS/CREDENTIAL_INVENTORY.local.md
