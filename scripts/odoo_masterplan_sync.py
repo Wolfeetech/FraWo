@@ -16,7 +16,7 @@ DEFAULT_URL = "http://100.82.26.53:8444"
 DEFAULT_DB = "FraWo_GbR"
 DEFAULT_USER = "wolf@frawo-tech.de"
 DEFAULT_PROJECT_NAME = "🚀 Homeserver 2027: Masterplan"
-MASTERPLAN_PATH = Path(__file__).resolve().parents[1] / "MASTERPLAN.md"
+MASTERPLAN_PATH = Path(__file__).resolve().parents[1] / "archive" / "MASTERPLAN.md"
 
 STAGE_MAP = {
     "active": "🚀 In Arbeit",

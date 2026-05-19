@@ -595,7 +595,7 @@ def run_reconcile(apply: bool) -> int:
     print("Odoo Masterplan Sync")
     print(f"Modus: {'APPLY' if apply else 'DRY-RUN'}")
 
-    session = connect(default_user=WOLF_LOGIN, prompt_for_username=True)
+    session = connect(default_user=WOLF_LOGIN, prompt_for_username=False)
     print(f"Verbunden: {session.url} | DB: {session.db} | User: {session.username}")
 
     changes: list[Change] = []

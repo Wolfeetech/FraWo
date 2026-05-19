@@ -2,8 +2,8 @@ import os
 from odoo_rpc_client import connect
 
 # Configuration
-ODOO_URL = os.getenv("ODOO_RPC_URL", "http://10.1.0.22:8069")
-DB_LIST = ["FraWo_Live", "FraWo_GbR_Backup", "Recovery_DB"]
+ODOO_URL = os.getenv("ODOO_RPC_URL", "http://10.4.0.22:8069")
+DB_LIST = ["FraWo_Live", "FraWo_GbR"]
 ODOO_USER = "admin"
 ODOO_PASS = "admin"
 

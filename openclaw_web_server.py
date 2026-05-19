@@ -164,47 +164,100 @@ class OpenClawAPIHandler(BaseHTTPRequestHandler):
 
         elif parsed.path == "/api/monitor":
             # Aggregated monitor data with real Proxmox fetching logic
-            def get_pve_stats(host):
+            def get_pve_stats():
                 try:
-                    # This is a simplified version, ideally we'd use a shared utility
-                    cmd = "pvesh get /nodes/$(hostname)/status --output-format json"
-                    # Using ssh directly for now as a POC
-                    ssh_cmd = f"ssh -o ConnectTimeout=2 {host} '{cmd}'"
+                    cmd = "pvesh get /nodes/proxmox-anker/status --output-format json"
+                    ssh_cmd = f"ssh -o StrictHostKeyChecking=no -o ConnectTimeout=2 10.4.0.99 '{cmd}'"
                     import subprocess
                     out = subprocess.check_output(ssh_cmd, shell=True).decode()
                     return json.loads(out)
-                except: return {"status": "offline"}
+                except Exception as e:
+                    logger.error(f"Error fetching PVE stats: {e}")
+                    return {"status": "offline"}
 
-            def get_pve_resources(host):
+            def get_pve_resources():
                 try:
                     cmd = "pvesh get /cluster/resources --output-format json"
-                    ssh_cmd = f"ssh -o ConnectTimeout=2 {host} '{cmd}'"
+                    ssh_cmd = f"ssh -o StrictHostKeyChecking=no -o ConnectTimeout=2 10.4.0.99 '{cmd}'"
                     import subprocess
                     out = subprocess.check_output(ssh_cmd, shell=True).decode()
-                    resources = json.loads(out)
-                    # Filter for this node's VMs/LXCs
-                    return [r for r in resources if r.get('node') in host]
-                except: return []
+                    return json.loads(out)
+                except Exception as e:
+                    logger.error(f"Error fetching PVE resources: {e}")
+                    return []
 
-            # For now, return a more detailed structure that the UI can expand
+            def get_azuracast_stats():
+                try:
+                    import urllib.request
+                    import json
+                    req = urllib.request.Request("http://10.4.0.233:80/api/nowplaying", headers={'User-Agent': 'Mozilla/5.0'})
+                    with urllib.request.urlopen(req, timeout=2) as response:
+                        data = json.loads(response.read().decode())
+                        if data and isinstance(data, list):
+                            station_data = data[0]
+                            return {
+                                "listeners": station_data.get("listeners", {}).get("total", 0),
+                                "now_playing": station_data.get("now_playing", {}).get("song", {}).get("text", "Keine Musik")
+                            }
+                except Exception as e:
+                    logger.error(f"Error fetching AzuraCast stats: {e}")
+                return {"listeners": 0, "now_playing": "Offline"}
+
+            pve_status = get_pve_stats()
+            pve_resources = get_pve_resources()
+            azura_stats = get_azuracast_stats()
+
+            # Process PVE stats
+            load_percentage = "0%"
+            status = "offline"
+            if pve_status and "cpu" in pve_status:
+                status = "online"
+                cpu_usage = float(pve_status.get("cpu", 0)) * 100
+                load_percentage = f"{cpu_usage:.1f}%"
+
+            vms_list = []
+            for r in pve_resources:
+                if r.get("type") in ["qemu", "lxc"]:
+                    vm_id = r.get("vmid")
+                    vm_name = r.get("name", "Unknown")
+                    vm_status = r.get("status", "unknown")
+                    
+                    cpu_raw = float(r.get("cpu", 0)) * 100
+                    cpu_str = f"{cpu_raw:.1f}%"
+                    
+                    mem_raw = float(r.get("mem", 0))
+                    
+                    # Convert to human readable memory
+                    if mem_raw > 1024**3:
+                        mem_str = f"{mem_raw / 1024**3:.1f} GB"
+                    else:
+                        mem_str = f"{mem_raw / 1024**2:.0f} MB"
+                        
+                    vms_list.append({
+                        "name": f"{vm_name} ({vm_id})",
+                        "status": vm_status,
+                        "cpu": cpu_str,
+                        "mem": mem_str
+                    })
+
             monitor_data = {
                 "sites": {
                     "anker": {
-                        "status": "online",
-                        "load": "24%",
-                        "vms": [
-                            {"name": "Toolbox (100)", "status": "running", "cpu": "1.2%", "mem": "512MB"},
-                            {"name": "Nextcloud (210)", "status": "running", "cpu": "4.5%", "mem": "4GB"},
-                            {"name": "Odoo (220)", "status": "running", "cpu": "8.1%", "mem": "2GB"}
-                        ]
+                        "status": status,
+                        "load": load_percentage,
+                        "vms": vms_list
                     },
                     "stockenweiler": {
-                        "status": "online",
-                        "load": "12%",
+                        "status": "offline",
+                        "load": "0%",
                         "vms": [
-                            {"name": "AzuraCast (210)", "status": "running", "cpu": "15%", "mem": "6GB", "sync": "ACTIVE"}
+                            {"name": "AzuraCast (210)", "status": "stopped", "cpu": "0%", "mem": "0 MB"}
                         ]
                     }
+                },
+                "radio": {
+                    "listeners": azura_stats.get("listeners", 0),
+                    "now_playing": azura_stats.get("now_playing", "Offline")
                 },
                 "tasks": [
                     "[Lane E] Radio-Sync: 88GB (Aktiv)",
@@ -355,7 +408,7 @@ class OpenClawAPIHandler(BaseHTTPRequestHandler):
 def run():
     logger.info(f"Starting OpenClaw AGENT on port {PORT} (Ollama: {OLLAMA_MODEL})...")
     try:
-        server = HTTPServer(('127.0.0.1', PORT), OpenClawAPIHandler)
+        server = HTTPServer(('0.0.0.0', PORT), OpenClawAPIHandler)
         server.serve_forever()
     except Exception as e:
         logger.critical(f"Server failed to start: {e}")
