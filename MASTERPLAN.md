@@ -58,9 +58,9 @@ Der Homeserver 2027 ist die produktive Basis der **FraWo GbR**: ERP, Cloud, Doku
 
 ### Netzwerk-Wahrheit
 
-- Primaeres Netz: `10.1.0.0/24`
-- Gateway: UCG-Ultra `10.1.0.1`
-- Toolbox / Frontdoor: CT 100 `10.1.0.20`, Tailscale `100.82.26.53`
+- Primaeres Netz: `10.4.0.0/24`
+- Gateway: UCG-Ultra `10.4.0.1`
+- Toolbox / Frontdoor: CT 100 `10.4.0.20`, Tailscale `100.82.26.53`
 - DNS: AdGuard auf CT 100/101, langfristig ueber UniFi/Tailscale Split-DNS statt Windows Hosts-Datei
 - Reverse Proxy: Caddy in CT 100
 - TLS intern: Caddy internal CA fuer `*.hs27.internal`
@@ -69,40 +69,40 @@ Der Homeserver 2027 ist die produktive Basis der **FraWo GbR**: ERP, Cloud, Doku
 
 | ID  | Typ | Dienst                               | IP               | Status         |
 | --- | --- | ------------------------------------ | ---------------- | -------------- |
-| 100 | CT  | Toolbox / Caddy / AdGuard / Jellyfin | `10.1.0.20`      | LIVE           |
-| 101 | CT  | AdGuard Slave                        | `10.1.0.101`     | LIVE           |
-| 110 | CT  | Storage Node / SMB / NFS             | `10.1.0.30`      | LIVE           |
-| 120 | CT  | Vaultwarden                          | `10.1.0.26:8080` | LIVE           |
-| 200 | VM  | Nextcloud                            | `10.1.0.21:80`   | LIVE           |
-| 210 | VM  | Home Assistant OS                    | `10.1.0.24:8123` | LIVE           |
-| 220 | VM  | Odoo / Website Origin                | `10.1.0.22:8069` | LIVE           |
-| 230 | VM  | Paperless                            | `10.1.0.23:8000` | LIVE           |
-| 240 | VM  | PBS                                  | `10.1.0.x`       | watch / verify |
+| 100 | CT  | Toolbox / Caddy / AdGuard / Jellyfin | `10.4.0.20`      | LIVE           |
+| 101 | CT  | AdGuard Slave                        | `10.4.0.101`     | LIVE           |
+| 110 | CT  | Storage Node / SMB / NFS             | `10.4.0.30`      | LIVE           |
+| 120 | CT  | Vaultwarden                          | `10.4.0.26:8080` | LIVE           |
+| 200 | VM  | Nextcloud                            | `10.4.0.21:80`   | LIVE           |
+| 210 | VM  | Home Assistant OS                    | `10.4.0.24:8123` | LIVE           |
+| 220 | VM  | Odoo / Website Origin                | `10.4.0.22:8069` | LIVE           |
+| 230 | VM  | Paperless                            | `10.4.0.23:8000` | LIVE           |
+| 240 | VM  | PBS                                  | `10.4.0.x`       | watch / verify |
 
 ### Caddy Frontdoors
 
 | Domain                    | Backend             | Status                             |
 | ------------------------- | ------------------- | ---------------------------------- |
 | `portal.hs27.internal`    | local `/srv/portal` | `HTTP 200`                         |
-| `odoo.hs27.internal`      | `10.1.0.22:8069`    | `HTTP 200`                         |
-| `vault.hs27.internal`     | `10.1.0.26:8080`    | `HTTP 200`                         |
-| `ha.hs27.internal`        | `10.1.0.24:8123`    | `HTTP 200`                         |
-| `cloud.hs27.internal`     | `10.1.0.21:80`      | `HTTP 302` login/HTTPS redirect    |
-| `paperless.hs27.internal` | `10.1.0.23:8000`    | `HTTP 302` login redirect          |
-| `media.hs27.internal`     | `10.1.0.20:8096`    | `HTTP 302` Jellyfin login redirect |
+| `odoo.hs27.internal`      | `10.4.0.22:8069`    | `HTTP 200`                         |
+| `vault.hs27.internal`     | `10.4.0.26:8080`    | `HTTP 200`                         |
+| `ha.hs27.internal`        | `10.4.0.24:8123`    | `HTTP 200`                         |
+| `cloud.hs27.internal`     | `10.4.0.21:80`      | `HTTP 302` login/HTTPS redirect    |
+| `paperless.hs27.internal` | `10.4.0.23:8000`    | `HTTP 302` login redirect          |
+| `media.hs27.internal`     | `10.4.0.20:8096`    | `HTTP 302` Jellyfin login redirect |
 
 ---
 
 ## 4. Restore Notes 2026-04-22
 
 - CT 100 was restored and Caddy stack rebuilt.
-- Odoo outage root cause: VM 220 Proxmox NIC firewall blocked CT 100 to `10.1.0.22:8069`.
+- Odoo outage root cause: VM 220 Proxmox NIC firewall blocked CT 100 to `10.4.0.22:8069`.
 - HAOS had the same VM-level firewall problem on VM 210.
 - Temporary service-safe state: VM 210 and VM 220 `net0 firewall=0`.
 - Security follow-up: re-enable only after a tested bridge/firewall design proves CT 100 traffic still reaches Odoo and HAOS.
-- Vaultwarden Caddy upstream was wrong: service is `10.1.0.26:8080`, not `:80`.
-- HAOS Caddy frontdoor was missing and is now `ha.hs27.internal -> 10.1.0.24:8123`.
-- Jellyfin frontdoor is now `media.hs27.internal -> 10.1.0.20:8096`; `localhost` is wrong from inside the Caddy container.
+- Vaultwarden Caddy upstream was wrong: service is `10.4.0.26:8080`, not `:80`.
+- HAOS Caddy frontdoor was missing and is now `ha.hs27.internal -> 10.4.0.24:8123`.
+- Jellyfin frontdoor is now `media.hs27.internal -> 10.4.0.20:8096`; `localhost` is wrong from inside the Caddy container.
 - rclone Google Drive mount is active; API quota/rate limits were observed during backup traffic.
 
 ### Runtime Note 2026-05-03

@@ -10,8 +10,8 @@
   - **Affected services**: AzuraCast (VM 210), Home Assistant Eltern (VM 360), AdGuard (CT 101), Vaultwarden (CT 108)
   - **Blocked tasks**: All Lane E Radio tests, Lane D Remote Support tasks
 
-- **Anker PVE (`100.69.179.87` / `10.1.0.92`)**: OPERATIONAL via Tailscale
-- **Toolbox (CT 100)**: OPERATIONAL on `10.1.0.20`, Tailscale IP `100.82.26.53`. Caddy, AdGuard and Jellyfin running.
+- **Anker PVE (`100.69.179.87` / `10.4.0.92`)**: OPERATIONAL via Tailscale
+- **Toolbox (CT 100)**: OPERATIONAL on `10.4.0.20`, Tailscale IP `100.82.26.53`. Caddy, AdGuard and Jellyfin running.
 
 - **Verified frontdoors via Caddy/Tailscale (2026-05-10 22:55):**
   - `portal.hs27.internal` -> `HTTP 200` (64ms)
