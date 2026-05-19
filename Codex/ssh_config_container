@@ -1,0 +1,25 @@
+# FraWo SSH Config for Container - updated 2026-05-19
+# Used by OpenClaw inside LXC container to bypass Tailscale SSH checks using local bridge
+
+# Proxmox Anker host via local bridge
+Host pve-anker anker-pve proxmox-anker
+  HostName 10.4.0.99
+  User root
+  IdentityFile /root/.ssh/id_ed25519
+  StrictHostKeyChecking accept-new
+  ConnectTimeout 5
+
+# Stockenweiler Proxmox via Tailscale (remote)
+Host pve-stock stockenweiler-pve stockenweiler
+  HostName 100.91.20.116
+  User root
+  IdentityFile /root/.ssh/id_ed25519
+  StrictHostKeyChecking accept-new
+  ConnectTimeout 5
+
+Host *
+  IdentityFile /root/.ssh/id_ed25519
+  IdentitiesOnly yes
+  PreferredAuthentications publickey
+  StrictHostKeyChecking accept-new
+  ConnectTimeout 5

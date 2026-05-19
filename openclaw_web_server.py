@@ -20,6 +20,7 @@ from urllib.parse import urlparse
 PORT = 5555
 OLLAMA_URL = "http://127.0.0.1:11434"
 OLLAMA_MODEL = "frawo-pro:latest"
+SSH_CONFIG_PATH = "Codex/ssh_config_container" if sys.platform != "win32" else "Codex/ssh_config"
 
 # Setup logging
 logging.basicConfig(
@@ -258,7 +259,7 @@ class OpenClawAPIHandler(BaseHTTPRequestHandler):
                 try:
                     ssh_cmd = [
                         "ssh",
-                        "-F", "Codex/ssh_config",
+                        "-F", SSH_CONFIG_PATH,
                         "-o", "BatchMode=yes",
                         "-o", "ConnectTimeout=2",
                         "pve-anker",
@@ -274,7 +275,7 @@ class OpenClawAPIHandler(BaseHTTPRequestHandler):
                 try:
                     ssh_cmd = [
                         "ssh",
-                        "-F", "Codex/ssh_config",
+                        "-F", SSH_CONFIG_PATH,
                         "-o", "BatchMode=yes",
                         "-o", "ConnectTimeout=2",
                         "pve-anker",
@@ -438,7 +439,7 @@ class OpenClawAPIHandler(BaseHTTPRequestHandler):
                 # Execute remote SSH command using custom ssh_config and list args
                 ssh_cmd = [
                     "ssh",
-                    "-F", "Codex/ssh_config",
+                    "-F", SSH_CONFIG_PATH,
                     "-o", "BatchMode=yes",
                     "-o", "ConnectTimeout=5",
                     host,
