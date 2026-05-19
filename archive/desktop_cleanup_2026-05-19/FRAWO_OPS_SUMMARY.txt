@@ -1,0 +1,320 @@
+================================================================================
+                    FRAWO OPS - INFRASTRUCTURE AUDIT SUMMARY
+                           Generated: 2026-05-06 23:50
+================================================================================
+
+EXECUTIVE SUMMARY
+================================================================================
+
+✅ OPERATIONAL SYSTEMS:
+   • Stockenweiler PVE (Primary Proxmox Host)
+   • 12 Containers running (Radio, File Server, Automation, VPN, etc.)
+   • 2 VMs running (AzuraCast, Home Assistant)
+   • All radio/media services fully functional
+
+❌ CRITICAL ISSUES:
+   • Anker PVE server is OFFLINE (physical host)
+   • Toolbox container OFFLINE (depends on Anker PVE)
+   • All business services UNAVAILABLE:
+     - Odoo ERP (business operations)
+     - Nextcloud (file collaboration)
+     - Paperless (document management)
+     - Internal Portal
+
+🔧 REQUIRED ACTION:
+   Physical intervention needed at Rothkreuz location to restore Anker PVE
+
+
+INFRASTRUCTURE DETAILS
+================================================================================
+
+ONLINE SERVERS:
+-------------------------------------------------------------------------------
+Stockenweiler PVE
+   IP: 100.91.20.116 (Tailscale)
+   Status: ✅ ONLINE
+   Role: Primary Proxmox host for radio/media services
+   Containers: 12 running
+   VMs: 2 running
+   Access: https://100.91.20.116:8006/
+
+
+OFFLINE SERVERS:
+-------------------------------------------------------------------------------
+Anker PVE
+   IP: 100.69.179.87 (Tailscale) / 10.1.0.92 (Local)
+   Status: ❌ OFFLINE (~18 hours)
+   Role: Secondary Proxmox host
+   Location: Rothkreuz
+   Issue: Complete power/network failure
+   Impact: High - Business services unavailable
+
+Toolbox Container
+   IP: 100.82.26.53 (Tailscale) / 10.1.0.20 (Local)
+   Status: ❌ OFFLINE (depends on Anker PVE)
+   Role: Core services hub
+   Services: Portal, Odoo, Nextcloud, Paperless, Vault, Home Assistant
+   Impact: Critical - All business operations affected
+
+
+SERVICE STATUS
+================================================================================
+
+✅ AVAILABLE (on Stockenweiler PVE):
+   • Radio streaming (AzuraCast)
+   • Radio API & WordPress
+   • File Server
+   • n8n Automation
+   • WireGuard VPN
+   • AdGuard DNS
+   • Vaultwarden
+   • NPM (Nginx Proxy Manager)
+   • Mail Relay
+   • MongoDB & MariaDB
+
+❌ UNAVAILABLE (on Toolbox/Anker PVE):
+   • Odoo ERP - http://odoo.hs27.internal/
+   • Nextcloud - http://cloud.hs27.internal/
+   • Paperless - http://paperless.hs27.internal/
+   • Portal - http://portal.hs27.internal/
+   • Vault - http://vault.hs27.internal/
+   • Home Assistant - http://ha.hs27.internal/
+
+
+RECOVERY PLAN
+================================================================================
+
+IMMEDIATE ACTIONS (Next 1 Hour):
+   1. Travel to Rothkreuz location or contact on-site personnel
+   2. Check Anker PVE physical server:
+      - Verify power connection
+      - Check network cables
+      - Press power button if needed
+   3. Wait 2-3 minutes for server boot
+   4. Verify Tailscale connectivity (ping 100.69.179.87)
+   5. Check if Toolbox auto-starts
+   6. Run verification: python Desktop/frawo_ops_dashboard.py
+
+AUTOMATED RECOVERY (If Anker PVE is accessible):
+   1. Run: python Desktop/frawo_auto_recovery.py
+   2. Script will automatically:
+      - Detect Anker PVE status
+      - Start Toolbox container
+      - Verify all services
+      - Report recovery status
+
+MANUAL RECOVERY (If automation fails):
+   1. SSH to Anker: ssh anker-pve
+   2. List containers: pct list
+   3. Find Toolbox ID
+   4. Start Toolbox: pct start <vmid>
+   5. Monitor: pct status <vmid>
+   6. Wait 30 seconds for services to initialize
+   7. Verify: curl http://odoo.hs27.internal/
+
+
+TOOLS CREATED
+================================================================================
+
+All tools saved to Desktop:
+
+1. frawo_ops_dashboard.py
+   Purpose: Complete infrastructure status dashboard
+   Usage: python Desktop/frawo_ops_dashboard.py
+   When: Daily health checks, troubleshooting
+
+2. frawo_auto_recovery.py
+   Purpose: Automated service recovery
+   Usage: python Desktop/frawo_auto_recovery.py
+   When: Services are down, automatic recovery needed
+
+3. pve_start_toolbox.py
+   Purpose: Interactive Proxmox management
+   Usage: python Desktop/pve_start_toolbox.py
+   When: Manual container management, needs auth
+
+4. pve_check.py
+   Purpose: Quick connectivity check
+   Usage: python Desktop/pve_check.py
+   When: Fast status overview (30 seconds)
+
+5. FRAWO_Quick_Check.bat
+   Purpose: Windows quick launcher for pve_check.py
+   Usage: Double-click on Desktop
+   When: Instant status check
+
+6. FRAWO_Dashboard.bat
+   Purpose: Windows launcher for full dashboard
+   Usage: Double-click on Desktop
+   When: Complete infrastructure overview
+
+7. FRAWO_Auto_Recovery.bat
+   Purpose: Windows launcher for auto recovery
+   Usage: Double-click on Desktop
+   When: Attempting service recovery
+
+
+DOCUMENTATION FILES
+================================================================================
+
+FRAWO_OPS_DOCUMENTATION.md
+   • Complete infrastructure reference
+   • Detailed recovery procedures
+   • Network configuration details
+   • Security and access information
+   • Monitoring recommendations
+
+README_FRAWO_OPS.md
+   • Quick start guide
+   • Common tasks and commands
+   • Troubleshooting steps
+   • Emergency procedures
+
+FRAWO_OPS_SUMMARY.txt (this file)
+   • Executive summary
+   • Quick reference
+   • Current status snapshot
+
+
+NETWORK INFORMATION
+================================================================================
+
+Tailscale VPN:
+   Network: tail150400.ts.net
+   Your PC: 100.98.31.60 (wolfstudiopc)
+   Stock PVE: 100.91.20.116 (stockenweiler-pve)
+   Anker PVE: 100.69.179.87 (proxmox-anker)
+   Toolbox: 100.82.26.53 (toolbox)
+
+SSH Configuration:
+   Config File: ~/.ssh/config
+   Stock PVE: ssh stock-pve
+   Anker PVE: ssh anker-pve
+   Toolbox: ssh toolbox
+
+DNS/Hosts:
+   File: C:\Windows\System32\drivers\etc\hosts
+   Internal Domain: .hs27.internal
+   All *.hs27.internal → 100.82.26.53 (Toolbox)
+
+
+QUICK COMMAND REFERENCE
+================================================================================
+
+Status Checks:
+   python Desktop/pve_check.py                    # Quick check
+   python Desktop/frawo_ops_dashboard.py          # Full dashboard
+
+Recovery:
+   python Desktop/frawo_auto_recovery.py          # Auto recovery
+   python Desktop/pve_start_toolbox.py            # Interactive management
+
+Direct Access:
+   start https://100.91.20.116:8006/              # Proxmox Web
+   ssh stock-pve                                  # SSH to Stockenweiler
+   ssh anker-pve                                  # SSH to Anker
+
+Service Tests:
+   curl -I http://odoo.hs27.internal/             # Check Odoo
+   curl -I http://portal.hs27.internal/           # Check Portal
+   curl -k https://100.91.20.116:8006/            # Check Proxmox
+
+Network:
+   tailscale status                               # VPN status
+   ping 100.91.20.116                             # Ping Stock PVE
+   ping 100.69.179.87                             # Ping Anker PVE
+
+
+NEXT STEPS
+================================================================================
+
+IMMEDIATE (< 1 hour):
+   [ ] Restore Anker PVE power/connectivity
+   [ ] Verify Toolbox auto-starts
+   [ ] Confirm all services accessible
+   [ ] Run full dashboard to verify
+
+SHORT-TERM (< 1 week):
+   [ ] Setup automated daily health checks
+   [ ] Configure auto-start for Toolbox on Anker PVE
+   [ ] Document Anker PVE MAC address for Wake-on-LAN
+   [ ] Setup service monitoring alerts
+
+MEDIUM-TERM (< 1 month):
+   [ ] Implement high availability for critical services
+   [ ] Setup service failover to Stockenweiler
+   [ ] Create backup recovery procedures
+   [ ] Test disaster recovery plan
+
+LONG-TERM (< 3 months):
+   [ ] Migrate Odoo to highly available setup
+   [ ] Implement automatic failover
+   [ ] Setup monitoring dashboard (Uptime Kuma)
+   [ ] Create comprehensive backup strategy
+
+
+SUPPORT INFORMATION
+================================================================================
+
+Scripts Location:
+   C:\Users\StudioPC\Desktop\
+
+Documentation:
+   C:\Users\StudioPC\Desktop\FRAWO_OPS_DOCUMENTATION.md
+   C:\Users\StudioPC\Desktop\README_FRAWO_OPS.md
+
+Inventory Data:
+   C:\Users\StudioPC\.gemini\antigravity\playground\ionized-kepler\pve_inventory.txt
+   C:\Users\StudioPC\OneDrive\Dokumente\GitHub\FraWo\artifacts\stockenweiler_inventory\
+
+SSH Configuration:
+   C:\Users\StudioPC\.ssh\config
+
+Hosts File:
+   C:\Windows\System32\drivers\etc\hosts
+
+All Python scripts are self-contained and require only standard libraries
+(requests, urllib3 - already installed).
+
+
+STORAGE USAGE (Stockenweiler PVE)
+================================================================================
+
+   local:        18.2 GB / 71 GB used (25.67%)
+   local-lvm:    106 GB / 164 GB used (64.60%)
+   hdd-backup:   976 GB / 976 GB used (100% - FULL!)
+
+⚠️  WARNING: Backup drive (hdd-backup) is FULL!
+   Action needed: Clean old backups to free space
+
+
+SYSTEM HEALTH
+================================================================================
+
+✅ Healthy Systems:
+   • Stockenweiler PVE - All services operational
+   • 12 containers running smoothly
+   • Network connectivity via Tailscale stable
+   • Radio/Media services fully functional
+
+⚠️  Warnings:
+   • Backup drive full (100% used)
+   • Anker PVE offline for 18+ hours
+   • Business services unavailable
+
+🔴 Critical:
+   • Requires immediate physical intervention at Rothkreuz
+   • Business operations impacted by Odoo/Nextcloud downtime
+
+
+================================================================================
+                              END OF SUMMARY
+================================================================================
+
+For complete details, see: FRAWO_OPS_DOCUMENTATION.md
+For quick start, see: README_FRAWO_OPS.md
+
+Tools are ready to use - just double-click the .bat files on Desktop!
+
+Generated by: Claude Code (Sonnet 4.5)
+Date: 2026-05-06 23:50:00

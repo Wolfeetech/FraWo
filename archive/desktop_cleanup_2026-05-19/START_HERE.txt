@@ -1,0 +1,130 @@
+================================================================================
+                         FRAWO OPS - START HERE
+================================================================================
+
+Welcome to FRAWO Ops Infrastructure Management Tools!
+
+This package gives you complete control and visibility of your infrastructure.
+
+
+🚀 QUICK START - Choose One:
+================================================================================
+
+For the fastest status check:
+   👉 Double-click: FRAWO_Quick_Check.bat
+
+For a complete dashboard:
+   👉 Double-click: FRAWO_Dashboard.bat
+
+If services are down:
+   👉 Double-click: FRAWO_Auto_Recovery.bat
+
+
+📚 DOCUMENTATION:
+================================================================================
+
+New to these tools? Start here:
+   👉 Open: README_FRAWO_OPS.md
+
+Want all the details?
+   👉 Open: FRAWO_OPS_DOCUMENTATION.md
+
+Quick reference summary:
+   👉 Open: FRAWO_OPS_SUMMARY.txt
+
+
+🛠️ ALL AVAILABLE TOOLS:
+================================================================================
+
+Windows Batch Files (Double-click to run):
+   ├── FRAWO_Quick_Check.bat         → 30-second status check
+   ├── FRAWO_Dashboard.bat            → Complete infrastructure overview
+   └── FRAWO_Auto_Recovery.bat        → Automated service recovery
+
+Python Scripts (More advanced, use if needed):
+   ├── pve_check.py                   → Quick connectivity test
+   ├── frawo_ops_dashboard.py         → Full status dashboard
+   ├── frawo_auto_recovery.py         → Automated recovery system
+   ├── pve_start_toolbox.py           → Interactive Proxmox management
+   └── pve_manager.py                 → Advanced PVE control
+
+Documentation Files:
+   ├── README_FRAWO_OPS.md            → Quick start guide
+   ├── FRAWO_OPS_DOCUMENTATION.md     → Complete reference
+   ├── FRAWO_OPS_SUMMARY.txt          → Executive summary
+   └── START_HERE.txt                 → This file
+
+
+⚡ MOST COMMON TASKS:
+================================================================================
+
+Daily Health Check:
+   Double-click: FRAWO_Quick_Check.bat
+   (Takes 30 seconds, shows if everything is OK)
+
+Full Status Report:
+   Double-click: FRAWO_Dashboard.bat
+   (Takes 1 minute, shows complete infrastructure status)
+
+When Services Are Down:
+   1. Double-click: FRAWO_Auto_Recovery.bat
+   2. Wait for recovery attempt
+   3. Check dashboard to verify
+
+Access Proxmox Web Interface:
+   Open browser to: https://100.91.20.116:8006/
+
+
+🎯 YOUR CURRENT SITUATION (as of 2026-05-06):
+================================================================================
+
+✅ WORKING:
+   • Stockenweiler PVE (Primary server)
+   • Radio/Music services
+   • File server
+   • 12 containers running
+
+❌ NEEDS ATTENTION:
+   • Anker PVE server is OFFLINE
+   • Toolbox container OFFLINE
+   • Business services UNAVAILABLE:
+     - Odoo ERP
+     - Nextcloud
+     - Paperless
+     - Portal
+
+🔧 TO FIX:
+   Physical intervention needed at Rothkreuz to power on Anker PVE server
+
+
+💡 TIPS:
+================================================================================
+
+• Run Quick Check daily to ensure everything is healthy
+• Keep these tools on your Desktop for easy access
+• Read the README first if you're new to these tools
+• The Auto Recovery script can fix most issues automatically
+
+
+📞 NEED HELP?
+================================================================================
+
+1. Check FRAWO_OPS_SUMMARY.txt for current status
+2. Read README_FRAWO_OPS.md for solutions
+3. Review FRAWO_OPS_DOCUMENTATION.md for technical details
+
+
+🎉 YOU'RE ALL SET!
+================================================================================
+
+Start by double-clicking: FRAWO_Dashboard.bat
+
+This will show you the current status of everything.
+
+All tools are ready to use - enjoy simplified infrastructure management!
+
+
+================================================================================
+                    Tools by Claude Code (Sonnet 4.5)
+                         Generated: 2026-05-06
+================================================================================
