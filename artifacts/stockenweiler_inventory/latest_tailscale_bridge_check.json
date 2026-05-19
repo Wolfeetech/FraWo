@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-18 09:39:01",
+  "generated_at": "2026-05-19 17:24:09",
   "local_stockenweiler_route_present": true,
   "local_visible_primary_routes": [
     "192.168.178.0/24 via stockenweiler-pve.tail150400.ts.net",

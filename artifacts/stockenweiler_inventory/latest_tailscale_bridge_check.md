@@ -1,6 +1,6 @@
 # Stockenweiler Tailscale Bridge Check
 
-- generated_at: `2026-05-18 09:39:01`
+- generated_at: `2026-05-19 17:24:09`
 - bridge_state: `pending`
 - remote_backend_state: `-`
 - remote_current_tailnet: `-`
