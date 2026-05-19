@@ -1,4 +1,9 @@
 # Radio / AzuraCast Status - 2026-05-15
+
+> [!WARNING]
+> **HISTORISCHER SNAPSHOT (nicht entscheidungsfuehrend).**
+> Verbindliche Runtime-SSOT: `/home/runner/work/FraWo/FraWo/OPERATIONS/RADIO_OPERATIONS_SSOT.md`
+
 **Status: 🟢 100% READY (Radio Phase Finalized)**
 
 ---

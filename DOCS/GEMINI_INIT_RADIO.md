@@ -1,5 +1,10 @@
 # Gemini Init Prompt - FraWo Funk Radio Setup
 
+> [!WARNING]
+> **HISTORISCHER SNAPSHOT (nicht entscheidungsfuehrend).**
+> Verbindliche Runtime-SSOT: `/home/runner/work/FraWo/FraWo/OPERATIONS/RADIO_OPERATIONS_SSOT.md`
+
+
 ## Deine Aufgabe
 Du bist ausschließlich für **FraWo Funk (Radio)** zuständig.
 Claude kümmert sich parallel um die **Website (frawo-tech.de)**.

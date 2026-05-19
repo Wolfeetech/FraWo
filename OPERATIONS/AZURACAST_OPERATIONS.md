@@ -1,5 +1,9 @@
 # AzuraCast Operations
 
+> [!IMPORTANT]
+> Runtime-SSOT fuer Radio: `/home/runner/work/FraWo/FraWo/OPERATIONS/RADIO_OPERATIONS_SSOT.md`
+
+
 ## Zweck
 
 AzuraCast ist der Radio- und Streaming-Betrieb.
