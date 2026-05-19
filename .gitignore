@@ -88,3 +88,5 @@ artifacts/security_inventory/
 CREDENTIALS.local.md
 **/CREDENTIALS.local.md
 OPERATIONS/CREDENTIAL_INVENTORY.local.md
+*.credentials
+**/*.credentials
