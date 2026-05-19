@@ -76,6 +76,46 @@ jobs:
           fi
           echo "OK: no tracked private key blocks found."
 
+      - name: Guard tracked plaintext credential artifacts
+        run: |
+          set -euo pipefail
+
+          legacy_env_allowlist=(
+            "apps/yourparty/apps/api/.env.prod"
+            "apps/yourparty/apps/api/.env.production"
+          )
+
+          tracked_env_runtime=$(git ls-files '**/.env' '**/.env.*' \
+            | grep -Ev '(^|/)\.env(\..+)?\.example$|(^|/)\.env\.template$|(^|/)\.env\.sample$' || true)
+
+          if [ -n "$tracked_env_runtime" ]; then
+            unexpected_env_runtime="$tracked_env_runtime"
+            for legacy_env in "${legacy_env_allowlist[@]}"; do
+              unexpected_env_runtime=$(printf '%s\n' "$unexpected_env_runtime" | grep -vxF "$legacy_env" || true)
+            done
+            if [ -n "$unexpected_env_runtime" ]; then
+              echo "ERROR: Unexpected tracked runtime .env files detected:"
+              printf '%s\n' "$unexpected_env_runtime"
+              exit 1
+            fi
+            echo "WARN: legacy tracked runtime .env files still present (migration debt):"
+            printf '%s\n' "$tracked_env_runtime"
+          fi
+
+          if git ls-files '*.credentials' '**/*.credentials' | grep -q .; then
+            echo "ERROR: plaintext *.credentials files must not be tracked."
+            git ls-files '*.credentials' '**/*.credentials'
+            exit 1
+          fi
+
+          if git ls-files 'CREDENTIALS.local.md' '**/CREDENTIALS.local.md' 'OPERATIONS/CREDENTIAL_INVENTORY.local.md' | grep -q .; then
+            echo "ERROR: local credential markdown handoff files are tracked."
+            git ls-files 'CREDENTIALS.local.md' '**/CREDENTIALS.local.md' 'OPERATIONS/CREDENTIAL_INVENTORY.local.md'
+            exit 1
+          fi
+
+          echo "OK: tracked plaintext credential artifact guardrails passed."
+
       - name: Validate JSON manifests
         run: |
           set -euo pipefail

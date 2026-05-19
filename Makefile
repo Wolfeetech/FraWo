@@ -87,6 +87,31 @@ lint: ansible-check
 	@if [ -f .vault_pass ] && grep -q "your-vault-password-here" .vault_pass 2>/dev/null; then \
 		echo "[WARN] .vault_pass still contains the example placeholder"; \
 	fi
+	@echo "[lint] Checking tracked plaintext credential artifact patterns..."
+	@tracked_env_runtime=$$(git ls-files '**/.env' '**/.env.*' | grep -Ev '(^|/)\.env(\..+)?\.example$$|(^|/)\.env\.template$$|(^|/)\.env\.sample$$' || true); \
+	if [ -n "$$tracked_env_runtime" ]; then \
+		unexpected_env_runtime="$$tracked_env_runtime"; \
+		for legacy_env in apps/yourparty/apps/api/.env.prod apps/yourparty/apps/api/.env.production; do \
+			unexpected_env_runtime=$$(printf '%s\n' "$$unexpected_env_runtime" | grep -vxF "$$legacy_env" || true); \
+		done; \
+		if [ -n "$$unexpected_env_runtime" ]; then \
+			echo "[ERROR] Unexpected tracked runtime .env files found:"; \
+			printf '%s\n' "$$unexpected_env_runtime"; \
+			exit 1; \
+		fi; \
+		echo "[WARN] Legacy tracked runtime .env files still present (migration debt):"; \
+		printf '%s\n' "$$tracked_env_runtime"; \
+	fi
+	@if git ls-files '*.credentials' '**/*.credentials' | grep -q .; then \
+		echo "[ERROR] Tracked plaintext *.credentials files found."; \
+		git ls-files '*.credentials' '**/*.credentials'; \
+		exit 1; \
+	fi
+	@if git ls-files 'CREDENTIALS.local.md' '**/CREDENTIALS.local.md' 'OPERATIONS/CREDENTIAL_INVENTORY.local.md' | grep -q .; then \
+		echo "[ERROR] Tracked local credential markdown files found."; \
+		git ls-files 'CREDENTIALS.local.md' '**/CREDENTIALS.local.md' 'OPERATIONS/CREDENTIAL_INVENTORY.local.md'; \
+		exit 1; \
+	fi
 	@echo "[lint] Done."
 
 ## ansible-check: Syntax-check all Ansible playbooks
