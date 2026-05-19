@@ -395,6 +395,147 @@
 
         @keyframes spin { to { transform: rotate(360deg); } }
 
+        /* Right Side Panel Layout */
+        .side-panel-container {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            height: calc(100vh - 190px);
+            width: 100%;
+        }
+
+        .caretaker-panel {
+            background: rgba(15, 23, 42, 0.45);
+            backdrop-filter: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 35px;
+            display: flex;
+            flex-direction: column;
+            padding: 25px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            max-height: 42%;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .caretaker-panel.status-ok {
+            border-color: rgba(0, 255, 162, 0.3);
+            box-shadow: 0 0 30px rgba(0, 255, 162, 0.1);
+        }
+
+        .caretaker-panel.status-warning {
+            border-color: rgba(255, 170, 0, 0.3);
+            box-shadow: 0 0 30px rgba(255, 170, 0, 0.1);
+        }
+
+        .caretaker-panel.status-critical {
+            border-color: rgba(255, 61, 113, 0.3);
+            box-shadow: 0 0 30px rgba(255, 61, 113, 0.15);
+        }
+
+        .panel-header-sub {
+            font-family: var(--font-heading);
+            font-size: 1.15rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 10px;
+        }
+
+        .caretaker-badge {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .caretaker-badge.badge-ok { background: rgba(0, 255, 162, 0.15); color: var(--success); }
+        .caretaker-badge.badge-warning { background: rgba(255, 170, 0, 0.15); color: #ffa000; }
+        .caretaker-badge.badge-critical { background: rgba(255, 61, 113, 0.15); color: var(--error); }
+
+        .alerts-list {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding-right: 5px;
+        }
+
+        .alert-item {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 12px 16px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .alert-item.severity-high {
+            border-left: 4px solid var(--error);
+            background: rgba(255, 61, 113, 0.03);
+        }
+
+        .alert-item.severity-low {
+            border-left: 4px solid #ffaa00;
+            background: rgba(255, 170, 0, 0.03);
+        }
+
+        .alert-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-remediate {
+            background: linear-gradient(135deg, var(--accent), #0099ff);
+            color: #000;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            align-self: flex-start;
+        }
+
+        .btn-remediate:active {
+            transform: scale(0.92);
+        }
+
+        /* Telemetry Ticker inside Chat Panel */
+        .telemetry-ticker {
+            background: rgba(0, 0, 0, 0.25);
+            border-bottom: 1px solid var(--border);
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .telemetry-item span {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .chat-panel {
+            flex: 1;
+            height: auto !important; /* overrides previous height */
+        }
+
     </style>
 </head>
 <body>
@@ -533,16 +674,36 @@
             </div>
             </div>
 
-            <div class="chat-panel" id="chat-panel">
-                <div class="chat-header">🦞 OPENCLAW AGENT</div>
-                <div class="chat-messages" id="chat-msgs">
-                    <div class="msg bot">Bereit. Wie kann ich die RTX-Power heute nutzen?</div>
+            <div class="side-panel-container">
+                <div class="caretaker-panel" id="caretaker-panel">
+                    <div class="panel-header-sub">
+                        <span>🦞 SYSTEM CARETAKER</span>
+                        <span class="caretaker-badge" id="caretaker-badge">OK</span>
+                    </div>
+                    <div class="alerts-list" id="alerts-list">
+                        <div style="text-align: center; color: var(--text-muted); font-size: 0.95rem; margin-top: 15px;">
+                            Lädt Status...
+                        </div>
+                    </div>
                 </div>
-                <div class="chat-input-area">
-                    <input type="text" class="chat-input" id="chat-in" placeholder="Nachricht..." onkeypress="handleChat(event)">
-                    <button class="nav-item" style="width:60px; height:60px; margin:0;" onclick="sendChat()">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-                    </button>
+
+                <div class="chat-panel" id="chat-panel">
+                    <div class="chat-header">🤖 OPENCLAW AGENT</div>
+                    <div class="telemetry-ticker">
+                        <div class="telemetry-item">CPU: <span id="tel-cpu">0%</span></div>
+                        <div class="telemetry-item">RAM: <span id="tel-mem">0 MB</span></div>
+                        <div class="telemetry-item">Threads: <span id="tel-threads">1</span></div>
+                        <div class="telemetry-item">Reqs: <span id="tel-requests">0</span></div>
+                    </div>
+                    <div class="chat-messages" id="chat-msgs">
+                        <div class="msg bot">Bereit. Wie kann ich die RTX-Power heute nutzen?</div>
+                    </div>
+                    <div class="chat-input-area">
+                        <input type="text" class="chat-input" id="chat-in" placeholder="Nachricht..." onkeypress="handleChat(event)">
+                        <button class="nav-item" style="width:60px; height:60px; margin:0;" onclick="sendChat()">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -646,25 +807,116 @@
 
         async function refreshSystem() {
             try {
-                const res = await fetch(`${API_BASE}/api/status`);
+                // Poll OpenClaw monitor endpoint
+                const res = await fetch(`${API_BASE}/api/monitor`);
                 const data = await res.json();
-                console.log("System Status:", data);
-                
+                console.log("Monitor Data:", data);
+
+                // Update Studio-PC (OpenClaw) status dot
                 const brainDot = document.getElementById('s-brain');
-                if (data.status === 'online') {
-                    brainDot.classList.add('online');
+                if (data.openclaw && data.openclaw.status === 'online') {
+                    brainDot.className = 'dot online';
                 } else {
-                    brainDot.classList.remove('online');
+                    brainDot.className = 'dot';
                 }
-            } catch (e) { 
-                console.error("Status fetch failed"); 
-                document.getElementById('s-brain').classList.remove('online');
+
+                // Update Anker-Node status dot
+                const cloudDot = document.getElementById('s-cloud');
+                if (data.sites && data.sites.anker && data.sites.anker.status === 'online') {
+                    cloudDot.className = 'dot online';
+                } else {
+                    cloudDot.className = 'dot';
+                }
+
+                // Update Telemetry Ticker
+                if (data.openclaw) {
+                    document.getElementById('tel-cpu').textContent = data.openclaw.cpu || '0%';
+                    document.getElementById('tel-mem').textContent = data.openclaw.mem || '0 MB';
+                    document.getElementById('tel-threads').textContent = data.openclaw.threads || '1';
+                    document.getElementById('tel-requests').textContent = data.openclaw.total_requests || '0';
+                }
+
+                // Update Caretaker Status and Alerts
+                const cp = document.getElementById('caretaker-panel');
+                const cb = document.getElementById('caretaker-badge');
+                const list = document.getElementById('alerts-list');
+
+                if (data.caretaker) {
+                    const status = data.caretaker.status || 'ok';
+                    cp.className = `caretaker-panel status-${status}`;
+                    cb.className = `caretaker-badge badge-${status}`;
+                    cb.textContent = status.toUpperCase();
+
+                    // Render alerts
+                    list.innerHTML = '';
+                    const alerts = data.caretaker.alerts || [];
+                    if (alerts.length === 0) {
+                        list.innerHTML = `
+                            <div style="text-align: center; color: var(--text-muted); font-size: 0.95rem; margin-top: 15px;">
+                                ✨ Alle Systeme nominal. Hausmeister entspannt.
+                            </div>
+                        `;
+                    } else {
+                        alerts.forEach(alert => {
+                            const item = document.createElement('div');
+                            item.className = `alert-item severity-${alert.severity || 'low'}`;
+                            
+                            let buttonHtml = '';
+                            if (alert.action) {
+                                buttonHtml = `
+                                    <button class="btn-remediate" onclick="triggerRemediation(this, '${alert.action}')">
+                                        Beheben
+                                    </button>
+                                `;
+                            }
+
+                            item.innerHTML = `
+                                <div style="font-weight: 600; font-size:0.95rem;">${alert.msg}</div>
+                                ${buttonHtml}
+                            `;
+                            list.appendChild(item);
+                        });
+                    }
+                }
+            } catch (e) {
+                console.error("Monitor fetch failed:", e);
+                document.getElementById('s-brain').className = 'dot';
+                document.getElementById('s-cloud').className = 'dot';
             }
+        }
+
+        async function triggerRemediation(btn, action) {
+            btn.disabled = true;
+            btn.textContent = 'Wird behoben...';
+            btn.style.opacity = '0.6';
+
+            try {
+                const res = await fetch(`${API_BASE}/api/caretaker/remediate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: action })
+                });
+                const data = await res.json();
+                if (data.status === 'success') {
+                    btn.textContent = 'Erledigt!';
+                    btn.style.background = 'var(--success)';
+                } else {
+                    btn.textContent = 'Fehler';
+                    btn.style.background = 'var(--error)';
+                    alert('Fehler bei der Behebung: ' + (data.stderr || data.error));
+                }
+            } catch (e) {
+                btn.textContent = 'Fehlgeschlagen';
+                btn.style.background = 'var(--error)';
+                alert('Netzwerkfehler: Behebung konnte nicht gesendet werden.');
+            }
+
+            setTimeout(refreshSystem, 3000);
         }
 
         // Initial check and periodic refresh
         refreshSystem();
-        setInterval(refreshSystem, 30000);
+        setInterval(refreshSystem, 5000);
 
         // Prevent context menu
         document.addEventListener('contextmenu', e => e.preventDefault());
