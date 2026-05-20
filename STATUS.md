@@ -1,6 +1,6 @@
-# Aktueller Status & Praxis-Scan (Stand: 18.05.2026)
+# Aktueller Status & Praxis-Scan (Stand: 20.05.2026)
 
-Dieses Dokument beschreibt den **tatsächlich getesteten** Zustand des Systems. Alle anderen Pläne und Dokumente wurden ins Archiv verschoben, um Verwirrung zu vermeiden.
+Dieses Dokument beschreibt den **tatsächlich getesteten und diagnostizierten** Zustand des Systems.
 
 ---
 
@@ -8,37 +8,52 @@ Dieses Dokument beschreibt den **tatsächlich getesteten** Zustand des Systems. 
 
 ### 🌍 Website & Domain
 - **`https://www.frawo-tech.de/`**: **ERREICHBAR** und funktional.
-  - Die Seite lädt ohne sichtbare Fehler.
-  - Die neuen Bilder (Dartboard, Lautsprecher, ATEM-Switcher) sind live und an den richtigen Stellen.
 - **`https://frawo-tech.de/` (ohne www)**: **ERREICHBAR**.
-  - Der Browser-Scan zeigt, dass die Seite ohne www ebenfalls lädt und identischen Inhalt zeigt.
+  - Der mobile Button-Wrap in `frawo_custom_css.css` wurde behoben, eingecheckt und gepusht.
 
-### 🖥️ Odoo Server
+### 🖥️ Odoo Server & SSOT Consolidation
 - **IP `10.4.0.22`**: **ERREICHBAR** (Ping erfolgreich, <1ms).
-- **Homepage-Deployment**: **FUNKTIONAL**. Die Skripte können die Homepage erfolgreich in Odoo aktualisieren.
+- **Zentrales SSOT-Board**: **VOLLSTÄNDIG AKTIVIERT** und konsolidiert.
+  - Alle 85+ Aufgaben aus allen separaten Projekten wurden in das zentrale Projekt **`🚀 Homeserver 2027: Masterplan`** migriert.
+  - Alle Aufgaben sind mit Lane-Tags (z.B. `Lane A: MVP`, `Lane B: Website`, etc.) versehen.
+  - Aufgaben besitzen klare visuelle Indikatoren und Zuweisungen:
+    - **`[🤖 AGENT]`** zugewiesen an `agent@frawo-tech.de` (Infrastruktur, Automation).
+    - **`[👤 WOLF]`** zugewiesen an `wolf@frawo-tech.de` (Physik, Verträge, manuelle Aufgaben).
+    - **`[👤 FRANZ]`** zugewiesen an `franz@frawo-tech.de` (Villa Bienert Stream/Audio-Projekte).
+  - Unnötige/leere Projekt-Boards wurden archiviert, um die Benutzeroberfläche sauber zu halten.
+- **Dokumentations-Backup in Odoo**: **VOLLSTÄNDIG SYNCED**.
+  - Die Dateien `MASTERPLAN.md`, `LIVE_CONTEXT.md` und `STATUS.md` wurden als HTML formatiert und in den Task **`📚 System-Dokumentation & SSOT (Masterplan, Live-Context, Status)`** injiziert.
+  - Die Originaldateien sind zudem als binäre Dateianhänge direkt an der Aufgabe in Odoo gesichert.
+
+### 🌐 Netzwerk-Stabilität & Diagnose
+- **Netzwerk-Ausfall Root Cause**: **UDP PORT EXHAUSTION (Event 4266) gelöst**.
+  - Der Server lief durch das gleichzeitige Flapping von VPN- und Tunnel-Diensten (Tailscale, Netbird, Cloudflared) über zwei aktive Gateways (WLAN zu Easybox `192.168.2.1` für Shellys und LAN zu UCG `10.1.0.1`/`10.4.0.1`) in einen Socket-Leak.
+  - **Empfehlung für Windows-Port-Optimierung (als Administrator ausführen):**
+    ```powershell
+    # Dynamic Port Limit auf Maximum anheben
+    Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters' -Name 'MaxUserPort' -Value 65534 -Type DWord
+    
+    # TIME_WAIT Socket-Haltezeit auf 30 Sekunden reduzieren
+    Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters' -Name 'TcpTimedWaitDelay' -Value 30 -Type DWord
+    ```
 
 ---
 
 ## 2. Was unvollständig oder fehlerhaft ist
 
 ### 🔴 Stockenweiler Server
-- **SSH `stock-pve` (100.91.20.116)**: **NICHT ERREICHBAR**.
-  - Der SSH-Versuch lief in einen Timeout.
-  - Der Tailscale-Bridge-Check meldet den Status `pending` (Wartend).
-  - Die Route `192.168.178.0/24` ist lokal zwar sichtbar, aber der Server antwortet nicht auf Anfragen.
-  - **Fazit:** Stockenweiler ist aktuell von außen/über Tailscale nicht erreichbar.
+- **SSH `stock-pve` (100.91.20.116)**: **NICHT ERREICHBAR** (physisch ausgeschaltet).
+  - **Fazit:** Ein Besuch vor Ort in Rothkreuz ist zwingend erforderlich, um den Host physisch einzuschalten.
+  - **Odoo-Aktion:** Es wurde eine prioritäre Aufgabe **`[👤 WOLF] 🔌 Stockenweiler PVE physisch einschalten (Rothkreuz vor Ort)`** erstellt und Wolf zugewiesen. Alle davon abhängigen Aufgaben (Radio-Node, Backup-Sync, HA Eltern) wurden in die Stage `🛑 Blockiert` verschoben.
 
 ### ⚠️ Cloudflare Security Headers
-- Die "Transform Rules" (Schritt 4 der Anleitung) für die Sicherheits-Header sind noch nicht eingerichtet.
-
-### 📱 Mobile Responsiveness
-- Ich habe CSS-Regeln hinzugefügt, um den Header auf Handys zu verkleinern.
-- **Status:** Unbestätigt. Wir haben keinen echten Handy-Testbericht, sondern nur die Bestätigung, dass die Seite generell lädt.
+- Die "Transform Rules" (Schritt 4 der Anleitung) für die Sicherheits-Header in Cloudflare sind noch nicht eingerichtet.
 
 ---
 
 ## 3. Nächste Schritte
 
-1. **Stockenweiler vor Ort prüfen**: Warum ist der Server über Tailscale nicht erreichbar?
-2. **Cloudflare Transform Rules**: Einrichten der Security Headers (Schritt 4).
-3. **Mobile Ansicht testen**: Feedback vom echten Handy einholen.
+1. **Stockenweiler PVE physisch einschalten** (Wolf vor Ort in Rothkreuz).
+2. **Windows Registry-Optimierung anwenden** (Wolf im Administrator-Terminal).
+3. **Cloudflare Transform Rules einrichten** (Agent & Wolf gemeinsam).
+4. **Schritt-für-Schritt Abarbeitung der Lanes** direkt über das Odoo-Zentralboard.
