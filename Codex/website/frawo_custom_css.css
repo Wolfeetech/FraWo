@@ -187,6 +187,7 @@ header, .o_header {
   border-radius: 50px;
   box-shadow: 0 0 15px rgba(138, 43, 226, 0.5);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  white-space: nowrap !important;
 }
 
 .fw-btn-header:hover {
@@ -269,6 +270,7 @@ a.fw-btn-primary.btn {
   transition: background-color 0.2s ease !important;
   display: inline-block !important;
   text-decoration: none !important;
+  white-space: nowrap !important;
 }
 
 a.fw-btn-primary.btn:hover {
@@ -288,6 +290,7 @@ a.fw-btn-ghost.btn {
   transition: all 0.2s ease !important;
   display: inline-block !important;
   text-decoration: none !important;
+  white-space: nowrap !important;
 }
 
 a.fw-btn-ghost.btn:hover {
