@@ -20,7 +20,9 @@ from urllib.parse import urlparse
 PORT = 5555
 OLLAMA_URL = "http://127.0.0.1:11434"
 OLLAMA_MODEL = "frawo-pro:latest"
-SSH_CONFIG_PATH = "Codex/ssh_config_container" if sys.platform != "win32" else "Codex/ssh_config"
+# Resolve SSH config to absolute path for Windows compatibility
+_BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+SSH_CONFIG_PATH = os.path.join(_BASE_DIR, "Codex", "ssh_config_container" if sys.platform != "win32" else "ssh_config")
 
 # Setup logging
 logging.basicConfig(
@@ -137,20 +139,20 @@ def check_caretaker_anomalies(pve_resources):
     })
     
     # 2. Key active VMs that should ALWAYS be running on Anker-PVE
+    # Updated 2026-05-20 to match real infra (MASTERPLAN.md / LIVE_CONTEXT.md)
     active_vms = {
-        300: "Nextcloud (VM 300)",
-        330: "Paperless (VM 330)",
-        220: "Odoo ERP (VM 220)",
+        200: "Nextcloud (VM 200)",
         210: "HAOS Smart Home (VM 210)",
-        240: "PBS Backup Server (VM 240)"
+        220: "Odoo ERP (VM 220)",
+        230: "Paperless (VM 230)",
     }
-    
+
     # 3. Key active LXCs that should ALWAYS be running on Anker-PVE
     active_cts = {
-        120: "Vaultwarden Password Safe (CT 120)",
-        130: "Radio-Node (CT 130)",
+        100: "Toolbox / Caddy / AdGuard (CT 100)",
         110: "Storage-Node (CT 110)",
-        101: "Adguard-Slave DNS (CT 101)" # Low severity backup
+        120: "Vaultwarden (CT 120)",
+        101: "AdGuard-Slave DNS (CT 101)",  # Low severity
     }
     
     found_vmids = set()
@@ -489,7 +491,7 @@ class OpenClawAPIHandler(BaseHTTPRequestHandler):
             headers={"Content-Type": "application/json"}
         )
         
-        with urllib.request.urlopen(req, timeout=180) as response:
+        with urllib.request.urlopen(req, timeout=45) as response:
             return json.loads(response.read().decode())
 
     def handle_chat(self, data):
@@ -598,9 +600,15 @@ class OpenClawAPIHandler(BaseHTTPRequestHandler):
 
 def run():
     logger.info(f"Starting OpenClaw AGENT on port {PORT} (Ollama: {OLLAMA_MODEL})...")
+    logger.info(f"SSH config path: {SSH_CONFIG_PATH}")
+    logger.info(f"Base dir: {_BASE_DIR}")
     try:
         server = HTTPServer(('0.0.0.0', PORT), OpenClawAPIHandler)
+        logger.info(f"OpenClaw listening on 0.0.0.0:{PORT} — ready.")
         server.serve_forever()
+    except OSError as e:
+        logger.critical(f"Port {PORT} already in use or bind failed: {e}")
+        sys.exit(1)
     except Exception as e:
         logger.critical(f"Server failed to start: {e}")
         sys.exit(1)
