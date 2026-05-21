@@ -1,6 +1,6 @@
 # Platform Health Audit
 
-- Generated at: `2026-05-19T17:45:51+02:00`
+- Generated at: `2026-05-20T22:19:10+02:00`
 - Anker management path: `pve-anker`
 - Stockenweiler management path: `pve-stock`
 
@@ -14,15 +14,15 @@
 ## Anker Host
 
 - Host: `proxmox-anker` / `pve-manager/9.1.9/ee7bad0a3d1546c9`
-- Memory used: `10.79 GiB` / `15.46 GiB` (`69.8%`) 
-- Rootfs used: `32.06 GiB` / `67.61 GiB` (`47.4%`) 
-- Swap used: `3.37 GiB` / `8.0 GiB` (`42.1%`) 
+- Memory used: `12.27 GiB` / `15.46 GiB` (`79.4%`) 
+- Rootfs used: `32.62 GiB` / `67.61 GiB` (`48.2%`) 
+- Swap used: `2.39 GiB` / `8.0 GiB` (`29.9%`) 
 - Storages:
-  - `local-lvm` `lvmthin` active=`true` used=`89.9%`
-  - `local` `dir` active=`true` used=`47.4%`
-  - `pbs-usb` `dir` active=`true` used=`47.4%`
-  - `google-drive` `dir` active=`true` used=`33.4%`
-  - `ssd2tb` `dir` active=`true` used=`4.6%`
+  - `local-lvm` `lvmthin` active=`true` used=`89.8%`
+  - `pbs-usb` `dir` active=`true` used=`48.2%`
+  - `local` `dir` active=`true` used=`48.2%`
+  - `google-drive` `dir` active=`true` used=`34.1%`
+  - `ssd2tb` `dir` active=`true` used=`4.8%`
 
 ## Stockenweiler Host
 
@@ -52,8 +52,8 @@
 ## Optimization Candidates
 
 - Anker guest `PBS-FraWo` (`240`) runs at only `1.0%` RAM use and is a later rightsizing candidate.
-- Anker guest `storage-node` (`110`) runs at only `3.4%` RAM use and is a later rightsizing candidate.
-- Anker guest `vaultwarden` (`120`) runs at only `5.7%` RAM use and is a later rightsizing candidate.
+- Anker guest `storage-node` (`110`) runs at only `2.1%` RAM use and is a later rightsizing candidate.
+- Anker guest `vaultwarden` (`120`) runs at only `6.1%` RAM use and is a later rightsizing candidate.
 
 ## Strategic Recommendations
 

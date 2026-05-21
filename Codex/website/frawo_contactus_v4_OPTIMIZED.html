@@ -39,7 +39,7 @@
         <div class="fw-card" style="background: rgba(255, 255, 255, 0.98); border: none; padding: 2.5rem;">
           <h3 style="color: var(--fw-forest); font-weight: 800; margin-bottom: 1.5rem;">Anfrage senden</h3>
 
-          <form action="/website/form/" method="POST" id="contact-form" data-model_name="crm.lead">
+          <form action="/website/form/crm.lead" method="POST" id="contact-form">
             <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
             <!-- Name -->
             <div class="mb-3">
@@ -118,6 +118,41 @@
     </div>
   </div>
 </section>
+
+<!-- Contact Form JS Interceptor -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var form = document.getElementById('contact-form');
+    if (form) {
+        form.addEventListener('submit', function(event) {
+            var timelineInput = document.getElementById('timeline');
+            var interestInput = document.getElementById('name');
+            var descInput = document.getElementById('description');
+            var privacyInput = document.getElementById('privacy');
+            
+            if (timelineInput && interestInput && descInput) {
+                // Wir speichern den Originaltext ab
+                if (!descInput.dataset.modified) {
+                    var timeline = timelineInput.value;
+                    var interest = interestInput.value;
+                    var originalDesc = descInput.value;
+                    
+                    descInput.value = "[Zeitrahmen: " + timeline + "] [Interesse: " + interest + "]\n\nBeschreibung:\n" + originalDesc;
+                    descInput.dataset.modified = "true";
+                }
+                
+                // Anstatt den Standard-Submit zu killen, lassen wir das Formular normal senden.
+                // Odoo benötigt die saubere Submit-Kette für sein eigenes AJAX-Handling.
+                // Damit die Felder nicht als Fehler in Odoo aufschlagen, disablen wir sie kurz vor dem Senden:
+                setTimeout(function() {
+                    timelineInput.disabled = true;
+                    if (privacyInput) privacyInput.disabled = true;
+                }, 10);
+            }
+        });
+    }
+});
+</script>
 
 <!-- Info Section -->
 <section style="padding: 80px 0; background: var(--fw-bg);">
