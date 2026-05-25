@@ -1,4 +1,4 @@
-# Radio / AzuraCast Status - 2026-05-15
+# Radio / AzuraCast Status - 2026-05-14
 
 > [!WARNING]
 > **HISTORISCHER SNAPSHOT (nicht entscheidungsfuehrend).**
