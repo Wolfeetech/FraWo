@@ -1,8 +1,7 @@
-#!/usr/bin/env python3
+import xmlrpc.client
 import os
 import sys
 sys.stdout.reconfigure(encoding='utf-8')
-import xmlrpc.client
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -18,12 +17,10 @@ common = xmlrpc.client.ServerProxy(f'{ODOO_URL}/xmlrpc/2/common')
 uid = common.authenticate(ODOO_DB, ODOO_USER, ODOO_PASSWORD, {})
 models = xmlrpc.client.ServerProxy(f'{ODOO_URL}/xmlrpc/2/object')
 
-servers = models.execute_kw(ODOO_DB, uid, ODOO_PASSWORD, 'ir.mail_server', 'search_read', [[]], {'fields': ['name', 'smtp_user', 'smtp_host', 'sequence', 'active']})
-print('SMTP Servers:')
-for s in servers:
-    print(f"- {s['name']}: User={s['smtp_user']} Host={s['smtp_host']} Active={s['active']}")
+smtp = models.execute_kw(ODOO_DB, uid, ODOO_PASSWORD, 'ir.mail_server', 'search_read', [[]], {'fields': ['smtp_user']})
+print("SMTP Users:", smtp)
 
-params = models.execute_kw(ODOO_DB, uid, ODOO_PASSWORD, 'ir.config_parameter', 'search_read', [[('key', 'ilike', 'mail')]], {'fields': ['key', 'value']})
-print('\nMail Parameters:')
-for p in params:
-    print(f"- {p['key']}: {p['value']}")
+# Set the system parameters to force the FROM address
+# We need to set mail.default.from and mail.default.from_filter
+params = models.execute_kw(ODOO_DB, uid, ODOO_PASSWORD, 'ir.config_parameter', 'search_read', [[('key', 'in', ['mail.default.from', 'mail.catchall.domain'])]], {'fields': ['key', 'value']})
+print("Current Params:", params)

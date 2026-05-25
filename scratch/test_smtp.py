@@ -1,8 +1,5 @@
-#!/usr/bin/env python3
-import os
-import sys
-sys.stdout.reconfigure(encoding='utf-8')
 import xmlrpc.client
+import os
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -14,18 +11,12 @@ ODOO_DB = 'FraWo_GbR'
 ODOO_USER = os.getenv('ODOO_USER', 'wolf@frawo-tech.de')
 ODOO_PASSWORD = os.getenv('ODOO_PASSWORD', 'Wolf2024!Frawo')
 
-def test_smtp():
-    common = xmlrpc.client.ServerProxy(f'{ODOO_URL}/xmlrpc/2/common')
-    uid = common.authenticate(ODOO_DB, ODOO_USER, ODOO_PASSWORD, {})
-    models = xmlrpc.client.ServerProxy(f'{ODOO_URL}/xmlrpc/2/object')
+common = xmlrpc.client.ServerProxy(f'{ODOO_URL}/xmlrpc/2/common')
+uid = common.authenticate(ODOO_DB, ODOO_USER, ODOO_PASSWORD, {})
+models = xmlrpc.client.ServerProxy(f'{ODOO_URL}/xmlrpc/2/object')
 
-    servers = models.execute_kw(ODOO_DB, uid, ODOO_PASSWORD, 'ir.mail_server', 'search_read', [[]], {'fields': ['id', 'name']})
-    for s in servers:
-        print(f"Testing Server: {s['name']} (ID: {s['id']})")
-        try:
-            res = models.execute_kw(ODOO_DB, uid, ODOO_PASSWORD, 'ir.mail_server', 'test_smtp_connection', [s['id']])
-            print(f"[OK] Connection test returned: {res}")
-        except Exception as e:
-            print(f"[FAIL] Error: {e}")
-
-test_smtp()
+try:
+    result = models.execute_kw(ODOO_DB, uid, ODOO_PASSWORD, 'ir.mail_server', 'test_smtp_connection', [1])
+    print("Test SMTP Connection Result:", result)
+except Exception as e:
+    print("SMTP Test Failed:", repr(e))
