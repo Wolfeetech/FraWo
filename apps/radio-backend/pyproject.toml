@@ -4,7 +4,6 @@ version = "1.0.0"
 description = "Professional radio streaming backend with FastAPI"
 authors = ["FraWo GbR"]
 readme = "README.md"
-python = "^3.11"
 
 [tool.poetry.dependencies]
 python = "^3.11"

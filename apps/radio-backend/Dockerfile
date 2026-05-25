@@ -16,8 +16,10 @@ RUN pip install --no-cache-dir poetry==1.8.0
 # Copy dependency files
 COPY pyproject.toml poetry.lock* ./
 
-# Export dependencies to requirements.txt
-RUN poetry export -f requirements.txt --output requirements.txt --without-hashes
+# Resolve deps (creates lock if missing) then export to requirements.txt
+RUN poetry config virtualenvs.create false && \
+    poetry lock --no-update 2>/dev/null || poetry lock && \
+    poetry export -f requirements.txt --output requirements.txt --without-hashes
 
 # Stage 2: Runtime
 FROM python:3.11-slim
@@ -55,4 +57,4 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
 EXPOSE 8000 9090
 
 # Run application
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "4"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "2"]

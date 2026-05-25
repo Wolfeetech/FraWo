@@ -45,7 +45,7 @@
 | CT 101 | adguard-slave | 10.4.0.101 | AdGuard Home (Slave/Backup) | ✅ running |
 | CT 110 | storage-node | 10.4.0.30 | CIFS/Samba (media + docs) | ✅ running |
 | CT 120 | vaultwarden | 10.4.0.26 | Vaultwarden (Bitwarden-kompatibel) | ✅ running |
-| CT 130 | radio-node | **10.4.0.28** | AzuraCast (port 80/443/8000) + Navidrome (port 4533) + Samba music-share | ✅ running, RAM 4GB |
+| CT 130 | radio-node | **10.4.0.28** | AzuraCast (port 80/443/8000) + Navidrome (port 4533) + Samba music-share + **Radio Backend API (port 9500)** | ✅ running, RAM 4GB |
 | VM 220 | odoo | 10.4.0.22 | Odoo 17 ERP only (AzuraCast abgeschaltet ✅) | ✅ running |
 
 ### STOCKENWEILER — Site B (Schiffscontainer, 10.30.8.x)
@@ -99,6 +99,7 @@
 | navidrome.hs27.internal | 10.4.0.28:4533 | ✅ | Navidrome auf CT 130 (music_ssd) |
 | radio-anker.hs27.internal | 10.4.0.28:80 | ✅ | AzuraCast CT 130 (Anker-Standort) |
 | radio-stock.hs27.internal | 10.30.8.22:8000 | 🔴 | Icecast Relay frawo-docker-1 (TODO #242) |
+| radio-api.hs27.internal | 10.4.0.28:9500 | ✅ | FraWo Radio Backend API (FastAPI) |
 
 ## FRAWO FUNK RADIO
 
