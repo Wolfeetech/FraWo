@@ -10,7 +10,7 @@ socket.setdefaulttimeout(15.0)
 
 
 
-DEFAULT_ODOO_URL = "http://10.1.0.22:8069"
+DEFAULT_ODOO_URL = "http://10.4.0.22:8069"
 DEFAULT_ODOO_DB = "FraWo_GbR"
 
 

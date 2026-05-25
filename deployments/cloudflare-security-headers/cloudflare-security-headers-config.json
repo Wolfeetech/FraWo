@@ -1,0 +1,86 @@
+{
+  "cloudflare_transform_rules": {
+    "description": "Security Headers für frawo-tech.de",
+    "rule_name": "Add Security Headers - frawo-tech.de",
+    "instructions": [
+      "1. Login zu Cloudflare Dashboard",
+      "2. Domain auswählen: frawo-tech.de",
+      "3. Navigate: Rules → Transform Rules → Modify Response Header",
+      "4. Click: Create Rule",
+      "5. Folgende Header nacheinander hinzufügen:"
+    ],
+    "headers_to_add": [
+      {
+        "header_name": "Strict-Transport-Security",
+        "value": "max-age=31536000; includeSubDomains; preload",
+        "priority": "HIGH",
+        "description": "Erzwingt HTTPS für 1 Jahr, inkl. Subdomains"
+      },
+      {
+        "header_name": "X-Frame-Options",
+        "value": "SAMEORIGIN",
+        "priority": "HIGH",
+        "description": "Verhindert Clickjacking - erlaubt nur eigene Frames"
+      },
+      {
+        "header_name": "X-Content-Type-Options",
+        "value": "nosniff",
+        "priority": "MEDIUM",
+        "description": "Bereits vorhanden, aber zur Sicherheit auch hier setzen"
+      },
+      {
+        "header_name": "Referrer-Policy",
+        "value": "strict-origin-when-cross-origin",
+        "priority": "MEDIUM",
+        "description": "Kontrolliert Referrer-Informationen bei Cross-Origin"
+      },
+      {
+        "header_name": "Permissions-Policy",
+        "value": "geolocation=(), microphone=(), camera=(), payment=(), usb=(), magnetometer=(), gyroscope=()",
+        "priority": "MEDIUM",
+        "description": "Deaktiviert unnötige Browser-Features"
+      },
+      {
+        "header_name": "Content-Security-Policy",
+        "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' wss: https:; frame-src 'self' https://challenges.cloudflare.com; frame-ancestors 'self';",
+        "priority": "HIGH",
+        "description": "CSP Policy - Odoo-kompatibel mit Cloudflare Turnstile",
+        "note": "WICHTIG: Schrittweise testen! Kann bei zu restriktiver Config Funktionen brechen."
+      }
+    ],
+    "cloudflare_ui_steps": {
+      "step_1": "Login: https://dash.cloudflare.com/",
+      "step_2": "Domain auswählen: frawo-tech.de",
+      "step_3": "Left Menu: Rules → Transform Rules",
+      "step_4": "Tab: Modify Response Header",
+      "step_5": "Button: Create Rule",
+      "step_6_rule_config": {
+        "rule_name": "Security Headers - All Pages",
+        "when_incoming_requests_match": {
+          "field": "URI Path",
+          "operator": "starts with",
+          "value": "/"
+        },
+        "then": {
+          "action": "Set dynamic",
+          "headers": "Add multiple headers as listed above"
+        }
+      }
+    },
+    "alternative_curl_api_method": {
+      "description": "Für fortgeschrittene Nutzer: Cloudflare API verwenden",
+      "note": "Benötigt API Token mit 'Transform Rules' Permission",
+      "api_endpoint": "https://api.cloudflare.com/client/v4/zones/{zone_id}/rulesets/phases/http_response_headers_transform/entrypoint",
+      "requires": [
+        "Zone ID (aus Cloudflare Dashboard → Overview → Zone ID)",
+        "API Token (Account → API Tokens → Create Token)"
+      ]
+    }
+  },
+  "testing_urls": [
+    "https://securityheaders.com/?q=https://frawo-tech.de",
+    "https://observatory.mozilla.org/analyze/frawo-tech.de"
+  ],
+  "estimated_time": "15-30 Minuten",
+  "rollback_plan": "Regel einfach in Cloudflare Dashboard deaktivieren oder löschen"
+}

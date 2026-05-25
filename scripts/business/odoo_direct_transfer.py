@@ -3,7 +3,7 @@ import json
 
 # Connection parameters
 DB_USER = 'odoo'
-DB_HOST = '10.1.0.22'  # We will run this via docker exec on the db container, so localhost there
+DB_HOST = '10.4.0.22'  # We will run this via docker exec on the db container, so localhost there
 DB_PORT = '5432'
 
 SOURCE_DBS = ['FraWo_Live', 'Recovery_DB']

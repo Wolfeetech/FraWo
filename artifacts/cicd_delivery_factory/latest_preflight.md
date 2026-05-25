@@ -1,21 +1,21 @@
 # CI/CD Delivery Factory Preflight
 
-- Generated at: `2026-04-20T19:15:43+02:00`
-- Git origin: `https://github.com/Wolfeetech/FraWo.git`
-- Existing workflow files: `4`
-- Dockerfiles/Containerfiles: `2`
+- Generated at: `2026-05-19T15:23:39+00:00`
+- Git origin: `https://github.com/Wolfeetech/FraWo`
+- Existing workflow files: `10`
+- Dockerfiles/Containerfiles: `3`
 - Stack compose templates: `6`
 - Factory-ready apps now: `1` / `10`
 
 ## Verified Facts
 
-- Git remote is configured: `https://github.com/Wolfeetech/FraWo.git`.
+- Git remote is configured: `https://github.com/Wolfeetech/FraWo`.
 - Current repo host is GitHub, so a thin GitHub Actions wrapper is a factual option.
 - Repo already contains `6` stack compose templates, but they are runtime templates, not standalone OCI app definitions.
 - GHCR registry contract and env/secret contract docs now exist for the first reference app.
 - A neutral compose deploy bundle now exists for the first reference app.
 - Coolify host selection contract now exists and keeps the controller out of the DMZ and off the hypervisor host itself.
-- Repo now contains `2` verified Dockerfile/Containerfile artifact for factory build work.
+- Repo now contains `3` verified Dockerfile/Containerfile artifact for factory build work.
 - App catalog now contains `1` factory-deploy-ready reference app candidate.
 
 ## Rejected Assumptions

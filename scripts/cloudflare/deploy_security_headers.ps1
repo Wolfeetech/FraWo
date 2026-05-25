@@ -18,35 +18,7 @@ $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 Set-Location $scriptDir
 
 # Worker Code
-$workerCode = @'
-addEventListener('fetch', event => {
-  event.respondWith(handleRequest(event.request))
-})
-
-async function handleRequest(request) {
-  const response = await fetch(request)
-  const newHeaders = new Headers(response.headers)
-
-  // Critical Security Headers
-  newHeaders.set('X-Frame-Options', 'SAMEORIGIN')
-  newHeaders.set('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https: blob:; connect-src 'self' https://www.google-analytics.com; frame-ancestors 'self'; base-uri 'self'; form-action 'self'")
-  newHeaders.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains')
-  newHeaders.set('X-Content-Type-Options', 'nosniff')
-  newHeaders.set('X-XSS-Protection', '1; mode=block')
-  newHeaders.set('Referrer-Policy', 'strict-origin-when-cross-origin')
-  newHeaders.set('Permissions-Policy', 'geolocation=(), microphone=(), camera=(), payment=()')
-
-  // Remove information disclosure headers
-  newHeaders.delete('Server')
-  newHeaders.delete('X-Powered-By')
-
-  return new Response(response.body, {
-    status: response.status,
-    statusText: response.statusText,
-    headers: newHeaders
-  })
-}
-'@
+$workerCode = Get-Content -Raw -Path "security-headers-worker.js"
 
 # If credentials not provided, check environment or ask
 if ([string]::IsNullOrEmpty($CloudflareEmail) -or [string]::IsNullOrEmpty($CloudflareApiKey)) {
@@ -110,14 +82,14 @@ if ([string]::IsNullOrEmpty($ZoneId)) {
 
         if ($zonesResponse.success -and $zonesResponse.result.Count -gt 0) {
             $ZoneId = $zonesResponse.result[0].id
-            Write-Host "✓ Zone ID found: $ZoneId" -ForegroundColor Green
+            Write-Host "[OK] Zone ID found: $ZoneId" -ForegroundColor Green
         } else {
-            Write-Host "✗ Could not find zone for frawo-tech.de" -ForegroundColor Red
+            Write-Host "[FAIL] Could not find zone for frawo-tech.de" -ForegroundColor Red
             Write-Host "Please check your domain in Cloudflare Dashboard" -ForegroundColor Red
             exit 1
         }
     } catch {
-        Write-Host "✗ API Error: $($_.Exception.Message)" -ForegroundColor Red
+        Write-Host "[FAIL] API Error: $($_.Exception.Message)" -ForegroundColor Red
         exit 1
     }
 }
@@ -130,13 +102,13 @@ try {
 
     if ($accountResponse.success -and $accountResponse.result.Count -gt 0) {
         $AccountId = $accountResponse.result[0].id
-        Write-Host "✓ Account ID found: $AccountId" -ForegroundColor Green
+        Write-Host "[OK] Account ID found: $AccountId" -ForegroundColor Green
     } else {
-        Write-Host "✗ Could not find Account ID" -ForegroundColor Red
+        Write-Host "[FAIL] Could not find Account ID" -ForegroundColor Red
         exit 1
     }
 } catch {
-    Write-Host "✗ API Error: $($_.Exception.Message)" -ForegroundColor Red
+    Write-Host "[FAIL] API Error: $($_.Exception.Message)" -ForegroundColor Red
     exit 1
 }
 
@@ -160,13 +132,13 @@ try {
         -ContentType "application/javascript"
 
     if ($workerResponse.success) {
-        Write-Host "✓ Worker deployed successfully!" -ForegroundColor Green
+        Write-Host "[OK] Worker deployed successfully!" -ForegroundColor Green
     } else {
-        Write-Host "✗ Worker deployment failed: $($workerResponse.errors)" -ForegroundColor Red
+        Write-Host "[FAIL] Worker deployment failed: $($workerResponse.errors)" -ForegroundColor Red
         exit 1
     }
 } catch {
-    Write-Host "✗ API Error: $($_.Exception.Message)" -ForegroundColor Red
+    Write-Host "[FAIL] API Error: $($_.Exception.Message)" -ForegroundColor Red
     exit 1
 }
 
@@ -187,13 +159,13 @@ try {
         -ContentType "application/json"
 
     if ($routeResponse.success) {
-        Write-Host "✓ Worker route created successfully!" -ForegroundColor Green
+        Write-Host "[OK] Worker route created successfully!" -ForegroundColor Green
     } else {
-        Write-Host "✗ Route creation failed: $($routeResponse.errors)" -ForegroundColor Red
+        Write-Host "[FAIL] Route creation failed: $($routeResponse.errors)" -ForegroundColor Red
         exit 1
     }
 } catch {
-    Write-Host "✗ API Error: $($_.Exception.Message)" -ForegroundColor Red
+    Write-Host "[FAIL] API Error: $($_.Exception.Message)" -ForegroundColor Red
     exit 1
 }
 
@@ -220,10 +192,10 @@ try {
     $foundHeaders = 0
     foreach ($header in $headersToCheck) {
         if ($response.Headers[$header]) {
-            Write-Host "  ✓ $header : $($response.Headers[$header])" -ForegroundColor Green
+            Write-Host "  [OK] $header : $($response.Headers[$header])" -ForegroundColor Green
             $foundHeaders++
         } else {
-            Write-Host "  ✗ $header : Missing" -ForegroundColor Red
+            Write-Host "  [FAIL] $header : Missing" -ForegroundColor Red
         }
     }
 
@@ -236,7 +208,7 @@ try {
         Write-Host "Security Score Improvement:" -ForegroundColor White
         Write-Host "  Before: 62/100 (MEDIUM)" -ForegroundColor Yellow
         Write-Host "  After:  87/100 (GOOD)" -ForegroundColor Green
-        Write-Host "  +25 points (+40% improvement)" -ForegroundColor Green
+        Write-Host '  +25 points (+40% improvement)' -ForegroundColor Green
     } else {
         Write-Host "========================================" -ForegroundColor Yellow
         Write-Host "PARTIAL SUCCESS - Some headers missing" -ForegroundColor Yellow

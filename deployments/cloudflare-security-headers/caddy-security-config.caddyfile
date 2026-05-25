@@ -1,0 +1,76 @@
+# Caddy Security Headers Konfiguration für frawo-tech.de
+# Diese Konfiguration kann zusätzlich zu Cloudflare verwendet werden
+# oder als Fallback wenn Cloudflare nicht verfügbar ist
+
+frawo-tech.de, www.frawo-tech.de {
+    # Reverse Proxy zu Odoo (typische Konfiguration)
+    reverse_proxy localhost:8069 {
+        # Preserve original headers
+        header_up Host {host}
+        header_up X-Real-IP {remote_host}
+        header_up X-Forwarded-For {remote_host}
+        header_up X-Forwarded-Proto {scheme}
+    }
+
+    # Security Headers (wenn NICHT über Cloudflare gesetzt)
+    header {
+        # HSTS - Force HTTPS for 1 year
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+
+        # Clickjacking Protection
+        X-Frame-Options "SAMEORIGIN"
+
+        # Prevent MIME-Type sniffing
+        X-Content-Type-Options "nosniff"
+
+        # XSS Protection (Legacy, but still useful for old browsers)
+        X-XSS-Protection "1; mode=block"
+
+        # Referrer Policy
+        Referrer-Policy "strict-origin-when-cross-origin"
+
+        # Permissions Policy - Disable unnecessary features
+        Permissions-Policy "geolocation=(), microphone=(), camera=(), payment=(), usb=(), magnetometer=(), gyroscope=()"
+
+        # Content Security Policy (Odoo-kompatibel)
+        # ACHTUNG: Diese CSP ist für Odoo optimiert - bei Problemen anpassen!
+        Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' wss: https:; frame-src 'self'; frame-ancestors 'self';"
+
+        # Remove Server header to hide Caddy version
+        -Server
+    }
+
+    # Cookie Security (wenn Odoo-Cookies durchgereicht werden)
+    # HINWEIS: Odoo muss die Cookies selbst mit Secure/SameSite setzen
+    # Diese Config kann helfen, aber ist nicht ideal für alle Setups
+
+    # Logging für Security-Events
+    log {
+        output file /var/log/caddy/frawo-tech-access.log
+        format json
+        level INFO
+    }
+
+    # Error Pages (optional)
+    handle_errors {
+        respond "{err.status_code} {err.status_text}"
+    }
+}
+
+# HTTP zu HTTPS Redirect (automatisch von Caddy, aber explizit für Klarheit)
+http://frawo-tech.de, http://www.frawo-tech.de {
+    redir https://{host}{uri} permanent
+}
+
+# Alternative: Wenn nur als Datei-Server für statische Inhalte
+# (Nicht für Odoo Reverse Proxy)
+# frawo-tech.de {
+#     root * /var/www/frawo-tech
+#     file_server
+#
+#     # Security Headers wie oben
+#     header {
+#         Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+#         # ... rest of headers
+#     }
+# }

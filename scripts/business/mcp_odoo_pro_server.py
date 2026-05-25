@@ -7,12 +7,14 @@ from odoo_rpc_client import connect
 mcp = FastMCP("OdooPro", dependencies=["odoo-rpc-client"])
 
 # Odoo Connection Configuration (SSOT)
-ODOO_URL = os.getenv("ODOO_RPC_URL", "http://10.1.0.22:8069")
+ODOO_URL = os.getenv("ODOO_RPC_URL", "http://10.4.0.22:8069")
 ODOO_DB = os.getenv("ODOO_RPC_DB", "FraWo_GbR")
-ODOO_USER = os.getenv("ODOO_RPC_USER", "admin")
+ODOO_USER = os.getenv("ODOO_RPC_USER", "wolf@frawo-tech.de")
 
 def get_odoo_session():
     """Establish connection to Odoo via RPC."""
+    if not os.getenv("ODOO_RPC_PASSWORD"):
+        os.environ["ODOO_RPC_PASSWORD"] = "anker1101"
     return connect(url=ODOO_URL, db=ODOO_DB, default_user=ODOO_USER, secret_label="MCP Odoo Pro Secret")
 
 @mcp.tool()

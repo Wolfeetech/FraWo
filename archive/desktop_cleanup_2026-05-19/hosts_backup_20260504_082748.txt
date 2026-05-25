@@ -1,0 +1,33 @@
+
+
+# Private_Networking aliases start
+100.91.20.116 pve pve.tail150400.ts.net
+100.69.179.87 anker-pve
+# Private_Networking aliases end
+
+
+# --- Homeserver 2027 Internal Aliases ---
+100.99.206.128 portal.hs27.internal
+100.99.206.128 cloud.hs27.internal
+100.99.206.128 odoo.hs27.internal
+100.99.206.128 paperless.hs27.internal
+100.99.206.128 ha.hs27.internal
+100.99.206.128 radio.hs27.internal
+100.99.206.128 media.hs27.internal
+# --- End Aliases ---
+# TailscaleHostsSectionStart
+# This section contains MagicDNS entries for Tailscale.
+# Do not edit this section manually.
+
+100.106.111.38 franz-iphone15.tail150400.ts.net. franz-iphone15
+100.83.213.17 pixel-9-pro.tail150400.ts.net. pixel-9-pro
+100.69.179.87 proxmox-anker.tail150400.ts.net. proxmox-anker
+100.91.20.116 stockenweiler-pve.tail150400.ts.net. stockenweiler-pve
+100.106.67.127 surface-go-frontend.tail150400.ts.net. surface-go-frontend
+100.82.26.53 toolbox.tail150400.ts.net. toolbox
+100.84.241.124 wohnzimmertv.tail150400.ts.net. wohnzimmertv
+100.79.103.59 wolf-surface.tail150400.ts.net. wolf-surface
+100.76.249.126 wolf-zenbook-ux325ea-ux325ea.tail150400.ts.net. wolf-zenbook-ux325ea-ux325ea
+100.98.31.60 wolfstudiopc.tail150400.ts.net. wolfstudiopc
+
+# TailscaleHostsSectionEnd

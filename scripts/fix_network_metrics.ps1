@@ -3,7 +3,7 @@
 
 # 1. Identify Interfaces
 $wlan = Get-NetIPConfiguration | Where-Object { $_.IPv4DefaultGateway.NextHop -eq "192.168.2.1" }
-$ethernet = Get-NetIPConfiguration | Where-Object { $_.IPv4DefaultGateway.NextHop -eq "10.1.0.1" }
+$ethernet = Get-NetIPConfiguration | Where-Object { $_.IPv4DefaultGateway.NextHop -eq "10.4.0.1" }
 
 if ($null -eq $wlan -or $null -eq $ethernet) {
     Write-Error "Could not identify both interfaces. Please ensure you are connected to both EasyBox and UCG."
@@ -25,4 +25,4 @@ Get-NetRoute -DestinationPrefix "0.0.0.0/0" | Sort-Object Metric
 
 Write-Host "`nTesting Connectivity..."
 Test-NetConnection google.com
-Test-NetConnection 10.1.0.1
+Test-NetConnection 10.4.0.1

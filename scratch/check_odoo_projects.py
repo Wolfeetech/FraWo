@@ -1,28 +1,25 @@
 import xmlrpc.client
+import os
+from pathlib import Path
+from dotenv import load_dotenv
 
-url = 'http://10.1.0.22:8069'
-db = 'FraWo_GbR'
-username = 'wolf@frawo-tech.de'
-password = 'Wolf2024!Frawo'
+env_path = Path.home() / '.ai-tools-shared' / '.env'
+load_dotenv(env_path)
 
-def check_odoo_projects():
-    common = xmlrpc.client.ServerProxy(f'{url}/xmlrpc/2/common')
-    uid = common.authenticate(db, username, password, {})
-    if not uid:
-        print("[X] Auth failed")
-        return
-    
-    models = xmlrpc.client.ServerProxy(f'{url}/xmlrpc/2/object')
+ODOO_URL = os.getenv('ODOO_URL', 'http://10.4.0.22:8069')
+ODOO_DB = 'FraWo_GbR'
+ODOO_USER = os.getenv('ODOO_USER', 'wolf@frawo-tech.de')
+ODOO_PASSWORD = os.getenv('ODOO_PASSWORD', 'Wolf2024!Frawo')
 
-    print("--- Projects ---")
-    projects = models.execute_kw(db, uid, password, 'project.project', 'search_read', [[]], {'fields': ['id', 'name']})
+try:
+    common = xmlrpc.client.ServerProxy(f'{ODOO_URL}/xmlrpc/2/common')
+    uid = common.authenticate(ODOO_DB, ODOO_USER, ODOO_PASSWORD, {})
+    models = xmlrpc.client.ServerProxy(f'{ODOO_URL}/xmlrpc/2/object')
+
+    print("--- Odoo Projects ---")
+    projects = models.execute_kw(ODOO_DB, uid, ODOO_PASSWORD, 'project.project', 'search_read', [[]], {'fields': ['id', 'name']})
     for p in projects:
-        print(f"Project [{p['id']}]: {p['name']}")
-        
-    print("\n--- Tasks ---")
-    tasks = models.execute_kw(db, uid, password, 'project.task', 'search_read', [[]], {'fields': ['id', 'name', 'project_id', 'stage_id', 'is_closed']})
-    for t in tasks:
-        print(f"Task [{t['id']}]: {t['name']} | Stage: {t['stage_id']} | Closed: {t['is_closed']}")
+        print(f"ID: {p['id']}, Name: {p['name']}")
 
-if __name__ == "__main__":
-    check_odoo_projects()
+except Exception as e:
+    print(f"Error connecting to Odoo: {e}")

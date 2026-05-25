@@ -63,7 +63,7 @@ PY' 2>/dev/null || true
 )"
 
 internal_http="$(extract_remote_vhost_http_code "media.hs27.internal")"
-direct_http="$(extract_remote_http_code "http://10.1.0.20:8096")"
+direct_http="$(extract_remote_http_code "http://10.4.0.20:8096")"
 mobile_http="$(extract_http_code "http://${TOOLBOX_FRONTDOOR_IP}:8449")"
 
 echo "media_internal_http=${internal_http:-000}"

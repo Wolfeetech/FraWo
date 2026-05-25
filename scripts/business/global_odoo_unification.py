@@ -2,7 +2,7 @@ import os
 from odoo_rpc_client import connect
 
 # Configuration
-ODOO_URL = os.getenv("ODOO_RPC_URL", "http://10.1.0.22:8069")
+ODOO_URL = os.getenv("ODOO_RPC_URL", "http://10.4.0.22:8069")
 ODOO_USER = "admin"
 ODOO_PASS = "admin"
 

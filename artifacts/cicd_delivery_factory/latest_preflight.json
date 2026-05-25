@@ -1,37 +1,44 @@
 {
-  "generated_at": "2026-04-20T19:15:43+02:00",
-  "origin": "https://github.com/Wolfeetech/FraWo.git",
-  "workflow_file_count": 4,
+  "generated_at": "2026-05-19T15:23:39+00:00",
+  "origin": "https://github.com/Wolfeetech/FraWo",
+  "workflow_file_count": 10,
   "workflow_files": [
+    ".github/CODEOWNERS",
+    ".github/ISSUE_TEMPLATE/config.yml",
+    ".github/ISSUE_TEMPLATE/incident.yml",
+    ".github/ISSUE_TEMPLATE/ops_task.yml",
+    ".github/PULL_REQUEST_TEMPLATE.md",
+    ".github/dependabot.yml",
     ".github/workflows/delivery-factory-validate.yml",
     ".github/workflows/radio-player-frontend-build.yml",
     ".github/workflows/radio-player-frontend-package.yml",
     ".github/workflows/repo-hygiene.yml"
   ],
-  "dockerfile_count": 2,
+  "dockerfile_count": 3,
   "dockerfiles": [
+    "apps/radio-backend/Dockerfile",
     "apps/radio-player-frontend/Dockerfile",
     "apps/yourparty/apps/api/Dockerfile"
   ],
   "compose_template_count": 6,
   "compose_templates": [
-    "ansible/templates/stacks/nextcloud/docker-compose.yml.j2",
-    "ansible/templates/stacks/odoo/docker-compose.yml.j2",
     "ansible/templates/stacks/paperless/docker-compose.yml.j2",
+    "ansible/templates/stacks/nextcloud/docker-compose.yml.j2",
     "ansible/templates/stacks/toolbox-media/docker-compose.yml.j2",
+    "ansible/templates/stacks/odoo/docker-compose.yml.j2",
     "ansible/templates/stacks/toolbox-network/docker-compose.yml.j2",
     "ansible/templates/stacks/vaultwarden/docker-compose.yml.j2"
   ],
   "catalog_app_count": 10,
   "factory_ready_app_count": 1,
   "verified_facts": [
-    "Git remote is configured: `https://github.com/Wolfeetech/FraWo.git`.",
+    "Git remote is configured: `https://github.com/Wolfeetech/FraWo`.",
     "Current repo host is GitHub, so a thin GitHub Actions wrapper is a factual option.",
     "Repo already contains `6` stack compose templates, but they are runtime templates, not standalone OCI app definitions.",
     "GHCR registry contract and env/secret contract docs now exist for the first reference app.",
     "A neutral compose deploy bundle now exists for the first reference app.",
     "Coolify host selection contract now exists and keeps the controller out of the DMZ and off the hypervisor host itself.",
-    "Repo now contains `2` verified Dockerfile/Containerfile artifact for factory build work.",
+    "Repo now contains `3` verified Dockerfile/Containerfile artifact for factory build work.",
     "App catalog now contains `1` factory-deploy-ready reference app candidate."
   ],
   "rejected_assumptions": [],
@@ -49,7 +56,7 @@
   "summary": {
     "repo_host": "github",
     "factory_ready_app_count": 1,
-    "workflow_file_count_before_factory": 3,
+    "workflow_file_count_before_factory": 9,
     "oci_build_artifact_present": true,
     "safe_scope_now": "repo_side_factory_only"
   }

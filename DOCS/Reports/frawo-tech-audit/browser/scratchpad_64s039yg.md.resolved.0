@@ -1,0 +1,17 @@
+# Website Analysis: frawo-tech.de
+
+## Checklist
+- [ ] Visual Audit (Desktop)
+    - [ ] Header/Navigation
+    - [ ] Hero Section
+    - [ ] Expertise/Services Section
+    - [ ] Footer
+- [ ] Visual Audit (Mobile)
+- [ ] Typography & Spacing
+- [ ] Color Contrast & Accessibility
+- [ ] Performance & Loading
+- [ ] Responsive Design Issues
+
+## Findings
+- [ ] Odoo logo in top left (likely placeholder or brand inconsistency)
+- [ ] Small text contrast in hero section

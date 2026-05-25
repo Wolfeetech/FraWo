@@ -90,7 +90,7 @@ def main():
 **Option A: NPM Config**
 ```bash
 ssh pve "pct exec 103 -- vi /data/nginx/proxy_host/frawo-tech.conf"
-# Ändere: proxy_pass http://10.1.0.22:8069 → http://10.4.0.22:8069
+# Ändere: proxy_pass http://10.4.0.22:8069 → http://10.4.0.22:8069
 ```
 
 **Option B: Odoo System Parameter (EINFACHER)**

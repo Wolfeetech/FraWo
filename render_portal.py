@@ -3,7 +3,7 @@ import json
 import os
 
 # Paths
-ROOT = r"C:\WORKSPACE\FraWo"
+ROOT = os.path.dirname(os.path.abspath(__file__))
 MANIFEST_PATH = os.path.join(ROOT, "manifests", "control_surface", "actions.json")
 TEMPLATE_PATH = os.path.join(ROOT, "ansible", "templates", "frontend", "surface-go-portal", "index.html.j2")
 OUTPUT_PATH = os.path.join(ROOT, "rendered_index.html")

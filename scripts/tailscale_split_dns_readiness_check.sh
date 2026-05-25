@@ -61,7 +61,7 @@ tailnet_route_visible_local() {
   local route_output=""
 
   if command -v powershell.exe >/dev/null 2>&1; then
-    route_output="$(powershell.exe -NoProfile -Command '$route = Find-NetRoute -RemoteIPAddress 10.1.0.20 -ErrorAction SilentlyContinue | Format-List InterfaceAlias,NextHop; $route' 2>/dev/null | tr -d '\r')"
+    route_output="$(powershell.exe -NoProfile -Command '$route = Find-NetRoute -RemoteIPAddress 10.4.0.20 -ErrorAction SilentlyContinue | Format-List InterfaceAlias,NextHop; $route' 2>/dev/null | tr -d '\r')"
   fi
 
   if printf '%s\n' "${route_output}" | grep -Fq 'InterfaceAlias : Tailscale' && \
@@ -102,14 +102,14 @@ else
 fi
 
 magicdns_ha_answer="$(dns_query_short 100.100.100.100 ha.hs27.internal)"
-if [[ "${magicdns_ha_answer}" == "10.1.0.20" ]]; then
+if [[ "${magicdns_ha_answer}" == "10.4.0.20" ]]; then
   magicdns_split_ha_resolves="yes"
 else
   magicdns_split_ha_resolves="no"
 fi
 
 adguard_hs27_answer="$(dns_query_short "${TOOLBOX_FRONTDOOR_IP}" ha.hs27.internal)"
-if [[ "${adguard_hs27_answer}" == "10.1.0.20" ]]; then
+if [[ "${adguard_hs27_answer}" == "10.4.0.20" ]]; then
   adguard_hs27_resolves="yes"
 else
   adguard_hs27_resolves="no"
