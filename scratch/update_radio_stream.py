@@ -1,6 +1,5 @@
 import os
 import xmlrpc.client
-import os
 import sys
 
 url = 'http://10.1.0.22:8069'
