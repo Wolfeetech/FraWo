@@ -1,6 +1,5 @@
 import os
 import smtplib
-import os
 from email.mime.text import MIMEText
 from email.header import Header
 
