@@ -64,6 +64,7 @@ pct exec $CT_ID -- bash -c "
 
     # Install Docker Compose v2 plugin
     DOCKER_COMPOSE_VERSION=v2.29.2
+    mkdir -p /usr/local/lib/docker/cli-plugins
     curl -fsSL "https://github.com/docker/compose/releases/download/\${DOCKER_COMPOSE_VERSION}/docker-compose-linux-x86_64" \
         -o /usr/local/lib/docker/cli-plugins/docker-compose
     chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
@@ -96,12 +97,14 @@ pct exec $CT_ID -- bash -c "
 
     # Generate secret key
     SECRET_KEY=\$(openssl rand -hex 32)
+    POSTGRES_PASSWORD=\$(openssl rand -hex 16)
 
     # Update .env with production values
     sed -i 's/^APP_ENV=.*/APP_ENV=production/' .env
     sed -i 's/^DEBUG=.*/DEBUG=false/' .env
     sed -i \"s|^SECRET_KEY=.*|SECRET_KEY=\$SECRET_KEY|\" .env
-    sed -i 's|^DATABASE_URL=.*|DATABASE_URL=postgresql+asyncpg://radio:radio@postgres:5432/frawo_radio|' .env
+    sed -i \"s|^POSTGRES_PASSWORD=.*|POSTGRES_PASSWORD=\$POSTGRES_PASSWORD|\" .env
+    sed -i \"s|^DATABASE_URL=.*|DATABASE_URL=postgresql+asyncpg://radio:\$POSTGRES_PASSWORD@postgres:5432/frawo_radio|\" .env
     sed -i 's|^REDIS_URL=.*|REDIS_URL=redis://redis:6379/0|' .env
 
     echo '✅ Environment configured'

@@ -12,6 +12,7 @@ ODOO_URL = os.getenv('ODOO_URL', 'http://10.4.0.22:8069')
 ODOO_DB = 'FraWo_GbR'
 ODOO_USER = os.getenv('ODOO_USER', 'wolf@frawo-tech.de')
 ODOO_PASSWORD = os.getenv('ODOO_PASSWORD', '')
+ODOO_PASSWORD_FRANZ = os.getenv('ODOO_PASSWORD_FRANZ', '')
 
 common = xmlrpc.client.ServerProxy(f'{ODOO_URL}/xmlrpc/2/common')
 uid = common.authenticate(ODOO_DB, ODOO_USER, ODOO_PASSWORD, {})
@@ -20,8 +21,7 @@ if not uid:
     sys.exit(1)
 print("Odoo authentication successful for wolf@frawo-tech.de")
 
-# Test Franz
-ODOO_PASSWORD_FRANZ = os.getenv('ODOO_PASSWORD_FRANZ', '')
+# Test Franz only when a dedicated password is provided
 if ODOO_PASSWORD_FRANZ:
     uid_franz = common.authenticate(ODOO_DB, 'franz@frawo-tech.de', ODOO_PASSWORD_FRANZ, {})
     if uid_franz:
