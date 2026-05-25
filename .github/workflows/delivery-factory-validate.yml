@@ -29,7 +29,7 @@ jobs:
         run: python scripts/document_ownership_check.py
 
       - name: Upload delivery factory artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: delivery-factory-artifacts
           path: |
