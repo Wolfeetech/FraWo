@@ -1,59 +1,113 @@
-# Aktueller Status & Praxis-Scan (Stand: 20.05.2026)
+# Aktueller Status & Praxis-Scan (Stand: 2026-05-25)
 
-Dieses Dokument beschreibt den **tatsächlich getesteten und diagnostizierten** Zustand des Systems.
-
----
-
-## 1. Was wirklich läuft und getestet wurde (Fakten)
-
-### 🌍 Website & Domain
-- **`https://www.frawo-tech.de/`**: **ERREICHBAR** und funktional.
-- **`https://frawo-tech.de/` (ohne www)**: **ERREICHBAR**.
-  - Der mobile Button-Wrap in `frawo_custom_css.css` wurde behoben, eingecheckt und gepusht.
-
-### 🖥️ Odoo Server & SSOT Consolidation
-- **IP `10.4.0.22`**: **ERREICHBAR** (Ping erfolgreich, <1ms).
-- **Zentrales SSOT-Board**: **VOLLSTÄNDIG AKTIVIERT** und konsolidiert.
-  - Alle 85+ Aufgaben aus allen separaten Projekten wurden in das zentrale Projekt **`🚀 Homeserver 2027: Masterplan`** migriert.
-  - Alle Aufgaben sind mit Lane-Tags (z.B. `Lane A: MVP`, `Lane B: Website`, etc.) versehen.
-  - Aufgaben besitzen klare visuelle Indikatoren und Zuweisungen:
-    - **`[🤖 AGENT]`** zugewiesen an `agent@frawo-tech.de` (Infrastruktur, Automation).
-    - **`[👤 WOLF]`** zugewiesen an `wolf@frawo-tech.de` (Physik, Verträge, manuelle Aufgaben).
-    - **`[👤 FRANZ]`** zugewiesen an `franz@frawo-tech.de` (Villa Bienert Stream/Audio-Projekte).
-  - Unnötige/leere Projekt-Boards wurden archiviert, um die Benutzeroberfläche sauber zu halten.
-- **Dokumentations-Backup in Odoo**: **VOLLSTÄNDIG SYNCED**.
-  - Die Dateien `MASTERPLAN.md`, `LIVE_CONTEXT.md` und `STATUS.md` wurden als HTML formatiert und in den Task **`📚 System-Dokumentation & SSOT (Masterplan, Live-Context, Status)`** injiziert.
-  - Die Originaldateien sind zudem als binäre Dateianhänge direkt an der Aufgabe in Odoo gesichert.
-
-### 🌐 Netzwerk-Stabilität & Diagnose
-- **Netzwerk-Ausfall Root Cause**: **UDP PORT EXHAUSTION (Event 4266) gelöst**.
-  - Der Server lief durch das gleichzeitige Flapping von VPN- und Tunnel-Diensten (Tailscale, Netbird, Cloudflared) über zwei aktive Gateways (WLAN zu Easybox `192.168.2.1` für Shellys und LAN zu UCG `10.1.0.1`/`10.4.0.1`) in einen Socket-Leak.
-  - **Empfehlung für Windows-Port-Optimierung (als Administrator ausführen):**
-    ```powershell
-    # Dynamic Port Limit auf Maximum anheben
-    Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters' -Name 'MaxUserPort' -Value 65534 -Type DWord
-    
-    # TIME_WAIT Socket-Haltezeit auf 30 Sekunden reduzieren
-    Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters' -Name 'TcpTimedWaitDelay' -Value 30 -Type DWord
-    ```
+Dieses Dokument beschreibt den **tatsächlich getesteten und diagnostizierten** Zustand des Systems nach vollständigem Audit.
 
 ---
 
-## 2. Was unvollständig oder fehlerhaft ist
+## 1. Heute behoben (2026-05-25)
 
-### 🔴 Stockenweiler Server
-- **SSH `stock-pve` (100.91.20.116)**: **NICHT ERREICHBAR** (physisch ausgeschaltet).
-  - **Fazit:** Ein Besuch vor Ort in Rothkreuz ist zwingend erforderlich, um den Host physisch einzuschalten.
-  - **Odoo-Aktion:** Es wurde eine prioritäre Aufgabe **`[👤 WOLF] 🔌 Stockenweiler PVE physisch einschalten (Rothkreuz vor Ort)`** erstellt und Wolf zugewiesen. Alle davon abhängigen Aufgaben (Radio-Node, Backup-Sync, HA Eltern) wurden in die Stage `🛑 Blockiert` verschoben.
-
-### ⚠️ Cloudflare Security Headers
-- Die "Transform Rules" (Schritt 4 der Anleitung) für die Sicherheits-Header in Cloudflare sind noch nicht eingerichtet.
+| Problem | Ursache | Fix |
+|---------|---------|-----|
+| Odoo VM (220) komplett eingefroren | Alle Userspace-Prozesse frozen (OOM-Kill, kein Swap) | Force-Stop + Start via PVE |
+| SSH nicht erreichbar auf VM 220 | `sshd_config.d/10-hs27-lan-only.conf` hatte alte IP `192.168.2.22` | `ListenAddress 0.0.0.0` gesetzt |
+| OOM-Kill Risiko auf VM 220 | Kein Swap konfiguriert, RAM 2.4/2.9GB voll | 2GB Swapfile angelegt + `/etc/fstab` Eintrag |
+| Zombie-Container auf VM 220 | `edge_web_1` (Created) + `edge_db_1` (Exited) | `docker rm` ausgeführt |
 
 ---
 
-## 3. Nächste Schritte
+## 2. Was läuft und getestet ist (Fakten)
 
-1. **Stockenweiler PVE physisch einschalten** (Wolf vor Ort in Rothkreuz).
-2. **Windows Registry-Optimierung anwenden** (Wolf im Administrator-Terminal).
-3. **Cloudflare Transform Rules einrichten** (Agent & Wolf gemeinsam).
-4. **Schritt-für-Schritt Abarbeitung der Lanes** direkt über das Odoo-Zentralboard.
+### 🌍 Öffentliche Dienste
+- **`https://www.frawo-tech.de/`**: **ERREICHBAR** ✅ HTTP 200
+- **`https://frawo-tech.de/`**: **ERREICHBAR** ✅ HTTP 200
+
+### 🖥️ Odoo (VM 220)
+- **`10.4.0.22:8069`**: **ERREICHBAR** ✅ HTTP 200
+- **Via Toolbox**: `http://100.82.26.53:8444` → HTTP 200 ✅
+- Container: `odoo-web-1` Up, `odoo-db-1` Up ✅
+- Datenbank: `FraWo_GbR` ✅
+- Swap: 2GB aktiv ✅
+
+### ☁️ Nextcloud (VM 300)
+- **Intern** `10.4.0.21:80`: HTTP 302 ✅
+- Containers: `nextcloud_app_1`, `nextcloud_db_1`, `nextcloud_redis_1` — alle Up 22h+ ✅
+- **Öffentlich** `cloud.frawo-tech.de`: ❌ HTTP 502 (Cloudflare Tunnel hat alte IP, siehe unten)
+
+### 📄 Paperless (VM 330)
+- **Intern** `10.4.0.23:8000`: HTTP 302 ✅
+- Containers: webserver (healthy), tika, broker, gotenberg, db — alle Up ✅
+
+### 🏠 Toolbox (CT 100)
+- Caddy: Up 5 Wochen, Config valid ✅
+- Uptime Kuma: healthy ✅
+- Jellyfin: healthy ✅
+- AdGuard: Up ✅
+- Open-WebUI: healthy ✅
+- cloudflared: aktiv (systemd) ✅
+- Disk: 60% ⚠️
+
+---
+
+## 3. Was defekt oder offen ist
+
+### 🔴 cloud.frawo-tech.de → HTTP 502
+- **Ursache**: Cloudflare Zero Trust Tunnel-Ingress zeigt auf **alte IP `10.1.0.21`**
+- **Nextcloud läuft** auf `10.4.0.21` und ist intern erreichbar
+- **Fix**: Cloudflare Dashboard → Zero Trust → Tunnels → Ingress Rule für `cloud.frawo-tech.de` → Origin auf `http://10.4.0.21` ändern
+- **Weitere veraltete IPs im Tunnel prüfen** (radio, vault, ha usw.)
+
+### 🔴 Stockenweiler PVE — offline
+- SSH `stock-pve` (`100.91.20.116`): NICHT ERREICHBAR — physisch ausgeschaltet
+- Last seen Tailscale: **15 Tage**
+- Benötigt: Physischer Besuch in Rothkreuz (Wolf)
+- Blockiert: AzuraCast Migration, Home Assistant Eltern, Lane D + E
+
+### ⚠️ hs27-media: 80% voll
+- `/mnt/hs27-media` (NFS-Share vom Storage-Node): 78G / 98G
+- Aktion: Alte Mediendateien prüfen und aufräumen
+
+### ⚠️ frawo-docker-1 nicht zugänglich
+- Tailscale: `100.94.32.41` aktiv, aber SSH-Key nicht hinterlegt
+- Rolle im System unklar — muss eingeordnet werden
+
+### ⚠️ StudioPC — Docker inaktiv
+- Docker läuft, nur gestoppte Dev-Container (YourParty, VS Code)
+- Rolle als SSH-Brücke und lokaler Docker-Host nach Best Practice definieren
+
+---
+
+## 4. Nächste Schritte (priorisiert)
+
+### Sofort (Agent):
+1. ~~Odoo VM reparieren~~ ✅ Erledigt heute
+2. **Cloudflare Tunnel Ingress-IPs prüfen und auf `10.4.0.x` aktualisieren** (Dashboard)
+3. Git commit + push dieser Docs
+
+### Wolf (manuell):
+4. **Stockenweiler PVE physisch einschalten** (Rothkreuz vor Ort)
+5. **Windows Registry UDP-Fix** (Admin-Terminal, aus LIVE_CONTEXT.md)
+6. **Cloudflare Dashboard**: Tunnel-Ingress `cloud.frawo-tech.de` → `http://10.4.0.21`
+7. **hs27-media aufräumen**: 78G/98G belegt → Platz schaffen
+
+### Gemeinsam (Wolf + Agent):
+8. **frawo-docker-1 SSH-Key hinterlegen** + Rolle definieren
+9. **StudioPC Rolle** in Infrastruktur definieren (SSH-Bridge? Local Dev? CI?)
+10. **Cloudflare Security Headers** (Transform Rules — aus STATUS 2026-05-20 noch offen)
+11. **Uptime Kuma** externer Check konfigurieren (aktuell intern auf Toolbox — Best Practice: externer VPS)
+
+---
+
+## 5. Bekannte Konfigurationsdrift (10.1.0.x → 10.4.0.x)
+
+Bei der Netzwerk-Migration wurden nicht alle Config-Files aktualisiert:
+
+| Datei | Problem | Fix |
+|-------|---------|-----|
+| `/etc/ssh/sshd_config.d/10-hs27-lan-only.conf` auf VM 220 | `192.168.2.22` + `10.1.0.x` statt `10.4.0.x` | ✅ Heute gefixt |
+| Cloudflare Tunnel Ingress (Dashboard) | `10.1.0.21` für Nextcloud | ❌ Noch offen |
+| Weitere Tunnel-Ingress-Rules (vault, ha, radio) | Wahrscheinlich auch `10.1.0.x` | ❌ Prüfen |
+
+---
+
+*Updated: 2026-05-25 12:10 Europe/Berlin*
+*Audit: Claude Sonnet 4.6 + Wolf*
