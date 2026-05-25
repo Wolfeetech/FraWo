@@ -87,12 +87,29 @@ SKILLS = {
     "sync_masterplan": {
         "cmd": ["python", "scripts/sync_lane_c_to_odoo.py"],
         "desc": "Synchronisiert den Masterplan mit Odoo."
+    },
+    "odoo_list_projects": {
+        "cmd": ["python", "scripts/business/odoo_manage.py", "list-projects"],
+        "desc": "Listet alle aktiven Odoo-Projekte auf. [RUN: odoo_list_projects]"
+    },
+    "odoo_create_project": {
+        "cmd": ["python", "scripts/business/odoo_manage.py", "create-project"],
+        "desc": "Erstellt ein neues Odoo-Projekt. [RUN: odoo_create_project 'Name' 'Beschreibung']"
+    },
+    "odoo_list_tasks": {
+        "cmd": ["python", "scripts/business/odoo_manage.py", "list-tasks"],
+        "desc": "Listet Aufgaben eines Odoo-Projekts auf. [RUN: odoo_list_tasks 'Projekt']"
+    },
+    "odoo_create_task": {
+        "cmd": ["python", "scripts/business/odoo_manage.py", "create-task"],
+        "desc": "Erstellt eine Aufgabe in Odoo. [RUN: odoo_create_task 'Projekt' 'Task Name' 'Beschreibung']"
     }
 }
 
 AGENT_SYSTEM_PROMPT = """
 PROJEKT-LEITUNG & INFRASTRUKTUR-SICHERHEIT:
-Du bist der OpenClaw Project Lead. Deine Mission ist die Stabilität des FraWo-Stacks.
+Du bist der OpenClaw Project Lead und der offizielle FraWo DevOps & ERP Lead-Engineer.
+Deine Mission ist die Stabilität des FraWo-Stacks, Odoo Projektmanagement und Unterstützung deines Teams als digitaler Assistent.
 
 ⚠️ SICHERHEITS-REGELN (Kritisch):
 1. KEINE destruktiven Befehle (rm, docker rm, etc.) ohne vorherige Auflistung und explizite Bestätigung.
@@ -101,6 +118,9 @@ Du bist der OpenClaw Project Lead. Deine Mission ist die Stabilität des FraWo-S
 4. Schütze die Radio-Infrastruktur (AzuraCast) um jeden Preis.
 
 INFRA-WISSEN:
+- Odoo läuft auf VM 220 (IP: 10.4.0.22).
+- HAOS Smart Home läuft auf VM 210.
+- Toolbox läuft auf CT 100.
 - Proxmox Befehle (pct, qm): Diese MÜSSEN via 'remote_exec [host] "[command]"' ausgeführt werden, da du auf dem StudioPC läufst.
 - Hosts: pve-stock (Stockenweiler), pve-anker (Anker).
 - Beispiel: [RUN: remote_exec pve-stock "pct list"]
@@ -117,6 +137,10 @@ Verfügbare Skills:
 - health_audit: System-Check (PVE, Network).
 - fix_network: Netzwerk-Fix (StudioPC).
 - sync_masterplan: Masterplan -> Odoo Board.
+- odoo_list_projects: Alle aktiven Odoo-Projekte abfragen.
+- odoo_create_project [name] [desc]: Neues Odoo-Projekt erstellen.
+- odoo_list_tasks [projekt]: Aufgaben eines Odoo-Projekts auslesen.
+- odoo_create_task [projekt] [name] [desc]: Neue Aufgabe in Odoo erstellen.
 - list_files: Übersicht aller Dokumente/Skripte.
 - read_file [pfad]: Inhalt einer Datei lesen.
 - write_file [pfad] [inhalt]: Datei erstellen oder aktualisieren.
