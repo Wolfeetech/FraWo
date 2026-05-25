@@ -34,15 +34,15 @@ Der Homeserver 2027 ist die produktive Basis der **FraWo GbR**: ERP, Cloud, Doku
   - UniFi/Tailscale Split-DNS finalisieren
   - Stockenweiler-Monitoringpfad wieder auf einen echten Metrics-Sink ziehen; `outputs.discard` auf `pve-stock` ist nur die sichere Zwischenmassnahme nach dem Swap-Fix
 
-### Lane D: Stockenweiler Integration - [STATUS: ACTIVE]
+### Lane D: Stockenweiler Integration - [STATUS: BLOCKED/PHYSICAL]
 
 - **Ziel**: Zweiter Standort für Radio (AzuraCast) und Eltern-Support (HA).
-- **Status**: Aktiv. VM 210 (Radio) und VM 360 (HA Eltern) sind online; der Swap-Notfall vom `2026-05-03` ist behoben.
+- **Status**: Blockiert, weil Stockenweiler physisch offline ist (Power-On vor Ort erforderlich).
 - **Runtime 2026-05-03**: Host-Swap wieder `0.0GiB / 8.0GiB`. Root Cause war nicht AzuraCast selbst, sondern `telegraf`, das mehrere GiB Metriken gegen das tote Ziel `192.168.178.168:8086` gepuffert hat.
 - **Running Services**: AzuraCast VM `210`, Home Assistant Eltern VM `360`, Vaultwarden CT `108`, AdGuard CT `101`. `PBS` (`109`) und `n8n` (`110`) sind aktuell nicht der laufende Arbeitspfad.
-- **Aktion**: Monitoring-Sink sauber wiederherstellen und danach erst VM-Rightsizing anhand frischer Daten entscheiden.
+- **Aktion**: Physischer Start + Tailscale-Liveness prüfen; danach Monitoring-Sink sauber wiederherstellen und VM-Rightsizing anhand frischer Daten entscheiden.
 
-### Lane E: Radio & Media - [STATUS: ACTIVE]
+### Lane E: Radio & Media - [STATUS: ACTIVE/BLOCKED BY LANE D]
 
 - **Ziel**: AzuraCast auf Stockenweiler als primärer Radio-Service, Anker als Relay/Backup.
 - **Status**: In Migration/Setup. IP `192.168.178.210`.
@@ -51,6 +51,16 @@ Der Homeserver 2027 ist die produktive Basis der **FraWo GbR**: ERP, Cloud, Doku
   2. [ ] Media-Library Sync via Tailscale (rclone).
   3. [ ] Icecast Relay auf Anker für Redundanz konfigurieren.
   4. [ ] Integration in das Odoo-CRM für Supporter-Management.
+
+### Operativer Fokus 2026-05-25 (Umsetzungspaket)
+
+1. [ ] Cloudflare-Tunnel für `cloud.frawo-tech.de` auf `http://10.4.0.21` korrigieren und extern gegen `502` verifizieren.
+2. [ ] Stockenweiler physisch einschalten, dann Tailscale/Service-Liveness bestätigen.
+3. [ ] `/mnt/hs27-media` Kapazitätsdruck abbauen (Cleanup oder Erweiterung) und Restkapazität dokumentieren.
+4. [ ] PBS/aktive VMs nach RAM/Swap-Lage rightsizen, um Freeze-Risiko zu reduzieren.
+5. [ ] Rollen für `frawo-docker-1` und StudioPC verbindlich festlegen.
+6. [ ] Nach Wiederfreigabe von Lane D die Radio-Migration auf CT 130 fortsetzen.
+7. [ ] Jede abgeschlossene Aktion in Odoo (SSOT) und Repo-Dokumenten spiegeln.
 
 ---
 
