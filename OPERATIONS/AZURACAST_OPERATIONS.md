@@ -1,7 +1,7 @@
 # AzuraCast Operations
 
 > [!IMPORTANT]
-> Runtime-SSOT fuer Radio: `/home/runner/work/FraWo/FraWo/OPERATIONS/RADIO_OPERATIONS_SSOT.md`
+> Runtime-SSOT fuer Radio: `OPERATIONS/RADIO_OPERATIONS_SSOT.md`
 
 
 ## Zweck

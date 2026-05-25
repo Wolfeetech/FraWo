@@ -2,7 +2,7 @@
 
 > [!WARNING]
 > **HISTORISCHER SNAPSHOT (nicht entscheidungsfuehrend).**
-> Verbindliche Runtime-SSOT: `/home/runner/work/FraWo/FraWo/OPERATIONS/RADIO_OPERATIONS_SSOT.md`
+> Verbindliche Runtime-SSOT: `OPERATIONS/RADIO_OPERATIONS_SSOT.md`
 
 **Status: 🟢 100% READY (Radio Phase Finalized)**
 
