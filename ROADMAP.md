@@ -1,115 +1,132 @@
 # ROADMAP — FraWo GbR Infrastruktur
+**Stand: 2026-05-25 | Letzte Konsolidierung: Claude Sonnet 4.6 + Wolf**
 
-**Single Source of Truth-Hierarchie:**
-- **Odoo** (`FraWo_GbR` Projekt "🚀 Homeserver 2027: Masterplan") → Task-SSOT (Wer macht was, Status, Priorität)
-- **GitHub** (`LIVE_CONTEXT.md`, `STATUS.md`, diese Datei) → Technische Wahrheit (Konfiguration, Architektur, Entscheidungen)
-- **Kein Split-Brain**: Jede Änderung landet in BEIDEN Systemen. Tasks in Odoo → technische Umsetzung im Repo dokumentiert.
-
----
-
-## Aktuelle Sprint-Übersicht (Stand: 2026-05-25)
-
-### 🔴 KRITISCH — Sofort
-
-| Odoo Task | Beschreibung | Wer | Status |
-|-----------|-------------|-----|--------|
-| #224 | CF Tunnel Ingress: `cloud.frawo-tech.de` → `10.4.0.21` (war `10.1.0.21`) | Wolf (Dashboard) | ❌ Offen |
-| #199 | Stockenweiler PVE physisch einschalten (Rothkreuz) | Wolf (vor Ort) | ❌ Offen |
-| #225 | hs27-media aufräumen (80% voll, 78G/98G) | Agent | 🔄 Läuft |
-
-### 🟡 WICHTIG — Diese Woche
-
-| Odoo Task | Beschreibung | Wer | Status |
-|-----------|-------------|-----|--------|
-| #65 | rclone rate limiting (Google API Quota-Fehler) | Agent | ✅ Heute gefixt |
-| #138 | Caddy: gzip/zstd Compression | Agent | ✅ Heute gefixt |
-| #196 | Cloudflare Security Headers (Transform Rules) | Wolf (Dashboard) | ❌ Offen |
-| #226 | frawo-docker-1 SSH-Key + Rolle definieren | Wolf | ❌ Offen |
-| #227 | StudioPC + frawo-docker-1 in Infra einordnen | Wolf + Agent | ❌ Offen |
-| - | CT 130 (radio-node) statische IP setzen | Agent | ❌ Offen |
-| #162 | Radio-Sendeplan AzuraCast (provisorisch auf VM 220) | Agent | 🔄 Läuft |
-
-### 🟢 LANE B — Website (aktiv)
-
-| Odoo Task | Beschreibung | Wer | Status |
-|-----------|-------------|-----|--------|
-| #197 | Unified Brand Rollout CI-Farben & Logos | Agent | 🔄 In Arbeit |
-| #137 | JSON-LD Structured Data | Agent | ❌ Offen |
-| #139 | Bilder-Optimierung (WebP) | Agent | ❌ Offen |
-| #90 | Qualitätsprüfung FraWo Funk Integration | Wolf + Agent | ❌ Offen |
-
-### 🟢 LANE C — Security/Backup/Infra (aktiv)
-
-| Odoo Task | Beschreibung | Wer | Status |
-|-----------|-------------|-----|--------|
-| #84 | PBS Recovery & Datastore Setup | Agent | 🔄 Prüfen |
-| #159 | PBS produktiv setzen | Agent | 🔄 Prüfen |
-| #66 | CT100 Disk Migration (local-lvm → ssd2tb) | Agent | ❌ Offen |
-| #59 | DNS Finalization (AdGuard, kein hosts-file mehr) | Agent | ❌ Offen |
-| #160 | NFS-Mounts validieren | Agent | ❌ Offen |
-
-### 🔵 LANE D — Stockenweiler (blockiert)
-
-| Odoo Task | Beschreibung | Wer | Status |
-|-----------|-------------|-----|--------|
-| #199 | Stockenweiler physisch einschalten | Wolf | ❌ Blockiert (vor Ort) |
-| #9 | Remote Support Bridge | Agent | 🛑 Wartet auf Stockenweiler |
-
-### 🔵 LANE E — Radio & Media (teilweise blockiert)
-
-| Odoo Task | Beschreibung | Wer | Status |
-|-----------|-------------|-----|--------|
-| #125/#190 | Radio Lane Hauptkoordination | Agent | 🔄 AzuraCast provisorisch auf VM 220 |
-| #180 | Media Library Strukturierung | Agent | ❌ Wartet auf hs27-media Cleanup |
+**SSOT-Hierarchie:**
+- **Odoo** (`FraWo_GbR` → "🚀 Homeserver 2027: Masterplan") → Wer macht was, Status, Priorität
+- **GitHub** (diese Datei, `LIVE_CONTEXT.md`, `STATUS.md`) → Technische Wahrheit
+- **Konflikt**: Odoo für Status, GitHub für Konfiguration
 
 ---
 
-## Was HEUTE automatisch umgesetzt wurde (2026-05-25)
+## ZIELARCHITEKTUR 2027 (Masterplan)
 
-| Fix | Details |
-|-----|---------|
-| ✅ Odoo VM Freeze | Force-Restart via PVE, SSH-Config gefixt |
-| ✅ Swap 2GB auf VM 220 | Verhindert künftige OOM-Kills |
-| ✅ Zombie-Container | edge_web_1 + edge_db_1 entfernt |
-| ✅ Caddy: Compression | `encode zstd gzip` in alle Frontdoors |
-| ✅ Caddy: Radio Frontdoor | `10.3.0.9` → `10.4.0.22:8080` (AzuraCast auf Odoo-VM) |
-| ✅ rclone: Rate Limiting | `--tpslimit 8` + `--tpslimit-burst 10` → keine API-Quota-Fehler mehr |
-| ✅ GitHub Docs | LIVE_CONTEXT.md + STATUS.md vollständig aktualisiert |
-| ✅ Odoo SSOT | Audit-Note + 4 neue Tasks angelegt |
+```
+ANKER PVE (Primary)              STOCKENWEILER (Site B)
+├── Odoo ERP (VM 220)            ├── HAOS Eltern
+├── Nextcloud (VM 300)           ├── frawo-docker-1 (Schiffscontainer)
+├── Paperless (VM 330)           │   └── Rolle: Monitoring-Stack ODER
+├── PBS Backup (VM 240) ←fix     │       Staging ODER Backup-Relay
+├── HAOS FraWo (VM 210)          └── [YourParty: EINGESTELLT]
+├── Toolbox CT 100 (Caddy/Edge)
+├── radio-node CT 130 ←TARGET
+│   ├── AzuraCast (Streaming)
+│   └── FraWo Radio Backend (FastAPI+PG+Redis)
+├── storage-node CT 110 (CIFS)
+├── vaultwarden CT 120
+└── adguard CT 100+101
 
----
-
-## Bekannte Konfigurationsdrift (10.1.0.x → 10.4.0.x Netzwerk-Migration)
-
-Alle folgenden Stellen verwenden noch alte IPs und müssen gefixt werden:
-
-| Ort | Alter Wert | Korrekt | Status |
-|-----|-----------|---------|--------|
-| Cloudflare Tunnel Ingress `cloud.frawo-tech.de` | `10.1.0.21` | `10.4.0.21` | ❌ Wolf manuell |
-| Cloudflare Tunnel weitere Rules (vault, ha, radio) | `10.1.0.x` | `10.4.0.x` | ❌ Prüfen |
-| VM 220 SSH sshd_config | `192.168.2.22` | `0.0.0.0` | ✅ Heute gefixt |
-| Caddy radio Frontdoor | `10.3.0.9` | `10.4.0.22:8080` | ✅ Heute gefixt |
+ÖFFENTLICH                       INTERN
+├── frawo-tech.de (Odoo)         ├── *.hs27.internal (AdGuard)
+├── cloud.frawo-tech.de ←fix     ├── :84xx Caddy Ports
+├── radio.frawo-tech.de ←TODO    └── Tailscale für Admin
+└── Cloudflare Tunnel (cloudflared CT 100)
+```
 
 ---
 
-## Architektur-Entscheidungen (ADRs)
+## SPRINT 2026-05-25 — STATUS
+
+### ✅ Heute erledigt
+
+| Task | Was | Fix |
+|------|-----|-----|
+| #65 | rclone rate limiting | `--tpslimit 8 --tpslimit-burst 10` |
+| #138 | Caddy gzip/zstd | `encode zstd gzip` alle Frontdoors |
+| #229 | Email DMARC-Fix | p=reject → p=none, SMTP funktioniert |
+| #229 | Trommlerzug Rechnung | INV/2026/00006 (100€) gesendet ✅ |
+| #229 | Bodensee Auftrag | S00007 gesendet ✅ |
+| #230 | CT 130 Static IP | 10.4.0.28 (war DHCP) |
+| #59 | DNS AdGuard | 4 neue Einträge (radio-node, storage-node, pve, adguard-slave) |
+| Odoo SSOT | 6 Tasks aktualisiert, 2 neue erstellt | Alle Notizen mit Details |
+
+### 🔴 KRITISCH — Wolf sofort
+
+| Odoo | Was | Wo | Anleitung |
+|------|-----|-----|-----------|
+| #224 | CF Tunnel cloud.frawo-tech.de | Cloudflare Dashboard | Zero Trust → Tunnels → Ingress → 10.4.0.21 |
+| #199 | Stockenweiler einschalten | Physisch Rothkreuz | Vor Ort |
+| #159 | PBS Netzwerk-Fix | PVE Web UI | VM 240 → Console → ip addr / cloud-init prüfen |
+| #226 | frawo-docker-1 SSH-Key | win-j1aenasv2fj | SSH-Key von dem PC auf frawo-docker-1 kopieren |
+
+### 🟡 NÄCHSTE AGENT-TASKS (automatisierbar sobald Voraussetzungen erfüllt)
+
+| Odoo | Was | Wartet auf | Priorität |
+|------|-----|-----------|-----------|
+| #162 | AzuraCast → CT 130 migrieren | Stockenweiler online (oder Entscheidung ohne) | Hoch |
+| - | FraWo Radio Backend deployen (CT 130) | AzuraCast-Migration | Hoch |
+| #225 | hs27-media: Radio-Library auf music_ssd | Wolf-Entscheidung + PVE-Wartung | Mittel |
+| #227 | frawo-docker-1 Rolle + Dienste definieren | SSH-Key Wolf | Mittel |
+| #84/#159 | PBS produktiv setzen | Netzwerk-Fix Wolf | Mittel |
+| #197 | Website Brand Rollout | Odoo-Website-Zugang | Niedrig |
+| #137 | JSON-LD Structured Data | Brand Rollout | Niedrig |
+| #139 | WebP Bilder | Brand Rollout | Niedrig |
+
+### 🛑 BLOCKIERT (wartet auf Stockenweiler)
+
+| Was | Warum |
+|-----|-------|
+| Home Assistant Eltern | Stockenweiler-PVE offline |
+| frawo-docker-1 volle Integration | Stockenweiler offline → kein Vor-Ort-Zugang |
+| YourParty Cleanup/Archiv | Stockenweiler-Daten (eingestellt, aber aufräumen) |
+
+---
+
+## ENTSCHEIDUNGEN (ADRs)
 
 | Entscheidung | Begründung | Datum |
 |-------------|-----------|-------|
-| AzuraCast provisorisch auf VM 220 (Odoo-VM) | Stockenweiler offline, CT 130 ohne feste IP | 2026-05-25 |
-| SSH auf allen VMs: `ListenAddress 0.0.0.0` | Private Subnet, UFW deaktiviert, Tailscale als VPN-Layer | 2026-05-25 |
-| rclone rate limit: 8 TPS | Google Drive API Quota-Fehler → Backoff nötig | 2026-05-25 |
-| Swap 2GB auf VM 220 | Kein Swap → OOM-Kill bei vollem RAM (2.4/2.9GB) | 2026-05-25 |
+| AzuraCast Ziel: CT 130 (radio-node) | Best Practice: dedizierter Radio-Node, 10.4.0.28 | 2026-05-25 |
+| FraWo Radio Backend (FastAPI) → CT 130 | Gemeinsam mit AzuraCast, low latency, single node | 2026-05-25 |
+| YourParty: EINGESTELLT | Kein aktiver Betrieb mehr, Code archivieren | 2026-05-25 |
+| frawo-docker-1: Schiffscontainer Stockenweiler | Physischer Standort bestätigt, Rolle noch TBD | 2026-05-25 |
+| DMARC: p=none | DKIM fehlt → p=reject blockiert Strato-Relay | 2026-05-25 |
+| StudioPC: nur Entwicklung | Keine Produktions-Services, Docker nur lokal | 2026-05-25 |
+| hs27-media CIFS Stale | Kernel-Bug, Fix: PVE-Neustart Wartungsfenster | 2026-05-25 |
+| rclone rate limit 8 TPS | Google Drive API-Quota-Fehler | 2026-05-25 |
+| Swap 2GB VM 220 | OOM-Kill bei vollem RAM (2.4/2.9GB) | 2026-05-25 |
+| ListenAddress 0.0.0.0 SSH | Private Subnet, Tailscale als VPN | 2026-05-25 |
 
 ---
 
-## Anti-Split-Brain Regeln
+## KONSOLIDIERTER NODE-ÜBERBLICK
 
-1. **Odoo-Task zuerst** — Jede Arbeit beginnt mit einem offenen Odoo-Task. Kein Task = kein Merge.
-2. **Commit-Referenz** — Jeder Commit referenziert `task-<ID>` wenn möglich.
-3. **LIVE_CONTEXT.md** — Wird nach jedem Audit-Session aktualisiert (nicht während der Arbeit).
-4. **ROADMAP.md** — Diese Datei ist die Brücke zwischen Odoo (Tasks) und GitHub (Technik). Bei Widerspruch gilt: Odoo für Status, GitHub für Konfiguration.
-5. **Agent markiert Tasks** — Agent setzt Tasks auf "In Arbeit" wenn gestartet, "Erledigt" wenn fertig. Wolf bestätigt/schließt.
+| Node | Tailscale | Lokal-IP | Typ | Rolle |
+|------|-----------|----------|-----|-------|
+| proxmox-anker | 100.69.179.87 | 10.4.0.99 | PVE | Primary Hypervisor |
+| toolbox | 100.82.26.53 | 10.4.0.20 | CT 100 | Edge/Ingress/Monitoring |
+| frawo-docker-1 | 100.94.32.41 | ? | Phys. Server | Schiffscontainer Stockenweiler |
+| stockenweiler-pve | 100.91.20.116 | 192.168.178.172 | PVE | Site B Hypervisor (offline) |
+| wolfstudiopc | 100.98.31.60 | 10.1.0.210 | Windows PC | Dev-Workstation |
+| wolf-surface | 100.79.103.59 | - | Windows | Mobile Dev |
+| wolf-zenbook | 100.76.249.126 | - | Linux | Linux Dev |
+| surface-go-frontend | 100.106.67.127 | - | Linux | Frontend-Dev |
+| villarechner420 | 100.85.153.121 | - | Windows | Villa-PC |
+| wohnzimmertv | 100.84.241.124 | - | Android | Wohnzimmer TV |
+| franz-iphone15 | 100.106.111.38 | - | iOS | Franz's Phone |
+| pixel-9-pro | 100.83.213.17 | - | Android | Wolf's Phone |
+| win-j1aenasv2fj | 100.97.147.67 | - | Windows | Stockenweiler-PC (SSH-Bridge zu frawo-docker-1) |
+
+---
+
+## ANTI-SPLIT-BRAIN REGELN
+
+1. **Odoo-Task zuerst** — Kein Merge ohne offenen Task
+2. **Commit-Referenz** — `task-<ID>` in Commits wenn möglich
+3. **LIVE_CONTEXT.md** — Nach jedem Audit aktualisieren
+4. **ROADMAP.md** — Brücke Odoo ↔ GitHub. Konflikt: Odoo für Status, GitHub für Konfiguration
+5. **Agent markiert Tasks** — "In Arbeit" wenn gestartet, "Erledigt" wenn fertig. Wolf bestätigt.
+6. **Keine Ghost-Services** — Jeder laufende Dienst ist in LIVE_CONTEXT dokumentiert
+7. **Node-Rollen** — Jede Maschine hat eine klar definierte Rolle (keine Mehrfachbelegung ohne ADR)
 
 ---
 

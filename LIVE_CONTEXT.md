@@ -1,127 +1,155 @@
-# LIVE CONTEXT
-
-## Infrastructure Status & Governance (2026-05-25)
-
-- **Status**: **ANKER OPERATIONAL — VOLLSTÄNDIG AUDITIERT**. Stockenweiler weiterhin offline.
-- **Letzter Audit**: 2026-05-25 11:30–12:10 Europe/Berlin (Claude Sonnet 4.6 + Wolf)
-- **Heute behoben**: Odoo VM eingefroren → Force-Restart → SSH-Config-Fix → Swap angelegt → Zombie-Container entfernt
+# LIVE CONTEXT — FraWo GbR Infrastruktur
+**Single Source of Truth für technischen Zustand**
+*Letzte vollständige Aktualisierung: 2026-05-25 — Claude Sonnet 4.6 + Wolf*
 
 ---
 
-## KRITISCHE PROBLEME
+## ARCHITEKTUR-ÜBERSICHT
 
-### 🔴 1. cloud.frawo-tech.de → 502 (Cloudflare Tunnel falsche IP)
-- **Ursache**: Cloudflared-Tunnel-Ingress zeigt auf alte IP `10.1.0.21` (alt: `10.1.0.x`-Subnetz)
-- **Korrekt wäre**: `http://10.4.0.21` (Nextcloud VM 300, aktuelles `10.4.0.x`-Subnetz)
-- **Fix**: Cloudflare Dashboard → Zero Trust → Tunnels → Ingress Rule für `cloud.frawo-tech.de` auf `http://10.4.0.21` ändern (Wolf, manuell)
-- **Nextcloud selbst**: Läuft einwandfrei (intern HTTP 302 ✓, VM up 22h)
-
-### 🔴 2. Stockenweiler PVE — physisch offline
-- **Tailscale**: `100.91.20.116` — offline, last seen **15 Tage** vor Audit
-- **Benötigt**: Physischer Besuch in Rothkreuz zum Einschalten
-- **Blockiert**: Lane D (Radio/HA), Lane E (AzuraCast Migration)
-- **Hinweis**: AzuraCast läuft aktuell provisorisch auf VM 220 (Odoo VM) — Ziel ist CT 130 (radio-node)
-
-### ⚠️ 3. hs27-media NFS-Share: 80% voll
-- **Mount**: `/mnt/hs27-media` auf Anker PVE (gemountet vom Storage-Node CT 110)
-- **Belegung**: 78G / 98G → **nur noch 20G frei**
-- **Aktion**: Alte Mediendateien aufräumen oder NFS-Share erweitern
-
-### ⚠️ 4. Anker PVE RAM: hoch
-- **RAM**: 10GB / 15GB genutzt, Swap: 3.5GB / 8GB aktiv
-- **Ursache**: Viele VMs/CTs gleichzeitig aktiv (5 VMs + 5 CTs)
-- **Aktion**: PBS-VM (240) RAM-Bedarf prüfen; ggf. VMs mit niedrigerem Bedarf trimmen
-
----
-
-## ANKER — ALLE SERVICES (Stand: 2026-05-25)
-
-### PVE Node
-- **Version**: PVE 9.1.19, Kernel 7.0.2-6-pve
-- **Uptime**: 1 Tag 1:14
-- **IP**: `10.4.0.92` / Tailscale `100.69.179.87`
-
-### VMs
-| VMID | Name | Status | RAM | Disk | Dienste |
-|------|------|--------|-----|------|---------|
-| 210 | haos | ✅ running | 2GB allok. | 32GB | Home Assistant OS |
-| 220 | odoo | ✅ running | 2.4/2.9GB | 39% (12G/32G) | Odoo 17, PostgreSQL 15, AzuraCast (provisorisch) |
-| 240 | PBS-FraWo | ✅ running | 2GB allok. | 32GB | Proxmox Backup Server |
-| 300 | nextcloud | ✅ running | 582MB/1.9GB | 16% (4.6G/32G) | Nextcloud + DB + Redis |
-| 330 | paperless | ✅ running | 1.2/1.9GB | 27% (8G/32G) | Paperless-ngx + Tika + Gotenberg + DB |
-
-### LXC Container
-| CTID | Name | Status | Dienste |
-|------|------|--------|---------|
-| 100 | toolbox | ✅ running | Caddy, Uptime Kuma, Jellyfin, AdGuard, Open-WebUI, cloudflared |
-| 101 | adguard-slave | ✅ running | AdGuard Home (Slave) |
-| 110 | storage-node | ✅ running | NFS/Storage Services |
-| 120 | vaultwarden | ✅ running | Vaultwarden (Bitwarden-kompatibel) |
-| 130 | radio-node | ✅ running | AzuraCast (Ziel, aktuell noch leer) |
-
-### Storage (Anker PVE)
-| Pfad | Größe | Belegt | Frei | Status |
-|------|-------|--------|------|--------|
-| `/` (PVE root, ssd2tb LVM) | 68G | 28G | 38G | ✅ 43% |
-| `/mnt/ssd2tb` | 1.8T | 175G | 1.6T | ✅ 11% |
-| `/mnt/music_ssd` | 983G | 177G | 806G | ✅ 18% |
-| `/mnt/hs27-media` (NFS) | 98G | 78G | 21G | ⚠️ 80% |
-| `gdrive:` (rclone) | 5.1T | 1.9T | 3.3T | ✅ 37% |
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    TAILSCALE MESH (VPN)                      │
+│         Alle Nodes sicher verbunden, kein offener Port       │
+└──────────────┬──────────────────────┬───────────────────────┘
+               │                      │
+    ┌──────────▼──────────┐  ┌────────▼───────────────┐
+    │   ANKER PVE          │  │  STOCKENWEILER (Site B)  │
+    │   10.4.0.99          │  │  192.168.178.x           │
+    │   Tailscale:         │  │  Tailscale:              │
+    │   100.69.179.87      │  │  100.91.20.116 (offline) │
+    │   PRIMARY PRODUCTION │  │  ELTERN-HAUS             │
+    └──────────┬──────────┘  └────────┬───────────────┘
+               │                      │
+    [alle VMs/CTs unten]    ┌─────────▼──────────────┐
+                            │  frawo-docker-1          │
+                            │  Tailscale: 100.94.32.41 │
+                            │  Physisch: Schiffscontainer│
+                            │  Stockenweiler            │
+                            │  Role: TBD (kein SSH-Key) │
+                            └────────────────────────┘
+```
 
 ---
 
-## TOOLBOX (CT 100) — Service Details
+## NODE-ROLLEN (verbindlich)
 
-- **IP**: `10.4.0.20` / Tailscale `100.82.26.53`
-- **Disk**: 13G / 23G (60%) ⚠️
-- **Containers**:
-  - `toolbox-network-caddy-1` — Up 5 Wochen, Config ✅ valid
-  - `uptime-kuma` — Up 5 Wochen (healthy) ✅
-  - `jellyfin` — Up 5 Wochen (healthy) ✅
-  - `toolbox-network-adguard-1` — Up 5 Wochen ✅
-  - `open-webui` — Up 5 Wochen (healthy) ✅
-- **cloudflared**: aktiv (systemd), Tunnel-Token konfiguriert
+### ANKER PVE — Primäre Produktion
+**IP**: `10.4.0.99` | **Tailscale**: `100.69.179.87` | **PVE**: 9.1.19, Kernel 7.0.2-6-pve
 
----
+| ID | Name | IP | Rolle | Status |
+|----|------|----|-------|--------|
+| VM 210 | haos | 10.4.0.24 | Home Assistant OS (FraWo intern) | ✅ running |
+| VM 220 | odoo | 10.4.0.22 | Odoo 17 ERP + AzuraCast (provisorisch) | ✅ running |
+| VM 240 | PBS-FraWo | 10.4.0.25 (konfiguriert) | Proxmox Backup Server | ⚠️ kein Netzwerk |
+| VM 300 | nextcloud | 10.4.0.21 | Nextcloud + DB + Redis | ✅ running |
+| VM 330 | paperless | 10.4.0.23 | Paperless-ngx + Tika + Gotenberg | ✅ running |
+| CT 100 | toolbox | 10.4.0.20 | Caddy · Uptime Kuma · Jellyfin · AdGuard · Open-WebUI · cloudflared | ✅ running |
+| CT 101 | adguard-slave | 10.4.0.101 | AdGuard Home (Slave/Backup) | ✅ running |
+| CT 110 | storage-node | 10.4.0.30 | CIFS/Samba (media + docs) | ✅ running |
+| CT 120 | vaultwarden | 10.4.0.26 | Vaultwarden (Bitwarden-kompatibel) | ✅ running |
+| CT 130 | radio-node | **10.4.0.28** | AzuraCast (Ziel) + FraWo Radio Backend | ✅ running, IP heute gesetzt |
 
-## ODOO VM (220) — Heute gefixt
+### STOCKENWEILER PVE — Site B (Eltern-Haus)
+**IP lokal**: `192.168.178.172` | **Tailscale**: `100.91.20.116` | **Status**: offline seit 15 Tagen
 
-- **IP**: `10.4.0.22` / User `wolf`
-- **SSH**: jetzt auf `0.0.0.0:22` (war: nur `127.0.0.1` — altes `10.1.0.x`-Config-Artifact)
-- **Swap**: 2GB angelegt und in `/etc/fstab` eingetragen (war: kein Swap → OOM-Kill Risiko)
-- **Zombie-Container**: `edge_web_1` und `edge_db_1` entfernt
-- **Odoo**: HTTP 200 ✅, DB `FraWo_GbR` ✅
-- **Root-Cause des Einfrierens**: Wahrscheinlich OOM-Kill bei vollem RAM (kein Swap) → alle Prozesse frozen, SSH-Daemon abgestürzt
+| Was | Wo | Status |
+|-----|----|--------|
+| Home Assistant (Eltern) | HAOS VM | offline (PVE offline) |
+| frawo-docker-1 | Schiffscontainer | Tailscale aktiv, kein SSH-Key |
 
----
-
-## ÖFFENTLICHE FRONTDOORS (Stand: 2026-05-25)
-
-| URL | Status | Anmerkung |
-|-----|--------|-----------|
-| `https://www.frawo-tech.de` | ✅ HTTP 200 | Odoo Website via Cloudflare |
-| `https://frawo-tech.de` | ✅ HTTP 200 | Redirect zu www |
-| `https://cloud.frawo-tech.de` | 🔴 HTTP 502 | CF-Tunnel zeigt auf alte IP 10.1.0.21 |
-| `https://odoo.frawo-tech.de` | ❓ nicht konfiguriert | |
-| `https://docs.frawo-tech.de` | ❓ nicht konfiguriert | |
-
-## INTERNE FRONTDOORS (via Caddy auf Toolbox, :84xx)
-
-| Host / Port | Upstream | Status |
-|-------------|----------|--------|
-| `odoo.hs27.internal` / `:8444` | `10.4.0.22:8069` | ✅ HTTP 200 |
-| `cloud.hs27.internal` / `:8445` | `10.4.0.21:80` | ✅ HTTP 302 (intern OK) |
-| `paperless.hs27.internal` / `:8446` | `10.4.0.23` | läuft |
-| `vault.hs27.internal` / `:8442` | `10.4.0.26:8080` | ⚠️ Backend prüfen |
-| `ha.hs27.internal` / `:8443` | HAOS | ⚠️ IP prüfen |
-| `media.hs27.internal` / `:8449` | Jellyfin (Toolbox) | ✅ |
+### ENTWICKLUNGSMASCHINEN (keine Produktion)
+| Name | Tailscale | Netzwerk | Rolle |
+|------|-----------|---------|-------|
+| wolfstudiopc | 100.98.31.60 | 10.1.0.210 (alt!) | Dev-Workstation, lokales Docker-Testing |
+| wolf-surface | 100.79.103.59 | - | Mobile Dev |
+| wolf-zenbook | 100.76.249.126 | - | Linux Dev |
+| surface-go-frontend | 100.106.67.127 | - | Frontend-Entwicklung |
 
 ---
 
-## NETZWERK-HINWEIS (StudioPC)
+## ÖFFENTLICHE DIENSTE
 
-- **UDP Port Exhaustion (Event 4266)**: Durch Dual-Gateway (WLAN Easybox `192.168.2.1` + LAN UCG `10.4.0.1`) und VPN-Flapping
-- **Empfehlung** (Admin-Terminal, noch ausstehend):
+| URL | Status | Backend |
+|-----|--------|---------|
+| https://www.frawo-tech.de | ✅ HTTP 200 | Odoo via Cloudflare |
+| https://frawo-tech.de | ✅ HTTP 200 | Redirect zu www |
+| https://cloud.frawo-tech.de | 🔴 HTTP 502 | CF-Tunnel zeigt auf alte IP 10.1.0.21 → Fix: Wolf Dashboard |
+| https://radio.frawo-tech.de | ❓ nicht konfiguriert | Ziel: AzuraCast CT 130 |
+
+---
+
+## INTERNE DIENSTE (via Caddy CT 100 / AdGuard)
+
+| Domain (AdGuard) | Caddy Port | Upstream | Status |
+|------------------|-----------|---------|--------|
+| odoo.hs27.internal | :8444 | 10.4.0.22:8069 | ✅ |
+| cloud.hs27.internal | :8445 | 10.4.0.21:80 | ✅ intern |
+| paperless.hs27.internal | :8446 | 10.4.0.23:8000 | ✅ |
+| vault.hs27.internal | :8442 | 10.4.0.26:8080 | ⚠️ prüfen |
+| ha.hs27.internal | :8443 | 10.4.0.24:8123 | ✅ |
+| media.hs27.internal | :8449 | 10.4.0.20:8096 (Jellyfin) | ✅ |
+| radio.hs27.internal | :8448 | 10.4.0.22:8080 (AzuraCast VM220 provisorisch) | ✅ |
+| radio-node.hs27.internal | direkt | 10.4.0.28 | ✅ neu |
+| storage-node.hs27.internal | direkt | 10.4.0.30 | ✅ neu |
+| pve.hs27.internal | direkt | 10.4.0.99 | ✅ neu |
+| adguard-slave.hs27.internal | direkt | 10.4.0.101 | ✅ neu |
+
+---
+
+## STORAGE
+
+| Pfad | Typ | Größe | Belegt | Frei | Hinweis |
+|------|-----|-------|--------|------|---------|
+| `/` (PVE local) | LVM | 70G | 28G | 38G | ✅ 40% |
+| `/mnt/ssd2tb` | dir | 1.9T | 175G | 1.6T | ✅ 9.5% |
+| `/mnt/music_ssd` | dir | 983G | 177G | 806G | ✅ 18% |
+| `/mnt/hs27-media` | CIFS | 98G | 73G | 21G | ⚠️ 74%, Mount stale (Kernel-Bug, Fix: PVE-Neustart) |
+| `gdrive:` | rclone | 5.4T | 1.9T | 3.3T | ✅ 36% |
+| `local-lvm` (LVM thin) | lvmthin | 164G | 2G | 162G | ✅ 1% — fast leer! |
+
+**hs27-media Breakdown:**
+- `FraWo_Radio_Library/Clean` = 63G (Radio-Library, Kern-Content)
+- `FraWo_Radio_Library/Quarantine` = 5.6G (458 MP3s, abgelehnt — Wolf entscheidet)
+- `yourparty_Libary` = 1.3G (YourParty eingestellt → Archivieren/Löschen)
+- `Duplicates` = ✅ gelöscht (109M)
+
+**Langzeit-Fix**: Radio-Library (63G) auf `/mnt/music_ssd` (806G frei) umziehen → hs27-media-Share dauerhaft entlasten.
+
+---
+
+## EMAIL / SMTP
+
+| Parameter | Wert |
+|-----------|------|
+| Server | smtp.strato.de:587 (STARTTLS) |
+| User | webmaster@frawo-tech.de |
+| from_filter | frawo-tech.de |
+| DMARC | v=DMARC1;p=none; (heute geändert von p=reject) |
+| SPF | v=spf1 include:spf.strato.de ~all ✅ |
+| DKIM | nicht konfiguriert (TODO: Strato-Einstellungen) |
+| Status | ✅ Email funktioniert seit heute |
+
+---
+
+## BEKANNTE OFFENE BAUSTELLEN
+
+| Problem | Priorität | Fix | Wer |
+|---------|-----------|-----|-----|
+| cloud.frawo-tech.de → 502 | 🔴 | CF Dashboard: Tunnel → 10.4.0.21 | Wolf |
+| PBS VM 240 kein Netzwerk | 🔴 | PVE Web Console → VNC → IP prüfen | Wolf |
+| /mnt/hs27-media stale | 🟡 | PVE-Neustart (Wartungsfenster) | Agent/Wolf |
+| frawo-docker-1 kein SSH | 🟡 | SSH-Key von win-j1aenasv2fj kopieren | Wolf |
+| Stockenweiler offline | 🔴 | Physisch einschalten (Rothkreuz) | Wolf |
+| DKIM für frawo-tech.de | 🟡 | Strato-Panel → DomainKeys | Wolf |
+| StudioPC auf 10.1.0.x | 🟢 | UCG DHCP-Reservation auf 10.4.0.x | Wolf |
+| Odoo Admin-Passwort | 🟡 | Temporär: AuditTemp2026! → Wolf setzt permanent | Wolf |
+
+---
+
+## NETZWERK HINWEISE
+
+- **StudioPC** Tailscale zeigt `direct 10.1.0.210:41641` — noch auf altem Subnetz, nicht 10.4.0.x
+- **UDP Port Exhaustion**: Dual-Gateway (WLAN Easybox 192.168.2.1 + LAN UCG 10.4.0.1) → Registry-Fix ausstehend:
   ```powershell
   Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters' -Name 'MaxUserPort' -Value 65534 -Type DWord
   Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters' -Name 'TcpTimedWaitDelay' -Value 30 -Type DWord
@@ -129,22 +157,4 @@
 
 ---
 
-## OFFENE BAUSTELLEN — frawo-docker-1 & StudioPC
-
-- **frawo-docker-1** (`100.94.32.41`): Tailscale-Node vorhanden, SSH-Key nicht hinterlegt → Rolle/Zweck unklar, muss in Gesamtarchitektur eingeordnet werden
-- **StudioPC** (wolfstudiopc): Docker läuft, aber nur gestoppte Dev-Container (YourParty). Keine aktiven Services. Rolle als SSH-Bridge und lokaler Docker-Host nach Best Practice definieren.
-- **→ Aktion**: Beide Nodes gemeinsam mit Wolf nach Best Practice in die Infrastruktur einordnen
-
----
-
-## WORKSPACE STATUS
-
-- Operator: **Wolf**
-- Working path: `C:\Users\StudioPC\OneDrive\Dokumente\GitHub\FraWo`
-- Git: main branch
-- SSH Key: `hs27_ops_ed25519` (Anker/VMs), `pve_ed25519` (Anker PVE root)
-
----
-
-*Updated: 2026-05-25 12:10 Europe/Berlin*
-*Audit durchgeführt von: Claude Sonnet 4.6 + Wolf*
+*Updated: 2026-05-25 — Claude Sonnet 4.6 + Wolf*
