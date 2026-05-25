@@ -38,7 +38,6 @@
 | ID | Name | IP | Rolle | Status |
 |----|------|----|-------|--------|
 | VM 210 | haos | 10.4.0.24 | Home Assistant OS (FraWo intern) | ✅ running |
-| VM 220 | odoo | 10.4.0.22 | Odoo 17 ERP (+ AzuraCast Port 8080 → abschalten, Task #238) | ✅ running |
 | VM 240 | PBS-FraWo | 10.4.0.25 (konfiguriert) | Proxmox Backup Server | ⚠️ kein Netzwerk |
 | VM 300 | nextcloud | 10.4.0.21 | Nextcloud + DB + Redis | ✅ running |
 | VM 330 | paperless | 10.4.0.23 | Paperless-ngx + Tika + Gotenberg | ✅ running |
@@ -46,7 +45,8 @@
 | CT 101 | adguard-slave | 10.4.0.101 | AdGuard Home (Slave/Backup) | ✅ running |
 | CT 110 | storage-node | 10.4.0.30 | CIFS/Samba (media + docs) | ✅ running |
 | CT 120 | vaultwarden | 10.4.0.26 | Vaultwarden (Bitwarden-kompatibel) | ✅ running |
-| CT 130 | radio-node | **10.4.0.28** | AzuraCast (port 80/443) + Navidrome (port 4533) + Samba music-share | ✅ running, RAM 4GB |
+| CT 130 | radio-node | **10.4.0.28** | AzuraCast (port 80/443/8000) + Navidrome (port 4533) + Samba music-share | ✅ running, RAM 4GB |
+| VM 220 | odoo | 10.4.0.22 | Odoo 17 ERP only (AzuraCast abgeschaltet ✅) | ✅ running |
 
 ### STOCKENWEILER — Site B (Schiffscontainer, 10.30.8.x)
 **Stockenweiler PVE: EINGESTELLT** (ersetzt durch frawo-docker-1)
@@ -96,8 +96,29 @@
 | pve.hs27.internal | 10.4.0.99 | ✅ | PVE Web UI |
 | adguard-slave.hs27.internal | 10.4.0.101 | ✅ | AdGuard Slave |
 
-**⚠️ VM 220 AzuraCast (port 8080)**: läuft noch, muss abgeschaltet werden (Task #238)
-**⚠️ Navidrome CT 130 (port 4533)**: läuft, noch nicht via Caddy erreichbar — ggf. navidrome.hs27.internal ergänzen
+| navidrome.hs27.internal | 10.4.0.28:4533 | ✅ | Navidrome auf CT 130 (music_ssd) |
+| radio-anker.hs27.internal | 10.4.0.28:80 | ✅ | AzuraCast CT 130 (Anker-Standort) |
+| radio-stock.hs27.internal | 10.30.8.22:8000 | 🔴 | Icecast Relay frawo-docker-1 (TODO #242) |
+
+## FRAWO FUNK RADIO
+
+**Station**: FraWo Funk — "Das Non-Stop Radio vom Bodensee." (Electronic / Alternative)
+**Source**: CT 130 (radio-node, 10.4.0.28), AzuraCast `latest`
+**Öffentliche Domain**: `funk.frawo-tech.de`
+
+| Stream | URL | Format | Bitrate |
+|--------|-----|--------|---------|
+| Hifi | `https://funk.frawo-tech.de/listen/frawo_funk/hifi.mp3` | MP3 | 320 kbps |
+| Standard | `https://funk.frawo-tech.de/listen/frawo_funk/radio.mp3` | MP3 | 192 kbps |
+| Mobile | `https://funk.frawo-tech.de/listen/frawo_funk/mobile.aac` | AAC | 64 kbps |
+
+**Interne Icecast URLs** (direkt, kein Cloudflare):
+- `http://10.4.0.28:8000/radio.mp3` (intern, 192 kbps)
+- `http://100.94.32.41:8000/radio.mp3` (via Tailscale, für Relays)
+
+**Relay-Architektur (geplant)**:
+- CT 130 = Source → frawo-docker-1 Icecast-Relay → Stockenweiler 10.30.8.x lokal
+- CT 130 = Source → Raspberry Pi Icecast-Relay → Mobile Events (WiFi-Hotspot)
 
 ---
 
@@ -144,7 +165,7 @@
 | Tailscale hs27.internal DNS | 🔴 | tailscale.com/admin/dns: 10.1.0.20 → 10.4.0.20 | Wolf |
 | PBS VM 240 kein Netzwerk | 🔴 | PVE Web Console → VNC → IP prüfen | Wolf |
 | frawo-docker-1 SSH-Key | 🟡 | Von win-j1aenasv2fj: Befehl in ROADMAP | Wolf |
-| VM 220 AzuraCast abschalten | 🟡 | Nach Verifikation gleiche Daten wie CT 130 | Agent |
+| Icecast Relay frawo-docker-1 | 🟡 | SSH-Key nötig, dann deploy (#242) | Agent |
 | HAOS Eltern — neue Heimat | 🟡 | frawo-docker-1 (Docker) oder verzichten? | Wolf |
 | /mnt/hs27-media stale | 🟡 | PVE-Neustart (Wartungsfenster) | Agent/Wolf |
 | DKIM für frawo-tech.de | 🟡 | Strato-Panel → DomainKeys | Wolf |
