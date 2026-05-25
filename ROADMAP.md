@@ -56,7 +56,8 @@ ANKER PVE (Primary)              STOCKENWEILER (Site B)
 | #224 | CF Tunnel cloud.frawo-tech.de | Cloudflare Dashboard | Zero Trust → Tunnels → Ingress → 10.4.0.21 |
 | #199 | Stockenweiler einschalten | Physisch Rothkreuz | Vor Ort |
 | #159 | PBS Netzwerk-Fix | PVE Web UI | VM 240 → Console → ip addr / cloud-init prüfen |
-| #226 | frawo-docker-1 SSH-Key | win-j1aenasv2fj | SSH-Key von dem PC auf frawo-docker-1 kopieren |
+| #226 | frawo-docker-1 SSH-Key | win-j1aenasv2fj (10.30.8.21) | hs27_ops_ed25519.pub → authorized_keys (SSH via Passwort schon möglich!) |
+| - | Tailscale DNS Fix | tailscale.com/admin → DNS | hs27.internal nameserver: 10.1.0.20 → 10.4.0.20 (AdGuard) |
 
 ### 🟡 NÄCHSTE AGENT-TASKS (automatisierbar sobald Voraussetzungen erfüllt)
 
@@ -104,7 +105,7 @@ ANKER PVE (Primary)              STOCKENWEILER (Site B)
 |------|-----------|----------|-----|-------|
 | proxmox-anker | 100.69.179.87 | 10.4.0.99 | PVE | Primary Hypervisor |
 | toolbox | 100.82.26.53 | 10.4.0.20 | CT 100 | Edge/Ingress/Monitoring |
-| frawo-docker-1 | 100.94.32.41 | ? | Phys. Server | Schiffscontainer Stockenweiler |
+| frawo-docker-1 | 100.94.32.41 | 10.30.8.22 | Phys. Server | Schiffscontainer Stockenweiler, Debian 13 Trixie |
 | stockenweiler-pve | 100.91.20.116 | 192.168.178.172 | PVE | Site B Hypervisor (offline) |
 | wolfstudiopc | 100.98.31.60 | 10.1.0.210 | Windows PC | Dev-Workstation |
 | wolf-surface | 100.79.103.59 | - | Windows | Mobile Dev |

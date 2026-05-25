@@ -23,9 +23,12 @@
     [alle VMs/CTs unten]    ┌─────────▼──────────────┐
                             │  frawo-docker-1          │
                             │  Tailscale: 100.94.32.41 │
+                            │  Lokal: 10.30.8.22       │
                             │  Physisch: Schiffscontainer│
-                            │  Stockenweiler            │
-                            │  Role: TBD (kein SSH-Key) │
+                            │  Stockenweiler (10.30.8.x)│
+                            │  OS: Debian 13 Trixie    │
+                            │  Disk: 188G frei         │
+                            │  SSH: wolf (sudo) ✅     │
                             └────────────────────────┘
 ```
 
@@ -55,7 +58,7 @@
 | Was | Wo | Status |
 |-----|----|--------|
 | Home Assistant (Eltern) | HAOS VM | offline (PVE offline) |
-| frawo-docker-1 | Schiffscontainer | Tailscale aktiv, kein SSH-Key |
+| frawo-docker-1 | Schiffscontainer | Tailscale 100.94.32.41, Lokal 10.30.8.22, SSH ✅ (wolf/sudo), Debian 13 Trixie, 188G frei |
 
 ### ENTWICKLUNGSMASCHINEN (keine Produktion)
 | Name | Tailscale | Netzwerk | Rolle |
@@ -64,6 +67,12 @@
 | wolf-surface | 100.79.103.59 | - | Mobile Dev |
 | wolf-zenbook | 100.76.249.126 | - | Linux Dev |
 | surface-go-frontend | 100.106.67.127 | - | Frontend-Entwicklung |
+
+### STOCKENWEILER INFRASTRUKTUR (Schiffscontainer / Eltern-Haus)
+| Name | Tailscale | Lokal-IP | Rolle | Status |
+|------|-----------|---------|-------|--------|
+| frawo-docker-1 | 100.94.32.41 | 10.30.8.22 | Phys. Server, Debian 13 Trixie, 188G Disk, Rolle TBD | ✅ SSH wolf/sudo |
+| win-j1aenasv2fj | 100.97.147.67 | 10.30.8.21 | Windows-PC Stockenweiler, SSH-Bridge + Claude Code | ✅ |
 
 ---
 
@@ -138,7 +147,8 @@
 | cloud.frawo-tech.de → 502 | 🔴 | CF Dashboard: Tunnel → 10.4.0.21 | Wolf |
 | PBS VM 240 kein Netzwerk | 🔴 | PVE Web Console → VNC → IP prüfen | Wolf |
 | /mnt/hs27-media stale | 🟡 | PVE-Neustart (Wartungsfenster) | Agent/Wolf |
-| frawo-docker-1 kein SSH | 🟡 | SSH-Key von win-j1aenasv2fj kopieren | Wolf |
+| frawo-docker-1 SSH-Key deployen | 🟡 | SSH läuft via Passwort — hs27_ops_ed25519.pub in authorized_keys | Wolf |
+| Tailscale hs27.internal DNS | 🟡 | admin-console: nameserver 10.1.0.20 → 10.4.0.20 | Wolf |
 | Stockenweiler offline | 🔴 | Physisch einschalten (Rothkreuz) | Wolf |
 | DKIM für frawo-tech.de | 🟡 | Strato-Panel → DomainKeys | Wolf |
 | StudioPC auf 10.1.0.x | 🟢 | UCG DHCP-Reservation auf 10.4.0.x | Wolf |
@@ -156,5 +166,11 @@
   ```
 
 ---
+
+## NETZWERK HINWEIS — frawo-docker-1
+- **Stockenweiler-Subnet**: 10.30.8.x (eigenes, nicht 192.168.178.x Eltern-Haus)
+- **SSH via Passwort**: vom Stockenweiler-PC (10.30.8.21) direkt erreichbar
+- **Via Tailscale**: 100.94.32.41, via StudioPC Tailscale direkt SSH möglich sobald Key deployed
+- **apt-cdrom**: Warnung beim Update (DVD-Source in sources.list) — ignorierbar, internet-Repos funktionieren
 
 *Updated: 2026-05-25 — Claude Sonnet 4.6 + Wolf*
