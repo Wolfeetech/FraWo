@@ -8,19 +8,19 @@ header = ["folder", "favorite", "type", "name", "notes", "fields", "reprompt", "
 
 rows = [
     # Infrastruktur
-    ["Infrastruktur", 1, "login", "Proxmox (pve-anker)", "Haupt-Server Webinterface", "", 0, "https://10.1.0.92:8006", "root", "Wolf2024!Frawo", ""],
-    ["Infrastruktur", 1, "login", "Cloudflare", "DNS, Tunnels & Proxy", "", 0, "https://dash.cloudflare.com", "office@frawo-tech.de", "Wolf2024!Frawo", ""],
+    ["Infrastruktur", 1, "login", "Proxmox (pve-anker)", "Haupt-Server Webinterface", "", 0, "https://10.1.0.92:8006", "root", "", ""],
+    ["Infrastruktur", 1, "login", "Cloudflare", "DNS, Tunnels & Proxy", "", 0, "https://dash.cloudflare.com", "office@frawo-tech.de", "", ""],
     
     # Odoo
-    ["Odoo", 1, "login", "Odoo (Wolf)", "Hauptaccount", "", 0, "https://www.frawo-tech.de", "wolf@frawo-tech.de", "Wolf2024!Frawo", ""],
+    ["Odoo", 1, "login", "Odoo (Wolf)", "Hauptaccount", "", 0, "https://www.frawo-tech.de", "wolf@frawo-tech.de", "", ""],
     ["Odoo", 0, "login", "Odoo (Franz)", "Hauptaccount Franz", "", 0, "https://www.frawo-tech.de", "franz@frawo-tech.de", "[BITTE_EINTRAGEN]", ""],
-    ["Odoo", 0, "login", "Odoo (Database Admin)", "Für Datenbank-Backups", "", 0, "https://www.frawo-tech.de/web/database/manager", "admin", "Wolf2024!Frawo", ""],
+    ["Odoo", 0, "login", "Odoo (Database Admin)", "Für Datenbank-Backups", "", 0, "https://www.frawo-tech.de/web/database/manager", "admin", "", ""],
     
     # Web-Dienste
-    ["Web-Dienste", 0, "login", "Vaultwarden Admin", "Konfiguration des Tresors", "", 0, "https://vault.frawo-tech.de/admin", "", "Faya-Admin-Token-d9a5c8e1b4f2", ""],
-    ["Web-Dienste", 0, "login", "Nextcloud", "Cloud Speicher", "", 0, "https://cloud.frawo-tech.de", "admin", "Wolf2024!Frawo", ""],
-    ["Web-Dienste", 0, "login", "Home Assistant", "Smart Home", "", 0, "https://home.frawo-tech.de", "admin", "Wolf2024!Frawo", ""],
-    ["Web-Dienste", 0, "login", "AzuraCast (Radio)", "Webradio Backend", "", 0, "https://funk.frawo-tech.de", "radio@frawo-tech.de", "Wolf2024!Frawo", ""],
+    ["Web-Dienste", 0, "login", "Vaultwarden Admin", "Konfiguration des Tresors", "", 0, "https://vault.frawo-tech.de/admin", "", "", ""],
+    ["Web-Dienste", 0, "login", "Nextcloud", "Cloud Speicher", "", 0, "https://cloud.frawo-tech.de", "admin", "", ""],
+    ["Web-Dienste", 0, "login", "Home Assistant", "Smart Home", "", 0, "https://home.frawo-tech.de", "admin", "", ""],
+    ["Web-Dienste", 0, "login", "AzuraCast (Radio)", "Webradio Backend", "", 0, "https://funk.frawo-tech.de", "radio@frawo-tech.de", "", ""],
 ]
 
 proxmox_vms = [
@@ -49,7 +49,7 @@ for vmid, name, vm_type in proxmox_vms:
         0,
         "",
         "root",
-        "Wolf2024!Frawo",
+        "",
         ""
     ])
 

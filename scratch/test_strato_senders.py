@@ -5,7 +5,7 @@ from email.header import Header
 SMTP_HOST = 'smtp.strato.de'
 SMTP_PORT = 587
 SMTP_USER = 'webmaster@frawo-tech.de'
-SMTP_PASS = 'Frawo0426!!'
+SMTP_PASS = os.getenv('SMTP_PASS', '')
 
 def test_sender(from_header, envelope_from):
     print(f"\n[*] Testing with Envelope From: '{envelope_from}' and From Header: '{from_header}'...")

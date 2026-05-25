@@ -8,7 +8,7 @@ PVE_HOST="100.69.179.87"
 PVE_USER="root"
 CT_ID="105"
 CT_NAME="radio-backend"
-GIT_REPO="https://github.com/frawo-tech/frawo.git"
+GIT_REPO="https://github.com/Wolfeetech/FraWo.git"
 DEPLOY_PATH="/opt/radio-backend"
 
 echo "====================================="
@@ -58,13 +58,16 @@ echo "📦 Step 3: Installing dependencies..."
 pct exec $CT_ID -- bash -c "
     set -e
     apt-get update
-    apt-get install -y curl git docker.io docker-compose python3-pip
+    apt-get install -y curl git docker.io python3-pip
     systemctl enable docker
     systemctl start docker
 
-    # Install Docker Compose v2
-    curl -SL https://github.com/docker/compose/releases/download/v2.24.0/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose
-    chmod +x /usr/local/bin/docker-compose
+    # Install Docker Compose v2 plugin
+    DOCKER_COMPOSE_VERSION=v2.29.2
+    curl -fsSL "https://github.com/docker/compose/releases/download/\${DOCKER_COMPOSE_VERSION}/docker-compose-linux-x86_64" \
+        -o /usr/local/lib/docker/cli-plugins/docker-compose
+    chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
+    ln -sf /usr/local/lib/docker/cli-plugins/docker-compose /usr/local/bin/docker-compose
 "
 
 echo "✅ Dependencies installed"

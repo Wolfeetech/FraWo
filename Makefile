@@ -77,12 +77,19 @@ help:
 
 ## lint: Run local lint checks (ansible syntax, yaml, python)
 lint: ansible-check
-	@echo "[lint] Checking for obvious plaintext secrets in non-vault yml files..."
+	@echo "[lint] Checking for obvious plaintext secrets in non-vault yml/yaml files..."
 	@if grep -rn --include="*.yml" --include="*.yaml" \
 		-E "(password|passwd|secret|token)\s*[:=]\s*['\"][A-Za-z0-9+/]{8,}" \
 		--exclude-dir=.git --exclude="*/vault.yml" \
-		. 2>/dev/null | grep -v "vault_password_file\|example\|placeholder"; then \
+		. 2>/dev/null | grep -v "vault_password_file\|example\|placeholder\|required\|getenv\|REDACTED"; then \
 		echo "[WARN] Potential plaintext secrets found above. Move them to ansible-vault."; \
+	fi
+	@echo "[lint] Checking for obvious plaintext secrets in Python/shell scripts..."
+	@if grep -rn --include="*.py" --include="*.sh" \
+		-E "(password|passwd|PASS|TOKEN|SECRET)\s*=\s*['\"][^'\"]{8,}" \
+		--exclude-dir=.git \
+		scratch/ ansible/ apps/ 2>/dev/null | grep -v "getenv\|REDACTED\|placeholder\|example\|required\|\:\?"; then \
+		echo "[WARN] Potential plaintext secrets found in scripts. Use os.getenv() or vault variables."; \
 	fi
 	@if [ -f .vault_pass ] && grep -q "your-vault-password-here" .vault_pass 2>/dev/null; then \
 		echo "[WARN] .vault_pass still contains the example placeholder"; \
@@ -95,9 +102,11 @@ ansible-check: ansible-syntax-check
 ## docs: Verify key SSOT documentation files are present
 docs:
 	@echo "[docs] Checking required SSOT files..."
-	@for f in README.md MASTERPLAN.md OPERATOR_TODO_QUEUE.md OPS_HOME.md LIVE_CONTEXT.md SECURITY.md SECURITY_BASELINE.md MEMORY.md NETWORK_INVENTORY.md VM_AUDIT.md; do \
-		if [ -f "$$f" ]; then echo "  ✓ $$f"; else echo "  ✗ MISSING: $$f"; fi; \
-	done
+	@missing=0; \
+	for f in README.md MASTERPLAN.md OPS_HOME.md LIVE_CONTEXT.md SECURITY.md MEMORY.md; do \
+		if [ -f "$$f" ]; then echo "  ✓ $$f"; else echo "  ✗ MISSING: $$f"; missing=1; fi; \
+	done; \
+	if [ "$$missing" -ne 0 ]; then echo "[docs] FAIL: One or more required files are missing."; exit 1; fi
 	@echo "[docs] Done."
 
 ## ai-status: Check health of local brains (Ollama) and MCP bridge
@@ -255,7 +264,12 @@ public-mail-dns-check:
 	python3 ./scripts/public_mail_dns_check.py
 
 ansible-syntax-check:
-	$(ANSIBLE_PLAYBOOK_CMD) --syntax-check ansible/playbooks/deploy_business_stacks.yml
+	@echo "[ansible] Syntax-checking all playbooks..."
+	@for pb in ansible/playbooks/*.yml; do \
+		echo "  checking $$pb"; \
+		$(ANSIBLE_PLAYBOOK_CMD) --syntax-check "$$pb" || exit 1; \
+	done
+	@echo "[ansible] All playbooks OK."
 
 ansible-syntax-check-toolbox:
 	$(ANSIBLE_PLAYBOOK_CMD) --syntax-check ansible/playbooks/deploy_toolbox_foundation.yml

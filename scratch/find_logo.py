@@ -7,7 +7,7 @@ def main():
     url = "http://10.4.0.22:8069"
     db = "FraWo_GbR"
     user = "wolf@frawo-tech.de"
-    pw = "Wolf2024!Frawo"
+    pw = os.getenv("ODOO_PASSWORD", "")
 
     print(f"Connecting to {url}...")
     try:

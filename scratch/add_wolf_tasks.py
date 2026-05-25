@@ -3,7 +3,7 @@ import xmlrpc.client
 url = 'http://10.1.0.22:8069'
 db = 'FraWo_GbR'
 username = 'wolf@frawo-tech.de'
-password = 'Wolf2024!Frawo'
+password = os.getenv('ODOO_PASSWORD', '')
 
 def add_wolf_tasks():
     common = xmlrpc.client.ServerProxy(f'{url}/xmlrpc/2/common')

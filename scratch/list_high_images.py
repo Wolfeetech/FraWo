@@ -12,7 +12,7 @@ if env_file.exists():
 url = os.getenv("ODOO_URL", "http://10.4.0.22:8069")
 db = os.getenv("ODOO_DB_GBR", "FraWo_GbR")
 user = os.getenv("ODOO_USER", "wolf@frawo-tech.de")
-pw = os.getenv("ODOO_PASSWORD", "Wolf2024!Frawo")
+pw = os.getenv("ODOO_PASSWORD", "")
 
 common = xmlrpc.client.ServerProxy(f"{url}/xmlrpc/2/common")
 uid = common.authenticate(db, user, pw, {})

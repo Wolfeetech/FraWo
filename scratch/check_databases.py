@@ -3,7 +3,7 @@ import os
 
 ODOO_URL = 'http://10.4.0.22:8069'
 ODOO_USER = 'wolf@frawo-tech.de'
-ODOO_PASSWORD = 'Wolf2024!Frawo'
+ODOO_PASSWORD = os.getenv('ODOO_PASSWORD', '')
 
 def main():
     print("[*] Connecting to Odoo at", ODOO_URL)
