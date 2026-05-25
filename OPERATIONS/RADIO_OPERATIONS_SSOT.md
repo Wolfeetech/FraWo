@@ -57,13 +57,13 @@ Wenn ein Kriterium fehlschlägt: **NO-GO** bis zur Behebung.
 
 ## 4) Canonical Radio References
 
-- Betrieb: `/home/runner/work/FraWo/FraWo/OPERATIONS/AZURACAST_OPERATIONS.md`
+- Betrieb: `OPERATIONS/AZURACAST_OPERATIONS.md`
 - Daily checks:
-  - `/home/runner/work/FraWo/FraWo/scripts/rpi_radio_readiness_check.sh`
-  - `/home/runner/work/FraWo/FraWo/scripts/rpi_azuracast_service_check.sh`
-  - `/home/runner/work/FraWo/FraWo/scripts/radio_operations_check.sh`
-  - `/home/runner/work/FraWo/FraWo/scripts/radio_daily_health_gate.sh`
-- Inventory source: `/home/runner/work/FraWo/FraWo/ansible/inventory/hosts.yml`
+  - `scripts/rpi_radio_readiness_check.sh`
+  - `scripts/rpi_azuracast_service_check.sh`
+  - `scripts/radio_operations_check.sh`
+  - `scripts/radio_daily_health_gate.sh`
+- Inventory source: `ansible/inventory/hosts.yml`
 
 ---
 
