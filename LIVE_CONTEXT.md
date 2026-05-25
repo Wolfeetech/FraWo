@@ -53,7 +53,7 @@
 
 | Name | Tailscale | Lokal-IP | OS | Rolle | Status |
 |------|-----------|---------|-----|-------|--------|
-| frawo-docker-1 | 100.94.32.41 | 10.30.8.22 | Debian 13 Trixie | Compute-Node, 188G Disk, Rolle TBD | ✅ SSH wolf/sudo |
+| frawo-docker-1 | 100.94.32.41 | 10.30.8.22 | Debian 13 Trixie | Compute-Node, 188G Disk, Rolle TBD | 🔴 SSH BLOCKED (Passwort unbekannt, GRUB-Recovery nötig) |
 | win-j1aenasv2fj | 100.97.147.67 | 10.30.8.21 | Windows | Management-PC, SSH-Bridge, Claude Code | ✅ |
 
 **HAOS Eltern** (lief auf eingestelltem PVE): Neue Heimat TBD — Option frawo-docker-1 (Task #241)
@@ -164,16 +164,15 @@
 |---------|-----------|-----|-----|
 | cloud.frawo-tech.de → 502 | 🔴 | CF Dashboard: Zero Trust → Tunnel → 10.4.0.21 | Wolf |
 | Tailscale hs27.internal DNS | 🔴 | tailscale.com/admin/dns: 10.1.0.20 → 10.4.0.20 | Wolf |
-| PBS VM 240 kein Netzwerk | 🔴 | PVE Web Console → VNC → IP prüfen | Wolf |
-| frawo-docker-1 SSH-Key | 🟡 | Von win-j1aenasv2fj: Befehl in ROADMAP | Wolf |
-| Icecast Relay frawo-docker-1 | 🟡 | SSH-Key nötig, dann deploy (#242) | Agent |
-| HAOS Eltern — neue Heimat | 🟡 | frawo-docker-1 (Docker) oder verzichten? | Wolf |
+| **Passwort-Audit** (#244) | 🔴 | Alle Credentials in Vaultwarden (vault.hs27.internal) | Wolf |
+| **frawo-docker-1 Recovery** (#226) | 🔴 | GRUB Single-User-Mode → passwd wolf → SSH-Key → PasswordAuth deaktivieren | Wolf (physisch) |
+| PBS VM 240 kein Netzwerk | 🟡 | PVE Web Console → VNC → IP prüfen | Wolf |
+| Icecast Relay frawo-docker-1 | 🟡 | SSH-Recovery nötig (#226), dann deploy (#242) | Agent |
+| HAOS Eltern — neue Heimat | 🟡 | frawo-docker-1 (Docker) oder verzichten? (#241) | Wolf |
 | /mnt/hs27-media stale | 🟡 | PVE-Neustart (Wartungsfenster) | Agent/Wolf |
 | DKIM für frawo-tech.de | 🟡 | Strato-Panel → DomainKeys | Wolf |
-| radio.frawo-tech.de | 🟡 | Cloudflare Tunnel → CT 130 (Task #240) | Wolf+Agent |
-| Navidrome Caddy-Route | 🟢 | navidrome.hs27.internal → CT 130:4533 | Agent |
 | StudioPC auf 10.1.0.x | 🟢 | UCG DHCP-Reservation auf 10.4.0.x | Wolf |
-| Odoo Admin-Passwort | 🟡 | AuditTemp2026! → permanentes Passwort | Wolf |
+| Odoo Admin-Passwort | 🟡 | AuditTemp2026! → permanentes Passwort (#244) | Wolf |
 
 ---
 
@@ -194,4 +193,4 @@
 - **Via Tailscale**: 100.94.32.41, via StudioPC Tailscale direkt SSH möglich sobald Key deployed
 - **apt-cdrom**: Warnung beim Update (DVD-Source in sources.list) — ignorierbar, internet-Repos funktionieren
 
-*Updated: 2026-05-25 — Claude Sonnet 4.6 + Wolf*
+*Updated: 2026-05-26 — Claude Sonnet 4.6 + Wolf*
