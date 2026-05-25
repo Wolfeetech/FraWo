@@ -12,24 +12,20 @@
 │         Alle Nodes sicher verbunden, kein offener Port       │
 └──────────────┬──────────────────────┬───────────────────────┘
                │                      │
-    ┌──────────▼──────────┐  ┌────────▼───────────────┐
-    │   ANKER PVE          │  │  STOCKENWEILER (Site B)  │
-    │   10.4.0.99          │  │  192.168.178.x           │
-    │   Tailscale:         │  │  Tailscale:              │
-    │   100.69.179.87      │  │  100.91.20.116 (offline) │
-    │   PRIMARY PRODUCTION │  │  ELTERN-HAUS             │
-    └──────────┬──────────┘  └────────┬───────────────┘
-               │                      │
-    [alle VMs/CTs unten]    ┌─────────▼──────────────┐
-                            │  frawo-docker-1          │
-                            │  Tailscale: 100.94.32.41 │
-                            │  Lokal: 10.30.8.22       │
-                            │  Physisch: Schiffscontainer│
-                            │  Stockenweiler (10.30.8.x)│
-                            │  OS: Debian 13 Trixie    │
-                            │  Disk: 188G frei         │
-                            │  SSH: wolf (sudo) ✅     │
-                            └────────────────────────┘
+    ┌──────────▼──────────┐  ┌────────▼──────────────────────┐
+    │   ANKER PVE          │  │  STOCKENWEILER (Site B)        │
+    │   10.4.0.99          │  │  Netz: 10.30.8.x (Container)  │
+    │   Tailscale:         │  │  PVE: EINGESTELLT              │
+    │   100.69.179.87      │  │                                │
+    │   PRIMARY PRODUCTION │  │  frawo-docker-1 (10.30.8.22)  │
+    └──────────┬──────────┘  │  Tailscale: 100.94.32.41      │
+               │             │  Debian 13, 188G, SSH ✅       │
+    [VMs/CTs]  │             │  Rolle: TBD (Monitoring/Backup)│
+               │             │                                │
+               │             │  win-j1aenasv2fj (10.30.8.21) │
+               │             │  Tailscale: 100.97.147.67      │
+               │             │  Windows, Claude Code ✅        │
+               │             └────────────────────────────────┘
 ```
 
 ---
@@ -42,7 +38,7 @@
 | ID | Name | IP | Rolle | Status |
 |----|------|----|-------|--------|
 | VM 210 | haos | 10.4.0.24 | Home Assistant OS (FraWo intern) | ✅ running |
-| VM 220 | odoo | 10.4.0.22 | Odoo 17 ERP + AzuraCast (provisorisch) | ✅ running |
+| VM 220 | odoo | 10.4.0.22 | Odoo 17 ERP (+ AzuraCast Port 8080 → abschalten, Task #238) | ✅ running |
 | VM 240 | PBS-FraWo | 10.4.0.25 (konfiguriert) | Proxmox Backup Server | ⚠️ kein Netzwerk |
 | VM 300 | nextcloud | 10.4.0.21 | Nextcloud + DB + Redis | ✅ running |
 | VM 330 | paperless | 10.4.0.23 | Paperless-ngx + Tika + Gotenberg | ✅ running |
@@ -52,13 +48,15 @@
 | CT 120 | vaultwarden | 10.4.0.26 | Vaultwarden (Bitwarden-kompatibel) | ✅ running |
 | CT 130 | radio-node | **10.4.0.28** | AzuraCast (port 80/443) + Navidrome (port 4533) + Samba music-share | ✅ running, RAM 4GB |
 
-### STOCKENWEILER PVE — Site B (Eltern-Haus)
-**IP lokal**: `192.168.178.172` | **Tailscale**: `100.91.20.116` | **Status**: offline seit 15 Tagen
+### STOCKENWEILER — Site B (Schiffscontainer, 10.30.8.x)
+**Stockenweiler PVE: EINGESTELLT** (ersetzt durch frawo-docker-1)
 
-| Was | Wo | Status |
-|-----|----|--------|
-| Home Assistant (Eltern) | HAOS VM | offline (PVE offline) |
-| frawo-docker-1 | Schiffscontainer | Tailscale 100.94.32.41, Lokal 10.30.8.22, SSH ✅ (wolf/sudo), Debian 13 Trixie, 188G frei |
+| Name | Tailscale | Lokal-IP | OS | Rolle | Status |
+|------|-----------|---------|-----|-------|--------|
+| frawo-docker-1 | 100.94.32.41 | 10.30.8.22 | Debian 13 Trixie | Compute-Node, 188G Disk, Rolle TBD | ✅ SSH wolf/sudo |
+| win-j1aenasv2fj | 100.97.147.67 | 10.30.8.21 | Windows | Management-PC, SSH-Bridge, Claude Code | ✅ |
+
+**HAOS Eltern** (lief auf eingestelltem PVE): Neue Heimat TBD — Option frawo-docker-1 (Task #241)
 
 ### ENTWICKLUNGSMASCHINEN (keine Produktion)
 | Name | Tailscale | Netzwerk | Rolle |
@@ -67,12 +65,6 @@
 | wolf-surface | 100.79.103.59 | - | Mobile Dev |
 | wolf-zenbook | 100.76.249.126 | - | Linux Dev |
 | surface-go-frontend | 100.106.67.127 | - | Frontend-Entwicklung |
-
-### STOCKENWEILER INFRASTRUKTUR (Schiffscontainer / Eltern-Haus)
-| Name | Tailscale | Lokal-IP | Rolle | Status |
-|------|-----------|---------|-------|--------|
-| frawo-docker-1 | 100.94.32.41 | 10.30.8.22 | Phys. Server, Debian 13 Trixie, 188G Disk, Rolle TBD | ✅ SSH wolf/sudo |
-| win-j1aenasv2fj | 100.97.147.67 | 10.30.8.21 | Windows-PC Stockenweiler, SSH-Bridge + Claude Code | ✅ |
 
 ---
 
@@ -149,16 +141,17 @@
 | Problem | Priorität | Fix | Wer |
 |---------|-----------|-----|-----|
 | cloud.frawo-tech.de → 502 | 🔴 | CF Dashboard: Zero Trust → Tunnel → 10.4.0.21 | Wolf |
+| Tailscale hs27.internal DNS | 🔴 | tailscale.com/admin/dns: 10.1.0.20 → 10.4.0.20 | Wolf |
 | PBS VM 240 kein Netzwerk | 🔴 | PVE Web Console → VNC → IP prüfen | Wolf |
-| Stockenweiler PVE offline | 🔴 | Physisch einschalten (Rothkreuz) | Wolf |
-| Tailscale hs27.internal DNS | 🔴 | tailscale.com/admin → DNS: 10.1.0.20 → 10.4.0.20 | Wolf |
-| frawo-docker-1 SSH-Key | 🟡 | Von win-j1aenasv2fj: ssh-copy-id → 10.30.8.22 | Wolf |
-| VM 220 AzuraCast abschalten | 🟡 | docker stop auf VM 220, dann docker compose remove | Agent |
-| /mnt/hs27-media stale | 🟡 | PVE-Neustart (nächstes Wartungsfenster) | Agent/Wolf |
-| DKIM für frawo-tech.de | 🟡 | Strato-Panel → DomainKeys → DKIM aktivieren | Wolf |
-| Navidrome Caddy-Route | 🟢 | navidrome.hs27.internal → CT 130:4533 ergänzen | Agent |
+| frawo-docker-1 SSH-Key | 🟡 | Von win-j1aenasv2fj: Befehl in ROADMAP | Wolf |
+| VM 220 AzuraCast abschalten | 🟡 | Nach Verifikation gleiche Daten wie CT 130 | Agent |
+| HAOS Eltern — neue Heimat | 🟡 | frawo-docker-1 (Docker) oder verzichten? | Wolf |
+| /mnt/hs27-media stale | 🟡 | PVE-Neustart (Wartungsfenster) | Agent/Wolf |
+| DKIM für frawo-tech.de | 🟡 | Strato-Panel → DomainKeys | Wolf |
+| radio.frawo-tech.de | 🟡 | Cloudflare Tunnel → CT 130 (Task #240) | Wolf+Agent |
+| Navidrome Caddy-Route | 🟢 | navidrome.hs27.internal → CT 130:4533 | Agent |
 | StudioPC auf 10.1.0.x | 🟢 | UCG DHCP-Reservation auf 10.4.0.x | Wolf |
-| Odoo Admin-Passwort | 🟡 | AuditTemp2026! → permanentes Passwort setzen | Wolf |
+| Odoo Admin-Passwort | 🟡 | AuditTemp2026! → permanentes Passwort | Wolf |
 
 ---
 

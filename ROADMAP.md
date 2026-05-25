@@ -11,25 +11,27 @@
 ## ZIELARCHITEKTUR 2027 (Masterplan)
 
 ```
-ANKER PVE (Primary)              STOCKENWEILER (Site B)
-├── Odoo ERP (VM 220)            ├── HAOS Eltern
-├── Nextcloud (VM 300)           ├── frawo-docker-1 (Schiffscontainer)
-├── Paperless (VM 330)           │   └── Rolle: Monitoring-Stack ODER
-├── PBS Backup (VM 240) ←fix     │       Staging ODER Backup-Relay
-├── HAOS FraWo (VM 210)          └── [YourParty: EINGESTELLT]
-├── Toolbox CT 100 (Caddy/Edge)
-├── radio-node CT 130 ←TARGET
-│   ├── AzuraCast (Streaming)
-│   └── FraWo Radio Backend (FastAPI+PG+Redis)
+ANKER PVE (Primary)              STOCKENWEILER (Site B, 10.30.8.x)
+├── Odoo ERP (VM 220)            ├── frawo-docker-1 (10.30.8.22)
+├── Nextcloud (VM 300)           │   Debian 13, 188G, SSH ✅
+├── Paperless (VM 330)           │   Rolle: TBD nach Audit
+├── PBS Backup (VM 240) ←fix     │   (Monitoring/Backup/Staging)
+├── HAOS FraWo (VM 210)          │   HAOS Eltern → Option hier
+├── Toolbox CT 100 (Caddy/Edge)  └── win-j1aenasv2fj (Management)
+├── radio-node CT 130 ✅ LIVE         Stockenweiler PVE: EINGESTELLT
+│   ├── AzuraCast ✅ (Port 80)        YourParty: EINGESTELLT
+│   ├── Navidrome ✅ (Port 4533)
+│   └── FraWo Radio Backend ←TODO
 ├── storage-node CT 110 (CIFS)
 ├── vaultwarden CT 120
 └── adguard CT 100+101
 
-ÖFFENTLICH                       INTERN
-├── frawo-tech.de (Odoo)         ├── *.hs27.internal (AdGuard)
-├── cloud.frawo-tech.de ←fix     ├── :84xx Caddy Ports
-├── radio.frawo-tech.de ←TODO    └── Tailscale für Admin
-└── Cloudflare Tunnel (cloudflared CT 100)
+ÖFFENTLICH                       INTERN (via AdGuard + Caddy CT 100)
+├── frawo-tech.de ✅ (Odoo)      ├── odoo.hs27.internal ✅
+├── cloud.frawo-tech.de ←fix CF  ├── cloud.hs27.internal ✅
+├── radio.frawo-tech.de ←TODO    ├── radio.hs27.internal ✅ (CT 130)
+└── Cloudflare Tunnel            ├── ha/media/paperless/vault ✅
+                                 └── navidrome.hs27.internal ←TODO
 ```
 
 ---
@@ -76,13 +78,13 @@ ANKER PVE (Primary)              STOCKENWEILER (Site B)
 | #84/#159 | PBS produktiv setzen | Netzwerk-Fix Wolf | Mittel |
 | #197 | Website Brand Rollout | Odoo-Website-Zugang | Niedrig |
 
-### 🛑 BLOCKIERT (wartet auf Stockenweiler)
+### 🛑 OFFEN — Wolf-Entscheidung nötig
 
-| Was | Warum |
+| Was | Frage |
 |-----|-------|
-| Home Assistant Eltern | Stockenweiler-PVE offline |
-| frawo-docker-1 volle Integration | Stockenweiler offline → kein Vor-Ort-Zugang |
-| YourParty Cleanup/Archiv | Stockenweiler-Daten (eingestellt, aber aufräumen) |
+| HAOS Eltern (#241) | frawo-docker-1 (Docker) ODER verzichten? |
+| frawo-docker-1 Rolle (#234) | Monitoring / Backup-Relay / Staging / Kombi? |
+| VM 220 AzuraCast abschalten (#238) | CT 130 = gleiche Daten wie VM 220? Bestätigung Wolf |
 
 ---
 
@@ -93,7 +95,10 @@ ANKER PVE (Primary)              STOCKENWEILER (Site B)
 | AzuraCast Ziel: CT 130 (radio-node) | Best Practice: dedizierter Radio-Node, 10.4.0.28 | 2026-05-25 |
 | FraWo Radio Backend (FastAPI) → CT 130 | Gemeinsam mit AzuraCast, low latency, single node | 2026-05-25 |
 | YourParty: EINGESTELLT | Kein aktiver Betrieb mehr, Code archivieren | 2026-05-25 |
-| frawo-docker-1: Schiffscontainer Stockenweiler | Physischer Standort bestätigt, Rolle noch TBD | 2026-05-25 |
+| Stockenweiler PVE: EINGESTELLT | Durch frawo-docker-1 + win-jx ersetzt, kein Einschalten mehr | 2026-05-25 |
+| frawo-docker-1: DER Stockenweiler Compute-Node | Debian 13, 188G, SSH aktiv, ersetzt PVE | 2026-05-25 |
+| AzuraCast CT 130: bereits seit 6 Wochen live | Migration war erledigt, Caddy umgestellt | 2026-05-25 |
+| CT 130 RAM: 4GB | Swap-Druck wegen Navidrome+AzuraCast, hot-upgrade | 2026-05-25 |
 | DMARC: p=none | DKIM fehlt → p=reject blockiert Strato-Relay | 2026-05-25 |
 | StudioPC: nur Entwicklung | Keine Produktions-Services, Docker nur lokal | 2026-05-25 |
 | hs27-media CIFS Stale | Kernel-Bug, Fix: PVE-Neustart Wartungsfenster | 2026-05-25 |
