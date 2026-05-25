@@ -21,11 +21,15 @@ if not uid:
 print("Odoo authentication successful for wolf@frawo-tech.de")
 
 # Test Franz
-uid_franz = common.authenticate(ODOO_DB, 'franz@frawo-tech.de', '', {})
-if uid_franz:
-    print("Odoo authentication successful for franz@frawo-tech.de")
+ODOO_PASSWORD_FRANZ = os.getenv('ODOO_PASSWORD_FRANZ', '')
+if ODOO_PASSWORD_FRANZ:
+    uid_franz = common.authenticate(ODOO_DB, 'franz@frawo-tech.de', ODOO_PASSWORD_FRANZ, {})
+    if uid_franz:
+        print("Odoo authentication successful for franz@frawo-tech.de")
+    else:
+        print("Odoo authentication failed for franz@frawo-tech.de")
 else:
-    print("Odoo authentication failed for franz@frawo-tech.de (Password might be different)")
+    print("Skipping franz@frawo-tech.de authentication (ODOO_PASSWORD_FRANZ not set)")
 
 models = xmlrpc.client.ServerProxy(f'{ODOO_URL}/xmlrpc/2/object')
 
