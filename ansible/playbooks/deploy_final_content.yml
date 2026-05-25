@@ -7,7 +7,7 @@
         dest: "/tmp/mega_inject.py"
     
     - name: Execute injection script
-      shell: "cat /tmp/mega_inject.py | docker exec -i odoo-web-1 odoo shell -d FraWo_GbR --db_host=db --db_user=odoo --db_password={{ odoo_db_password }}"
+      shell: "cat /tmp/mega_inject.py | docker exec -i odoo-web-1 odoo shell -d FraWo_GbR --db_host=db --db_user=odoo --db_password={{ homeserver_vault_odoo_db_password | quote }}"
       register: inject_out
     
     - name: Show output
