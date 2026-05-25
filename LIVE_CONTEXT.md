@@ -8,18 +8,40 @@
 
 ---
 
+## EXECUTION TRACKER (Plan-Implementierung 2026-05-25)
+
+1. **Cloudflare 502 Fix (`cloud.frawo-tech.de`)** — `IN PROGRESS`
+   - Umsetzungspfad festgelegt: Ingress auf `http://10.4.0.21` korrigieren.
+   - Externer Verifikationstest nach Umstellung: `curl -I https://cloud.frawo-tech.de` (Erwartung: kein `502`).
+2. **Stockenweiler online bringen** — `BLOCKED (physisch)`
+   - Nächster Schritt: Physischer Power-On in Rothkreuz, danach Tailscale-Liveness prüfen.
+3. **Storage-Druck (`/mnt/hs27-media`)** — `OPEN`
+   - Nächster Schritt: Cleanup-Run oder Share-Erweiterung priorisiert terminieren.
+4. **Anker RAM/Swap stabilisieren** — `OPEN`
+   - Nächster Schritt: PBS/VM-Rightsizing mit frischer Laufzeitmessung.
+5. **Node-Rollen frawo-docker-1 + StudioPC** — `OPEN`
+   - Nächster Schritt: Zielrolle je Node verbindlich festlegen (Bridge/Host/Betriebsmodus).
+6. **Radio-Migration CT 130** — `READY AFTER 2`
+   - Startbedingung: Stockenweiler wieder online.
+7. **Governance Sync (Odoo + Repo SSOT)** — `ACTIVE`
+   - Regel: Jede erledigte Runtime-Aktion sofort in Odoo und SSOT spiegeln.
+
+---
+
 ## KRITISCHE PROBLEME
 
 ### 🔴 1. cloud.frawo-tech.de → 502 (Cloudflare Tunnel falsche IP)
 - **Ursache**: Cloudflared-Tunnel-Ingress zeigt auf alte IP `10.1.0.21` (alt: `10.1.0.x`-Subnetz)
 - **Korrekt wäre**: `http://10.4.0.21` (Nextcloud VM 300, aktuelles `10.4.0.x`-Subnetz)
 - **Fix**: Cloudflare Dashboard → Zero Trust → Tunnels → Ingress Rule für `cloud.frawo-tech.de` auf `http://10.4.0.21` ändern (Wolf, manuell)
+- **Externer Test danach**: `curl -I https://cloud.frawo-tech.de` (Erwartung `HTTP 200/302`, kein `502`)
 - **Nextcloud selbst**: Läuft einwandfrei (intern HTTP 302 ✓, VM up 22h)
 
 ### 🔴 2. Stockenweiler PVE — physisch offline
 - **Tailscale**: `100.91.20.116` — offline, last seen **15 Tage** vor Audit
 - **Benötigt**: Physischer Besuch in Rothkreuz zum Einschalten
 - **Blockiert**: Lane D (Radio/HA), Lane E (AzuraCast Migration)
+- **Freigabe-Kriterium**: Node online + erfolgreicher Tailscale/Service-Check
 - **Hinweis**: AzuraCast läuft aktuell provisorisch auf VM 220 (Odoo VM) — Ziel ist CT 130 (radio-node)
 
 ### ⚠️ 3. hs27-media NFS-Share: 80% voll
@@ -146,5 +168,5 @@
 
 ---
 
-*Updated: 2026-05-25 12:10 Europe/Berlin*
+*Updated: 2026-05-25 15:46 Europe/Berlin*
 *Audit durchgeführt von: Claude Sonnet 4.6 + Wolf*

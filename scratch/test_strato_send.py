@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 env_path = Path.home() / '.ai-tools-shared' / '.env'
 load_dotenv(env_path)
 
-password = os.getenv('ODOO_PASSWORD', 'Wolf2024!Frawo')
+password = os.getenv('ODOO_PASSWORD', '')
 sender = 'webmaster@frawo-tech.de'
 receiver = 'wolf@frawo-tech.de'
 

@@ -11,7 +11,7 @@ load_dotenv(env_path)
 ODOO_URL = os.getenv('ODOO_URL', 'http://10.4.0.22:8069')
 ODOO_DB = 'FraWo_GbR'
 ODOO_USER = os.getenv('ODOO_USER', 'wolf@frawo-tech.de')
-ODOO_PASSWORD = os.getenv('ODOO_PASSWORD', 'Wolf2024!Frawo')
+ODOO_PASSWORD = os.getenv('ODOO_PASSWORD', '')
 
 common = xmlrpc.client.ServerProxy(f'{ODOO_URL}/xmlrpc/2/common')
 uid = common.authenticate(ODOO_DB, ODOO_USER, ODOO_PASSWORD, {})
@@ -21,7 +21,7 @@ if not uid:
 print("Odoo authentication successful for wolf@frawo-tech.de")
 
 # Test Franz
-uid_franz = common.authenticate(ODOO_DB, 'franz@frawo-tech.de', 'Wolf2024!Frawo', {})
+uid_franz = common.authenticate(ODOO_DB, 'franz@frawo-tech.de', '', {})
 if uid_franz:
     print("Odoo authentication successful for franz@frawo-tech.de")
 else:

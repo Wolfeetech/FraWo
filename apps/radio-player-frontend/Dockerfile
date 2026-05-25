@@ -8,7 +8,7 @@ COPY site/ /usr/share/nginx/html/
 
 RUN chmod +x /docker-entrypoint.d/40-render-config.sh
 
-ENV APP_TITLE="YourParty Radio"
+ENV APP_TITLE="FraWo Funk"
 ENV APP_TAGLINE="Listen live and stay close to the FraWo media lane."
 ENV STREAM_URL="https://radio.example.invalid/live"
 ENV STATUS_URL="https://status.example.invalid"
