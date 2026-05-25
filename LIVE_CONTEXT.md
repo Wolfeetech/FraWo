@@ -50,7 +50,7 @@
 | CT 101 | adguard-slave | 10.4.0.101 | AdGuard Home (Slave/Backup) | ✅ running |
 | CT 110 | storage-node | 10.4.0.30 | CIFS/Samba (media + docs) | ✅ running |
 | CT 120 | vaultwarden | 10.4.0.26 | Vaultwarden (Bitwarden-kompatibel) | ✅ running |
-| CT 130 | radio-node | **10.4.0.28** | AzuraCast (Ziel) + FraWo Radio Backend | ✅ running, IP heute gesetzt |
+| CT 130 | radio-node | **10.4.0.28** | AzuraCast (port 80/443) + Navidrome (port 4533) + Samba music-share | ✅ running, RAM 4GB |
 
 ### STOCKENWEILER PVE — Site B (Eltern-Haus)
 **IP lokal**: `192.168.178.172` | **Tailscale**: `100.91.20.116` | **Status**: offline seit 15 Tagen
@@ -88,20 +88,24 @@
 ---
 
 ## INTERNE DIENSTE (via Caddy CT 100 / AdGuard)
+**Caddy läuft als Docker-Container** `toolbox-network-caddy-1` auf CT 100, Config: `/root/stacks/toolbox-network/Caddyfile`
 
-| Domain (AdGuard) | Caddy Port | Upstream | Status |
-|------------------|-----------|---------|--------|
-| odoo.hs27.internal | :8444 | 10.4.0.22:8069 | ✅ |
-| cloud.hs27.internal | :8445 | 10.4.0.21:80 | ✅ intern |
-| paperless.hs27.internal | :8446 | 10.4.0.23:8000 | ✅ |
-| vault.hs27.internal | :8442 | 10.4.0.26:8080 | ⚠️ prüfen |
-| ha.hs27.internal | :8443 | 10.4.0.24:8123 | ✅ |
-| media.hs27.internal | :8449 | 10.4.0.20:8096 (Jellyfin) | ✅ |
-| radio.hs27.internal | :8448 | 10.4.0.22:8080 (AzuraCast VM220 provisorisch) | ✅ |
-| radio-node.hs27.internal | direkt | 10.4.0.28 | ✅ neu |
-| storage-node.hs27.internal | direkt | 10.4.0.30 | ✅ neu |
-| pve.hs27.internal | direkt | 10.4.0.99 | ✅ neu |
-| adguard-slave.hs27.internal | direkt | 10.4.0.101 | ✅ neu |
+| Domain (AdGuard) | Upstream | Status | Hinweis |
+|------------------|---------|--------|---------|
+| odoo.hs27.internal | 10.4.0.22:8069 | ✅ | Odoo 17 ERP |
+| cloud.hs27.internal | 10.4.0.21:80 | ✅ | Nextcloud |
+| paperless.hs27.internal | 10.4.0.23:8000 | ✅ | Paperless-ngx |
+| vault.hs27.internal | 10.4.0.26:8080 | ✅ | Vaultwarden |
+| ha.hs27.internal | 10.4.0.24:8123 | ✅ | Home Assistant (HAOS) |
+| media.hs27.internal | 10.4.0.20:8096 | ✅ | Jellyfin (CT 100 lokal) |
+| radio.hs27.internal | **10.4.0.28:80** | ✅ | AzuraCast auf CT 130 — **heute migriert** |
+| radio-node.hs27.internal | 10.4.0.28 | ✅ | Direkt-Zugriff CT 130 |
+| storage-node.hs27.internal | 10.4.0.30 | ✅ | Direkt CT 110 |
+| pve.hs27.internal | 10.4.0.99 | ✅ | PVE Web UI |
+| adguard-slave.hs27.internal | 10.4.0.101 | ✅ | AdGuard Slave |
+
+**⚠️ VM 220 AzuraCast (port 8080)**: läuft noch, muss abgeschaltet werden (Task #238)
+**⚠️ Navidrome CT 130 (port 4533)**: läuft, noch nicht via Caddy erreichbar — ggf. navidrome.hs27.internal ergänzen
 
 ---
 
@@ -144,15 +148,17 @@
 
 | Problem | Priorität | Fix | Wer |
 |---------|-----------|-----|-----|
-| cloud.frawo-tech.de → 502 | 🔴 | CF Dashboard: Tunnel → 10.4.0.21 | Wolf |
+| cloud.frawo-tech.de → 502 | 🔴 | CF Dashboard: Zero Trust → Tunnel → 10.4.0.21 | Wolf |
 | PBS VM 240 kein Netzwerk | 🔴 | PVE Web Console → VNC → IP prüfen | Wolf |
-| /mnt/hs27-media stale | 🟡 | PVE-Neustart (Wartungsfenster) | Agent/Wolf |
-| frawo-docker-1 SSH-Key deployen | 🟡 | SSH läuft via Passwort — hs27_ops_ed25519.pub in authorized_keys | Wolf |
-| Tailscale hs27.internal DNS | 🟡 | admin-console: nameserver 10.1.0.20 → 10.4.0.20 | Wolf |
-| Stockenweiler offline | 🔴 | Physisch einschalten (Rothkreuz) | Wolf |
-| DKIM für frawo-tech.de | 🟡 | Strato-Panel → DomainKeys | Wolf |
+| Stockenweiler PVE offline | 🔴 | Physisch einschalten (Rothkreuz) | Wolf |
+| Tailscale hs27.internal DNS | 🔴 | tailscale.com/admin → DNS: 10.1.0.20 → 10.4.0.20 | Wolf |
+| frawo-docker-1 SSH-Key | 🟡 | Von win-j1aenasv2fj: ssh-copy-id → 10.30.8.22 | Wolf |
+| VM 220 AzuraCast abschalten | 🟡 | docker stop auf VM 220, dann docker compose remove | Agent |
+| /mnt/hs27-media stale | 🟡 | PVE-Neustart (nächstes Wartungsfenster) | Agent/Wolf |
+| DKIM für frawo-tech.de | 🟡 | Strato-Panel → DomainKeys → DKIM aktivieren | Wolf |
+| Navidrome Caddy-Route | 🟢 | navidrome.hs27.internal → CT 130:4533 ergänzen | Agent |
 | StudioPC auf 10.1.0.x | 🟢 | UCG DHCP-Reservation auf 10.4.0.x | Wolf |
-| Odoo Admin-Passwort | 🟡 | Temporär: AuditTemp2026! → Wolf setzt permanent | Wolf |
+| Odoo Admin-Passwort | 🟡 | AuditTemp2026! → permanentes Passwort setzen | Wolf |
 
 ---
 

@@ -41,36 +41,40 @@ ANKER PVE (Primary)              STOCKENWEILER (Site B)
 | Task | Was | Fix |
 |------|-----|-----|
 | #65 | rclone rate limiting | `--tpslimit 8 --tpslimit-burst 10` |
-| #138 | Caddy gzip/zstd | `encode zstd gzip` alle Frontdoors |
+| #138 | Caddy gzip/zstd + IP-Fix | Alle 10.1.0.x → 10.4.0.x, ha/media/radio Routes neu |
 | #229 | Email DMARC-Fix | p=reject → p=none, SMTP funktioniert |
 | #229 | Trommlerzug Rechnung | INV/2026/00006 (100€) gesendet ✅ |
 | #229 | Bodensee Auftrag | S00007 gesendet ✅ |
 | #230 | CT 130 Static IP | 10.4.0.28 (war DHCP) |
 | #59 | DNS AdGuard | 4 neue Einträge (radio-node, storage-node, pve, adguard-slave) |
-| Odoo SSOT | 6 Tasks aktualisiert, 2 neue erstellt | Alle Notizen mit Details |
+| #162 | **AzuraCast Migration CT 130** | War bereits erledigt (6 Wochen live) — Caddy-Route umgestellt |
+| CT 130 RAM | 2GB → 4GB | `pct set 130 -memory 4096` live |
+| frawo-docker-1 | SSH zugänglich | 10.30.8.22, Debian 13, 188G, sudo ✅ |
+| Git Push | DNS-Fix | curloptResolve Workaround (Tailscale DNS kaputt) |
+| Odoo SSOT | 10+ Tasks aktualisiert, 8 neue erstellt | Vollständiger Stand |
 
 ### 🔴 KRITISCH — Wolf sofort
 
 | Odoo | Was | Wo | Anleitung |
 |------|-----|-----|-----------|
-| #224 | CF Tunnel cloud.frawo-tech.de | Cloudflare Dashboard | Zero Trust → Tunnels → Ingress → 10.4.0.21 |
-| #199 | Stockenweiler einschalten | Physisch Rothkreuz | Vor Ort |
+| #235 | **Tailscale DNS Fix** | tailscale.com/admin/dns | Split DNS hs27.internal: 10.1.0.20 → 10.4.0.20 — StudioPC ohne Internet-DNS |
+| #224 | CF Tunnel cloud.frawo-tech.de | Cloudflare Dashboard | Zero Trust → Tunnels → Public Hostname → 10.4.0.21 |
+| #199 | Stockenweiler PVE einschalten | Physisch Rothkreuz | Vor Ort |
 | #159 | PBS Netzwerk-Fix | PVE Web UI | VM 240 → Console → ip addr / cloud-init prüfen |
-| #226 | frawo-docker-1 SSH-Key | win-j1aenasv2fj (10.30.8.21) | hs27_ops_ed25519.pub → authorized_keys (SSH via Passwort schon möglich!) |
-| - | Tailscale DNS Fix | tailscale.com/admin → DNS | hs27.internal nameserver: 10.1.0.20 → 10.4.0.20 (AdGuard) |
+| #226 | frawo-docker-1 SSH-Key | Von win-j1aenasv2fj (10.30.8.21) | `ssh wolf@10.30.8.22 "mkdir -p ~/.ssh && echo 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICps0AFY3eiRRj/h7j1jVf+IynVbZqwA2wOErxCa9cms studiopc@hs27-ops' >> ~/.ssh/authorized_keys && chmod 700 ~/.ssh && chmod 600 ~/.ssh/authorized_keys"` |
 
 ### 🟡 NÄCHSTE AGENT-TASKS (automatisierbar sobald Voraussetzungen erfüllt)
 
 | Odoo | Was | Wartet auf | Priorität |
 |------|-----|-----------|-----------|
-| #162 | AzuraCast → CT 130 migrieren | Stockenweiler online (oder Entscheidung ohne) | Hoch |
-| - | FraWo Radio Backend deployen (CT 130) | AzuraCast-Migration | Hoch |
-| #225 | hs27-media: Radio-Library auf music_ssd | Wolf-Entscheidung + PVE-Wartung | Mittel |
-| #227 | frawo-docker-1 Rolle + Dienste definieren | SSH-Key Wolf | Mittel |
+| #238 | VM 220 AzuraCast (Port 8080) abschalten | Wolf-Bestätigung (gleiche Daten?) | Hoch |
+| #233 | FraWo Radio Backend deployen (CT 130) | VM 220 Azura abgeschaltet | Hoch |
+| #240 | radio.frawo-tech.de → Cloudflare Tunnel | Wolf (CF Dashboard) | Hoch |
+| #225 | hs27-media: Radio-Library auf music_ssd | PVE-Neustart (CIFS-Stale) | Mittel |
+| #234 | frawo-docker-1 Rolle + Dienste definieren | SSH-Key (#226) | Mittel |
+| #239 | Navidrome: navidrome.hs27.internal Route | - | Niedrig |
 | #84/#159 | PBS produktiv setzen | Netzwerk-Fix Wolf | Mittel |
 | #197 | Website Brand Rollout | Odoo-Website-Zugang | Niedrig |
-| #137 | JSON-LD Structured Data | Brand Rollout | Niedrig |
-| #139 | WebP Bilder | Brand Rollout | Niedrig |
 
 ### 🛑 BLOCKIERT (wartet auf Stockenweiler)
 
