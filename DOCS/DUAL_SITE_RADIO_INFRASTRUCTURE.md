@@ -2,7 +2,8 @@
 
 > [!NOTE]
 > **Architektur-Referenzdokument (Planung).**
-> Runtime-Entscheidungen immer gegen `/home/runner/work/FraWo/FraWo/OPERATIONS/RADIO_OPERATIONS_SSOT.md` und Daily-Gate verifizieren.
+> Runtime-Entscheidungen immer gegen `OPERATIONS/RADIO_OPERATIONS_SSOT.md` und Daily-Gate verifizieren.
+
 
 
 > **Status**: Implementation Active (2026-04-26)
