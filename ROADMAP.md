@@ -67,17 +67,16 @@ ANKER PVE (Primary)              STOCKENWEILER (Site B, 10.30.8.x)
 | #235 | **Tailscale DNS Fix** | tailscale.com/admin/dns | Split DNS hs27.internal: 10.1.0.20 → 10.4.0.20 — StudioPC ohne Internet-DNS |
 | #224 | CF Tunnel cloud.frawo-tech.de | Cloudflare Dashboard | Zero Trust → Tunnels → Public Hostname → 10.4.0.21 |
 | #244 | **Passwort-Audit** | vault.hs27.internal | frawo-docker-1: 1Vaudeville! + alle anderen Passwörter eintragen |
-| CT 130 | **Tailscale Auth** | tailscale.com/admin | Nach CT 130 Neustart: neues Device "radio-node" genehmigen → Icecast Relay freigeschaltet |
+| CT 130 | ~~Tailscale Auth~~ | ✅ DONE | radio-node 100.78.88.33 live |
 | #159 | PBS Netzwerk-Fix | PVE Web UI | VM 240 → Console → ip addr / cloud-init prüfen |
 
-### 🟡 NÄCHSTE AGENT-TASKS (automatisierbar sobald Voraussetzungen erfüllt)
+### 🟡 NÄCHSTE AGENT-TASKS
 
 | Odoo | Was | Wartet auf | Priorität |
 |------|-----|-----------|-----------|
 | #240 | funk.frawo-tech.de CF-Tunnel prüfen/sichern | Wolf (CF Dashboard) | Hoch |
-| #242 | **Icecast Relay frawo-docker-1** | ✅ LIVE — relay.mp3/hifi.mp3/mobile.aac → CT 130:100.78.88.33 | — |
-| #225 | hs27-media: Radio-Library auf music_ssd | PVE-Neustart (CIFS-Stale) | Mittel |
-| #234 | frawo-docker-1 Rolle + Dienste definieren | — | Mittel |
+| #225 | hs27-media: Radio-Library auf music_ssd | PVE-Neustart (CIFS-Stale) → prüfen ob jetzt OK | Mittel |
+| #234 | frawo-docker-1 Rolle dokumentieren | — Rollen klar: Monitoring+Relay+n8n | Agent |
 | #84/#159 | PBS produktiv setzen | Netzwerk-Fix Wolf | Mittel |
 | #197 | Website Brand Rollout | Odoo-Website-Zugang | Niedrig |
 
@@ -86,7 +85,6 @@ ANKER PVE (Primary)              STOCKENWEILER (Site B, 10.30.8.x)
 | Was | Frage |
 |-----|-------|
 | HAOS Eltern (#241) | frawo-docker-1 (Docker, hat bereits n8n + 31GB RAM frei) ODER verzichten? |
-| frawo-docker-1 Rolle (#234) | Monitoring / n8n Automation / Backup-Relay / Kombi? |
 
 ---
 
@@ -99,6 +97,9 @@ ANKER PVE (Primary)              STOCKENWEILER (Site B, 10.30.8.x)
 | YourParty: EINGESTELLT | Kein aktiver Betrieb mehr, Code archivieren | 2026-05-25 |
 | Stockenweiler PVE: EINGESTELLT | Durch frawo-docker-1 + win-jx ersetzt, kein Einschalten mehr | 2026-05-25 |
 | frawo-docker-1: DER Stockenweiler Compute-Node | Debian 13, 188G, SSH aktiv, ersetzt PVE | 2026-05-25 |
+| frawo-docker-1 Rolle: Monitoring+Relay+Automation | n8n+Portainer+Grafana+Prometheus+Icecast-Relay | 2026-05-26 |
+| CT 130 Tailscale: 100.78.88.33 | LXC cgroup2+mount.entry statt tun=1 (PVE 9 inkompatibel) | 2026-05-26 |
+| Icecast-Relay via Tailscale | frawo-docker-1 relayed von CT 130 100.78.88.33 — kein offener Port | 2026-05-26 |
 | AzuraCast CT 130: bereits seit 6 Wochen live | Migration war erledigt, Caddy umgestellt | 2026-05-25 |
 | CT 130 RAM: 4GB | Swap-Druck wegen Navidrome+AzuraCast, hot-upgrade | 2026-05-25 |
 | DMARC: p=none | DKIM fehlt → p=reject blockiert Strato-Relay | 2026-05-25 |
@@ -143,4 +144,4 @@ ANKER PVE (Primary)              STOCKENWEILER (Site B, 10.30.8.x)
 
 ---
 
-*Letzte Aktualisierung: 2026-05-26 Abend — Claude Sonnet 4.6 + Wolf*
+*Letzte Aktualisierung: 2026-05-26 Nacht — Claude Sonnet 4.6 + Wolf*
