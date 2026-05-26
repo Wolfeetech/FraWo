@@ -147,7 +147,7 @@
 | `/` (PVE local) | LVM | 70G | 28G | 38G | ✅ 40% |
 | `/mnt/ssd2tb` | dir | 1.9T | 175G | 1.6T | ✅ 9.5% |
 | `/mnt/music_ssd` | dir | 983G | 177G | 806G | ✅ 18% |
-| `/mnt/hs27-media` | CIFS | 98G | 73G | 21G | ⚠️ 74%, Mount stale (Kernel-Bug, Fix: PVE-Neustart) |
+| `/mnt/hs27-media` | CIFS | 98G | 73G | 21G | ⚠️ stale (Kernel-Bug, Fix: PVE-Neustart) — Radio-Library Migration via tar-pipe läuft |
 | `gdrive:` | rclone | 5.4T | 1.9T | 3.3T | ✅ 36% |
 | `local-lvm` (LVM thin) | lvmthin | 164G | 2G | 162G | ✅ 1% — fast leer! |
 
@@ -157,7 +157,7 @@
 - `yourparty_Libary` = 1.3G (YourParty eingestellt → Archivieren/Löschen)
 - `Duplicates` = ✅ gelöscht (109M)
 
-**Langzeit-Fix**: Radio-Library (63G) auf `/mnt/music_ssd` (806G frei) umziehen → hs27-media-Share dauerhaft entlasten.
+**Migration läuft**: Radio-Library (63G) via tar-pipe CT 110 → `/mnt/music_ssd/FraWo_Radio_Library/` (PVE direkt, kein PVE-Neustart nötig)
 
 ---
 
@@ -186,7 +186,7 @@
 | PBS VM 240 kein Netzwerk | 🟡 | PVE Web Console → VNC → IP prüfen | Wolf |
 | Icecast Relay frawo-docker-1 | ✅ LIVE | radio.mp3/hifi.mp3/mobile.aac relay von CT 130 via Tailscale | Agent 2026-05-26 |
 | HAOS Eltern — neue Heimat | 🟡 | frawo-docker-1 (Docker) oder verzichten? (#241) | Wolf |
-| /mnt/hs27-media stale | 🟡 | PVE-Neustart (Wartungsfenster) | Agent/Wolf |
+| /mnt/hs27-media stale | 🟡 | PVE-Neustart (Wartungsfenster) — Radio-Library wird parallel migriert | Agent/Wolf |
 | DKIM für frawo-tech.de | 🟡 | Strato-Panel → DomainKeys | Wolf |
 | StudioPC auf 10.1.0.x | 🟢 | UCG DHCP-Reservation auf 10.4.0.x | Wolf |
 | Odoo Admin-Passwort | 🟡 | AuditTemp2026! → permanentes Passwort (#244) | Wolf |
@@ -211,4 +211,4 @@
 - **Via Tailscale**: 100.94.32.41, via StudioPC Tailscale direkt SSH möglich sobald Key deployed
 - **apt-cdrom**: Warnung beim Update (DVD-Source in sources.list) — ignorierbar, internet-Repos funktionieren
 
-*Updated: 2026-05-26 — Claude Sonnet 4.6 + Wolf*
+*Updated: 2026-05-26 Nacht — Claude Sonnet 4.6 + Wolf*
