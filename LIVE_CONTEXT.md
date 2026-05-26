@@ -46,20 +46,24 @@
 | CT 110 | storage-node | 10.4.0.30 | CIFS/Samba (media + docs) | ✅ running |
 | CT 120 | vaultwarden | 10.4.0.26 | Vaultwarden (Bitwarden-kompatibel) | ✅ running |
 | CT 130 | radio-node | **10.4.0.28** | AzuraCast (port 80/443/8000) + Navidrome (port 4533) + Samba music-share + Radio Backend API (port 9500) | ✅ running, RAM 4GB, Tailscale installiert (pending: restart + Wolf-Auth) |
-| VM 220 | odoo | 10.4.0.22 | Odoo 17 ERP only (AzuraCast abgeschaltet ✅) | ✅ running |
+| VM 220 | odoo | 10.4.0.22 | Odoo 17 ERP only (AzuraCast abgeschaltet ✅) | ✅ running, restart=unless-stopped, startup order=3 |
 
 ### STOCKENWEILER — Site B (Schiffscontainer, 10.30.8.x)
 **Stockenweiler PVE: EINGESTELLT** (ersetzt durch frawo-docker-1)
 
 | Name | Tailscale | Lokal-IP | OS | Rolle | Status |
 |------|-----------|---------|-----|-------|--------|
-| frawo-docker-1 | 100.94.32.41 | 10.30.8.22 | Debian 13 Trixie | **n8n (port 5678)** + Icecast-Relay (TODO #242), 31GB RAM, 173G frei | ✅ SSH via Key (pw: vault!), PasswordAuth deaktiviert |
+| frawo-docker-1 | 100.94.32.41 | 10.30.8.22 | Debian 13 Trixie | **n8n (5678)** + **Portainer (9000)** + **Grafana (3001)** + **Prometheus (9091)** + Node-Exporter (9100) + Icecast-Relay (TODO #242), 31GB RAM, 173G frei | ✅ SSH via Key (pw: vault!), PasswordAuth deaktiviert |
 | win-j1aenasv2fj | 100.97.147.67 | 10.30.8.21 | Windows | Management-PC, SSH-Bridge, Claude Code | ✅ |
 
 **HAOS Eltern** (lief auf eingestelltem PVE): Neue Heimat TBD — Option frawo-docker-1 (Task #241)
 
-**frawo-docker-1 Dienste** (entdeckt 2026-05-26):
-- n8n Workflow Automation (Port 5678, Docker, /home/wolf/n8n/) — Odoo Task #245
+**frawo-docker-1 Dienste** (Stand 2026-05-26):
+- n8n Workflow Automation (Port 5678, Docker, /home/wolf/n8n/) — Task #245 ✅
+- Portainer CE (Port 9000/9443, /home/wolf/stacks/infra/) ✅
+- Grafana (Port 3001, PW: FrawoGrafana2026!, /home/wolf/stacks/monitoring/) ✅
+- Prometheus (Port 9091, /home/wolf/stacks/monitoring/) ✅
+- Node Exporter (Port 9100) ✅
 - Icecast-Relay (Task #242): pending Tailscale CT 130 Auth + Neustart
 
 **frawo-docker-1 Tailscale** (nach nächstem CT 130 Neustart):
@@ -110,6 +114,9 @@
 | radio-stock.hs27.internal | 10.30.8.22:8000 | 🔴 | Icecast Relay frawo-docker-1 (TODO #242) |
 | radio-api.hs27.internal | 10.4.0.28:9500 | ✅ | FraWo Radio Backend API (FastAPI) |
 | n8n.hs27.internal | 10.30.8.22:5678 | ✅ | n8n Workflow Automation (frawo-docker-1) |
+| portainer.hs27.internal | 10.30.8.22:9000 | ✅ | Portainer CE (frawo-docker-1) |
+| grafana.hs27.internal | 10.30.8.22:3001 | ✅ | Grafana (frawo-docker-1, PW: FrawoGrafana2026!) |
+| prometheus.hs27.internal | 10.30.8.22:9091 | ✅ | Prometheus (frawo-docker-1) |
 
 ## FRAWO FUNK RADIO
 
@@ -183,6 +190,7 @@
 | DKIM für frawo-tech.de | 🟡 | Strato-Panel → DomainKeys | Wolf |
 | StudioPC auf 10.1.0.x | 🟢 | UCG DHCP-Reservation auf 10.4.0.x | Wolf |
 | Odoo Admin-Passwort | 🟡 | AuditTemp2026! → permanentes Passwort (#244) | Wolf |
+| **Odoo Instabilität** | ✅ FIXED | restart=unless-stopped + PVE startup order=3 | Agent 2026-05-26 |
 
 ---
 

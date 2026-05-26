@@ -50,6 +50,8 @@ ANKER PVE (Primary)              STOCKENWEILER (Site B, 10.30.8.x)
 | #162/#238 | **AzuraCast Migration CT 130** | War bereits erledigt (6 Wochen live) — VM 220 AzuraCast abgeschaltet ✅ |
 | CT 130 RAM | 2GB → 4GB | `pct set 130 -memory 4096` live |
 | frawo-docker-1 | SSH zugänglich | 10.30.8.22, Debian 13, 188G, sudo ✅ |
+| frawo-docker-1 | **Monitoring Stack deployed** | Portainer (9000) + Grafana (3001, FrawoGrafana2026!) + Prometheus (9091) + Node-Exporter ✅ |
+| **Odoo #fix** | **restart=unless-stopped** | Container hatten kein Restart-Policy → nach VM-Reboot offline. Fix: unless-stopped + PVE startup order=3 ✅ |
 | #239 | Navidrome Route | navidrome.hs27.internal → CT 130:4533 ✅ |
 | **#233** | **FraWo Radio Backend** | **FastAPI deployed CT 130:9500, radio-api.hs27.internal ✅** |
 | #226 | **frawo-docker-1 SSH** | Passwort 1Vaudeville! gefunden → SSH-Key deployed, PasswordAuth deaktiviert ✅ |
@@ -139,4 +141,4 @@ ANKER PVE (Primary)              STOCKENWEILER (Site B, 10.30.8.x)
 
 ---
 
-*Letzte Aktualisierung: 2026-05-26 — Claude Sonnet 4.6 + Wolf*
+*Letzte Aktualisierung: 2026-05-26 Abend — Claude Sonnet 4.6 + Wolf*
