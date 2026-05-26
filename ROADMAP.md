@@ -65,7 +65,7 @@ ANKER PVE (Primary)              STOCKENWEILER (Site B, 10.30.8.x)
 | Odoo | Was | Wo | Anleitung |
 |------|-----|-----|-----------|
 | #235 | ~~Tailscale DNS Fix~~ | ✅ DONE | Split DNS konfiguriert (Wolf 2026-05-26) |
-| #224 | CF Tunnel — 2 IPs falsch! | Cloudflare Dashboard | funk.frawo-tech.de → **10.4.0.28** \| home.frawo-tech.de → **10.4.0.24:8123** |
+| #224 | ~~CF Tunnel~~ | ✅ DONE | alle 6 Routen korrekt, alle Backends 200/302 (Wolf 2026-05-26) |
 | #244 | **Passwort-Audit** | vault.hs27.internal | frawo-docker-1: 1Vaudeville! + alle anderen Passwörter eintragen |
 | CT 130 | ~~Tailscale Auth~~ | ✅ DONE | radio-node 100.78.88.33 live |
 | #159 | PBS Netzwerk-Fix | PVE Web UI | VM 240 → Console → ip addr / cloud-init prüfen |
@@ -74,7 +74,7 @@ ANKER PVE (Primary)              STOCKENWEILER (Site B, 10.30.8.x)
 
 | Odoo | Was | Wartet auf | Priorität |
 |------|-----|-----------|-----------|
-| #240 | funk.frawo-tech.de CF-Tunnel prüfen/sichern | Wolf (CF Dashboard) | Hoch |
+| #240 | ~~funk.frawo-tech.de CF-Tunnel~~ | ✅ DONE — 10.4.0.28 korrekt | — |
 | #225 | hs27-media: Radio-Library auf music_ssd | PVE-Neustart (CIFS-Stale) → prüfen ob jetzt OK | Mittel |
 | #234 | frawo-docker-1 Rolle dokumentieren | — Rollen klar: Monitoring+Relay+n8n | Agent |
 | #84/#159 | PBS produktiv setzen | Netzwerk-Fix Wolf | Mittel |
