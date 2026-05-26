@@ -56,7 +56,8 @@ ANKER PVE (Primary)              STOCKENWEILER (Site B, 10.30.8.x)
 | **#233** | **FraWo Radio Backend** | **FastAPI deployed CT 130:9500, radio-api.hs27.internal ✅** |
 | #226 | **frawo-docker-1 SSH** | Passwort 1Vaudeville! gefunden → SSH-Key deployed, PasswordAuth deaktiviert ✅ |
 | #245 | n8n entdeckt | n8n lief undokumentiert auf frawo-docker-1:5678 → Caddy+DNS hinzugefügt ✅ |
-| CT 130 | Tailscale installiert | tailscaled + TUN-Feature aktiviert (pending: Neustart + Wolf-Auth) |
+| **CT 130** | **Tailscale live** | TUN-Device via LXC raw config, tailscale up --ssh, IP: 100.78.88.33 ✅ |
+| **#242** | **Icecast Relay deployed** | frawo-docker-1:8000 relayed alle 3 Streams von CT 130 via Tailscale ✅ |
 | Git Push | DNS-Fix | curloptResolve Workaround (Tailscale DNS kaputt) |
 
 ### 🔴 KRITISCH — Wolf sofort
@@ -74,7 +75,7 @@ ANKER PVE (Primary)              STOCKENWEILER (Site B, 10.30.8.x)
 | Odoo | Was | Wartet auf | Priorität |
 |------|-----|-----------|-----------|
 | #240 | funk.frawo-tech.de CF-Tunnel prüfen/sichern | Wolf (CF Dashboard) | Hoch |
-| #242 | Icecast Relay frawo-docker-1 | CT 130 Tailscale Auth (Wolf) | Mittel |
+| #242 | **Icecast Relay frawo-docker-1** | ✅ LIVE — relay.mp3/hifi.mp3/mobile.aac → CT 130:100.78.88.33 | — |
 | #225 | hs27-media: Radio-Library auf music_ssd | PVE-Neustart (CIFS-Stale) | Mittel |
 | #234 | frawo-docker-1 Rolle + Dienste definieren | — | Mittel |
 | #84/#159 | PBS produktiv setzen | Netzwerk-Fix Wolf | Mittel |
@@ -115,6 +116,7 @@ ANKER PVE (Primary)              STOCKENWEILER (Site B, 10.30.8.x)
 |------|-----------|----------|-----|-------|
 | proxmox-anker | 100.69.179.87 | 10.4.0.99 | PVE | Primary Hypervisor |
 | toolbox | 100.82.26.53 | 10.4.0.20 | CT 100 | Edge/Ingress/Monitoring |
+| radio-node | **100.78.88.33** | 10.4.0.28 | CT 130 | AzuraCast + Navidrome + Radio Backend (neu: Tailscale ✅) |
 | frawo-docker-1 | 100.94.32.41 | 10.30.8.22 | Phys. Server | Schiffscontainer Stockenweiler, Debian 13 Trixie |
 | stockenweiler-pve | 100.91.20.116 | 192.168.178.172 | PVE | Site B Hypervisor (offline) |
 | wolfstudiopc | 100.98.31.60 | 10.1.0.210 | Windows PC | Dev-Workstation |

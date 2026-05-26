@@ -45,7 +45,7 @@
 | CT 101 | adguard-slave | 10.4.0.101 | AdGuard Home (Slave/Backup) | ✅ running |
 | CT 110 | storage-node | 10.4.0.30 | CIFS/Samba (media + docs) | ✅ running |
 | CT 120 | vaultwarden | 10.4.0.26 | Vaultwarden (Bitwarden-kompatibel) | ✅ running |
-| CT 130 | radio-node | **10.4.0.28** | AzuraCast (port 80/443/8000) + Navidrome (port 4533) + Samba music-share + Radio Backend API (port 9500) | ✅ running, RAM 4GB, Tailscale installiert (pending: restart + Wolf-Auth) |
+| CT 130 | radio-node | **10.4.0.28** | AzuraCast (port 80/443/8000) + Navidrome (port 4533) + Samba music-share + Radio Backend API (port 9500) | ✅ running, RAM 4GB, **Tailscale: 100.78.88.33** ✅ |
 | VM 220 | odoo | 10.4.0.22 | Odoo 17 ERP only (AzuraCast abgeschaltet ✅) | ✅ running, restart=unless-stopped, startup order=3 |
 
 ### STOCKENWEILER — Site B (Schiffscontainer, 10.30.8.x)
@@ -64,7 +64,7 @@
 - Grafana (Port 3001, PW: FrawoGrafana2026!, /home/wolf/stacks/monitoring/) ✅
 - Prometheus (Port 9091, /home/wolf/stacks/monitoring/) ✅
 - Node Exporter (Port 9100) ✅
-- Icecast-Relay (Task #242): pending Tailscale CT 130 Auth + Neustart
+- Icecast-Relay (Port 8000, /home/wolf/stacks/icecast-relay/) ✅ LIVE — relay von CT 130 via Tailscale 100.78.88.33
 
 **frawo-docker-1 Tailscale** (nach nächstem CT 130 Neustart):
 - tailscaled installiert auf CT 130 (PVE TUN-Feature aktiviert)
@@ -111,7 +111,7 @@
 
 | navidrome.hs27.internal | 10.4.0.28:4533 | ✅ | Navidrome auf CT 130 (music_ssd) |
 | radio-anker.hs27.internal | 10.4.0.28:80 | ✅ | AzuraCast CT 130 (Anker-Standort) |
-| radio-stock.hs27.internal | 10.30.8.22:8000 | 🔴 | Icecast Relay frawo-docker-1 (TODO #242) |
+| radio-stock.hs27.internal | 10.30.8.22:8000 | ✅ | Icecast Relay frawo-docker-1 → CT 130 via Tailscale 100.78.88.33 |
 | radio-api.hs27.internal | 10.4.0.28:9500 | ✅ | FraWo Radio Backend API (FastAPI) |
 | n8n.hs27.internal | 10.30.8.22:5678 | ✅ | n8n Workflow Automation (frawo-docker-1) |
 | portainer.hs27.internal | 10.30.8.22:9000 | ✅ | Portainer CE (frawo-docker-1) |
@@ -184,7 +184,7 @@
 | **Passwort-Audit** (#244) | 🔴 | Alle Credentials in Vaultwarden (vault.hs27.internal) | Wolf |
 | **frawo-docker-1 Recovery** (#226) | 🔴 | GRUB Single-User-Mode → passwd wolf → SSH-Key → PasswordAuth deaktivieren | Wolf (physisch) |
 | PBS VM 240 kein Netzwerk | 🟡 | PVE Web Console → VNC → IP prüfen | Wolf |
-| Icecast Relay frawo-docker-1 | 🟡 | SSH-Recovery nötig (#226), dann deploy (#242) | Agent |
+| Icecast Relay frawo-docker-1 | ✅ LIVE | radio.mp3/hifi.mp3/mobile.aac relay von CT 130 via Tailscale | Agent 2026-05-26 |
 | HAOS Eltern — neue Heimat | 🟡 | frawo-docker-1 (Docker) oder verzichten? (#241) | Wolf |
 | /mnt/hs27-media stale | 🟡 | PVE-Neustart (Wartungsfenster) | Agent/Wolf |
 | DKIM für frawo-tech.de | 🟡 | Strato-Panel → DomainKeys | Wolf |
