@@ -52,7 +52,9 @@ ANKER PVE (Primary)              STOCKENWEILER (Site B, 10.30.8.x)
 | frawo-docker-1 | SSH zugänglich | 10.30.8.22, Debian 13, 188G, sudo ✅ |
 | #239 | Navidrome Route | navidrome.hs27.internal → CT 130:4533 ✅ |
 | **#233** | **FraWo Radio Backend** | **FastAPI deployed CT 130:9500, radio-api.hs27.internal ✅** |
-| #244 | Passwort-Audit Task | Odoo Task ACTIVE, Vaultwarden-Checkliste erstellt |
+| #226 | **frawo-docker-1 SSH** | Passwort 1Vaudeville! gefunden → SSH-Key deployed, PasswordAuth deaktiviert ✅ |
+| #245 | n8n entdeckt | n8n lief undokumentiert auf frawo-docker-1:5678 → Caddy+DNS hinzugefügt ✅ |
+| CT 130 | Tailscale installiert | tailscaled + TUN-Feature aktiviert (pending: Neustart + Wolf-Auth) |
 | Git Push | DNS-Fix | curloptResolve Workaround (Tailscale DNS kaputt) |
 
 ### 🔴 KRITISCH — Wolf sofort
@@ -61,8 +63,8 @@ ANKER PVE (Primary)              STOCKENWEILER (Site B, 10.30.8.x)
 |------|-----|-----|-----------|
 | #235 | **Tailscale DNS Fix** | tailscale.com/admin/dns | Split DNS hs27.internal: 10.1.0.20 → 10.4.0.20 — StudioPC ohne Internet-DNS |
 | #224 | CF Tunnel cloud.frawo-tech.de | Cloudflare Dashboard | Zero Trust → Tunnels → Public Hostname → 10.4.0.21 |
-| #244 | **Passwort-Audit** | vault.hs27.internal | Alle System-Passwörter in Vaultwarden eintragen |
-| #226 | **frawo-docker-1 SSH-Key + Recovery** | Physisch Stockenweiler | GRUB Single-User → `passwd wolf` → SSH-Key deployen |
+| #244 | **Passwort-Audit** | vault.hs27.internal | frawo-docker-1: 1Vaudeville! + alle anderen Passwörter eintragen |
+| CT 130 | **Tailscale Auth** | tailscale.com/admin | Nach CT 130 Neustart: neues Device "radio-node" genehmigen → Icecast Relay freigeschaltet |
 | #159 | PBS Netzwerk-Fix | PVE Web UI | VM 240 → Console → ip addr / cloud-init prüfen |
 
 ### 🟡 NÄCHSTE AGENT-TASKS (automatisierbar sobald Voraussetzungen erfüllt)
@@ -70,9 +72,9 @@ ANKER PVE (Primary)              STOCKENWEILER (Site B, 10.30.8.x)
 | Odoo | Was | Wartet auf | Priorität |
 |------|-----|-----------|-----------|
 | #240 | funk.frawo-tech.de CF-Tunnel prüfen/sichern | Wolf (CF Dashboard) | Hoch |
-| #242 | Icecast Relay frawo-docker-1 | SSH-Key (#226) | Mittel |
+| #242 | Icecast Relay frawo-docker-1 | CT 130 Tailscale Auth (Wolf) | Mittel |
 | #225 | hs27-media: Radio-Library auf music_ssd | PVE-Neustart (CIFS-Stale) | Mittel |
-| #234 | frawo-docker-1 Rolle + Dienste definieren | SSH-Key (#226) | Mittel |
+| #234 | frawo-docker-1 Rolle + Dienste definieren | — | Mittel |
 | #84/#159 | PBS produktiv setzen | Netzwerk-Fix Wolf | Mittel |
 | #197 | Website Brand Rollout | Odoo-Website-Zugang | Niedrig |
 
@@ -80,8 +82,8 @@ ANKER PVE (Primary)              STOCKENWEILER (Site B, 10.30.8.x)
 
 | Was | Frage |
 |-----|-------|
-| HAOS Eltern (#241) | frawo-docker-1 (Docker) ODER verzichten? |
-| frawo-docker-1 Rolle (#234) | Monitoring / Backup-Relay / Staging / Kombi? |
+| HAOS Eltern (#241) | frawo-docker-1 (Docker, hat bereits n8n + 31GB RAM frei) ODER verzichten? |
+| frawo-docker-1 Rolle (#234) | Monitoring / n8n Automation / Backup-Relay / Kombi? |
 
 ---
 
