@@ -87,8 +87,10 @@
 |-----|--------|---------|
 | https://www.frawo-tech.de | ✅ HTTP 200 | Odoo via Cloudflare |
 | https://frawo-tech.de | ✅ HTTP 200 | Redirect zu www |
-| https://cloud.frawo-tech.de | 🔴 HTTP 502 | CF-Tunnel zeigt auf alte IP 10.1.0.21 → Fix: Wolf Dashboard |
-| https://radio.frawo-tech.de | ❓ nicht konfiguriert | Ziel: AzuraCast CT 130 |
+| https://cloud.frawo-tech.de | ✅ | CF-Tunnel → 10.4.0.21 ✅ (Wolf 2026-05-26) |
+| https://funk.frawo-tech.de | 🔴 | CF-Tunnel → 10.4.0.233 FALSCH (alt) → fix: 10.4.0.28 |
+| https://home.frawo-tech.de | 🔴 | CF-Tunnel → 10.1.0.24:8123 FALSCH → fix: 10.4.0.24:8123 |
+| https://vault.frawo-tech.de | ✅ | CF-Tunnel → 10.4.0.26:8080 |
 
 ---
 
