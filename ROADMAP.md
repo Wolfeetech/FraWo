@@ -129,7 +129,7 @@ ANKER PVE (Primary)              STOCKENWEILER (Site B, 10.30.8.x)
 |-----|-------|
 | HAOS Eltern (#241) | frawo-docker-1 (Docker, hat bereits n8n + 31GB RAM frei) ODER verzichten? |
 | Kalender (#260) | Google Calendar, Odoo Kalender, Nextcloud Kalender verbinden — welcher ist Master? |
-| HP ProDesk (#265/#266) | UCG Port 2 oder 4? OS? Specs? → Wolf checkt physisch |
+| HP ProDesk (#265/#266) | = alter Stockenweiler PVE. Defekt, in Rothkreuz zur Reparatur. Wolf diagnostiziert vor Ort. |
 
 ---
 
@@ -140,7 +140,7 @@ ANKER PVE (Primary)              STOCKENWEILER (Site B, 10.30.8.x)
 | AzuraCast Ziel: CT 130 (radio-node) | Best Practice: dedizierter Radio-Node, 10.4.0.28 | 2026-05-25 |
 | FraWo Radio Backend (FastAPI) → CT 130 | Gemeinsam mit AzuraCast, low latency, single node | 2026-05-25 |
 | YourParty: EINGESTELLT | Kein aktiver Betrieb mehr, Code archivieren | 2026-05-25 |
-| Stockenweiler PVE: EINGESTELLT | Durch frawo-docker-1 + win-jx ersetzt, kein Einschalten mehr | 2026-05-25 |
+| Stockenweiler PVE: REAKTIVIERT | War eingestellt, ist defekt nach Rothkreuz, wird repariert → neue Rolle: Eltern-PC + Fallback | 2026-05-28 |
 | frawo-docker-1: DER Stockenweiler Compute-Node | Debian 13, 188G, SSH aktiv, ersetzt PVE | 2026-05-25 |
 | frawo-docker-1 Rolle: Monitoring+Relay+Automation | n8n+Portainer+Grafana+Prometheus+Icecast-Relay | 2026-05-26 |
 | CT 130 Tailscale: 100.78.88.33 | LXC cgroup2+mount.entry statt tun=1 (PVE 9 inkompatibel) | 2026-05-26 |
@@ -164,7 +164,7 @@ ANKER PVE (Primary)              STOCKENWEILER (Site B, 10.30.8.x)
 | toolbox | 100.82.26.53 | 10.4.0.20 | CT 100 | Edge/Ingress/Monitoring |
 | radio-node | **100.78.88.33** | 10.4.0.28 | CT 130 | AzuraCast + Navidrome + Radio Backend (neu: Tailscale ✅) |
 | frawo-docker-1 | 100.94.32.41 | 10.30.8.22 | Phys. Server | Schiffscontainer Stockenweiler, Debian 13 Trixie |
-| stockenweiler-pve | 100.91.20.116 | 192.168.178.172 | PVE | Site B Hypervisor (offline) |
+| stockenweiler-pve | 100.91.20.116 | 192.168.178.172 | HP ProDesk / PVE | 🔧 In Reparatur (Rothkreuz) — nach Fix: Eltern-PC + Fallback-Server (#265) |
 | wolfstudiopc | 100.98.31.60 | 10.1.0.210 | Windows PC | Dev-Workstation |
 | wolf-surface | 100.79.103.59 | - | Windows | Mobile Dev |
 | wolf-zenbook | 100.76.249.126 | - | Linux | Linux Dev |
