@@ -1,5 +1,5 @@
 # ROADMAP — FraWo GbR Infrastruktur
-**Stand: 2026-05-27 | Letzte Konsolidierung: Claude Sonnet 4.6 + Wolf**
+**Stand: 2026-05-28 | Letzte Konsolidierung: Claude Sonnet 4.6 + Wolf**
 
 **SSOT-Hierarchie:**
 - **Odoo** (`FraWo_GbR` → "🚀 Homeserver 2027: Masterplan") → Wer macht was, Status, Priorität
@@ -76,6 +76,25 @@ ANKER PVE (Primary)              STOCKENWEILER (Site B, 10.30.8.x)
 | **CT 130 RAM** | 4GB → 6GB | Liquidsoap-Druck | pct set 130 -memory 6144 ✅ |
 | **#257** | **Musik-Pipeline** | beets + AcoustID läuft | screen gdrive-sync + beets-import auf PVE Host aktiv 🔄 |
 
+### ✅ Erledigt (2026-05-27 + 28)
+
+| Task | Was | Fix |
+|------|-----|-----|
+| **Tailscale Split DNS** | hs27.internal → 100.82.26.53 (war 10.4.0.20) | Dashboard konfiguriert, DNS-Test ✅ |
+| **#235** | Hosts-Datei cleanup | hs27.internal Einträge bereinigt ✅ |
+| **cloud.frawo-tech.de** | CF Tunnel Nextcloud | HTTP 302→200 bestätigt ✅ (war 502) |
+| **KRITISCH: Vault-Recovery** | vw_newkey.py hatte falschen sym key generiert — alle 429 Org-Items verschlüsselt mit falschem Key | Backup von 2026-05-26-02:12 extrahiert, original sym key wiederhergestellt, wolf akey neu verschlüsselt ✅ |
+| **Vault Crypto-Kette** | Vollständige Python-Implementierung Bitwarden E2E Crypto: PBKDF2→HKDF→AES-CBC→RSA-OAEP→AES-CBC | Alle 437 Items entschlüsselbar, Cloudflare + Tailscale API-Token in Vault gespeichert ✅ |
+| **Wolf Master-PW** | Von 11Vaudeville!! → FrawoWolf2026! (nach Vault-Recovery gesetzt) | Bestätigt: login + alle Items sichtbar ✅ |
+| **#258** | Workflow-Doku | Brainstorm-Stage #86 erstellt, Odoo-Workflow dokumentiert | Agent |
+| **#259** | **Dokument-Ökosystem: Option A** | Nextcloud als Hub — Wolf genehmigt 2026-05-27 | Agent |
+| Nextcloud Admin-PW | frawoadmin / NC-Frawo-2026! via occ in Docker | Login bestätigt HTTP 200 ✅ |
+| Nextcloud Ordner | /Dokumente/Eingang, /Archiv, /Verträge, /Rechnungen | WebDAV MKCOL ✅ |
+| Paperless Admin-PW | PL-Frawo-2026! (war n82DMJKSAydZqeKF8/BxTq08) | API Token erhalten ✅ |
+| **rclone + Cron** | VM 330: rclone move nextcloud:Dokumente/Eingang → Paperless consume alle 5 min | /etc/cron.d/nc-to-paperless, cron installiert ✅ |
+| **Paperless post-consume** | PAPERLESS_POST_CONSUME_SCRIPT → NC/Archiv upload nach OCR | Script als bind-mount in Container ✅ |
+| **End-to-End Test** | PDF upload NC/Eingang → Paperless Doc #14 "test_frawo" | Duplikat-Erkennung funktioniert ✅ |
+
 ### 🔴 KRITISCH — Wolf sofort
 
 | Odoo | Was | Wo | Anleitung |
@@ -85,7 +104,7 @@ ANKER PVE (Primary)              STOCKENWEILER (Site B, 10.30.8.x)
 | ~~#244~~ | ~~Passwort-Audit~~ | ✅ DONE | 19 Credentials in Vaultwarden, agent@frawo-tech.de ✅ |
 | CT 130 | ~~Tailscale Auth~~ | ✅ DONE | radio-node 100.78.88.33 live |
 | #159 | PBS Netzwerk-Fix | PVE Web UI | VM 240 → Console → ip addr / cloud-init prüfen |
-| ~~#249~~ | ~~Odoo Admin-PW~~ | 🛑 Blockiert bis Go-Live | Alle PWs rotieren beim Produktivbetrieb — AuditTemp2026! im Vaultwarden |
+| ~~#249~~ | ~~Odoo Admin-PW~~ | 🛑 Blockiert bis Go-Live | wolf@frawo-tech.de / FrawoWolf2026! aktiv, Odoo ERP Admin Vault aktualisiert |
 
 ### 🟡 NÄCHSTE AGENT-TASKS
 
@@ -100,12 +119,15 @@ ANKER PVE (Primary)              STOCKENWEILER (Site B, 10.30.8.x)
 | **#251** | PVE Firewall aktivieren | Wolf-Entscheidung welche Ports | HOCH |
 | ~~#253~~ | ~~CT 130 Samba auf LAN beschränken~~ | ✅ DONE | bind interfaces, hosts allow |
 | ~~#252~~ | ~~Nextcloud trusted_proxies~~ | ✅ DONE | 10.4.0.0/24 + 100.64.0.0/10 |
+| **#259** | Dokument-Ökosystem (#259): Odoo Nextcloud Connector installieren | OCA-Modul-Test | Mittel |
+| **BRAINSTORM** | Kalender-Integration: Google ↔ Odoo ↔ Nextcloud | Wolf-Freigabe | Niedrig |
 
 ### 🛑 OFFEN — Wolf-Entscheidung nötig
 
 | Was | Frage |
 |-----|-------|
 | HAOS Eltern (#241) | frawo-docker-1 (Docker, hat bereits n8n + 31GB RAM frei) ODER verzichten? |
+| Kalender (#260) | Google Calendar, Odoo Kalender, Nextcloud Kalender verbinden — welcher ist Master? |
 
 ---
 
@@ -165,4 +187,21 @@ ANKER PVE (Primary)              STOCKENWEILER (Site B, 10.30.8.x)
 
 ---
 
-*Letzte Aktualisierung: 2026-05-27 — Claude Sonnet 4.6 + Wolf — Temperature Dashboard, StudioPC Monitoring, Odoo SSOT Cleanup*
+---
+
+## DIENST-PASSWÖRTER (Kurzreferenz — SSOT: Vaultwarden)
+
+| Dienst | URL | User | Vault-Eintrag |
+|--------|-----|------|---------------|
+| Nextcloud | cloud.frawo-tech.de | frawoadmin | NC — Admin |
+| Paperless | paperless.hs27.internal | frawoadmin | Paperless-ngx — Admin |
+| Vaultwarden | vault.hs27.internal | wolf@frawo-tech.de | — |
+| Odoo | frawo-tech.de | wolf@frawo-tech.de | Odoo ERP — Admin |
+| Grafana | grafana.hs27.internal | admin | Grafana — Dashboards |
+| Portainer | portainer.hs27.internal | admin | Portainer — Docker Mgmt |
+| AdGuard | portal.hs27.internal | admin | AdGuard Home — Admin |
+| Uptime Kuma | uptime.hs27.internal | Wolf | Uptime Kuma — Status |
+
+---
+
+*Letzte Aktualisierung: 2026-05-28 — Claude Sonnet 4.6 + Wolf — Vault-Recovery, Dokument-Ökosystem (Nextcloud+Paperless), Kalender-Brainstorm*

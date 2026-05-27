@@ -1,113 +1,102 @@
-# Aktueller Status & Praxis-Scan (Stand: 2026-05-25)
-
-Dieses Dokument beschreibt den **tatsächlich getesteten und diagnostizierten** Zustand des Systems nach vollständigem Audit.
-
----
-
-## 1. Heute behoben (2026-05-25)
-
-| Problem | Ursache | Fix |
-|---------|---------|-----|
-| Odoo VM (220) komplett eingefroren | Alle Userspace-Prozesse frozen (OOM-Kill, kein Swap) | Force-Stop + Start via PVE |
-| SSH nicht erreichbar auf VM 220 | `sshd_config.d/10-hs27-lan-only.conf` hatte alte IP `192.168.2.22` | `ListenAddress 0.0.0.0` gesetzt |
-| OOM-Kill Risiko auf VM 220 | Kein Swap konfiguriert, RAM 2.4/2.9GB voll | 2GB Swapfile angelegt + `/etc/fstab` Eintrag |
-| Zombie-Container auf VM 220 | `edge_web_1` (Created) + `edge_db_1` (Exited) | `docker rm` ausgeführt |
+# Aktueller Status — FraWo GbR Infrastruktur
+**Stand: 2026-05-28 | Geprüft durch: Claude Sonnet 4.6 + Wolf**
 
 ---
 
-## 2. Was läuft und getestet ist (Fakten)
+## Dienste: LIVE-Status
 
-### 🌍 Öffentliche Dienste
-- **`https://www.frawo-tech.de/`**: **ERREICHBAR** ✅ HTTP 200
-- **`https://frawo-tech.de/`**: **ERREICHBAR** ✅ HTTP 200
+### 🌍 Öffentliche Dienste (Cloudflare Tunnel)
+| Domain | Status | Backend |
+|--------|--------|---------|
+| frawo-tech.de | ✅ HTTP 200 | VM 220 Odoo |
+| cloud.frawo-tech.de | ✅ HTTP 200/302 | VM 300 Nextcloud |
+| funk.frawo-tech.de | ✅ HTTP 200 | CT 130 AzuraCast |
 
-### 🖥️ Odoo (VM 220)
-- **`10.4.0.22:8069`**: **ERREICHBAR** ✅ HTTP 200
-- **Via Toolbox**: `http://100.82.26.53:8444` → HTTP 200 ✅
-- Container: `odoo-web-1` Up, `odoo-db-1` Up ✅
-- Datenbank: `FraWo_GbR` ✅
+### 🖥️ Odoo (VM 220, 10.4.0.22)
+- Port: 127.0.0.1:8069 (kein Direktzugriff) ✅
+- DB: FraWo_GbR ✅
 - Swap: 2GB aktiv ✅
+- Login: wolf@frawo-tech.de / FrawoWolf2026! (Vault: Odoo ERP — Admin)
+- Restart: unless-stopped + PVE startup order=3 ✅
 
-### ☁️ Nextcloud (VM 300)
-- **Intern** `10.4.0.21:80`: HTTP 302 ✅
-- Containers: `nextcloud_app_1`, `nextcloud_db_1`, `nextcloud_redis_1` — alle Up 22h+ ✅
-- **Öffentlich** `cloud.frawo-tech.de`: ❌ HTTP 502 (Cloudflare Tunnel hat alte IP, siehe unten)
+### ☁️ Nextcloud (VM 300, 10.4.0.21)
+- Intern: http://cloud.hs27.internal ✅
+- Öffentlich: https://cloud.frawo-tech.de ✅ HTTP 200
+- Admin: frawoadmin / NC-Frawo-2026! (Vault aktualisiert 2026-05-28)
+- Ordner: /Dokumente/{Eingang,Archiv,Verträge,Rechnungen} ✅
+- trusted_proxies: 10.4.0.0/24 + 100.64.0.0/10 ✅
 
-### 📄 Paperless (VM 330)
-- **Intern** `10.4.0.23:8000`: HTTP 302 ✅
-- Containers: webserver (healthy), tika, broker, gotenberg, db — alle Up ✅
+### 📄 Paperless-ngx (VM 330, 10.4.0.23)
+- Intern: http://paperless.hs27.internal ✅
+- Admin: frawoadmin / PL-Frawo-2026! (Vault aktualisiert 2026-05-28)
+- API Token: 4ca7affa0948fe3a73bb224c60fe1090d1c00b08
+- Post-consume Script: /usr/local/bin/paperless-to-nc.sh → NC/Archiv ✅
+- rclone-Sync: alle 5 min NC/Eingang → consume_dir (cron auf VM 330) ✅
 
-### 🏠 Toolbox (CT 100)
-- Caddy: Up 5 Wochen, Config valid ✅
-- Uptime Kuma: healthy ✅
-- Jellyfin: healthy ✅
-- AdGuard: Up ✅
-- Open-WebUI: healthy ✅
-- cloudflared: aktiv (systemd) ✅
-- Disk: 60% ⚠️
+### 🔐 Vaultwarden (CT 120, 10.4.0.26)
+- URL: http://vault.hs27.internal ✅
+- Wolf Master-PW: FrawoWolf2026! (Recovery 2026-05-27)
+- 437 Ciphers (429 Org + 8 persönlich) ✅
+- Admin-Token: FrawoAdminVault2026! (argon2id) ✅
+- SIGNUPS_ALLOWED: false ✅
 
----
+### 📡 Radio-Node (CT 130, 10.4.0.28, TS: 100.78.88.33)
+- AzuraCast: http://radio.hs27.internal ✅
+- Navidrome: http://navidrome.hs27.internal ✅
+- FraWo Radio Backend: http://radio-api.hs27.internal:9500 ✅
+- Icecast: funk.frawo-tech.de → Relay frawo-docker-1:8000 ✅
+- RAM: 6GB (hot-upgraded) ✅
 
-## 3. Was defekt oder offen ist
+### 🐳 frawo-docker-1 (Stockenweiler, TS: 100.94.32.41)
+- Services: n8n (5678), Portainer (9000), Grafana (3001), Prometheus (9091), Icecast-Relay (8000)
+- UFW: aktiv — deny in, allow Tailscale + 10.30.8.0/24 ✅
+- sudo-PW unbekannt → nsenter-Workaround via Docker ✅
 
-### 🔴 cloud.frawo-tech.de → HTTP 502
-- **Ursache**: Cloudflare Zero Trust Tunnel-Ingress zeigt auf **alte IP `10.1.0.21`**
-- **Nextcloud läuft** auf `10.4.0.21` und ist intern erreichbar
-- **Fix**: Cloudflare Dashboard → Zero Trust → Tunnels → Ingress Rule für `cloud.frawo-tech.de` → Origin auf `http://10.4.0.21` ändern
-- **Weitere veraltete IPs im Tunnel prüfen** (radio, vault, ha usw.)
-
-### 🔴 Stockenweiler PVE — offline
-- SSH `stock-pve` (`100.91.20.116`): NICHT ERREICHBAR — physisch ausgeschaltet
-- Last seen Tailscale: **15 Tage**
-- Benötigt: Physischer Besuch in Rothkreuz (Wolf)
-- Blockiert: AzuraCast Migration, Home Assistant Eltern, Lane D + E
-
-### ⚠️ hs27-media: 80% voll
-- `/mnt/hs27-media` (NFS-Share vom Storage-Node): 78G / 98G
-- Aktion: Alte Mediendateien prüfen und aufräumen
-
-### ⚠️ frawo-docker-1 nicht zugänglich
-- Tailscale: `100.94.32.41` aktiv, aber SSH-Key nicht hinterlegt
-- Rolle im System unklar — muss eingeordnet werden
-
-### ⚠️ StudioPC — Docker inaktiv
-- Docker läuft, nur gestoppte Dev-Container (YourParty, VS Code)
-- Rolle als SSH-Brücke und lokaler Docker-Host nach Best Practice definieren
+### 🏠 Toolbox (CT 100, 10.4.0.20, TS: 100.82.26.53)
+- Caddy: Up ✅ (Edge-Proxy für alle hs27.internal Domains)
+- AdGuard: Up, admin / FrawoAdGuard2026! ✅
+- cloudflared: aktiv (systemd), 6 CF-Tunnel-Routen ✅
+- Uptime Kuma: http://uptime.hs27.internal/status/frawo ✅
 
 ---
 
-## 4. Nächste Schritte (priorisiert)
+## Bekannte Blocker
 
-### Sofort (Agent):
-1. ~~Odoo VM reparieren~~ ✅ Erledigt heute
-2. **Cloudflare Tunnel Ingress-IPs prüfen und auf `10.4.0.x` aktualisieren** (Dashboard)
-3. Git commit + push dieser Docs
-
-### Wolf (manuell):
-4. **Stockenweiler PVE physisch einschalten** (Rothkreuz vor Ort)
-5. **Windows Registry UDP-Fix** (Admin-Terminal, aus LIVE_CONTEXT.md)
-6. **Cloudflare Dashboard**: Tunnel-Ingress `cloud.frawo-tech.de` → `http://10.4.0.21`
-7. **hs27-media aufräumen**: 78G/98G belegt → Platz schaffen
-
-### Gemeinsam (Wolf + Agent):
-8. **frawo-docker-1 SSH-Key hinterlegen** + Rolle definieren
-9. **StudioPC Rolle** in Infrastruktur definieren (SSH-Bridge? Local Dev? CI?)
-10. **Cloudflare Security Headers** (Transform Rules — aus STATUS 2026-05-20 noch offen)
-11. **Uptime Kuma** externer Check konfigurieren (aktuell intern auf Toolbox — Best Practice: externer VPS)
+| # | Was | Wo | Priorität |
+|---|-----|-----|-----------|
+| #159 | PBS VM 240: kein Netzwerk | PVE VNC Console | Mittel |
+| #251 | PVE Firewall | PVE Web UI | Hoch |
+| #241 | HAOS Eltern: Heimat unklar | Wolf-Entscheidung | Niedrig |
 
 ---
 
-## 5. Bekannte Konfigurationsdrift (10.1.0.x → 10.4.0.x)
+## Dokument-Ökosystem (Stand 2026-05-28)
 
-Bei der Netzwerk-Migration wurden nicht alle Config-Files aktualisiert:
+**Flow:** Upload → NC/Eingang → rclone (5 min) → Paperless OCR → NC/Archiv
 
-| Datei | Problem | Fix |
-|-------|---------|-----|
-| `/etc/ssh/sshd_config.d/10-hs27-lan-only.conf` auf VM 220 | `192.168.2.22` + `10.1.0.x` statt `10.4.0.x` | ✅ Heute gefixt |
-| Cloudflare Tunnel Ingress (Dashboard) | `10.1.0.21` für Nextcloud | ❌ Noch offen |
-| Weitere Tunnel-Ingress-Rules (vault, ha, radio) | Wahrscheinlich auch `10.1.0.x` | ❌ Prüfen |
+```
+cloud.frawo-tech.de/Dokumente/Eingang   ← Hochladen hier
+         ↓ rclone move (alle 5 min)
+Paperless consume_dir (VM 330)
+         ↓ OCR + Klassifizierung
+Paperless DB + paperless-to-nc.sh
+         ↓
+cloud.frawo-tech.de/Dokumente/Archiv/{Korrespondent}/{Jahr}/
+```
+
+**Korrespondenten:** BG ETEM, EGS, Obi, riverty, Thomann, VG Sigmarszell
+**Tags:** Anker, anmeldung, Beleg, GbR, Nebenkosten, Obi, Thomann, Wolf.EE
+**Dokumenttypen:** Bescheid, Kassenbeleg, Mahnung, Rechnung
 
 ---
 
-*Updated: 2026-05-25 12:10 Europe/Berlin*
-*Audit: Claude Sonnet 4.6 + Wolf*
+## Odoo Workflow
+
+```
+Neue Idee → 💡 Brainstorm (stage 86) → Wolf-Freigabe
+           → ⚙️ Planung (stage 2) → Agent plant
+           → 🚀 In Arbeit (stage 3) → Agent umsetzt
+           → ✅ Erledigt (stage 6) → DoD-Note
+```
+
+**Zugang:** wolf@frawo-tech.de / FrawoWolf2026! (xmlrpc: 10.4.0.22:8069, DB: FraWo_GbR)
