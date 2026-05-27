@@ -1,5 +1,5 @@
 # ROADMAP — FraWo GbR Infrastruktur
-**Stand: 2026-05-25 | Letzte Konsolidierung: Claude Sonnet 4.6 + Wolf**
+**Stand: 2026-05-27 | Letzte Konsolidierung: Claude Sonnet 4.6 + Wolf**
 
 **SSOT-Hierarchie:**
 - **Odoo** (`FraWo_GbR` → "🚀 Homeserver 2027: Masterplan") → Wer macht was, Status, Priorität
@@ -38,7 +38,7 @@ ANKER PVE (Primary)              STOCKENWEILER (Site B, 10.30.8.x)
 
 ## SPRINT 2026-05-25 — STATUS
 
-### ✅ Erledigt (2026-05-25 + 26)
+### ✅ Erledigt (2026-05-25 + 26 + 27)
 
 | Task | Was | Fix |
 |------|-----|-----|
@@ -59,6 +59,22 @@ ANKER PVE (Primary)              STOCKENWEILER (Site B, 10.30.8.x)
 | **CT 130** | **Tailscale live** | TUN-Device via LXC raw config, tailscale up --ssh, IP: 100.78.88.33 ✅ |
 | **#242** | **Icecast Relay deployed** | frawo-docker-1:8000 relayed alle 3 Streams von CT 130 via Tailscale ✅ |
 | Git Push | DNS-Fix | curloptResolve Workaround (Tailscale DNS kaputt) |
+| **Security Audit** | **Live-Audit aller Nodes** | PVE, CT 100/110/120/130, VM 220/300/330, frawo-docker-1 — alle geprüft ✅ |
+| **AdGuard Auth** | **Kritisch: war offen!** | admin / FrawoAdGuard2026! gesetzt, 401 für unauth ✅ |
+| **Portainer Init** | War nie initialisiert | admin / FrawoPortainer2026! — Volume-Reset + Init ✅ |
+| **Odoo Port** | 8069 war auf 0.0.0.0 | Geändert auf 127.0.0.1:8069 — kein Direktzugriff mehr ✅ |
+| **#244** | **Vaultwarden Credentials** | 19/19 Items gespeichert | agent@frawo-tech.de / FrawoAgent2026! — neue Vaultwarden 1.35.x API (/identity/...) ✅ |
+| **#250** | **frawo-docker-1 UFW** | UFW aktiv | deny incoming, allow 100.64.0.0/10 + 10.30.8.0/24, via nsenter-Workaround ✅ |
+| **#252** | **Nextcloud trusted_proxies** | 10.4.0.0/24 + 100.64.0.0/10 | via occ bereinigt, alte 10.1.0.x Einträge entfernt ✅ |
+| **#253** | **CT 130 Samba gesichert** | bind interfaces + hosts allow | nur 10.4.0.0/24 + Tailscale ✅ |
+| **Vaultwarden Admin-Token** | argon2id wiederhergestellt | FrawoAdminVault2026! → argon2id hash ✅ |
+| **#256** | **StudioPC Monitoring** | windows_exporter 0.30.4 | Port 9182, Prometheus scrapt, Grafana-Dashboard live ✅ |
+| **#237** | **frawo-docker-1 apt cleanup** | 00CDMountPoint entfernt | nsenter via privilegiertem Docker ✅ |
+| **Odoo Kanban SSOT** | Bereinigung | 8 Tasks Erledigt, 9 Duplikate Canceled | Board reflekriert jetzt Realität ✅ |
+| **SSH Config** | frawo-docker alias | `ssh frawo-docker` via hs27_ops_ed25519 | Direktzugriff ohne Tailscale-IP ✅ |
+| **#171** | **Uptime Kuma** | 14 Monitore, Status-Page live | http://uptime.hs27.internal/status/frawo — Login: Wolf/FrawoUptime2026! ✅ |
+| **CT 130 RAM** | 4GB → 6GB | Liquidsoap-Druck | pct set 130 -memory 6144 ✅ |
+| **#257** | **Musik-Pipeline** | beets + AcoustID läuft | screen gdrive-sync + beets-import auf PVE Host aktiv 🔄 |
 
 ### 🔴 KRITISCH — Wolf sofort
 
@@ -66,9 +82,10 @@ ANKER PVE (Primary)              STOCKENWEILER (Site B, 10.30.8.x)
 |------|-----|-----|-----------|
 | #235 | ~~Tailscale DNS Fix~~ | ✅ DONE | Split DNS konfiguriert (Wolf 2026-05-26) |
 | #224 | ~~CF Tunnel~~ | ✅ DONE | alle 6 Routen korrekt, alle Backends 200/302 (Wolf 2026-05-26) |
-| #244 | **Passwort-Audit** | vault.hs27.internal | frawo-docker-1: 1Vaudeville! + alle anderen Passwörter eintragen |
+| ~~#244~~ | ~~Passwort-Audit~~ | ✅ DONE | 19 Credentials in Vaultwarden, agent@frawo-tech.de ✅ |
 | CT 130 | ~~Tailscale Auth~~ | ✅ DONE | radio-node 100.78.88.33 live |
 | #159 | PBS Netzwerk-Fix | PVE Web UI | VM 240 → Console → ip addr / cloud-init prüfen |
+| ~~#249~~ | ~~Odoo Admin-PW~~ | 🛑 Blockiert bis Go-Live | Alle PWs rotieren beim Produktivbetrieb — AuditTemp2026! im Vaultwarden |
 
 ### 🟡 NÄCHSTE AGENT-TASKS
 
@@ -76,9 +93,13 @@ ANKER PVE (Primary)              STOCKENWEILER (Site B, 10.30.8.x)
 |------|-----|-----------|-----------|
 | #240 | ~~funk.frawo-tech.de CF-Tunnel~~ | ✅ DONE — 10.4.0.28 korrekt | — |
 | #225 | hs27-media: Radio-Library auf music_ssd | PVE-Neustart (CIFS-Stale) → prüfen ob jetzt OK | Mittel |
-| #234 | frawo-docker-1 Rolle dokumentieren | — Rollen klar: Monitoring+Relay+n8n | Agent |
+| #234 | frawo-docker-1 Rolle dokumentieren | ✅ NETWORK_PLAN.md erstellt | Agent |
 | #84/#159 | PBS produktiv setzen | Netzwerk-Fix Wolf | Mittel |
 | #197 | Website Brand Rollout | Odoo-Website-Zugang | Niedrig |
+| ~~#250~~ | ~~frawo-docker-1 UFW~~ | ✅ DONE | UFW aktiv |
+| **#251** | PVE Firewall aktivieren | Wolf-Entscheidung welche Ports | HOCH |
+| ~~#253~~ | ~~CT 130 Samba auf LAN beschränken~~ | ✅ DONE | bind interfaces, hosts allow |
+| ~~#252~~ | ~~Nextcloud trusted_proxies~~ | ✅ DONE | 10.4.0.0/24 + 100.64.0.0/10 |
 
 ### 🛑 OFFEN — Wolf-Entscheidung nötig
 
@@ -144,4 +165,4 @@ ANKER PVE (Primary)              STOCKENWEILER (Site B, 10.30.8.x)
 
 ---
 
-*Letzte Aktualisierung: 2026-05-26 Nacht — Claude Sonnet 4.6 + Wolf*
+*Letzte Aktualisierung: 2026-05-27 — Claude Sonnet 4.6 + Wolf — Temperature Dashboard, StudioPC Monitoring, Odoo SSOT Cleanup*
