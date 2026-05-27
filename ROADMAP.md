@@ -121,6 +121,7 @@ ANKER PVE (Primary)              STOCKENWEILER (Site B, 10.30.8.x)
 | ~~#252~~ | ~~Nextcloud trusted_proxies~~ | ✅ DONE | 10.4.0.0/24 + 100.64.0.0/10 |
 | **#259** | Dokument-Ökosystem (#259): Odoo Nextcloud Connector installieren | OCA-Modul-Test | Mittel |
 | **BRAINSTORM** | Kalender-Integration: Google ↔ Odoo ↔ Nextcloud | Wolf-Freigabe | Niedrig |
+| **#265** | HP ProDesk Stockenweiler: Eltern-PC + Server-Fallback | Wolf-Infos (#266) | Mittel |
 
 ### 🛑 OFFEN — Wolf-Entscheidung nötig
 
@@ -128,6 +129,7 @@ ANKER PVE (Primary)              STOCKENWEILER (Site B, 10.30.8.x)
 |-----|-------|
 | HAOS Eltern (#241) | frawo-docker-1 (Docker, hat bereits n8n + 31GB RAM frei) ODER verzichten? |
 | Kalender (#260) | Google Calendar, Odoo Kalender, Nextcloud Kalender verbinden — welcher ist Master? |
+| HP ProDesk (#265/#266) | UCG Port 2 oder 4? OS? Specs? → Wolf checkt physisch |
 
 ---
 
