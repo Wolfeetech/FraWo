@@ -155,3 +155,20 @@ Neue Idee → 💡 Brainstorm (stage 86) → Wolf-Freigabe
 1. **PM1 holen + REW Messungen** (T312, Deadline Di!)
 2. **Tailscale Route approven** → admin.tailscale.com (2 Klicks!)
 3. **PBS Netzwerk** (T159) — VM 240 kein Netz = kein Backup
+
+## Session 2026-05-31 — frawo-docker-1 ausgebaut
+
+**Neue Services auf frawo-docker-1:**
+- Ollama (llama3:8b, 4.7GB) — lokale KI, kostenlos, Klausi-Fallback
+- Qdrant v1.18.1 — lokale Vektor-DB für RAG
+- LS25 Server — Port 10823, lädt via SteamCMD
+- AzuraCast Docker Compose erstellt (wartet auf Tailscale Route)
+
+**n8n Workflows:**
+- Klausi-Bot (1fLw0n1e0gaObjsp): @Klausi in Odoo Chatter → Ollama
+- RAG Ingestion (xCShp2rttlOpaZCi): tägl. 03:00 Odoo → Qdrant
+
+**Noch offen (braucht Wolf):**
+- PBS VM 240: VNC Console öffnen, Netzwerk fixen → kein Backup!
+- Tailscale Route approven → löst ALLE Netzwerk-Probleme
+- Odoo Automation Action für Klausi-Bot (Einstellungen → Technisch → Automation)
