@@ -1,6 +1,6 @@
 # LIVE CONTEXT — FraWo GbR Infrastruktur
 **Single Source of Truth für technischen Zustand**
-*Letzte vollständige Aktualisierung: 2026-05-25 — Claude Sonnet 4.6 + Wolf*
+*Letzte vollständige Aktualisierung: 2026-05-30 — Claude Sonnet 4.6 + Wolf*
 
 ---
 
@@ -78,6 +78,7 @@
 | wolf-surface | 100.79.103.59 | - | Mobile Dev |
 | wolf-zenbook | 100.76.249.126 | - | Linux Dev |
 | surface-go-frontend | 100.106.67.127 | - | Frontend-Entwicklung |
+| wolf-admin-pc | TBD | Admin-PC | Ops-PC (dieser PC), frisch eingerichtet 2026-05-30, SSH-Key `hs27_ops_ed25519` generiert, deployment ausstehend |
 
 ---
 
@@ -181,8 +182,9 @@
 
 | Problem | Priorität | Fix | Wer |
 |---------|-----------|-----|-----|
-| cloud.frawo-tech.de → 502 | 🔴 | CF Dashboard: Zero Trust → Tunnel → 10.4.0.21 | Wolf |
+| cloud.frawo-tech.de | ✅ HTTP 200 | Behoben — CF Tunnel zeigt auf 10.4.0.21 | 2026-05-30 |
 | Tailscale hs27.internal DNS | 🔴 | tailscale.com/admin/dns: 10.1.0.20 → 10.4.0.20 | Wolf |
+| wolf-admin-pc SSH-Key | 🔴 | Key generiert (`C:\Users\Admin\bin\hs27_ops_ed25519`), deployment pending — run `bin\setup_ssh.ps1` als Admin | Wolf |
 | **Passwort-Audit** (#244) | 🔴 | Alle Credentials in Vaultwarden (vault.hs27.internal) | Wolf |
 | **frawo-docker-1 Recovery** (#226) | 🔴 | GRUB Single-User-Mode → passwd wolf → SSH-Key → PasswordAuth deaktivieren | Wolf (physisch) |
 | PBS VM 240 kein Netzwerk | 🟡 | PVE Web Console → VNC → IP prüfen | Wolf |

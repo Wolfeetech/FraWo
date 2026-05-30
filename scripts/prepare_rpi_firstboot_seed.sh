@@ -26,7 +26,12 @@ TARGET_HOSTNAME="radio-node"
 TARGET_ADMIN_USER="wolf"
 TARGET_TIMEZONE="Europe/Zurich"
 OPERATOR_HOME="$(resolve_operator_home)"
-PUBKEY_FILE="${OPERATOR_HOME}/.ssh/id_ed25519.pub"
+
+# Trusted Keys
+KEY_STUDIOPC="ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBcv7XLA8U9AFBTIATce451pNyO/WdmBYTmjqA4qzsOX studiopc@wolfstudioPC"
+KEY_SURFACE="ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILjI7rqUniSmuSxs7G0eVq6iD6WaebDfNxZDWVtkbDeH Admin@Surface-Work"
+KEY_SURFACE_2026="ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID6B6djoKYcD5MXnynkcXIjgZncm3E4Y6o0vg2nFP/bA wolf@wolf-surface-2026"
+
 BOOT_PART="$(partition_path "${TARGET_DEV}" 1)"
 MOUNT_DIR="/mnt/homeserver2027-rpi-boot"
 MOUNTED_TARGET=""
@@ -42,13 +47,6 @@ if [[ ! -b "${BOOT_PART}" ]]; then
   echo "Flash the Ubuntu Pi image first, then run this script." >&2
   exit 1
 fi
-
-if [[ ! -f "${PUBKEY_FILE}" ]]; then
-  echo "Missing operator SSH public key: ${PUBKEY_FILE}" >&2
-  exit 1
-fi
-
-PUBKEY_CONTENT="$(tr -d '\n' < "${PUBKEY_FILE}")"
 
 MOUNTED_TARGET="$(findmnt -nr -o TARGET "${BOOT_PART}" 2>/dev/null || true)"
 
@@ -79,7 +77,7 @@ hostname: ${TARGET_HOSTNAME}
 manage_etc_hosts: true
 timezone: ${TARGET_TIMEZONE}
 package_update: true
-package_upgrade: true
+package_upgrade: false
 packages:
   - openssh-server
   - curl
@@ -87,6 +85,7 @@ packages:
   - unattended-upgrades
   - avahi-daemon
   - jq
+  - tailscale
 users:
   - default
   - name: ${TARGET_ADMIN_USER}
@@ -97,10 +96,14 @@ users:
       - sudo
       - audio
       - video
+      - docker
     sudo: ALL=(ALL) NOPASSWD:ALL
-    lock_passwd: true
+    lock_passwd: false
+    passwd: "11011995"
     ssh_authorized_keys:
-      - ${PUBKEY_CONTENT}
+      - ${KEY_STUDIOPC}
+      - ${KEY_SURFACE}
+      - ${KEY_SURFACE_2026}
 ssh_pwauth: false
 disable_root: true
 write_files:
@@ -114,6 +117,8 @@ runcmd:
   - systemctl enable ssh
   - systemctl enable unattended-upgrades
   - systemctl enable avahi-daemon
+  - systemctl enable tailscaled
+  - tailscale up --authkey=tskey-auth-kkWC2C1Xmq11CNTRL-Z51zhJ7YZMcGq4555QEdLct4UjvUYkbyi --hostname=${TARGET_HOSTNAME} --accept-routes --ssh
 EOF
 
 cat > "${MOUNT_DIR}/network-config" <<EOF
@@ -122,10 +127,17 @@ ethernets:
   eth0:
     dhcp4: true
     dhcp6: true
+  wifis:
+    wlan0:
+      dhcp4: true
+      dhcp6: true
+      access-points:
+        "EasyBox-WLAN":
+          password: "11011995"
 EOF
 
 cat > "${MOUNT_DIR}/meta-data" <<EOF
-instance-id: homeserver2027-radio-node
+instance-id: radio-node-v7
 local-hostname: ${TARGET_HOSTNAME}
 EOF
 
@@ -136,4 +148,4 @@ echo "target_device=${TARGET_DEV}"
 echo "boot_partition=${BOOT_PART}"
 echo "hostname=${TARGET_HOSTNAME}"
 echo "admin_user=${TARGET_ADMIN_USER}"
-echo "pubkey_file=${PUBKEY_FILE}"
+echo "keys_added=StudioPC, Surface, Surface-2026"

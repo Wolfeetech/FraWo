@@ -15,49 +15,65 @@ Raspberry Pi 4 als mobile Audio-Workstation für FraWo:
 
 ## Aktueller Status (Stand 2026-04-27)
 
-### Netz
-
-- Pi läuft, IP vom UCG erhalten: **`10.3.0.7`** (Anker-DMZ-Radio VLAN)
-- MAC: `e4:5f:01:b0:a7:0b` (Raspberry Pi Trading — bestätigt)
-- cloud-init läuft aktiv (Package-Download sichtbar im UCG, ~18 MB Traffic)
-- Tailscale noch nicht gejoint (cloud-init runcmd läuft nach packages)
-- Tailscale Auth-Key aktiv, join passiert automatisch wenn packages fertig
-
 ### SD-Karte
 
-- Ubuntu Server 22.04 LTS arm64 für Raspberry Pi 4
-- user-data: korrekt, kein BOM, `#cloud-config` Zeile 1
-- instance-id: `homeserver2027-radio-node-v4`
+- **Frisch geflasht** mit Raspberry Pi Imager → Ubuntu Server 22.04 LTS arm64 (Pi 4)
+- cloud-init: **minimal** — nur SSH-Keys + Tailscale, kein package_upgrade
+- User: `wolf` / PW: `11011995` (für Sudo/Fallback)
+- WLAN Fallback: `EasyBox-WLAN` (PW: `11011995`)
+- instance-id: `radio-node-v7`
+- Boot-Zeit bis SSH erreichbar: ~2–3 Minuten
 
-### Was cloud-init einrichtet (läuft gerade)
+### Netz
 
-- User `wolf` mit 4 SSH Keys
-- Packages: openssh-server, docker.io, cifs-utils, avahi-daemon, jq, gnupg, curl, ca-certificates, unattended-upgrades, apt-transport-https
-- Verzeichnisse: `/opt/homeserver2027/radio-node`, `/srv/radio-library/*`, `/srv/radio-assets/*`
-- SSH-Hardening Drop-in, sudoers
-- Tailscale install + `tailscale up --authkey=... --hostname=radio-node --accept-routes`
+- MAC: `e4:5f:01:b0:a7:0b` (Raspberry Pi Trading — bestätigt)
+- UCG-Port: Port 3, Anker-DMZ-Radio VLAN (10.3.0.0/24)
+- DHCP-IP im LAN: `10.3.0.7` (erwartet, UCG-reserviert)
+- Tailscale-IP: **noch offen** — nach Join: `tailscale status | grep radio-node`
+
+### Was cloud-init einrichtet (minimal, ~2 Min)
+
+- User `wolf` mit 4 SSH-Keys (alle 4 Geräte)
+- SSH-Hardening Drop-in
+- Tailscale install + `tailscale up --authkey=... --hostname=radio-node --accept-routes --ssh`
+- **Tailscale SSH aktiviert** (`--ssh`): Zugang über Tailscale-App ohne Key-Setup
 
 ---
 
 ## SSH-Zugang
 
 ```bash
-# Nach Tailscale-Join — IP aus: tailscale status | grep radio-node
+# Nach Tailscale-Join — IP aus:
+tailscale status | grep radio-node
+
 ssh wolf@<tailscale-ip>
 
 # SSH Key auf wolf-surface:
-# Privat:  C:\Users\Admin\.ssh\id_ed25519
-# Publik:  wolf@wolf-surface-2026  (NEUES KEY-PAAR — alter Key war korrupt)
+# C:\Users\Admin\.ssh\id_ed25519  (wolf@wolf-surface-2026)
 ```
 
 ### Alle autorisierten Keys auf dem Pi
 
 | Key | Maschine |
 |---|---|
-| `wolf@wolf-surface-2026` | Surface (diese Maschine) — primär |
+| `wolf@wolf-surface-2026` | Surface (primär) |
 | `studiopc@wolfstudioPC` | Studio PC |
 | `zenbook_admin` | ZenBook |
 | `Admin@Surface-Work` | Surface Work |
+
+Zusätzlich: **Tailscale SSH** — jedes Gerät im Tailnet kann ohne Key zugreifen (Tailscale-App → SSH).
+
+---
+
+## Tailscale
+
+- Auth-Key: `tskey-auth-kkWC2C1Xmq11CNTRL-Z51zhJ7YZMcGq4555QEdLct4UjvUYkbyi` (gültig bis 2026-07-26, reusable)
+- ~~Alter Key (verbraucht/abgelaufen): `tskey-auth-kwxioQ1K9111CNTRL-vNfdYbHeDP8PC1TLvff6Q8xVjB12Ftfae`~~
+- Tailnet: `w.prinz1101@gmail.com`
+- Hostname im Tailscale: `radio-node`
+- wolf-surface: `100.79.103.59`
+- Proxmox-Anker: `100.69.179.87`
+- Toolbox: `100.82.26.53`
 
 ---
 
@@ -72,20 +88,20 @@ Datei: `ansible/inventory.ini`
 radio-node ansible_host=<tailscale-ip> ansible_user=wolf
 ```
 
-### 2 — AzuraCast einrichten
+### 2 — Post-Boot Setup ausführen
 
 ```bash
 ssh wolf@<tailscale-ip>
 bash -s < scripts/radio_node_post_boot_setup.sh
 ```
 
-Script `scripts/radio_node_post_boot_setup.sh` erledigt:
+Script erledigt:
 
-- 2 GB Swap anlegen (Pi 4 braucht das für AzuraCast)
-- Docker Compose sicherstellen
+- 2 GB Swap (Pi 4 braucht das für AzuraCast)
+- Docker + Docker Compose sicherstellen
 - AzuraCast Stable installieren (unattended)
 - ffmpeg installieren
-- Live-Capture Systemd-Service registrieren (noch nicht starten)
+- Live-Capture Systemd-Service registrieren
 
 ### 3 — AzuraCast Web-UI
 
@@ -100,10 +116,9 @@ http://<tailscale-ip>/
 ### 4 — Live Capture aktivieren
 
 ```bash
-# Source-Password eintragen:
 sudo nano /etc/radio-live-capture.env
 # ICECAST_SOURCE_PASSWORD=<password aus AzuraCast>
-# AUDIO_DEVICE=hw:1,0  (Behringer UCA202 oder prüfen mit: arecord -l)
+# AUDIO_DEVICE=hw:1,0  (prüfen mit: arecord -l)
 
 sudo systemctl enable --now radio-live-capture
 ```
@@ -144,35 +159,32 @@ Zuhörer erreichen den Stream via:
 
 | Datei | Inhalt |
 |---|---|
-| `ansible/inventory/host_vars/raspberry_pi_radio.yml` | Pi-Konfiguration (Pfade, Shortcuts) |
-| `ansible/playbooks/prepare_raspberry_pi_azuracast_host.yml` | AzuraCast-Vorbereitung (Ansible) |
-| `ansible/playbooks/deploy_raspberry_pi_azuracast.yml` | AzuraCast-Install (Ansible) |
-| `ansible/playbooks/tune_raspberry_pi_azuracast_resources.yml` | Pi-spezifische Ressourcen-Limits |
-| `scripts/radio_node_post_boot_setup.sh` | Post-Boot Setup (Shell, kein Ansible nötig) |
-| `scripts/rpi_radio_readiness_check.sh` | Readiness-Check via SSH |
+| `scripts/radio_node_post_boot_setup.sh` | Post-Boot Setup (Swap, AzuraCast, ffmpeg, Live-Capture) |
 | `ansible/inventory.ini` | Tailscale-IP nach Boot eintragen |
+| `ansible/inventory/host_vars/raspberry_pi_radio.yml` | Pi-Konfiguration |
 
 ---
 
-## Tailscale
+## Bekannte Probleme / Lektionen gelernt
 
-- Auth-Key: `tskey-auth-kwxioQ1K9111CNTRL-vNfdYbHeDP8PC1TLvff6Q8xVjB12Ftfae` (gültig bis 2026-07-25)
-- Tailnet: `w.prinz1101@gmail.com`
-- Hostname im Tailscale: `radio-node`
-- Diese Maschine (wolf-surface): `100.79.103.59`
-- Proxmox: `100.69.179.87`
-- Toolbox: `100.82.26.53`
+| Problem | Ursache | Fix |
+|---|---|---|
+| BOM in user-data | PowerShell UTF-8 schreibt BOM | `New-Object System.Text.UTF8Encoding $false` |
+| cloud-init läuft nicht erneut | gleiche instance-id | instance-id in meta-data inkrementieren (v1→v2→…) |
+| SSH key mismatch | alter Key war korrupt | neues Keypair generiert: `wolf@wolf-surface-2026` |
+| Tailscale joinnt nicht | package_upgrade blockiert runcmd 40+ Min | package_upgrade entfernt, minimal cloud-init |
+| Tailscale auth-link statt Auto-Join | Key war einmalig/ungültig | neuer reusable Key generiert |
+| Proxmox/Toolbox SSH kaputt | neues Surface-Keypair nicht registriert | neuen Public Key in Proxmox-Webkonsole eintragen |
 
 ---
 
 ## Offene Punkte
 
 - [ ] Tailscale-IP nach Join in `ansible/inventory.ini` eintragen
+- [ ] SSH-Key `wolf@wolf-surface-2026` in Proxmox-Anker + Toolbox `authorized_keys` eintragen
 - [ ] AzuraCast via `radio_node_post_boot_setup.sh` installieren
 - [ ] Station `frawo-funk` in AzuraCast einrichten
 - [ ] Live-Capture Service Source-Password eintragen + aktivieren
 - [ ] USB Audio Interface anschließen + Device prüfen (`arecord -l`)
 - [ ] WiFi / Hotspot-Konfiguration nach erstem SSH-Login
-- [ ] `package_upgrade: true` aus user-data entfernen (nach erstem Boot unnötig)
 - [ ] Tailscale Funnel für externen Stream-Zugang (optional)
-- [ ] VLAN 103 Migration im UCG (geplanter Endzustand laut Inventory)

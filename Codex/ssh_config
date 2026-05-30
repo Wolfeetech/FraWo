@@ -10,21 +10,24 @@ Host toolbox
 Host anker-pve proxmox-anker pve-anker
   HostName 100.69.179.87
   User root
-  IdentityFile C:\Users\StudioPC\.ssh\pve_ed25519
 
-# Stockenweiler Proxmox
+# Stockenweiler Proxmox (eingestellt - frawo-docker-1 stattdessen)
 Host stockenweiler-pve stockenweiler pve-stock
   HostName 100.91.20.116
   User root
-  IdentityFile C:\Users\StudioPC\.ssh\pve_ed25519
 
 # Radio node
 Host radio-node
   HostName 100.64.23.77
   User wolf
 
+# frawo-docker-1 Stockenweiler (Debian 13, Monitoring/n8n)
+Host frawo-docker-1
+  HostName 100.94.32.41
+  User wolf
+
 Host *
-  IdentityFile ~/.ssh/hs27_ops_ed25519
+  IdentityFile C:\Users\Admin\bin\hs27_ops_ed25519
   IdentitiesOnly yes
   PreferredAuthentications publickey
   StrictHostKeyChecking accept-new
