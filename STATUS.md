@@ -1,5 +1,5 @@
 # Aktueller Status — FraWo GbR Infrastruktur
-**Stand: 2026-05-28 | Geprüft durch: Claude Sonnet 4.6 + Wolf**
+**Stand: 2026-05-30 | Geprüft durch: Claude Sonnet 4.6 + Wolf**
 
 ---
 
@@ -15,29 +15,23 @@
 ### 🖥️ Odoo (VM 220, 10.4.0.22)
 - Port: 127.0.0.1:8069 (kein Direktzugriff) ✅
 - DB: FraWo_GbR ✅
-- Swap: 2GB aktiv ✅
-- Login: wolf@frawo-tech.de / FrawoWolf2026! (Vault: Odoo ERP — Admin)
+- Login: wolf@frawo-tech.de (Vault: Odoo ERP — Admin)
 - Restart: unless-stopped + PVE startup order=3 ✅
 
 ### ☁️ Nextcloud (VM 300, 10.4.0.21)
 - Intern: http://cloud.hs27.internal ✅
 - Öffentlich: https://cloud.frawo-tech.de ✅ HTTP 200
-- Admin: frawoadmin / NC-Frawo-2026! (Vault aktualisiert 2026-05-28)
 - Ordner: /Dokumente/{Eingang,Archiv,Verträge,Rechnungen} ✅
 - trusted_proxies: 10.4.0.0/24 + 100.64.0.0/10 ✅
 
 ### 📄 Paperless-ngx (VM 330, 10.4.0.23)
 - Intern: http://paperless.hs27.internal ✅
-- Admin: frawoadmin / PL-Frawo-2026! (Vault aktualisiert 2026-05-28)
-- API Token: 4ca7affa0948fe3a73bb224c60fe1090d1c00b08
 - Post-consume Script: /usr/local/bin/paperless-to-nc.sh → NC/Archiv ✅
 - rclone-Sync: alle 5 min NC/Eingang → consume_dir (cron auf VM 330) ✅
 
 ### 🔐 Vaultwarden (CT 120, 10.4.0.26)
 - URL: http://vault.hs27.internal ✅
-- Wolf Master-PW: FrawoWolf2026! (Recovery 2026-05-27)
 - 437 Ciphers (429 Org + 8 persönlich) ✅
-- Admin-Token: FrawoAdminVault2026! (argon2id) ✅
 - SIGNUPS_ALLOWED: false ✅
 
 ### 📡 Radio-Node (CT 130, 10.4.0.28, TS: 100.78.88.33)
@@ -45,18 +39,36 @@
 - Navidrome: http://navidrome.hs27.internal ✅
 - FraWo Radio Backend: http://radio-api.hs27.internal:9500 ✅
 - Icecast: funk.frawo-tech.de → Relay frawo-docker-1:8000 ✅
-- RAM: 6GB (hot-upgraded) ✅
+- RAM: 6GB ✅
 
 ### 🐳 frawo-docker-1 (Stockenweiler, TS: 100.94.32.41)
+- Node.js: v22.22.3 (~/.local/node)
 - Services: n8n (5678), Portainer (9000), Grafana (3001), Prometheus (9091), Icecast-Relay (8000)
+- **OpenClaw AI Gateway** (Port 19000, systemd user service) — v2026.5.27 ✅
+  - Telegram Bot: @Frawo_ClawBot (dmPolicy: pairing, Owner: Wolf TS 5410536762)
+  - Primärmodell: openai/gpt-4o | Fallback: anthropic/claude-haiku-4-5
+  - Config: ~/.openclaw/openclaw.json
+  - Service: ~/.config/systemd/user/openclaw.service (enabled, auto-restart)
 - UFW: aktiv — deny in, allow Tailscale + 10.30.8.0/24 ✅
 - sudo-PW unbekannt → nsenter-Workaround via Docker ✅
 
 ### 🏠 Toolbox (CT 100, 10.4.0.20, TS: 100.82.26.53)
 - Caddy: Up ✅ (Edge-Proxy für alle hs27.internal Domains)
-- AdGuard: Up, admin / FrawoAdGuard2026! ✅
+- AdGuard: Up ✅
 - cloudflared: aktiv (systemd), 6 CF-Tunnel-Routen ✅
 - Uptime Kuma: http://uptime.hs27.internal/status/frawo ✅
+
+---
+
+## Storage-Architektur (nach Migration 2026-05-29)
+
+| Pool | Typ | Nutzung | Inhalt |
+|------|-----|---------|--------|
+| local-lvm | LVM-Thin (NVMe) | ~30% (48G/156G) | Alle VMs + CTs (primär) |
+| ssd2tb | dir (USB-SSD) | ~9% (170G/1.9T) | Nur noch Backups/Dumps (images leer!) |
+| google-drive | dir (rclone) | ~40% | CT 110 storage-node Disk |
+
+**⚠️ Warnung:** Thin Pool virtuell überprovisioniert (~834G virtual). PBS-Datastore (VM 240) max ~100G real.
 
 ---
 
@@ -67,6 +79,28 @@
 | #159 | PBS VM 240: kein Netzwerk | PVE VNC Console | Mittel |
 | #251 | PVE Firewall | PVE Web UI | Hoch |
 | #241 | HAOS Eltern: Heimat unklar | Wolf-Entscheidung | Niedrig |
+| — | Anthropic API: Guthaben aufladen | console.anthropic.com | Mittel |
+| — | OpenClaw Odoo-Skill: noch nicht installiert | frawo-docker-1 | Mittel |
+
+---
+
+## Incident-Log (2026-05-28 bis 2026-05-30)
+
+### 2026-05-28: USB-SSD Bad Sectors
+- /dev/sde (ssd2tb) → Bad Sectors → emergency_ro → alle VMs auf ssd2tb gestoppt
+- Fix: `vgchange -an ssd2tb && vgchange -ay ssd2tb && e2fsck -f -y -b 32768 /dev/mapper/ssd2tb-data`
+- VMs wieder gestartet ✅
+
+### 2026-05-29: Zweiter Incident + Migration
+- CT 130 Neustart → ssd2tb wieder emergency_ro
+- Sofort-Fix: gleicher Prozess wie 2026-05-28
+- **Migration alle VMs/CTs → local-lvm (NVMe) abgeschlossen** ✅
+
+### 2026-05-30: Stromausfall (ca. 03:30 Uhr)
+- PVE + Fritz.Box gleichzeitig ausgefallen
+- Beim Neustart: AdGuard nicht bereit → rclone GDrive TLS-Fehler (Fritz.Box-Zertifikat)
+- CT 110 (GDrive disk) + CT 100 (CIFS mount) konnten nicht automatisch starten
+- Alle Services nach manuellem Start wieder online ✅
 
 ---
 
@@ -84,10 +118,6 @@ Paperless DB + paperless-to-nc.sh
 cloud.frawo-tech.de/Dokumente/Archiv/{Korrespondent}/{Jahr}/
 ```
 
-**Korrespondenten:** BG ETEM, EGS, Obi, riverty, Thomann, VG Sigmarszell
-**Tags:** Anker, anmeldung, Beleg, GbR, Nebenkosten, Obi, Thomann, Wolf.EE
-**Dokumenttypen:** Bescheid, Kassenbeleg, Mahnung, Rechnung
-
 ---
 
 ## Odoo Workflow
@@ -98,5 +128,3 @@ Neue Idee → 💡 Brainstorm (stage 86) → Wolf-Freigabe
            → 🚀 In Arbeit (stage 3) → Agent umsetzt
            → ✅ Erledigt (stage 6) → DoD-Note
 ```
-
-**Zugang:** wolf@frawo-tech.de / FrawoWolf2026! (xmlrpc: 10.4.0.22:8069, DB: FraWo_GbR)
