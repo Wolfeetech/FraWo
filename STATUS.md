@@ -128,3 +128,30 @@ Neue Idee → 💡 Brainstorm (stage 86) → Wolf-Freigabe
            → 🚀 In Arbeit (stage 3) → Agent umsetzt
            → ✅ Erledigt (stage 6) → DoD-Note
 ```
+
+---
+
+## Session 2026-05-30 — Was erledigt wurde
+
+**Infrastruktur:**
+- Stromausfall diagnostiziert + alle Services wiederhergestellt
+- Prometheus Monitoring: 6/6 Targets UP inkl. pve-exporter (VM/CT Metriken)
+- Grafana: Node Exporter Full + Proxmox VE Dashboards importiert
+
+**AI/Automatisierung:**
+- OpenClaw @ServAssi_bot auf frawo-docker-1 (gpt-4o, Odoo via frawo-tech.de)
+- n8n auf 2.22.5 updated, Backup-Alert + Show-Notes Workflows angelegt
+- StudioPC OpenClaw Scheduled Tasks deaktiviert (waren Konfliktursache)
+
+**REW:**
+- v5.31.3 installiert — PM1 fehlt noch → Messungen auf Di 02.06 verschoben
+
+**Odoo:**
+- 17 Duplikat-Stages bereinigt, Tasks T320/121/322/327/328/313 erledigt
+- Prinz Alois: Deadlines gesetzt, T308 Kassenantrag dokumentiert
+
+## Morgen als erstes
+
+1. **PM1 holen + REW Messungen** (T312, Deadline Di!)
+2. **Tailscale Route approven** → admin.tailscale.com (2 Klicks!)
+3. **PBS Netzwerk** (T159) — VM 240 kein Netz = kein Backup
