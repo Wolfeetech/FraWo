@@ -118,14 +118,17 @@ Diese Datei ist die kurze manuelle Unblock-Queue. Strategische Wahrheit steht im
 - `goal`: Odoo ACL-Warnings auf `res.users.log` klaeren.
 - `next_codex_action`: Odoo-App-Layer pruefen, keine Infra-Mutation.
 
-### `radio_frontdoor_backend` [WATCH]
+### `radio_frontdoor_backend` [DONE]
 
 - `lane`: `Lane E: Radio/Media`
 - `goal`: funk.frawo-tech.de als Community-Radiosite (Abstimmung, Chat, Song-Wunsch).
-- `current_state_2026-05-31`: https://funk.frawo-tech.de/ public via Cloudflare Tunnel (HTTP 200). Community-Site auf CT130:9501, Caddy intern via radio.hs27.internal. radio-backend /api/v1/community/ aktiv. Stream live.
-- `verified_2026-05-31`: Cloudflare Tunnel Route funk.frawo-tech.de -> http://100.78.88.33:9501 gesetzt, public HTTPS bestaetigt.
-- `next_operator_action`: navidrome.frawo-tech.de Dashboard-Route auf http://100.78.88.33:4533 korrigieren (derzeit 502).
-- `next_codex_action`: Song-Request API via AzuraCast API-Key aktivieren (AZURACAST_API_KEY in /opt/frawo-radio-backend/.env setzen).
+- `verified_2026-05-31`:
+  - https://funk.frawo-tech.de/ public HTTPS 200 via CF-Tunnel -> 100.78.88.33:9501
+  - https://navidrome.frawo-tech.de/ public HTTPS 200 via CF-Tunnel -> 100.78.88.33:4533
+  - Song-Requests aktiviert (AzuraCast enable_requests=true), API-Key genutzt, Suche laeuft
+  - Art-URLs public (kein internes 172.20.0.1), Now-Playing, Voting, Chat alles verifiziert
+- `next_operator_action`: Keine.
+- `deployment_note`: Docker-Build-Context ist /opt/frawo-radio-backend/app/ (nicht apps/radio-backend/). Nach git-Pull sync: cp apps/radio-backend/app/api/community.py app/api/community.py
 
 ### `ha_eltern_dashboard` [ACTIVE]
 
