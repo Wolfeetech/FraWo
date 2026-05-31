@@ -299,3 +299,47 @@ Chatter-Nachricht im Pflanzen-Task = permanentes Journal. Kein extra Tool noetig
 - Akai APC genaues Modell (P119)
 - PO7 löschen (Duplikat)
 - Martin Audio CX2: Kontakt Lautsprechermanufaktur Mannheim
+
+## Session 2026-05-31 Final — Kompletter Tagesabschluss
+
+### Erledigte Tasks heute (mit agent@-Protokoll)
+| Task | Was | Status |
+|------|-----|--------|
+| T251 | PVE Firewall aktiv (enable=1, DROP policy) | ✅ |
+| T319 | Netzwerk-Sicherheitsaudit abgeschlossen | ✅ |
+| T321 | n8n 2.22.5: 7/8 Workflows aktiv | ✅ |
+| T328 | pve-exporter: 6/6 Prometheus Targets UP | ✅ |
+| T329 | Grafana Telegram-Alert eingerichtet | ✅ |
+| T8   | PBS Offsite via Google Drive aktiv | ✅ |
+| T11  | PBS Backups: VM 240 online, Jobs aktiv | ✅ |
+| T159 | PBS Netzwerk wiederhergestellt | ✅ |
+| T169 | Inventar: 140+ Produkte kategorisiert | ✅ |
+| T312 | REW Erstmessungen Anker: Bass +11dB | ✅ |
+
+### Neue Infrastruktur
+- CT 110 storage-node: auf local-lvm restored, läuft
+- Grafana Alerts: Telegram-Benachrichtigung bei Node-Down
+- Alle 10 VMs/CTs aktiv
+
+### Inventar-Stand (Lautsprecher & Audio)
+- Beyma 8G40/10G40/12G40/12P80/CD-101: korrekte Specs
+- Jobst JM-Sub212: Ist=Thomann, Ziel=Kappalite 3012LF
+- Elvis 15": Ist=0815, Ziel=Beyma 15SW1800
+- KMT DF 1022: Beyma 10G40 + TD164 Horn
+
+### KVAs bereit (nur freigeben)
+- PO6: Intertechnik Frequenzweichen 107,90 EUR
+- PO8: Reichelt DEGSON 4,95 EUR
+- PO9: 4x Beyma 12G40 Kick 916 EUR
+- PO11: Option A Kappalite+Elvis 587 EUR
+- PO12: Option B Beyma+Elvis 619 EUR
+
+### Abstimmungen bis 01.07 (T383-T385)
+- JM-Sub212: Kappalite (A) oder Beyma (B)?
+- Kick 12": 12G40 oder anderes?
+- Elvis Upgrade: jetzt oder warten?
+
+### Offene Housekeeping-Punkte
+- local-lvm 98% voll: PBS-Disk (500GB) auf Google Drive migrieren
+- PO7 löschen (Duplikat Intertechnik)
+- Beyma Chassis Modelle bestätigen (P121/P122)
