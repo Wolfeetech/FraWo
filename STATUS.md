@@ -269,3 +269,33 @@ Chatter-Nachricht im Pflanzen-Task = permanentes Journal. Kein extra Tool noetig
 - Valentin Loehr (ID49): Montage
 
 **Inventar:** 22 Produkte, 3 Kategorien (Studio, IT, Elektronik), alle korrekt als Verbrauchsartikel
+
+## Fertigung & Inventar (2026-05-31 Abend)
+
+**Fertigungsaufträge (aktiv):**
+| MO | Was | Menge | Status |
+|----|-----|-------|--------|
+| MO2 | Tonstudio Villa (Anker) | 1x | In Bearbeitung |
+| MO3 | Subwoofer Doppel 12" | 4x | Bestätigt - TODO: SUB-12 -> Beyma |
+| MO5 | Frequenzweichen KMT | 2x | Entwurf - wartet auf Teile |
+| MO9 | Kick 12" Sub (Beyma) | 4x | Entwurf |
+
+**Neue Produkte:**
+- P115: Frequenzweiche KMT Top
+- P116-P119: Korg Volcas (3x) + Akai APC (Modelle noch zu bestätigen)
+- P121-P122: Beyma 12" + 15" Chassis (Modelle TBD)
+- P123-P126: Cubo 12/15, Kick 12, Doppel 12 (Eigenbau)
+- P127: Martin Audio CX2 (Reparatur)
+
+**Steuern bereinigt:**
+- 7 korrekte Steuern, 4 alte deaktiviert
+- §19 KU auf allen Verkaufsprodukten
+- VSt 19% auf allen Einkaufszeilen (PO6, PO8)
+
+**TODO Wolf manuell:**
+- MO3: SUB-12 -> Beyma 12" Chassis tauschen
+- Beyma Chassis Modelle bestätigen (P121/P122)
+- Volcas genaue Modelle eintragen (P116-P118)
+- Akai APC genaues Modell (P119)
+- PO7 löschen (Duplikat)
+- Martin Audio CX2: Kontakt Lautsprechermanufaktur Mannheim
