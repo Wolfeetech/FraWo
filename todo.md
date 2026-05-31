@@ -89,8 +89,8 @@ Diese Datei ist die kurze manuelle Unblock-Queue. Strategische Wahrheit steht im
 - `lane`: `Lane C: Security/PBS/Infra`
 - `github_issue`: `#14`
 - `goal`: CT 100 Disk kontrolliert auf `ssd2tb` migrieren.
-- `current_state`: CT 100 laeuft wieder, aber Migration bleibt sinnvoll, um NVMe/local-lvm Druck zu reduzieren.
-- `next_operator_action`: Kurzes Wartungsfenster fuer Toolbox/Caddy-Downtime freigeben.
+- `current_state`: CT 100 laeuft wieder; Migration bleibt sinnvoll, um NVMe/local-lvm Druck zu reduzieren, braucht aber ein kurzes Downtime-Fenster fuer Toolbox/Caddy.
+- `next_operator_action`: Wartungsfenster fixieren, davor Snapshot/Backup ziehen, dann CT100 kontrolliert auf `ssd2tb` migrieren und nach dem Boot Caddy, AdGuard, Jellyfin sowie alle Frontdoors verifizieren.
 
 ### `odoo_project_ssot_sync` [DONE]
 
