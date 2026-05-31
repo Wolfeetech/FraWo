@@ -121,7 +121,8 @@ ansible-check: ansible-syntax-check
 docs:
 	@echo "[docs] Checking required SSOT files..."
 	@for f in README.md archive/MASTERPLAN.md DOCS/Task_Archive/OPERATOR_TODO_QUEUE.md archive/OPS_HOME.md archive/LIVE_CONTEXT.md DOCS/Task_Archive/SECURITY.md DOCS/Task_Archive/SECURITY_BASELINE.md archive/MEMORY.md DOCS/Task_Archive/NETWORK_INVENTORY.md infrastructure/VM_AUDIT.md; do \
-		if [ -f "$$f" ]; then echo "  ✓ $$f"; else echo "  ✗ MISSING: $$f"; fi; \	done
+		if [ -f "$$f" ]; then echo "  ✓ $$f"; else echo "  ✗ MISSING: $$f"; fi; \
+	done
 	@echo "[docs] Done."
 
 ## ai-status: Check health of local brains (Ollama) and MCP bridge
