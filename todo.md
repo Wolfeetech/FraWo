@@ -63,8 +63,11 @@ Diese Datei ist die kurze manuelle Unblock-Queue. Strategische Wahrheit steht im
 - `next_operator_action`: Keine.
 
 
+### `openclaw_key_rotation_after_repo_cleanup` [BLOCKED]
+
 - `lane`: `Lane C: Security/PBS/Infra`
 - `github_issue`: `#7`
+- `goal`: OpenClaw SSH-Key rotieren, weil der alte private Key historisch im GitHub-Repo enthalten war.
 - `current_state`: Key ist aus dem aktuellen Repo-HEAD entfernt und per `.gitignore` blockiert; historische Git-Exposition bleibt als Sicherheitsbefund bestehen.
 - `next_operator_action`: Kurzes Rotationsfenster freigeben.
 - `next_codex_action`: Neuen Key erzeugen, PVE/Stock/autorisierten Zugriff aktualisieren, lokalen Secret-Pfad ersetzen, alten Public Key aus `authorized_keys` entfernen und Zugriff testen.
