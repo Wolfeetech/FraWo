@@ -118,13 +118,14 @@ Diese Datei ist die kurze manuelle Unblock-Queue. Strategische Wahrheit steht im
 - `goal`: Odoo ACL-Warnings auf `res.users.log` klaeren.
 - `next_codex_action`: Odoo-App-Layer pruefen, keine Infra-Mutation.
 
-### `radio_frontdoor_backend` [ACTIVE]
+### `radio_frontdoor_backend` [WATCH]
 
 - `lane`: `Lane E: Radio/Media`
-- `goal`: `radio.frawo-tech.de` Ã¼ber AzuraCast (Stockenweiler) bereitstellen.
-- `current_state`: AzuraCast VM 210 lÃ¤uft auf `192.168.178.210`.
-- `next_operator_action`: Cloudflare Tunnel Routing fÃ¼r `radio.frawo-tech.de` hinzufÃ¼gen.
-- `next_codex_action`: AzuraCast Konfiguration validieren und Stream-Test durchfÃ¼hren.
+- `goal`: funk.frawo-tech.de als Community-Radiosite (Abstimmung, Chat, Song-Wunsch).
+- `current_state_2026-05-31`: https://funk.frawo-tech.de/ public via Cloudflare Tunnel (HTTP 200). Community-Site auf CT130:9501, Caddy intern via radio.hs27.internal. radio-backend /api/v1/community/ aktiv. Stream live.
+- `verified_2026-05-31`: Cloudflare Tunnel Route funk.frawo-tech.de -> http://100.78.88.33:9501 gesetzt, public HTTPS bestaetigt.
+- `next_operator_action`: navidrome.frawo-tech.de Dashboard-Route auf http://100.78.88.33:4533 korrigieren (derzeit 502).
+- `next_codex_action`: Song-Request API via AzuraCast API-Key aktivieren (AZURACAST_API_KEY in /opt/frawo-radio-backend/.env setzen).
 
 ### `ha_eltern_dashboard` [ACTIVE]
 
@@ -132,6 +133,14 @@ Diese Datei ist die kurze manuelle Unblock-Queue. Strategische Wahrheit steht im
 - `goal`: Spezielles Dashboard fÃ¼r Wolfs Eltern (ZDF/ARD Mediatheken, Strom).
 - `current_state`: HA Eltern VM 360 lÃ¤uft auf `192.168.178.179`.
 - `next_codex_action`: Dashboard YAML-Entwurf erstellen (Mediathek iFrames).
+
+### `onkyo_avr390_setup` [ACTIVE]
+
+- `lane`: `Lane D: Stockenweiler` (oder Anker-HW)
+- `goal`: Onkyo AV R390 professionell einrichten und dokumentieren (Patching, Signalfluss, Geraeteeinstellungen) - Werkstattqualitaet.
+- `current_state`: Geraet angeschlossen, Einmessung erledigt. Naechster Schritt: saubere Verkabelung + vollstaendige Dokumentation.
+- `next_operator_action`: Kabel beschriften, Patchplan aufnehmen (Foto + Text).
+- `next_codex_action`: Dokumentationsvorlage erstellen (Standard-Patchplan-Template fuer AV-Receiver). Odoo-Task angelegt.
 
 ### `website_access_protection` [PROPOSED]
 

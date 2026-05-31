@@ -8,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from prometheus_fastapi_instrumentator import Instrumentator
 
-from app.api import nowplaying, stations, websocket
+from app.api import community, nowplaying, stations, websocket
 from app.core.config import settings
 from app.core.logging import configure_logging, get_logger
 
@@ -100,6 +100,7 @@ if settings.enable_metrics:
 app.include_router(stations.router, prefix="/api")
 app.include_router(nowplaying.router, prefix="/api")
 app.include_router(websocket.router, prefix="/api")
+app.include_router(community.router, prefix="/api/v1")
 
 
 @app.get("/", tags=["Root"])

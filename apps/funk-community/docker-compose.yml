@@ -1,0 +1,18 @@
+services:
+  funk-community:
+    build: .
+    container_name: funk-community
+    ports:
+      - "9501:80"
+    restart: unless-stopped
+    networks:
+      - radio-net
+      - azura-net
+
+networks:
+  radio-net:
+    external: true
+    name: frawo-radio-backend_frawo-network
+  azura-net:
+    external: true
+    name: azuracast_default
