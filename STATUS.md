@@ -249,3 +249,23 @@ Chatter-Nachricht im Pflanzen-Task = permanentes Journal. Kein extra Tool noetig
 | 1fLw0n1e | Klausi-Bot @Odoo-Chatter | AKTIV |
 | xCShp2rt | RAG: Odoo->Qdrant | AKTIV |
 | Onzd61um | Email-Agent agent@ | AKTIV |
+
+## Steuer-Setup + Inventar (2026-05-31)
+
+**Kleinunternehmer §19 UStG:**
+- Standard Verkauf: Steuerbefreit §19 (0%)
+- Standard Einkauf: VSt 19% (bezahlt, kein Vorsteuerabzug)
+- Pflichthinweis auf Rechnungen: "Gemäß §19 UStG wird keine USt berechnet"
+
+**Fiskalpositionen:**
+- DE<->AT Privatperson (auto)
+- EU B2B Reverse Charge (auto, UID-pflichtig)
+- DE<->CH Schweiz/Drittland (auto)
+
+**Frequenzweichen KMT Tops:**
+- PO6 Intertechnik: 107,90 EUR -> freigeben
+- PO8 Reichelt: 4,95 EUR -> freigeben
+- JLCPCB: 49,95 EUR (5x 9,99) -> manuell bestellen
+- Valentin Loehr (ID49): Montage
+
+**Inventar:** 22 Produkte, 3 Kategorien (Studio, IT, Elektronik), alle korrekt als Verbrauchsartikel
