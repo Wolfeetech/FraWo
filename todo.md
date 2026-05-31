@@ -1,6 +1,6 @@
 # Operator Todo Queue
 
-Stand: `2026-04-22`
+Stand: `2026-05-30`
 
 ## Zweck
 
@@ -93,15 +93,14 @@ Diese Datei ist die kurze manuelle Unblock-Queue. Strategische Wahrheit steht im
 - `current_state`: CT 100 laeuft wieder, aber Migration bleibt sinnvoll, um NVMe/local-lvm Druck zu reduzieren.
 - `next_operator_action`: Kurzes Wartungsfenster fuer Toolbox/Caddy-Downtime freigeben.
 
-### `odoo_project_ssot_sync` [ACTIVE]
+### `odoo_project_ssot_sync` [DONE]
 
 - `lane`: `Lane A/C`
 - `goal`: Odoo Masterprojekt und Repo-SSOT spiegeln denselben Stand (auf Deutsch).
-- `current_state`: Skript zur Lokalisierung und Konsolidierung vorbereitet (`scripts/run_odoo_board_fix.ps1`).
-- `next_operator_action`: Skript ausführen, um das Board auf Deutsch umzustellen und die "losen Enden" zu synchronisieren.
-- `next_codex_action`: Nach Ausführung den Erfolg im Odoo-UI bestätigen.
+- `current_state`: `scripts/business/odoo_ssot_sync.py` erstellt und gepusht (2026-05-30). Projekt "🚀 Homeserver 2027: Masterplan" (id=1) mit 16 Tasks in Backlog angelegt, Sprache de_DE gesetzt, Board-Stages korrekt. Wolf (uid=6) ist aktiver Admin-Benutzer.
+- `next_operator_action`: Keine.
 
-### `odoo_sender_email_for_document_mail` [ACTIVE]
+### `odoo_sender_email_for_document_mail` [DONE]
 
 - `lane`: `Lane A: MVP Closeout`
 - `github_issue`: `#11`
@@ -110,8 +109,8 @@ Diese Datei ist die kurze manuelle Unblock-Queue. Strategische Wahrheit steht im
 - `root_cause_verified`: Angebote `S00001` und `S00002` nutzen `wolf@frawo-tech.de` als Verkaeufer, aber der zugehoerige Odoo-Partner hatte keine E-Mail-Adresse.
 - `server_fix_2026-04-22`: Odoo-Partner fuer `wolf@frawo-tech.de` auf `wolf@frawo-tech.de` gesetzt; technischer `admin` auf `noreply@frawo-tech.de` gesetzt; Odoo-Webcontainer neu gestartet.
 - `verification_2026-04-22`: Odoo rendert die Storno-Mail-Vorlage fuer `S00001` jetzt mit `"Wolf Admin" <wolf@frawo-tech.de>` als `email_from`; Caddy-Frontdoor `odoo.hs27.internal/web/login` antwortet `HTTP 200`.
-- `next_operator_action`: Storno-Dialog in Odoo einmal im Browser erneut ausfuehren und bestaetigen, dass die Fehlermeldung verschwunden ist.
-- `next_codex_action`: Nach Browser-Abnahme GitHub Issue `#11` schliessen; optional echte sichtbare Odoo-Testmail gegen STRATO-Inbox pruefen.
+- `verified_2026-05-30`: S00001 storniert/entfernt, S00002 invoiced. SMTP-Config aktiv (Strato smtp.strato.de, webmaster@frawo-tech.de). Fix von 2026-04-22 greift. GitHub Issue #11 schliessen.
+- `next_operator_action`: Keine.
 
 ### `odoo_acl_res_users_log` [WATCH]
 
