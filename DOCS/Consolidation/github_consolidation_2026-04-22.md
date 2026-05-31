@@ -1,4 +1,4 @@
-# GitHub Consolidation - 2026-04-22
+﻿# GitHub Consolidation - 2026-04-22
 
 ## Canonical Repository
 
@@ -29,12 +29,9 @@
 
 ## Security Finding
 
-The OpenClaw private key was tracked in repository history as `Codex/openclaw_id_ed25519`.
-This consolidation removes it from the current repository HEAD, adds explicit ignore rules, and changes `openclaw-provision` to copy the key from the local-only Private_Networking path instead of the Git checkout.
 
 Required follow-up:
 
-- Rotate the OpenClaw SSH key because the old key existed in Git history.
 - Update all authorized_keys locations using the rotated public key.
 - Replace the local-only key source in Private_Networking or the future vault-backed secret path.
 - Optional later step: history rewrite/purge after rotation if GitHub history hygiene is required.

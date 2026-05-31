@@ -61,8 +61,8 @@ services:
       REDIS_URL: redis://redis:6379/0
       WORKERS: 1  # Single worker for low memory
     ports:
-      - "8000:8000"
-      - "9090:9090"
+      - "9500:8000"
+      - "9590:9090"
     depends_on:
       postgres:
         condition: service_healthy

@@ -32,22 +32,6 @@ async def lifespan(app: FastAPI) -> AsyncGenerator:
         environment=settings.app_env,
     )
 
-    # Initialize Prometheus metrics
-    if settings.enable_metrics:
-        instrumentator = Instrumentator(
-            should_group_status_codes=True,
-            should_ignore_untemplated=True,
-            should_respect_env_var=True,
-            should_instrument_requests_inprogress=True,
-            excluded_handlers=["/metrics", "/health", "/docs", "/redoc", "/openapi.json"],
-            env_var_name="ENABLE_METRICS",
-            inprogress_name="http_requests_inprogress",
-            inprogress_labels=True,
-        )
-        instrumentator.instrument(app)
-        instrumentator.expose(app, include_in_schema=False, endpoint="/metrics")
-        logger.info("prometheus_metrics_enabled", endpoint="/metrics")
-
     yield
 
     # Shutdown
@@ -92,11 +76,25 @@ app = FastAPI(
 # CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_origins,
+    allow_origins=[o.strip() for o in settings.cors_origins.split(",")],
     allow_credentials=settings.cors_allow_credentials,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Prometheus metrics — must be at module level before app starts
+if settings.enable_metrics:
+    instrumentator = Instrumentator(
+        should_group_status_codes=True,
+        should_ignore_untemplated=True,
+        should_respect_env_var=True,
+        should_instrument_requests_inprogress=True,
+        excluded_handlers=["/metrics", "/health", "/docs", "/redoc", "/openapi.json"],
+        env_var_name="ENABLE_METRICS",
+        inprogress_name="http_requests_inprogress",
+        inprogress_labels=True,
+    )
+    instrumentator.instrument(app).expose(app, include_in_schema=False, endpoint="/metrics")
 
 # Include routers
 app.include_router(stations.router, prefix="/api")

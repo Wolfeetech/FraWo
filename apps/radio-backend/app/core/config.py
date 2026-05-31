@@ -2,7 +2,7 @@
 
 from typing import List
 
-from pydantic import AnyHttpUrl, Field, PostgresDsn, RedisDsn, field_validator
+from pydantic import AnyHttpUrl, Field, PostgresDsn, RedisDsn
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -53,23 +53,12 @@ class Settings(BaseSettings):
     )
     algorithm: str = Field(default="HS256", description="JWT algorithm")
 
-    # CORS
-    cors_origins: List[str] = Field(
-        default=[
-            "http://localhost:3000",
-            "http://localhost:8080",
-        ],
-        description="Allowed CORS origins",
+    # CORS — comma-separated string (pydantic-settings v2 requires JSON for List types)
+    cors_origins: str = Field(
+        default="http://localhost:3000,http://localhost:8080",
+        description="Allowed CORS origins (comma-separated)",
     )
     cors_allow_credentials: bool = Field(default=True, description="Allow credentials in CORS")
-
-    @field_validator("cors_origins", mode="before")
-    @classmethod
-    def parse_cors_origins(cls, v: str | List[str]) -> List[str]:
-        """Parse CORS origins from string or list."""
-        if isinstance(v, str):
-            return [origin.strip() for origin in v.split(",")]
-        return v
 
     # AzuraCast Integration
     azuracast_api_url: AnyHttpUrl = Field(

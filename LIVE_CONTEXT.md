@@ -1,6 +1,6 @@
 # LIVE CONTEXT — FraWo GbR Infrastruktur
 **Single Source of Truth für technischen Zustand**
-*Letzte vollständige Aktualisierung: 2026-05-25 — Claude Sonnet 4.6 + Wolf*
+*Letzte vollständige Aktualisierung: 2026-05-30 — Claude Sonnet 4.6 + Wolf*
 
 ---
 
@@ -12,24 +12,20 @@
 │         Alle Nodes sicher verbunden, kein offener Port       │
 └──────────────┬──────────────────────┬───────────────────────┘
                │                      │
-    ┌──────────▼──────────┐  ┌────────▼───────────────┐
-    │   ANKER PVE          │  │  STOCKENWEILER (Site B)  │
-    │   10.4.0.99          │  │  192.168.178.x           │
-    │   Tailscale:         │  │  Tailscale:              │
-    │   100.69.179.87      │  │  100.91.20.116 (offline) │
-    │   PRIMARY PRODUCTION │  │  ELTERN-HAUS             │
-    └──────────┬──────────┘  └────────┬───────────────┘
-               │                      │
-    [alle VMs/CTs unten]    ┌─────────▼──────────────┐
-                            │  frawo-docker-1          │
-                            │  Tailscale: 100.94.32.41 │
-                            │  Lokal: 10.30.8.22       │
-                            │  Physisch: Schiffscontainer│
-                            │  Stockenweiler (10.30.8.x)│
-                            │  OS: Debian 13 Trixie    │
-                            │  Disk: 188G frei         │
-                            │  SSH: wolf (sudo) ✅     │
-                            └────────────────────────┘
+    ┌──────────▼──────────┐  ┌────────▼──────────────────────┐
+    │   ANKER PVE          │  │  STOCKENWEILER (Site B)        │
+    │   10.4.0.99          │  │  Netz: 10.30.8.x (Container)  │
+    │   Tailscale:         │  │  PVE: EINGESTELLT              │
+    │   100.69.179.87      │  │                                │
+    │   PRIMARY PRODUCTION │  │  frawo-docker-1 (10.30.8.22)  │
+    └──────────┬──────────┘  │  Tailscale: 100.94.32.41      │
+               │             │  Debian 13, 188G, SSH ✅       │
+    [VMs/CTs]  │             │  Rolle: TBD (Monitoring/Backup)│
+               │             │                                │
+               │             │  win-j1aenasv2fj (10.30.8.21) │
+               │             │  Tailscale: 100.97.147.67      │
+               │             │  Windows, Claude Code ✅        │
+               │             └────────────────────────────────┘
 ```
 
 ---
@@ -42,23 +38,38 @@
 | ID | Name | IP | Rolle | Status |
 |----|------|----|-------|--------|
 | VM 210 | haos | 10.4.0.24 | Home Assistant OS (FraWo intern) | ✅ running |
-| VM 220 | odoo | 10.4.0.22 | Odoo 17 ERP + AzuraCast (provisorisch) | ✅ running |
-| VM 240 | PBS-FraWo | 10.4.0.25 (konfiguriert) | Proxmox Backup Server | ⚠️ kein Netzwerk |
+| VM 240 | PBS-FraWo | 10.4.0.25 | Proxmox Backup Server 4.2, Datastore 500GB, Backup 02:00, Cloud-Sync 05:00 | ✅ running |
 | VM 300 | nextcloud | 10.4.0.21 | Nextcloud + DB + Redis | ✅ running |
 | VM 330 | paperless | 10.4.0.23 | Paperless-ngx + Tika + Gotenberg | ✅ running |
 | CT 100 | toolbox | 10.4.0.20 | Caddy · Uptime Kuma · Jellyfin · AdGuard · Open-WebUI · cloudflared | ✅ running |
 | CT 101 | adguard-slave | 10.4.0.101 | AdGuard Home (Slave/Backup) | ✅ running |
 | CT 110 | storage-node | 10.4.0.30 | CIFS/Samba (media + docs) | ✅ running |
 | CT 120 | vaultwarden | 10.4.0.26 | Vaultwarden (Bitwarden-kompatibel) | ✅ running |
-| CT 130 | radio-node | **10.4.0.28** | AzuraCast (Ziel) + FraWo Radio Backend | ✅ running, IP heute gesetzt |
+| CT 130 | radio-node | **10.4.0.28** | AzuraCast (port 80/443/8000) + Navidrome (port 4533) + Samba music-share + Radio Backend API (port 9500) | ✅ running, RAM 4GB, **Tailscale: 100.78.88.33** ✅ |
+| VM 220 | odoo | 10.4.0.22 | Odoo 17 ERP only (AzuraCast abgeschaltet ✅) | ✅ running, restart=unless-stopped, startup order=3 |
 
-### STOCKENWEILER PVE — Site B (Eltern-Haus)
-**IP lokal**: `192.168.178.172` | **Tailscale**: `100.91.20.116` | **Status**: offline seit 15 Tagen
+### STOCKENWEILER — Site B (Schiffscontainer, 10.30.8.x)
+**Stockenweiler PVE: EINGESTELLT** (ersetzt durch frawo-docker-1)
 
-| Was | Wo | Status |
-|-----|----|--------|
-| Home Assistant (Eltern) | HAOS VM | offline (PVE offline) |
-| frawo-docker-1 | Schiffscontainer | Tailscale 100.94.32.41, Lokal 10.30.8.22, SSH ✅ (wolf/sudo), Debian 13 Trixie, 188G frei |
+| Name | Tailscale | Lokal-IP | OS | Rolle | Status |
+|------|-----------|---------|-----|-------|--------|
+| frawo-docker-1 | 100.94.32.41 | 10.30.8.22 | Debian 13 Trixie | **n8n (5678)** + **Portainer (9000)** + **Grafana (3001)** + **Prometheus (9091)** + Node-Exporter (9100) + Icecast-Relay (TODO #242), 31GB RAM, 173G frei | ✅ SSH via Key (pw: vault!), PasswordAuth deaktiviert |
+| win-j1aenasv2fj | 100.97.147.67 | 10.30.8.21 | Windows | Management-PC, SSH-Bridge, Claude Code | ✅ |
+
+**HAOS Eltern** (lief auf eingestelltem PVE): Neue Heimat TBD — Option frawo-docker-1 (Task #241)
+
+**frawo-docker-1 Dienste** (Stand 2026-05-26):
+- n8n Workflow Automation (Port 5678, Docker, /home/wolf/n8n/) — Task #245 ✅
+- Portainer CE (Port 9000/9443, /home/wolf/stacks/infra/) ✅
+- Grafana (Port 3001, PW: FrawoGrafana2026!, /home/wolf/stacks/monitoring/) ✅
+- Prometheus (Port 9091, /home/wolf/stacks/monitoring/) ✅
+- Node Exporter (Port 9100) ✅
+- Icecast-Relay (Port 8000, /home/wolf/stacks/icecast-relay/) ✅ LIVE — relay von CT 130 via Tailscale 100.78.88.33
+
+**frawo-docker-1 Tailscale** (nach nächstem CT 130 Neustart):
+- tailscaled installiert auf CT 130 (PVE TUN-Feature aktiviert)
+- Wolf muss auf tailscale.com/admin das neue Device genehmigen
+- Dann: frawo-docker-1 kann direkt CT 130:8000 via Tailscale erreichen
 
 ### ENTWICKLUNGSMASCHINEN (keine Produktion)
 | Name | Tailscale | Netzwerk | Rolle |
@@ -67,12 +78,7 @@
 | wolf-surface | 100.79.103.59 | - | Mobile Dev |
 | wolf-zenbook | 100.76.249.126 | - | Linux Dev |
 | surface-go-frontend | 100.106.67.127 | - | Frontend-Entwicklung |
-
-### STOCKENWEILER INFRASTRUKTUR (Schiffscontainer / Eltern-Haus)
-| Name | Tailscale | Lokal-IP | Rolle | Status |
-|------|-----------|---------|-------|--------|
-| frawo-docker-1 | 100.94.32.41 | 10.30.8.22 | Phys. Server, Debian 13 Trixie, 188G Disk, Rolle TBD | ✅ SSH wolf/sudo |
-| win-j1aenasv2fj | 100.97.147.67 | 10.30.8.21 | Windows-PC Stockenweiler, SSH-Bridge + Claude Code | ✅ |
+| wolf-admin-pc | TBD | Admin-PC | Ops-PC (dieser PC), frisch eingerichtet 2026-05-30, SSH-Key `hs27_ops_ed25519` generiert, deployment ausstehend |
 
 ---
 
@@ -82,26 +88,58 @@
 |-----|--------|---------|
 | https://www.frawo-tech.de | ✅ HTTP 200 | Odoo via Cloudflare |
 | https://frawo-tech.de | ✅ HTTP 200 | Redirect zu www |
-| https://cloud.frawo-tech.de | 🔴 HTTP 502 | CF-Tunnel zeigt auf alte IP 10.1.0.21 → Fix: Wolf Dashboard |
-| https://radio.frawo-tech.de | ❓ nicht konfiguriert | Ziel: AzuraCast CT 130 |
+| https://cloud.frawo-tech.de | ✅ | CF-Tunnel → 10.4.0.21 (Nextcloud) |
+| https://funk.frawo-tech.de | ✅ | CF-Tunnel → 10.4.0.28 (AzuraCast CT 130) |
+| https://home.frawo-tech.de | ✅ | CF-Tunnel → 10.4.0.24:8123 (HAOS) |
+| https://vault.frawo-tech.de | ✅ | CF-Tunnel → 10.4.0.26:8080 (Vaultwarden) |
 
 ---
 
 ## INTERNE DIENSTE (via Caddy CT 100 / AdGuard)
+**Caddy läuft als Docker-Container** `toolbox-network-caddy-1` auf CT 100, Config: `/root/stacks/toolbox-network/Caddyfile`
 
-| Domain (AdGuard) | Caddy Port | Upstream | Status |
-|------------------|-----------|---------|--------|
-| odoo.hs27.internal | :8444 | 10.4.0.22:8069 | ✅ |
-| cloud.hs27.internal | :8445 | 10.4.0.21:80 | ✅ intern |
-| paperless.hs27.internal | :8446 | 10.4.0.23:8000 | ✅ |
-| vault.hs27.internal | :8442 | 10.4.0.26:8080 | ⚠️ prüfen |
-| ha.hs27.internal | :8443 | 10.4.0.24:8123 | ✅ |
-| media.hs27.internal | :8449 | 10.4.0.20:8096 (Jellyfin) | ✅ |
-| radio.hs27.internal | :8448 | 10.4.0.22:8080 (AzuraCast VM220 provisorisch) | ✅ |
-| radio-node.hs27.internal | direkt | 10.4.0.28 | ✅ neu |
-| storage-node.hs27.internal | direkt | 10.4.0.30 | ✅ neu |
-| pve.hs27.internal | direkt | 10.4.0.99 | ✅ neu |
-| adguard-slave.hs27.internal | direkt | 10.4.0.101 | ✅ neu |
+| Domain (AdGuard) | Upstream | Status | Hinweis |
+|------------------|---------|--------|---------|
+| odoo.hs27.internal | 10.4.0.22:8069 | ✅ | Odoo 17 ERP |
+| cloud.hs27.internal | 10.4.0.21:80 | ✅ | Nextcloud |
+| paperless.hs27.internal | 10.4.0.23:8000 | ✅ | Paperless-ngx |
+| vault.hs27.internal | 10.4.0.26:8080 | ✅ | Vaultwarden |
+| ha.hs27.internal | 10.4.0.24:8123 | ✅ | Home Assistant (HAOS) |
+| media.hs27.internal | 10.4.0.20:8096 | ✅ | Jellyfin (CT 100 lokal) |
+| radio.hs27.internal | **10.4.0.28:80** | ✅ | AzuraCast auf CT 130 — **heute migriert** |
+| radio-node.hs27.internal | 10.4.0.28 | ✅ | Direkt-Zugriff CT 130 |
+| storage-node.hs27.internal | 10.4.0.30 | ✅ | Direkt CT 110 |
+| pve.hs27.internal | 10.4.0.99 | ✅ | PVE Web UI |
+| adguard-slave.hs27.internal | 10.4.0.101 | ✅ | AdGuard Slave |
+
+| navidrome.hs27.internal | 10.4.0.28:4533 | ✅ | Navidrome auf CT 130 (music_ssd) |
+| radio-anker.hs27.internal | 10.4.0.28:80 | ✅ | AzuraCast CT 130 (Anker-Standort) |
+| radio-stock.hs27.internal | 10.30.8.22:8000 | ✅ | Icecast Relay frawo-docker-1 → CT 130 via Tailscale 100.78.88.33 |
+| radio-api.hs27.internal | 10.4.0.28:9500 | ✅ | FraWo Radio Backend API (FastAPI) |
+| n8n.hs27.internal | 10.30.8.22:5678 | ✅ | n8n Workflow Automation (frawo-docker-1) |
+| portainer.hs27.internal | 10.30.8.22:9000 | ✅ | Portainer CE (frawo-docker-1) |
+| grafana.hs27.internal | 10.30.8.22:3001 | ✅ | Grafana (frawo-docker-1, PW: FrawoGrafana2026!) |
+| prometheus.hs27.internal | 10.30.8.22:9091 | ✅ | Prometheus (frawo-docker-1) |
+
+## FRAWO FUNK RADIO
+
+**Station**: FraWo Funk — "Das Non-Stop Radio vom Bodensee." (Electronic / Alternative)
+**Source**: CT 130 (radio-node, 10.4.0.28), AzuraCast `latest`
+**Öffentliche Domain**: `funk.frawo-tech.de`
+
+| Stream | URL | Format | Bitrate |
+|--------|-----|--------|---------|
+| Hifi | `https://funk.frawo-tech.de/listen/frawo_funk/hifi.mp3` | MP3 | 320 kbps |
+| Standard | `https://funk.frawo-tech.de/listen/frawo_funk/radio.mp3` | MP3 | 192 kbps |
+| Mobile | `https://funk.frawo-tech.de/listen/frawo_funk/mobile.aac` | AAC | 64 kbps |
+
+**Interne Icecast URLs** (direkt, kein Cloudflare):
+- `http://10.4.0.28:8000/radio.mp3` (intern, 192 kbps)
+- `http://100.94.32.41:8000/radio.mp3` (via Tailscale, für Relays)
+
+**Relay-Architektur (geplant)**:
+- CT 130 = Source → frawo-docker-1 Icecast-Relay → Stockenweiler 10.30.8.x lokal
+- CT 130 = Source → Raspberry Pi Icecast-Relay → Mobile Events (WiFi-Hotspot)
 
 ---
 
@@ -112,7 +150,7 @@
 | `/` (PVE local) | LVM | 70G | 28G | 38G | ✅ 40% |
 | `/mnt/ssd2tb` | dir | 1.9T | 175G | 1.6T | ✅ 9.5% |
 | `/mnt/music_ssd` | dir | 983G | 177G | 806G | ✅ 18% |
-| `/mnt/hs27-media` | CIFS | 98G | 73G | 21G | ⚠️ 74%, Mount stale (Kernel-Bug, Fix: PVE-Neustart) |
+| `/mnt/hs27-media` | CIFS | 98G | 73G | 21G | ⚠️ stale (Kernel-Bug, Fix: PVE-Neustart) — Radio-Library Migration via tar-pipe läuft |
 | `gdrive:` | rclone | 5.4T | 1.9T | 3.3T | ✅ 36% |
 | `local-lvm` (LVM thin) | lvmthin | 164G | 2G | 162G | ✅ 1% — fast leer! |
 
@@ -122,7 +160,7 @@
 - `yourparty_Libary` = 1.3G (YourParty eingestellt → Archivieren/Löschen)
 - `Duplicates` = ✅ gelöscht (109M)
 
-**Langzeit-Fix**: Radio-Library (63G) auf `/mnt/music_ssd` (806G frei) umziehen → hs27-media-Share dauerhaft entlasten.
+**Migration läuft**: Radio-Library (63G) via tar-pipe CT 110 → `/mnt/music_ssd/FraWo_Radio_Library/` (PVE direkt, kein PVE-Neustart nötig)
 
 ---
 
@@ -144,15 +182,19 @@
 
 | Problem | Priorität | Fix | Wer |
 |---------|-----------|-----|-----|
-| cloud.frawo-tech.de → 502 | 🔴 | CF Dashboard: Tunnel → 10.4.0.21 | Wolf |
-| PBS VM 240 kein Netzwerk | 🔴 | PVE Web Console → VNC → IP prüfen | Wolf |
-| /mnt/hs27-media stale | 🟡 | PVE-Neustart (Wartungsfenster) | Agent/Wolf |
-| frawo-docker-1 SSH-Key deployen | 🟡 | SSH läuft via Passwort — hs27_ops_ed25519.pub in authorized_keys | Wolf |
-| Tailscale hs27.internal DNS | 🟡 | admin-console: nameserver 10.1.0.20 → 10.4.0.20 | Wolf |
-| Stockenweiler offline | 🔴 | Physisch einschalten (Rothkreuz) | Wolf |
+| cloud.frawo-tech.de | ✅ HTTP 200 | Behoben — CF Tunnel zeigt auf 10.4.0.21 | 2026-05-30 |
+| Tailscale hs27.internal DNS | 🔴 | tailscale.com/admin/dns: 10.1.0.20 → 10.4.0.20 | Wolf |
+| wolf-admin-pc SSH-Key | 🔴 | Key generiert (`C:\Users\Admin\bin\hs27_ops_ed25519`), deployment pending — run `bin\setup_ssh.ps1` als Admin | Wolf |
+| **Passwort-Audit** (#244) | 🔴 | Alle Credentials in Vaultwarden (vault.hs27.internal) | Wolf |
+| **frawo-docker-1 Recovery** (#226) | 🔴 | GRUB Single-User-Mode → passwd wolf → SSH-Key → PasswordAuth deaktivieren | Wolf (physisch) |
+| PBS VM 240 kein Netzwerk | 🟡 | PVE Web Console → VNC → IP prüfen | Wolf |
+| Icecast Relay frawo-docker-1 | ✅ LIVE | radio.mp3/hifi.mp3/mobile.aac relay von CT 130 via Tailscale | Agent 2026-05-26 |
+| HAOS Eltern — neue Heimat | 🟡 | frawo-docker-1 (Docker) oder verzichten? (#241) | Wolf |
+| /mnt/hs27-media stale | 🟡 | PVE-Neustart (Wartungsfenster) — Radio-Library wird parallel migriert | Agent/Wolf |
 | DKIM für frawo-tech.de | 🟡 | Strato-Panel → DomainKeys | Wolf |
 | StudioPC auf 10.1.0.x | 🟢 | UCG DHCP-Reservation auf 10.4.0.x | Wolf |
-| Odoo Admin-Passwort | 🟡 | Temporär: AuditTemp2026! → Wolf setzt permanent | Wolf |
+| Odoo Admin-Passwort | 🟡 | AuditTemp2026! → permanentes Passwort (#244) | Wolf |
+| **Odoo Instabilität** | ✅ FIXED | restart=unless-stopped + PVE startup order=3 | Agent 2026-05-26 |
 
 ---
 
@@ -173,4 +215,4 @@
 - **Via Tailscale**: 100.94.32.41, via StudioPC Tailscale direkt SSH möglich sobald Key deployed
 - **apt-cdrom**: Warnung beim Update (DVD-Source in sources.list) — ignorierbar, internet-Repos funktionieren
 
-*Updated: 2026-05-25 — Claude Sonnet 4.6 + Wolf*
+*Updated: 2026-05-26 Nacht — Claude Sonnet 4.6 + Wolf*
