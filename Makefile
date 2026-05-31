@@ -88,19 +88,11 @@ lint: ansible-check
 		echo "[WARN] .vault_pass still contains the example placeholder"; \
 	fi
 	@echo "[lint] Checking tracked plaintext credential artifact patterns..."
-	@tracked_env_runtime=$$(git ls-files '**/.env' '**/.env.*' | grep -Ev '(^|/)\.env(\..+)?\.example$$|(^|/)\.env\.template$$|(^|/)\.env\.sample$$' || true); \
+	@tracked_env_runtime=$$(git ls-files '.env' '.env.*' '**/.env' '**/.env.*' | grep -Ev '(^|/)\.env(\..+)?\.example$$|(^|/)\.env\.template$$|(^|/)\.env\.sample$$' || true); \
 	if [ -n "$$tracked_env_runtime" ]; then \
-		unexpected_env_runtime="$$tracked_env_runtime"; \
-		for legacy_env in apps/yourparty/apps/api/.env.prod apps/yourparty/apps/api/.env.production; do \
-			unexpected_env_runtime=$$(printf '%s\n' "$$unexpected_env_runtime" | grep -vxF "$$legacy_env" || true); \
-		done; \
-		if [ -n "$$unexpected_env_runtime" ]; then \
-			echo "[ERROR] Unexpected tracked runtime .env files found:"; \
-			printf '%s\n' "$$unexpected_env_runtime"; \
-			exit 1; \
-		fi; \
-		echo "[WARN] Legacy tracked runtime .env files still present (migration debt):"; \
+		echo "[ERROR] Unexpected tracked runtime .env files found:"; \
 		printf '%s\n' "$$tracked_env_runtime"; \
+		exit 1; \
 	fi
 	@if git ls-files '*.credentials' '**/*.credentials' | grep -q .; then \
 		echo "[ERROR] Tracked plaintext *.credentials files found."; \

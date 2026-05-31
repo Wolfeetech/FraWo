@@ -12,7 +12,7 @@ extract_value() {
 
 readiness_output="$(timeout 60 "${ROOT_DIR}/scripts/rpi_radio_readiness_check.sh" "${TARGET_HOST}" 2>&1 || true)"
 service_output="$(timeout 60 "${ROOT_DIR}/scripts/rpi_azuracast_service_check.sh" "${TARGET_HOST}" 2>&1 || true)"
-ops_output="$(timeout 60 "${ROOT_DIR}/scripts/radio_operations_check.sh" 2>&1 || true)"
+ops_output="$(timeout 60 "${ROOT_DIR}/scripts/radio_operations_check.sh" "${TARGET_HOST}" 2>&1 || true)"
 
 readiness_gate="$(extract_value rpi_radio_ready_for_azuracast "${readiness_output}")"
 service_gate="$(extract_value rpi_azuracast_service_ready "${service_output}")"
