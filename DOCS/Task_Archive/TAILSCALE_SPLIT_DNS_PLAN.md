@@ -24,10 +24,10 @@ Zielbild:
 - `MagicDNS` ist im Tailnet aktiv
 - der ZenBook akzeptiert Tailscale-DNS (`CorpDNS=true`)
 - `toolbox.tail150400.ts.net` ist ueber `100.100.100.100` aufloesbar
-- `hs27.internal` ist fuer entfernte Tailscale-Clients direkt ueber AdGuard auf `100.82.26.53` korrekt aufloesbar und liefert dabei weiter `10.1.0.20` als Frontdoor-Antwort
-- die Toolbox annonciert lokal `10.1.0.0/24` (Tailnet-Approval steht noch aus)
-- der restricted nameserver fuer `hs27.internal` ist noch nicht sauber auf den aktuellen Toolbox-Tailscale-Resolver umgestellt und muss auf `100.82.26.53` aktualisiert werden
-- `ha.hs27.internal`, `portal.hs27.internal` und `odoo.hs27.internal` liefern ueber `100.100.100.100` korrekt, sobald Split-DNS auf `100.82.26.53` umgestellt ist
+- CT 100 (toolbox) ist nach Netz-Migration jetzt auf `10.4.0.20` (frueherer Stand: `10.1.0.20`)
+- der restricted nameserver fuer `hs27.internal` zeigt noch auf die alte IP `10.1.0.20` und muss auf `10.4.0.20` (oder Tailscale-IP `100.82.26.53`) aktualisiert werden
+- Route `10.4.0.0/24` muss im Tailscale-Admin approved sein, damit Remote-Clients `10.4.0.20` (AdGuard) erreichen koennen
+- Windows Hosts-Datei Workaround (`scripts/tools/Update-HS27-DNS-Aliases.ps1`) ist solange aktiv
 
 ## Wichtige Regel
 
@@ -58,39 +58,42 @@ Erwartung fuer echte Umstellung:
 
 ## Exakte Admin-Schritte
 
-Status: Update auf `100.82.26.53` steht noch aus (Route/DNS-Approval).
+Status: restricted nameserver zeigt noch auf alte IP `10.1.0.20`; muss auf `10.4.0.20` (CT 100 neue LAN-IP) aktualisiert werden.
 
 ### 1. Route zuerst
 
 1. `https://login.tailscale.com/admin/machines`
 2. Tailnet `w.prinz1101@gmail.com`
-3. Node `toolbox`
-4. Route `10.1.0.0/24` approven
+3. Node `toolbox` (oder PVE-Host)
+4. Route `10.4.0.0/24` approven (frueheres Netz `10.1.0.0/24` obsolet)
 
 ### 2. DNS-Seite oeffnen
 
 1. `https://login.tailscale.com/admin/dns`
 2. `MagicDNS` eingeschaltet lassen
 
-### 3. Restricted Nameserver fuer `hs27.internal` anlegen
+### 3. Restricted Nameserver fuer `hs27.internal` aktualisieren
 
-1. `Add nameserver`
-2. Custom nameserver `100.82.26.53`
-3. Restrict to domain `hs27.internal`
-4. Speichern
+1. Bestehenden Eintrag fuer `hs27.internal` entfernen (zeigt noch auf `10.1.0.20`)
+2. `Add nameserver`
+3. Custom nameserver `10.4.0.20` (CT 100 LAN-IP, AdGuard)
+4. Restrict to domain `hs27.internal`
+5. Speichern
+
+Alternativ, wenn CT 100 eine Tailscale-IP hat (`100.82.26.53`): diese bevorzugen, da kein Subnet-Route-Dependency.
 
 ### 4. Kein globaler DNS-Cutover an dieser Stelle
 
 Noch nicht tun:
 
-- keinen globalen Nameserver fuer alles auf `100.82.26.53` setzen
+- keinen globalen Nameserver fuer alles auf `10.4.0.20` setzen
 - `Override DNS servers` nicht als blanket change einschalten, wenn nur `hs27.internal` gebraucht wird
 
 Der saubere erste Schritt ist wirklich nur:
 
 - `restricted nameserver`
 - Domain `hs27.internal`
-- Server `100.82.26.53`
+- Server `10.4.0.20` (oder Tailscale-IP falls verfuegbar)
 
 ## Validierung nach dem Admin-Schritt
 
@@ -132,14 +135,15 @@ resolvectl query ha.hs27.internal
 
 Minimal fertig:
 
-- Route approved
-- restricted nameserver gesetzt
+- Route `10.4.0.0/24` approved
+- restricted nameserver auf `10.4.0.20` (oder Tailscale-IP) gesetzt
 - ZenBook loest `ha.hs27.internal` erfolgreich ueber Tailscale-DNS auf
 
 Komfort fertig:
 
 - Handy loest `ha.hs27.internal` ueber Tailscale erfolgreich auf
 - `portal`, `ha`, `odoo`, `cloud`, `paperless` funktionieren ueber `hs27.internal`
+- Windows Hosts-Datei Workaround (`Update-HS27-DNS-Aliases.ps1`) deaktiviert oder entfernt
 
 ## Quellen
 
