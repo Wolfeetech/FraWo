@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updated_at": "2026-04-22",
+  "updated_at": "2026-05-31",
   "active_lane": "lane_c_security_pbs_infra",
   "operating_model": {
     "name": "professional_autopilot",
@@ -168,7 +168,7 @@
       "id": "pve_host_exposure_audit",
       "order": 3,
       "lane": "Lane C: Security/PBS/Infra",
-      "status": "active",
+      "status": "done",
       "manual": false,
       "delegable": true,
       "change_class": "gated_infra",
@@ -182,12 +182,12 @@
         "ss -tlnp",
         "cat /etc/pve/firewall/cluster.fw"
       ],
-      "last_verified_at": "2026-04-22",
+      "last_verified_at": "2026-05-31",
       "goal": "Reduce unnecessary PVE host service exposure without breaking storage-node operations.",
       "done_when": "NFS/RPC/management exposure is explicitly justified or restricted to trusted internal networks.",
       "blocked_by": [],
-      "next_operator_action": "No action unless storage or router credentials are needed.",
-      "next_codex_action": "Audit host listeners, propose minimal restrictions, and verify storage consumers."
+      "next_operator_action": "None.",
+      "next_codex_action": "Keep the current exposure model documented and only re-open if a new host service is introduced."
     },
     {
       "id": "ct100_storage_migration",

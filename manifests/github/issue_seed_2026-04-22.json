@@ -1,6 +1,6 @@
 ﻿{
   "schema_version": 1,
-  "updated_at": "2026-04-22",
+  "updated_at": "2026-05-31",
   "repository": "Wolfeetech/FraWo",
   "source": "odoo_project_board_plus_repo_runtime_ssot",
   "items": [
@@ -49,7 +49,8 @@
       "title": "[security] Audit PVE host exposed services",
       "lane": "Lane C: Security/PBS/Infra",
       "issue_number": 13,
-      "url": "https://github.com/Wolfeetech/FraWo/issues/13"
+      "url": "https://github.com/Wolfeetech/FraWo/issues/13",
+      "state": "closed"
     },
     {
       "key": "ct100_storage_migration",
