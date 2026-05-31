@@ -39,8 +39,9 @@ Diese Datei ist die kurze manuelle Unblock-Queue. Strategische Wahrheit steht im
 - `lane`: `Lane C: Security/PBS/Infra`
 - `github_issue`: `#9`
 - `goal`: Nach CT-100-Restore, Caddy-Fixes und Firewall-Aenderungen wieder einen nachweisbaren Sicherungsstand erzeugen.
-- `next_operator_action`: Wartungsfenster bestaetigen, falls ein grosser Backup-/Restore-Proof laenger laufen darf.
-- `next_codex_action`: Backup-Ziel pruefen, `ssd2tb` Fallback einrichten, rclone-Rate-Limit beruecksichtigen und Proof dokumentieren.
+- `current_state_2026-05-30`: PBS 4.2 installiert (10.4.0.25), SSH-Key deployed, Datastore local-backups (500GB /mnt/pbs-data) angelegt. In PVE als pbs-frawo eingebunden (API-Token pve@pbs!pve-token). Backup-Job daily-all-pbs 02:00 fuer alle VMs/CTs aktiv. Prune: 7d/4w/3m. rclone Google Drive Sync taeglich 05:00 nach gdrive:pbs-backups. ssd2tb INACTIVE (I/O-Error, Hardware pruefen).
+- `next_operator_action`: Ersten manuellen Backup-Test starten: PVE -> Datacenter -> Backup -> daily-all-pbs -> Run Now. PBS Root-Passwort in Vaultwarden speichern.
+- `next_codex_action`: Nach erstem Backup: Restore-Test an einer VM durchfuehren (Backup-Proof). ssd2tb Hardware untersuchen.
 
 ### `vm_firewall_hardening_reapply` [BLOCKED]
 
