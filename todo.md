@@ -52,13 +52,13 @@ Diese Datei ist die kurze manuelle Unblock-Queue. Strategische Wahrheit steht im
 - `next_operator_action`: Keine manuelle Aktion noetig, aber Reaktivierung nur als bewusstes Wartungsfenster freigeben.
 - `next_codex_action`: Regelpfad mit tcpdump/counters testen, ICMP/TCP fuer interne Frontdoor erlauben, dann erst produktiv setzen.
 
-### `pve_host_exposure_audit` [ACTIVE]
+### `pve_host_exposure_audit` [DONE]
 
 - `lane`: `Lane C: Security/PBS/Infra`
 - `github_issue`: `#13`
 - `goal`: NFS/RPC/SSH/PVE-UI Exposure des Proxmox Hosts auf notwendige Netze begrenzen.
-- `observed`: NFS/RPC Ports lauschen auf `0.0.0.0`; Cluster-Firewall ist aktiv, aber Host-Service-Exposure braucht explizite Pruefung.
-- `next_codex_action`: Host-Firewall-Regeln und NFS-Bind/Export-Modell pruefen, ohne Storage-Node-Betrieb zu brechen.
+- `fixed_2026-05-31`: socat:18069 (Odoo-Proxy) auf Tailscale-IP gebunden. netdata:19999 auf 127.0.0.1+Tailscale. node-exporter:9100 auf 127.0.0.1. NFS-Export /mnt/wolf-ee nur fuer 100.91.20.116 (Stockenweiler) - OK.
+- `next_operator_action`: Keine.
 
 
 - `lane`: `Lane C: Security/PBS/Infra`

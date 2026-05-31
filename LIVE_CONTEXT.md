@@ -38,7 +38,7 @@
 | ID | Name | IP | Rolle | Status |
 |----|------|----|-------|--------|
 | VM 210 | haos | 10.4.0.24 | Home Assistant OS (FraWo intern) | ✅ running |
-| VM 240 | PBS-FraWo | 10.4.0.25 (konfiguriert) | Proxmox Backup Server | ⚠️ kein Netzwerk |
+| VM 240 | PBS-FraWo | 10.4.0.25 | Proxmox Backup Server 4.2, Datastore 500GB, Backup 02:00, Cloud-Sync 05:00 | ✅ running |
 | VM 300 | nextcloud | 10.4.0.21 | Nextcloud + DB + Redis | ✅ running |
 | VM 330 | paperless | 10.4.0.23 | Paperless-ngx + Tika + Gotenberg | ✅ running |
 | CT 100 | toolbox | 10.4.0.20 | Caddy · Uptime Kuma · Jellyfin · AdGuard · Open-WebUI · cloudflared | ✅ running |
