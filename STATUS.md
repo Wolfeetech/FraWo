@@ -196,3 +196,23 @@ Empfehlung: Low-Shelf EQ -6dB bei 200Hz
 - T308 Pflegekasse-Antrag: bis 06.06 (Alois füllt Platzhalter aus)
 - T316/317/315 Weitere Messungen: bis 02.06
 - T100/T73 Wohnzimmer/Badewanne: HEUTE fällig (physisch)
+
+## Agent-Infrastruktur (Stand 2026-05-31)
+
+### Aktive n8n Workflows
+| Workflow | Funktion | Status |
+|----------|----------|--------|
+| Klausi-Bot (1fLw0n1e) | @Klausi in Odoo Chatter → Ollama → Antwort | AKTIV |
+| Backup-Alert (QyM1RKzZ) | Tägl. 08:00 PBS-Backup prüfen → Telegram | AKTIV |
+| RAG Indexer (xCShp2rt) | Tägl. 03:00 Odoo-Tasks → Qdrant | AKTIV |
+| Email-Agent (T335) | IMAP agent@ → GPT → Odoo Chatter | IN ARBEIT |
+
+### Odoo Inventar (neu 2026-05-31)
+- Kategorien: FraWo Equipment / Studio & Audio / IT & Server
+- 10 Geräte als Produkte (P90-P99)
+- T312 REW: 4 Messdateien angehängt
+
+### Agent-Roadmap
+1. Email-Agent aktivieren → Emails landen auto in Odoo
+2. Odoo Alias: task-312@frawo-tech.de → direkt in Task-Chatter
+3. Klausi-Bot: Equipment-Info automatisch aus Ollama/Internet
