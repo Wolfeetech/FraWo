@@ -226,3 +226,26 @@ Empfehlung: Low-Shelf EQ -6dB bei 200Hz
 
 **Best Practice Pflanzen-Journal:**
 Chatter-Nachricht im Pflanzen-Task = permanentes Journal. Kein extra Tool noetig.
+
+## Infra-Session 2026-05-31 (Abend)
+
+**CT 110 storage-node:**
+- Disk-File auf google-drive verloren (war nur im ssd2tb VFS-Cache, nie zu GDrive hochgeladen)
+- Restore aus Backup 2026-05-29 auf local-lvm läuft
+- rclone-Cache dauerhaft auf /var/cache/rclone-gdrive (NVMe) umgestellt
+
+**frawo-docker-1:**
+- Tailscale accept-routes persistent via systemd ExecStartPost
+- SSH-Stabilität: Routing über proxmox-anker Subnet funktioniert
+- Email-Agent (Onzd61umVKjjEc7O) + GrowBox-Visite-Analyse (h9p6IhpJTGf1vh9v) aktiviert
+
+**n8n Workflows (Stand 2026-05-31):**
+| ID | Name | Status |
+|----|------|--------|
+| QyM1RKzZ | Backup-Monitoring Alert | AKTIV |
+| Fg4w058x | Rating Test v5 | AKTIV |
+| R7suhQjb | GrowBox: taegl. Pflanzen-Review | AKTIV |
+| h9p6IhpJ | GrowBox: Visite-Analyse Auto-Tasks | AKTIV |
+| 1fLw0n1e | Klausi-Bot @Odoo-Chatter | AKTIV |
+| xCShp2rt | RAG: Odoo->Qdrant | AKTIV |
+| Onzd61um | Email-Agent agent@ | AKTIV |
