@@ -44,5 +44,4 @@ Changes that affect network, firewall, backup, storage, DNS, or public exposure 
 
 - GitHub issue `#7`: Rotate OpenClaw SSH key after repo cleanup.
 - GitHub issue `#8`: Reapply VM 210/220 firewall hardening safely.
-- GitHub issue `#13`: Audit PVE host exposed services.
 - GitHub issue `#15`: Authenticate `gh` and apply main branch protection.

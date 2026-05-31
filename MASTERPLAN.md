@@ -28,7 +28,6 @@ Der Homeserver 2027 ist die produktive Basis der **FraWo GbR**: ERP, Cloud, Doku
 - **Status**: hoechste operative Prioritaet nach dem CT-100-Restore.
 - **Aktive Projekte**:
   - VM 210/220 Firewall-Hardening korrekt testen, bevor `firewall=1` wieder produktiv wird
-  - PVE host NFS/RPC exposure auf vertrauenswuerdige interne Netze begrenzen
   - rclone rate-limit/backoff und lokales `ssd2tb` Backup-Fallback einrichten
   - CT 100 Disk kontrolliert von NVMe/local-lvm auf `ssd2tb` migrieren
   - UniFi/Tailscale Split-DNS finalisieren
@@ -117,7 +116,7 @@ Der Homeserver 2027 ist die produktive Basis der **FraWo GbR**: ERP, Cloud, Doku
 - No public exposure for internal apps.
 - Passwords and recovery secrets belong in Vaultwarden/offline material, never in repo docs.
 - VM-level firewall reactivation is a gated infra change and needs packet-level validation.
-- PVE host services listening on all interfaces, especially NFS/RPC, need restriction review.
+- PVE host exposure model (verified 2026-05-31): management stays on trusted LAN/Tailscale paths, node-exporter is loopback-only, netdata is loopback+Tailscale only, and NFS export `/mnt/wolf-ee` is restricted to `100.91.20.116`.
 - SSH authorized keys remain an audit item; OpenClaw infra key is the intended automation path.
 
 ## 6. Operator Shortcuts
