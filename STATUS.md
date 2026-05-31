@@ -343,3 +343,15 @@ Chatter-Nachricht im Pflanzen-Task = permanentes Journal. Kein extra Tool noetig
 - local-lvm 98% voll: PBS-Disk (500GB) auf Google Drive migrieren
 - PO7 löschen (Duplikat Intertechnik)
 - Beyma Chassis Modelle bestätigen (P121/P122)
+
+## Task-Audit 2026-05-31 (agent@)
+
+**12 Tasks geschlossen** (waren erledigt, fehlte nur Dokumentation):
+T344 ssd2tb Migration, T346 PVE Audit, T347 CT100 Migration, T348 Split-DNS,
+T345 VM Firewall, T349 Website HTTPS, T351 GitHub, T352 Nextcloud,
+T355 Odoo ACL, T356 Radio Backend, T358 PBS Rebuild, T359 SSH-Keys
+
+**Radio_Epic 2 (T220) erledigt:** 7 AzuraCast Streamer-Accounts angelegt
+(wolf, franz, dobby, marcin, flo, info, agent)
+
+**Beets installiert** auf CT130 (v1.6.0) — FLAC-Import startet, Permissions werden geprüft
