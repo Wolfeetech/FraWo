@@ -6,9 +6,9 @@ services:
     image: postgres:16-alpine
     container_name: frawo-radio-db
     environment:
-      POSTGRES_USER: radio
-      POSTGRES_PASSWORD: radio
-      POSTGRES_DB: frawo_radio
+      POSTGRES_USER: ${POSTGRES_USER:-radio}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set}
+      POSTGRES_DB: ${POSTGRES_DB:-frawo_radio}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
@@ -47,7 +47,7 @@ services:
     env_file:
       - .env
     environment:
-      DATABASE_URL: postgresql+asyncpg://radio:radio@postgres:5432/frawo_radio
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-radio}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-frawo_radio}
       REDIS_URL: redis://redis:6379/0
     ports:
       - "8000:8000"
@@ -86,7 +86,7 @@ services:
     image: grafana/grafana:latest
     container_name: frawo-radio-grafana
     environment:
-      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:?GRAFANA_ADMIN_PASSWORD must be set}
       - GF_USERS_ALLOW_SIGN_UP=false
     volumes:
       - grafana_data:/var/lib/grafana
