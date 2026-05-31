@@ -58,6 +58,7 @@ Diese Datei ist die kurze manuelle Unblock-Queue. Strategische Wahrheit steht im
 - `github_issue`: `#13`
 - `goal`: NFS/RPC/SSH/PVE-UI Exposure des Proxmox Hosts auf notwendige Netze begrenzen.
 - `fixed_2026-05-31`: socat:18069 (Odoo-Proxy) auf Tailscale-IP gebunden. netdata:19999 auf 127.0.0.1+Tailscale. node-exporter:9100 auf 127.0.0.1. NFS-Export /mnt/wolf-ee nur fuer 100.91.20.116 (Stockenweiler) - OK.
+- `exposure_model`: Host-Management nur ueber vertrauenswuerdige LAN/Tailscale-Pfade; Metrics lokal/Tailscale-only; NFS nur fuer expliziten Storage-Consumer.
 - `next_operator_action`: Keine.
 
 
