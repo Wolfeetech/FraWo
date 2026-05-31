@@ -1,5 +1,9 @@
 # AzuraCast Operations
 
+> [!IMPORTANT]
+> Runtime-SSOT fuer Radio: `OPERATIONS/RADIO_OPERATIONS_SSOT.md`
+
+
 ## Zweck
 
 AzuraCast ist der Radio- und Streaming-Betrieb.

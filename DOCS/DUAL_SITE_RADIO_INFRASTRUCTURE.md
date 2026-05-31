@@ -1,5 +1,11 @@
 # Dual-Site Radio Infrastructure
 
+> [!NOTE]
+> **Architektur-Referenzdokument (Planung).**
+> Runtime-Entscheidungen immer gegen `OPERATIONS/RADIO_OPERATIONS_SSOT.md` und Daily-Gate verifizieren.
+
+
+
 > **Status**: Implementation Active (2026-04-26)
 > **Domain Migration**: `radio.yourparty.tech` → `funk.frawo-tech.de`
 
