@@ -1,15 +1,19 @@
 ---
 pbs_vmid: 240
-pbs_admin_url: https://192.168.2.25:8007
+pbs_admin_url: https://10.4.0.25:8007
 pbs_datastore_device_hint: ""
-pbs_datastore_mountpoint: /srv/pbs-datastore
-pbs_datastore_name: hs27-pbs
-pbs_proxmox_storage_id: pbs
+pbs_datastore_mountpoint: /mnt/pbs-data
+pbs_datastore_name: local-backups
+pbs_proxmox_storage_id: pbs-frawo
 pbs_interim_mode: false
-pbs_expected_backing_storage: pbs-usb
-pbs_rebuild_state: blocked_wait_for_hardware_contract
-pbs_rebuild_notes:
-  - VM 240 exists but is stopped and storage-drifted.
-  - The current config incorrectly points both scsi0 and scsi1 at the disabled Proxmox storage `pbs-usb`.
-  - The guarded rebuild path requires a readable boot USB, an explicitly approved datastore device contract and a clean datastore prepare at `/srv/pbs-datastore`.
-  - Do not treat `/dev/sdb` as ready; the latest device inventory shows zero capacity / no medium.
+pbs_expected_backing_storage: local
+# State as of 2026-05-30: PBS 4.2 installed and active on VM 240 (10.4.0.25).
+# Datastore local-backups (500 GB at /mnt/pbs-data) created and registered in PVE
+# as pbs-frawo via API token pve@pbs!pve-token.
+# Backup job daily-all-pbs runs at 02:00 for all VMs/CTs; prune 7d/4w/3m.
+# rclone Google Drive sync (gdrive:pbs-backups) runs daily at 05:00.
+# ssd2tb (/mnt/ssd2tb) reported I/O-Error — hardware check required before
+# enabling as active rclone fallback target.
+# Next operator action: run first manual backup test and store PBS root
+# password in Vaultwarden.
+pbs_rebuild_state: active_pending_first_backup_proof
