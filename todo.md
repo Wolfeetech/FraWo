@@ -60,7 +60,6 @@ Diese Datei ist die kurze manuelle Unblock-Queue. Strategische Wahrheit steht im
 - `fixed_2026-05-31`: socat:18069 (Odoo-Proxy) auf Tailscale-IP gebunden. netdata:19999 auf 127.0.0.1+Tailscale. node-exporter:9100 auf 127.0.0.1. NFS-Export /mnt/wolf-ee nur fuer 100.91.20.116 (Stockenweiler) - OK.
 - `next_operator_action`: Keine.
 
-
 ### `openclaw_key_rotation_after_repo_cleanup` [BLOCKED]
 
 - `lane`: `Lane C: Security/PBS/Infra`
