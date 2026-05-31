@@ -355,3 +355,19 @@ T355 Odoo ACL, T356 Radio Backend, T358 PBS Rebuild, T359 SSH-Keys
 (wolf, franz, dobby, marcin, flo, info, agent)
 
 **Beets installiert** auf CT130 (v1.6.0) — FLAC-Import startet, Permissions werden geprüft
+
+## Infra-Abschluss (2026-05-31 Abend)
+
+**Homeserver "Sack zu":**
+- Keine kritischen Blocker mehr
+- PVE Firewall aktiv, n8n 8/8 Workflows aktiv
+- CT110 restored, alle 10 VMs/CTs online
+- PBS online, Backups laufen
+- Grafana Alerts konfiguriert
+- AzuraCast 7 DJ-Streamer-Accounts
+
+**Nächste Phase: Backup + Radio**
+- PBS Datastore proper einrichten
+- local-lvm Space (PBS-Disk migrieren)
+- Radio Show Tracklists kuratieren
+- Beets Musik-Import abschließen
