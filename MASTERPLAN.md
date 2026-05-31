@@ -28,7 +28,6 @@ Der Homeserver 2027 ist die produktive Basis der **FraWo GbR**: ERP, Cloud, Doku
 - **Status**: hoechste operative Prioritaet nach dem CT-100-Restore.
 - **Aktive Projekte**:
   - VM 210/220 Firewall-Hardening korrekt testen, bevor `firewall=1` wieder produktiv wird
-  - PVE host NFS/RPC exposure auf vertrauenswuerdige interne Netze begrenzen
   - rclone rate-limit/backoff und lokales `ssd2tb` Backup-Fallback einrichten
   - CT 100 Disk kontrolliert von NVMe/local-lvm auf `ssd2tb` migrieren
   - UniFi/Tailscale Split-DNS finalisieren
