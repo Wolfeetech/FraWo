@@ -172,3 +172,27 @@ Neue Idee → 💡 Brainstorm (stage 86) → Wolf-Freigabe
 - PBS VM 240: VNC Console öffnen, Netzwerk fixen → kein Backup!
 - Tailscale Route approven → löst ALLE Netzwerk-Probleme
 - Odoo Automation Action für Klausi-Bot (Einstellungen → Technisch → Automation)
+
+## Session 2026-05-31 (Fortsetzung) — REW + Infra
+
+**Erledigt:**
+- T312/313/314 REW Erstmessungen Anker: Anlage ausgewogen, Raummoden Bass +10dB
+- T309 Thomann-Lieferung vollständig geprüft
+- frawo-docker-1: Tailscale wiederhergestellt (Neustart via win-j1aenasv2fj SSH)
+- Tailscale Subnet Route 10.4.0.0/24 approved + accept-routes aktiv
+- sudo NOPASSWD für wolf auf frawo-docker-1 eingerichtet
+- CDROM aus apt sources entfernt
+
+**REW Messprotokoll Anker (2026-05-31):**
+| Position | Bass (80-250Hz) | Höhen (2-10kHz) | Bewertung |
+|----------|-----------------|-----------------|-----------|
+| Hauptposition | 76 dB | 71 dB | ✅ +5 dB |
+| Ohrhöhe | 83 dB | 80 dB | ✅ +3 dB |
+| Raum Mitte | 90 dB | 79 dB | ⚠️ +11 dB |
+Empfehlung: Low-Shelf EQ -6dB bei 200Hz
+
+**Nächste Schritte (Wolf manuell):**
+- T7 GbR Gründung: HEUTE fällig!
+- T308 Pflegekasse-Antrag: bis 06.06 (Alois füllt Platzhalter aus)
+- T316/317/315 Weitere Messungen: bis 02.06
+- T100/T73 Wohnzimmer/Badewanne: HEUTE fällig (physisch)
