@@ -58,7 +58,7 @@ Diese Datei ist die kurze manuelle Unblock-Queue. Strategische Wahrheit steht im
 - `github_issue`: `#13`
 - `goal`: NFS/RPC/SSH/PVE-UI Exposure des Proxmox Hosts auf notwendige Netze begrenzen.
 - `fixed_2026-05-31`: socat:18069 (Odoo-Proxy) auf Tailscale-IP gebunden. netdata:19999 auf 127.0.0.1+Tailscale. node-exporter:9100 auf 127.0.0.1. NFS-Export /mnt/wolf-ee nur fuer 100.91.20.116 (Stockenweiler) - OK.
-- `next_operator_action`: Keine.
+- `next_operator_action`: GitHub Issue `#13` schliessen.
 
 
 - `lane`: `Lane C: Security/PBS/Infra`
@@ -72,9 +72,10 @@ Diese Datei ist die kurze manuelle Unblock-Queue. Strategische Wahrheit steht im
 - `lane`: `Lane C: Security/PBS/Infra`
 - `github_issue`: `#12`
 - `goal`: `hs27.internal` loest sauber ohne Windows Hosts-Datei.
-- `blocked_by`: UniFi/Tailscale Admin-Aktion.
-- `next_operator_action`: UniFi DNS bzw. Tailscale restricted nameserver fuer `hs27.internal` final setzen.
-- `next_codex_action`: Danach `dig/nslookup` gegen `portal`, `odoo`, `cloud`, `vault`, `ha`, `paperless`, `media` pruefen.
+- `blocked_by`: Tailscale Admin-Aktion (DNS-Eintrag veraltet).
+- `current_state_2026-05-31`: Tailscale-Admin-DNS zeigt noch auf alte Toolbox-LAN-IP `10.1.0.20` (Netz migriert; CT 100 ist jetzt `10.4.0.20`). Windows Hosts-Datei Workaround (`scripts/tools/Update-HS27-DNS-Aliases.ps1`) aktiv.
+- `next_operator_action`: Tailscale Admin -> `https://login.tailscale.com/admin/dns` -> restricted nameserver fuer `hs27.internal` von `10.1.0.20` auf `10.4.0.20` aendern (oder Tailscale-IP `100.82.26.53` falls CT 100 Tailscale hat). Route `10.4.0.0/24` vorher approven falls noch ausstehend.
+- `next_codex_action`: Nach Admin-Schritt: `nslookup portal.hs27.internal`, `odoo`, `cloud`, `vault`, `ha`, `paperless`, `media` gegen `100.100.100.100` pruefen; danach Hosts-Datei-Workaround entfernen oder deaktivieren.
 
 ### `nextcloud_desktop_https_callback` [DONE]
 
@@ -82,7 +83,7 @@ Diese Datei ist die kurze manuelle Unblock-Queue. Strategische Wahrheit steht im
 - `github_issue`: `#10`
 - `goal`: Nextcloud Desktop Client Login ueber `https://cloud.hs27.internal` wieder verbinden.
 - `verified_2026-05-31`: Nextcloud Desktop Client laeuft (Prozess aktiv), N: Laufwerk gemappt, cloud.frawo-tech.de antwortet 302. Verbindung funktioniert.
-- `next_operator_action`: Keine.
+- `next_operator_action`: GitHub Issue `#10` schliessen.
 
 ### `ct100_storage_migration` [WATCH]
 
