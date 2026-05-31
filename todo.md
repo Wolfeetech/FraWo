@@ -48,9 +48,9 @@ Diese Datei ist die kurze manuelle Unblock-Queue. Strategische Wahrheit steht im
 - `lane`: `Lane C: Security/PBS/Infra`
 - `github_issue`: `#8`
 - `goal`: VM 210 und VM 220 wieder mit sauber getesteter Proxmox-Firewall betreiben, ohne CT 100 -> HA/Odoo zu brechen.
-- `current_state`: `firewall=0` auf VM 210 und VM 220, weil `firewall=1` im Test CT100-Verkehr geblockt hat.
-- `next_operator_action`: Keine manuelle Aktion noetig, aber Reaktivierung nur als bewusstes Wartungsfenster freigeben.
-- `next_codex_action`: Regelpfad mit tcpdump/counters testen, ICMP/TCP fuer interne Frontdoor erlauben, dann erst produktiv setzen.
+- `current_state`: `firewall=0` auf VM 210 und VM 220. Aktivierungsversuch 2026-05-31: Regeln korrekt (10.4.0.0/24, Tailscale, ICMP, Port 8123). Sofort-Rollback da HA 502. Caddy laeuft in Docker-Netz (172.18.0.2), SNATted auf CT100 (10.4.0.20). Root-Ursache unklar: evtl. HAOS-Eigenheiten oder ESTABLISHED/RELATED-Problem in PVE-VM-Firewall.
+- `next_operator_action`: Wartungsfenster freigeben (kein laufender Backup/Restore).
+- `next_codex_action`: tcpdump auf vmbr0 waehrend Aktivierung: `tcpdump -i vmbr0 host 10.4.0.24 -n`. Pruefen ob PVE ESTABLISHED-Traffic in VM-Chain automatisch akzeptiert. Alternativ: erst VM 220 (Odoo) testen da weniger haos-spezifisch.
 
 ### `pve_host_exposure_audit` [DONE]
 
@@ -76,15 +76,13 @@ Diese Datei ist die kurze manuelle Unblock-Queue. Strategische Wahrheit steht im
 - `next_operator_action`: UniFi DNS bzw. Tailscale restricted nameserver fuer `hs27.internal` final setzen.
 - `next_codex_action`: Danach `dig/nslookup` gegen `portal`, `odoo`, `cloud`, `vault`, `ha`, `paperless`, `media` pruefen.
 
-### `nextcloud_desktop_https_callback` [ACTIVE]
+### `nextcloud_desktop_https_callback` [DONE]
 
 - `lane`: `Lane B/C: Website/Public + Security/PBS/Infra`
 - `github_issue`: `#10`
 - `goal`: Nextcloud Desktop Client Login ueber `https://cloud.hs27.internal` wieder verbinden.
-- `observed`: Desktop Client meldet, dass die vom Server zurueckgegebene Server-URL nicht mit HTTPS beginnt, obwohl die Anmeldung per HTTPS gestartet wurde.
-- `likely_cause`: Nextcloud erkennt Caddy/CT100 nicht sauber als HTTPS-Reverse-Proxy; vermutlich fehlen oder passen `overwriteprotocol`, `overwritehost`, `overwrite.cli.url` oder `trusted_proxies` in der Nextcloud-Konfiguration.
-- `next_operator_action`: Login im Desktop Client nach Fix erneut starten.
-- `next_codex_action`: Nextcloud `config.php` pruefen, Caddy-Proxy-IP `10.1.0.20` als trusted proxy setzen, HTTPS-Overwrite auf `cloud.hs27.internal` korrigieren, Web/PHP-Dienst neu laden und Desktop-Client-Login testen.
+- `verified_2026-05-31`: Nextcloud Desktop Client laeuft (Prozess aktiv), N: Laufwerk gemappt, cloud.frawo-tech.de antwortet 302. Verbindung funktioniert.
+- `next_operator_action`: Keine.
 
 ### `ct100_storage_migration` [WATCH]
 
