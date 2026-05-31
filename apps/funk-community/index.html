@@ -3,229 +3,1255 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>FraWo Funk — Community</title>
+<title>FraWo Funk — Independent Hi-Fi Broadcast</title>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
 :root {
-  --bg: #0a0a0a;
-  --surface: #141414;
-  --border: #222;
-  --accent: #e63946;
-  --accent2: #457b9d;
-  --text: #f1f1f1;
-  --muted: #888;
-  --up: #4ade80;
-  --down: #f87171;
-  --radius: 8px;
-  --font: 'Inter', system-ui, -apple-system, sans-serif;
+  --bg: #050505; /* Deep Space Black */
+  --surface: rgba(20, 20, 20, 0.4); /* Glass Grey */
+  --border: rgba(255, 255, 255, 0.05); /* Ultra-thin white outline */
+  --border-active: rgba(255, 255, 255, 0.15);
+  --emerald: #10B981; /* Primary Accent (ON AIR / Play) */
+  --violet: #8B5CF6; /* Secondary Accent (Links / Supporter) */
+  --dark-violet: #4c1d95; /* Inactive states */
+  --text: #ffffff; /* Pure White */
+  --muted: #aaaaaa; /* Muted Silver */
+  --radius: 2px; /* Brutalist sharp corners */
+  --font: 'Outfit', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
 }
+
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100vh; }
+body { 
+  background: var(--bg); 
+  color: var(--text); 
+  font-family: var(--font); 
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* BACKGROUND AMBIENT GLOW */
+.ambient-glow {
+  position: fixed;
+  top: -10%;
+  left: -10%;
+  width: 120%;
+  height: 120%;
+  z-index: -1;
+  pointer-events: none;
+  background: 
+    radial-gradient(circle at 20% 30%, rgba(16, 185, 129, 0.02) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(139, 92, 246, 0.03) 0%, transparent 60%);
+  filter: blur(140px);
+}
 
 /* HEADER */
 header {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 18px 28px; border-bottom: 1px solid var(--border);
-  position: sticky; top: 0; background: var(--bg); z-index: 50;
+  padding: 24px 40px; 
+  border-bottom: 1px solid var(--border);
+  background: rgba(5, 5, 5, 0.85); 
+  backdrop-filter: blur(20px);
+  position: sticky; top: 0; z-index: 100;
 }
-.logo { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; }
-.logo span { color: var(--accent); }
+.logo-area {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.logo { 
+  font-size: 24px; 
+  font-weight: 900; 
+  letter-spacing: -1.5px; 
+  text-transform: uppercase;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--emerald);
+  transition: all 0.3s ease;
+}
+.logo:hover {
+  color: var(--emerald);
+  text-shadow: 0 0 15px rgba(16, 185, 129, 0.6);
+}
+.logo span { 
+  color: var(--text); 
+  -webkit-text-stroke: 0;
+}
+.live-badge-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 .live-pill {
-  display: flex; align-items: center; gap: 8px; font-size: 12px;
-  font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--muted);
+  display: flex; align-items: center; gap: 8px; font-size: 11px;
+  font-family: var(--font-mono);
+  font-weight: 700; letter-spacing: 2px; text-transform: uppercase; 
+  border: 1px solid var(--border);
+  padding: 4px 10px;
 }
-.live-dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; }
-.live-dot.on { animation: blink 1.4s infinite; }
-@keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0.2; } }
-.listener-count { font-size: 13px; color: var(--muted); }
+.live-dot { width: 6px; height: 6px; background: var(--muted); border-radius: 50%; }
+.live-dot.on { 
+  background: var(--emerald); 
+  box-shadow: 0 0 10px var(--emerald);
+  animation: blink 1.2s infinite; 
+}
+@keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+
+.hifi-badge {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--emerald);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  padding: 4px 10px;
+  letter-spacing: 1px;
+}
 
 /* LAYOUT */
-main { max-width: 1140px; margin: 0 auto; padding: 32px 24px; display: grid; grid-template-columns: 1fr 340px; gap: 32px; }
-@media (max-width: 900px) { main { grid-template-columns: 1fr; } }
-
-/* NOW PLAYING */
-.now-playing {
-  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
-  padding: 32px; display: flex; gap: 28px; align-items: flex-start;
+main { 
+  max-width: 1300px; 
+  margin: 0 auto; 
+  padding: 40px 40px; 
+  display: grid; 
+  grid-template-columns: 1fr 380px; 
+  gap: 40px; 
 }
-.track-art {
-  width: 120px; height: 120px; border-radius: 6px; object-fit: cover; flex-shrink: 0;
-  background: #1a1a1a;
+@media (max-width: 1024px) { 
+  main { grid-template-columns: 1fr; padding: 24px 20px; } 
+  header { padding: 18px 20px; }
 }
-.track-info { flex: 1; min-width: 0; }
-.station-label { font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
-.track-title { font-size: 24px; font-weight: 700; line-height: 1.2; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.track-artist { font-size: 15px; color: var(--muted); margin-bottom: 20px; }
-.progress-bar { height: 3px; background: var(--border); border-radius: 2px; margin-bottom: 20px; overflow: hidden; }
-.progress-fill { height: 100%; background: var(--accent); transition: width 1s linear; }
 
-/* PLAYER */
-.player-row { display: flex; align-items: center; gap: 14px; }
+/* SIDEBAR / PANELS GENERAL */
+.panel {
+  background: var(--surface);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border);
+  padding: 32px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+.panel:hover {
+  border-color: var(--border-active);
+}
+
+.panel-header {
+  font-family: var(--font);
+  font-weight: 900;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 24px;
+  color: var(--text);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* VINYL RECORD PLAYER DECK */
+.player-deck {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+.deck-top {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 32px;
+}
+@media (max-width: 600px) {
+  .deck-top { grid-template-columns: 1fr; justify-items: center; }
+}
+
+/* VINYL DISK GRAPHIC */
+.vinyl-container {
+  width: 240px;
+  height: 240px;
+  background: #111;
+  border-radius: 4px; /* Brutalist frame around record */
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+}
+.vinyl-record {
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #333 4%, #000 12%, #111 20%, #000 30%, #111 40%, #000 50%, #151515 60%, #000 70%, #111 80%, #000 90%, #050505 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+}
+.vinyl-grooves {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  border-radius: 50%;
+  background: repeating-radial-gradient(circle, transparent, transparent 1.5px, rgba(255,255,255,0.03) 2px, transparent 2.5px);
+  pointer-events: none;
+}
+.vinyl-shine {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  border-radius: 50%;
+  background: conic-gradient(from 45deg, transparent 40%, rgba(255,255,255,0.04) 45%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 55%, transparent 60%, transparent 90%, rgba(255,255,255,0.04) 95%, rgba(255,255,255,0.08) 100%, rgba(255,255,255,0.04) 5%);
+  pointer-events: none;
+}
+.vinyl-label {
+  width: 86px;
+  height: 86px;
+  border-radius: 50%;
+  border: 2px solid #000;
+  background: var(--bg);
+  overflow: hidden;
+  position: relative;
+  z-index: 10;
+}
+.vinyl-label img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.vinyl-center-hole {
+  width: 8px;
+  height: 8px;
+  background: #222;
+  border-radius: 50%;
+  position: absolute;
+  z-index: 15;
+  box-shadow: inset 0 2px 2px rgba(0,0,0,0.8);
+}
+
+/* THE TONEARM */
+.tonearm {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  width: 30px;
+  height: 180px;
+  pointer-events: none;
+  transform-origin: 15px 15px;
+  transform: rotate(-15deg);
+  transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+  z-index: 20;
+}
+.tonearm-pivot {
+  width: 30px;
+  height: 30px;
+  background: #333;
+  border: 2px solid #555;
+  border-radius: 50%;
+  position: absolute;
+  top: 0; left: 0;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.5);
+}
+.tonearm-pole {
+  width: 4px;
+  height: 120px;
+  background: linear-gradient(to right, #888, #555, #888);
+  position: absolute;
+  top: 25px; left: 13px;
+}
+.tonearm-head {
+  width: 10px;
+  height: 25px;
+  background: #222;
+  border: 1px solid #444;
+  position: absolute;
+  top: 140px; left: 10px;
+  transform: rotate(20deg);
+  transform-origin: center top;
+}
+.tonearm-needle-light {
+  width: 3px;
+  height: 3px;
+  background: var(--emerald);
+  position: absolute;
+  bottom: 2px;
+  left: 3px;
+  box-shadow: 0 0 5px var(--emerald);
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+.tonearm.active {
+  transform: rotate(25deg);
+}
+.tonearm.active .tonearm-needle-light {
+  opacity: 1;
+}
+
+/* TRACK INFO & PLAYERCONTROLS */
+.track-details {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+}
+.station-tag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  margin-bottom: 12px;
+}
+.track-title {
+  font-size: 32px;
+  font-weight: 900;
+  letter-spacing: -1px;
+  text-transform: uppercase;
+  line-height: 1.1;
+  margin-bottom: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.track-artist {
+  font-size: 16px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 28px;
+}
+
+/* PLAY CONTROL ROW */
+.player-controls {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
 .play-btn {
-  width: 48px; height: 48px; border-radius: 50%; border: none; cursor: pointer;
-  background: var(--accent); color: #fff; font-size: 18px; display: flex; align-items: center; justify-content: center;
-  transition: transform .15s, background .15s; flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+  border: 1px solid var(--emerald);
+  background: transparent;
+  color: var(--emerald);
+  font-size: 20px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.play-btn:hover { transform: scale(1.08); background: #c1121f; }
-.play-btn.loading { background: var(--muted); }
-.volume-wrap { display: flex; align-items: center; gap: 8px; flex: 1; }
-.vol-icon { color: var(--muted); font-size: 14px; }
-input[type=range] { flex: 1; height: 4px; accent-color: var(--accent); cursor: pointer; }
+.play-btn:hover {
+  background: var(--emerald);
+  color: #000;
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+}
+.play-btn.loading {
+  border-color: var(--muted);
+  color: var(--muted);
+}
+.volume-slider-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  max-width: 200px;
+}
+.vol-text {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+}
+input[type=range] {
+  flex: 1;
+  height: 2px;
+  accent-color: var(--emerald);
+  background: #222;
+  outline: none;
+  cursor: pointer;
+  -webkit-appearance: none;
+}
+input[type=range]::-webkit-slider-runnable-track {
+  height: 2px;
+  background: #222;
+}
 
-/* VOTE SECTION */
-.vote-section { margin-top: 24px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-.vote-label { font-size: 13px; color: var(--muted); }
-.vote-btn {
-  display: flex; align-items: center; gap: 6px; padding: 8px 16px;
-  border-radius: 20px; border: 1px solid var(--border); background: transparent;
-  color: var(--text); cursor: pointer; font-size: 14px; font-weight: 600;
-  transition: all .15s;
+/* STUDIO OSCILLOSCOPE CANVAS */
+.visualizer-card {
+  margin-top: 12px;
+  padding: 16px;
+  background: #000000;
+  border: 1px solid var(--border);
 }
-.vote-btn:hover { border-color: var(--muted); }
-.vote-btn.active-up { border-color: var(--up); background: rgba(74,222,128,.1); color: var(--up); }
-.vote-btn.active-down { border-color: var(--down); background: rgba(248,113,113,.1); color: var(--down); }
-.vote-count { font-size: 13px; color: var(--muted); }
+.oscilloscope-canvas {
+  width: 100%;
+  height: 80px;
+  display: block;
+  background: #000;
+}
 
-/* REQUEST */
-.request-section { margin-top: 24px; }
-.section-title { font-size: 13px; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; font-weight: 600; }
-.request-form { display: flex; gap: 8px; }
-.request-input {
-  flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius);
-  padding: 10px 14px; color: var(--text); font-size: 14px;
+/* TRACK RATING DECK */
+.rating-deck {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 24px;
+  border-top: 1px solid var(--border);
+  padding-top: 24px;
 }
-.request-input:focus { outline: none; border-color: var(--accent2); }
-.request-btn {
-  background: var(--accent2); border: none; border-radius: var(--radius); padding: 10px 18px;
-  color: #fff; font-size: 14px; font-weight: 600; cursor: pointer; transition: background .15s;
+.rating-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 2px;
 }
-.request-btn:hover { background: #1d3557; }
-.request-results { margin-top: 8px; }
-.request-item {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 10px 12px; border: 1px solid var(--border); border-radius: 6px; margin-bottom: 6px;
+.rating-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 13px;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.rating-btn:hover {
+  border-color: var(--border-active);
+}
+.rating-btn.active-up {
+  border-color: var(--emerald);
+  color: var(--emerald);
+  background: rgba(16, 185, 129, 0.05);
+}
+.rating-btn.active-down {
+  border-color: var(--violet);
+  color: var(--violet);
+  background: rgba(139, 92, 246, 0.05);
+}
+.rating-status {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--emerald);
+  margin-left: 8px;
+}
+
+/* SONG WISH SECTION */
+.wish-deck {
+  margin-top: 32px;
+}
+.wish-form {
+  display: flex;
+  gap: 1px; /* Brutalist seamless look */
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+.wish-input {
+  flex: 1;
+  background: #080808;
+  border: none;
+  padding: 12px 16px;
+  color: var(--text);
+  font-size: 14px;
+  font-family: var(--font);
+}
+.wish-input:focus {
+  outline: none;
+  background: #0d0d0d;
+}
+.wish-btn {
+  background: #111;
+  border: none;
+  border-left: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  padding: 0 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.wish-btn:hover {
+  background: var(--emerald);
+  color: #000;
+}
+.wish-results {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.wish-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: rgba(255,255,255,0.01);
+  border: 1px solid var(--border);
   font-size: 13px;
 }
-.request-item-info { min-width: 0; }
-.request-item-title { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.request-item-artist { color: var(--muted); font-size: 12px; }
-.req-submit { background: none; border: 1px solid var(--accent2); border-radius: 4px; padding: 4px 10px; color: var(--accent2); font-size: 12px; cursor: pointer; white-space: nowrap; }
-.req-submit:hover { background: var(--accent2); color: #fff; }
-.req-msg { font-size: 12px; color: var(--up); margin-top: 4px; }
+.wish-item-info { min-width: 0; }
+.wish-item-title { font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-transform: uppercase; }
+.wish-item-artist { color: var(--muted); font-size: 11px; margin-top: 2px; }
+.wish-submit-btn {
+  background: transparent;
+  border: 1px solid var(--emerald);
+  color: var(--emerald);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.wish-submit-btn:hover {
+  background: var(--emerald);
+  color: #000;
+}
 
-/* SIDEBAR */
-aside { display: flex; flex-direction: column; gap: 20px; }
+/* CHATBOX */
+.chat-deck {
+  display: flex;
+  flex-direction: column;
+  height: 480px;
+}
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+  scroll-behavior: smooth;
+}
+.chat-messages::-webkit-scrollbar {
+  width: 4px;
+}
+.chat-messages::-webkit-scrollbar-track {
+  background: transparent;
+}
+.chat-messages::-webkit-scrollbar-thumb {
+  background: var(--border);
+}
 
-/* CHAT */
-.chat-box {
-  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
-  display: flex; flex-direction: column; height: 440px;
+/* IRC STYLE CHAT MESSAGES */
+.chat-msg {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.5;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
 }
-.chat-header { padding: 16px 18px; border-bottom: 1px solid var(--border); font-size: 13px; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); font-weight: 600; }
-.chat-messages { flex: 1; overflow-y: auto; padding: 14px 18px; display: flex; flex-direction: column; gap: 10px; scroll-behavior: smooth; }
-.chat-msg { font-size: 13px; line-height: 1.4; }
-.chat-msg-name { font-weight: 600; color: var(--accent2); margin-right: 6px; }
-.chat-msg-text { color: var(--text); word-break: break-word; }
-.chat-form { padding: 12px 14px; border-top: 1px solid var(--border); display: flex; gap: 8px; }
-.chat-name-input, .chat-text-input {
-  background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 8px 12px;
-  color: var(--text); font-size: 13px;
+.chat-msg-time {
+  color: rgba(255, 255, 255, 0.2);
+  flex-shrink: 0;
 }
-.chat-name-input { width: 90px; flex-shrink: 0; }
-.chat-text-input { flex: 1; }
-.chat-name-input:focus, .chat-text-input:focus { outline: none; border-color: var(--accent2); }
-.chat-send {
-  background: var(--accent2); border: none; border-radius: 6px; padding: 8px 14px;
-  color: #fff; font-size: 13px; font-weight: 600; cursor: pointer; transition: background .15s;
+.chat-msg-author {
+  font-weight: 700;
+  color: var(--muted);
+  flex-shrink: 0;
 }
-.chat-send:hover { background: #1d3557; }
+.chat-msg-author.vip {
+  color: var(--emerald);
+}
+.chat-msg-author.supporter {
+  color: var(--violet);
+  text-shadow: 0 0 8px rgba(139, 92, 246, 0.3);
+}
+.chat-msg-badge {
+  font-size: 9px;
+  color: var(--violet);
+  font-weight: 900;
+  margin-right: 4px;
+}
+.chat-msg-text {
+  color: var(--text);
+  word-break: break-word;
+}
 
-/* HISTORY */
-.history-box {
-  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
-  padding: 18px;
+.chat-form {
+  display: flex;
+  gap: 8px;
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
 }
-.history-item { display: flex; gap: 12px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); }
-.history-item:last-child { border-bottom: none; }
-.history-num { font-size: 11px; color: var(--muted); width: 20px; flex-shrink: 0; }
+.chat-text-input {
+  flex: 1;
+  background: #080808;
+  border: 1px solid var(--border);
+  padding: 10px 14px;
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 13px;
+}
+.chat-text-input:focus {
+  outline: none;
+  border-color: var(--border-active);
+}
+.chat-send-btn {
+  background: #111;
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  padding: 0 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.chat-send-btn:hover {
+  border-color: var(--emerald);
+  color: var(--emerald);
+}
+
+/* COLLECTIVE SUPPORT WIDGET */
+.support-widget {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.support-transparency {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.support-transparency strong {
+  color: var(--text);
+}
+/* ASCII / MINIMAL PROGRESS BAR */
+.progress-card {
+  background: #000;
+  border: 1px solid var(--border);
+  padding: 16px;
+  font-family: var(--font-mono);
+}
+.progress-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  margin-bottom: 8px;
+  color: var(--muted);
+}
+.progress-bar-container {
+  height: 4px;
+  background: #111;
+  position: relative;
+  margin-bottom: 8px;
+}
+.progress-bar-fill {
+  height: 100%;
+  background: var(--emerald);
+  box-shadow: 0 0 8px var(--emerald);
+}
+.progress-percent {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--emerald);
+  text-align: right;
+}
+
+/* SPONSOR TIERS GRID */
+.sponsor-tiers {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+.sponsor-tier-card {
+  border: 1px solid var(--border);
+  background: transparent;
+  padding: 14px 8px;
+  text-align: center;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+.sponsor-tier-card:hover {
+  border-color: var(--emerald);
+  background: rgba(16, 185, 129, 0.03);
+}
+.sponsor-tier-card:nth-child(2):hover {
+  border-color: var(--violet);
+  background: rgba(139, 92, 246, 0.03);
+}
+.sponsor-tier-card:nth-child(3):hover {
+  border-color: var(--text);
+  background: rgba(255, 255, 255, 0.03);
+}
+.tier-amount {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.tier-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--muted);
+}
+
+.supporter-activation {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--violet);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  align-self: center;
+  text-decoration: underline;
+  transition: opacity 0.2s;
+}
+.supporter-activation:hover {
+  opacity: 0.8;
+}
+
+/* HISTROY DECK */
+.history-deck {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.history-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 12px;
+}
+.history-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+.history-num {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--border-active);
+  width: 20px;
+}
 .history-info { min-width: 0; }
-.history-title { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.history-artist { font-size: 11px; color: var(--muted); }
+.history-title {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.history-artist {
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 2px;
+}
+
+/* BRAND SPOTLIGHT ADVERTISING CARD */
+.brand-spotlight {
+  background: linear-gradient(135deg, rgba(20, 20, 20, 0.4), rgba(10, 10, 10, 0.6));
+  border: 1px dashed rgba(139, 92, 246, 0.3); /* Electric Violet border theme */
+}
+.brand-spotlight:hover {
+  border-color: rgba(139, 92, 246, 0.6);
+}
+.spotlight-text {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--muted);
+  margin-bottom: 20px;
+}
+.spotlight-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--violet);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-decoration: none;
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  padding: 8px 16px;
+  transition: all 0.2s;
+}
+.spotlight-cta:hover {
+  background: var(--violet);
+  color: #fff;
+  box-shadow: 0 0 15px rgba(139, 92, 246, 0.4);
+}
+
+/* REGISTRATION MODAL overlay */
+.modal-overlay {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(24px);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1000;
+  transition: opacity 0.4s ease;
+}
+.modal-content {
+  background: #000;
+  border: 1px solid var(--border);
+  padding: 48px;
+  width: 100%;
+  max-width: 480px;
+  animation: modalSlide 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes modalSlide {
+  from { transform: translateY(30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.modal-title {
+  font-size: 28px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -1.5px;
+  margin-bottom: 12px;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--emerald);
+}
+.modal-text {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-bottom: 32px;
+}
+.form-group {
+  margin-bottom: 24px;
+}
+.form-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.form-input {
+  width: 100%;
+  background: #0a0a0a;
+  border: 1px solid var(--border);
+  padding: 12px 16px;
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 14px;
+}
+.form-input:focus {
+  outline: none;
+  border-color: var(--emerald);
+}
+.modal-submit-btn {
+  width: 100%;
+  background: transparent;
+  border: 1px solid var(--emerald);
+  color: var(--emerald);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.modal-submit-btn:hover {
+  background: var(--emerald);
+  color: #000;
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+}
+.modal-skip-btn {
+  width: 100%;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  padding: 10px;
+  cursor: pointer;
+  margin-top: 12px;
+  transition: all 0.2s;
+}
+.modal-skip-btn:hover {
+  border-color: var(--border-active);
+  color: var(--text);
+}
+
+/* USER STATUS CARD AT TOP OF SIDEBAR */
+.status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.01);
+  padding: 14px 20px;
+  margin-bottom: 24px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+.status-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.status-tag {
+  background: #333;
+  color: #fff;
+  padding: 2px 8px;
+  font-weight: 700;
+  font-size: 9px;
+  text-transform: uppercase;
+}
+.status-tag.vip {
+  background: var(--emerald);
+  color: #000;
+}
+.status-tag.supporter {
+  background: var(--violet);
+  color: #fff;
+}
+.status-action-btn {
+  background: none;
+  border: none;
+  color: var(--muted);
+  text-decoration: underline;
+  cursor: pointer;
+}
+.status-action-btn:hover {
+  color: var(--emerald);
+}
 
 audio { display: none; }
+
+/* ==========================================================================
+   ADVANCED MOBILE RESPONSIVENESS & BRUTALIST POLISH (BEST PRACTICE)
+   ========================================================================== */
+
+/* Clean Brutalist Sharp Edges Globally */
+.panel, .play-btn, .wish-form, .wish-input, .wish-btn, .chat-text-input, 
+.chat-send-btn, .sponsor-tier-card, .rating-btn, .form-input, 
+.modal-submit-btn, .modal-skip-btn, .modal-content, .progress-card, .wish-item {
+  border-radius: 0 !important; /* Razor-sharp brutalist corners */
+}
+
+/* Tablet & Mobile Layout Refinements */
+@media (max-width: 768px) {
+  main {
+    padding: 16px 12px;
+    gap: 24px;
+  }
+  .panel {
+    padding: 20px 16px;
+  }
+  .deck-top {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    justify-items: center;
+    text-align: center;
+  }
+  .track-details {
+    align-items: center;
+  }
+  .player-controls {
+    justify-content: center;
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .volume-slider-wrap {
+    max-width: 100%;
+    width: 100%;
+  }
+  .chat-deck {
+    height: 380px; /* Shorter chat deck on mobile to prevent infinite scrolling bugs */
+  }
+  .sponsor-tiers {
+    gap: 8px;
+  }
+  .tier-amount {
+    font-size: 14px;
+  }
+}
+
+/* Detailed Turntable & UI Scaling for Mobile Phones */
+@media (max-width: 480px) {
+  header {
+    padding: 16px 16px;
+  }
+  .logo {
+    font-size: 18px;
+    letter-spacing: -1px;
+  }
+  .hifi-badge {
+    font-size: 9px;
+    padding: 2px 6px;
+  }
+  .track-title {
+    font-size: 24px;
+    letter-spacing: -0.5px;
+  }
+  .track-artist {
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+  
+  /* Proportional Turntable Shrinking */
+  .vinyl-container {
+    width: 180px;
+    height: 180px;
+  }
+  .vinyl-record {
+    width: 164px;
+    height: 164px;
+  }
+  .vinyl-label {
+    width: 64px;
+    height: 64px;
+  }
+  .tonearm {
+    width: 20px;
+    height: 135px;
+    top: 10px;
+    right: 10px;
+    transform-origin: 10px 10px;
+  }
+  .tonearm-pivot {
+    width: 20px;
+    height: 20px;
+  }
+  .tonearm-pole {
+    width: 3px;
+    height: 90px;
+    left: 8px;
+    top: 18px;
+  }
+  .tonearm-head {
+    width: 8px;
+    height: 18px;
+    top: 108px;
+    left: 6px;
+  }
+  .tonearm.active {
+    transform: rotate(26deg);
+  }
+  
+  /* Modal responsive spacing */
+  .modal-content {
+    padding: 32px 20px;
+  }
+  .modal-title {
+    font-size: 22px;
+  }
+  .progress-card {
+    padding: 14px 8px;
+  }
+  .progress-meta {
+    font-size: 10px;
+  }
+}
 </style>
 </head>
 <body>
 
-<header>
-  <div class="logo">FraWo<span>Funk</span></div>
-  <div class="live-pill">
-    <div class="live-dot" id="liveDot"></div>
-    <span id="liveLabel">Lädt...</span>
+<div class="ambient-glow"></div>
+
+<!-- LEADS GENERATION MODAL -->
+<div id="registerModal" class="modal-overlay" style="display: none;">
+  <div class="modal-content">
+    <div class="modal-title" id="modalTitle">VIP ACCESS // COMMUNITY</div>
+    <p class="modal-text" id="modalText">Registrieren Sie sich kostenlos, um den exklusiven **Hi-Fi 320kbps Stream** freizuschalten, Track-Wünsche zu senden und live im Chat zu interagieren. Als anonymer Gast hören Sie den Standard-Stream in 192kbps.</p>
+    
+    <!-- REGISTRATION FORM -->
+    <form id="registerForm" onsubmit="registerUser(event)">
+      <div class="form-group">
+        <label for="regName" class="form-label">Wunsch-Nickname *</label>
+        <input type="text" id="regName" class="form-input" required placeholder="z. B. DJ_BODENSEE" maxlength="30">
+      </div>
+      <div class="form-group">
+        <label for="regEmail" class="form-label">E-Mail-Adresse (Verifizierung & Event-Updates)</label>
+        <input type="email" id="regEmail" class="form-input" placeholder="ihre.adresse@firma.de">
+      </div>
+      <button type="submit" class="modal-submit-btn">Kollektiv beitreten</button>
+      <a href="#" onclick="showLoginForm(event)" style="display:block; text-align:center; margin-top:20px; font-family:var(--font-mono); font-size:10px; color:var(--violet); text-transform:uppercase; letter-spacing:1px; text-decoration:underline;">Bereits registriert? Zugangscode eingeben</a>
+    </form>
+
+    <!-- LOGIN FORM (TOKEN RECOVERY) -->
+    <form id="loginForm" onsubmit="loginUser(event)" style="display: none;">
+      <div class="form-group">
+        <label for="loginToken" class="form-label">Zugangscode (FW-XXXXXX) *</label>
+        <input type="text" id="loginToken" class="form-input" required placeholder="FW-XXXXXX" maxlength="9" style="text-transform: uppercase;">
+      </div>
+      <div id="loginError" style="color:#EF4444; font-family:var(--font-mono); font-size:11px; margin-bottom:16px; display:none; text-transform:uppercase; letter-spacing:1px;"></div>
+      <button type="submit" class="modal-submit-btn">Session wiederherstellen</button>
+      <a href="#" onclick="showRegisterForm(event)" style="display:block; text-align:center; margin-top:20px; font-family:var(--font-mono); font-size:10px; color:var(--violet); text-transform:uppercase; letter-spacing:1px; text-decoration:underline;">Noch keinen Zugangscode? Registrieren</a>
+    </form>
+
+    <button class="modal-skip-btn" id="modalSkipBtn" onclick="skipRegistration()">Als Gast fortfahren (Eingeschränkt // 192kbps)</button>
   </div>
-  <div class="listener-count" id="listenerCount"></div>
+</div>
+
+<header>
+  <div class="logo-area">
+    <div class="logo">FraWo<span>Funk</span></div>
+    <div class="hifi-badge">320 KBPS AAC // HI-FI</div>
+  </div>
+  <div class="live-badge-wrap">
+    <div class="live-pill">
+      <span class="live-dot" id="liveDot"></span>
+      <span id="liveLabel">OFFLINE</span>
+    </div>
+  </div>
 </header>
 
 <main>
-  <!-- LEFT: Player + Voting + Requests -->
-  <section>
-    <div class="now-playing">
-      <img class="track-art" id="trackArt" src="" alt="" onerror="this.style.visibility='hidden'">
-      <div class="track-info">
-        <div class="station-label">Jetzt läuft</div>
-        <div class="track-title" id="trackTitle">Lädt...</div>
-        <div class="track-artist" id="trackArtist"></div>
-        <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
-        <div class="player-row">
-          <button class="play-btn" id="playBtn" title="Play/Pause">▶</button>
-          <div class="volume-wrap">
-            <span class="vol-icon">🔈</span>
-            <input type="range" id="volSlider" min="0" max="1" step="0.05" value="0.8">
-            <span class="vol-icon">🔊</span>
+  <!-- LEFT PANEL: PLAYER / OSZILLOSKOP / VOTING / REQUESTS -->
+  <div style="display:flex; flex-direction:column; gap:40px;">
+    
+    <!-- PLAYER DECK -->
+    <div class="panel player-deck">
+      <div class="deck-top">
+        
+        <!-- VINYL GRAPHIC WITH FLOATING TONEARM -->
+        <div class="vinyl-container">
+          <div class="vinyl-record" id="vinylRecord">
+            <div class="vinyl-grooves"></div>
+            <div class="vinyl-shine"></div>
+            <div class="vinyl-label">
+              <img id="trackArt" src="" alt="" onerror="this.style.visibility='hidden'">
+            </div>
+            <div class="vinyl-center-hole"></div>
+          </div>
+          <div class="tonearm" id="playerTonearm">
+            <div class="tonearm-pivot"></div>
+            <div class="tonearm-pole"></div>
+            <div class="tonearm-head">
+              <div class="tonearm-needle-light"></div>
+            </div>
           </div>
         </div>
+
+        <!-- TRACK METADATA & CONTROLS -->
+        <div class="track-details">
+          <div class="station-tag" id="stationName">FRAWO FUNK // HI-FI</div>
+          <div class="track-title" id="trackTitle">Verbindung wird hergestellt...</div>
+          <div class="track-artist" id="trackArtist">Bitte warten</div>
+          
+          <div class="player-controls">
+            <button class="play-btn" id="playBtn" title="Play/Pause">▶</button>
+            <div class="volume-slider-wrap">
+              <span class="vol-text">VOL</span>
+              <input type="range" id="volSlider" min="0" max="1" step="0.05" value="0.8">
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- UNIVERSAL CRT OSCILLOSCOPE -->
+      <div class="visualizer-card">
+        <canvas class="oscilloscope-canvas" id="audioOscilloscope"></canvas>
+      </div>
+
+      <!-- RATINGS PANEL -->
+      <div class="rating-deck">
+        <span class="rating-label">Track-Kurierung:</span>
+        <button class="rating-btn" id="upBtn" onclick="vote('up')">👍 <span id="upCount">—</span></button>
+        <button class="rating-btn" id="downBtn" onclick="vote('down')">👎 <span id="downCount">—</span></button>
+        <span class="rating-status" id="voteStatus"></span>
       </div>
     </div>
-    <audio id="audioEl" preload="none"></audio>
 
-    <div class="vote-section">
-      <span class="vote-label">Track bewerten:</span>
-      <button class="vote-btn" id="upBtn" onclick="vote('up')">👍 <span id="upCount">—</span></button>
-      <button class="vote-btn" id="downBtn" onclick="vote('down')">👎 <span id="downCount">—</span></button>
-      <span class="vote-count" id="voteStatus"></span>
-    </div>
-
-    <div class="request-section">
-      <div class="section-title">Song wünschen</div>
-      <div class="request-form">
-        <input class="request-input" id="reqInput" type="text" placeholder="Titel oder Künstler suchen…">
-        <button class="request-btn" onclick="searchRequests()">Suchen</button>
+    <!-- SONG WISHES PANEL -->
+    <div class="panel">
+      <div class="panel-header">Song-Wünsche an "The Machine"</div>
+      <div class="wish-form">
+        <input class="wish-input" id="reqInput" type="text" placeholder="Geben Sie Titel oder Künstler ein...">
+        <button class="wish-btn" onclick="searchRequests()">Suchen</button>
       </div>
-      <div class="request-results" id="reqResults"></div>
+      <div class="wish-results" id="reqResults"></div>
     </div>
-  </section>
 
-  <!-- RIGHT: Chat + History -->
-  <aside>
-    <div class="chat-box">
-      <div class="chat-header">Community Chat</div>
+  </div>
+
+  <!-- RIGHT PANEL: USER STATE / COLLECTIVE / IRC CHAT / HISTORY / SPOTLIGHT -->
+  <div style="display:flex; flex-direction:column; gap:40px;">
+    
+    <!-- REGISTRATION STATUS -->
+    <div id="userStatusBar" class="status-bar" style="display: none;"></div>
+
+    <!-- COLLECTIVE TRANSMITTER DRIVE -->
+    <div class="panel support-widget">
+      <div class="panel-header">
+        <span>Transmitter Maintenance</span>
+        <span id="listenerCount" style="font-family:var(--font-mono);font-size:11px;color:var(--emerald);">— Hörer</span>
+      </div>
+      <div class="support-transparency">
+        FraWo Funk wird unabhängig und werbefrei betrieben. Ihre Unterstützung fließt direkt in den Erhalt und Ausbau unserer audiophilen Stream-Infrastruktur.
+      </div>
+      
+      <div class="progress-card" style="border: 1px solid var(--border); text-align: center; padding: 20px 10px; background: rgba(16, 185, 129, 0.02); border-color: rgba(16, 185, 129, 0.2);">
+        <span class="live-dot on" style="display:inline-block; margin-right: 8px; vertical-align: middle; background: var(--emerald); box-shadow: 0 0 8px var(--emerald);"></span>
+        <span style="font-family:var(--font-mono); font-size:11px; letter-spacing: 1px; text-transform:uppercase; color: var(--emerald);">SUPPORT CHANNEL AKTIV // HI-FI OK</span>
+      </div>
+
+      <!-- PRE-FILLED CHECKOUTS -->
+      <div class="sponsor-tiers">
+        <a href="https://www.paypal.com/donate/?business=w.prinz1101@outlook.de&no_recurring=0&currency_code=EUR&amount=2" target="_blank" rel="noopener noreferrer" class="sponsor-tier-card" onclick="claimSupporterStatus()">
+          <div class="tier-amount">2.00 €</div>
+          <div class="tier-label">Micro</div>
+        </a>
+        <a href="https://www.paypal.com/donate/?business=w.prinz1101@outlook.de&no_recurring=0&currency_code=EUR&amount=5" target="_blank" rel="noopener noreferrer" class="sponsor-tier-card" onclick="claimSupporterStatus()">
+          <div class="tier-amount">5.00 €</div>
+          <div class="tier-label">Foster</div>
+        </a>
+        <a href="https://www.paypal.com/donate/?business=w.prinz1101@outlook.de&no_recurring=0&currency_code=EUR&amount=10" target="_blank" rel="noopener noreferrer" class="sponsor-tier-card" onclick="claimSupporterStatus()">
+          <div class="tier-amount">10.00 €</div>
+          <div class="tier-label">Patron</div>
+        </a>
+      </div>
+      
+      <button class="supporter-activation" id="supporterVerifyBtn" onclick="claimSupporterStatus()">✦ VIP-Badge aktivieren (Ehrensache)</button>
+    </div>
+
+    <!-- HIGH-DENSITY IRC LIVE CHAT -->
+    <div class="panel chat-deck">
+      <div class="panel-header">Kollektiv-Frequenz Chat</div>
       <div class="chat-messages" id="chatMessages"></div>
       <form class="chat-form" onsubmit="sendChat(event)">
-        <input class="chat-name-input" id="chatName" type="text" placeholder="Name" maxlength="30" value="">
-        <input class="chat-text-input" id="chatText" type="text" placeholder="Schreib etwas…" maxlength="280">
-        <button class="chat-send" type="submit">→</button>
+        <input class="chat-text-input" id="chatText" type="text" placeholder="Übertragung eingeben..." maxlength="280">
+        <button class="chat-send-btn" type="submit">SEND</button>
       </form>
     </div>
 
-    <div class="history-box">
-      <div class="section-title" style="margin-bottom:12px">Zuletzt gespielt</div>
-      <div id="historyList"></div>
+    <!-- TRACK HISTORY -->
+    <div class="panel">
+      <div class="panel-header">Sende-Protokoll (Kürzlich gespielt)</div>
+      <div class="history-deck" id="historyList"></div>
     </div>
-  </aside>
+
+    <!-- FRAWO GBR BRAND SPOTLIGHT (SELF-ADVERTISING) -->
+    <div class="panel brand-spotlight">
+      <div class="panel-header" style="border-color: rgba(139, 92, 246, 0.2); color: var(--violet);">FraWo GbR // Event &amp; Stage</div>
+      <div class="spotlight-text">
+        Dieses Webradio und seine Infrastruktur basieren auf unseren leidenschaftlichen **IT-Spielereien mit produktivem Hintergedanken**. Im echten Leben stehen wir hinter der **FraWo GbR** für professionelle Veranstaltungstechnik, PA-Systeme, Licht &amp; Ton sowie maßgeschneiderte Sonderbauten (Holz &amp; Bühnentechnik) in der Bodensee-Region.
+      </div>
+      <a href="https://frawo-tech.de" target="_blank" rel="noopener noreferrer" class="spotlight-cta">
+        Unsere Event-Projekte ↗
+      </a>
+    </div>
+
+  </div>
 </main>
+
+<audio id="audioEl" preload="none"></audio>
 
 <script>
 const API = '/api/v1/community';
-const AZURA_API = '/api/nowplaying/1';
 
 let streamUrl = null;
 let currentTrackKey = null;
@@ -233,17 +1259,75 @@ let isPlaying = false;
 const audio = document.getElementById('audioEl');
 const playBtn = document.getElementById('playBtn');
 
-// --- AUDIO PLAYER ---
-document.getElementById('volSlider').addEventListener('input', e => { audio.volume = e.target.value; });
+// Web Audio API Global References
+let audioCtx = null;
+let audioSource = null;
+let analyser = null;
+let dataArray = null;
+let bufferLength = 0;
+
+// Oszilloskop Canvas Setup
+const canvas = document.getElementById('audioOscilloscope');
+const ctx = canvas.getContext('2d');
+
+function resizeCanvas() {
+  canvas.width = canvas.clientWidth;
+  canvas.height = canvas.clientHeight;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+// Vinyl Record elements
+const vinyl = document.getElementById('vinylRecord');
+const tonearm = document.getElementById('playerTonearm');
+let vinylRotation = 0;
+let lastFrameTime = performance.now();
+let currentRotationSpeed = 0; // degrees per second
+let smoothedBass = 0;
+
+// --- VOLUME SYSTEM ---
+document.getElementById('volSlider').addEventListener('input', e => { 
+  audio.volume = e.target.value; 
+});
 audio.volume = 0.8;
 
+// --- INITIALIZE WEB AUDIO API (On User Gesture) ---
+function initWebAudio() {
+  if (audioCtx) return; // Already initialized
+  
+  try {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    audioSource = audioCtx.createMediaElementSource(audio);
+    analyser = audioCtx.createAnalyser();
+    
+    // Low FFT size for crisp brutalist oscilloscope resolution
+    analyser.fftSize = 256;
+    bufferLength = analyser.frequencyBinCount;
+    dataArray = new Uint8Array(bufferLength);
+    
+    audioSource.connect(analyser);
+    analyser.connect(audioCtx.destination);
+  } catch (err) {
+    console.warn("Web Audio API not supported or blocked: ", err);
+  }
+}
+
+// --- AUDIO PLAYER CONTROLLER ---
 playBtn.addEventListener('click', () => {
   if (!streamUrl) return;
+  
+  // Lazily boost Web Audio API
+  initWebAudio();
+  if (audioCtx && audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+
   if (isPlaying) {
     audio.pause();
     audio.src = '';
     playBtn.textContent = '▶';
     isPlaying = false;
+    tonearm.classList.remove('active');
   } else {
     playBtn.classList.add('loading');
     playBtn.textContent = '⏳';
@@ -252,15 +1336,144 @@ playBtn.addEventListener('click', () => {
       playBtn.textContent = '⏸';
       playBtn.classList.remove('loading');
       isPlaying = true;
+      tonearm.classList.add('active');
     }).catch(() => {
       playBtn.textContent = '▶';
       playBtn.classList.remove('loading');
       isPlaying = false;
+      tonearm.classList.remove('active');
     });
   }
 });
 
-// --- NOW PLAYING ---
+// --- RENDER LOOP (Canvas Oscilloscope & Bass Pulsing Vinyl) ---
+function render() {
+  requestAnimationFrame(render);
+  
+  const now = performance.now();
+  const delta = Math.min(0.1, (now - lastFrameTime) / 1000);
+  lastFrameTime = now;
+  
+  let bassIntensity = 0;
+  
+  // 1. Process Audio Data
+  if (isPlaying && analyser && dataArray) {
+    analyser.getByteTimeDomainData(dataArray);
+    
+    // Analyze Bass frequencies (roughly lower indices of time domain deviations)
+    let deviationSum = 0;
+    for (let i = 0; i < bufferLength; i++) {
+      deviationSum += Math.abs(dataArray[i] - 128);
+    }
+    bassIntensity = Math.min(1, deviationSum / (bufferLength * 12)); // Normalized intensity
+  } else {
+    // Zero state or procedural flat-line wave shimmer
+    if (dataArray) {
+      for (let i = 0; i < bufferLength; i++) {
+        dataArray[i] = 128 + Math.sin(i * 0.15 + now * 0.005) * 1.5;
+      }
+    }
+  }
+
+  // 2. Turntable Platter Physics (Inertia, momentum & smooth direct-drive rotation)
+  const targetSpeed = isPlaying ? 200 : 0; // Constant ~33 RPM (200 deg/sec) when playing
+  const motorTorque = isPlaying ? 2.5 : 1.5; // Technics direct-drive startup torque vs natural spin-down friction
+  currentRotationSpeed += (targetSpeed - currentRotationSpeed) * delta * motorTorque;
+  
+  vinylRotation = (vinylRotation + currentRotationSpeed * delta) % 360;
+  
+  // Organic Low-Pass Beat Pulsing (Buttery speaker-cone excursion envelope)
+  smoothedBass += (bassIntensity - smoothedBass) * delta * 12; 
+  const scale = 1 + (smoothedBass * 0.02); // Subtle, high-end rhythmic bounce
+  
+  // Dynamic, beat-reactive ambient glow matching HIFI / Guest state colors
+  const glowRadius = smoothedBass * 25;
+  const isVipUser = localStorage.getItem('radio_user_registered') === 'true';
+  const glowColor = isVipUser ? 'rgba(16, 185, 129, 0.35)' : 'rgba(139, 92, 246, 0.2)';
+  
+  if (currentRotationSpeed > 0.1) {
+    vinyl.style.transform = `rotate(${vinylRotation}deg) scale(${scale})`;
+    vinyl.style.boxShadow = `0 10px 25px rgba(0,0,0,0.65), 0 0 ${glowRadius}px ${glowColor}`;
+  } else {
+    vinyl.style.transform = `rotate(${vinylRotation}deg) scale(1)`;
+    vinyl.style.boxShadow = '0 10px 25px rgba(0,0,0,0.6)';
+  }
+
+  // 3. Render Oscilloscope Canvas
+  ctx.fillStyle = '#000000';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  
+  // Draw GRID lines (Brutalist CRT-Monitor style)
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.015)';
+  ctx.lineWidth = 1;
+  const gridSpacing = 20;
+  for (let x = 0; x < canvas.width; x += gridSpacing) {
+    ctx.beginPath();
+    ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height);
+    ctx.stroke();
+  }
+  for (let y = 0; y < canvas.height; y += gridSpacing) {
+    ctx.beginPath();
+    ctx.moveTo(0, y); ctx.lineTo(canvas.width, y);
+    ctx.stroke();
+  }
+  
+  if (!dataArray) return;
+  
+  // Draw primary Emerald Welle
+  ctx.lineWidth = 1.8;
+  ctx.shadowBlur = isPlaying ? 6 : 0;
+  ctx.shadowColor = '#10B981';
+  ctx.strokeStyle = '#10B981';
+  ctx.beginPath();
+  
+  let sliceWidth = canvas.width * 1.0 / bufferLength;
+  let x = 0;
+  
+  for (let i = 0; i < bufferLength; i++) {
+    let v = dataArray[i] / 128.0;
+    let y = v * canvas.height / 2;
+    
+    if (i === 0) {
+      ctx.moveTo(x, y);
+    } else {
+      ctx.lineTo(x, y);
+    }
+    x += sliceWidth;
+  }
+  ctx.lineTo(canvas.width, canvas.height / 2);
+  ctx.stroke();
+
+  // Draw secondary Electric Violet phase-shifted curve
+  ctx.lineWidth = 1.0;
+  ctx.shadowColor = '#8B5CF6';
+  ctx.strokeStyle = 'rgba(139, 92, 246, 0.6)';
+  ctx.beginPath();
+  
+  x = 0;
+  for (let i = 0; i < bufferLength; i++) {
+    // Grab value slightly offsetted for beautiful CRT analog depth
+    let offsetIdx = (i + 4) % bufferLength;
+    let v = dataArray[offsetIdx] / 128.0;
+    // Shift phase height
+    let y = (v * canvas.height / 2) + Math.sin(i * 0.1 + now * 0.01) * (isPlaying ? 2 : 0.5);
+    
+    if (i === 0) {
+      ctx.moveTo(x, y);
+    } else {
+      ctx.lineTo(x, y);
+    }
+    x += sliceWidth;
+  }
+  ctx.lineTo(canvas.width, canvas.height / 2);
+  ctx.stroke();
+  
+  // Reset shadow for performance
+  ctx.shadowBlur = 0;
+}
+requestAnimationFrame(render);
+
+// --- NOW PLAYING & STATION STATE ---
 let lastTrackKey = null;
 
 async function updateNowPlaying() {
@@ -269,11 +1482,12 @@ async function updateNowPlaying() {
     if (!r.ok) throw new Error('not ok');
     const d = await r.json();
 
-    document.getElementById('trackTitle').textContent = d.title || '—';
-    document.getElementById('trackArtist').textContent = d.artist || '';
-    document.getElementById('listenerCount').textContent = `${d.listeners} Hörer`;
+    document.getElementById('trackTitle').textContent = d.title || 'UNBEKANNT';
+    document.getElementById('trackArtist').textContent = d.artist || 'THE UNDERGROUND';
+    document.getElementById('stationName').textContent = `${d.station || 'FRAWO FUNK'} // HI-FI`;
+    document.getElementById('listenerCount').textContent = `${d.listeners} HÖRER`;
     document.getElementById('liveDot').classList.add('on');
-    document.getElementById('liveLabel').textContent = 'LIVE';
+    document.getElementById('liveLabel').textContent = 'LIVE // ON AIR';
 
     if (d.art) {
       const img = document.getElementById('trackArt');
@@ -281,13 +1495,49 @@ async function updateNowPlaying() {
       img.style.visibility = 'visible';
     }
 
-    if (d.stream_url && !streamUrl) {
-      streamUrl = d.stream_url;
+    // Determine correct stream URL based on VIP registration status
+    const isVip = localStorage.getItem('radio_user_registered') === 'true';
+    // Use explicit quality URLs from backend — no fragile string replacement
+    const activeStream = isVip
+      ? (d.hifi_stream_url || d.stream_url)
+      : (d.standard_stream_url || d.stream_url);
+
+    // Update quality badge
+    const badge = document.querySelector('.hifi-badge');
+    if (badge) {
+      if (isVip) {
+        badge.textContent = '320 KBPS MP3 // HI-FI';
+        badge.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+        badge.style.color = 'var(--emerald)';
+      } else {
+        badge.textContent = '192 KBPS MP3 // GUEST';
+        badge.style.borderColor = 'rgba(255,255,255,0.1)';
+        badge.style.color = 'var(--muted)';
+      }
     }
 
-    const elapsed = d.elapsed || 0;
-    const duration = d.duration || 1;
-    document.getElementById('progressFill').style.width = `${Math.min(100, (elapsed / duration) * 100)}%`;
+    if (activeStream && streamUrl !== activeStream) {
+      const wasPlaying = isPlaying;
+      if (isPlaying) {
+        audio.pause();
+        audio.src = '';
+      }
+      streamUrl = activeStream;
+      if (wasPlaying) {
+        playBtn.classList.add('loading');
+        playBtn.textContent = '⏳';
+        audio.src = streamUrl;
+        audio.play().then(() => {
+          playBtn.textContent = '⏸';
+          playBtn.classList.remove('loading');
+        }).catch(() => {
+          playBtn.textContent = '▶';
+          playBtn.classList.remove('loading');
+          isPlaying = false;
+          tonearm.classList.remove('active');
+        });
+      }
+    }
 
     const key = `${d.artist}|${d.title}`;
     if (key !== lastTrackKey) {
@@ -298,7 +1548,7 @@ async function updateNowPlaying() {
       updateHistory(d);
     }
   } catch {
-    document.getElementById('liveLabel').textContent = 'Offline';
+    document.getElementById('liveLabel').textContent = 'OFFLINE';
     document.getElementById('liveDot').classList.remove('on');
   }
 }
@@ -308,18 +1558,26 @@ function updateHistory(nowPlaying) {
   const existing = Array.from(list.querySelectorAll('.history-item'));
   const newItem = document.createElement('div');
   newItem.className = 'history-item';
-  newItem.innerHTML = `<span class="history-num">${existing.length + 1}</span><div class="history-info"><div class="history-title">${esc(nowPlaying.title)}</div><div class="history-artist">${esc(nowPlaying.artist)}</div></div>`;
+  newItem.innerHTML = `
+    <span class="history-num">${(existing.length + 1).toString().padStart(2, '0')}</span>
+    <div class="history-info">
+      <div class="history-title">${esc(nowPlaying.title)}</div>
+      <div class="history-artist">${esc(nowPlaying.artist || 'THE MACHINE')}</div>
+    </div>
+  `;
   list.prepend(newItem);
-  Array.from(list.querySelectorAll('.history-num')).forEach((el, i) => el.textContent = i + 1);
-  while (list.children.length > 8) list.removeChild(list.lastChild);
+  Array.from(list.querySelectorAll('.history-num')).forEach((el, i) => {
+    el.textContent = (i + 1).toString().padStart(2, '0');
+  });
+  while (list.children.length > 5) list.removeChild(list.lastChild);
 }
 
-// --- VOTING ---
+// --- VOTING SYSTEM ---
 function resetVotes() {
   document.getElementById('upCount').textContent = '—';
   document.getElementById('downCount').textContent = '—';
-  document.getElementById('upBtn').className = 'vote-btn';
-  document.getElementById('downBtn').className = 'vote-btn';
+  document.getElementById('upBtn').className = 'rating-btn';
+  document.getElementById('downBtn').className = 'rating-btn';
   document.getElementById('voteStatus').textContent = '';
 }
 
@@ -336,6 +1594,11 @@ async function loadVotes(key) {
 
 async function vote(reaction) {
   if (!currentTrackKey) return;
+  const isVip = localStorage.getItem('radio_user_registered') === 'true';
+  if (!isVip) {
+    showRegisterModal();
+    return;
+  }
   try {
     const r = await fetch(`${API}/vote`, {
       method: 'POST',
@@ -347,15 +1610,19 @@ async function vote(reaction) {
     document.getElementById('upCount').textContent = d.up;
     document.getElementById('downCount').textContent = d.down;
     highlightVote(reaction);
+    
+    const voteStatus = document.getElementById('voteStatus');
+    voteStatus.textContent = reaction === 'up' ? 'VOTE POSITIV SYNCHRONISIERT' : 'VOTE NEGATIV SYNCHRONISIERT';
+    setTimeout(() => { voteStatus.textContent = ''; }, 3000);
   } catch {}
 }
 
 function highlightVote(r) {
-  document.getElementById('upBtn').className = 'vote-btn' + (r === 'up' ? ' active-up' : '');
-  document.getElementById('downBtn').className = 'vote-btn' + (r === 'down' ? ' active-down' : '');
+  document.getElementById('upBtn').className = 'rating-btn' + (r === 'up' ? ' active-up' : '');
+  document.getElementById('downBtn').className = 'rating-btn' + (r === 'down' ? ' active-down' : '');
 }
 
-// --- REQUESTS ---
+// --- SONG REQUEST SYSTEM ---
 let reqDebounce;
 document.getElementById('reqInput').addEventListener('keyup', () => {
   clearTimeout(reqDebounce);
@@ -371,38 +1638,224 @@ async function searchRequests() {
     if (!r.ok) throw new Error('fail');
     const data = await r.json();
     const items = Array.isArray(data) ? data : (data.result || []);
-    if (!items.length) { el.innerHTML = '<p style="color:var(--muted);font-size:13px;padding:8px 0">Nichts gefunden.</p>'; return; }
+    if (!items.length) { 
+      el.innerHTML = '<p style="color:var(--muted);font-family:var(--font-mono);font-size:11px;padding:8px 0">NICHTS GEFUNDEN</p>'; 
+      return; 
+    }
     const fixArt = u => u ? u.replace(/^https?:\/\/(172\.20\.0\.1|localhost|azuracast)/, window.location.origin) : '';
-    el.innerHTML = items.slice(0, 6).map(item => {
+    el.innerHTML = items.slice(0, 4).map(item => {
       const art = fixArt(item.song?.art || '');
-      return `<div class="request-item">
-        ${art ? `<img src="${art}" style="width:36px;height:36px;border-radius:4px;object-fit:cover;flex-shrink:0" onerror="this.style.display='none'">` : ''}
-        <div class="request-item-info">
-          <div class="request-item-title">${esc(item.song?.title || item.title || '')}</div>
-          <div class="request-item-artist">${esc(item.song?.artist || item.artist || '')}</div>
+      return `<div class="wish-item">
+        <div style="display:flex;align-items:center;gap:12px;min-width:0;">
+          ${art ? `<img src="${art}" style="width:36px;height:36px;border-radius:2px;object-fit:cover;flex-shrink:0" onerror="this.style.display='none'">` : ''}
+          <div class="wish-item-info">
+            <div class="wish-item-title">${esc(item.song?.title || item.title || '')}</div>
+            <div class="wish-item-artist">${esc(item.song?.artist || item.artist || '')}</div>
+          </div>
         </div>
-        <button class="req-submit" onclick="submitRequest('${esc(item.request_id || item.id || '')}', this)">Wünschen</button>
+        <button class="wish-submit-btn" onclick="submitRequest('${esc(item.request_id || item.id || '')}', this)">WÜNSCHEN</button>
       </div>`;
     }).join('');
   } catch {
-    el.innerHTML = '<p style="color:var(--muted);font-size:13px;padding:8px 0">Suche nicht verfügbar.</p>';
+    el.innerHTML = '<p style="color:var(--muted);font-family:var(--font-mono);font-size:11px;padding:8px 0">SUCHE NICHT VERFÜGBAR</p>';
   }
 }
 
 async function submitRequest(id, btn) {
-  btn.disabled = true; btn.textContent = '…';
+  btn.disabled = true; btn.textContent = '...';
   try {
     const r = await fetch(`${API}/requests/${id}`, {method:'POST'});
     const d = await r.json();
-    btn.textContent = d.status === 'queued' ? '✓' : '!';
-  } catch { btn.textContent = '✗'; }
+    btn.textContent = d.status === 'queued' ? 'QUEUED' : 'FAIL';
+    if (d.status === 'queued') {
+      btn.style.borderColor = 'var(--emerald)';
+      btn.style.color = 'var(--emerald)';
+    }
+  } catch { btn.textContent = 'FAIL'; }
 }
 
-// --- CHAT ---
-let chatPollInterval;
+// --- DATABASE REGISTRATION & STATUS FLOW ---
+function showLoginForm(e) {
+  if (e) e.preventDefault();
+  document.getElementById('registerForm').style.display = 'none';
+  document.getElementById('loginForm').style.display = 'block';
+  document.getElementById('modalTitle').textContent = 'RESTORE SESSION // COMMUNITY';
+  document.getElementById('modalText').textContent = 'Geben Sie Ihren 6-stelligen Zugangscode (FW-XXXXXX) ein, um Ihr VIP- oder Supporter-Profil auf diesem Gerät zu reaktivieren.';
+}
+
+function showRegisterForm(e) {
+  if (e) e.preventDefault();
+  document.getElementById('registerForm').style.display = 'block';
+  document.getElementById('loginForm').style.display = 'none';
+  document.getElementById('modalTitle').textContent = 'VIP ACCESS // COMMUNITY';
+  document.getElementById('modalText').textContent = 'Registrieren Sie sich, um exklusive Track-Wünsche freizuschalten, live mit anderen Hörern zu chatten und direkt Teil unseres audiophilen Kollektivs zu werden.';
+}
+
+async function fetchMemberStatus() {
+  const modal = document.getElementById('registerModal');
+  const statusB = document.getElementById('userStatusBar');
+
+  try {
+    const r = await fetch(`${API}/member_status`);
+    if (!r.ok) return;
+    const d = await r.json();
+
+    if (d.registered) {
+      modal.style.display = 'none';
+      statusB.style.display = 'flex';
+      
+      const tagClass = d.is_supporter ? 'status-tag supporter' : 'status-tag vip';
+      const tagLabel = d.is_supporter ? '✦ VIP SUPPORT' : 'VIP ACCESS';
+      const tokenHtml = d.access_token ? `<span style="border: 1px dashed rgba(255,255,255,0.15); padding: 2px 8px; font-family:var(--font-mono); font-size:10px; color:var(--muted); margin-left: 10px;">CODE: ${esc(d.access_token)}</span>` : '';
+      
+      statusB.innerHTML = `
+        <div class="status-info" style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+          <span class="${tagClass}">${tagLabel}</span>
+          <span>SYSTEM // OK // HELLO, ${esc(d.nickname.toUpperCase())}</span>
+          ${tokenHtml}
+        </div>
+        <button class="status-action-btn" onclick="logoutUser()">DISCONNECT</button>
+      `;
+      localStorage.setItem('radio_user_registered', 'true');
+      localStorage.setItem('chat_name', d.nickname);
+      
+      if (d.is_supporter) {
+        document.getElementById('supporterVerifyBtn').style.display = 'none';
+      }
+      
+      applyVipRestrictions(true);
+      updateNowPlaying(); // Force update stream URL
+    } else {
+      const skipLocal = localStorage.getItem('radio_user_registered');
+      if (skipLocal === 'skipped') {
+        modal.style.display = 'none';
+        statusB.style.display = 'flex';
+        statusB.innerHTML = `
+          <div class="status-info" style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+            <span class="status-tag" style="background:#222; color:#aaa; border:1px solid #444;">GAST LISTEN</span>
+            <span>SYSTEM // RESTRICTED ACCESS // 192KBPS</span>
+          </div>
+          <button class="status-action-btn" onclick="showRegisterModal()">CONNECT VIP</button>
+        `;
+        applyVipRestrictions(false);
+        updateNowPlaying(); // Force update stream URL
+      } else {
+        modal.style.display = 'flex';
+        statusB.style.display = 'none';
+        // Reset forms inside modal to register by default
+        showRegisterForm();
+      }
+    }
+  } catch {
+    // Network fail fallback to anonymous local
+    modal.style.display = 'none';
+  }
+}
+
+function applyVipRestrictions(isVip) {
+  // 1. Chat input restriction
+  const chatInput = document.getElementById('chatText');
+  const chatSendBtn = document.querySelector('.chat-send-btn');
+  if (chatInput) {
+    chatInput.disabled = !isVip;
+    chatInput.placeholder = isVip ? "Übertragung eingeben..." : "CHAT NUR FÜR VIP-KOLLEKTIV";
+    if (!isVip) chatInput.value = "";
+  }
+  if (chatSendBtn) {
+    chatSendBtn.disabled = !isVip;
+    chatSendBtn.style.opacity = isVip ? "1" : "0.5";
+  }
+
+  // 2. Song wishes input restriction
+  const reqInput = document.getElementById('reqInput');
+  const reqBtn = document.querySelector('.wish-btn');
+  if (reqInput) {
+    reqInput.disabled = !isVip;
+    reqInput.placeholder = isVip ? "Geben Sie Titel oder Künstler ein..." : "WÜNSCHE NUR FÜR VIP-KOLLEKTIV";
+    if (!isVip) reqInput.value = "";
+  }
+  if (reqBtn) {
+    reqBtn.disabled = !isVip;
+    reqBtn.style.opacity = isVip ? "1" : "0.5";
+  }
+}
+
+async function registerUser(e) {
+  e.preventDefault();
+  const name = document.getElementById('regName').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
+  if (!name) return;
+
+  try {
+    const r = await fetch(`${API}/register`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({nickname: name, email: email})
+    });
+    if (r.ok) {
+      await fetchMemberStatus();
+    }
+  } catch {}
+}
+
+async function loginUser(e) {
+  e.preventDefault();
+  const tokenInput = document.getElementById('loginToken').value.trim();
+  const errorDiv = document.getElementById('loginError');
+  errorDiv.style.display = 'none';
+  if (!tokenInput) return;
+
+  try {
+    const r = await fetch(`${API}/login`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({access_token: tokenInput})
+    });
+    
+    if (r.ok) {
+      await fetchMemberStatus();
+      loadChat(); // Reload chat to see correct VIP/Supporter status
+    } else {
+      const err = await r.json();
+      errorDiv.textContent = err.detail || 'FALSCHER ZUGANGSCODE';
+      errorDiv.style.display = 'block';
+    }
+  } catch (err) {
+    errorDiv.textContent = 'NETZWERK-FEHLER';
+    errorDiv.style.display = 'block';
+  }
+}
+
+function skipRegistration() {
+  localStorage.setItem('radio_user_registered', 'skipped');
+  fetchMemberStatus();
+}
+
+function showRegisterModal() {
+  document.getElementById('registerModal').style.display = 'flex';
+  showRegisterForm();
+}
+
+function logoutUser() {
+  localStorage.removeItem('radio_user_registered');
+  localStorage.removeItem('chat_name');
+  // Just trigger skip state Locally and don't purge DB lead, let them disconnect session
+  fetchMemberStatus();
+}
+
+// --- VERIFIED SUPPORTER TRIGGER (Ehrensache Link) ---
+async function claimSupporterStatus() {
+  try {
+    const r = await fetch(`${API}/set_supporter`, { method: 'POST' });
+    if (r.ok) {
+      await fetchMemberStatus();
+      loadChat(); // Reload chat to see badge active
+    }
+  } catch {}
+}
+
+// --- IRC LIVE CHAT ---
 let lastChatId = 0;
-const savedName = localStorage.getItem('chat_name') || '';
-if (savedName) document.getElementById('chatName').value = savedName;
 
 async function loadChat() {
   try {
@@ -410,31 +1863,44 @@ async function loadChat() {
     if (!r.ok) return;
     const msgs = await r.json();
     const el = document.getElementById('chatMessages');
-    const atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 20;
+    const atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 30;
+    
     const newMsgs = msgs.filter(m => m.id > lastChatId);
     if (!newMsgs.length) return;
+    
     newMsgs.forEach(m => {
       const div = document.createElement('div');
       div.className = 'chat-msg';
-      div.innerHTML = `<span class="chat-msg-name">${esc(m.name)}</span><span class="chat-msg-text">${esc(m.text)}</span>`;
+      
+      const timeStr = m.ts ? m.ts.substring(11, 16) : '00:00';
+      const isSupp = m.is_supporter;
+      
+      const authorClass = isSupp ? 'chat-msg-author supporter' : (m.name !== 'Anonym' ? 'chat-msg-author vip' : 'chat-msg-author');
+      const badgeHtml = isSupp ? '<span class="chat-msg-badge">✦</span>' : '';
+      
+      div.innerHTML = `
+        <span class="chat-msg-time">[${esc(timeStr)}]</span>
+        <span class="${authorClass}">${badgeHtml}${esc(m.name.toUpperCase())}:</span>
+        <span class="chat-msg-text">${esc(m.text)}</span>
+      `;
       el.appendChild(div);
       lastChatId = Math.max(lastChatId, m.id);
     });
+    
     if (atBottom) el.scrollTop = el.scrollHeight;
   } catch {}
 }
 
 async function sendChat(e) {
   e.preventDefault();
-  const name = document.getElementById('chatName').value.trim() || 'Anonym';
   const text = document.getElementById('chatText').value.trim();
   if (!text) return;
-  localStorage.setItem('chat_name', name);
+  
   try {
     const r = await fetch(`${API}/chat`, {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({name, text})
+      body: JSON.stringify({text})
     });
     if (r.ok) {
       document.getElementById('chatText').value = '';
@@ -448,11 +1914,12 @@ function esc(s) {
   return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-// --- INIT ---
+// --- INITIALIZE PORTAL ---
 updateNowPlaying();
 setInterval(updateNowPlaying, 10000);
 loadChat();
-setInterval(loadChat, 5000);
+setInterval(loadChat, 4000);
+fetchMemberStatus();
 </script>
 </body>
 </html>
