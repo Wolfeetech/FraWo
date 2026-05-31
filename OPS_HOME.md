@@ -147,13 +147,12 @@ Diese Dateien bleiben nur so lange bestehen, bis ihr Inhalt sauber in den Wiki-K
 
 ## Offene manuelle Blocker
 
-1. Sicherheits-Follow-up: VM 210/220 Firewall-Design testen und erst danach `firewall=1` wieder produktiv setzen.
-2. Backup-Follow-up: nach den Caddy-/Firewall-Aenderungen erneut sichern und einen Restore-Proof dokumentieren.
-3. DNS-Follow-up: UniFi/Tailscale Split-DNS finalisieren, damit Windows Hosts-Datei nicht die Dauerloesung bleibt.
-4. CT 100 Storage-Follow-up: kontrollierte Migration der Toolbox-Disk auf `ssd2tb`.
-5. `Vaultwarden` fuer Wolf und Franz sichtbar gegenpruefen.
-6. Wolf- und Franz-Durchlauf fuer `Vault`, `Nextcloud`, `Paperless`, `Odoo` sichtbar abschliessen.
-7. `STRATO`-Send/Receive fuer `webmaster`, `franz`, `noreply` sichtbar verifizieren.
-8. Sichtbare App-Testmails fuer `Nextcloud`, `Paperless`, `Odoo` abschliessen.
-9. Das alte Klartext-Register bleibt nur noch als Desktop-Archiv ausserhalb des Workspaces; im Repo gilt nur noch `ACCESS_REGISTER_VAULTWARDEN_REFERENCES.md`.
-10. `Radio` ist in Wiederherstellung: AzuraCast läuft auf Stockenweiler VM 210 (`192.168.178.210`), DNS-Routing über Tunnel folgt.
+1. Backup-Follow-up: nach den Caddy-/Firewall-Aenderungen erneut sichern und einen Restore-Proof dokumentieren.
+2. DNS-Follow-up: UniFi/Tailscale Split-DNS finalisieren, damit Windows Hosts-Datei nicht die Dauerloesung bleibt.
+3. CT 100 Storage-Follow-up: kontrollierte Migration der Toolbox-Disk auf `ssd2tb`.
+4. `Vaultwarden` fuer Wolf und Franz sichtbar gegenpruefen.
+5. Wolf- und Franz-Durchlauf fuer `Vault`, `Nextcloud`, `Paperless`, `Odoo` sichtbar abschliessen.
+6. `STRATO`-Send/Receive fuer `webmaster`, `franz`, `noreply` sichtbar verifizieren.
+7. Sichtbare App-Testmails fuer `Nextcloud`, `Paperless`, `Odoo` abschliessen.
+8. Das alte Klartext-Register bleibt nur noch als Desktop-Archiv ausserhalb des Workspaces; im Repo gilt nur noch `ACCESS_REGISTER_VAULTWARDEN_REFERENCES.md`.
+9. `Radio` ist in Wiederherstellung: AzuraCast läuft auf Stockenweiler VM 210 (`192.168.178.210`), DNS-Routing über Tunnel folgt.
