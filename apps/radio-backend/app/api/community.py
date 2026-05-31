@@ -18,6 +18,17 @@ logger = get_logger(__name__)
 router = APIRouter(prefix="/community", tags=["Community"])
 
 AZURACAST_BASE = str(settings.azuracast_api_url).rstrip("/").removesuffix("/api")
+AZURACAST_PUBLIC = "https://funk.frawo-tech.de"
+
+
+def _public_url(url: str | None) -> str | None:
+    """Rewrite internal AzuraCast URLs to public domain."""
+    if not url:
+        return url
+    for prefix in ("http://172.20.0.1", "http://localhost", "http://azuracast"):
+        if url.startswith(prefix):
+            return AZURACAST_PUBLIC + url[len(prefix):]
+    return url
 
 
 def _azura_headers() -> dict:
@@ -48,7 +59,7 @@ async def nowplaying():
             "title": data["now_playing"]["song"]["title"],
             "artist": data["now_playing"]["song"]["artist"],
             "album": data["now_playing"]["song"]["album"],
-            "art": data["now_playing"]["song"].get("art"),
+            "art": _public_url(data["now_playing"]["song"].get("art")),
             "listeners": data["listeners"]["current"],
             "elapsed": data["now_playing"].get("elapsed", 0),
             "duration": data["now_playing"]["song"].get("length", 0),
