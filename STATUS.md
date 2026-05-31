@@ -216,3 +216,13 @@ Empfehlung: Low-Shelf EQ -6dB bei 200Hz
 1. Email-Agent aktivieren → Emails landen auto in Odoo
 2. Odoo Alias: task-312@frawo-tech.de → direkt in Task-Chatter
 3. Klausi-Bot: Equipment-Info automatisch aus Ollama/Internet
+
+## GrowBox System (2026-05-31)
+
+**Smart-Visite Workflow (R7suhQjbg1w0ZUQK):** Taegl. 08:00 Telegram-Alert mit zufaelliger Pflanze
+- Alle 19 Pflanzen-Tasks mit Visite-Journal ergaenzt
+- Template T373, Rotationsplan T372
+- Erste Visiten: Banana (T203), Apple Fritter (T215) - professionell dokumentiert im Chatter
+
+**Best Practice Pflanzen-Journal:**
+Chatter-Nachricht im Pflanzen-Task = permanentes Journal. Kein extra Tool noetig.
