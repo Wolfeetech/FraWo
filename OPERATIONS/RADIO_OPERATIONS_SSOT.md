@@ -45,11 +45,9 @@ make radio-daily-health-gate TARGET_HOST=100.64.23.77
 - `rpi_azuracast_service_ready=yes`
 - `radio_operations_ready=yes`
 - KPI-Ampel grün:
-  - UI erreichbar
-  - nowplaying erreichbar
-  - Station online
-  - Media-Mount sichtbar
-  - Storage nicht kritisch
+  - UI erreichbar (`radio_internal_ready=yes` und `radio_control_ready=yes`)
+  - nowplaying erreichbar (`radio_nowplaying_ready=yes`)
+  - Station online (`azuracast_station_online=true`)
 
 Wenn ein Kriterium fehlschlägt: **NO-GO** bis zur Behebung.
 
