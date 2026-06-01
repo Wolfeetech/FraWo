@@ -368,7 +368,9 @@ T355 Odoo ACL, T356 Radio Backend, T358 PBS Rebuild, T359 SSH-Keys
 - AzuraCast 7 DJ-Streamer-Accounts
 
 **Nächste Phase: Backup + Radio**
-- PBS Datastore proper einrichten
-- local-lvm Space (PBS-Disk migrieren)
+- PBS-frawo: AKTIV ✅ (10/10 VMs/CTs gesichert, 3.96% belegt)
+- Google Drive: AKTIV ✅ (tägl. 02:00, alle VMs bis 30.05., offsite 2TB)
+- Nächster Backup-Lauf: heute Nacht 02:00
+- local-lvm: 37.95% (nach Storage-Krise 01.06. behoben)
 - Radio Show Tracklists kuratieren
 - Beets Musik-Import abschließen
