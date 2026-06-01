@@ -1,5 +1,5 @@
 # Aktueller Status — FraWo GbR Infrastruktur
-**Stand: 2026-05-30 | Geprüft durch: Claude Sonnet 4.6 + Wolf**
+**Stand: 2026-06-01 | Verifikation: n8n API + SSH live**
 
 ---
 
@@ -244,11 +244,12 @@ Chatter-Nachricht im Pflanzen-Task = permanentes Journal. Kein extra Tool noetig
 |----|------|--------|
 | QyM1RKzZ | Backup-Monitoring Alert | AKTIV |
 | Fg4w058x | Rating Test v5 | AKTIV |
-| R7suhQjb | GrowBox: taegl. Pflanzen-Review | AKTIV |
-| h9p6IhpJ | GrowBox: Visite-Analyse Auto-Tasks | AKTIV |
-| 1fLw0n1e | Klausi-Bot @Odoo-Chatter | AKTIV |
-| xCShp2rt | RAG: Odoo->Qdrant | AKTIV |
-| Onzd61um | Email-Agent agent@ | AKTIV |
+| R7suhQjbg1w0ZUQK | GrowBox: Pflanzen-Review 08:00 (schlägt fehl wenn Odoo down) | ✅ AKTIV |
+| pwFyW7OLBsRGHSD7 | GrowBox: Pflanzen-Reminder 19:00 Fallback (kein Odoo nötig) | ✅ AKTIV |
+| h9p6IhpJTGf1vh9v | GrowBox: Visite-Analyse Auto-Tasks | ✅ AKTIV |
+| 1fLw0n1e0gaObjsp | Klausi-Bot @Odoo-Chatter → Ollama | ✅ AKTIV |
+| xCShp2rttlOpaZCi | RAG: Odoo → Qdrant Index | ✅ AKTIV |
+| Onzd61umVKjjEc7O | Email-Agent agent@ → GPT → Odoo | ✅ AKTIV |
 
 ## Steuer-Setup + Inventar (2026-05-31)
 
@@ -307,7 +308,7 @@ Chatter-Nachricht im Pflanzen-Task = permanentes Journal. Kein extra Tool noetig
 |------|-----|--------|
 | T251 | PVE Firewall aktiv (enable=1, DROP policy) | ✅ |
 | T319 | Netzwerk-Sicherheitsaudit abgeschlossen | ✅ |
-| T321 | n8n 2.22.5: 7/8 Workflows aktiv | ✅ |
+| T321 | n8n 2.22.5: 9/9 Workflows aktiv (verifiziert 2026-06-01) | ✅ |
 | T328 | pve-exporter: 6/6 Prometheus Targets UP | ✅ |
 | T329 | Grafana Telegram-Alert eingerichtet | ✅ |
 | T8   | PBS Offsite via Google Drive aktiv | ✅ |
@@ -360,7 +361,7 @@ T355 Odoo ACL, T356 Radio Backend, T358 PBS Rebuild, T359 SSH-Keys
 
 **Homeserver "Sack zu":**
 - Keine kritischen Blocker mehr
-- PVE Firewall aktiv, n8n 8/8 Workflows aktiv
+- PVE Firewall aktiv, n8n 9/9 Workflows aktiv (verifiziert 2026-06-01)
 - CT110 restored, alle 10 VMs/CTs online
 - PBS online, Backups laufen
 - Grafana Alerts konfiguriert
