@@ -379,3 +379,32 @@ T355 Odoo ACL, T356 Radio Backend, T358 PBS Rebuild, T359 SSH-Keys
 - local-lvm: 37.95% (nach Storage-Krise 01.06. behoben)
 - Radio Show Tracklists kuratieren
 - Beets Musik-Import abschließen
+
+## Session 2026-06-01 — Infra-Abschluss + Backup-Fix
+
+### Erledigt
+| Task | Was | Verifiziert |
+|------|-----|-------------|
+| T389 | Storage-Krise behoben, local-lvm 37% | ✅ |
+| T391 | ssd2tb udev-Regel Auto-Remount | ✅ |
+| T388 | SSH-Key Toolbox → frawo-docker-1 | ✅ |
+| T390 | SPOF-Audit: Grafana Alert + fstrim Cron | ✅ |
+| T425 | Docker infra_shared Netzwerk permanent | ✅ |
+| T159 | PBS produktiv, 10/10 VMs gesichert | ✅ |
+| T178 | AzuraCast Branding komplett | ✅ |
+| T179 | Radio Mounts + Qualität OK | ✅ |
+| RAG  | 200 Odoo-Tasks in Qdrant indexiert | ✅ |
+| T423/424 | Biscotti + Rainbow Sherbet dokumentiert | ✅ |
+
+### n8n Workflows (verifiziert via API)
+9/9 AKTIV | Tägl. Pflanzenerinnerung 19:00 (Fallback) neu
+
+### Backup-Status
+- PBS lokal: 10/10, tägl. 02:00
+- Google Drive: alle VMs bis 30.05., tägl. 02:00
+- fstrim: tägl. 04:00 auf proxmox-anker
+
+### Wolf manuell offen
+- QEMU Guest Agent VMs 220/300/330 (VNC Console)
+- PBS VM 240 SSH Key einrichten
+- T393 Musik-Library Upload
