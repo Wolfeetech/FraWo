@@ -195,6 +195,13 @@ async def vote(
     except Exception as exc:
         logger.error("sync_track_rating_failed", error=str(exc))
 
+    # System chat — throttled, uses member nickname if registered
+    member_res = await db.execute(
+        select(CommunityMember.nickname).where(CommunityMember.client_id == client_id)
+    )
+    nickname = member_res.scalar_one_or_none() or "Anonym"
+    await _vote_chat_throttled(db, track_key, nickname, reaction)
+
     return {"up": up_votes, "down": down_votes, "your_vote": reaction}
 
 
@@ -432,6 +439,31 @@ def odoo_set_partner_supporter(token: str) -> bool:
     except Exception as exc:
         logger.error("odoo_set_partner_supporter_failed", error=str(exc))
         return False
+
+
+async def _system_chat(db: AsyncSession, text: str) -> None:
+    """Post a system event message to chat. Silently skips on error."""
+    try:
+        db.add(ChatMessage(client_id="__system__", display_name="FraWo Funk", text=text))
+        await db.commit()
+    except Exception as exc:
+        logger.warning("system_chat_failed", error=str(exc))
+
+
+async def _vote_chat_throttled(db: AsyncSession, track_key: str, nickname: str, reaction: str) -> None:
+    """Post a vote event to chat — max once per track per 90 seconds to avoid spam."""
+    cutoff = datetime.now(timezone.utc) - timedelta(seconds=90)
+    recent = await db.execute(
+        select(func.count(ChatMessage.id)).where(
+            ChatMessage.client_id == "__system__",
+            ChatMessage.text.like(f"%{track_key[:40]}%"),
+            ChatMessage.created_at > cutoff,
+        )
+    )
+    if (recent.scalar() or 0) == 0:
+        artist_title = track_key.replace("|", " — ")
+        emoji = "🔥" if reaction == "up" else "💀"
+        await _system_chat(db, f"{emoji} {nickname.upper()} — {artist_title[:60]}")
 
 
 def _generate_access_token() -> str:
@@ -771,6 +803,7 @@ async def set_supporter(
     await db.commit()
     await db.refresh(member)
 
+    await _system_chat(db, f"✦ {member.nickname.upper()} ist jetzt VIP Supporter — Danke fürs Support!")
     logger.info("supporter_confirmed", token=token, amount=amount)
     return {
         "status": "success",
