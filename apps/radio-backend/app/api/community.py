@@ -15,23 +15,36 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.config import settings
 from app.core.logging import get_logger
 from app.db.base import get_db
-
-# --- Simple in-memory rate limiter ---
-# {(ip, endpoint): [timestamp, ...]}
-_rate_buckets: dict[tuple[str, str], list[datetime]] = defaultdict(list)
-
-def _check_rate(ip: str, endpoint: str, max_calls: int, window_seconds: int) -> None:
-    now = datetime.now(timezone.utc)
-    cutoff = now - timedelta(seconds=window_seconds)
-    bucket = _rate_buckets[(ip, endpoint)]
-    # Prune old entries
-    _rate_buckets[(ip, endpoint)] = [t for t in bucket if t > cutoff]
-    if len(_rate_buckets[(ip, endpoint)]) >= max_calls:
-        raise HTTPException(status_code=429, detail="Zu viele Anfragen — bitte warten.")
-    _rate_buckets[(ip, endpoint)].append(now)
 from app.models.community import ChatMessage, TrackVote, CommunityMember
 from app.models.track import Track
 from app.models.station import Station
+
+# --- Redis-backed rate limiter (falls back to in-memory if Redis unavailable) ---
+# Multi-worker safe: each worker shares the same Redis counter.
+# In-memory fallback: per-worker, so limits are multiplied by worker count (acceptable degradation).
+_rate_buckets: dict[tuple[str, str], list[datetime]] = defaultdict(list)
+
+async def _check_rate(ip: str, endpoint: str, max_calls: int, window_seconds: int) -> None:
+    try:
+        import redis.asyncio as aioredis
+        r = aioredis.from_url(str(settings.redis_url), socket_connect_timeout=1)
+        key = f"rl:{endpoint}:{ip}"
+        count = await r.incr(key)
+        if count == 1:
+            await r.expire(key, window_seconds)
+        await r.aclose()
+        if count > max_calls:
+            raise HTTPException(status_code=429, detail="Zu viele Anfragen — bitte warten.")
+    except HTTPException:
+        raise
+    except Exception:
+        # Redis unavailable — fall back to in-memory (per-worker, best-effort)
+        now = datetime.now(timezone.utc)
+        cutoff = now - timedelta(seconds=window_seconds)
+        _rate_buckets[(ip, endpoint)] = [t for t in _rate_buckets[(ip, endpoint)] if t > cutoff]
+        if len(_rate_buckets[(ip, endpoint)]) >= max_calls:
+            raise HTTPException(status_code=429, detail="Zu viele Anfragen — bitte warten.")
+        _rate_buckets[(ip, endpoint)].append(now)
 
 logger = get_logger(__name__)
 
@@ -110,7 +123,7 @@ async def vote(
     body: dict,
     db: AsyncSession = Depends(get_db),
 ):
-    _check_rate(_client_id(request), "vote", max_calls=10, window_seconds=60)
+    await _check_rate(_client_id(request), "vote", max_calls=10, window_seconds=60)
     reaction = body.get("reaction")
     if reaction not in ("up", "down"):
         raise HTTPException(status_code=422, detail="reaction must be 'up' or 'down'")
@@ -613,7 +626,7 @@ def odoo_confirm_donation(token: str, amount: float | None = None) -> bool:
 
 @router.post("/register", summary="Register or update a community member (Lead Acquisition)")
 async def register_member(request: Request, body: dict, db: AsyncSession = Depends(get_db)):
-    _check_rate(_client_id(request), "register", max_calls=5, window_seconds=300)
+    await _check_rate(_client_id(request), "register", max_calls=5, window_seconds=300)
     nickname = (body.get("nickname") or "").strip()
     if not nickname or len(nickname) > 50:
         raise HTTPException(status_code=422, detail="nickname must be 1-50 chars")
@@ -701,7 +714,7 @@ def _require_admin(x_admin_key: str = Header(default="")) -> None:
 @router.post("/donate/initiate", summary="Register donation intent before PayPal redirect (DSGVO-compliant)")
 async def donate_initiate(request: Request, body: dict, db: AsyncSession = Depends(get_db)):
     """Called before PayPal redirect — records intent, creates Odoo lead."""
-    _check_rate(_client_id(request), "donate", max_calls=3, window_seconds=3600)
+    await _check_rate(_client_id(request), "donate", max_calls=3, window_seconds=3600)
     nickname = (body.get("nickname") or "").strip()
     email = (body.get("email") or "").strip()
     amount = body.get("amount")
@@ -815,7 +828,7 @@ async def set_supporter(
 
 @router.post("/login", summary="Login/Reclaim session with an access token")
 async def login_member(request: Request, body: dict, db: AsyncSession = Depends(get_db)):
-    _check_rate(_client_id(request), "login", max_calls=10, window_seconds=300)
+    await _check_rate(_client_id(request), "login", max_calls=10, window_seconds=300)
     token = (body.get("access_token") or "").strip().upper()
     if not token:
         raise HTTPException(status_code=422, detail="access_token is required")
@@ -900,3 +913,74 @@ async def submit_request(request_id: str):
     except Exception as exc:
         logger.warning("request_submit_failed", error=str(exc))
         raise HTTPException(status_code=503, detail="Request unavailable")
+
+
+# --- Admin / Curation ---
+
+@router.post("/admin/curate", summary="Auto-curate poor rated tracks")
+async def auto_curate(request: Request, db: AsyncSession = Depends(get_db)):
+    """Find tracks with average_rating <= -3 and remove them from AzuraCast playlists."""
+    admin_secret = request.headers.get("X-Admin-Token")
+    if admin_secret != settings.secret_key:
+        raise HTTPException(status_code=403, detail="Invalid admin token")
+
+    bad_tracks_res = await db.execute(
+        select(Track).where(Track.average_rating <= -3.0)
+    )
+    bad_tracks = bad_tracks_res.scalars().all()
+    
+    if not bad_tracks:
+        return {"status": "ok", "message": "No tracks to curate", "curated": 0}
+
+    curated_count = 0
+    errors = []
+
+    async with httpx.AsyncClient(verify=settings.azuracast_verify_ssl, timeout=10.0) as client:
+        try:
+            resp = await client.get(f"{AZURACAST_BASE}/api/station/{settings.azuracast_station_id}/files", headers=_azura_headers())
+            if resp.status_code == 403:
+                return {"status": "error", "message": "AzuraCast API Key lacks 'Manage Station Media' permission."}
+            resp.raise_for_status()
+            files_data = resp.json()
+            
+            for track in bad_tracks:
+                target_file = None
+                for f in files_data:
+                    if track.azuracast_media_id and f.get("unique_id") == track.azuracast_media_id:
+                        target_file = f
+                        break
+                    if f.get("custom_fields", {}).get("artist") == track.artist and f.get("custom_fields", {}).get("title") == track.title:
+                        target_file = f
+                        break
+                
+                if target_file:
+                    media_id = target_file.get("id")
+                    if media_id:
+                        update_payload = {"playlists": []} 
+                        update_resp = await client.put(
+                            f"{AZURACAST_BASE}/api/station/{settings.azuracast_station_id}/file/{media_id}",
+                            json=update_payload,
+                            headers=_azura_headers()
+                        )
+                        if update_resp.status_code in (200, 204):
+                            curated_count += 1
+                            track.average_rating = 0
+                            track.rating_count = 0
+                        else:
+                            errors.append(f"Failed to update {track.title}: {update_resp.status_code}")
+                else:
+                    errors.append(f"File not found in Azuracast for {track.artist} - {track.title}")
+            
+            await db.commit()
+            
+        except Exception as e:
+            logger.error("curate_failed", error=str(e))
+            raise HTTPException(status_code=500, detail=f"Curation failed: {str(e)}")
+
+    return {
+        "status": "ok",
+        "message": f"Curated {curated_count} tracks.",
+        "curated": curated_count,
+        "errors": errors
+    }
+
