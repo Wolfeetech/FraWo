@@ -37,9 +37,14 @@
 ### 📡 Radio-Node (CT 130, 10.4.0.28, TS: 100.78.88.33)
 - AzuraCast: http://radio.hs27.internal ✅
 - Navidrome: http://navidrome.hs27.internal ✅
-- FraWo Radio Backend: http://radio-api.hs27.internal:9500 ✅
+- FraWo Radio Backend: http://radio-api.hs27.internal:9500 ✅ **V1 live seit 2026-06-01**
+  - Community: Chat, Votes, System-Events, Donation-Flow
+  - Auth: ADMIN_API_KEY gesetzt, /docs hinter Key, Rate-Limits (Redis)
+  - Odoo-Integration: Partner, CRM-Leads, Rechnungen, Email-Quittungen
+  - PayPal: PPWP (Wolf privat w.prinz1101@outlook.de) — PPBIZ bereit für Business
+- funk-community: https://funk.frawo-tech.de ✅
 - Icecast: funk.frawo-tech.de → Relay frawo-docker-1:8000 ✅
-- RAM: 6GB ✅
+- RAM: 6GB ✅ | Disk: 12G/32G (39%) ✅
 
 ### 🐳 frawo-docker-1 (Stockenweiler, TS: 100.94.32.41)
 - Node.js: v22.22.3 (~/.local/node)

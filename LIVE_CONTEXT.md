@@ -45,7 +45,7 @@
 | CT 101 | adguard-slave | 10.4.0.101 | AdGuard Home (Slave/Backup) | ✅ running |
 | CT 110 | storage-node | 10.4.0.30 | CIFS/Samba (media + docs) | ✅ running |
 | CT 120 | vaultwarden | 10.4.0.26 | Vaultwarden (Bitwarden-kompatibel) | ✅ running |
-| CT 130 | radio-node | **10.4.0.28** | AzuraCast (port 80/443/8000) + Navidrome (port 4533) + Samba music-share + Radio Backend API (port 9500) + **funk-community Site (port 9501)** | ✅ running, RAM 4GB, **Tailscale: 100.78.88.33** ✅ — LAN 10.4.0.28 via Tailscale-Routing nur über 100.78.88.33 erreichbar! |
+| CT 130 | radio-node | **10.4.0.28** | AzuraCast (port 80/443/8000) + Navidrome (port 4533) + Samba music-share + Radio Backend API (port **9500**) + **funk-community Site (port 9501)** — V1 deployed 2026-06-01: DSGVO Donation-Flow, Supporter-Beitrag (Trinkgeld), System-Chat, Redis Rate-Limiting, Admin-Key Auth | ✅ running, RAM 6GB, **Tailscale: 100.78.88.33** ✅ |
 | VM 220 | odoo | 10.4.0.22 | Odoo 17 ERP only (AzuraCast abgeschaltet ✅) | ✅ running, restart=unless-stopped, startup order=3 |
 
 ### STOCKENWEILER — Site B (Schiffscontainer, 10.30.8.x)
