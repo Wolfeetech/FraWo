@@ -1109,6 +1109,35 @@ audio { display: none; }
   </div>
 </div>
 
+<!-- DONATION MODAL -->
+<div id="donateModal" class="modal-overlay" style="display: none;">
+  <div class="modal-content">
+    <div class="modal-title">✦ SUPPORT // TRANSMITTER DRIVE</div>
+    <p class="modal-text">Du unterstützt FraWo Funk mit <strong id="donateAmountDisplay">—</strong>. Nach deiner PayPal-Zahlung erhältst du eine Quittung per Email und dein ✦ Supporter-Badge wird aktiviert.</p>
+
+    <form id="donateForm" onsubmit="submitDonation(event)">
+      <div class="form-group">
+        <label for="donateNickname" class="form-label">Nickname *</label>
+        <input type="text" id="donateNickname" class="form-input" required placeholder="z. B. DJ_BODENSEE" maxlength="50">
+      </div>
+      <div class="form-group">
+        <label for="donateEmail" class="form-label">Email-Adresse (für Quittung) *</label>
+        <input type="email" id="donateEmail" class="form-input" required placeholder="deine@email.de" maxlength="100">
+      </div>
+      <div class="form-group" style="display:flex; align-items:flex-start; gap:10px; margin-top:16px;">
+        <input type="checkbox" id="donateDsgvo" required style="margin-top:3px; flex-shrink:0; accent-color:var(--emerald);">
+        <label for="donateDsgvo" style="font-family:var(--font-mono); font-size:10px; color:var(--muted); line-height:1.5; cursor:pointer;">
+          Ich stimme zu, dass mein Nickname und meine Email-Adresse ausschließlich zur Ausstellung einer Quittung und Vergabe des Supporter-Status gespeichert werden. Die Daten werden nicht an Dritte weitergegeben. Widerruf jederzeit per Email an frawo@frawo-tech.de möglich.
+        </label>
+      </div>
+      <div id="donateError" style="color:#EF4444; font-family:var(--font-mono); font-size:11px; margin-bottom:16px; display:none; text-transform:uppercase; letter-spacing:1px;"></div>
+      <button type="submit" class="modal-submit-btn" id="donateSubmitBtn">Weiter zu PayPal →</button>
+    </form>
+
+    <button class="modal-skip-btn" onclick="closeDonateModal()">Abbrechen</button>
+  </div>
+</div>
+
 <header>
   <div class="logo-area">
     <div class="logo">FraWo<span>Funk</span></div>
@@ -1215,21 +1244,23 @@ audio { display: none; }
 
       <!-- PRE-FILLED CHECKOUTS -->
       <div class="sponsor-tiers">
-        <a href="https://www.paypal.com/donate/?business=w.prinz1101@outlook.de&no_recurring=0&currency_code=EUR&amount=2" target="_blank" rel="noopener noreferrer" class="sponsor-tier-card" onclick="claimSupporterStatus()">
+        <button class="sponsor-tier-card" onclick="openDonateModal(2)">
           <div class="tier-amount">2.00 €</div>
           <div class="tier-label">Micro</div>
-        </a>
-        <a href="https://www.paypal.com/donate/?business=w.prinz1101@outlook.de&no_recurring=0&currency_code=EUR&amount=5" target="_blank" rel="noopener noreferrer" class="sponsor-tier-card" onclick="claimSupporterStatus()">
+        </button>
+        <button class="sponsor-tier-card" onclick="openDonateModal(5)">
           <div class="tier-amount">5.00 €</div>
           <div class="tier-label">Foster</div>
-        </a>
-        <a href="https://www.paypal.com/donate/?business=w.prinz1101@outlook.de&no_recurring=0&currency_code=EUR&amount=10" target="_blank" rel="noopener noreferrer" class="sponsor-tier-card" onclick="claimSupporterStatus()">
+        </button>
+        <button class="sponsor-tier-card" onclick="openDonateModal(10)">
           <div class="tier-amount">10.00 €</div>
           <div class="tier-label">Patron</div>
-        </a>
+        </button>
       </div>
-      
-      <button class="supporter-activation" id="supporterVerifyBtn" onclick="claimSupporterStatus()">✦ VIP-Badge aktivieren (Ehrensache)</button>
+
+      <div id="donationPendingNote" style="display:none; font-family:var(--font-mono); font-size:11px; color:var(--emerald); text-align:center; padding:12px; border:1px solid rgba(16,185,129,0.3); margin-top:12px;">
+        ✦ ZAHLUNG AUSSTEHEND — Du erhältst eine Quittung per Email sobald dein Beitrag eingeht.
+      </div>
     </div>
 
     <!-- HIGH-DENSITY IRC LIVE CHAT -->
@@ -1714,6 +1745,7 @@ async function fetchMemberStatus() {
     const d = await r.json();
 
     if (d.registered) {
+      window._memberState = d; // store for donation pre-fill
       modal.style.display = 'none';
       statusB.style.display = 'flex';
       
@@ -1733,7 +1765,7 @@ async function fetchMemberStatus() {
       localStorage.setItem('chat_name', d.nickname);
       
       if (d.is_supporter) {
-        document.getElementById('supporterVerifyBtn').style.display = 'none';
+        document.getElementById('donationPendingNote').style.display = 'none';
       }
       
       applyVipRestrictions(true);
@@ -1856,15 +1888,67 @@ function logoutUser() {
   fetchMemberStatus();
 }
 
-// --- VERIFIED SUPPORTER TRIGGER (Ehrensache Link) ---
-async function claimSupporterStatus() {
+// --- DONATION FLOW ---
+let _donateAmount = 0;
+const PAYPAL_EMAIL = 'w.prinz1101@outlook.de'; // TODO: auf Business-Email umstellen nach PayPal Business Setup
+
+function openDonateModal(amount) {
+  _donateAmount = amount;
+  document.getElementById('donateAmountDisplay').textContent = `€${amount}.00`;
+  document.getElementById('donateError').style.display = 'none';
+  document.getElementById('donateSubmitBtn').disabled = false;
+  document.getElementById('donateSubmitBtn').textContent = 'Weiter zu PayPal →';
+
+  // Pre-fill if already registered
+  const state = window._memberState;
+  if (state && state.nickname) document.getElementById('donateNickname').value = state.nickname;
+  if (state && state.email) document.getElementById('donateEmail').value = state.email;
+
+  document.getElementById('donateModal').style.display = 'flex';
+}
+
+function closeDonateModal() {
+  document.getElementById('donateModal').style.display = 'none';
+}
+
+async function submitDonation(event) {
+  event.preventDefault();
+  const nickname = document.getElementById('donateNickname').value.trim();
+  const email = document.getElementById('donateEmail').value.trim();
+  const consent = document.getElementById('donateDsgvo').checked;
+  const errEl = document.getElementById('donateError');
+  const btn = document.getElementById('donateSubmitBtn');
+
+  errEl.style.display = 'none';
+  btn.disabled = true;
+  btn.textContent = 'Wird registriert…';
+
   try {
-    const r = await fetch(`${API}/set_supporter`, { method: 'POST' });
-    if (r.ok) {
-      await fetchMemberStatus();
-      loadChat(); // Reload chat to see badge active
+    const r = await fetch(`${API}/donate/initiate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nickname, email, amount: _donateAmount, dsgvo_consent: consent }),
+    });
+    const data = await r.json();
+    if (!r.ok) {
+      errEl.textContent = data.detail || 'Fehler — bitte nochmal versuchen.';
+      errEl.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Weiter zu PayPal →';
+      return;
     }
-  } catch {}
+
+    // Registration recorded — now open PayPal
+    closeDonateModal();
+    document.getElementById('donationPendingNote').style.display = 'block';
+    const paypalUrl = `https://www.paypal.com/donate/?business=${encodeURIComponent(PAYPAL_EMAIL)}&no_recurring=0&currency_code=EUR&amount=${_donateAmount}`;
+    window.open(paypalUrl, '_blank', 'noopener,noreferrer');
+  } catch {
+    errEl.textContent = 'Verbindungsfehler — bitte nochmal versuchen.';
+    errEl.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Weiter zu PayPal →';
+  }
 }
 
 // --- IRC LIVE CHAT ---

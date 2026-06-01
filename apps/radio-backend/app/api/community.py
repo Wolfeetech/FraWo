@@ -1,17 +1,34 @@
 """Community API endpoints — votes, chat, song requests."""
 
-from datetime import datetime, timedelta, timezone
+import asyncio
+import secrets
+from collections import defaultdict
+from datetime import date as _date, datetime, timedelta, timezone
 from typing import List
 import xmlrpc.client
 
 import httpx
-from fastapi import APIRouter, Depends, HTTPException, Request, status
+from fastapi import APIRouter, Depends, HTTPException, Header, Request, status
 from sqlalchemy import desc, func, select, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
 from app.core.logging import get_logger
 from app.db.base import get_db
+
+# --- Simple in-memory rate limiter ---
+# {(ip, endpoint): [timestamp, ...]}
+_rate_buckets: dict[tuple[str, str], list[datetime]] = defaultdict(list)
+
+def _check_rate(ip: str, endpoint: str, max_calls: int, window_seconds: int) -> None:
+    now = datetime.now(timezone.utc)
+    cutoff = now - timedelta(seconds=window_seconds)
+    bucket = _rate_buckets[(ip, endpoint)]
+    # Prune old entries
+    _rate_buckets[(ip, endpoint)] = [t for t in bucket if t > cutoff]
+    if len(_rate_buckets[(ip, endpoint)]) >= max_calls:
+        raise HTTPException(status_code=429, detail="Zu viele Anfragen — bitte warten.")
+    _rate_buckets[(ip, endpoint)].append(now)
 from app.models.community import ChatMessage, TrackVote, CommunityMember
 from app.models.track import Track
 from app.models.station import Station
@@ -40,7 +57,7 @@ def _azura_headers() -> dict:
 
 
 async def _azuracast_get(path: str) -> dict:
-    async with httpx.AsyncClient(verify=False, timeout=5.0) as client:
+    async with httpx.AsyncClient(verify=settings.azuracast_verify_ssl, timeout=5.0) as client:
         resp = await client.get(f"{AZURACAST_BASE}{path}", headers=_azura_headers())
         resp.raise_for_status()
         return resp.json()
@@ -58,7 +75,6 @@ def _client_id(request: Request) -> str:
 async def nowplaying():
     try:
         data = await _azuracast_get(f"/api/nowplaying/{settings.azuracast_station_id}")
-        default_listen = _public_url(data["station"]["listen_url"]) or ""
 
         # Build explicit mount URLs — robust regardless of what AzuraCast returns as default
         base = "https://funk.frawo-tech.de/listen/frawo_funk"
@@ -94,6 +110,7 @@ async def vote(
     body: dict,
     db: AsyncSession = Depends(get_db),
 ):
+    _check_rate(_client_id(request), "vote", max_calls=10, window_seconds=60)
     reaction = body.get("reaction")
     if reaction not in ("up", "down"):
         raise HTTPException(status_code=422, detail="reaction must be 'up' or 'down'")
@@ -346,7 +363,10 @@ def odoo_register_or_get_partner(nickname: str, email: str | None, token: str) -
                     'name': f"Radio Hörer: {nickname}",
                     'partner_id': partner_id,
                     'email_from': email if email else False,
-                    'description': f"Hörer hat sich über das Webradio funk.frawo-tech.de registriert.\nZugangscode: {token}"
+                    'description': f"Hörer hat sich über funk.frawo-tech.de registriert.\nZugangscode: {token}",
+                    'stage_id': 1,
+                    'user_id': 6,
+                    'tag_ids': [],
                 }]
             )
             logger.info("odoo_created_crm_lead", lead_id=lead_id)
@@ -415,13 +435,153 @@ def odoo_set_partner_supporter(token: str) -> bool:
 
 
 def _generate_access_token() -> str:
-    import secrets
     chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
     return "FW-" + "".join(secrets.choice(chars) for _ in range(6))
 
 
+def odoo_record_donation(partner_id: int, amount: float, token: str, nickname: str) -> int | None:
+    """Create a pending donation lead in Odoo CRM and return the lead ID."""
+    try:
+        uid, models = _get_odoo_client()
+        if not uid or not models:
+            return None
+        db = settings.odoo_db
+        pw = settings.odoo_password
+        lead_id = models.execute_kw(
+            db, uid, pw, 'crm.lead', 'create',
+            [{
+                'name': f"Supporter-Beitrag €{amount:.0f} — {nickname}",
+                'partner_id': partner_id,
+                'stage_id': 1,
+                'user_id': 6,
+                'description': (
+                    f"Freiwilliger Supporter-Beitrag via funk.frawo-tech.de\n"
+                    f"Betrag: €{amount:.2f}\n"
+                    f"Zugangscode: {token}\n"
+                    f"Status: AUSSTEHEND — Eingang manuell prüfen (PayPal PPWP)"
+                ),
+                'tag_ids': [],
+            }]
+        )
+        logger.info("odoo_donation_lead_created", lead_id=lead_id, amount=amount, token=token)
+        return lead_id
+    except Exception as exc:
+        logger.error("odoo_record_donation_failed", error=str(exc))
+        return None
+
+
+def odoo_confirm_donation(token: str, amount: float | None = None) -> bool:
+    """Confirm donation: create invoice, register PayPal payment, send receipt email."""
+    try:
+        uid, models = _get_odoo_client()
+        if not uid or not models:
+            return False
+        db = settings.odoo_db
+        pw = settings.odoo_password
+        today = _date.today().isoformat()
+
+        # Find partner by token
+        partners = models.execute_kw(
+            db, uid, pw, 'res.partner', 'search_read',
+            [[('ref', '=', token)]],
+            {'fields': ['id', 'name', 'email', 'comment']}
+        )
+        if not partners:
+            return False
+
+        partner = partners[0]
+        pid = partner['id']
+        name = partner['name']
+        email = partner['email']
+        amount_val = amount or 0.0
+
+        # Mark as supporter in partner comment
+        comment = partner.get('comment') or ""
+        if "supporter" not in comment.lower():
+            models.execute_kw(db, uid, pw, 'res.partner', 'write',
+                [[pid], {'comment': (comment.strip() + " [supporter]").strip()}])
+
+        # Update ALL pending donation leads for this partner to Won
+        leads = models.execute_kw(
+            db, uid, pw, 'crm.lead', 'search_read',
+            [[('partner_id', '=', pid), ('stage_id', '=', 1), ('name', 'like', 'Supporter-Beitrag')]],
+            {'fields': ['id']}
+        )
+        if leads:
+            all_ids = [l['id'] for l in leads]
+            models.execute_kw(db, uid, pw, 'crm.lead', 'write',
+                [all_ids, {
+                    'stage_id': 4,
+                    'description': f"Beitrag bestätigt\nZugangscode: {token}\nBetrag: €{amount_val:.2f}",
+                }])
+
+        # Create invoice + register PayPal payment
+        invoice_id = models.execute_kw(db, uid, pw, 'account.move', 'create', [{
+            'move_type': 'out_invoice',
+            'partner_id': pid,
+            'invoice_date': today,
+            'journal_id': 1,  # Customer Invoices (payment registered separately via PPWP)
+            'invoice_line_ids': [(0, 0, {
+                'name': 'Freiwilliger Supporter-Beitrag — FraWo Funk',
+                'quantity': 1.0,
+                'price_unit': amount_val,
+                'account_id': 24,  # 400000 Product Sales
+            })],
+            'narration': f'Supporter-Beitrag (Trinkgeld) via PayPal. Zugangscode: {token}',
+        }])
+        models.execute_kw(db, uid, pw, 'account.move', 'action_post', [[invoice_id]])
+        inv = models.execute_kw(db, uid, pw, 'account.move', 'read',
+            [[invoice_id]], {'fields': ['name']})[0]
+        invoice_number = inv['name']
+
+        payment_id = models.execute_kw(db, uid, pw, 'account.payment.register', 'create', [{
+            'journal_id': 8,
+            'payment_date': today,
+            'amount': amount_val,
+            'communication': f'Supporter-Beitrag {name} {token}',
+        }], {'context': {'active_model': 'account.move', 'active_ids': [invoice_id]}})
+        models.execute_kw(db, uid, pw, 'account.payment.register', 'action_create_payments',
+            [[payment_id]], {'context': {'active_model': 'account.move', 'active_ids': [invoice_id]}})
+
+        logger.info("odoo_invoice_created", invoice=invoice_number, token=token, amount=amount_val)
+
+        # Send receipt email
+        if email:
+            amount_str = f"€{amount_val:.2f}"
+            body = (
+                f"<p>Hallo {name},</p>"
+                f"<hr>"
+                f"<p><strong>Zahlungsbestätigung</strong><br>"
+                f"FraWo GbR — funk.frawo-tech.de<br>"
+                f"Datum: {today}<br>"
+                f"Beleg-Nr.: {invoice_number}<br>"
+                f"Betrag: <strong>{amount_str}</strong><br>"
+                f"Verwendungszweck: Freiwilliger Supporter-Beitrag (Trinkgeld)<br>"
+                f"Zahlungsweg: PayPal</p>"
+                f"<p><em>Dies ist kein steuerlich abzugsfähiger Betrag.</em></p>"
+                f"<hr>"
+                f"<p>Du bist jetzt <strong>✦ VIP Supporter</strong> von FraWo Funk!<br>"
+                f"Dein Zugangscode: <strong>{token}</strong><br>"
+                f"Einlösen auf: <a href='https://funk.frawo-tech.de'>funk.frawo-tech.de</a></p>"
+                f"<p>Danke & keep it funky,<br><strong>Wolf — FraWo Funk</strong></p>"
+            )
+            models.execute_kw(db, uid, pw, 'res.partner', 'message_post', [[pid]], {
+                'body': body,
+                'message_type': 'email',
+                'subtype_xmlid': 'mail.mt_comment',
+                'subject': f"Zahlungsbestätigung {invoice_number} — FraWo Funk ✦",
+            })
+            logger.info("odoo_receipt_sent", partner_id=pid, email=email, invoice=invoice_number)
+
+        return True
+    except Exception as exc:
+        logger.error("odoo_confirm_donation_failed", error=str(exc))
+        return False
+
+
 @router.post("/register", summary="Register or update a community member (Lead Acquisition)")
 async def register_member(request: Request, body: dict, db: AsyncSession = Depends(get_db)):
+    _check_rate(_client_id(request), "register", max_calls=5, window_seconds=300)
     nickname = (body.get("nickname") or "").strip()
     if not nickname or len(nickname) > 50:
         raise HTTPException(status_code=422, detail="nickname must be 1-50 chars")
@@ -434,7 +594,7 @@ async def register_member(request: Request, body: dict, db: AsyncSession = Depen
     candidate_token = _generate_access_token()
 
     # Odoo SSOT Sync & Lead Generation
-    odoo_res = odoo_register_or_get_partner(nickname, email if email else None, candidate_token)
+    odoo_res = await asyncio.to_thread(odoo_register_or_get_partner, nickname, email if email else None, candidate_token)
     token = odoo_res["token"]
     is_supporter = odoo_res["is_supporter"]
 
@@ -500,35 +660,118 @@ async def get_member_status(request: Request, db: AsyncSession = Depends(get_db)
         }
 
 
-@router.post("/set_supporter", summary="Mark a client as a verified supporter")
-async def set_supporter(request: Request, db: AsyncSession = Depends(get_db)):
+def _require_admin(x_admin_key: str = Header(default="")) -> None:
+    key = settings.admin_api_key
+    if not key or x_admin_key != key:
+        raise HTTPException(status_code=403, detail="Forbidden")
+
+
+@router.post("/donate/initiate", summary="Register donation intent before PayPal redirect (DSGVO-compliant)")
+async def donate_initiate(request: Request, body: dict, db: AsyncSession = Depends(get_db)):
+    """Called before PayPal redirect — records intent, creates Odoo lead."""
+    _check_rate(_client_id(request), "donate", max_calls=3, window_seconds=3600)
+    nickname = (body.get("nickname") or "").strip()
+    email = (body.get("email") or "").strip()
+    amount = body.get("amount")
+    consent = body.get("dsgvo_consent", False)
+
+    if not nickname or len(nickname) > 50:
+        raise HTTPException(status_code=422, detail="nickname must be 1-50 chars")
+    if not email or "@" not in email or len(email) > 100:
+        raise HTTPException(status_code=422, detail="Gültige Email-Adresse erforderlich")
+    if not consent:
+        raise HTTPException(status_code=422, detail="DSGVO-Einwilligung erforderlich")
+    if amount not in (2, 5, 10, 2.0, 5.0, 10.0):
+        raise HTTPException(status_code=422, detail="Ungültiger Betrag")
+
+    amount = float(amount)
     client_id = _client_id(request)
+    candidate_token = _generate_access_token()
+
+    # Register or find partner in Odoo
+    odoo_res = await asyncio.to_thread(
+        odoo_register_or_get_partner, nickname, email, candidate_token
+    )
+    token = odoo_res["token"]
+
+    # Find partner_id for the donation lead
+    def _get_partner_id(tok: str) -> int | None:
+        uid, models = _get_odoo_client()
+        if not uid:
+            return None
+        partners = models.execute_kw(
+            settings.odoo_db, uid, settings.odoo_password, 'res.partner', 'search_read',
+            [[('ref', '=', tok)]], {'fields': ['id']}
+        )
+        return partners[0]['id'] if partners else None
+
+    partner_id = await asyncio.to_thread(_get_partner_id, token)
+    if partner_id:
+        await asyncio.to_thread(odoo_record_donation, partner_id, amount, token, nickname)
+
+    # Upsert local CommunityMember
     res = await db.execute(
         select(CommunityMember).where(CommunityMember.client_id == client_id)
     )
     member = res.scalar_one_or_none()
-
-    if not member:
-        # Default guest supporter
-        token = _generate_access_token()
-        odoo_register_or_get_partner("Underground Supporter", None, token)
-        odoo_set_partner_supporter(token)
+    if member:
+        member.nickname = nickname
+        member.email = email
+        member.access_token = token
+    else:
         member = CommunityMember(
             client_id=client_id,
-            nickname="Underground Supporter",
-            email=None,
-            is_supporter=True,
+            nickname=nickname,
+            email=email,
+            is_supporter=False,
             access_token=token,
         )
         db.add(member)
-    else:
-        member.is_supporter = True
-        if member.access_token:
-            odoo_set_partner_supporter(member.access_token)
+
+    await db.commit()
+    logger.info("donation_initiated", nickname=nickname, amount=amount, token=token)
+
+    return {
+        "status": "pending",
+        "access_token": token,
+        "amount": amount,
+        "message": "Zahlungsabsicht registriert. Nach Bestätigung erhältst du eine Quittung per Email.",
+    }
+
+
+@router.post("/set_supporter", summary="Confirm payment and grant supporter status (admin only)")
+async def set_supporter(
+    body: dict,
+    db: AsyncSession = Depends(get_db),
+    _: None = Depends(_require_admin),
+):
+    token = (body.get("access_token") or "").strip().upper()
+    if not token:
+        raise HTTPException(status_code=422, detail="access_token is required")
+    raw_amount = body.get("amount")
+    try:
+        amount = float(raw_amount) if raw_amount is not None else None
+    except (TypeError, ValueError):
+        raise HTTPException(status_code=422, detail="amount must be a number")
+
+    res = await db.execute(
+        select(CommunityMember).where(CommunityMember.access_token == token)
+    )
+    member = res.scalar_one_or_none()
+    if not member:
+        raise HTTPException(status_code=404, detail="Member not found")
+
+    member.is_supporter = True
+
+    # Confirm in Odoo + send email receipt
+    await asyncio.to_thread(
+        odoo_confirm_donation, token, float(amount) if amount else None
+    )
 
     await db.commit()
     await db.refresh(member)
 
+    logger.info("supporter_confirmed", token=token, amount=amount)
     return {
         "status": "success",
         "nickname": member.nickname,
@@ -539,12 +782,13 @@ async def set_supporter(request: Request, db: AsyncSession = Depends(get_db)):
 
 @router.post("/login", summary="Login/Reclaim session with an access token")
 async def login_member(request: Request, body: dict, db: AsyncSession = Depends(get_db)):
+    _check_rate(_client_id(request), "login", max_calls=10, window_seconds=300)
     token = (body.get("access_token") or "").strip().upper()
     if not token:
         raise HTTPException(status_code=422, detail="access_token is required")
 
     # Query Odoo SSOT for session recovery
-    odoo_partner = odoo_get_partner_by_token(token)
+    odoo_partner = await asyncio.to_thread(odoo_get_partner_by_token, token)
     if not odoo_partner:
         raise HTTPException(status_code=404, detail="Zugangscode ungültig")
 
@@ -612,7 +856,7 @@ async def search_requests(q: str):
 @router.post("/requests/{request_id}", summary="Submit a song request")
 async def submit_request(request_id: str):
     try:
-        async with httpx.AsyncClient(verify=False, timeout=5.0) as client:
+        async with httpx.AsyncClient(verify=settings.azuracast_verify_ssl, timeout=5.0) as client:
             resp = await client.post(
                 f"{AZURACAST_BASE}/api/station/{settings.azuracast_station_id}/request/{request_id}",
                 headers=_azura_headers(),

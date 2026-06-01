@@ -1,16 +1,20 @@
 import xmlrpc.client
+import os
 
-url = "http://10.1.0.22:8069"
-db = "FraWo_GbR"
-username = "admin"
-password = "frawo_temp_2026"
+URL = os.environ.get("ODOO_URL", "http://10.4.0.22:8069")
+DB = os.environ.get("ODOO_DB", "FraWo_GbR")
+USER = os.environ.get("ODOO_USER", "wolf@frawo-tech.de")
+PASSWORD = os.environ.get("ODOO_PASSWORD", "")
 
-print(f"Connecting to {url}...")
+if not PASSWORD:
+    print("ERROR: Set ODOO_PASSWORD env var before running.")
+    exit(1)
+
 try:
-    common = xmlrpc.client.ServerProxy(f"{url}/xmlrpc/2/common")
-    uid = common.authenticate(db, username, password, {})
+    common = xmlrpc.client.ServerProxy(f"{URL}/xmlrpc/2/common")
+    uid = common.authenticate(DB, USER, PASSWORD, {})
     if uid:
-        print(f"SUCCESS! UID: {uid}")
+        print(f"OK — uid={uid}")
     else:
         print("FAILED: Authentication failed.")
 except Exception as e:
