@@ -765,7 +765,18 @@ input[type=range]::-webkit-slider-runnable-track {
   color: var(--border-active);
   width: 20px;
 }
-.history-info { min-width: 0; }
+.history-info { min-width: 0; flex: 1; }
+.history-badge {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  flex-shrink: 0;
+  padding: 2px 6px;
+  border-radius: 2px;
+  letter-spacing: 0.5px;
+}
+.history-badge.hot  { color: var(--emerald); border: 1px solid rgba(16,185,129,0.25); }
+.history-badge.cold { color: #EF4444;         border: 1px solid rgba(239,68,68,0.25); }
+.history-badge.none { display: none; }
 .history-title {
   font-size: 13px;
   font-weight: 700;
@@ -1614,23 +1625,43 @@ async function updateNowPlaying() {
   }
 }
 
-function updateHistory(nowPlaying) {
+async function updateHistory(nowPlaying) {
   const list = document.getElementById('historyList');
-  const existing = Array.from(list.querySelectorAll('.history-item'));
+  const trackKey = `${nowPlaying.artist || ''}|${nowPlaying.title || ''}`;
   const newItem = document.createElement('div');
   newItem.className = 'history-item';
   newItem.innerHTML = `
-    <span class="history-num">${(existing.length + 1).toString().padStart(2, '0')}</span>
+    <span class="history-num">01</span>
     <div class="history-info">
       <div class="history-title">${esc(nowPlaying.title)}</div>
       <div class="history-artist">${esc(nowPlaying.artist || 'THE MACHINE')}</div>
     </div>
+    <span class="history-badge none" data-track="${esc(trackKey)}"></span>
   `;
   list.prepend(newItem);
   Array.from(list.querySelectorAll('.history-num')).forEach((el, i) => {
     el.textContent = (i + 1).toString().padStart(2, '0');
   });
   while (list.children.length > 5) list.removeChild(list.lastChild);
+
+  // Fetch votes for this track and show badge
+  try {
+    const r = await fetch(`${API}/votes/${encodeURIComponent(trackKey)}`);
+    if (r.ok) _applyHistoryBadge(newItem.querySelector('.history-badge'), await r.json());
+  } catch {}
+}
+
+function _applyHistoryBadge(badge, votes) {
+  if (!badge) return;
+  const { up = 0, down = 0 } = votes;
+  if (up === 0 && down === 0) return;
+  if (up >= down) {
+    badge.textContent = `🔥 ${up}`;
+    badge.className = 'history-badge hot';
+  } else {
+    badge.textContent = `💀 ${down}`;
+    badge.className = 'history-badge cold';
+  }
 }
 
 // --- VOTING SYSTEM ---
