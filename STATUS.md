@@ -408,3 +408,19 @@ T355 Odoo ACL, T356 Radio Backend, T358 PBS Rebuild, T359 SSH-Keys
 - QEMU Guest Agent VMs 220/300/330 (VNC Console)
 - PBS VM 240 SSH Key einrichten
 - T393 Musik-Library Upload
+
+## Tasks-Abschluss 2026-06-01/02
+
+| Task | Was | |
+|------|-----|--|
+| T164 | OpenClaw Slash-Commands (Telegram-native) | ✅ |
+| T165 | Agent@ Berechtigungen dokumentiert | ✅ |
+| T178 | AzuraCast Branding: Genre, URL, Beschreibung | ✅ |
+| T179 | Radio Mounts: 192/320kbps MP3 + 64kbps AAC+ | ✅ |
+| T180 | Media Library Struktur dokumentiert | ✅ |
+| T181 | Playlists: 7 aktiv, Track-Rating läuft | ✅ |
+| T262 | Franz Onboarding: Checkliste + franz-iphone15 im Netz | 🔄 |
+| T388 | SSH-Key Toolbox → frawo-docker-1 | ✅ |
+| T393 | FraWo_Radio_Library Upload → GDrive läuft (309MB) | 🔄 |
+| T426 | Google Drive rclone (bereits vorhanden) | ✅ |
+| SOUL.md | Klausi Kontext: Infra, Odoo, GrowBox, Audio | ✅ |
