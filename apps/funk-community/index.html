@@ -8,18 +8,33 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap');
 
 :root {
-  --bg: #050505; /* Deep Space Black */
-  --surface: rgba(20, 20, 20, 0.4); /* Glass Grey */
-  --border: rgba(255, 255, 255, 0.05); /* Ultra-thin white outline */
+  --bg: #050505;
+  --surface: rgba(20, 20, 20, 0.4);
+  --border: rgba(255, 255, 255, 0.05);
   --border-active: rgba(255, 255, 255, 0.15);
-  --emerald: #10B981; /* Primary Accent (ON AIR / Play) */
-  --violet: #8B5CF6; /* Secondary Accent (Links / Supporter) */
-  --dark-violet: #4c1d95; /* Inactive states */
-  --text: #ffffff; /* Pure White */
-  --muted: #aaaaaa; /* Muted Silver */
-  --radius: 2px; /* Brutalist sharp corners */
+  --emerald: #10B981;
+  --violet: #8B5CF6;
+  --dark-violet: #4c1d95;
+  --text: #ffffff;
+  --muted: #aaaaaa;
+  --radius: 2px;
   --font: 'Outfit', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
+  /* Theme vars — overridden per show */
+  --theme-accent: #10B981;
+  --theme-accent2: #8B5CF6;
+  --theme-glow1: rgba(16, 185, 129, 0.015);
+  --theme-glow2: rgba(139, 92, 246, 0.015);
+  --theme-bg-tint: rgba(0,0,0,0);
+}
+
+/* Smooth theme transition */
+body, .ambient-glow, .show-name, .live-dot,
+.play-btn, .rating-btn, .sponsor-tier-card,
+.chat-msg-author.vip, .history-badge.hot {
+  transition: background 2s ease, color 1.5s ease,
+              border-color 1.5s ease, box-shadow 2s ease,
+              filter 2s ease;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -40,9 +55,9 @@ body {
   height: 120%;
   z-index: -1;
   pointer-events: none;
-  background: 
-    radial-gradient(circle at 20% 30%, rgba(16, 185, 129, 0.015) 0%, transparent 40%),
-    radial-gradient(circle at 80% 70%, rgba(139, 92, 246, 0.015) 0%, transparent 40%);
+  background:
+    radial-gradient(circle at 20% 30%, var(--theme-glow1) 0%, transparent 40%),
+    radial-gradient(circle at 80% 70%, var(--theme-glow2) 0%, transparent 40%);
   filter: blur(140px);
 }
 
@@ -1356,6 +1371,55 @@ audio { display: none; }
 <script>
 const API = '/api/v1/community';
 
+// --- SHOW THEMES ---
+const SHOW_THEMES = {
+  // Bodensee Sunrise: soft teal-blue, coastal morning
+  'Bodensee Sunrise': {
+    accent:  '#06B6D4', accent2: '#0EA5E9',
+    glow1:   'rgba(6,182,212,0.025)',  glow2: 'rgba(14,165,233,0.018)',
+    emerald: '#06B6D4', violet: '#38BDF8',
+  },
+  // FraWo Club Peaktime: hot violet-pink, strobes
+  'FraWo Club': {
+    accent:  '#D946EF', accent2: '#A855F7',
+    glow1:   'rgba(217,70,239,0.035)', glow2: 'rgba(168,85,247,0.025)',
+    emerald: '#D946EF', violet: '#A855F7',
+  },
+  // Underground Currents: deep red-rust, dystopian
+  'Underground Currents': {
+    accent:  '#EF4444', accent2: '#DC2626',
+    glow1:   'rgba(239,68,68,0.03)',   glow2: 'rgba(220,38,38,0.015)',
+    emerald: '#EF4444', violet: '#F97316',
+  },
+  // Classics & Anthems: warm amber-gold
+  'Classics': {
+    accent:  '#F59E0B', accent2: '#D97706',
+    glow1:   'rgba(245,158,11,0.03)',  glow2: 'rgba(217,119,6,0.015)',
+    emerald: '#F59E0B', violet: '#FBBF24',
+  },
+};
+const DEFAULT_THEME = {
+  accent: '#10B981', accent2: '#8B5CF6',
+  glow1: 'rgba(16,185,129,0.015)', glow2: 'rgba(139,92,246,0.015)',
+  emerald: '#10B981', violet: '#8B5CF6',
+};
+
+let _currentTheme = null;
+function applyShowTheme(showName) {
+  if (!showName) return;
+  const key = Object.keys(SHOW_THEMES).find(k => showName.includes(k));
+  const theme = key ? SHOW_THEMES[key] : DEFAULT_THEME;
+  if (_currentTheme === key) return; // no change
+  _currentTheme = key;
+  const r = document.documentElement.style;
+  r.setProperty('--theme-accent',  theme.accent);
+  r.setProperty('--theme-accent2', theme.accent2);
+  r.setProperty('--theme-glow1',   theme.glow1);
+  r.setProperty('--theme-glow2',   theme.glow2);
+  r.setProperty('--emerald',        theme.emerald);
+  r.setProperty('--violet',         theme.accent2);
+}
+
 let streamUrl = null;
 let currentTrackKey = null;
 let isPlaying = false;
@@ -1587,6 +1651,9 @@ async function updateNowPlaying() {
     document.getElementById('trackTitle').textContent = d.title || 'UNBEKANNT';
     document.getElementById('trackArtist').textContent = d.artist || 'THE UNDERGROUND';
     document.getElementById('stationName').textContent = `${d.station || 'FRAWO FUNK'} // HI-FI`;
+
+    // Apply show theme (smooth transition)
+    if (d.show) applyShowTheme(d.show);
 
     // Show info
     const showInfo = document.getElementById('showInfo');
