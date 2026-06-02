@@ -94,8 +94,12 @@ async def nowplaying():
         standard_url = f"{base}/radio.mp3"
         hifi_url = f"{base}/hifi.mp3"
 
+        # Clean up title — AzuraCast sometimes concatenates multiple versions with semicolons
+        raw_title = data["now_playing"]["song"]["title"] or ""
+        clean_title = raw_title.split(";")[0].strip()
+
         return {
-            "title": data["now_playing"]["song"]["title"],
+            "title": clean_title,
             "artist": data["now_playing"]["song"]["artist"],
             "album": data["now_playing"]["song"]["album"],
             "art": _public_url(data["now_playing"]["song"].get("art")),
@@ -474,9 +478,12 @@ async def _vote_chat_throttled(db: AsyncSession, track_key: str, nickname: str, 
         )
     )
     if (recent.scalar() or 0) == 0:
-        artist_title = track_key.replace("|", " — ")
+        parts = track_key.split("|", 1)
+        artist = parts[0].strip() if len(parts) > 1 else ""
+        title = (parts[1] if len(parts) > 1 else parts[0]).split(";")[0].strip()[:50]
+        label = f"{artist} — {title}" if artist else title
         emoji = "🔥" if reaction == "up" else "💀"
-        await _system_chat(db, f"{emoji} {nickname.upper()} — {artist_title[:60]}")
+        await _system_chat(db, f"{emoji} {nickname.upper()} — {label}")
 
 
 def _generate_access_token() -> str:
