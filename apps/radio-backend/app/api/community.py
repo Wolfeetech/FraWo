@@ -909,17 +909,52 @@ async def login_member(request: Request, body: dict, db: AsyncSession = Depends(
     }
 
 
-# --- Song requests (proxy to AzuraCast) ---
+# --- Song requests ---
+# AzuraCast ignores the ?search= parameter and returns all tracks.
+# We cache the full list and filter server-side.
+_requests_cache: list = []
+_requests_cache_ts: datetime = datetime.min.replace(tzinfo=timezone.utc)
+_REQUESTS_CACHE_TTL = 300  # 5 minutes
+
+
+async def _get_all_requests() -> list:
+    global _requests_cache, _requests_cache_ts
+    now = datetime.now(timezone.utc)
+    if (now - _requests_cache_ts).total_seconds() > _REQUESTS_CACHE_TTL:
+        data = await _azuracast_get(f"/api/station/{settings.azuracast_station_id}/requests")
+        _requests_cache = data if isinstance(data, list) else data.get("result", [])
+        _requests_cache_ts = now
+        logger.info("requests_cache_refreshed", count=len(_requests_cache))
+    return _requests_cache
+
 
 @router.get("/requests/search", summary="Search for requestable tracks")
 async def search_requests(q: str):
     if len(q) < 2:
         raise HTTPException(status_code=422, detail="query too short")
     try:
-        data = await _azuracast_get(
-            f"/api/station/{settings.azuracast_station_id}/requests?search={q}"
-        )
-        return data
+        all_tracks = await _get_all_requests()
+        ql = q.lower()
+
+        def score(item: dict) -> int:
+            song = item.get("song", {})
+            title = (song.get("title") or "").lower()
+            artist = (song.get("artist") or "").lower()
+            text = (song.get("text") or "").lower()
+            combined = f"{artist} {title} {text}"
+            if ql == title or ql == artist:
+                return 0
+            if title.startswith(ql) or artist.startswith(ql):
+                return 1
+            if ql in title or ql in artist:
+                return 2
+            if ql in combined:
+                return 3
+            return 99
+
+        results = [t for t in all_tracks if score(t) < 99]
+        results.sort(key=score)
+        return results[:10]
     except Exception as exc:
         logger.warning("request_search_failed", error=str(exc))
         raise HTTPException(status_code=503, detail="Search unavailable")

@@ -1781,7 +1781,7 @@ async function searchRequests() {
       return; 
     }
     const fixArt = u => u ? u.replace(/^https?:\/\/(172\.20\.0\.1|localhost|azuracast)/, window.location.origin) : '';
-    el.innerHTML = items.slice(0, 4).map(item => {
+    el.innerHTML = items.slice(0, 8).map(item => {
       const art = fixArt(item.song?.art || '');
       return `<div class="wish-item">
         <div style="display:flex;align-items:center;gap:12px;min-width:0;">
