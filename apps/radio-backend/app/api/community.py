@@ -98,6 +98,25 @@ async def nowplaying():
         raw_title = data["now_playing"]["song"]["title"] or ""
         clean_title = raw_title.split(";")[0].strip()
 
+        # Extract show name from playlist field ("Show: Bodensee Sunrise (Chill)" → "Bodensee Sunrise (Chill)")
+        raw_playlist = data["now_playing"].get("playlist", "") or ""
+        show_name = raw_playlist.removeprefix("Show: ").strip() if raw_playlist else None
+
+        # Fetch next show from schedule
+        next_show = None
+        try:
+            schedule = await _azuracast_get(f"/api/station/{settings.azuracast_station_id}/schedule")
+            if isinstance(schedule, list):
+                upcoming = [s for s in schedule if not s.get("is_now") and s.get("name", "").startswith("Show:")]
+                if upcoming:
+                    s = upcoming[0]
+                    next_show = {
+                        "name": s["name"].removeprefix("Show: ").strip(),
+                        "start_timestamp": s.get("start_timestamp"),
+                    }
+        except Exception:
+            pass
+
         return {
             "title": clean_title,
             "artist": data["now_playing"]["song"]["artist"],
@@ -106,12 +125,12 @@ async def nowplaying():
             "listeners": data["listeners"]["current"],
             "elapsed": data["now_playing"].get("elapsed", 0),
             "duration": data["now_playing"]["song"].get("length", 0),
-            # Legacy key — keep for backward compat, points to standard
             "stream_url": standard_url,
-            # Explicit quality streams
             "standard_stream_url": standard_url,
             "hifi_stream_url": hifi_url,
             "station": data["station"]["name"],
+            "show": show_name,
+            "next_show": next_show,
         }
     except Exception as exc:
         logger.warning("azuracast_nowplaying_failed", error=str(exc))

@@ -330,7 +330,32 @@ main {
   color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 1px;
-  margin-bottom: 28px;
+  margin-bottom: 12px;
+}
+.show-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.show-name {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--emerald);
+  background: rgba(16,185,129,0.08);
+  border: 1px solid rgba(16,185,129,0.25);
+  padding: 3px 8px;
+}
+.show-next {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 1px;
+  text-transform: uppercase;
 }
 
 /* PLAY CONTROL ROW */
@@ -1211,7 +1236,12 @@ audio { display: none; }
           <div class="station-tag" id="stationName">FRAWO FUNK // HI-FI</div>
           <div class="track-title" id="trackTitle">Verbindung wird hergestellt...</div>
           <div class="track-artist" id="trackArtist">Bitte warten</div>
-          
+
+          <div class="show-info" id="showInfo" style="display:none;">
+            <span class="show-name" id="showName"></span>
+            <span class="show-next" id="showNext"></span>
+          </div>
+
           <div class="player-controls">
             <button class="play-btn" id="playBtn" title="Play/Pause">▶</button>
             <div class="volume-slider-wrap">
@@ -1557,6 +1587,22 @@ async function updateNowPlaying() {
     document.getElementById('trackTitle').textContent = d.title || 'UNBEKANNT';
     document.getElementById('trackArtist').textContent = d.artist || 'THE UNDERGROUND';
     document.getElementById('stationName').textContent = `${d.station || 'FRAWO FUNK'} // HI-FI`;
+
+    // Show info
+    const showInfo = document.getElementById('showInfo');
+    if (d.show) {
+      document.getElementById('showName').textContent = `⬡ ${d.show}`;
+      if (d.next_show) {
+        const t = new Date(d.next_show.start_timestamp * 1000);
+        const hm = t.toLocaleTimeString('de-DE', {hour:'2-digit', minute:'2-digit'});
+        document.getElementById('showNext').textContent = `→ ${d.next_show.name} um ${hm}`;
+      } else {
+        document.getElementById('showNext').textContent = '';
+      }
+      showInfo.style.display = 'flex';
+    } else {
+      showInfo.style.display = 'none';
+    }
     document.getElementById('listenerCount').textContent = `${d.listeners} HÖRER`;
     document.getElementById('liveDot').classList.add('on');
     document.getElementById('liveLabel').textContent = 'LIVE // ON AIR';
