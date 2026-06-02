@@ -28,6 +28,18 @@
   --theme-bg-tint: rgba(0,0,0,0);
 }
 
+/* Show background photo layer */
+.show-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background-size: cover;
+  background-position: center 30%;
+  opacity: 0;
+  transition: opacity 3s ease, background-image 0s;
+}
+.show-bg.visible { opacity: 1; }
+
 /* Smooth theme transition */
 body, .ambient-glow, .show-name, .live-dot,
 .play-btn, .rating-btn, .sponsor-tier-card,
@@ -1140,6 +1152,7 @@ audio { display: none; }
 </head>
 <body>
 
+<div class="show-bg" id="showBg"></div>
 <div class="ambient-glow"></div>
 
 <!-- LEADS GENERATION MODAL -->
@@ -1373,11 +1386,12 @@ const API = '/api/v1/community';
 
 // --- SHOW THEMES ---
 const SHOW_THEMES = {
-  // Bodensee Sunrise: soft teal-blue, coastal morning
+  // Bodensee Sunrise: soft teal-blue, coastal morning, beach photo
   'Bodensee Sunrise': {
     accent:  '#06B6D4', accent2: '#0EA5E9',
     glow1:   'rgba(6,182,212,0.025)',  glow2: 'rgba(14,165,233,0.018)',
     emerald: '#06B6D4', violet: '#38BDF8',
+    bg: 'url(/bodensee.jpg)', bgOpacity: 0.08,
   },
   // FraWo Club Peaktime: hot violet-pink, strobes
   'FraWo Club': {
@@ -1409,8 +1423,9 @@ function applyShowTheme(showName) {
   if (!showName) return;
   const key = Object.keys(SHOW_THEMES).find(k => showName.includes(k));
   const theme = key ? SHOW_THEMES[key] : DEFAULT_THEME;
-  if (_currentTheme === key) return; // no change
+  if (_currentTheme === key) return;
   _currentTheme = key;
+
   const r = document.documentElement.style;
   r.setProperty('--theme-accent',  theme.accent);
   r.setProperty('--theme-accent2', theme.accent2);
@@ -1418,6 +1433,17 @@ function applyShowTheme(showName) {
   r.setProperty('--theme-glow2',   theme.glow2);
   r.setProperty('--emerald',        theme.emerald);
   r.setProperty('--violet',         theme.accent2);
+
+  // Background photo
+  const bg = document.getElementById('showBg');
+  if (theme.bg) {
+    bg.style.backgroundImage = theme.bg;
+    bg.style.opacity = theme.bgOpacity || 0.07;
+    bg.classList.add('visible');
+  } else {
+    bg.classList.remove('visible');
+    bg.style.opacity = 0;
+  }
 }
 
 let streamUrl = null;
