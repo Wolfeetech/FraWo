@@ -102,18 +102,25 @@ async def nowplaying():
         raw_playlist = data["now_playing"].get("playlist", "") or ""
         show_name = raw_playlist.removeprefix("Show: ").strip() if raw_playlist else None
 
-        # Fetch next show from schedule
+        # Fetch schedule (current + upcoming shows)
         next_show = None
+        schedule_items = []
         try:
-            schedule = await _azuracast_get(f"/api/station/{settings.azuracast_station_id}/schedule")
-            if isinstance(schedule, list):
-                upcoming = [s for s in schedule if not s.get("is_now") and s.get("name", "").startswith("Show:")]
-                if upcoming:
-                    s = upcoming[0]
-                    next_show = {
-                        "name": s["name"].removeprefix("Show: ").strip(),
+            raw_schedule = await _azuracast_get(f"/api/station/{settings.azuracast_station_id}/schedule")
+            if isinstance(raw_schedule, list):
+                for s in raw_schedule[:8]:
+                    name = s.get("name", "")
+                    if not name.startswith("Show:"):
+                        continue
+                    item = {
+                        "name": name.removeprefix("Show: ").strip(),
                         "start_timestamp": s.get("start_timestamp"),
+                        "end_timestamp": s.get("end_timestamp"),
+                        "is_now": bool(s.get("is_now")),
                     }
+                    schedule_items.append(item)
+                    if not item["is_now"] and next_show is None:
+                        next_show = {"name": item["name"], "start_timestamp": item["start_timestamp"]}
         except Exception:
             pass
 
@@ -145,6 +152,7 @@ async def nowplaying():
             "station": data["station"]["name"],
             "show": show_name,
             "next_show": next_show,
+            "schedule": schedule_items,
             "song_history": song_history,
         }
     except Exception as exc:

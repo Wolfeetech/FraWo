@@ -795,6 +795,28 @@ input[type=range]::-webkit-slider-runnable-track {
 }
 
 /* HISTROY DECK */
+.schedule-list { display: flex; flex-direction: column; gap: 0; }
+.schedule-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 0; border-bottom: 1px solid var(--border);
+}
+.schedule-item:last-child { border-bottom: none; }
+.schedule-item.now { background: rgba(16,185,129,0.04); margin: 0 -8px; padding: 10px 8px; }
+.schedule-time {
+  font-family: var(--font-mono); font-size: 10px;
+  color: var(--muted); min-width: 80px; letter-spacing: 0.5px;
+}
+.schedule-name {
+  font-size: 12px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.schedule-item.now .schedule-name { color: var(--emerald); }
+.schedule-now-tag {
+  font-family: var(--font-mono); font-size: 9px;
+  color: var(--emerald); border: 1px solid rgba(16,185,129,0.3);
+  padding: 1px 5px; margin-left: auto; flex-shrink: 0;
+}
+
 .history-deck {
   display: flex;
   flex-direction: column;
@@ -1365,39 +1387,10 @@ audio { display: none; }
       <div class="history-deck" id="historyList"></div>
     </div>
 
-    <!-- PROGRAM SCHEDULE -->
-    <div class="panel">
-      <div class="panel-header">Sendeplan (Vorschau)</div>
-      <div class="schedule-list">
-        <div class="schedule-item">
-          <div class="schedule-time">06:00 - 10:00</div>
-          <div class="schedule-info">
-            <strong>Bodensee Sunrise</strong>
-            <span>Chillout & Ambient Sessions</span>
-          </div>
-        </div>
-        <div class="schedule-item">
-          <div class="schedule-time">10:00 - 18:00</div>
-          <div class="schedule-info">
-            <strong>FraWo Workday</strong>
-            <span>Indie, Groove & Deep House</span>
-          </div>
-        </div>
-        <div class="schedule-item">
-          <div class="schedule-time">18:00 - 00:00</div>
-          <div class="schedule-info">
-            <strong>FraWo Club Peaktime</strong>
-            <span>Techno & Elektronik</span>
-          </div>
-        </div>
-        <div class="schedule-item">
-          <div class="schedule-time">00:00 - 06:00</div>
-          <div class="schedule-info">
-            <strong>Night Owl Session</strong>
-            <span>Dark & Minimal</span>
-          </div>
-        </div>
-      </div>
+    <!-- PROGRAM SCHEDULE (live from AzuraCast) -->
+    <div class="panel" id="schedulePanel" style="display:none;">
+      <div class="panel-header">Sendeplan</div>
+      <div class="schedule-list" id="scheduleList"></div>
     </div>
 
     <!-- FRAWO GBR BRAND SPOTLIGHT (SELF-ADVERTISING) -->
@@ -1731,6 +1724,23 @@ async function updateNowPlaying() {
     } else {
       showInfo.style.display = 'none';
     }
+    // Schedule panel
+    if (d.schedule && d.schedule.length) {
+      const panel = document.getElementById('schedulePanel');
+      const list = document.getElementById('scheduleList');
+      panel.style.display = '';
+      list.innerHTML = d.schedule.map(s => {
+        const start = new Date(s.start_timestamp * 1000);
+        const end   = new Date(s.end_timestamp   * 1000);
+        const fmt = t => t.toLocaleTimeString('de-DE', {hour:'2-digit', minute:'2-digit'});
+        return `<div class="schedule-item${s.is_now ? ' now' : ''}">
+          <span class="schedule-time">${fmt(start)} – ${fmt(end)}</span>
+          <span class="schedule-name">${esc(s.name)}</span>
+          ${s.is_now ? '<span class="schedule-now-tag">ON AIR</span>' : ''}
+        </div>`;
+      }).join('');
+    }
+
     document.getElementById('listenerCount').textContent = `${d.listeners} HÖRER`;
     document.getElementById('liveDot').classList.add('on');
     document.getElementById('liveLabel').textContent = 'LIVE // ON AIR';
