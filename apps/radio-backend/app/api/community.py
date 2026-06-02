@@ -117,6 +117,20 @@ async def nowplaying():
         except Exception:
             pass
 
+        # Build song history (recently played, cleaned titles)
+        song_history = []
+        for h in data.get("song_history", []):
+            song = h.get("song", {})
+            t = (song.get("title") or "").split(";")[0].strip()
+            a = song.get("artist") or ""
+            if t:
+                song_history.append({
+                    "title": t,
+                    "artist": a,
+                    "art": _public_url(song.get("art")),
+                    "played_at": h.get("played_at"),
+                })
+
         return {
             "title": clean_title,
             "artist": data["now_playing"]["song"]["artist"],
@@ -131,6 +145,7 @@ async def nowplaying():
             "station": data["station"]["name"],
             "show": show_name,
             "next_show": next_show,
+            "song_history": song_history,
         }
     except Exception as exc:
         logger.warning("azuracast_nowplaying_failed", error=str(exc))

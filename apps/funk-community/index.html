@@ -1663,7 +1663,14 @@ async function updateNowPlaying() {
       currentTrackKey = key;
       resetVotes();
       loadVotes(key);
-      updateHistory(d);
+
+      // On first load: pre-populate history from AzuraCast song_history (recently played)
+      const list = document.getElementById('historyList');
+      if (!list.children.length && d.song_history && d.song_history.length) {
+        // Show oldest first (reverse), newest at top after loop
+        for (const h of [...d.song_history].reverse()) await updateHistory(h);
+      }
+      await updateHistory(d);
     }
   } catch {
     document.getElementById('liveLabel').textContent = 'OFFLINE';
@@ -1748,7 +1755,11 @@ async function vote(reaction) {
     document.getElementById('upCount').textContent = d.up;
     document.getElementById('downCount').textContent = d.down;
     highlightVote(reaction);
-    
+
+    // Update history badge for currently playing track immediately
+    const histBadge = document.querySelector(`.history-badge[data-track="${CSS.escape(currentTrackKey)}"]`);
+    if (histBadge) _applyHistoryBadge(histBadge, d);
+
     const voteStatus = document.getElementById('voteStatus');
     voteStatus.textContent = reaction === 'up' ? 'VOTE POSITIV SYNCHRONISIERT' : 'VOTE NEGATIV SYNCHRONISIERT';
     setTimeout(() => { voteStatus.textContent = ''; }, 3000);
