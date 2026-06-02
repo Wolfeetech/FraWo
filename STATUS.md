@@ -424,3 +424,11 @@ T355 Odoo ACL, T356 Radio Backend, T358 PBS Rebuild, T359 SSH-Keys
 | T393 | FraWo_Radio_Library Upload → GDrive läuft (309MB) | 🔄 |
 | T426 | Google Drive rclone (bereits vorhanden) | ✅ |
 | SOUL.md | Klausi Kontext: Infra, Odoo, GrowBox, Audio | ✅ |
+
+## ⚠️ AUSFALL proxmox-anker — 2026-06-02 ~00:00
+
+**Status:** SSH timeout, Tailscale relay aktiv aber SSH nicht erreichbar.
+**Auswirkung:** Odoo, Nextcloud, Paperless, Radio (AzuraCast), PBS — alle 530.
+**Nicht betroffen:** frawo-docker-1 (n8n, Grafana, Klausi, Radio-Relay läuft).
+**Ursache unbekannt:** Möglichst rclone fuse mount-Hänger nach rsync-Kill, oder separate Hardware-/Netzwerk-Problem.
+**Maßnahme:** Wolf muss proxmox-anker physisch prüfen/neustarten.
