@@ -432,3 +432,33 @@ T355 Odoo ACL, T356 Radio Backend, T358 PBS Rebuild, T359 SSH-Keys
 **Nicht betroffen:** frawo-docker-1 (n8n, Grafana, Klausi, Radio-Relay läuft).
 **Ursache unbekannt:** Möglichst rclone fuse mount-Hänger nach rsync-Kill, oder separate Hardware-/Netzwerk-Problem.
 **Maßnahme:** Wolf muss proxmox-anker physisch prüfen/neustarten.
+
+## HP ProDesk / stockenweiler-pve (2026-06-02)
+
+**Hardware:** i7-7700T, 16GB RAM, 238GB NVMe + 931GB NTFS HDD + 1.8TB NTFS HDD
+**Tailscale:** 100.91.20.116 | **LAN:** 192.168.2.153 | **PVE:** 9.1.4
+
+### Aktuell laufende VMs/CTs
+| ID | Name | Status |
+|----|------|--------|
+| VM360 | homeassistant-eltern | running |
+| VM210 | azuracast-vm | running |
+| CT108 | vaultwarden | running |
+| CT110 | n8n | running |
+| CT109 | pbs | running |
+
+### Upload läuft (systemd frawo-upload.service)
+- `gdrive:Stockenweiler/data_family` ← /mnt/data_family (931GB)
+- `gdrive:Stockenweiler/music_hdd` ← /mnt/music_hdd (1.8TB)
+- Logs: /var/log/frawo-uploads/
+
+### Nach Upload: Neuinstallation (T449)
+- PVE clean install
+- Windows VM: Alois ALF-Programm (User only, kein Admin)
+- HA Satellite: Stockenweiler Geräte → Anker-HA als Zentrale
+- Tailscale: Verbindung zu Anker
+
+### Architektur-Entscheidung
+- HA-Zentrale: Anker VM210
+- HA-Satellite: Stockenweiler (lightweight, für lokale Geräte)
+- Alois: NUR User, kein Admin (hat Konfiguration beschädigt)
