@@ -462,3 +462,18 @@ T355 Odoo ACL, T356 Radio Backend, T358 PBS Rebuild, T359 SSH-Keys
 - HA-Zentrale: Anker VM210
 - HA-Satellite: Stockenweiler (lightweight, für lokale Geräte)
 - Alois: NUR User, kein Admin (hat Konfiguration beschädigt)
+
+## Session 2026-06-03/04 — Zusammenfassung
+
+### Fortschritte
+- **frawo.tech**: NS propagiert, Cloudflare Zone aktiv, 9 DNS-Records gesetzt, Caddy Redirects konfiguriert
+- **AzuraCast Radio**: 982GB Musik-SSD gemountet, 1385 Tracks in Main Rotation — Radio spielt wieder!
+- **HP ProDesk (stockenweiler-pve)**: rclone installiert, 2.7TB GDrive-Upload läuft (frawo-upload.service)
+- **Surface Go Portal**: Neues Live-Dashboard (3 Tabs: Home/Radio/Monitor, kein target=_blank)
+- **Odoo Tasks**: T436-T461 angelegt (frawo.tech Migration + 3-Standort HA)
+
+### Offen für Wolf (T461)
+- Cloudflare: Zero Trust → Tunnels → Public Hostnames → frawo.tech eintragen (5 Min)
+
+### Bekanntes Problem
+- proxmox-anker (Lenovo) crasht wiederholt → SPOF bis HP ProDesk als 2. Knoten eingebunden
