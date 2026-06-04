@@ -501,3 +501,26 @@ T355 Odoo ACL, T356 Radio Backend, T358 PBS Rebuild, T359 SSH-Keys
 - BIOS: Power Management auf Performance, kein Sleep/Hibernate
 - PVE: power_button = ignore
 - Langfristig: HP ProDesk als 2. Knoten → PVE Cluster + HA
+
+## Session 2026-06-04 — Fortschritte
+
+### Fixes
+- e1000e NIC Hang: Absturzursache gefunden + gefixt (SmartPowerDownEnable=0, pcie_aspm=off, GRUB)
+- PBS Backup: 02:00 → 03:30 verschoben
+- Kernel Watchdog: kernel.panic=30 aktiv
+
+### Tasks erledigt
+- T262 Franz Onboarding ✅
+- T115 Medienspeicher ✅  
+- T102/T103 Computer/Standort ✅
+- Service Alert n8n (ersetzt Grafana, keine No-Value Alarme mehr)
+- Agent@ Poller (neue Tasks → Telegram-Benachrichtigung)
+
+### Google Business
+- T465: Verifizierungsvideo 04.06. eingereicht (Frist 09.06.)
+- T466: Integration Best Practice geplant
+
+### Wolf offen
+- T461: frawo.tech CF Tunnel Public Hostnames (5 Min)
+- T465: Google Business nach 09.06. vervollständigen
+- T98: Logo-Entscheidung
