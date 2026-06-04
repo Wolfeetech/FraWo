@@ -477,3 +477,27 @@ T355 Odoo ACL, T356 Radio Backend, T358 PBS Rebuild, T359 SSH-Keys
 
 ### Bekanntes Problem
 - proxmox-anker (Lenovo) crasht wiederholt → SPOF bis HP ProDesk als 2. Knoten eingebunden
+
+## ⚠️ KRITISCH: proxmox-anker Crash-Pattern (2026-06-03/04)
+
+**4 Abstürze in 24h:**
+- 02.06. ~00:00 — Stromausfall oder Freeze
+- 03.06. ~09:XX — nach Neustart, nach ~8h
+- 03.06. ~21:25 — nach ~12h  
+- 04.06. ~XX:XX — nach Neustart heute Nacht
+
+**Symptome:**
+- SSH Timeout (kein ICMP-Timeout, nur TCP-Verbindungsabbruch)
+- Tailscale zeigt 'offline, last seen Xmin ago' (nicht sofort)
+- Keine automatische Recovery
+
+**Mögliche Ursachen:**
+- Lenovo Thin Centre Thermal Throttling / Shutdown
+- PVE Kernel Panic (brauche journalctl -xb -1 Output)
+- Memory-Fehler unter Last (PBS Backup-Job 02:00 als Auslöser?)
+- Power Management (ACPI Sleep-States)
+
+**Sofortmassnahmen:**
+- BIOS: Power Management auf Performance, kein Sleep/Hibernate
+- PVE: power_button = ignore
+- Langfristig: HP ProDesk als 2. Knoten → PVE Cluster + HA
