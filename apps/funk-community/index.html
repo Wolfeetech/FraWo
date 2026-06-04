@@ -1877,11 +1877,9 @@ async function loadVotes(key) {
 
 async function vote(reaction) {
   if (!currentTrackKey) return;
+  // Votes fuer alle Hoerer - Login nur fuer Chat/Requests
   const isVip = localStorage.getItem('radio_user_registered') === 'true';
-  if (!isVip) {
-    showRegisterModal();
-    return;
-  }
+  const displayName = isVip ? localStorage.getItem('chat_name') : 'Gaest';
   try {
     const r = await fetch(`${API}/vote`, {
       method: 'POST',
@@ -2028,10 +2026,13 @@ async function fetchMemberStatus() {
         applyVipRestrictions(false);
         updateNowPlaying(); // Force update stream URL
       } else {
-        modal.style.display = 'flex';
-        statusB.style.display = 'none';
-        // Reset forms inside modal to register by default
-        showRegisterForm();
+        // Erstbesuch: auto Gast-Modus, Radio sofort hoeren
+        localStorage.setItem('radio_user_registered', 'skipped');
+        modal.style.display = 'none';
+        statusB.style.display = 'flex';
+        statusB.innerHTML = '<div style="display:flex;align-items:center;gap:8px"><span style="background:#222;color:#aaa;border:1px solid #444;padding:2px 8px;font-size:10px">GAEST</span><span>FraWo Funk laeuft</span></div><button class="status-action-btn" onclick="showRegisterModal()">VIP beitreten</button>';
+        applyVipRestrictions(false);
+        updateNowPlaying();
       }
     }
   } catch {
