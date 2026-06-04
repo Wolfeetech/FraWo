@@ -1,5 +1,10 @@
 # Radio Network Status Report
 
+> [!WARNING]
+> **HISTORISCHER SNAPSHOT (nicht entscheidungsfuehrend).**
+> Verbindliche Runtime-SSOT: `OPERATIONS/RADIO_OPERATIONS_SSOT.md`
+
+
 **Datum:** 2026-04-30
 **Status:** CONSOLIDATION IN PROGRESS
 

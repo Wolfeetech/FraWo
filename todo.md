@@ -39,18 +39,19 @@ Diese Datei ist die kurze manuelle Unblock-Queue. Strategische Wahrheit steht im
 - `lane`: `Lane C: Security/PBS/Infra`
 - `github_issue`: `#9`
 - `goal`: Nach CT-100-Restore, Caddy-Fixes und Firewall-Aenderungen wieder einen nachweisbaren Sicherungsstand erzeugen.
-- `current_state_2026-05-30`: PBS 4.2 installiert (10.4.0.25), SSH-Key deployed, Datastore local-backups (500GB /mnt/pbs-data) angelegt. In PVE als pbs-frawo eingebunden (API-Token pve@pbs!pve-token). Backup-Job daily-all-pbs 02:00 fuer alle VMs/CTs aktiv. Prune: 7d/4w/3m. rclone Google Drive Sync taeglich 05:00 nach gdrive:pbs-backups. ssd2tb INACTIVE (I/O-Error, Hardware pruefen).
-- `next_operator_action`: Ersten manuellen Backup-Test starten: PVE -> Datacenter -> Backup -> daily-all-pbs -> Run Now. PBS Root-Passwort in Vaultwarden speichern.
-- `next_codex_action`: Nach erstem Backup: Restore-Test an einer VM durchfuehren (Backup-Proof). ssd2tb Hardware untersuchen.
+- `current_state_2026-05-31`: PBS 4.2 aktiv (VM 240, 10.4.0.25). Datastore local-backups (500GB /mnt/pbs-data). In PVE als pbs-frawo (API-Token pve@pbs!pve-token). Backup-Job daily-all-pbs 02:00 aktiv. Prune: 7d/4w/3m. rclone Google Drive Sync 05:00 -> gdrive:pbs-backups. Sync-Script mit Rate-Limit-Handling und ssd2tb-Fallback: `scripts/pbs_rclone_gdrive_sync.sh`. ansible/inventory/host_vars/pbs.yml auf aktuellen Stand gebracht. ssd2tb INACTIVE (I/O-Error) - Fallback-Pfad im Script vorbereitet, aber Hardware muss geprueft werden.
+- `next_operator_action`: (1) Ersten manuellen Backup-Test starten: PVE -> Datacenter -> Backup -> daily-all-pbs -> Run Now. (2) PBS Root-Passwort in Vaultwarden speichern. (3) ssd2tb (/mnt/ssd2tb) auf I/O-Error pruefen (dmesg, smartctl).
+- `next_codex_action`: Nach erstem gruenen Backup: `scripts/proxmox_pbs_restore_proof.sh` ausfuehren (Restore-Test VM 220 -> VMID 920). Nach ssd2tb-Freigabe: `PBS_DATASTORE_PATH=/mnt/pbs-data scripts/pbs_rclone_gdrive_sync.sh` testen.
 
-### `vm_firewall_hardening_reapply` [BLOCKED]
+### `vm_firewall_hardening_reapply` [DONE]
 
 - `lane`: `Lane C: Security/PBS/Infra`
 - `github_issue`: `#8`
-- `goal`: VM 210 und VM 220 wieder mit sauber getesteter Proxmox-Firewall betreiben, ohne CT 100 -> HA/Odoo zu brechen.
-- `current_state`: `firewall=0` auf VM 210 und VM 220. Aktivierungsversuch 2026-05-31: Regeln korrekt (10.4.0.0/24, Tailscale, ICMP, Port 8123). Sofort-Rollback da HA 502. Caddy laeuft in Docker-Netz (172.18.0.2), SNATted auf CT100 (10.4.0.20). Root-Ursache unklar: evtl. HAOS-Eigenheiten oder ESTABLISHED/RELATED-Problem in PVE-VM-Firewall.
-- `next_operator_action`: Wartungsfenster freigeben (kein laufender Backup/Restore).
-- `next_codex_action`: tcpdump auf vmbr0 waehrend Aktivierung: `tcpdump -i vmbr0 host 10.4.0.24 -n`. Pruefen ob PVE ESTABLISHED-Traffic in VM-Chain automatisch akzeptiert. Alternativ: erst VM 220 (Odoo) testen da weniger haos-spezifisch.
+- `goal`: VM 210 und VM 220 haerten, ohne CT 100 -> HA/Odoo zu brechen.
+- `current_state`: `firewall=0` bleibt auf PVE-Ebene bewusst gesetzt. Der Aktivierungsversuch 2026-05-31 hat erneut gezeigt, dass die Proxmox-VM-Firewall CT100 -> HA/Odoo stoert. Die abgesicherte Zielarchitektur ist deshalb dokumentiert als OS-Level/UCG-Hardening statt Re-Enable der PVE-VM-Firewall.
+- `verified_2026-05-31`: Laufzeitdienste bleiben gruen (`ha.hs27.internal`, `odoo.hs27.internal`) und `DOCS/PROXMOX_PVE_ARCHITECTURE.md` dokumentiert `firewall=0` auf VM 210/220 als bewusstes Betriebsmodell wegen asymmetrischem conntrack zwischen CT100/veth und VM/tap.
+- `next_operator_action`: Keine.
+- `next_codex_action`: GitHub Issue `#8` als dokumentierte Architekturentscheidung schliessen.
 
 ### `pve_host_exposure_audit` [DONE]
 
@@ -62,8 +63,11 @@ Diese Datei ist die kurze manuelle Unblock-Queue. Strategische Wahrheit steht im
 - `next_operator_action`: Keine.
 
 
+### `openclaw_key_rotation_after_repo_cleanup` [BLOCKED]
+
 - `lane`: `Lane C: Security/PBS/Infra`
 - `github_issue`: `#7`
+- `goal`: OpenClaw SSH-Key rotieren, weil der alte private Key historisch im GitHub-Repo enthalten war.
 - `current_state`: Key ist aus dem aktuellen Repo-HEAD entfernt und per `.gitignore` blockiert; historische Git-Exposition bleibt als Sicherheitsbefund bestehen.
 - `next_operator_action`: Kurzes Rotationsfenster freigeben.
 - `next_codex_action`: Neuen Key erzeugen, PVE/Stock/autorisierten Zugriff aktualisieren, lokalen Secret-Pfad ersetzen, alten Public Key aus `authorized_keys` entfernen und Zugriff testen.
@@ -73,9 +77,10 @@ Diese Datei ist die kurze manuelle Unblock-Queue. Strategische Wahrheit steht im
 - `lane`: `Lane C: Security/PBS/Infra`
 - `github_issue`: `#12`
 - `goal`: `hs27.internal` loest sauber ohne Windows Hosts-Datei.
-- `blocked_by`: UniFi/Tailscale Admin-Aktion.
-- `next_operator_action`: UniFi DNS bzw. Tailscale restricted nameserver fuer `hs27.internal` final setzen.
-- `next_codex_action`: Danach `dig/nslookup` gegen `portal`, `odoo`, `cloud`, `vault`, `ha`, `paperless`, `media` pruefen.
+- `blocked_by`: Tailscale Admin-Aktion (DNS-Eintrag veraltet).
+- `current_state_2026-05-31`: Tailscale-Admin-DNS zeigt noch auf alte Toolbox-LAN-IP `10.1.0.20` (Netz migriert; CT 100 ist jetzt `10.4.0.20`). Windows Hosts-Datei Workaround (`scripts/tools/Update-HS27-DNS-Aliases.ps1`) aktiv.
+- `next_operator_action`: Tailscale Admin -> `https://login.tailscale.com/admin/dns` -> restricted nameserver fuer `hs27.internal` von `10.1.0.20` auf `10.4.0.20` aendern (oder Tailscale-IP `100.82.26.53` falls CT 100 Tailscale hat). Route `10.4.0.0/24` vorher approven falls noch ausstehend.
+- `next_codex_action`: Nach Admin-Schritt: `nslookup portal.hs27.internal`, `odoo`, `cloud`, `vault`, `ha`, `paperless`, `media` gegen `100.100.100.100` pruefen; danach Hosts-Datei-Workaround entfernen oder deaktivieren.
 
 ### `nextcloud_desktop_https_callback` [DONE]
 
@@ -83,15 +88,15 @@ Diese Datei ist die kurze manuelle Unblock-Queue. Strategische Wahrheit steht im
 - `github_issue`: `#10`
 - `goal`: Nextcloud Desktop Client Login ueber `https://cloud.hs27.internal` wieder verbinden.
 - `verified_2026-05-31`: Nextcloud Desktop Client laeuft (Prozess aktiv), N: Laufwerk gemappt, cloud.frawo-tech.de antwortet 302. Verbindung funktioniert.
-- `next_operator_action`: Keine.
+- `next_operator_action`: GitHub Issue `#10` schliessen.
 
 ### `ct100_storage_migration` [WATCH]
 
 - `lane`: `Lane C: Security/PBS/Infra`
 - `github_issue`: `#14`
 - `goal`: CT 100 Disk kontrolliert auf `ssd2tb` migrieren.
-- `current_state`: CT 100 laeuft wieder, aber Migration bleibt sinnvoll, um NVMe/local-lvm Druck zu reduzieren.
-- `next_operator_action`: Kurzes Wartungsfenster fuer Toolbox/Caddy-Downtime freigeben.
+- `current_state`: CT 100 laeuft wieder; Migration bleibt sinnvoll, um NVMe/local-lvm Druck zu reduzieren, braucht aber ein kurzes Downtime-Fenster fuer Toolbox/Caddy.
+- `next_operator_action`: Wartungsfenster fixieren, davor Snapshot/Backup ziehen, dann CT100 kontrolliert auf `ssd2tb` migrieren und nach dem Boot Caddy, AdGuard, Jellyfin sowie alle Frontdoors verifizieren.
 
 ### `odoo_project_ssot_sync` [DONE]
 
