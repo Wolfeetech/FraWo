@@ -39,3 +39,18 @@
 - Alle Logins: @frawo-tech.de → @frawo.tech
 - Cloudflare Tunnel: HA-Failover auf frawo-docker-1
 - Equipment: Canton CT2000 in Maintenance-Register
+
+## Update 2026-06-05 Abend
+
+### Abgeschlossen
+- Radio-Voting live: vote/votes Endpoints verifiziert, Frontend v3 deployed
+- Radio-Backend neu gebaut (community Router Prefix /api/v1/community korrekt)
+- Firewall: DOCKER-USER gesetzt, rpcbind gestoppt
+- Alle Logins: @frawo-tech.de → @frawo.tech (0 alte Referenzen)
+- Roadmap: 5-Phasen-Plan in GitHub + Odoo Epics T481-T485
+- Kanban: 30 → 7 Stages
+- Cloudflare Tunnel HA: Failover-Connector auf frawo-docker-1
+
+### Blockiert (Wolf nötig)
+- Nextcloud Filestore Transfer: SSH-Key auf VM300 (10.4.0.21) einrichten
+- HA-Setup: ha.frawo.tech → Account anlegen (3 Min)
