@@ -598,3 +598,24 @@ frawo-docker-1 (Stockenweiler, 31GB RAM) → alle produktiven Dienste
 - Nextcloud Filestore (5.2GB Transfer laeuft)
 - Paperless Media Transfer laeuft
 - Passwort-Audit (wolf in Vaultwarden pruefen)
+
+## Stand 2026-06-05 (Abend)
+
+### frawo.tech LIVE - alles produktiv
+- Odoo: https://frawo.tech
+- Radio: https://funk.frawo.tech (neues Frontend, 203 Zeilen)
+- Nextcloud: https://cloud.frawo.tech
+- Navidrome: https://navidrome.frawo.tech
+- Grafana: https://status.frawo.tech
+- HomeAssistant: https://ha.frawo.tech (Setup ausstehend)
+- frawo-tech.de: 301 Redirect auf frawo.tech
+
+### Noch offen (Wolf)
+- HA einrichten: https://ha.frawo.tech
+- OpenAI Key rotieren
+- Logo-Entscheidung (T98)
+- NC Filestore (5.2GB Transfer)
+
+### PoE Switch
+- TP-Link 5-Port PoE+ eingebaut
+- RPi 4 via PoE betreiben moeglich
