@@ -560,3 +560,20 @@ frawo-docker-1 (Stockenweiler, 31GB RAM) → alle produktiven Dienste
 - AzuraCast: Backup von CT130 eingespielt, Station konfiguriert
 - Odoo: Docker Compose bereit, DB-Dump läuft (297MB → 65MB komprimiert)
 - Nächste Schritte: DB restore, Cloudflare Tunnel switch
+
+## Migration frawo-docker-1 — aktuell (2026-06-05)
+
+### Was auf frawo-docker-1 läuft
+- **Odoo** Port 8069 — Datenmigration OK (387 Tasks), wartet auf CF Tunnel Fix
+- **AzuraCast Radio** Port 80 — voll migriert, Musik via rclone GDrive
+- **Nextcloud** Port 8888 — DB migriert, Filestore Transfer läuft (5.2GB)
+- **Paperless** Port 8011 — DB + Media Transfer läuft
+
+### Blocker (Wolf macht)
+- CF Dashboard: frawo-tech.de Public Hostname → localhost:80 ändern
+- CF Dashboard: frawo.tech Public Hostnames eintragen
+
+### Passwörter neue Services
+- Paperless: wolf / FrawoWolf2026! (NEU)
+- Nextcloud: wolf / (aus Backup)
+- Odoo: wolf@frawo-tech.de / FrawoWolf2026! (unverändert)
