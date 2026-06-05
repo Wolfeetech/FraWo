@@ -540,3 +540,23 @@ Ursache: Intel e1000e Hardware Unit Hang auf Lenovo Thin Centre
 **Langfristig:**
 - HP ProDesk als 2. PVE-Knoten nach GDrive-Upload
 - PVE Cluster + HA = auto-Failover
+
+## Migration: frawo-docker-1 als Haupt-Infra (2026-06-05)
+
+### Strategie
+proxmox-anker (Lenovo) → nur noch Backup-Node
+frawo-docker-1 (Stockenweiler, 31GB RAM) → alle produktiven Dienste
+
+### Fortschritt
+- ✅ rclone auf frawo-docker-1 installiert + GDrive verbunden
+- ✅ Musik-Mount: /home/wolf/mnt/music via rclone GDrive
+- ✅ AzuraCast Backup von CT130 auf frawo-docker-1 eingespielt
+- ✅ Odoo Docker-Compose vorbereitet
+- 🔄 Odoo DB Migration läuft
+- ⏳ Cloudflare Tunnel Switch: nach Verifikation
+
+## Migration frawo-docker-1 (2026-06-05)
+- rclone GDrive Mount: /home/wolf/mnt/music (Musik-Library)
+- AzuraCast: Backup von CT130 eingespielt, Station konfiguriert
+- Odoo: Docker Compose bereit, DB-Dump läuft (297MB → 65MB komprimiert)
+- Nächste Schritte: DB restore, Cloudflare Tunnel switch
