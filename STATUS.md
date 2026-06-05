@@ -577,3 +577,24 @@ frawo-docker-1 (Stockenweiler, 31GB RAM) → alle produktiven Dienste
 - Paperless: wolf / FrawoWolf2026! (NEU)
 - Nextcloud: wolf / (aus Backup)
 - Odoo: wolf@frawo-tech.de / FrawoWolf2026! (unverändert)
+
+## MIGRATION ABGESCHLOSSEN (2026-06-05)
+
+### frawo.tech ist jetzt die finale Domain
+
+| Service | URL | Status |
+|---------|-----|--------|
+| Odoo ERP | https://frawo.tech | LIVE |
+| Nextcloud | https://cloud.frawo.tech | LIVE |
+| Radio | https://funk.frawo.tech | LIVE |
+| Navidrome | https://navidrome.frawo.tech | LIVE |
+| frawo-tech.de | Redirect zu frawo.tech (301) | aktiv |
+
+### frawo-docker-1 traegt alle Produktiv-Dienste
+- Odoo, Nextcloud, Paperless, AzuraCast, n8n, Grafana
+- proxmox-anker: nur noch HAOS + PBS Backup
+
+### Was noch fehlt
+- Nextcloud Filestore (5.2GB Transfer laeuft)
+- Paperless Media Transfer laeuft
+- Passwort-Audit (wolf in Vaultwarden pruefen)
