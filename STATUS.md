@@ -524,3 +524,19 @@ T355 Odoo ACL, T356 Radio Backend, T358 PBS Rebuild, T359 SSH-Keys
 - T461: frawo.tech CF Tunnel Public Hostnames (5 Min)
 - T465: Google Business nach 09.06. vervollständigen
 - T98: Logo-Entscheidung
+
+## KRITISCH: e1000e NIC Problem (2026-06-04/05)
+
+**6 Abstürze in ~36 Stunden**
+
+Ursache: Intel e1000e Hardware Unit Hang auf Lenovo Thin Centre
+- Software-Fixes (pcie_aspm=off, SmartPowerDownEnable=0): nicht ausreichend
+- NIC hängt sich unvorhersehbar auf
+
+**SOFORTMASSNAHME (Wolf kauft):**
+- USB Gigabit Ethernet Adapter (~12EUR): TP-Link UE300
+- Neues Interface statt nic0 in PVE konfigurieren
+
+**Langfristig:**
+- HP ProDesk als 2. PVE-Knoten nach GDrive-Upload
+- PVE Cluster + HA = auto-Failover
