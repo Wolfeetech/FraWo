@@ -61,3 +61,12 @@
 - T168 Haftpflicht + T167 Geschäftskonto dokumentiert
 - SOUL.md aktualisiert (Klausi)
 - GrowBox: kein Backlog mehr
+
+## Update 2026-06-06
+- CI: FRAWO_CI_GUIDELINES.md in SSOT (Purple #a855f7, Forest #0d4d4d, Inter, Sharp Corners)
+- funk.frawo.tech: auf offizielle CI umgestellt
+- Odoo Website: CI bereits aktiv (21k chars Custom CSS)
+- N26 + Qonto Journals in Odoo
+- GrowBox: 7 Stages, 20 Pflanzen, kein Backlog
+- Business: CRM DE, Services, Templates
+- Tasks: Haftpflicht/Qonto/N26 als Wolf-Tasks eingetragen
