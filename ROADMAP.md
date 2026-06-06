@@ -207,3 +207,16 @@ ANKER PVE (Primary)              STOCKENWEILER (Site B, 10.30.8.x)
 ---
 
 *Letzte Aktualisierung: 2026-05-28 — Claude Sonnet 4.6 + Wolf — Vault-Recovery, Dokument-Ökosystem (Nextcloud+Paperless), Kalender-Brainstorm*
+
+---
+*Zuletzt aktualisiert: 2026-06-06*
+
+## Status je Phase
+
+| Phase | Epic | Stand |
+|-------|------|-------|
+| Phase 1 Fundament | T481 | 🚀 95% — Radio-Voting live, Firewall gesichert, Tunnel-HA |
+| Phase 2 Studio & Radio | T482 | ⚙️ 30% — Radio live, Voting läuft, Backend stabil |
+| Phase 3 Business | T483 | 🚀 40% — CRM DE, Services-Portfolio, Angebots-Templates |
+| Phase 4 Smart Home | T484 | 📋 5% — HA läuft, Setup ausstehend |
+| Phase 5 Wachstum | T485 | 📋 10% — GrowBox Kanban-Stages, Pflanzen eingeordnet |
