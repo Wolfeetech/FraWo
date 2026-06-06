@@ -54,3 +54,10 @@
 ### Blockiert (Wolf nötig)
 - Nextcloud Filestore Transfer: SSH-Key auf VM300 (10.4.0.21) einrichten
 - HA-Setup: ha.frawo.tech → Account anlegen (3 Min)
+
+## Update 2026-06-06 Morgen
+- 3 n8n Workflows: frawo-tech.de → frawo.tech gefixt
+- Franz: Internal User (Admin-Rechte entfernt)
+- T168 Haftpflicht + T167 Geschäftskonto dokumentiert
+- SOUL.md aktualisiert (Klausi)
+- GrowBox: kein Backlog mehr
