@@ -1,5 +1,5 @@
-# FraWo Website — Redesign Brief v3
-Stand: 2026-04-23 | Für den nächsten Agenten
+﻿# FraWo Website â€” Redesign Brief v3
+Stand: 2026-04-23 | FÃ¼r den nÃ¤chsten Agenten
 
 ---
 
@@ -12,11 +12,11 @@ Der aktuelle Stand (v2, frawo_homepage_blocks.html) ist deployed aber NICHT das 
 
 ## Stilrichtung
 
-**Referenz:** NTS Radio (nts.live) — nicht kopieren, aber Gefühl übernehmen:
+**Referenz:** NTS Radio (nts.live) â€” nicht kopieren, aber GefÃ¼hl Ã¼bernehmen:
 - Starke, klare Typografie
-- Redaktionell, seriös, kein Agentur-Sprech
-- Dark Mode als Primär, Light Mode als Alternative (beide müssen funktionieren)
-- Wenig Dekoration, Content trägt das Design
+- Redaktionell, seriÃ¶s, kein Agentur-Sprech
+- Dark Mode als PrimÃ¤r, Light Mode als Alternative (beide mÃ¼ssen funktionieren)
+- Wenig Dekoration, Content trÃ¤gt das Design
 - Kein Spielkram, kein Gradient-Overload
 
 **Nicht:** Sunshine Live (zu verspielt), kein Bootstrap-Einheitsbrei
@@ -25,42 +25,42 @@ Der aktuelle Stand (v2, frawo_homepage_blocks.html) ist deployed aber NICHT das 
 
 ## Sprache & Ton
 
-- **Direkte Du-Ansprache** — "Du brauchst Ton für deinen Abend" nicht "Sie suchen..."
+- **Direkte Du-Ansprache** â€” "Du brauchst Ton fÃ¼r deinen Abend" nicht "Sie suchen..."
 - Kein Marketingsprech, keine Superlative
-- Kurze Sätze, konkret
-- Texte sind Platzhalter — Wolf passt sie selbst an
+- Kurze SÃ¤tze, konkret
+- Texte sind Platzhalter â€” Wolf passt sie selbst an
 - Zwei Zielgruppen klar trennen (siehe unten)
 
 ---
 
 ## Struktur: B2C / B2B Trennung
 
-### B2C — Für Künstler, Bands, private Veranstalter
-- Emotional, zugänglich
+### B2C â€” FÃ¼r KÃ¼nstler, Bands, private Veranstalter
+- Emotional, zugÃ¤nglich
 - "Du willst einen Abend der klingt wie er klingen soll"
 - Fokus: Ton, Licht, unkomplizierter Ablauf
 - CTA: direkt mailen / anrufen
 
-### B2B — Für Locations, Veranstalter, Unternehmen
-- Technisch, auf Augenhöhe
-- "Ihr plant Events — wir liefern die Technik die nicht auffällt"
-- Fokus: Zuverlässigkeit, Planungssicherheit, wiederholbare Abläufe
-- CTA: Anfrage / Erstgespräch
+### B2B â€” FÃ¼r Locations, Veranstalter, Unternehmen
+- Technisch, auf AugenhÃ¶he
+- "Ihr plant Events â€” wir liefern die Technik die nicht auffÃ¤llt"
+- Fokus: ZuverlÃ¤ssigkeit, Planungssicherheit, wiederholbare AblÃ¤ufe
+- CTA: Anfrage / ErstgesprÃ¤ch
 
-**Trennung:** Eigene Sektionen auf der Homepage ODER zwei Einstiegspunkte in der Navigation — nach Best Practice für kleine Dienstleister die wachsen wollen. Entscheidung kann Wolf treffen, Seite soll erweiterbar sein.
+**Trennung:** Eigene Sektionen auf der Homepage ODER zwei Einstiegspunkte in der Navigation â€” nach Best Practice fÃ¼r kleine Dienstleister die wachsen wollen. Entscheidung kann Wolf treffen, Seite soll erweiterbar sein.
 
 ---
 
-## Radio Player (AzuraCast) — VORBEREITUNG, nicht live
+## Radio Player (AzuraCast) â€” VORBEREITUNG, nicht live
 
-**Status:** AzuraCast aktuell nicht funktional. Nächste Woche wieder verfügbar (Limit-Reset).
+**Status:** AzuraCast aktuell nicht funktional. NÃ¤chste Woche wieder verfÃ¼gbar (Limit-Reset).
 
 **Was trotzdem gebaut werden soll:**
-- Sticky Footer Player — immer sichtbar, unten
-- Skeleton: Play/Pause Button, Sendungsname, Lautstärke-Slider
+- Sticky Footer Player â€” immer sichtbar, unten
+- Skeleton: Play/Pause Button, Sendungsname, LautstÃ¤rke-Slider
 - Happy / Unhappy Rating (Thumbs up / down)
-- UI vorhanden, aber disabled / "Coming soon" bis AzuraCast läuft
-- Stream-URL: `/radio/listen/frawo_funk/radio.mp3` (unverändert aus altem Code)
+- UI vorhanden, aber disabled / "Coming soon" bis AzuraCast lÃ¤uft
+- Stream-URL: `/radio/listen/frawo_funk/radio.mp3` (unverÃ¤ndert aus altem Code)
 - Player ist **Zusatz-Feature**, nicht Kern der Seite
 
 ---
@@ -68,24 +68,23 @@ Der aktuelle Stand (v2, frawo_homepage_blocks.html) ist deployed aber NICHT das 
 ## Technischer Status (Stand 2026-04-23)
 
 ### Was deployed ist (aber ersetzt werden soll):
-- `ir.ui.view` ID=503: Homepage (website.homepage) — v2 HTML
-- `ir.ui.view` ID=496: Contact (website.contactus) — v2 HTML
+- `ir.ui.view` ID=503: Homepage (website.homepage) â€” v2 HTML
+- `ir.ui.view` ID=496: Contact (website.contactus) â€” v2 HTML
 - CSS: `user_custom_rules.scss` im Container (ID=3 in ir.asset, bundle: web.assets_frontend)
 - Bilder: ID 858 (service-stage.jpg Platzhalter), ID 859 (hero-bodensee.jpg Platzhalter)
 
 ### Kritisches Problem: CSS rendert nicht
-Die Seite sieht "wie Word" aus — komplett ungestylt. CSS ist im Bundle (720KB, 0 Fehler),
-aber die fw-Klassen scheinen nicht zu greifen. Muss der nächste Agent debuggen BEVOR
+Die Seite sieht "wie Word" aus â€” komplett ungestylt. CSS ist im Bundle (720KB, 0 Fehler),
+aber die fw-Klassen scheinen nicht zu greifen. Muss der nÃ¤chste Agent debuggen BEVOR
 er das neue Design deployed.
 
-Mögliche Ursache:
+MÃ¶gliche Ursache:
 - SCSS kompiliert aber klassen landen nicht im Output (nur :root vars sind nachweisbar)
-- Odoo-Theme (theme_treehouse) könnte overriden
-- ir.asset Reihenfolge prüfen: ID=3 ist last in bundle, sollte prio haben
+- Odoo-Theme (theme_treehouse) kÃ¶nnte overriden
+- ir.asset Reihenfolge prÃ¼fen: ID=3 ist last in bundle, sollte prio haben
 
 ### SSH / Zugang:
 ```
-SSH Key:    c:\Users\Admin\Workspace\Repos\FraWo\Codex\openclaw_id_ed25519
 Proxmox:    root@100.69.179.87 (Tailscale)
 VM 220:     qm guest exec 220 bash -- -c "..."
 Container:  docker exec odoo-web-1 bash -c "..."
@@ -96,18 +95,18 @@ Admin PW:   frawo_temp_2026
 
 ### Bilder:
 - Platzhalter laufen (IDs 858/859)
-- Echte Fotos: wolfstudiopc (Tailscale 100.98.31.60) — SMB noch nicht freigegeben
-  → Wolf muss Freigabe aktivieren oder Fotos rüberkopieren
+- Echte Fotos: wolfstudiopc (Tailscale 100.98.31.60) â€” SMB noch nicht freigegeben
+  â†’ Wolf muss Freigabe aktivieren oder Fotos rÃ¼berkopieren
 
 ---
 
-## Design System (für v3)
+## Design System (fÃ¼r v3)
 
 CSS-Klassen-Prefix: `fw-` beibehalten  
 Font: Inter (Google Fonts, bereits geladen)  
 Dark Mode Primary: `prefers-color-scheme: dark` + manuelle Toggle-Option  
 
-### Vorschlag Token-Struktur für Dark/Light:
+### Vorschlag Token-Struktur fÃ¼r Dark/Light:
 ```css
 :root {
   /* Light */
@@ -115,7 +114,7 @@ Dark Mode Primary: `prefers-color-scheme: dark` + manuelle Toggle-Option
   --fw-surface: #ffffff;
   --fw-text: #0a0a0a;
   --fw-text-2: #3a3a3a;
-  --fw-accent: #e05500;  /* kräftiger als bisheriges Amber */
+  --fw-accent: #e05500;  /* krÃ¤ftiger als bisheriges Amber */
 }
 [data-theme="dark"], .dark {
   --fw-bg: #0a0a0a;
@@ -128,15 +127,15 @@ Dark Mode Primary: `prefers-color-scheme: dark` + manuelle Toggle-Option
 
 ---
 
-## Was der nächste Agent als erstes tun soll
+## Was der nÃ¤chste Agent als erstes tun soll
 
 1. **CSS-Problem diagnostizieren:** Warum rendert die Seite ungestylt?
-   - Bundle prüfen: `curl http://10.1.0.22:8069/web/assets/1/.../web.assets_frontend.min.css | grep fw-hero`
-   - Wenn leer: ir.asset ID=3 und user_custom_rules.scss im Container prüfen
+   - Bundle prÃ¼fen: `curl http://10.1.0.22:8069/web/assets/1/.../web.assets_frontend.min.css | grep fw-hero`
+   - Wenn leer: ir.asset ID=3 und user_custom_rules.scss im Container prÃ¼fen
    
 2. **Neues Design-System umsetzen** (nach diesem Brief)
 
-3. **Player-Skeleton bauen** (disabled, schön, vorbereitet)
+3. **Player-Skeleton bauen** (disabled, schÃ¶n, vorbereitet)
 
 4. **B2C/B2B Struktur** implementieren
 
@@ -146,5 +145,5 @@ Dark Mode Primary: `prefers-color-scheme: dark` + manuelle Toggle-Option
 
 ## Referenzen
 
-- nts.live — Stil, nicht Inhalt
-- Keine weiteren Vorgaben — Eigene kreative Entscheidungen sind erwünscht
+- nts.live â€” Stil, nicht Inhalt
+- Keine weiteren Vorgaben â€” Eigene kreative Entscheidungen sind erwÃ¼nscht

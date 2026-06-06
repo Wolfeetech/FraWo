@@ -1,102 +1,72 @@
-# Aktueller Status — FraWo GbR Infrastruktur
-**Stand: 2026-05-28 | Geprüft durch: Claude Sonnet 4.6 + Wolf**
+# FraWo GbR — Aktueller Status
 
----
+> Stand: 2026-06-05 | Vollständige Roadmap: ROADMAP.md
 
-## Dienste: LIVE-Status
+## Dienste (alle frawo.tech)
 
-### 🌍 Öffentliche Dienste (Cloudflare Tunnel)
-| Domain | Status | Backend |
-|--------|--------|---------|
-| frawo-tech.de | ✅ HTTP 200 | VM 220 Odoo |
-| cloud.frawo-tech.de | ✅ HTTP 200/302 | VM 300 Nextcloud |
-| funk.frawo-tech.de | ✅ HTTP 200 | CT 130 AzuraCast |
+| Dienst | URL | Status |
+|--------|-----|--------|
+| Odoo 17 | https://frawo.tech | ✅ |
+| Nextcloud | https://cloud.frawo.tech | ✅ |
+| Grafana | https://status.frawo.tech | ✅ |
+| Radio | https://funk.frawo.tech | ✅ (Anker) |
+| Navidrome | https://navidrome.frawo.tech | ✅ (Anker) |
+| HomeAssistant | https://ha.frawo.tech | ⚙️ Setup ausstehend |
+| Paperless | intern :8011 | ✅ |
+| n8n | intern :5678 | ✅ |
+| Qdrant | intern :6333 | ✅ (gesichert) |
 
-### 🖥️ Odoo (VM 220, 10.4.0.22)
-- Port: 127.0.0.1:8069 (kein Direktzugriff) ✅
-- DB: FraWo_GbR ✅
-- Swap: 2GB aktiv ✅
-- Login: wolf@frawo-tech.de / [Siehe Vaultwarden] (Vault: Odoo ERP — Admin)
-- Restart: unless-stopped + PVE startup order=3 ✅
+## Infra
 
-### ☁️ Nextcloud (VM 300, 10.4.0.21)
-- Intern: http://cloud.hs27.internal ✅
-- Öffentlich: https://cloud.frawo-tech.de ✅ HTTP 200
-- Admin: frawoadmin / [Siehe Vaultwarden] (Vault aktualisiert 2026-05-28)
-- Ordner: /Dokumente/{Eingang,Archiv,Verträge,Rechnungen} ✅
-- trusted_proxies: 10.4.0.0/24 + 100.64.0.0/10 ✅
+| Node | IP Tailscale | Rolle |
+|------|-------------|-------|
+| frawo-docker-1 | 100.94.32.41 | Docker primär + CF Tunnel |
+| proxmox-anker | 100.69.179.87 | HA, PBS, Radio, Navidrome |
+| stockenweiler-pve | 100.91.20.116 | HP ProDesk, Upload läuft |
 
-### 📄 Paperless-ngx (VM 330, 10.4.0.23)
-- Intern: http://paperless.hs27.internal ✅
-- Admin: frawoadmin / [Siehe Vaultwarden] (Vault aktualisiert 2026-05-28)
-- API Token: [Siehe Vaultwarden]
-- Post-consume Script: /usr/local/bin/paperless-to-nc.sh → NC/Archiv ✅
-- rclone-Sync: alle 5 min NC/Eingang → consume_dir (cron auf VM 330) ✅
+## Offene Punkte (Wolf)
 
-### 🔐 Vaultwarden (CT 120, 10.4.0.26)
-- URL: http://vault.hs27.internal ✅
-- Wolf Master-PW: [Siehe Vaultwarden] (Recovery 2026-05-27)
-- 437 Ciphers (429 Org + 8 persönlich) ✅
-- Admin-Token: [Siehe Vaultwarden] (argon2id) ✅
-- SIGNUPS_ALLOWED: false ✅
+- [ ] ha.frawo.tech einrichten (Browser, 3 Min)
+- [ ] Canton CT2000 Tweeter einbauen (Lieferung 08.-11.06.)
+- [ ] HP ProDesk Upload abwarten (~384 GB total, 9% done)
+- [ ] Franz Bienert Nachname verifizieren
+- [ ] Passwörter in Vaultwarden eintragen
 
-### 📡 Radio-Node (CT 130, 10.4.0.28, TS: 100.78.88.33)
-- AzuraCast: http://radio.hs27.internal ✅
-- Navidrome: http://navidrome.hs27.internal ✅
-- FraWo Radio Backend: http://radio-api.hs27.internal:9500 ✅
-- Icecast: funk.frawo-tech.de → Relay frawo-docker-1:8000 ✅
-- RAM: 6GB (hot-upgraded) ✅
+## Letzte Änderungen
 
-### 🐳 frawo-docker-1 (Stockenweiler, TS: 100.94.32.41)
-- Services: n8n (5678), Portainer (9000), Grafana (3001), Prometheus (9091), Icecast-Relay (8000)
-- UFW: aktiv — deny in, allow Tailscale + 10.30.8.0/24 ✅
-- sudo-PW unbekannt → nsenter-Workaround via Docker ✅
+- Kanban: 30 → 7 Stages (sauber)
+- Firewall: DOCKER-USER gesetzt, rpcbind gestoppt
+- Alle Logins: @frawo-tech.de → @frawo.tech
+- Cloudflare Tunnel: HA-Failover auf frawo-docker-1
+- Equipment: Canton CT2000 in Maintenance-Register
 
-### 🏠 Toolbox (CT 100, 10.4.0.20, TS: 100.82.26.53)
-- Caddy: Up ✅ (Edge-Proxy für alle hs27.internal Domains)
-- AdGuard: Up, admin / [Siehe Vaultwarden] ✅
-- cloudflared: aktiv (systemd), 6 CF-Tunnel-Routen ✅
-- Uptime Kuma: http://uptime.hs27.internal/status/frawo ✅
+## Update 2026-06-05 Abend
 
----
+### Abgeschlossen
+- Radio-Voting live: vote/votes Endpoints verifiziert, Frontend v3 deployed
+- Radio-Backend neu gebaut (community Router Prefix /api/v1/community korrekt)
+- Firewall: DOCKER-USER gesetzt, rpcbind gestoppt
+- Alle Logins: @frawo-tech.de → @frawo.tech (0 alte Referenzen)
+- Roadmap: 5-Phasen-Plan in GitHub + Odoo Epics T481-T485
+- Kanban: 30 → 7 Stages
+- Cloudflare Tunnel HA: Failover-Connector auf frawo-docker-1
 
-## Bekannte Blocker
+### Blockiert (Wolf nötig)
+- Nextcloud Filestore Transfer: SSH-Key auf VM300 (10.4.0.21) einrichten
+- HA-Setup: ha.frawo.tech → Account anlegen (3 Min)
 
-| # | Was | Wo | Priorität |
-|---|-----|-----|-----------|
-| #159 | PBS VM 240: kein Netzwerk | PVE VNC Console | Mittel |
-| #251 | PVE Firewall | PVE Web UI | Hoch |
-| #241 | HAOS Eltern: Heimat unklar | Wolf-Entscheidung | Niedrig |
+## Update 2026-06-06 Morgen
+- 3 n8n Workflows: frawo-tech.de → frawo.tech gefixt
+- Franz: Internal User (Admin-Rechte entfernt)
+- T168 Haftpflicht + T167 Geschäftskonto dokumentiert
+- SOUL.md aktualisiert (Klausi)
+- GrowBox: kein Backlog mehr
 
----
-
-## Dokument-Ökosystem (Stand 2026-05-28)
-
-**Flow:** Upload → NC/Eingang → rclone (5 min) → Paperless OCR → NC/Archiv
-
-```
-cloud.frawo-tech.de/Dokumente/Eingang   ← Hochladen hier
-         ↓ rclone move (alle 5 min)
-Paperless consume_dir (VM 330)
-         ↓ OCR + Klassifizierung
-Paperless DB + paperless-to-nc.sh
-         ↓
-cloud.frawo-tech.de/Dokumente/Archiv/{Korrespondent}/{Jahr}/
-```
-
-**Korrespondenten:** BG ETEM, EGS, Obi, riverty, Thomann, VG Sigmarszell
-**Tags:** Anker, anmeldung, Beleg, GbR, Nebenkosten, Obi, Thomann, Wolf.EE
-**Dokumenttypen:** Bescheid, Kassenbeleg, Mahnung, Rechnung
-
----
-
-## Odoo Workflow
-
-```
-Neue Idee → 💡 Brainstorm (stage 86) → Wolf-Freigabe
-           → ⚙️ Planung (stage 2) → Agent plant
-           → 🚀 In Arbeit (stage 3) → Agent umsetzt
-           → ✅ Erledigt (stage 6) → DoD-Note
-```
-
-**Zugang:** wolf@frawo-tech.de / [Siehe Vaultwarden] (xmlrpc: 10.4.0.22:8069, DB: FraWo_GbR)
+## Update 2026-06-06
+- CI: FRAWO_CI_GUIDELINES.md in SSOT (Purple #a855f7, Forest #0d4d4d, Inter, Sharp Corners)
+- funk.frawo.tech: auf offizielle CI umgestellt
+- Odoo Website: CI bereits aktiv (21k chars Custom CSS)
+- N26 + Qonto Journals in Odoo
+- GrowBox: 7 Stages, 20 Pflanzen, kein Backlog
+- Business: CRM DE, Services, Templates
+- Tasks: Haftpflicht/Qonto/N26 als Wolf-Tasks eingetragen

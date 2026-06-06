@@ -70,6 +70,15 @@ class Settings(BaseSettings):
     azuracast_station_id: int = Field(default=1, description="AzuraCast station ID")
     azuracast_verify_ssl: bool = Field(default=True, description="Verify SSL for AzuraCast")
 
+    # Odoo ERP Integration (SSOT for partners, leads & supporter status)
+    odoo_url: str = Field(default="http://10.4.0.22:8069", description="Odoo instance URL")
+    odoo_db: str = Field(default="FraWo_GbR", description="Odoo database name")
+    odoo_user: str = Field(default="wolf@frawo-tech.de", description="Odoo XML-RPC user email")
+    odoo_password: str = Field(default="", description="Odoo XML-RPC password (set in .env!)")
+
+    # Admin
+    admin_api_key: str = Field(default="", description="Secret key for admin endpoints (set in .env!)")
+
     # Monitoring
     enable_metrics: bool = Field(default=True, description="Enable Prometheus metrics")
     metrics_port: int = Field(default=9090, description="Prometheus metrics port")

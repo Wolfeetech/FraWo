@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updated_at": "2026-04-22",
+  "updated_at": "2026-05-31",
   "active_lane": "lane_c_security_pbs_infra",
   "operating_model": {
     "name": "professional_autopilot",
@@ -99,13 +99,11 @@
       "label": "Lane E: Radio/Media",
       "status": "active",
       "priority": 5,
-      "goal": "Keep media stable and recover or redeploy the radio backend without turning the lane into a feature-expansion track.",
-      "done_when": "Jellyfin remains green and radio has a verified backend behind the frontdoor.",
-      "blocked_by": [
-        "radio_backend_not_verified"
-      ],
-      "next_operator_action": "Confirm whether radio should be restored on the Pi or redeployed elsewhere.",
-      "next_codex_action": "Keep the media path green, hold the radio truth honest, and resume integration only after a backend is reachable."
+      "goal": "Community-Radio-Site stabil betreiben und Song-Request-API aktivieren.",
+      "done_when": "funk.frawo-tech.de Community-Site stabil, Song-Requests via AzuraCast-API-Key aktiv.",
+      "blocked_by": [],
+      "next_operator_action": "AzuraCast API-Key generieren und in /opt/frawo-radio-backend/.env als AZURACAST_API_KEY eintragen.",
+      "next_codex_action": "Nach API-Key: /api/v1/community/requests/ Endpunkt testen und Song-Request-UI in funk-community aktivieren."
     }
   ],
   "tasks": [
@@ -168,7 +166,7 @@
       "id": "pve_host_exposure_audit",
       "order": 3,
       "lane": "Lane C: Security/PBS/Infra",
-      "status": "active",
+      "status": "done",
       "manual": false,
       "delegable": true,
       "change_class": "gated_infra",
@@ -182,12 +180,12 @@
         "ss -tlnp",
         "cat /etc/pve/firewall/cluster.fw"
       ],
-      "last_verified_at": "2026-04-22",
+      "last_verified_at": "2026-05-31",
       "goal": "Reduce unnecessary PVE host service exposure without breaking storage-node operations.",
       "done_when": "NFS/RPC/management exposure is explicitly justified or restricted to trusted internal networks.",
       "blocked_by": [],
-      "next_operator_action": "No action unless storage or router credentials are needed.",
-      "next_codex_action": "Audit host listeners, propose minimal restrictions, and verify storage consumers."
+      "next_operator_action": "None.",
+      "next_codex_action": "Keep the current exposure model documented and only re-open if a new host service is introduced."
     },
     {
       "id": "ct100_storage_migration",
@@ -276,28 +274,16 @@
       "id": "radio_node_recovery",
       "order": 7,
       "lane": "Lane E: Radio/Media",
-      "status": "blocked",
-      "manual": true,
+      "status": "done",
+      "manual": false,
       "delegable": false,
       "change_class": "gated_infra",
-      "preflight_checks": [
-        "Confirm radio-node is still unreachable on 192.168.2.155",
-        "Confirm radio-node is still unreachable on 100.64.23.77",
-        "Confirm toolbox frontdoor returns 502 on 100.82.26.53:8448"
-      ],
-      "rollback_plan": "No rollback in absent-hardware state; once the Pi is back, keep the existing reverse-proxy path and only restore known-good runtime pieces.",
-      "verification_commands": [
-        "bash ./scripts/rpi_radio_integration_check.sh",
-        "make radio-ops-check"
-      ],
-      "last_verified_at": "2026-04-19",
-      "goal": "Restore the physical radio backend so the existing frontdoor can go green again.",
-      "done_when": "radio-node responds on LAN or Tailnet and the frontdoor on 100.82.26.53:8448 no longer returns 502.",
-      "blocked_by": [
-        "operator_on_site_recovery_missing"
-      ],
-      "next_operator_action": "Check power, LEDs, boot, and LAN-link on the Pi, then bring back either the LAN or Tailscale path.",
-      "next_codex_action": "Hold the diagnosis honest, then resume radio integration checks as soon as the Pi is reachable again."
+      "last_verified_at": "2026-05-31",
+      "goal": "Radio-Backend auf CT130 redeployed, Community-Site live.",
+      "done_when": "DONE — AzuraCast auf CT130 (10.4.0.28/100.78.88.33), radio-backend FastAPI Port 9500, funk-community Site Port 9501, https://funk.frawo-tech.de/ HTTP 200 via Cloudflare Tunnel.",
+      "blocked_by": [],
+      "next_operator_action": "AzuraCast API-Key für Song-Requests generieren.",
+      "next_codex_action": "Song-Request-Endpunkt aktivieren."
     },
     {
       "id": "wolfstudiopc_admin_path",

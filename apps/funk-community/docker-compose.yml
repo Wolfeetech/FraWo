@@ -1,0 +1,22 @@
+services:
+  funk-community:
+    build: .
+    container_name: funk-community
+    ports:
+      - "9501:80"
+    volumes:
+      - ./index.html:/usr/share/nginx/html/index.html:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./bodensee.jpg:/usr/share/nginx/html/bodensee.jpg:ro
+    restart: unless-stopped
+    networks:
+      - radio-net
+      - azura-net
+
+networks:
+  radio-net:
+    external: true
+    name: frawo-radio-backend_frawo-network
+  azura-net:
+    external: true
+    name: azuracast_default
