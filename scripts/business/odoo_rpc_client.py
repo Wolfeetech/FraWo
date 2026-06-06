@@ -44,7 +44,7 @@ def connect(
         else:
             username = default_user
 
-    secret = os.getenv("ODOO_RPC_API_KEY") or os.getenv("ODOO_RPC_PASSWORD")
+    secret = os.getenv("ODOO_RPC_API_KEY")
     if not secret:
         secret = getpass.getpass(f"{secret_label}: ")
 

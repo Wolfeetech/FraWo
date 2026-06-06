@@ -19,10 +19,13 @@ from dotenv import load_dotenv
 env_path = Path.home() / '.ai-tools-shared' / '.env'
 load_dotenv(env_path)
 
-ODOO_URL = os.getenv('ODOO_URL', 'http://10.4.0.22:8069')
-ODOO_DB = 'FraWo_GbR'
-ODOO_USER = os.getenv('ODOO_USER')
-ODOO_PASSWORD = os.getenv('ODOO_PASSWORD')
+ODOO_URL = os.getenv('ODOO_RPC_URL', os.getenv('ODOO_URL', 'http://10.4.0.22:8069'))
+ODOO_DB = os.getenv('ODOO_RPC_DB', os.getenv('ODOO_DB', 'FraWo_GbR'))
+ODOO_USER = os.getenv('ODOO_RPC_USER', os.getenv('ODOO_USER'))
+ODOO_SECRET = os.getenv('ODOO_RPC_API_KEY')
+
+if not all([ODOO_URL, ODOO_DB, ODOO_USER, ODOO_SECRET]):
+    raise SystemExit("Missing ODOO_RPC_URL/ODOO_RPC_DB/ODOO_RPC_USER/ODOO_RPC_API_KEY")
 
 
 # New Homepage HTML (without <odoo> wrapper - that's added by Odoo)
@@ -576,7 +579,7 @@ def deploy_homepage():
     print("[*] Connecting to Odoo...")
 
     common = xmlrpc.client.ServerProxy(f'{ODOO_URL}/xmlrpc/2/common')
-    uid = common.authenticate(ODOO_DB, ODOO_USER, ODOO_PASSWORD, {})
+    uid = common.authenticate(ODOO_DB, ODOO_USER, ODOO_SECRET, {})
 
     if not uid:
         print("[FAIL] Authentication failed!")
@@ -588,7 +591,7 @@ def deploy_homepage():
 
     # Find homepage
     pages = models.execute_kw(
-        ODOO_DB, uid, ODOO_PASSWORD,
+        ODOO_DB, uid, ODOO_SECRET,
         'website.page', 'search_read',
         [[['url', '=', '/']]],
         {'fields': ['id', 'name', 'view_id']}
@@ -605,7 +608,7 @@ def deploy_homepage():
 
     # Update view arch
     models.execute_kw(
-        ODOO_DB, uid, ODOO_PASSWORD,
+        ODOO_DB, uid, ODOO_SECRET,
         'ir.ui.view', 'write',
         [[view_id], {'arch': HOMEPAGE_HTML}]
     )

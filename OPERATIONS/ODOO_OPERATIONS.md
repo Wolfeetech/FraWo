@@ -6,10 +6,18 @@ Odoo ist ERP-, CRM-, Angebots-, Rechnungs- und Prozessplattform fuer `FraWo`.
 
 Der professionelle Zielzustand ist nicht nur `HTTP 200`, sondern ein bewusst definierter Business-Stack.
 
+## SSOT Contract
+
+- Odoo ist in diesem Projekt ausschliesslich der `task SSOT`.
+- Repo-Dateien bleiben der `technical/runtime SSOT` fuer Netzwerk, Runtime, Infrastruktur, Sicherheitsregeln und Auditbelege.
+- `STATUS.md` ist Audit, nicht Governance.
+- `MEMORY.md` ist Langzeitwissen, nicht fuehrende Runtime-Wahrheit.
+- Historische Incident-Abschnitte in diesem Dokument koennen Legacy-IP-Pfade enthalten; fuehrende Netz-Wahrheit steht in `LIVE_CONTEXT.md` und `NETWORK_PLAN.md`.
+
 ## Zugriff
 
 - `http://odoo.hs27.internal/web/login`
-- `http://100.99.206.128:8444/web/login`
+- `http://100.82.26.53:8444/web/login`
 
 ## Normalbetrieb
 
@@ -22,7 +30,7 @@ Der professionelle Zielzustand ist nicht nur `HTTP 200`, sondern ein bewusst def
 ## SSOT-Modell fuer dieses Projekt
 
 - Das Odoo-Projektboard ist der operative `task SSOT` fuer `Homeserver 2027`: Backlog, In-Arbeit, Blocker, Zuweisung, Review und Abschluss gehoeren dorthin.
-- Das Repo bleibt weiterhin der technische `runtime SSOT`: `LIVE_CONTEXT.md`, `MEMORY.md`, `NETWORK_INVENTORY.md`, `VM_AUDIT.md` und die Operations-Runbooks bleiben die verbindliche Wahrheit fuer Infrastruktur, Netzwerk, Gates und Betriebsrealitaet.
+- Das Repo bleibt weiterhin der technische `runtime SSOT`: `LIVE_CONTEXT.md`, `NETWORK_PLAN.md`, `ROADMAP.md`, `MASTERPLAN.md` und die Operations-Runbooks bleiben die verbindliche Wahrheit fuer Infrastruktur, Netzwerk, Gates und Betriebsrealitaet.
 - Konsequenz: Aufgabenstatus lebt in Odoo; technische Fakten, Netzstand, IPs, Sicherheitsregeln und Audit-Resultate leben weiter im Repo.
 - Keine fragmentierten Odoo-Projekte pro Lane als Dauerzustand pflegen; ein zentrales Masterprojekt mit Stages, Tags und klaren Verantwortlichkeiten ist der bevorzugte Weg.
 - `agent@frawo-tech.de` ist fuer diesen Block eine Bot-/Automationsidentitaet, kein menschlicher Admin-Ersatz.
@@ -30,13 +38,14 @@ Der professionelle Zielzustand ist nicht nur `HTTP 200`, sondern ein bewusst def
 ## Board Best Practice
 
 - Ein zentrales Projekt fuer `Homeserver 2027`.
-- Workflow-Stages mindestens: `Backlog`, `Planung`, `In Arbeit`, `Blockiert`, `Review/Abnahme`, `Erledigt`.
-- Lanes ueber Tags abbilden, nicht ueber immer neue Projekte.
+- Workflow-Stages verbindlich: `📝 Backlog`, `⚙️ Planung & Vorbereitung`, `🚀 In Arbeit`, `🤖 Automatisierung`, `🛑 Blockiert`, `✅ Erledigt`.
+- Lanes verbindlich ueber Tags abbilden: `Lane A: MVP`, `Lane B: Website`, `Lane C: Infra`, `Lane D: Stockenweiler`, `Lane E: Radio & Media`.
 - Aufgaben immer mit klarer `owner`-Logik pflegen:
   - Menschen: `wolf@...`, `franz@...`
   - Bot/Automation: `agent@...` nur fuer Intake, Automationsketten oder klar begrenzte Routinejobs
 - Jede operatorgebundene Abhaengigkeit bleibt als sichtbarer Blocker in Odoo und gespiegelt im Repo-Handoff.
 - Keine Infrastrukturentscheidungen nur in Odoo-Kommentaren begraben; Entscheidungen muessen im Repo-SSOT nachgezogen werden.
+- Keine Vollspiegel von `MASTERPLAN.md`, `LIVE_CONTEXT.md` oder `STATUS.md` in Odoo-Taskbeschreibungen pflegen; stattdessen kurze Summary plus Link auf die kanonische Repo-Datei.
 
 ## Hardening vor Automation
 

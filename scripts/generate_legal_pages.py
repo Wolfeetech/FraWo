@@ -299,20 +299,20 @@ def main():
                 k, v = line.split("=", 1)
                 os.environ[k.strip()] = v.strip()
 
-    url = os.getenv("ODOO_URL", "http://10.4.0.22:8069")
-    db = os.getenv("ODOO_DB_GBR", "FraWo_GbR")
-    user = os.getenv("ODOO_USER", "wolf@frawo-tech.de")
-    pw = os.getenv("ODOO_PASSWORD")
+    url = os.getenv("ODOO_RPC_URL", os.getenv("ODOO_URL", "http://10.4.0.22:8069"))
+    db = os.getenv("ODOO_RPC_DB", os.getenv("ODOO_DB_GBR", "FraWo_GbR"))
+    user = os.getenv("ODOO_RPC_USER", os.getenv("ODOO_USER"))
+    secret = os.getenv("ODOO_RPC_API_KEY")
 
-    if not pw:
-        print("[FAIL] ODOO_PASSWORD not set")
+    if not all([url, db, user, secret]):
+        print("[FAIL] Missing ODOO_RPC_URL/ODOO_RPC_DB/ODOO_RPC_USER/ODOO_RPC_API_KEY")
         return 1
 
     print("[*] Connecting to Odoo...")
 
     try:
         common = xmlrpc.client.ServerProxy(f"{url}/xmlrpc/2/common", allow_none=True)
-        uid = common.authenticate(db, user, pw, {})
+        uid = common.authenticate(db, user, secret, {})
 
         if not uid:
             print("[FAIL] Auth failed")

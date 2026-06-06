@@ -15,10 +15,10 @@ url = os.getenv("ODOO_RPC_URL", "http://172.21.0.3:8069")
 db = os.getenv("ODOO_RPC_DB", "FraWo_GbR")
 username = os.getenv("ODOO_RPC_USER", "wolf@frawo-tech.de")
 
-# Get password from env or prompt
-password = os.getenv("ODOO_RPC_PASSWORD") or os.getenv("ODOO_RPC_API_KEY")
+# Get API key from env or prompt
+password = os.getenv("ODOO_RPC_API_KEY")
 if not password:
-    password = getpass.getpass("Odoo Password: ")
+    password = getpass.getpass("Odoo API-Key: ")
 
 print(f"\nConnecting to Odoo...")
 print(f"   URL: {url}")

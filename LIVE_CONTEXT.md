@@ -1,6 +1,13 @@
 # LIVE CONTEXT — FraWo GbR Infrastruktur
-**Single Source of Truth für technischen Zustand**
+**Fuehrender Snapshot fuer technischen Ist-Zustand**
 *Letzte vollständige Aktualisierung: 2026-05-25 — Claude Sonnet 4.6 + Wolf*
+
+## SSOT Contract
+
+- Odoo-Projekt `🚀 Homeserver 2027: Masterplan` ist der `task SSOT`.
+- `LIVE_CONTEXT.md` ist zusammen mit `NETWORK_PLAN.md` die fuehrende Runtime- und Node-Wahrheit.
+- `STATUS.md` ist Audit, nicht Governance.
+- `MEMORY.md` ist Langzeitwissen, nicht fuehrende Runtime-Wahrheit.
 
 ---
 
@@ -15,12 +22,12 @@
     ┌──────────▼──────────┐  ┌────────▼──────────────────────┐
     │   ANKER PVE          │  │  STOCKENWEILER (Site B)        │
     │   10.4.0.99          │  │  Netz: 10.30.8.x (Container)  │
-    │   Tailscale:         │  │  PVE: EINGESTELLT              │
+    │   Tailscale:         │  │  PVE: LEGACY / FALLBACK TRACK  │
     │   100.69.179.87      │  │                                │
     │   PRIMARY PRODUCTION │  │  frawo-docker-1 (10.30.8.22)  │
     └──────────┬──────────┘  │  Tailscale: 100.94.32.41      │
                │             │  Debian 13, 188G, SSH ✅       │
-    [VMs/CTs]  │             │  Rolle: TBD (Monitoring/Backup)│
+    [VMs/CTs]  │             │  Production Secondary Node     │
                │             │                                │
                │             │  win-j1aenasv2fj (10.30.8.21) │
                │             │  Tailscale: 100.97.147.67      │
@@ -49,11 +56,11 @@
 | VM 220 | odoo | 10.4.0.22 | Odoo 17 ERP only (AzuraCast abgeschaltet ✅) | ✅ running, restart=unless-stopped, startup order=3 |
 
 ### STOCKENWEILER — Site B (Schiffscontainer, 10.30.8.x)
-**Stockenweiler PVE: EINGESTELLT** (ersetzt durch frawo-docker-1)
+**Stockenweiler PVE:** Legacy-/Fallback-Pfad in Neubewertung. `frawo-docker-1` bleibt die aktive Secondary-Produktionsrolle.
 
 | Name | Tailscale | Lokal-IP | OS | Rolle | Status |
 |------|-----------|---------|-----|-------|--------|
-| frawo-docker-1 | 100.94.32.41 | 10.30.8.22 | Debian 13 Trixie | **n8n (5678)** + **Portainer (9000)** + **Grafana (3001)** + **Prometheus (9091)** + Node-Exporter (9100) + Icecast-Relay (TODO #242), 31GB RAM, 173G frei | ✅ SSH via Key (pw: vault!), PasswordAuth deaktiviert |
+| frawo-docker-1 | 100.94.32.41 | 10.30.8.22 | Debian 13 Trixie | **Production Secondary Node** fuer **n8n**, **Portainer**, **Grafana**, **Prometheus**, Node-Exporter und Icecast-Relay, 31GB RAM, 173G frei | ✅ SSH via Key, PasswordAuth deaktiviert |
 | win-j1aenasv2fj | 100.97.147.67 | 10.30.8.21 | Windows | Management-PC, SSH-Bridge, Claude Code | ✅ |
 
 **HAOS Eltern** (lief auf eingestelltem PVE): Neue Heimat TBD — Option frawo-docker-1 (Task #241)
@@ -61,7 +68,7 @@
 **frawo-docker-1 Dienste** (Stand 2026-05-26):
 - n8n Workflow Automation (Port 5678, Docker, /home/wolf/n8n/) — Task #245 ✅
 - Portainer CE (Port 9000/9443, /home/wolf/stacks/infra/) ✅
-- Grafana (Port 3001, PW: FrawoGrafana2026!, /home/wolf/stacks/monitoring/) ✅
+- Grafana (Port 3001, /home/wolf/stacks/monitoring/) ✅
 - Prometheus (Port 9091, /home/wolf/stacks/monitoring/) ✅
 - Node Exporter (Port 9100) ✅
 - Icecast-Relay (Port 8000, /home/wolf/stacks/icecast-relay/) ✅ LIVE — relay von CT 130 via Tailscale 100.78.88.33
@@ -117,7 +124,7 @@
 | radio-api.hs27.internal | 10.4.0.28:9500 | ✅ | FraWo Radio Backend API (FastAPI) |
 | n8n.hs27.internal | 10.30.8.22:5678 | ✅ | n8n Workflow Automation (frawo-docker-1) |
 | portainer.hs27.internal | 10.30.8.22:9000 | ✅ | Portainer CE (frawo-docker-1) |
-| grafana.hs27.internal | 10.30.8.22:3001 | ✅ | Grafana (frawo-docker-1, PW: FrawoGrafana2026!) |
+| grafana.hs27.internal | 10.30.8.22:3001 | ✅ | Grafana (frawo-docker-1, Credentials in Vaultwarden) |
 | prometheus.hs27.internal | 10.30.8.22:9091 | ✅ | Prometheus (frawo-docker-1) |
 
 ## FRAWO FUNK RADIO
@@ -181,17 +188,14 @@
 
 | Problem | Priorität | Fix | Wer |
 |---------|-----------|-----|-----|
-| cloud.frawo-tech.de → 502 | 🔴 | CF Dashboard: Zero Trust → Tunnel → 10.4.0.21 | Wolf |
-| Tailscale hs27.internal DNS | 🔴 | tailscale.com/admin/dns: 10.1.0.20 → 10.4.0.20 | Wolf |
 | **Passwort-Audit** (#244) | 🔴 | Alle Credentials in Vaultwarden (vault.hs27.internal) | Wolf |
-| **frawo-docker-1 Recovery** (#226) | 🔴 | GRUB Single-User-Mode → passwd wolf → SSH-Key → PasswordAuth deaktivieren | Wolf (physisch) |
 | PBS VM 240 kein Netzwerk | 🟡 | PVE Web Console → VNC → IP prüfen | Wolf |
 | Icecast Relay frawo-docker-1 | ✅ LIVE | radio.mp3/hifi.mp3/mobile.aac relay von CT 130 via Tailscale | Agent 2026-05-26 |
 | HAOS Eltern — neue Heimat | 🟡 | frawo-docker-1 (Docker) oder verzichten? (#241) | Wolf |
 | /mnt/hs27-media stale | 🟡 | PVE-Neustart (Wartungsfenster) — Radio-Library wird parallel migriert | Agent/Wolf |
 | DKIM für frawo-tech.de | 🟡 | Strato-Panel → DomainKeys | Wolf |
 | StudioPC auf 10.1.0.x | 🟢 | UCG DHCP-Reservation auf 10.4.0.x | Wolf |
-| Odoo Admin-Passwort | 🟡 | AuditTemp2026! → permanentes Passwort (#244) | Wolf |
+| Odoo Admin-Credential | 🟡 | Rotationsstatus im Vault verifizieren und dokumentieren (#244) | Wolf |
 | **Odoo Instabilität** | ✅ FIXED | restart=unless-stopped + PVE startup order=3 | Agent 2026-05-26 |
 
 ---
@@ -209,8 +213,8 @@
 
 ## NETZWERK HINWEIS — frawo-docker-1
 - **Stockenweiler-Subnet**: 10.30.8.x (eigenes, nicht 192.168.178.x Eltern-Haus)
-- **SSH via Passwort**: vom Stockenweiler-PC (10.30.8.21) direkt erreichbar
-- **Via Tailscale**: 100.94.32.41, via StudioPC Tailscale direkt SSH möglich sobald Key deployed
+- **SSH via Key**: vom Stockenweiler-PC (10.30.8.21) und ueber Tailscale dokumentiert
+- **Via Tailscale**: 100.94.32.41, direkter SSH-Zugriff ueber den dokumentierten Ops-Key
 - **apt-cdrom**: Warnung beim Update (DVD-Source in sources.list) — ignorierbar, internet-Repos funktionieren
 
 *Updated: 2026-05-26 Nacht — Claude Sonnet 4.6 + Wolf*

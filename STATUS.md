@@ -16,28 +16,28 @@
 - Port: 127.0.0.1:8069 (kein Direktzugriff) ✅
 - DB: FraWo_GbR ✅
 - Swap: 2GB aktiv ✅
-- Login: wolf@frawo-tech.de / FrawoWolf2026! (Vault: Odoo ERP — Admin)
+- Login: wolf@frawo-tech.de / [Siehe Vaultwarden] (Vault: Odoo ERP — Admin)
 - Restart: unless-stopped + PVE startup order=3 ✅
 
 ### ☁️ Nextcloud (VM 300, 10.4.0.21)
 - Intern: http://cloud.hs27.internal ✅
 - Öffentlich: https://cloud.frawo-tech.de ✅ HTTP 200
-- Admin: frawoadmin / NC-Frawo-2026! (Vault aktualisiert 2026-05-28)
+- Admin: frawoadmin / [Siehe Vaultwarden] (Vault aktualisiert 2026-05-28)
 - Ordner: /Dokumente/{Eingang,Archiv,Verträge,Rechnungen} ✅
 - trusted_proxies: 10.4.0.0/24 + 100.64.0.0/10 ✅
 
 ### 📄 Paperless-ngx (VM 330, 10.4.0.23)
 - Intern: http://paperless.hs27.internal ✅
-- Admin: frawoadmin / PL-Frawo-2026! (Vault aktualisiert 2026-05-28)
-- API Token: 4ca7affa0948fe3a73bb224c60fe1090d1c00b08
+- Admin: frawoadmin / [Siehe Vaultwarden] (Vault aktualisiert 2026-05-28)
+- API Token: [Siehe Vaultwarden]
 - Post-consume Script: /usr/local/bin/paperless-to-nc.sh → NC/Archiv ✅
 - rclone-Sync: alle 5 min NC/Eingang → consume_dir (cron auf VM 330) ✅
 
 ### 🔐 Vaultwarden (CT 120, 10.4.0.26)
 - URL: http://vault.hs27.internal ✅
-- Wolf Master-PW: FrawoWolf2026! (Recovery 2026-05-27)
+- Wolf Master-PW: [Siehe Vaultwarden] (Recovery 2026-05-27)
 - 437 Ciphers (429 Org + 8 persönlich) ✅
-- Admin-Token: FrawoAdminVault2026! (argon2id) ✅
+- Admin-Token: [Siehe Vaultwarden] (argon2id) ✅
 - SIGNUPS_ALLOWED: false ✅
 
 ### 📡 Radio-Node (CT 130, 10.4.0.28, TS: 100.78.88.33)
@@ -54,7 +54,7 @@
 
 ### 🏠 Toolbox (CT 100, 10.4.0.20, TS: 100.82.26.53)
 - Caddy: Up ✅ (Edge-Proxy für alle hs27.internal Domains)
-- AdGuard: Up, admin / FrawoAdGuard2026! ✅
+- AdGuard: Up, admin / [Siehe Vaultwarden] ✅
 - cloudflared: aktiv (systemd), 6 CF-Tunnel-Routen ✅
 - Uptime Kuma: http://uptime.hs27.internal/status/frawo ✅
 
@@ -99,4 +99,4 @@ Neue Idee → 💡 Brainstorm (stage 86) → Wolf-Freigabe
            → ✅ Erledigt (stage 6) → DoD-Note
 ```
 
-**Zugang:** wolf@frawo-tech.de / FrawoWolf2026! (xmlrpc: 10.4.0.22:8069, DB: FraWo_GbR)
+**Zugang:** wolf@frawo-tech.de / [Siehe Vaultwarden] (xmlrpc: 10.4.0.22:8069, DB: FraWo_GbR)

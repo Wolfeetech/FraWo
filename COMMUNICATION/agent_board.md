@@ -8,18 +8,34 @@ Keep entries short. Put durable tasks in the Odoo project board `🚀 Homeserver
 All agents work from `C:\Users\Admin\Workspace\Repos\FraWo`.
 Other paths are aliases, archives, or local-only legacy material.
 
+## SSOT Contract
+
+- Odoo-Projekt `🚀 Homeserver 2027: Masterplan` ist der `task SSOT`.
+- Repo-Dateien sind der `technical/runtime SSOT`.
+- `STATUS.md` ist Audit, nicht Governance.
+- `MEMORY.md` ist Langzeitwissen, nicht fuehrende Runtime-Wahrheit.
+
 ## Active Ownership
 
 | Area | Current owner | Status | Notes |
 |------|---------------|--------|-------|
 | Workspace consolidation | Codex | active | Canonical path and junctions established on 2026-04-22. |
 | GitHub operations | Codex | active | Issue/PR templates and repo hygiene workflow being professionalized. |
+| Website & Odoo content | Claude Code | active | Website/Odoo scope only; keine direkte Infra-Fuehrung ohne Handoff. |
 | Infra hardening | open | queued | VM 210/220 firewall reapply remains blocked until tested. |
 | Odoo app setup | Codex | active | Sender email server-side fixed; browser retest and ACL warning remain open. |
 | Radio dual-site frontdoor | Codex | active | Align `toolbox` runtime with dual-site radio hostnames; default host returns to Anker, Stockenweiler stays explicit. |
 | Nextcloud desktop login | open | queued | HTTPS callback/overwrite settings need fixing. |
 
+## Claude Scope
+
+- Claude Code arbeitet offiziell an Odoo-Website, SEO/Content, kuratierten Business-Syncs und Board-Hygiene.
+- Claude Code fuehrt keine direkten Runtime-Mutationen an PVE, Firewall, Routing oder Multi-DB-Odoo-Skripten als Default-Pfad.
+- Infra-Aenderungen laufen ueber Handoff an Codex oder den Operator.
+
 ## Handoff Log
+
+Historische Logs koennen Legacy-IP-Pfade (`10.1.x`, `10.3.x`, `192.168.178.x`) enthalten. Fuehrende Netz-Wahrheit steht in `LIVE_CONTEXT.md` und `NETWORK_PLAN.md`.
 
 ### 2026-04-22 - Workspace Consolidation
 

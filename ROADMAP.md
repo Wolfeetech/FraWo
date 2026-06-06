@@ -2,9 +2,10 @@
 **Stand: 2026-05-28 | Letzte Konsolidierung: Claude Sonnet 4.6 + Wolf**
 
 **SSOT-Hierarchie:**
-- **Odoo** (`FraWo_GbR` → "🚀 Homeserver 2027: Masterplan") → Wer macht was, Status, Priorität
-- **GitHub** (diese Datei, `LIVE_CONTEXT.md`, `STATUS.md`) → Technische Wahrheit
-- **Konflikt**: Odoo für Status, GitHub für Konfiguration
+- **Odoo** (`FraWo_GbR` → `🚀 Homeserver 2027: Masterplan`) → Task-Wahrheit fuer Status, Owner, Prioritaet, Blocker, Review und Abschluss
+- **Repo** (`ROADMAP.md`, `LIVE_CONTEXT.md`, `NETWORK_PLAN.md`, `MASTERPLAN.md`) → technische und betriebliche Wahrheit
+- **STATUS.md** → Audit, nicht Governance
+- **MEMORY.md** → Langzeitwissen, nicht fuehrende Runtime-Wahrheit
 
 ---
 
@@ -14,8 +15,8 @@
 ANKER PVE (Primary)              STOCKENWEILER (Site B, 10.30.8.x)
 ├── Odoo ERP (VM 220)            ├── frawo-docker-1 (10.30.8.22)
 ├── Nextcloud (VM 300)           │   Debian 13, 188G, SSH ✅
-├── Paperless (VM 330)           │   Rolle: TBD nach Audit
-├── PBS Backup (VM 240) ←fix     │   (Monitoring/Backup/Staging)
+├── Paperless (VM 330)           │   Rolle: Production Secondary Node
+├── PBS Backup (VM 240) ←fix     │   Fokus: Monitoring / Relay / kuratierte Automation
 ├── HAOS FraWo (VM 210)          │   HAOS Eltern → Option hier
 ├── Toolbox CT 100 (Caddy/Edge)  └── win-j1aenasv2fj (Management)
 ├── radio-node CT 130 ✅ LIVE         Stockenweiler PVE: EINGESTELLT
@@ -50,29 +51,29 @@ ANKER PVE (Primary)              STOCKENWEILER (Site B, 10.30.8.x)
 | #162/#238 | **AzuraCast Migration CT 130** | War bereits erledigt (6 Wochen live) — VM 220 AzuraCast abgeschaltet ✅ |
 | CT 130 RAM | 2GB → 4GB | `pct set 130 -memory 4096` live |
 | frawo-docker-1 | SSH zugänglich | 10.30.8.22, Debian 13, 188G, sudo ✅ |
-| frawo-docker-1 | **Monitoring Stack deployed** | Portainer (9000) + Grafana (3001, FrawoGrafana2026!) + Prometheus (9091) + Node-Exporter ✅ |
+| frawo-docker-1 | **Monitoring Stack deployed** | Portainer, Grafana, Prometheus und Node-Exporter produktiv dokumentiert ✅ |
 | **Odoo #fix** | **restart=unless-stopped** | Container hatten kein Restart-Policy → nach VM-Reboot offline. Fix: unless-stopped + PVE startup order=3 ✅ |
 | #239 | Navidrome Route | navidrome.hs27.internal → CT 130:4533 ✅ |
 | **#233** | **FraWo Radio Backend** | **FastAPI deployed CT 130:9500, radio-api.hs27.internal ✅** |
-| #226 | **frawo-docker-1 SSH** | Passwort 1Vaudeville! gefunden → SSH-Key deployed, PasswordAuth deaktiviert ✅ |
+| #226 | **frawo-docker-1 SSH** | SSH-Zugang bereinigt, Key deployed, PasswordAuth deaktiviert ✅ |
 | #245 | n8n entdeckt | n8n lief undokumentiert auf frawo-docker-1:5678 → Caddy+DNS hinzugefügt ✅ |
 | **CT 130** | **Tailscale live** | TUN-Device via LXC raw config, tailscale up --ssh, IP: 100.78.88.33 ✅ |
 | **#242** | **Icecast Relay deployed** | frawo-docker-1:8000 relayed alle 3 Streams von CT 130 via Tailscale ✅ |
 | Git Push | DNS-Fix | curloptResolve Workaround (Tailscale DNS kaputt) |
 | **Security Audit** | **Live-Audit aller Nodes** | PVE, CT 100/110/120/130, VM 220/300/330, frawo-docker-1 — alle geprüft ✅ |
-| **AdGuard Auth** | **Kritisch: war offen!** | admin / FrawoAdGuard2026! gesetzt, 401 für unauth ✅ |
-| **Portainer Init** | War nie initialisiert | admin / FrawoPortainer2026! — Volume-Reset + Init ✅ |
+| **AdGuard Auth** | **Kritisch: war offen!** | Auth gesetzt, Vaultwarden aktualisiert, 401 fuer unauth bestaetigt ✅ |
+| **Portainer Init** | War nie initialisiert | Initialisiert, Vaultwarden aktualisiert, Zugriff verifiziert ✅ |
 | **Odoo Port** | 8069 war auf 0.0.0.0 | Geändert auf 127.0.0.1:8069 — kein Direktzugriff mehr ✅ |
-| **#244** | **Vaultwarden Credentials** | 19/19 Items gespeichert | agent@frawo-tech.de / FrawoAgent2026! — neue Vaultwarden 1.35.x API (/identity/...) ✅ |
+| **#244** | **Vaultwarden Credentials** | 19/19 Items gespeichert | API-Pfad dokumentiert, Secrets im Vault statt im Repo ✅ |
 | **#250** | **frawo-docker-1 UFW** | UFW aktiv | deny incoming, allow 100.64.0.0/10 + 10.30.8.0/24, via nsenter-Workaround ✅ |
 | **#252** | **Nextcloud trusted_proxies** | 10.4.0.0/24 + 100.64.0.0/10 | via occ bereinigt, alte 10.1.0.x Einträge entfernt ✅ |
 | **#253** | **CT 130 Samba gesichert** | bind interfaces + hosts allow | nur 10.4.0.0/24 + Tailscale ✅ |
-| **Vaultwarden Admin-Token** | argon2id wiederhergestellt | FrawoAdminVault2026! → argon2id hash ✅ |
+| **Vaultwarden Admin-Token** | argon2id wiederhergestellt | Admin-Token rotiert und ausserhalb des Repos referenziert ✅ |
 | **#256** | **StudioPC Monitoring** | windows_exporter 0.30.4 | Port 9182, Prometheus scrapt, Grafana-Dashboard live ✅ |
 | **#237** | **frawo-docker-1 apt cleanup** | 00CDMountPoint entfernt | nsenter via privilegiertem Docker ✅ |
 | **Odoo Kanban SSOT** | Bereinigung | 8 Tasks Erledigt, 9 Duplikate Canceled | Board reflekriert jetzt Realität ✅ |
 | **SSH Config** | frawo-docker alias | `ssh frawo-docker` via hs27_ops_ed25519 | Direktzugriff ohne Tailscale-IP ✅ |
-| **#171** | **Uptime Kuma** | 14 Monitore, Status-Page live | http://uptime.hs27.internal/status/frawo — Login: Wolf/FrawoUptime2026! ✅ |
+| **#171** | **Uptime Kuma** | 14 Monitore, Status-Page live | Status-Page erreichbar, Credentials nur in Vaultwarden ✅ |
 | **CT 130 RAM** | 4GB → 6GB | Liquidsoap-Druck | pct set 130 -memory 6144 ✅ |
 | **#257** | **Musik-Pipeline** | beets + AcoustID läuft | screen gdrive-sync + beets-import auf PVE Host aktiv 🔄 |
 
@@ -85,12 +86,12 @@ ANKER PVE (Primary)              STOCKENWEILER (Site B, 10.30.8.x)
 | **cloud.frawo-tech.de** | CF Tunnel Nextcloud | HTTP 302→200 bestätigt ✅ (war 502) |
 | **KRITISCH: Vault-Recovery** | vw_newkey.py hatte falschen sym key generiert — alle 429 Org-Items verschlüsselt mit falschem Key | Backup von 2026-05-26-02:12 extrahiert, original sym key wiederhergestellt, wolf akey neu verschlüsselt ✅ |
 | **Vault Crypto-Kette** | Vollständige Python-Implementierung Bitwarden E2E Crypto: PBKDF2→HKDF→AES-CBC→RSA-OAEP→AES-CBC | Alle 437 Items entschlüsselbar, Cloudflare + Tailscale API-Token in Vault gespeichert ✅ |
-| **Wolf Master-PW** | Von 11Vaudeville!! → FrawoWolf2026! (nach Vault-Recovery gesetzt) | Bestätigt: login + alle Items sichtbar ✅ |
+| **Vault-Recovery** | Operator-Vaultzugriff nach Recovery bestaetigt | Alle Items sichtbar, keine Klartext-Referenz mehr im Repo ✅ |
 | **#258** | Workflow-Doku | Brainstorm-Stage #86 erstellt, Odoo-Workflow dokumentiert | Agent |
 | **#259** | **Dokument-Ökosystem: Option A** | Nextcloud als Hub — Wolf genehmigt 2026-05-27 | Agent |
-| Nextcloud Admin-PW | frawoadmin / NC-Frawo-2026! via occ in Docker | Login bestätigt HTTP 200 ✅ |
+| Nextcloud Admin | Passwort rotiert und via occ gesetzt | Login bestaetigt HTTP 200, Secret nur im Vault ✅ |
 | Nextcloud Ordner | /Dokumente/Eingang, /Archiv, /Verträge, /Rechnungen | WebDAV MKCOL ✅ |
-| Paperless Admin-PW | PL-Frawo-2026! (war n82DMJKSAydZqeKF8/BxTq08) | API Token erhalten ✅ |
+| Paperless Admin | Passwort rotiert und API-Token neu erzeugt | Zugriff verifiziert, Secret nur im Vault ✅ |
 | **rclone + Cron** | VM 330: rclone move nextcloud:Dokumente/Eingang → Paperless consume alle 5 min | /etc/cron.d/nc-to-paperless, cron installiert ✅ |
 | **Paperless post-consume** | PAPERLESS_POST_CONSUME_SCRIPT → NC/Archiv upload nach OCR | Script als bind-mount in Container ✅ |
 | **End-to-End Test** | PDF upload NC/Eingang → Paperless Doc #14 "test_frawo" | Duplikat-Erkennung funktioniert ✅ |
@@ -104,7 +105,7 @@ ANKER PVE (Primary)              STOCKENWEILER (Site B, 10.30.8.x)
 | ~~#244~~ | ~~Passwort-Audit~~ | ✅ DONE | 19 Credentials in Vaultwarden, agent@frawo-tech.de ✅ |
 | CT 130 | ~~Tailscale Auth~~ | ✅ DONE | radio-node 100.78.88.33 live |
 | #159 | PBS Netzwerk-Fix | PVE Web UI | VM 240 → Console → ip addr / cloud-init prüfen |
-| ~~#249~~ | ~~Odoo Admin-PW~~ | 🛑 Blockiert bis Go-Live | wolf@frawo-tech.de / FrawoWolf2026! aktiv, Odoo ERP Admin Vault aktualisiert |
+| ~~#249~~ | ~~Odoo Admin-PW~~ | 🛑 Blockiert bis Go-Live | Vault-Eintrag aktualisiert, Repo enthaelt keine Klartext-Referenz mehr |
 
 ### 🟡 NÄCHSTE AGENT-TASKS
 
@@ -163,7 +164,7 @@ ANKER PVE (Primary)              STOCKENWEILER (Site B, 10.30.8.x)
 | proxmox-anker | 100.69.179.87 | 10.4.0.99 | PVE | Primary Hypervisor |
 | toolbox | 100.82.26.53 | 10.4.0.20 | CT 100 | Edge/Ingress/Monitoring |
 | radio-node | **100.78.88.33** | 10.4.0.28 | CT 130 | AzuraCast + Navidrome + Radio Backend (neu: Tailscale ✅) |
-| frawo-docker-1 | 100.94.32.41 | 10.30.8.22 | Phys. Server | Schiffscontainer Stockenweiler, Debian 13 Trixie |
+| frawo-docker-1 | 100.94.32.41 | 10.30.8.22 | Phys. Server | Production Secondary Node: Monitoring, Relay, kuratierte Automation |
 | stockenweiler-pve | 100.91.20.116 | 192.168.178.172 | HP ProDesk / PVE | 🔧 In Reparatur (Rothkreuz) — nach Fix: Eltern-PC + Fallback-Server (#265) |
 | wolfstudiopc | 100.98.31.60 | 10.1.0.210 | Windows PC | Dev-Workstation |
 | wolf-surface | 100.79.103.59 | - | Windows | Mobile Dev |
@@ -191,19 +192,9 @@ ANKER PVE (Primary)              STOCKENWEILER (Site B, 10.30.8.x)
 
 ---
 
-## DIENST-PASSWÖRTER (Kurzreferenz — SSOT: Vaultwarden)
+## SECRET-REFERENZEN
 
-| Dienst | URL | User | Vault-Eintrag |
-|--------|-----|------|---------------|
-| Nextcloud | cloud.frawo-tech.de | frawoadmin | NC — Admin |
-| Paperless | paperless.hs27.internal | frawoadmin | Paperless-ngx — Admin |
-| Vaultwarden | vault.hs27.internal | wolf@frawo-tech.de | — |
-| Odoo | frawo-tech.de | wolf@frawo-tech.de | Odoo ERP — Admin |
-| Grafana | grafana.hs27.internal | admin | Grafana — Dashboards |
-| Portainer | portainer.hs27.internal | admin | Portainer — Docker Mgmt |
-| AdGuard | portal.hs27.internal | admin | AdGuard Home — Admin |
-| Uptime Kuma | uptime.hs27.internal | Wolf | Uptime Kuma — Status |
-
----
+- Alle produktiven Credentials, Tokens und Admin-Logins leben ausschliesslich in Vaultwarden.
+- Repo-Dokumente duerfen nur noch den passenden Vault-Eintrag oder die betroffene Systemrolle referenzieren.
 
 *Letzte Aktualisierung: 2026-05-28 — Claude Sonnet 4.6 + Wolf — Vault-Recovery, Dokument-Ökosystem (Nextcloud+Paperless), Kalender-Brainstorm*

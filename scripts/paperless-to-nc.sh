@@ -4,14 +4,17 @@
 # Laedt das Originaldokument via Paperless API in Nextcloud/Archiv hoch.
 # Mount: /usr/local/bin/paperless-to-nc.sh:ro im webserver Container
 #
-# Umgebungsvariablen (von Paperless gesetzt):
-#   DOCUMENT_ID, DOCUMENT_TITLE, DOCUMENT_CORRESPONDENT, DOCUMENT_CREATED
+# Umgebungsvariablen:
+#   DOCUMENT_ID, DOCUMENT_TITLE, DOCUMENT_CORRESPONDENT, DOCUMENT_CREATED (von Paperless)
+#   NC_USER, NC_PASS, PAPERLESS_API_TOKEN (aus Secret-/Runtime-Pfad)
+#   NC_BASE optional; Default basiert auf NC_USER
 
-NC_USER="frawoadmin"
-NC_PASS="NC-Frawo-2026!"
-NC_BASE="http://10.4.0.21/remote.php/dav/files/${NC_USER}"
-LOG="/var/log/paperless-to-nc.log"
-API_TOKEN="4ca7affa0948fe3a73bb224c60fe1090d1c00b08"
+: "${NC_USER:?NC_USER muss gesetzt sein}"
+: "${NC_PASS:?NC_PASS muss gesetzt sein}"
+: "${PAPERLESS_API_TOKEN:?PAPERLESS_API_TOKEN muss gesetzt sein}"
+
+NC_BASE="${NC_BASE:-http://10.4.0.21/remote.php/dav/files/${NC_USER}}"
+LOG="${LOG:-/var/log/paperless-to-nc.log}"
 
 YEAR=$(echo "$DOCUMENT_CREATED" | cut -c1-4)
 CORRESPONDENT="${DOCUMENT_CORRESPONDENT:-Unbekannt}"
@@ -28,7 +31,7 @@ curl -s -o /dev/null -u "${NC_USER}:${NC_PASS}" -X MKCOL "${NC_BASE}/Dokumente/A
 curl -s -o /dev/null -u "${NC_USER}:${NC_PASS}" -X MKCOL "${NC_BASE}/${ARCHIVE_PATH}" 2>/dev/null
 
 # Dokument von Paperless API laden und nach NC hochladen
-curl -s -H "Authorization: Token ${API_TOKEN}" \
+curl -s -H "Authorization: Token ${PAPERLESS_API_TOKEN}" \
     "http://localhost:8000/api/documents/${DOCUMENT_ID}/download/" \
     -o /tmp/pl_doc_${DOCUMENT_ID}.pdf
 
