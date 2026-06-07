@@ -10,7 +10,11 @@
     </record>
     <record id="param_ollama_timeout" model="ir.config_parameter">
       <field name="key">frawo_agent.ollama_timeout</field>
-      <field name="value">90</field>
+      <field name="value">150</field>
+    </record>
+    <record id="param_ollama_num_predict" model="ir.config_parameter">
+      <field name="key">frawo_agent.ollama_num_predict</field>
+      <field name="value">300</field>
     </record>
   </data>
 </odoo>

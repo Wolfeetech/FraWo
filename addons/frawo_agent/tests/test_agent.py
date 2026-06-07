@@ -15,6 +15,15 @@ class TestOllamaClient(TransactionCase):
             out = client.generate("irgendein prompt")
         self.assertEqual(out, "Hallo Welt")
 
+    def test_generate_caps_token_length(self):
+        client = self.env["frawo.ollama.client"]
+        with patch("odoo.addons.frawo_agent.models.ollama_client.requests.post") as m:
+            m.return_value.json.return_value = {"response": "ok"}
+            m.return_value.raise_for_status.return_value = None
+            client.generate("prompt")
+            payload = m.call_args.kwargs["json"]
+        self.assertIn("num_predict", payload["options"])
+
     def test_generate_timeout_returns_none(self):
         import requests
         client = self.env["frawo.ollama.client"]

@@ -20,11 +20,13 @@ class OllamaClient(models.AbstractModel):
         Blockiert NIE laenger als das konfigurierte Timeout."""
         url = self._cfg("ollama_url", "http://172.17.0.1:11434")
         model = self._cfg("ollama_model", "llama3:8b")
-        timeout = int(self._cfg("ollama_timeout", "90"))
+        timeout = int(self._cfg("ollama_timeout", "150"))
+        num_predict = int(self._cfg("ollama_num_predict", "300"))
         try:
             resp = requests.post(
                 "%s/api/generate" % url,
-                json={"model": model, "prompt": prompt, "stream": False},
+                json={"model": model, "prompt": prompt, "stream": False,
+                      "options": {"num_predict": num_predict}},
                 timeout=timeout,
             )
             resp.raise_for_status()
