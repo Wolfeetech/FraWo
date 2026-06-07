@@ -115,11 +115,17 @@ Alle künftigen Agent-Schreibvorgänge authentifizieren sich als **UID 7 „🤖
 | 4 | Addon-Deployment | Odoo 17, `/mnt/extra-addons` als Volume gemountet, Default-Cron-Threads aktiv | ✅ |
 | 5 | UID 7 Rechte | interner User; *Project/User* + *Settings* + *Technical Features*; ggf. *Project/Manager* nötig für ALLE Tasks | ✅ (Scope im Impl prüfen) |
 
-### Stabilitäts-Schutzregeln (ZWINGEND ins Addon)
-1. **Nur 1 Task pro Cron-Takt** — jeder Lauf bleibt auf ~45–60 Sek begrenzt; Bursts werden langsam abgearbeitet.
-2. **Hartes HTTP-Timeout (90 Sek)** auf den Ollama-Call — ein hängendes Modell darf Odoo nie blockieren.
-3. **Eigener Cron-Thread** (Standard = 2, erfüllt) — Weboberfläche bleibt flüssig.
-4. **Realistische Latenz: ~1 Min/Task** mit `llama3:8b`. Optional `llama3.2:3b` (~10–15 Sek, einfacheres Deutsch) für mehr Tempo.
+### Stabilitäts-Schutzregeln (ZWINGEND ins Addon — im Bau verifiziert)
+1. **Nur 1 Task pro Cron-Takt** — jeder Lauf bleibt begrenzt; Bursts werden langsam abgearbeitet.
+2. **Token-Cap `num_predict=300`** — begrenzt die Generierungslänge (E2E-Befund: ohne Cap schrieb llama3:8b >90 s weiter → Timeout). Mit Cap: 31–72 s/Task.
+3. **Hartes HTTP-Timeout (150 Sek)** auf den Ollama-Call — komfortable Marge über der gemessenen Latenz; ein hängendes Modell blockiert Odoo nie.
+4. **Eigener Cron-Thread** (Standard = 2, erfüllt) — Weboberfläche bleibt flüssig.
+5. **Fehler-Isolation:** schlägt ein Task fehl → `agent_state='error'` + Logbuch, Queue bleibt frei (verifiziert).
+
+### E2E-Verifikation (Test-DB-Kopie, echtes Ollama, 2026-06-07)
+- „Backup-Skript für Docker prüfen" → Rolle DevOps, 72 s, Tag DevOps-Agent ✅
+- „Schrank in Werkstatt montieren" → Rolle Handwerk, 31 s, Tag Handwerk-Franz, Franz-Format ✅
+- 14 Unit-Tests grün. Realistische Latenz **~0,5–1,2 Min/Task**. Optional `llama3.2:3b` für mehr Tempo.
 
 ### Verbleibender Eingriff
 - Addon in `/mnt/extra-addons` einspielen + Modul installieren + Odoo-Neustart (Wartungsfenster mit Wolf).
