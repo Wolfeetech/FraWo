@@ -1,6 +1,9 @@
 from odoo import api, fields, models
+from odoo.tools import html2plaintext
 
 AGENT_LOGIN = "agent@frawo.tech"
+# Ab dieser Laenge (Klartext) gilt ein Task als bereits dokumentiert -> nicht ueberschreiben
+DOC_THRESHOLD = 150
 
 
 class ProjectTask(models.Model):
@@ -55,6 +58,15 @@ class ProjectTask(models.Model):
             return
         Log = self.env["frawo.agent.log"]
         try:
+            # Schutz: bereits ausfuehrlich dokumentierte Tasks NICHT ueberschreiben
+            existing = html2plaintext(task.description or "").strip()
+            if len(existing) >= DOC_THRESHOLD:
+                task.agent_state = "skip"
+                Log.create({"name": "Bereits dokumentiert", "level": "info",
+                            "task_id": task.id,
+                            "message": "Beschreibung >=%d Zeichen – Agent ueberschreibt "
+                                       "nicht." % DOC_THRESHOLD})
+                return
             role = self.env["frawo.task.formatter"].detect_role(task.name)
             prompt = self.env["frawo.task.formatter"].build_prompt(task.name, role)
             text = self.env["frawo.ollama.client"].generate(prompt)

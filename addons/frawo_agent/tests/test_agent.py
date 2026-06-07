@@ -121,6 +121,19 @@ class TestProcessor(TransactionCase):
         self.assertTrue(self.env["frawo.agent.log"].search(
             [("task_id", "=", t.id)]))
 
+    def test_process_skips_already_documented(self):
+        t = self._queued_task("Schon dokumentierte Aufgabe")
+        t.description = "<p>" + ("Ausfuehrliche bestehende Beschreibung. " * 6) + "</p>"
+        with patch(
+            "odoo.addons.frawo_agent.models.ollama_client.OllamaClient.generate",
+            return_value="NEUER LLM TEXT",
+        ) as gen:
+            self.env["project.task"]._cron_process_agent_queue()
+        t.invalidate_recordset()
+        self.assertEqual(t.agent_state, "skip")
+        self.assertNotIn("NEUER LLM TEXT", t.description or "")
+        self.assertFalse(gen.called)
+
     def test_process_handles_ollama_failure(self):
         t = self._queued_task("irgendwas")
         with patch(
