@@ -1,3 +1,6 @@
+# CHANGELOG - IT-Abteilung
+
+Hier werden alle umgesetzten Änderungen (Optionen), die vom Chef freigegeben wurden, chronologisch dokumentiert.
 
 ## 2026-06-07 (Opus / Claude Code Session)
 
@@ -15,3 +18,15 @@
 
 ### OFFENER BEFUND (braucht Wolf-Entscheidung)
 - **GrowBox HA-Steuerung komplett offline**: 45 Entitäten unavailable — shelly_grow_licht (20), growbox_schwenk (14), prima_klima_shelly (11). Sind das die Shellys der echten GrowBox? Absicht (Grow aus) oder Netzwerkproblem?
+
+## 2026-06-07
+- **Autonomer Odoo-Agent `frawo_agent` LIVE:**
+  - Neues Odoo-Addon gebaut (Branch `feat/frawo-agent`, 14 Unit-Tests grün, E2E auf DB-Kopie `FraWo_GbR_test` mit echtem Ollama verifiziert).
+  - Funktion: jeder neue `project.task` wird autonom als „🤖 Agent" (UID 7) nach CI ausformuliert (lokales Ollama `llama3:8b`), Rollen-Tag gesetzt (DevOps/Review-Wolf/Handwerk-Franz), Owner/Deadline als Freigabe-Vorschlag (Aktivität).
+  - Schutzregeln: 1 Task/Cron-Takt, num_predict=300, Timeout 150s, Fehler-Isolation (`agent_state=error`), bereits dokumentierte Tasks (>=150 Zeichen) werden nicht überschrieben.
+  - **Eingriff:** DB-Backup gezogen (`~/backups/FraWo_GbR_20260607_194904.dump`); Compose um bind-mount `./extra-addons` + `--addons-path` ergänzt (fehlte vorher ganz); odoo-web neu erstellt (~30s Downtime); Modul installiert; Cron aktiv (alle 2 Min, user agent@frawo.tech).
+  - **Grund:** Wolf wollte „Agent sitzt in Odoo, formatiert neue Tasks autonom, ohne manuelle Aktivierung". Kosten: 0 € (Odoo Community + lokales Ollama).
+  - Demo-Task #520 als Funktionsbeweis. Spec+Plan: `DOCS/specs/` + `DOCS/plans/`.
+- **VM 240 (Proxmox Backup Server):** 
+  - Die 500GB Daten-Festplatte (`vm-240-disk-1`) wurde von der NVMe (`local-lvm`) auf die `ssd2tb` verschoben.
+  - **Grund:** Der LVM-Thin Pool war zu 90,4% gefüllt, was Backups blockiert hat. Durch den Umzug wurde massiv Speicherplatz auf der NVMe freigegeben.
