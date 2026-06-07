@@ -1,1 +1,16 @@
-<odoo></odoo>
+<odoo>
+  <data noupdate="1">
+    <record id="param_ollama_url" model="ir.config_parameter">
+      <field name="key">frawo_agent.ollama_url</field>
+      <field name="value">http://172.17.0.1:11434</field>
+    </record>
+    <record id="param_ollama_model" model="ir.config_parameter">
+      <field name="key">frawo_agent.ollama_model</field>
+      <field name="value">llama3:8b</field>
+    </record>
+    <record id="param_ollama_timeout" model="ir.config_parameter">
+      <field name="key">frawo_agent.ollama_timeout</field>
+      <field name="value">90</field>
+    </record>
+  </data>
+</odoo>

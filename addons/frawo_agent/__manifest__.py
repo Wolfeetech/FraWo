@@ -12,6 +12,7 @@
         "data/ir_cron.xml",
         "views/agent_log_views.xml",
     ],
+    "post_init_hook": "post_init",
     "application": False,
     "installable": True,
 }
