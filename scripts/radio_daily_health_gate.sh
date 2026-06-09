@@ -44,6 +44,7 @@ if [[ "${readiness_gate}" == "yes" \
    && "${service_gate}" == "yes" \
    && "${ops_gate}" == "yes" \
    && "${internal_ready}" == "yes" \
+   && "${control_ready}" == "yes" \
    && "${nowplaying_ready}" == "yes" \
    && "${station_online}" == "true" ]]; then
   echo "radio_daily_gate=go"
