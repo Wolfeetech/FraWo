@@ -1,12 +1,12 @@
-# MASTER SINGLE SOURCE OF TRUTH (SSOT)
+# FraWo Memory
 
 > [!IMPORTANT]
-> **Dies ist die einzige und maßgebliche Knowledge Base für Homeserver 2027.**
-> Jegliche technische Wahrheit über das FraWo-Estate wird ausschließlich hier und im Canonical Upstream (`https://github.com/Wolfeetech/FraWo`) gepflegt.
+> **Dieses Dokument ist Langzeitwissen und RAG-Kontext.**
+> Fuehrende Runtime-Wahrheit liegt in `LIVE_CONTEXT.md`, `NETWORK_PLAN.md` und `ROADMAP.md`.
 
 ## Status
 
-- Status: **MASTER SSOT ACTIVE**
+- Status: **LONG-LIVED CONTEXT ACTIVE**
 - Canonical Upstream: [https://github.com/Wolfeetech/FraWo](https://github.com/Wolfeetech/FraWo) (Established 2026-04-13)
 - Dokumenttyp: zentrale Knowledge Base / RAG-Index
 - Gueltig ab: 2026-03-17
@@ -17,36 +17,35 @@
 ## Verifizierte Basisfakten
 
 - Hardware: Lenovo ThinkCentre M920q (i5-8500T, 15 GB RAM)
-- Host: Proxmox VE auf lokalem NVMe-Storage
-- Studio-PC: `WOLFSTUDIOPC` (192.168.2.162)
-- Operator-Rechner (Workstation): `wolf-ZenBook` (100.76.249.126)
-- Shared Frontend: `surface-go-frontend` (192.168.2.154 / 100.106.67.127)
-- **Review & Control Node**: `wolf_surface` (DESKTOP-7LMP02S, 100.79.103.59)
-- **Toolbox Tailscale-IP**: `100.82.26.53` (Confirmed active after rebuild; old entry `100.99.206.128` is dead)
-- **WolfStudioPC Remote Reality (2026-04-15)**: `wolfstudiopc` is online in the tailnet at `100.98.31.60` and SMB is reachable, but `SSH` on port `22` is still closed.
-- Radio-Node: `radio-node` (192.168.2.155 / 100.64.23.77), ARM64 Raspberry Pi 4
-- PBS: `VM 240` (192.168.2.25), Interim-Datastore auf 64GB USB-Stick
+- Primarhost: `proxmox-anker` (`10.4.0.99`, `100.69.179.87`)
+- Zentraler Ingress: `toolbox` (`10.4.0.20`, `100.82.26.53`)
+- Produktionsdienste: `odoo` (`10.4.0.22`), `nextcloud` (`10.4.0.21`), `paperless` (`10.4.0.23`), `vaultwarden` (`10.4.0.26`), `storage-node` (`10.4.0.30`)
+- Radio-Node: `CT 130` (`10.4.0.28`, `100.78.88.33`)
+- Produktionssekundaer: `frawo-docker-1` (`10.30.8.22`, `100.94.32.41`) fuer Monitoring, Relay und kuratierte Automation
+- `stockenweiler-pve` bleibt Legacy-/Fallback-Pfad und ist keine aktive Produktionsbasis
+- PBS: `VM 240` (`10.4.0.25`) ist weiter als Netzwerk-/Produktionsbaustelle zu behandeln
 
 ## Kanonische Topologie (Produktion)
 
 | ID | Typ | Dienst | Rolle | Ziel-IP | Betriebsmodell |
 | --- | --- | --- | --- | --- | --- |
-| 100 | CT | Toolbox | Docker, Ansible, Caddy, Tailscale, DNS | **10.1.0.20** | local storage (bypass LVM) |
-| 200 | VM | Nextcloud | Cloud & Files | **10.1.0.21** | dedizierte VM |
-| 210 | VM | HAOS | Smart Home | **10.1.0.24** | dedizierte HAOS-VM |
-| 220 | VM | Odoo | Business ERP | **10.1.0.22** | dedizierte VM |
-| 230 | VM | Paperless | DMS | **10.1.0.23** | dedizierte VM |
-| 240 | VM | PBS | Backup Server | `192.168.2.25` | **DEGRADED / INACTIVE** – Neuaufsetzen geplant nach Kernstack-Stabilisierung |
-| 110 | CT | Storage | NFS/SMB Data Node | **10.1.0.30** | CT 110 |
+| 100 | CT | Toolbox | Caddy, AdGuard, Uptime, Jellyfin, Open-WebUI, cloudflared | **10.4.0.20** | zentrale Frontdoor |
+| 200 | VM | Nextcloud | Cloud & Files | **10.4.0.21** | dedizierte VM |
+| 210 | VM | HAOS | Smart Home | **10.4.0.24** | dedizierte HAOS-VM |
+| 220 | VM | Odoo | Business ERP | **10.4.0.22** | dedizierte VM |
+| 230 | VM | Paperless | DMS | **10.4.0.23** | dedizierte VM |
+| 240 | VM | PBS | Backup Server | **10.4.0.25** | **DEGRADED / VERIFY** – Netzwerkfix offen |
+| 110 | CT | Storage | NFS/SMB Data Node | **10.4.0.30** | CT 110 |
+| ext | Host | frawo-docker-1 | Production Secondary Node | **10.30.8.22** | Monitoring, Relay, kuratierte Automation |
 
 ## Netzwerk & Freigaben
 
-- Router: **UCG-Ultra** (10.1.0.1) -> Primäres Gateway (**aktiv**)
+- Router: **UCG-Ultra** (`10.4.0.1`) -> Primäres Gateway (**aktiv**)
 - Fallback: Vodafone Easy Box (192.168.2.1) -> Legacy-Segment (Haushalt/IoT)
-- DNS: AdGuard Home (CT 100) on **10.1.0.20**
+- DNS: AdGuard Home (CT 100) on **10.4.0.20**
 - VPN: Tailscale
-- **Public Edge**: Cloudflare Tunnel (Alpha, nicht produktiv)
-- Frontdoors (intern): `*.hs27.internal` via Caddy (**10.1.0.20**)
+- **Public Edge**: Cloudflare Tunnel (produktiv fuer freigegebene Public-Endpunkte)
+- Frontdoors (intern): `*.hs27.internal` via Caddy (**10.4.0.20**)
 
 ## Architekturentscheidungen & Business Logic
 
@@ -82,7 +81,7 @@
 - [ ] Windows-GUI-Updates spaeter kontrolliert abschliessen, nachdem die blockierenden Prozesse bewusst geschlossen wurden.
 - [x] Easy-Box-Geraete autoritativ zuordnen (.141-.144) -> in NETWORK_INVENTORY.md den Family-Phones zugeordnet.
 
-## Chronologische Logs (Auszug)
+## Chronologische Logs (Auszug, historische Referenzen koennen Legacy-IP-Pfade enthalten)
 
 ### 2026-04-19 (FraWo_GbR Transition): Odoo Shape-Up completed. Database renamed from `FraWo_Live_V2` to `FraWo_GbR`. Website domain `www.frawo-tech.de` and proxy mode active. Manual bootstrap backup created on VM 220.
 

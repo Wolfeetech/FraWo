@@ -1,0 +1,41 @@
+<odoo>
+  <record id="view_agent_log_tree" model="ir.ui.view">
+    <field name="name">frawo.agent.log.tree</field>
+    <field name="model">frawo.agent.log</field>
+    <field name="arch" type="xml">
+      <tree decoration-danger="level=='error'" decoration-warning="level=='warning'">
+        <field name="create_date"/>
+        <field name="name"/>
+        <field name="level"/>
+        <field name="task_id"/>
+        <field name="message"/>
+      </tree>
+    </field>
+  </record>
+
+  <record id="view_agent_log_form" model="ir.ui.view">
+    <field name="name">frawo.agent.log.form</field>
+    <field name="model">frawo.agent.log</field>
+    <field name="arch" type="xml">
+      <form>
+        <sheet>
+          <group>
+            <field name="name"/><field name="level"/>
+            <field name="task_id"/><field name="create_date"/>
+          </group>
+          <field name="message"/>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <record id="action_agent_log" model="ir.actions.act_window">
+    <field name="name">Agent-Logbuch</field>
+    <field name="res_model">frawo.agent.log</field>
+    <field name="view_mode">tree,form</field>
+  </record>
+
+  <menuitem id="menu_frawo_agent_root" name="🤖 Agent" sequence="95"/>
+  <menuitem id="menu_agent_log" name="Logbuch"
+            parent="menu_frawo_agent_root" action="action_agent_log" sequence="10"/>
+</odoo>

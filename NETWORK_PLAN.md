@@ -1,6 +1,13 @@
 # FraWo GbR — Netzwerk-Plan & Abhängigkeiten
 **Stand: 2026-05-26 | Security-Audit-konsolidiert**
 
+## SSOT Contract
+
+- `NETWORK_PLAN.md` beschreibt die fuehrende Netz-, Service- und Abhaengigkeitswahrheit.
+- Odoo fuehrt keine Runtime-Topologie, sondern Aufgaben und Ownership.
+- `STATUS.md` ist Audit, nicht Governance.
+- Secrets gehoeren ausschliesslich in Vaultwarden, nicht in dieses Dokument.
+
 ---
 
 ## GESAMTARCHITEKTUR
@@ -37,7 +44,7 @@ ANKER PVE (10.4.0.99)
 ├── CT 100: TOOLBOX (10.4.0.20) ← CENTRAL INGRESS
 │   ├── Caddy (HTTP Proxy, Port 80/443)     ← ALLE .hs27.internal domains
 │   ├── AdGuard Home (DNS, Port 53)         ← DNS für alle Clients
-│   │   └── Auth: admin / FrawoAdGuard2026! ✅ (heute gesetzt)
+│   │   └── Auth: Vaultwarden-verwaltet ✅
 │   ├── cloudflared (CF Tunnel)             ← öffentliche Domains
 │   ├── Uptime Kuma (Port 3001)             ← Monitoring UI
 │   ├── Jellyfin (Port 8096)                ← media.hs27.internal
@@ -98,9 +105,9 @@ frawo-docker-1 (10.30.8.22 | TS: 100.94.32.41)
 │
 ├── n8n Automation (Port 5678)          ← n8n.hs27.internal
 ├── Portainer CE (Port 9000/9443)       ← portainer.hs27.internal
-│   └── PW: FrawoPortainer2026! ✅ (heute repariert, war nie initialisiert!)
+│   └── Credentials: Vaultwarden-verwaltet ✅
 ├── Grafana (Port 3001)                 ← grafana.hs27.internal
-│   └── PW: FrawoGrafana2026!
+│   └── Credentials: Vaultwarden-verwaltet
 ├── Prometheus (Port 9091)              ← prometheus.hs27.internal
 │   └── Scraping: frawo-docker-1 Node-Exporter
 ├── Node Exporter (Port 9100)           ← frawo-docker-1 Metriken
@@ -190,22 +197,21 @@ CF Tunnel fällt aus → ALLE öffentlichen Domains tot
 
 ---
 
-## PASSWÖRTER
+## SECRET-REFERENZEN
 
-Alle Credentials in **Vaultwarden** gespeichert: http://vault.hs27.internal
-- **Agent-Account**: agent@frawo-tech.de / FrawoAgent2026!
-- **Admin-Panel**: vault.hs27.internal/admin → Token: FrawoAdminVault2026! (argon2id gehashed)
-- 19 Items gespeichert (2026-05-27) ✅
+Alle Credentials, Tokens und Admin-Logins leben in **Vaultwarden**.
+- Repo-Dokumente referenzieren nur noch den passenden Vault-Eintrag.
+- Aktueller Stand: produktive Kern-Services sind im Vault dokumentiert.
 
 | Service | User | Status |
 |---------|------|--------|
-| AdGuard CT 100 | admin | ✅ In Vaultwarden |
-| Portainer frawo-docker-1 | admin | ✅ In Vaultwarden |
-| Grafana frawo-docker-1 | admin | ✅ In Vaultwarden |
-| Odoo VM 220 | admin | ❌ AuditTemp2026! — SOFORT ÄNDERN! |
-| Nextcloud VM 300 | frawoadmin | ✅ In Vaultwarden |
-| Paperless VM 330 | frawoadmin | ✅ In Vaultwarden |
-| Vaultwarden CT 120 | - | ✅ Admin-Token argon2id |
+| AdGuard CT 100 | Vault-Eintrag | ✅ In Vaultwarden |
+| Portainer frawo-docker-1 | Vault-Eintrag | ✅ In Vaultwarden |
+| Grafana frawo-docker-1 | Vault-Eintrag | ✅ In Vaultwarden |
+| Odoo VM 220 | Vault-Eintrag | ⚠️ Rotationsstatus im Vault verifizieren |
+| Nextcloud VM 300 | Vault-Eintrag | ✅ In Vaultwarden |
+| Paperless VM 330 | Vault-Eintrag | ✅ In Vaultwarden |
+| Vaultwarden CT 120 | Offline-/Vault-Referenz | ✅ Admin-Zugriff ausserhalb des Repos |
 
 ---
 
@@ -213,7 +219,7 @@ Alle Credentials in **Vaultwarden** gespeichert: http://vault.hs27.internal
 
 | Prio | Node | Problem | Fix |
 |------|------|---------|-----|
-| ❌ JETZT | VM 220 Odoo | admin-PW `AuditTemp2026!` | Web-UI → Einstellungen → Passwort |
+| ❌ JETZT | VM 220 Odoo | Legacy-Temp-Credential aus Alt-Doku muss als rotiert/verifiziert gelten | Vaultwarden-Eintrag pruefen und Rotation bestaetigen |
 | ❌ JETZT | alle | Passwörter in Vaultwarden eintragen | vault.hs27.internal |
 | ✅ DONE | frawo-docker-1 | UFW aktiv | deny incoming, allow 100.64.0.0/10 + 10.30.8.0/24 |
 | ⚠️ WOCHE | PVE Host | Kein PVE-Firewall | PVE Web UI → Datacenter → Firewall |

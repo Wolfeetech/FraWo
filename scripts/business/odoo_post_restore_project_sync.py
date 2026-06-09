@@ -158,8 +158,12 @@ upsert_task(
 upsert_task(
     lane_c,
     "PVE Host Exposure Audit: NFS/RPC/SSH",
-    "active",
-    "<p>Review host listeners. NFS/RPC are currently observed on all interfaces and need restriction review.</p>",
+    "done",
+    (
+        "<p>Exposure model verified 2026-05-31: management on trusted LAN/Tailscale paths, "
+        "node-exporter loopback-only, netdata loopback+Tailscale only, and NFS export "
+        "/mnt/wolf-ee restricted to storage consumer 100.91.20.116.</p>"
+    ),
 )
 upsert_task(
     lane_c,

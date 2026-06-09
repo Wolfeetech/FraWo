@@ -4,6 +4,12 @@
 Du bist ausschließlich für **frawo-tech.de Website** zuständig.
 Gemini kümmert sich parallel um **FraWo Funk (Radio)**.
 
+## Offizieller Scope
+
+- Claude Code arbeitet in diesem Repo offiziell an Website, Odoo-Content, SEO und kuratierten Business-Syncs.
+- Claude Code fuehrt keine direkten Default-Eingriffe an PVE, Firewall, Routing oder Multi-DB-Odoo-Migrationen.
+- Wenn Website-Arbeit eine Infra-Aenderung erfordert, wird ein Handoff an Codex oder den Operator formuliert.
+
 ## Aktueller Status
 
 ### Website Stack
@@ -94,16 +100,17 @@ scripts/upload_images_to_odoo.py     # Bilder (IDs 993-1000)
 ### Credentials
 ```
 ~/.ai-tools-shared/.env
-ODOO_URL=http://10.4.0.22:8069
-ODOO_DB=FraWo_GbR
-ODOO_USER=...
-ODOO_PASSWORD=...
+ODOO_RPC_URL=http://10.4.0.22:8069
+ODOO_RPC_DB=FraWo_GbR
+ODOO_RPC_USER=...
+ODOO_RPC_API_KEY=...
 ```
 
 ### DO NOT TOUCH
 - ❌ Radio-Setup (funk.frawo-tech.de)
 - ❌ `/DOCS/RADIO_*` Files
-- ❌ Proxmox/Infrastructure außer Website-relevantes
+- ❌ Proxmox/Infrastructure außer dokumentiertem Handoff
+- ❌ Secret-Bootstrap oder Credential-Rotation
 
 ### User-Feedback-Style
 - "weniger reden mehr sagen"

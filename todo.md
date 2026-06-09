@@ -58,6 +58,7 @@ Diese Datei ist die kurze manuelle Unblock-Queue. Strategische Wahrheit steht im
 - `github_issue`: `#13`
 - `goal`: NFS/RPC/SSH/PVE-UI Exposure des Proxmox Hosts auf notwendige Netze begrenzen.
 - `fixed_2026-05-31`: socat:18069 (Odoo-Proxy) auf Tailscale-IP gebunden. netdata:19999 auf 127.0.0.1+Tailscale. node-exporter:9100 auf 127.0.0.1. NFS-Export /mnt/wolf-ee nur fuer 100.91.20.116 (Stockenweiler) - OK.
+- `exposure_model`: Host-Management nur ueber vertrauenswuerdige LAN/Tailscale-Pfade; Metrics lokal/Tailscale-only; NFS nur fuer expliziten Storage-Consumer.
 - `next_operator_action`: Keine.
 
 
@@ -117,13 +118,17 @@ Diese Datei ist die kurze manuelle Unblock-Queue. Strategische Wahrheit steht im
 - `goal`: Odoo ACL-Warnings auf `res.users.log` klaeren.
 - `next_codex_action`: Odoo-App-Layer pruefen, keine Infra-Mutation.
 
-### `radio_frontdoor_backend` [ACTIVE]
+### `radio_frontdoor_backend` [DONE]
 
 - `lane`: `Lane E: Radio/Media`
-- `goal`: `radio.frawo-tech.de` Ã¼ber AzuraCast (Stockenweiler) bereitstellen.
-- `current_state`: AzuraCast VM 210 lÃ¤uft auf `192.168.178.210`.
-- `next_operator_action`: Cloudflare Tunnel Routing fÃ¼r `radio.frawo-tech.de` hinzufÃ¼gen.
-- `next_codex_action`: AzuraCast Konfiguration validieren und Stream-Test durchfÃ¼hren.
+- `goal`: funk.frawo-tech.de als Community-Radiosite (Abstimmung, Chat, Song-Wunsch).
+- `verified_2026-05-31`:
+  - https://funk.frawo-tech.de/ public HTTPS 200 via CF-Tunnel -> 100.78.88.33:9501
+  - https://navidrome.frawo-tech.de/ public HTTPS 200 via CF-Tunnel -> 100.78.88.33:4533
+  - Song-Requests aktiviert (AzuraCast enable_requests=true), API-Key genutzt, Suche laeuft
+  - Art-URLs public (kein internes 172.20.0.1), Now-Playing, Voting, Chat alles verifiziert
+- `next_operator_action`: Keine.
+- `deployment_note`: Docker-Build-Context ist /opt/frawo-radio-backend/app/ (nicht apps/radio-backend/). Nach git-Pull sync: cp apps/radio-backend/app/api/community.py app/api/community.py
 
 ### `ha_eltern_dashboard` [ACTIVE]
 
@@ -131,6 +136,14 @@ Diese Datei ist die kurze manuelle Unblock-Queue. Strategische Wahrheit steht im
 - `goal`: Spezielles Dashboard fÃ¼r Wolfs Eltern (ZDF/ARD Mediatheken, Strom).
 - `current_state`: HA Eltern VM 360 lÃ¤uft auf `192.168.178.179`.
 - `next_codex_action`: Dashboard YAML-Entwurf erstellen (Mediathek iFrames).
+
+### `onkyo_avr390_setup` [ACTIVE]
+
+- `lane`: `Lane D: Stockenweiler` (oder Anker-HW)
+- `goal`: Onkyo AV R390 professionell einrichten und dokumentieren (Patching, Signalfluss, Geraeteeinstellungen) - Werkstattqualitaet.
+- `current_state`: Geraet angeschlossen, Einmessung erledigt. Naechster Schritt: saubere Verkabelung + vollstaendige Dokumentation.
+- `next_operator_action`: Kabel beschriften, Patchplan aufnehmen (Foto + Text).
+- `next_codex_action`: Dokumentationsvorlage erstellen (Standard-Patchplan-Template fuer AV-Receiver). Odoo-Task angelegt.
 
 ### `website_access_protection` [PROPOSED]
 

@@ -1,10 +1,11 @@
-import xmlrpc.client
 import getpass
+import os
 import sys
+import xmlrpc.client
 
-URL = "http://odoo.hs27.internal"
-DB = "postgres"  # Common default, might also be odoo depending on setup
-USER = "admin"   # Adjust as necessary
+URL = os.getenv("ODOO_RPC_URL", "http://odoo.hs27.internal")
+DB = os.getenv("ODOO_RPC_DB", "FraWo_GbR")
+USER = os.getenv("ODOO_RPC_USER", "wolf@frawo-tech.de")
 
 print("🔹 Odoo To-Do WOW-Moment Generator 🔹")
 print(f"Verbinde zu {URL}...")

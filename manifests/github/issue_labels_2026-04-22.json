@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-04-22",
+  "updated_at": "2026-05-31",
   "repository": "Wolfeetech/FraWo",
   "issue_labels": [
     {
@@ -29,7 +29,7 @@
     },
     {
       "issue": 13,
-      "labels": ["type:security", "status:active", "lane:c-infra", "area:proxmox", "risk:runtime"]
+      "labels": ["type:security", "status:done", "lane:c-infra", "area:proxmox", "risk:runtime"]
     },
     {
       "issue": 14,

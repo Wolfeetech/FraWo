@@ -1,0 +1,62 @@
+---
+- name: Proxmox Auto-Healing Setup
+  hosts: pve-anker
+  become: yes
+  tasks:
+    - name: Enable kernel panic auto-reboot
+      sysctl:
+        name: kernel.panic
+        value: '10'
+        state: present
+        reload: yes
+        sysctl_file: /etc/sysctl.d/99-autoheal.conf
+
+    - name: Install watchdog package
+      apt:
+        name: watchdog
+        state: present
+        update_cache: yes
+
+    - name: Configure watchdog device
+      lineinfile:
+        path: /etc/watchdog.conf
+        regexp: '^#?watchdog-device'
+        line: 'watchdog-device = /dev/watchdog'
+
+    - name: Enable max-load-1 in watchdog
+      lineinfile:
+        path: /etc/watchdog.conf
+        regexp: '^#?max-load-1\s*='
+        line: 'max-load-1            = 24'
+
+    - name: Enable and start watchdog service
+      systemd:
+        name: watchdog
+        enabled: yes
+        state: restarted
+
+    - name: Deploy network resilience script
+      copy:
+        dest: /usr/local/bin/net-resilience.sh
+        mode: '0755'
+        content: |
+          #!/bin/bash
+          # Ping default gateway. If unreachable for 3 attempts, restart networking.
+          GATEWAY=$(ip route | awk '/default/ { print $3 }')
+          if [ -z "$GATEWAY" ]; then exit 0; fi
+          if ! ping -c 3 -W 5 $GATEWAY >/dev/null 2>&1; then
+              echo "$(date): Gateway $GATEWAY unreachable. Restarting network." >> /var/log/net-resilience.log
+              systemctl restart networking
+              sleep 30
+              # If still dead after 30s, reboot
+              if ! ping -c 3 -W 5 $GATEWAY >/dev/null 2>&1; then
+                   echo "$(date): Still unreachable. Rebooting." >> /var/log/net-resilience.log
+                   echo b > /sysrq-trigger || reboot -f
+              fi
+          fi
+
+    - name: Add network resilience cronjob
+      cron:
+        name: "Check network connectivity every 5 mins"
+        minute: "*/5"
+        job: "/usr/local/bin/net-resilience.sh"

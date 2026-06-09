@@ -1,11 +1,18 @@
-# MASTER SINGLE SOURCE OF TRUTH (SSOT)
+# FraWo Operations Workspace
 
 > [!IMPORTANT]
-> **Dies ist das einzige und massgebliche Projektverzeichnis für Homeserver 2027.**
-> Alle technischen Fakten, Automatisierungen und Dokumentationen in diesem Repository sind die absolute Wahrheit für das FraWo-Estate.
+> **Dieses Repository ist der technische und betriebliche Arbeitsraum fuer Homeserver 2027.**
+> Es ist nicht die alleinige Wahrheit fuer Aufgabenstatus: Das Odoo-Board fuehrt Tasks, das Repo fuehrt Runtime und Infrastruktur.
 >
 > **Canonical Upstream**: [https://github.com/Wolfeetech/FraWo](https://github.com/Wolfeetech/FraWo)
 > **Canonical Local Workspace**: `C:\Users\Admin\Workspace\Repos\FraWo`
+
+## SSOT Contract
+
+- **Odoo** (`FraWo_GbR` -> `🚀 Homeserver 2027: Masterplan`) ist der `task SSOT` fuer Status, Owner, Prioritaet, Blocker, Review und Abschluss.
+- **Repo-Dokumente** sind der `technical/runtime SSOT` fuer Netzwerk, Runtime, Infrastruktur, Sicherheitsregeln und Auditrealitaet.
+- `STATUS.md` ist ein zeitgebundener Audit- und Praxisreport, nicht das fuehrende Governance-Dokument.
+- `MEMORY.md` ist Langzeitwissen und Kontext, nicht die fuehrende Runtime-Wahrheit.
 
 ---
 
@@ -149,7 +156,7 @@ After `INTRODUCTION_PROMPT.md`, choose the narrowest specialized prompt that fit
 
 ## Consolidated Repositories
 
-This repository is the Single Source of Truth (SSOT). Key projects have been integrated via Git Subtrees:
+This repository is the technical/runtime SSOT. Key projects have been integrated via Git Subtrees:
 
 ### Active Apps
 - **[`apps/yourparty/`](apps/yourparty/)** - Community radio application with mood-based playlists.

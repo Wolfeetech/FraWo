@@ -123,13 +123,16 @@ import xmlrpc.client, os
 
 url = "http://localhost:8069"
 db  = "FraWo_GbR"
+user = os.environ.get("ODOO_RPC_USER")
 secret_path = "/run/secrets/odoo_admin_pw"
+if not user:
+    raise SystemExit("FEHLER: ODOO_RPC_USER fehlt. Kein Default-Admin im Repo.")
 if not os.path.exists(secret_path):
     raise SystemExit("FEHLER: /run/secrets/odoo_admin_pw fehlt. Kein Klartext-Fallback im Repo erlaubt.")
 pw = open(secret_path, "r").read().strip()
 
 common = xmlrpc.client.ServerProxy(f"{url}/xmlrpc/2/common", allow_none=True)
-uid = common.authenticate(db, "admin", pw, {})
+uid = common.authenticate(db, user, pw, {})
 models = xmlrpc.client.ServerProxy(f"{url}/xmlrpc/2/object", allow_none=True)
 
 ids = models.execute_kw(db, uid, pw, "ir.config_parameter", "search",

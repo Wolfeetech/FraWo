@@ -1,0 +1,8 @@
+<odoo>
+  <data noupdate="1">
+    <record id="tag_agent_queue" model="project.tags">
+      <field name="name">🤖 Agent-Queue</field>
+      <field name="color">3</field>
+    </record>
+  </data>
+</odoo>

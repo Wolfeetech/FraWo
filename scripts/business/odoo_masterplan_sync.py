@@ -144,7 +144,7 @@ NEW_TASK_SPECS = [
         "owners": [WOLF_LOGIN, AGENT_LOGIN],
         "description": (
             "<ul>"
-            "<li>[ ] SMTP-Test via test_odoo_smtp.py mit gesetztem ODOO_RPC_PASSWORD</li>"
+            "<li>[ ] SMTP-Test via test_odoo_smtp.py mit gesetztem ODOO_RPC_API_KEY</li>"
             "<li>[ ] noreply-Identitaet bei Strato final verifizieren</li>"
             "<li>[ ] Sichtbare Testmail in Franz' Postfach bestaetigen</li>"
             "</ul>"
