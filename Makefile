@@ -112,9 +112,11 @@ ansible-check: ansible-syntax-check
 ## docs: Verify key SSOT documentation files are present
 docs:
 	@echo "[docs] Checking required SSOT files..."
-	@for f in README.md DOCS/Task_Archive/SECURITY.md archive/CONTRIBUTING.md DOCS/Task_Archive/AGENTS.md archive/OPS_HOME.md archive/LIVE_CONTEXT.md archive/MASTERPLAN.md archive/todo.md archive/AI_OPERATING_MODEL.md OPERATIONS/GITHUB_OPERATIONS.md COMMUNICATION/agent_board.md .github/dependabot.yml manifests/workspaces/canonical_workspace.json manifests/work_lanes/current_plan.json SSOT/START_HERE.md; do \
-		if [ -f "$$f" ]; then echo "  ✓ $$f"; else echo "  ✗ MISSING: $$f"; fi; \
-	done
+	@missing=0; \
+	for f in README.md DOCS/Task_Archive/SECURITY.md archive/CONTRIBUTING.md DOCS/Task_Archive/AGENTS.md archive/OPS_HOME.md archive/LIVE_CONTEXT.md archive/MASTERPLAN.md archive/todo.md archive/AI_OPERATING_MODEL.md OPERATIONS/GITHUB_OPERATIONS.md COMMUNICATION/agent_board.md .github/dependabot.yml manifests/workspaces/canonical_workspace.json manifests/work_lanes/current_plan.json SSOT/START_HERE.md; do \
+		if [ -f "$$f" ]; then echo "  ✓ $$f"; else echo "  ✗ MISSING: $$f"; missing=$$((missing + 1)); fi; \
+	done; \
+	if [ "$$missing" -gt 0 ]; then echo "[docs] $$missing required file(s) missing."; exit 1; fi
 	@echo "[docs] Done."
 
 ## ai-status: Check health of local brains (Ollama) and MCP bridge
