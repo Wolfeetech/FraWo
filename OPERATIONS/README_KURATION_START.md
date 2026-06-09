@@ -126,11 +126,11 @@ Web UI → Media → Scan for Media
 9. [README_KURATION_START.md](README_KURATION_START.md) - This file
 
 ### Scripts
-9. [scripts/radio/fix_stocki_storage_critical.sh](../scripts/radio/fix_stocki_storage_critical.sh) - Storage Fix
-10. [scripts/radio/migrate_stocki_to_storage_node.sh](../scripts/radio/migrate_stocki_to_storage_node.sh) - Migration
+10. [scripts/radio/fix_stocki_storage_critical.sh](../scripts/radio/fix_stocki_storage_critical.sh) - Storage Fix
+11. [scripts/radio/migrate_stocki_to_storage_node.sh](../scripts/radio/migrate_stocki_to_storage_node.sh) - Migration
 
 ### Frontend
-11. [apps/radio-player-frontend/site/index_v2.html](../apps/radio-player-frontend/site/index_v2.html) - Radio Player V2
+12. [apps/radio-player-frontend/site/index_v2.html](../apps/radio-player-frontend/site/index_v2.html) - Radio Player V2
 
 ### Infrastructure
 - ✅ **Storage Node:** Music Directories bereit (`frawo_curated`, `frawo_incoming`)
