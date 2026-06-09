@@ -2,6 +2,12 @@
 
 Hier werden alle umgesetzten Änderungen (Optionen), die vom Chef freigegeben wurden, chronologisch dokumentiert.
 
+## 2026-06-09 (Opus / Claude Code Session)
+- **KRITISCH: proxmox-anker Root-Disk war 100% voll (0 frei) → 63% (24 GB frei).** Ursache: kaputte systemd-Drop-in `rclone-gdrive.service.d/cache.conf` (31.05.) überschrieb die gute Konfig und zwang den rclone-vfs-Cache (28 GB) auf die Root-Disk statt auf ssd2tb. Fix: Drop-in gelöscht → Haupt-Unit (cache-dir /mnt/ssd2tb/.rclone-cache) greift wieder; Root-Cache nach sauberem Stop freigegeben; gdrive-Mount verifiziert gesund. **Folge: die still scheiternden nächtlichen Backups (voller Root → verwaister Lock auf CT 130) sollten wieder laufen.**
+- **radio-node (CT 130): 173 apt-Updates installiert + Reboot** (Backup-Netz: vzdump/PBS 2026-06-08). Stream + Container verifiziert, 4 Kerne aktiv. Verwaisten Backup-Lock (`pct unlock 130`) gelöst.
+- **Odoo Performance:** workers=4 (statt 0) + db-filter + limit-time-real-cron=300 in Compose-command; DB-Selektor-Umweg weg. (frawo.tech extern bleibt tunnel-latenzabhängig.)
+- **Agent-Cron repariert:** numbercall=-1 (lief nur 1×, dann gestoppt) → tickt jetzt autonom alle 2 Min.
+
 ## 2026-06-07 (Opus / Claude Code Session)
 
 ### KRITISCH behoben
