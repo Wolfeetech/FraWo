@@ -35,10 +35,10 @@ echo "radio_daily_target_host=${TARGET_HOST}"
 echo "radio_daily_readiness_gate=${readiness_gate}"
 echo "radio_daily_service_gate=${service_gate}"
 echo "radio_daily_ops_gate=${ops_gate}"
-echo "radio_kpi_internal_ui_ready=${internal_ready}"
-echo "radio_kpi_control_ui_ready=${control_ready}"
-echo "radio_kpi_nowplaying_ready=${nowplaying_ready}"
-echo "radio_kpi_station_online=${station_online}"
+echo "radio_internal_ready=${internal_ready}"
+echo "radio_control_ready=${control_ready}"
+echo "radio_nowplaying_ready=${nowplaying_ready}"
+echo "azuracast_station_online=${station_online}"
 
 if [[ "${readiness_gate}" == "yes" \
    && "${service_gate}" == "yes" \
