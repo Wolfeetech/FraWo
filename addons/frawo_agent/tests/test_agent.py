@@ -63,6 +63,17 @@ class TestFormatter(TransactionCase):
 @tagged("post_install", "-at_install", "frawo_agent")
 class TestQueue(TransactionCase):
 
+    def setUp(self):
+        super().setUp()
+        # Tests duerfen nicht von Prod-Daten abhaengen: Agent-User sicherstellen.
+        Users = self.env["res.users"].sudo()
+        if not Users.search([("login", "=", AGENT_LOGIN)], limit=1):
+            Users.create({
+                "name": "FraWo Agent",
+                "login": AGENT_LOGIN,
+                "groups_id": [(6, 0, [self.env.ref("base.group_user").id])],
+            })
+
     def _project(self):
         return self.env["project.project"].create({"name": "T-Proj"})
 

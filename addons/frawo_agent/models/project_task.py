@@ -1,3 +1,5 @@
+from html import escape as html_escape
+
 from odoo import api, fields, models
 from odoo.tools import html2plaintext
 
@@ -28,9 +30,10 @@ class ProjectTask(models.Model):
     @api.model
     def _role_tag_id(self, role):
         name = self.ROLE_TAG_NAME.get(role, "Review-Wolf")
-        tag = self.env["project.tags"].search([("name", "=", name)], limit=1)
+        Tags = self.env["project.tags"].sudo()
+        tag = Tags.search([("name", "=", name)], limit=1)
         if not tag:
-            tag = self.env["project.tags"].create({"name": name})
+            tag = Tags.create({"name": name})
         return tag.id
 
     @api.model
@@ -56,12 +59,12 @@ class ProjectTask(models.Model):
                            order="create_date asc", limit=1)
         if not task:
             return
-        Log = self.env["frawo.agent.log"]
+        Log = self.env["frawo.agent.log"].sudo()
         try:
             # Schutz: bereits ausfuehrlich dokumentierte Tasks NICHT ueberschreiben
             existing = html2plaintext(task.description or "").strip()
             if len(existing) >= DOC_THRESHOLD:
-                task.agent_state = "skip"
+                task.sudo().agent_state = "skip"
                 Log.create({"name": "Bereits dokumentiert", "level": "info",
                             "task_id": task.id,
                             "message": "Beschreibung >=%d Zeichen – Agent ueberschreibt "
@@ -71,15 +74,15 @@ class ProjectTask(models.Model):
             prompt = self.env["frawo.task.formatter"].build_prompt(task.name, role)
             text = self.env["frawo.ollama.client"].generate(prompt)
             if not text:
-                task.agent_state = "error"
+                task.sudo().agent_state = "error"
                 Log.create({"name": "Ollama ohne Antwort", "level": "error",
                             "task_id": task.id,
                             "message": "Kein Text vom Modell – Task uebersprungen."})
                 return
             # autonom: Beschreibung + Rollen-Tag + Chatter
             tag_id = self._role_tag_id(role)
-            task.write({
-                "description": "<pre>%s</pre>" % text,
+            task.sudo().write({
+                "description": "<pre>%s</pre>" % html_escape(text),
                 "tag_ids": [(4, tag_id)],
                 "agent_state": "done",
             })
@@ -90,7 +93,7 @@ class ProjectTask(models.Model):
             Log.create({"name": "Task aufbereitet", "level": "info",
                         "task_id": task.id, "message": "Rolle=%s" % role})
         except Exception as e:
-            task.agent_state = "error"
+            task.sudo().agent_state = "error"
             Log.create({"name": "Verarbeitungsfehler", "level": "error",
                         "task_id": task.id, "message": str(e)})
 
