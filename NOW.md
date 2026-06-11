@@ -37,7 +37,7 @@
 1. Anker aus Emergency-Mode (SSD dran → `reboot` → dann `nofail`-Mount).
 2. ProDesk headless ins Netz + Tailscale.
 3. Vaultwarden & Radio down (kommen mit Anker zurück).
-4. Stockenweiler-Uplink ~10 KB/s = Strukturproblem für öffentliche Prod.
+4. **Stockenweiler-Uplink:** Latenz top (17 ms), aber Download real nur **~20–40 KB/s** (2026-06-11 gemessen an Debian/Ubuntu/Cloudflare, kein Tailscale-Artefakt). Muster (gute Latenz + gedrosselter Durchsatz) = **Bandbreiten-Shaping/Rate-Limit** auf der VM-Egress → **mit FLO klären** (sein Host/Netz, wir haben keinen HW-Zugriff). Kleine Web-Seiten ok, große Transfers (Git/Backups/Medien) leiden.
 
 ## 🤖 Klausi (Odoo-Nachrichtenfach-Bot)
 n8n-Workflow `1fLw0n1e0gaObjsp`. Kryptische Nachrichten = **Mojibake** (`?? Klausi:` statt `🤖 Klausi:`) + Webhook `odoo-klausi` nicht registriert. Fix im n8n-**Browser-UI** (UTF-8), Workflow aus/ein. Ollama selbst ist gesund. Details: Desktop `FRAWO Ops/Bestandsaufnahme_2026-06-11/03_Roadmap-und-offene-Punkte.md`.
