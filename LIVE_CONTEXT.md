@@ -1,3 +1,5 @@
+> ⚠️ **TEILWEISE VERALTET.** Aktueller Live-Stand: **[NOW.md](NOW.md)**. Kern-Korrekturen: frawo-docker-1 = VMware-VM auf **Flos** Host (kein HW-Zugriff; Wolfs Eltern = Testkunden). Echte Subnetze: Rothkreuz 10.1.0.0/24 + 10.3.0.0/24 (Radio-DMZ), Stockenweiler-ESXi 10.30.8.0/24, ProDesk/Easybox 192.168.2.0/24 (NICHT 10.4.0.x). Domain = **frawo.tech** (nicht frawo-tech.de).
+
 # LIVE CONTEXT — FraWo GbR Infrastruktur
 **Single Source of Truth für technischen Zustand**
 *Letzte vollständige Aktualisierung: 2026-05-31 — Claude Sonnet 4.6 + Wolf*

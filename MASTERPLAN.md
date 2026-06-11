@@ -1,3 +1,5 @@
+> ⚠️ **TEILWEISE VERALTET.** Aktueller Live-Stand: **[NOW.md](NOW.md)**. Kern-Korrekturen: frawo-docker-1 = VMware-VM auf **Flos** Host (kein HW-Zugriff; Wolfs Eltern = Testkunden). Echte Subnetze: Rothkreuz 10.1.0.0/24 + 10.3.0.0/24 (Radio-DMZ), Stockenweiler-ESXi 10.30.8.0/24, ProDesk/Easybox 192.168.2.0/24 (NICHT 10.4.0.x). Domain = **frawo.tech** (nicht frawo-tech.de).
+
 # MASTERPLAN - FraWo Homeserver 2027
 
 Dieses Dokument ist das zentrale Strategiepapier fuer Aufbau und Betrieb des FraWo Homeservers 2027 an den Standorten Anker und Stockenweiler. Es definiert die aktiven Lanes, die technische Wahrheit und die naechsten Freigabeschritte.
