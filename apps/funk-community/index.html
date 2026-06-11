@@ -16,7 +16,7 @@
   --violet: #8B5CF6;
   --dark-violet: #4c1d95;
   --text: #ffffff;
-  --muted: #aaaaaa;
+  --muted: #b8b8b8;
   --radius: 2px;
   --font: 'Outfit', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
@@ -404,6 +404,7 @@ main {
   align-items: center;
   justify-content: center;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
 }
 .play-btn:hover {
   background: var(--emerald);
@@ -413,6 +414,25 @@ main {
 .play-btn.loading {
   border-color: var(--muted);
   color: var(--muted);
+}
+/* Subtle buffering spinner ring around the emerald play button */
+.play-btn.buffering::after {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  border: 2px solid transparent;
+  border-top-color: var(--emerald);
+  border-right-color: var(--emerald);
+  border-radius: 50%;
+  animation: bufferSpin 0.7s linear infinite;
+  pointer-events: none;
+}
+@keyframes bufferSpin {
+  to { transform: rotate(360deg); }
+}
+.play-btn.errored {
+  border-color: #EF4444;
+  color: #EF4444;
 }
 .volume-slider-wrap {
   display: flex;
@@ -428,16 +448,46 @@ main {
 }
 input[type=range] {
   flex: 1;
-  height: 2px;
+  height: 24px; /* larger hit area for touch (>=44 via thumb + padding) */
   accent-color: var(--emerald);
-  background: #222;
+  background: transparent;
   outline: none;
   cursor: pointer;
   -webkit-appearance: none;
+  appearance: none;
 }
+/* WebKit track + thumb */
 input[type=range]::-webkit-slider-runnable-track {
-  height: 2px;
-  background: #222;
+  height: 4px;
+  background: #2a2a2a;
+  border: 1px solid var(--border);
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  margin-top: -8px; /* center on 4px track */
+  background: var(--emerald);
+  border: 2px solid #000;
+  box-shadow: 0 0 8px rgba(16,185,129,0.5);
+  cursor: pointer;
+  border-radius: 0; /* brutalist square thumb */
+}
+/* Firefox track + thumb */
+input[type=range]::-moz-range-track {
+  height: 4px;
+  background: #2a2a2a;
+  border: 1px solid var(--border);
+}
+input[type=range]::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  background: var(--emerald);
+  border: 2px solid #000;
+  box-shadow: 0 0 8px rgba(16,185,129,0.5);
+  cursor: pointer;
+  border-radius: 0;
 }
 
 /* STUDIO OSCILLOSCOPE CANVAS */
@@ -473,8 +523,10 @@ input[type=range]::-webkit-slider-runnable-track {
 .rating-btn {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   padding: 8px 18px;
+  min-height: 44px; /* touch target */
   background: transparent;
   border: 1px solid var(--border);
   color: var(--text);
@@ -536,6 +588,7 @@ input[type=range]::-webkit-slider-runnable-track {
   font-size: 11px;
   text-transform: uppercase;
   padding: 0 20px;
+  min-height: 44px; /* touch target */
   cursor: pointer;
   transition: all 0.2s;
 }
@@ -568,6 +621,8 @@ input[type=range]::-webkit-slider-runnable-track {
   font-family: var(--font-mono);
   font-size: 10px;
   padding: 6px 12px;
+  min-height: 44px; /* touch target */
+  flex-shrink: 0;
   cursor: pointer;
   transition: all 0.15s;
 }
@@ -612,7 +667,7 @@ input[type=range]::-webkit-slider-runnable-track {
   gap: 8px;
 }
 .chat-msg-time {
-  color: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.45);
   flex-shrink: 0;
 }
 .chat-msg-author {
@@ -682,6 +737,8 @@ input[type=range]::-webkit-slider-runnable-track {
   font-size: 11px;
   text-transform: uppercase;
   padding: 0 16px;
+  min-height: 44px; /* touch target */
+  min-width: 44px;
   cursor: pointer;
   transition: all 0.2s;
 }
@@ -836,7 +893,7 @@ input[type=range]::-webkit-slider-runnable-track {
 .history-num {
   font-family: var(--font-mono);
   font-size: 11px;
-  color: var(--border-active);
+  color: rgba(255, 255, 255, 0.4);
   width: 20px;
 }
 .history-info { min-width: 0; flex: 1; }
@@ -1170,6 +1227,143 @@ audio { display: none; }
     font-size: 10px;
   }
 }
+
+/* ==========================================================================
+   ACCESSIBILITY: FOCUS-VISIBLE RINGS (keyboard users only)
+   ========================================================================== */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+.sponsor-tier-card:focus-visible,
+.spotlight-cta:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--emerald);
+  outline-offset: 2px;
+}
+input[type=range]:focus-visible {
+  outline: 2px solid var(--emerald);
+  outline-offset: 4px;
+}
+/* Remove the default UA focus on mouse interaction but keep it for keyboard */
+button:focus:not(:focus-visible),
+a:focus:not(:focus-visible),
+input:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* ==========================================================================
+   SKELETON SHIMMER (loading placeholders)
+   ========================================================================== */
+.skeleton {
+  position: relative;
+  color: transparent !important;
+  background: linear-gradient(90deg, #161616 25%, #222 37%, #161616 63%);
+  background-size: 400% 100%;
+  animation: skeletonShimmer 1.4s ease infinite;
+  border-radius: 0;
+  -webkit-text-stroke: 0 !important;
+  user-select: none;
+}
+.skeleton * { visibility: hidden; }
+@keyframes skeletonShimmer {
+  0%   { background-position: 100% 50%; }
+  100% { background-position: 0 50%; }
+}
+/* Block skeletons for history/chat lists */
+.skeleton-line {
+  height: 12px;
+  margin: 6px 0;
+  background: linear-gradient(90deg, #161616 25%, #222 37%, #161616 63%);
+  background-size: 400% 100%;
+  animation: skeletonShimmer 1.4s ease infinite;
+}
+.skeleton-row {
+  display: flex; align-items: center; gap: 16px;
+  padding-bottom: 12px; border-bottom: 1px solid var(--border);
+}
+.skeleton-row .skeleton-line { margin: 0; }
+/* Cover skeleton keeps the vinyl label hole intact */
+.vinyl-label.skeleton-cover {
+  background: linear-gradient(90deg, #161616 25%, #222 37%, #161616 63%);
+  background-size: 400% 100%;
+  animation: skeletonShimmer 1.4s ease infinite;
+}
+
+/* ==========================================================================
+   DIGNIFIED INLINE OFFLINE STATE
+   ========================================================================== */
+.offline-card {
+  display: none;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+  padding: 14px 18px;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.04);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #EF4444;
+}
+.offline-card.visible { display: flex; }
+.offline-card .offline-dot {
+  width: 8px; height: 8px; flex-shrink: 0;
+  background: #EF4444; border-radius: 50%;
+  box-shadow: 0 0 8px #EF4444;
+  animation: blink 1.6s infinite;
+}
+.offline-card .offline-sub {
+  color: var(--muted);
+  text-transform: none;
+  letter-spacing: 0.5px;
+}
+
+/* ==========================================================================
+   NOW-PLAYING HIERARCHY TIGHTEN (<=650px)
+   ========================================================================== */
+@media (max-width: 650px) {
+  .track-title {
+    font-size: 22px;
+    letter-spacing: -0.5px;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    line-height: 1.05;
+  }
+  .track-artist {
+    font-size: 13px;
+    letter-spacing: 0.5px;
+  }
+  .station-tag {
+    font-size: 10px;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+  }
+}
+
+/* ==========================================================================
+   REDUCED MOTION: freeze spinning/oscilloscope/blink/slide/theme-fades
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  /* Keep theme/colour transitions off so they don't slowly cross-fade */
+  body, .ambient-glow, .show-name, .live-dot,
+  .play-btn, .rating-btn, .sponsor-tier-card,
+  .chat-msg-author.vip, .history-badge.hot,
+  .show-bg {
+    transition: none !important;
+  }
+  .live-dot.on { animation: none !important; opacity: 1 !important; }
+  .play-btn.buffering::after { animation: none !important; }
+  .skeleton, .skeleton-line, .vinyl-label.skeleton-cover { animation: none !important; }
+}
 </style>
 </head>
 <body>
@@ -1178,7 +1372,7 @@ audio { display: none; }
 <div class="ambient-glow"></div>
 
 <!-- LEADS GENERATION MODAL -->
-<div id="registerModal" class="modal-overlay" style="display: none;">
+<div id="registerModal" class="modal-overlay" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-describedby="modalText">
   <div class="modal-content">
     <div class="modal-title" id="modalTitle">VIP ACCESS // COMMUNITY</div>
     <p class="modal-text" id="modalText">Registrieren Sie sich kostenlos, um den exklusiven **Hi-Fi 320kbps Stream** freizuschalten, Track-Wünsche zu senden und live im Chat zu interagieren. Als anonymer Gast hören Sie den Standard-Stream in 192kbps.</p>
@@ -1213,9 +1407,9 @@ audio { display: none; }
 </div>
 
 <!-- DONATION MODAL -->
-<div id="donateModal" class="modal-overlay" style="display: none;">
+<div id="donateModal" class="modal-overlay" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="donateModalTitle">
   <div class="modal-content">
-    <div class="modal-title">✦ SUPPORT // TRANSMITTER DRIVE</div>
+    <div class="modal-title" id="donateModalTitle">✦ SUPPORT // TRANSMITTER DRIVE</div>
     <p class="modal-text">Du unterstützt FraWo Funk mit <strong id="donateAmountDisplay">—</strong>. Nach deiner PayPal-Zahlung erhältst du eine Quittung per Email und dein ✦ Supporter-Badge wird aktiviert.</p>
 
     <form id="donateForm" onsubmit="submitDonation(event)">
@@ -1263,11 +1457,11 @@ audio { display: none; }
       <div class="deck-top">
         
         <!-- VINYL GRAPHIC WITH FLOATING TONEARM -->
-        <div class="vinyl-container">
+        <div class="vinyl-container" aria-hidden="true">
           <div class="vinyl-record" id="vinylRecord">
             <div class="vinyl-grooves"></div>
             <div class="vinyl-shine"></div>
-            <div class="vinyl-label">
+            <div class="vinyl-label skeleton-cover" id="vinylLabel">
               <img id="trackArt" src="" alt="" onerror="this.style.visibility='hidden'">
             </div>
             <div class="vinyl-center-hole"></div>
@@ -1284,8 +1478,10 @@ audio { display: none; }
         <!-- TRACK METADATA & CONTROLS -->
         <div class="track-details">
           <div class="station-tag" id="stationName">FRAWO FUNK // HI-FI</div>
-          <div class="track-title" id="trackTitle">Verbindung wird hergestellt...</div>
-          <div class="track-artist" id="trackArtist">Bitte warten</div>
+          <div class="now-playing-region" aria-live="polite" aria-atomic="true">
+            <div class="track-title skeleton" id="trackTitle">Verbindung wird hergestellt...</div>
+            <div class="track-artist skeleton" id="trackArtist">Bitte warten</div>
+          </div>
 
           <div class="show-info" id="showInfo" style="display:none;">
             <span class="show-name" id="showName"></span>
@@ -1293,27 +1489,33 @@ audio { display: none; }
           </div>
 
           <div class="player-controls">
-            <button class="play-btn" id="playBtn" title="Play/Pause">▶</button>
+            <button class="play-btn" id="playBtn" aria-label="Stream abspielen" aria-pressed="false" title="Play/Pause">▶</button>
             <div class="volume-slider-wrap">
-              <span class="vol-text">VOL</span>
-              <input type="range" id="volSlider" min="0" max="1" step="0.05" value="0.8">
+              <span class="vol-text" id="volLabel">VOL</span>
+              <input type="range" id="volSlider" min="0" max="1" step="0.05" value="0.8" aria-label="Lautstärke" aria-labelledby="volLabel">
             </div>
+          </div>
+
+          <!-- DIGNIFIED INLINE OFFLINE / ERROR STATE -->
+          <div class="offline-card" id="offlineCard" role="status">
+            <span class="offline-dot"></span>
+            <span>OFFLINE — <span class="offline-sub">Sender nicht erreichbar. Erneuter Versuch läuft…</span></span>
           </div>
         </div>
 
       </div>
 
       <!-- UNIVERSAL CRT OSCILLOSCOPE -->
-      <div class="visualizer-card">
+      <div class="visualizer-card" aria-hidden="true">
         <canvas class="oscilloscope-canvas" id="audioOscilloscope"></canvas>
       </div>
 
       <!-- RATINGS PANEL -->
       <div class="rating-deck">
         <span class="rating-label">Track-Kurierung:</span>
-        <button class="rating-btn" id="upBtn" onclick="vote('up')">👍 <span id="upCount">—</span></button>
-        <button class="rating-btn" id="downBtn" onclick="vote('down')">👎 <span id="downCount">—</span></button>
-        <span class="rating-status" id="voteStatus"></span>
+        <button class="rating-btn" id="upBtn" onclick="vote('up')" aria-label="Track positiv bewerten">👍 <span id="upCount">—</span></button>
+        <button class="rating-btn" id="downBtn" onclick="vote('down')" aria-label="Track negativ bewerten">👎 <span id="downCount">—</span></button>
+        <span class="rating-status" id="voteStatus" aria-live="polite"></span>
       </div>
     </div>
 
@@ -1374,7 +1576,12 @@ audio { display: none; }
     <!-- HIGH-DENSITY IRC LIVE CHAT -->
     <div class="panel chat-deck">
       <div class="panel-header">Kollektiv-Frequenz Chat</div>
-      <div class="chat-messages" id="chatMessages"></div>
+      <div class="chat-messages" id="chatMessages">
+        <div class="skeleton-line" style="width:70%"></div>
+        <div class="skeleton-line" style="width:90%"></div>
+        <div class="skeleton-line" style="width:55%"></div>
+        <div class="skeleton-line" style="width:80%"></div>
+      </div>
       <form class="chat-form" onsubmit="sendChat(event)">
         <input class="chat-text-input" id="chatText" type="text" placeholder="Übertragung eingeben..." maxlength="280">
         <button class="chat-send-btn" type="submit">SEND</button>
@@ -1384,7 +1591,11 @@ audio { display: none; }
     <!-- TRACK HISTORY -->
     <div class="panel">
       <div class="panel-header">Sende-Protokoll (Kürzlich gespielt)</div>
-      <div class="history-deck" id="historyList"></div>
+      <div class="history-deck" id="historyList">
+        <div class="skeleton-row"><div class="skeleton-line" style="width:20px"></div><div class="skeleton-line" style="flex:1"></div></div>
+        <div class="skeleton-row"><div class="skeleton-line" style="width:20px"></div><div class="skeleton-line" style="flex:1"></div></div>
+        <div class="skeleton-row"><div class="skeleton-line" style="width:20px"></div><div class="skeleton-line" style="flex:1"></div></div>
+      </div>
     </div>
 
     <!-- PROGRAM SCHEDULE (live from AzuraCast) -->
@@ -1546,31 +1757,103 @@ playBtn.addEventListener('click', () => {
   if (isPlaying) {
     audio.pause();
     audio.src = '';
-    playBtn.textContent = '▶';
     isPlaying = false;
-    tonearm.classList.remove('active');
+    setPlayState('paused');
   } else {
-    playBtn.classList.add('loading');
-    playBtn.textContent = '⏳';
+    setPlayState('buffering');
     audio.src = streamUrl;
     audio.play().then(() => {
-      playBtn.textContent = '⏸';
-      playBtn.classList.remove('loading');
       isPlaying = true;
-      tonearm.classList.add('active');
+      // 'playing' event will finalize UI, but set optimistic state here too
+      setPlayState('playing');
     }).catch(() => {
-      playBtn.textContent = '▶';
-      playBtn.classList.remove('loading');
       isPlaying = false;
-      tonearm.classList.remove('active');
+      setPlayState('error');
     });
   }
 });
 
+// --- CENTRAL PLAY/BUFFER/ERROR UI STATE ---
+// Drives play button glyph, aria-pressed, buffering ring, tonearm + offline UI.
+function setPlayState(state) {
+  // state: 'paused' | 'buffering' | 'playing' | 'error'
+  playBtn.classList.remove('loading', 'buffering', 'errored');
+  switch (state) {
+    case 'buffering':
+      playBtn.classList.add('loading', 'buffering');
+      playBtn.textContent = '⏳';
+      playBtn.setAttribute('aria-label', 'Stream wird geladen');
+      playBtn.setAttribute('aria-pressed', 'true');
+      tonearm.classList.add('active'); // arm drops while cueing
+      break;
+    case 'playing':
+      playBtn.textContent = '⏸';
+      playBtn.setAttribute('aria-label', 'Stream pausieren');
+      playBtn.setAttribute('aria-pressed', 'true');
+      tonearm.classList.add('active');
+      break;
+    case 'error':
+      playBtn.classList.add('errored');
+      playBtn.textContent = '▶';
+      playBtn.setAttribute('aria-label', 'Wiedergabefehler — erneut versuchen');
+      playBtn.setAttribute('aria-pressed', 'false');
+      tonearm.classList.remove('active');
+      break;
+    case 'paused':
+    default:
+      playBtn.textContent = '▶';
+      playBtn.setAttribute('aria-label', 'Stream abspielen');
+      playBtn.setAttribute('aria-pressed', 'false');
+      tonearm.classList.remove('active');
+      break;
+  }
+}
+
+// --- REAL AUDIO ELEMENT EVENTS (buffering/recovery driven by the browser) ---
+audio.addEventListener('waiting', () => {
+  if (isPlaying) { playBtn.classList.add('loading', 'buffering'); }
+});
+audio.addEventListener('stalled', () => {
+  if (isPlaying) { playBtn.classList.add('loading', 'buffering'); }
+});
+audio.addEventListener('playing', () => {
+  isPlaying = true;
+  setPlayState('playing');
+});
+audio.addEventListener('ended', () => {
+  // Live stream ended (rare) — treat as paused
+  isPlaying = false;
+  setPlayState('paused');
+});
+audio.addEventListener('error', () => {
+  // Only surface an error if the user intended to play
+  if (audio.src && audio.src !== window.location.href) {
+    isPlaying = false;
+    setPlayState('error');
+  }
+});
+
+// --- REDUCED MOTION PREFERENCE ---
+const _reduceMotionMQ = window.matchMedia('(prefers-reduced-motion: reduce)');
+let _staticFrameDrawn = false;
+_reduceMotionMQ.addEventListener('change', () => { _staticFrameDrawn = false; });
+
 // --- RENDER LOOP (Canvas Oscilloscope & Bass Pulsing Vinyl) ---
 function render() {
   requestAnimationFrame(render);
-  
+
+  // Reduced motion: freeze the platter and draw a single static oscilloscope frame.
+  if (_reduceMotionMQ.matches) {
+    if (!_staticFrameDrawn) {
+      vinyl.style.transform = 'rotate(0deg)';
+      vinyl.style.boxShadow = '0 10px 25px rgba(0,0,0,0.6)';
+      _drawStaticScope();
+      _staticFrameDrawn = true;
+    }
+    return;
+  }
+  _staticFrameDrawn = false;
+
   const now = performance.now();
   const delta = Math.min(0.1, (now - lastFrameTime) / 1000);
   lastFrameTime = now;
@@ -1691,6 +1974,28 @@ function render() {
   // Reset shadow for performance
   ctx.shadowBlur = 0;
 }
+
+// Static, motionless oscilloscope frame for prefers-reduced-motion (flat centred line + grid).
+function _drawStaticScope() {
+  ctx.fillStyle = '#000000';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.015)';
+  ctx.lineWidth = 1;
+  const gridSpacing = 20;
+  for (let x = 0; x < canvas.width; x += gridSpacing) {
+    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+  }
+  for (let y = 0; y < canvas.height; y += gridSpacing) {
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+  }
+  ctx.shadowBlur = 0;
+  ctx.lineWidth = 1.8;
+  ctx.strokeStyle = '#10B981';
+  ctx.beginPath();
+  ctx.moveTo(0, canvas.height / 2);
+  ctx.lineTo(canvas.width, canvas.height / 2);
+  ctx.stroke();
+}
 requestAnimationFrame(render);
 
 // --- NOW PLAYING & STATION STATE ---
@@ -1702,8 +2007,17 @@ async function updateNowPlaying() {
     if (!r.ok) throw new Error('not ok');
     const d = await r.json();
 
-    document.getElementById('trackTitle').textContent = d.title || 'UNBEKANNT';
-    document.getElementById('trackArtist').textContent = d.artist || 'THE UNDERGROUND';
+    // Data arrived — clear loading/offline UI
+    const titleEl = document.getElementById('trackTitle');
+    const artistEl = document.getElementById('trackArtist');
+    titleEl.classList.remove('skeleton');
+    artistEl.classList.remove('skeleton');
+    document.getElementById('offlineCard').classList.remove('visible');
+    // If we were showing an error state but the user wasn't actively playing, reset glyph
+    if (!isPlaying) playBtn.classList.remove('errored');
+
+    titleEl.textContent = d.title || 'UNBEKANNT';
+    artistEl.textContent = d.artist || 'THE UNDERGROUND';
     document.getElementById('stationName').textContent = `${d.station || 'FRAWO FUNK'} // HI-FI`;
 
     // Apply show theme (smooth transition)
@@ -1745,10 +2059,15 @@ async function updateNowPlaying() {
     document.getElementById('liveDot').classList.add('on');
     document.getElementById('liveLabel').textContent = 'LIVE // ON AIR';
 
+    const vinylLabel = document.getElementById('vinylLabel');
     if (d.art) {
       const img = document.getElementById('trackArt');
       img.src = d.art;
       img.style.visibility = 'visible';
+      if (vinylLabel) vinylLabel.classList.remove('skeleton-cover');
+    } else if (vinylLabel) {
+      // No art available — stop shimmering, show empty label
+      vinylLabel.classList.remove('skeleton-cover');
     }
 
     // Determine correct stream URL based on VIP registration status
@@ -1780,17 +2099,13 @@ async function updateNowPlaying() {
       }
       streamUrl = activeStream;
       if (wasPlaying) {
-        playBtn.classList.add('loading');
-        playBtn.textContent = '⏳';
+        setPlayState('buffering');
         audio.src = streamUrl;
         audio.play().then(() => {
-          playBtn.textContent = '⏸';
-          playBtn.classList.remove('loading');
+          setPlayState('playing');
         }).catch(() => {
-          playBtn.textContent = '▶';
-          playBtn.classList.remove('loading');
           isPlaying = false;
-          tonearm.classList.remove('active');
+          setPlayState('error');
         });
       }
     }
@@ -1804,6 +2119,8 @@ async function updateNowPlaying() {
 
       // On first load: pre-populate history from AzuraCast song_history (recently played)
       const list = document.getElementById('historyList');
+      // Clear skeleton placeholders before first real population
+      if (list.querySelector('.skeleton-row')) list.innerHTML = '';
       if (!list.children.length && d.song_history && d.song_history.length) {
         // Show oldest first (reverse), newest at top after loop
         for (const h of [...d.song_history].reverse()) await updateHistory(h);
@@ -1811,8 +2128,23 @@ async function updateNowPlaying() {
       await updateHistory(d);
     }
   } catch {
+    // Dignified offline state — the 10s poll auto-retries; no endless "connecting" text.
     document.getElementById('liveLabel').textContent = 'OFFLINE';
     document.getElementById('liveDot').classList.remove('on');
+    document.getElementById('offlineCard').classList.add('visible');
+
+    // Replace the "connecting" placeholder with a calm offline message (only while not playing)
+    const titleEl = document.getElementById('trackTitle');
+    const artistEl = document.getElementById('trackArtist');
+    titleEl.classList.remove('skeleton');
+    artistEl.classList.remove('skeleton');
+    if (!isPlaying) {
+      titleEl.textContent = 'SENDER OFFLINE';
+      artistEl.textContent = 'Erneuter Verbindungsversuch läuft…';
+    }
+    // Stop the cover shimmer if it was still going
+    const vinylLabel = document.getElementById('vinylLabel');
+    if (vinylLabel) vinylLabel.classList.remove('skeleton-cover');
   }
 }
 
@@ -2117,12 +2449,15 @@ async function loginUser(e) {
 
 function skipRegistration() {
   localStorage.setItem('radio_user_registered', 'skipped');
+  _restoreFocus();
   fetchMemberStatus();
 }
 
 function showRegisterModal() {
-  document.getElementById('registerModal').style.display = 'flex';
+  const modal = document.getElementById('registerModal');
+  modal.style.display = 'flex';
   showRegisterForm();
+  _onModalOpened(modal);
 }
 
 function logoutUser() {
@@ -2148,11 +2483,14 @@ function openDonateModal(amount) {
   if (state && state.nickname) document.getElementById('donateNickname').value = state.nickname;
   if (state && state.email) document.getElementById('donateEmail').value = state.email;
 
-  document.getElementById('donateModal').style.display = 'flex';
+  const dm = document.getElementById('donateModal');
+  dm.style.display = 'flex';
+  _onModalOpened(dm);
 }
 
 function closeDonateModal() {
   document.getElementById('donateModal').style.display = 'none';
+  _restoreFocus();
 }
 
 async function submitDonation(event) {
@@ -2204,8 +2542,10 @@ async function loadChat() {
     if (!r.ok) return;
     const msgs = await r.json();
     const el = document.getElementById('chatMessages');
+    // Remove skeleton placeholders on first successful load
+    if (el.querySelector('.skeleton-line')) el.innerHTML = '';
     const atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 30;
-    
+
     const newMsgs = msgs.filter(m => m.id > lastChatId);
     if (!newMsgs.length) return;
     
@@ -2262,6 +2602,69 @@ async function sendChat(e) {
 // --- UTILS ---
 function esc(s) {
   return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// --- MODAL ACCESSIBILITY (Esc-close, focus trap, focus return) ---
+let _modalReturnFocus = null;
+const FOCUSABLE_SEL = 'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+function _activeModal() {
+  for (const id of ['registerModal', 'donateModal']) {
+    const m = document.getElementById(id);
+    if (m && m.style.display !== 'none' && getComputedStyle(m).display !== 'none') return m;
+  }
+  return null;
+}
+
+function _trapFocus(e) {
+  const modal = _activeModal();
+  if (!modal) return;
+  if (e.key === 'Escape') {
+    e.preventDefault();
+    if (modal.id === 'donateModal') closeDonateModal();
+    else _closeRegisterModalViaEsc();
+    return;
+  }
+  if (e.key !== 'Tab') return;
+  const items = Array.from(modal.querySelectorAll(FOCUSABLE_SEL))
+    .filter(el => el.offsetParent !== null); // visible only
+  if (!items.length) return;
+  const first = items[0], last = items[items.length - 1];
+  if (e.shiftKey && document.activeElement === first) {
+    e.preventDefault(); last.focus();
+  } else if (!e.shiftKey && document.activeElement === last) {
+    e.preventDefault(); first.focus();
+  }
+}
+document.addEventListener('keydown', _trapFocus);
+
+function _onModalOpened(modal) {
+  _modalReturnFocus = document.activeElement;
+  // Focus the first sensible field/button
+  requestAnimationFrame(() => {
+    const focusables = Array.from(modal.querySelectorAll(FOCUSABLE_SEL))
+      .filter(el => el.offsetParent !== null);
+    if (focusables.length) focusables[0].focus();
+  });
+}
+
+function _restoreFocus() {
+  if (_modalReturnFocus && typeof _modalReturnFocus.focus === 'function') {
+    _modalReturnFocus.focus();
+  }
+  _modalReturnFocus = null;
+}
+
+// The register modal can be dismissed by Esc only when guest-skip is allowed
+// (i.e. the skip button is present). Mirrors the existing "Als Gast fortfahren" path.
+function _closeRegisterModalViaEsc() {
+  const modal = document.getElementById('registerModal');
+  if (document.getElementById('modalSkipBtn')) {
+    skipRegistration();
+  } else {
+    modal.style.display = 'none';
+  }
+  _restoreFocus();
 }
 
 // --- INITIALIZE PORTAL ---

@@ -70,3 +70,10 @@
 - GrowBox: 7 Stages, 20 Pflanzen, kein Backlog
 - Business: CRM DE, Services, Templates
 - Tasks: Haftpflicht/Qonto/N26 als Wolf-Tasks eingetragen
+
+## Update 2026-06-11 Nacht (Antigravity Agent)
+- **Anker-Ausfall & Diagnostik:** Der Proxmox-Anker (`100.69.179.87`) ist offline. Im UCG (UniFi Cloud Gateway) wurde der Host mit der IP `10.3.0.25` auf VLAN 103 (Radio-DMZ) erkannt. Wegen falschem VLAN und fehlendem Datenpfad war er remote komplett isoliert (100% Packet Loss).
+- **Hard-Reboot & USB-Bereinigung:** Der Benutzer hat alle USB-Geräte (inkl. der fehlerhaften `ssd2tb`) abgezogen und einen manuellen Hard-Reboot durchgeführt.
+- **Monitoring:** Ein automatisches Monitoring prüft nun alle 5 Minuten die Erreichbarkeit und dokumentiert jeden Status-Check direkt in Odoo (Task 547 und 274).
+- **Odoo Sync:** Die Board-Spalten und Masterplan-Tasks wurden erfolgreich via `scripts/business/odoo_ssot_sync.py` abgeglichen.
+
