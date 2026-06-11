@@ -1,5 +1,8 @@
 # FraWo GbR — Aktueller Status
 
+> ⚠️ **VERALTET in Teilen. Für den ECHTEN Live-Stand → [`NOW.md`](NOW.md) lesen (verifiziert 2026-06-11).**
+> Die ✅-Tabelle unten zeigt teils Dienste grün (Radio/Navidrome/Vaultwarden), die aktuell **DOWN** sind (Anker im Emergency-Mode). Nicht als aktuell vertrauen.
+
 > Stand: 2026-06-05 | Vollständige Roadmap: ROADMAP.md
 
 ## Dienste (alle frawo.tech)
