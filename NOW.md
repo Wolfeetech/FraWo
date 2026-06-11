@@ -16,7 +16,7 @@
 |--------|----------------|----------|--------|-------|
 | frawo-docker-1 | 100.94.32.41 (ESXi-VM, 10.30.8.22) | Stockenweiler | 🟢 ONLINE | **Außen/Prod**: Odoo (frawo.tech ✅ HTTP 200), Nextcloud, Paperless, n8n, Grafana, Portainer, Ollama, Qdrant, cloudflared |
 | proxmox-anker | 100.69.179.87 / 10.1.0.92 | Rothkreuz | 🔴 EMERGENCY-MODE | **Intern**: Proxmox (radio-node, Vaultwarden, toolbox/Caddy). Boot hängt am 2TB-SSD-Mount (fstab ohne `nofail`). |
-| ProDesk „Stocki" | 100.91.20.116 | Rothkreuz (Easybox) | 🔴 OFFLINE | künftig **NAS + HomeAssistant-Eltern** (Eltern bekommen Raspberry-Pi-Außenposten) |
+| ProDesk „Stocki" | 100.91.20.116 | Rothkreuz (Easybox) | 🔴 OFFLINE — 11.06. ganzes Easybox-Netz gescannt: **kein Lebenszeichen** (bootet nicht durch ODER kein LAN-Link). Vor-Ort-Check nötig. | künftig **NAS + HomeAssistant-Eltern** (Eltern = Raspberry-Pi-Außenposten) |
 | radio-node / toolbox | 100.78.88.33 / 100.82.26.53 | Rothkreuz | 🔴 DOWN | hängen an Anker → Radio/funk, Navidrome, Vaultwarden, internes DNS aus |
 | wolfstudiopc | 100.98.31.60 | Rothkreuz | 🟢 ONLINE | Ops/Dev, dual-homed: Eth 10.1.0.210 (UCG) + WLAN 192.168.2.132 (Easybox) |
 
