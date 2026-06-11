@@ -27,7 +27,7 @@
 - Mobil einsetzbar bauen.
 
 ## ✅ Korrekturen gegenüber älteren Docs (WICHTIG)
-- **frawo-docker-1 ist eine VMware-ESXi-VM** (8 vCPU / 31 GB / 200 GB, Host-CPU Xeon Gold 6138), **kein Bare-Metal** „Debian 13, 188G" wie LIVE_CONTEXT sagt. Mieter-VM auf fremdem Host (Eltern/„Alois").
+- **frawo-docker-1 ist eine VMware-ESXi-VM** (8 vCPU / 31 GB / 200 GB, Host-CPU Xeon Gold 6138), **kein Bare-Metal** „Debian 13, 188G" wie LIVE_CONTEXT sagt. Der **ESXi-Host gehört Flo** (Eigentümer + Administrator der Hardware, ~Zulieferer) und steht in einem **Container auf dem Gelände von Wolfs Eltern** in Stockenweiler (eigenes Internet). **Wir haben KEINEN Hardware-Zugriff** — nur Mieter-VM. **Eltern = Testkunden** von FraWo (kein Admin/Eigentum).
 - **Subnetze (echt):** Rothkreuz = `10.1.0.0/24` (Anker-Server, anker=10.1.0.92) + `10.3.0.0/24` (Radio-DMZ, isoliert). Stockenweiler-ESXi = `10.30.8.0/24`. ProDesk/Easybox = `192.168.2.0/24`. → Alle `10.4.0.x`-Angaben in LIVE_CONTEXT/MASTERPLAN sind **veraltet**.
 - **Domain:** live ist **`frawo.tech`** (Cloudflare). Die ~176 `frawo-tech.de`-Referenzen sind alt → nicht in neuen Code/Configs übernehmen.
 - **Repo-Hygiene:** `DOCS/` und `docs/` kollidieren auf Windows (Case) → bereinigen.
