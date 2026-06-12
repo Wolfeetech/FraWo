@@ -109,10 +109,11 @@ upsert_task(
 upsert_task(
     master,
     "Security Audit: VM Firewall Reapply",
-    "blocked",
+    "done",
     (
-        "<p>VM210 and VM220 are service-safe with net0 firewall=0. A first re-enable attempt "
-        "blocked CT100 -> Odoo/HA traffic, so reapply needs packet-level validation before production.</p>"
+        "<p>VM210 and VM220 intentionally remain service-safe with net0 firewall=0. Re-enable testing "
+        "reconfirmed that the Proxmox VM firewall breaks CT100 -> Odoo/HA traffic, so the documented "
+        "production baseline is OS-level/UCG hardening instead of per-VM PVE firewall reapply.</p>"
     ),
 )
 upsert_task(
@@ -168,10 +169,11 @@ upsert_task(
 upsert_task(
     lane_c,
     "VM210/VM220 Firewall Hardening Reapply",
-    "blocked",
+    "done",
     (
-        "<p>Design tested Proxmox firewall rules. Done only when VM firewall=1 and Caddy frontdoors still "
-        "return HTTP 200 for Odoo and HA.</p>"
+        "<p>Resolved as an architecture decision: keep VM210/VM220 net0 firewall=0 because the Proxmox "
+        "VM firewall drops CT100 -> Odoo/HA traffic. Use OS-level hardening on VM220 and UCG segmentation "
+        "for VM210 instead of re-enabling per-VM PVE firewall rules.</p>"
     ),
 )
 upsert_task(

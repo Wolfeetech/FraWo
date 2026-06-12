@@ -43,14 +43,15 @@ Diese Datei ist die kurze manuelle Unblock-Queue. Strategische Wahrheit steht im
 - `next_operator_action`: Ersten manuellen Backup-Test starten: PVE -> Datacenter -> Backup -> daily-all-pbs -> Run Now. PBS Root-Passwort in Vaultwarden speichern.
 - `next_codex_action`: Nach erstem Backup: Restore-Test an einer VM durchfuehren (Backup-Proof). ssd2tb Hardware untersuchen.
 
-### `vm_firewall_hardening_reapply` [BLOCKED]
+### `vm_firewall_hardening_reapply` [DONE]
 
 - `lane`: `Lane C: Security/PBS/Infra`
 - `github_issue`: `#8`
-- `goal`: VM 210 und VM 220 wieder mit sauber getesteter Proxmox-Firewall betreiben, ohne CT 100 -> HA/Odoo zu brechen.
-- `current_state`: `firewall=0` auf VM 210 und VM 220. Aktivierungsversuch 2026-05-31: Regeln korrekt (10.4.0.0/24, Tailscale, ICMP, Port 8123). Sofort-Rollback da HA 502. Caddy laeuft in Docker-Netz (172.18.0.2), SNATted auf CT100 (10.4.0.20). Root-Ursache unklar: evtl. HAOS-Eigenheiten oder ESTABLISHED/RELATED-Problem in PVE-VM-Firewall.
-- `next_operator_action`: Wartungsfenster freigeben (kein laufender Backup/Restore).
-- `next_codex_action`: tcpdump auf vmbr0 waehrend Aktivierung: `tcpdump -i vmbr0 host 10.4.0.24 -n`. Pruefen ob PVE ESTABLISHED-Traffic in VM-Chain automatisch akzeptiert. Alternativ: erst VM 220 (Odoo) testen da weniger haos-spezifisch.
+- `goal`: VM 210 und VM 220 haerten, ohne CT 100 -> HA/Odoo zu brechen.
+- `current_state`: `firewall=0` bleibt auf PVE-Ebene bewusst gesetzt. Der Aktivierungsversuch 2026-05-31 hat erneut gezeigt, dass die Proxmox-VM-Firewall CT100 -> HA/Odoo stoert. Die abgesicherte Zielarchitektur ist deshalb dokumentiert als OS-Level/UCG-Hardening statt Re-Enable der PVE-VM-Firewall.
+- `verified_2026-05-31`: Laufzeitdienste bleiben gruen (`ha.hs27.internal`, `odoo.hs27.internal`) und `DOCS/PROXMOX_PVE_ARCHITECTURE.md` dokumentiert `firewall=0` auf VM 210/220 als bewusstes Betriebsmodell wegen asymmetrischem conntrack zwischen CT100/veth und VM/tap.
+- `next_operator_action`: Keine.
+- `next_codex_action`: GitHub Issue `#8` als dokumentierte Architekturentscheidung schliessen.
 
 ### `pve_host_exposure_audit` [DONE]
 
