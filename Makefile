@@ -1,4 +1,4 @@
-﻿.PHONY: help repo-sync repo-status lint ansible-check docs refresh-context ai-server-handoff estate-census platform-health-audit cicd-delivery-factory-preflight cicd-delivery-factory-report portal-ucg-pilot-preflight inventory-check ansible-ping qga-check close-day start-day repo-sync repo-status stress-test release-mvp-audit release-mvp-gate website-release-audit website-release-gate production-gate document-ownership-check document-ownership-report stockenweiler-inventory-check stockenweiler-inventory-report stockenweiler-support-brief stockenweiler-public-truth-check stockenweiler-remote-path-probe stockenweiler-toolbox-access stockenweiler-wireguard-refresh stockenweiler-wireguard-reapply stockenweiler-tailscale-bridge-prepare stockenweiler-tailscale-bridge-check wireguard-legacy-cleanup control-surface-actions-check control-surface-actions-report ansible-syntax-check ansible-syntax-check-toolbox ansible-syntax-check-toolbox-tailscale ansible-syntax-check-toolbox-mobile-firewall ansible-syntax-check-proxmox-backups ansible-syntax-check-haos ansible-syntax-check-business-hardening ansible-syntax-check-pbs ansible-syntax-check-surface-go ansible-syntax-check-rpi-radio ansible-syntax-check-rpi-radio-media ansible-syntax-check-rpi-radio-usb ansible-syntax-check-rpi-radio-network ansible-syntax-check-rpi-azuracast-host ansible-syntax-check-rpi-azuracast ansible-syntax-check-rpi-azuracast-tuning ansible-syntax-check-paperless-nextcloud-bridge ansible-syntax-check-app-smtp ansible-list-business proxmox-storage-check backup-proof backup-list business-drift-check basics-check backup-prune-dry-run backup-prune toolbox-deploy toolbox-network-check toolbox-portal-status-check toolbox-tun-prep toolbox-tailscale-prep toolbox-tailscale-check toolbox-tailscale-login-url toolbox-tailscale-join-assist toolbox-tailscale-mobile-check toolbox-mobile-firewall-deploy toolbox-media-deploy toolbox-media-storage-integrate toolbox-media-check toolbox-jellyfin-ui-check toolbox-media-sync-deploy toolbox-media-sync-check toolbox-media-bootstrap-progress media-migration-status toolbox-music-library-report toolbox-music-scan-issues toolbox-music-curation-candidates toolbox-music-curated-layout toolbox-music-quarantine-candidates toolbox-music-selection-sync toolbox-music-selection-seed-report toolbox-music-selection-generate-starter toolbox-music-selection-promote-starter rightsize-stage-gate rightsize-plan rightsize-apply haos-preflight haos-usb-audit haos-stage-gate haos-runner-deploy haos-vm-check haos-reverse-proxy-enable haos-reverse-proxy-check gateway-cutover-stage-gate pbs-preflight pbs-stage-gate pbs-proof-check pbs-restore-proof pbs-runner-deploy pbs-vm-check pbs-guest-check pbs-iso-stage pbs-usb-interim-prepare pbs-rebuild-storage-audit pbs-rebuild-contract-check pbs-device-inventory pbs-contract-prefill pbs-datastore-prepare pbs-vm240-reconcile pbs-guarded-rebuild app-smtp-deploy app-smtp-check vaultwarden-smtp-deploy vaultwarden-smtp-check vaultwarden-admin-token-check vaultwarden-network-baseline storage-node-network-baseline public-ipv6-exposure-audit proxmox-local-backup-deploy proxmox-local-backup-check portable-backup-usb-prepare portable-backup-usb-autoprepare portable-backup-usb-fill portable-backup-usb-check portable-backup-usb-run security-baseline-check business-hardening-deploy easybox-browser-probe easybox-authenticated-overview capacity-review plan-progress surface-go-check surface-go-bootstrap surface-go-root-sleep-harden media-fetch media-devices surface-iso-fetch surface-usb-prepare usb-stick-roles-prepare favorites-usb-prepare rpi-sd-flash rpi-firstboot-seed rpi-radio-bootstrap rpi-radio-media-prepare rpi-radio-media-check rpi-radio-usb-integrate rpi-radio-usb-check rpi-radio-network-integrate rpi-radio-network-check rpi-azuracast-host-prepare rpi-azuracast-deploy rpi-radio-check rpi-radio-integration-check rpi-azuracast-check rpi-azuracast-tune rpi-resource-check radio-ops-check anydesk-zenbook-install zenbook-remote-check remote-only-check operator-todos ops-brief adguard-pilot-check tailscale-split-dns-check inventory-resolution-check inventory-unknown-report paperless-nextcloud-bridge-deploy paperless-nextcloud-bridge-check public-dns-check public-http-redirect-check public-https-check public-mail-dns-check prove-strato-mail-model
+.PHONY: help repo-sync repo-status lint ansible-check docs refresh-context ai-server-handoff estate-census platform-health-audit cicd-delivery-factory-preflight cicd-delivery-factory-report portal-ucg-pilot-preflight inventory-check ansible-ping qga-check close-day start-day repo-sync repo-status stress-test release-mvp-audit release-mvp-gate website-release-audit website-release-gate production-gate document-ownership-check document-ownership-report stockenweiler-inventory-check stockenweiler-inventory-report stockenweiler-support-brief stockenweiler-public-truth-check stockenweiler-remote-path-probe stockenweiler-toolbox-access stockenweiler-wireguard-refresh stockenweiler-wireguard-reapply stockenweiler-tailscale-bridge-prepare stockenweiler-tailscale-bridge-check wireguard-legacy-cleanup control-surface-actions-check control-surface-actions-report ansible-syntax-check ansible-syntax-check-toolbox ansible-syntax-check-toolbox-tailscale ansible-syntax-check-toolbox-mobile-firewall ansible-syntax-check-proxmox-backups ansible-syntax-check-haos ansible-syntax-check-business-hardening ansible-syntax-check-pbs ansible-syntax-check-surface-go ansible-syntax-check-rpi-radio ansible-syntax-check-rpi-radio-media ansible-syntax-check-rpi-radio-usb ansible-syntax-check-rpi-radio-network ansible-syntax-check-rpi-azuracast-host ansible-syntax-check-rpi-azuracast ansible-syntax-check-rpi-azuracast-tuning ansible-syntax-check-paperless-nextcloud-bridge ansible-syntax-check-app-smtp ansible-list-business proxmox-storage-check backup-proof backup-list business-drift-check basics-check backup-prune-dry-run backup-prune toolbox-deploy toolbox-network-check toolbox-portal-status-check toolbox-tun-prep toolbox-tailscale-prep toolbox-tailscale-check toolbox-tailscale-login-url toolbox-tailscale-join-assist toolbox-tailscale-mobile-check toolbox-mobile-firewall-deploy toolbox-media-deploy toolbox-media-storage-integrate toolbox-media-check toolbox-jellyfin-ui-check toolbox-media-sync-deploy toolbox-media-sync-check toolbox-media-bootstrap-progress media-migration-status toolbox-music-library-report toolbox-music-scan-issues toolbox-music-curation-candidates toolbox-music-curated-layout toolbox-music-quarantine-candidates toolbox-music-selection-sync toolbox-music-selection-seed-report toolbox-music-selection-generate-starter toolbox-music-selection-promote-starter rightsize-stage-gate rightsize-plan rightsize-apply haos-preflight haos-usb-audit haos-stage-gate haos-runner-deploy haos-vm-check haos-reverse-proxy-enable haos-reverse-proxy-check gateway-cutover-stage-gate pbs-preflight pbs-stage-gate pbs-proof-check pbs-restore-proof pbs-runner-deploy pbs-vm-check pbs-guest-check pbs-iso-stage pbs-usb-interim-prepare pbs-rebuild-storage-audit pbs-rebuild-contract-check pbs-device-inventory pbs-contract-prefill pbs-datastore-prepare pbs-vm240-reconcile pbs-guarded-rebuild app-smtp-deploy app-smtp-check vaultwarden-smtp-deploy vaultwarden-smtp-check vaultwarden-admin-token-check vaultwarden-network-baseline storage-node-network-baseline public-ipv6-exposure-audit proxmox-local-backup-deploy proxmox-local-backup-check portable-backup-usb-prepare portable-backup-usb-autoprepare portable-backup-usb-fill portable-backup-usb-check portable-backup-usb-run security-baseline-check business-hardening-deploy easybox-browser-probe easybox-authenticated-overview capacity-review plan-progress surface-go-check surface-go-bootstrap surface-go-root-sleep-harden media-fetch media-devices surface-iso-fetch surface-usb-prepare usb-stick-roles-prepare favorites-usb-prepare rpi-sd-flash rpi-firstboot-seed rpi-radio-bootstrap rpi-radio-media-prepare rpi-radio-media-check rpi-radio-usb-integrate rpi-radio-usb-check rpi-radio-network-integrate rpi-radio-network-check rpi-azuracast-host-prepare rpi-azuracast-deploy rpi-radio-check rpi-radio-integration-check rpi-azuracast-check rpi-azuracast-tune rpi-resource-check radio-ops-check anydesk-zenbook-install zenbook-remote-check remote-only-check operator-todos ops-brief adguard-pilot-check tailscale-split-dns-check inventory-resolution-check inventory-unknown-report paperless-nextcloud-bridge-deploy paperless-nextcloud-bridge-check public-dns-check public-http-redirect-check public-https-check public-mail-dns-check prove-strato-mail-model radio-daily-health-gate
 
 
 ROOT_DIR := $(CURDIR)
@@ -10,7 +10,7 @@ ANSIBLE_PLAYBOOK_CMD = $(ANSIBLE_ENV) ansible-playbook --inventory "$(ANSIBLE_IN
 ANSIBLE_INVENTORY_CMD = $(ANSIBLE_ENV) ansible-inventory --inventory "$(ANSIBLE_INVENTORY_PATH)"
 PROXMOX_REMOTE = bash ./scripts/proxmox_remote_exec.sh
 
-# â”€â”€â”€ Solo Operator Entry Points â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# ─── Solo Operator Entry Points ─────────────────────────────────────────────
 
 # --- REPOSITORY -------------------------------------------------------------
 
@@ -34,7 +34,7 @@ repo-status:
 ## help: Show this help message
 help:
 	@echo ""
-	@echo "Homeserver 2027 Ops Workspace â€“ Common Make Targets"
+	@echo "Homeserver 2027 Ops Workspace – Common Make Targets"
 	@echo "====================================================="
 	@echo ""
 	@echo "DAILY OPERATIONS:"
@@ -87,6 +87,23 @@ lint: ansible-check
 	@if [ -f .vault_pass ] && grep -q "your-vault-password-here" .vault_pass 2>/dev/null; then \
 		echo "[WARN] .vault_pass still contains the example placeholder"; \
 	fi
+	@echo "[lint] Checking tracked plaintext credential artifact patterns..."
+	@tracked_env_runtime=$$(git ls-files '.env' '.env.*' '**/.env' '**/.env.*' | grep -Ev '(^|/)\.env(\..+)?\.example$$|(^|/)\.env\.template$$|(^|/)\.env\.sample$$' || true); \
+	if [ -n "$$tracked_env_runtime" ]; then \
+		echo "[ERROR] Unexpected tracked runtime .env files found:"; \
+		printf '%s\n' "$$tracked_env_runtime"; \
+		exit 1; \
+	fi
+	@if git ls-files '*.credentials' '**/*.credentials' | grep -q .; then \
+		echo "[ERROR] Tracked plaintext *.credentials files found."; \
+		git ls-files '*.credentials' '**/*.credentials'; \
+		exit 1; \
+	fi
+	@if git ls-files 'CREDENTIALS.local.md' '**/CREDENTIALS.local.md' 'OPERATIONS/CREDENTIAL_INVENTORY.local.md' | grep -q .; then \
+		echo "[ERROR] Tracked local credential markdown files found."; \
+		git ls-files 'CREDENTIALS.local.md' '**/CREDENTIALS.local.md' 'OPERATIONS/CREDENTIAL_INVENTORY.local.md'; \
+		exit 1; \
+	fi
 	@echo "[lint] Done."
 
 ## ansible-check: Syntax-check all Ansible playbooks
@@ -95,9 +112,11 @@ ansible-check: ansible-syntax-check
 ## docs: Verify key SSOT documentation files are present
 docs:
 	@echo "[docs] Checking required SSOT files..."
-	@for f in README.md MASTERPLAN.md OPERATOR_TODO_QUEUE.md OPS_HOME.md LIVE_CONTEXT.md SECURITY.md SECURITY_BASELINE.md MEMORY.md NETWORK_INVENTORY.md VM_AUDIT.md; do \
-		if [ -f "$$f" ]; then echo "  âœ“ $$f"; else echo "  âœ— MISSING: $$f"; fi; \
-	done
+	@missing=0; \
+	for f in README.md DOCS/Task_Archive/SECURITY.md archive/CONTRIBUTING.md DOCS/Task_Archive/AGENTS.md archive/OPS_HOME.md archive/LIVE_CONTEXT.md archive/MASTERPLAN.md archive/todo.md archive/AI_OPERATING_MODEL.md OPERATIONS/GITHUB_OPERATIONS.md COMMUNICATION/agent_board.md .github/dependabot.yml manifests/workspaces/canonical_workspace.json manifests/work_lanes/current_plan.json SSOT/START_HERE.md; do \
+		if [ -f "$$f" ]; then echo "  ✓ $$f"; else echo "  ✗ MISSING: $$f"; missing=$$((missing + 1)); fi; \
+	done; \
+	if [ "$$missing" -gt 0 ]; then echo "[docs] $$missing required file(s) missing."; exit 1; fi
 	@echo "[docs] Done."
 
 ## ai-status: Check health of local brains (Ollama) and MCP bridge
@@ -111,18 +130,34 @@ ai-odoo-sync:
 	python scripts/business/mcp_odoo_pro_server.py reclaim_tasks
 
 ai-preflight:
-	@"C:\Users\StudioPC\AppData\Local\Programs\Ollama\ollama.exe" run frawo-pro "Analysiere den aktuellen Status von LIVE_CONTEXT.md und MASTERPLAN.md. Liste die nÃ¤chsten 3 PrioritÃ¤ten auf."
+	@"C:\Users\StudioPC\AppData\Local\Programs\Ollama\ollama.exe" run frawo-pro "Analysiere den aktuellen Status von LIVE_CONTEXT.md und MASTERPLAN.md. Liste die nächsten 3 Prioritäten auf."
 
 ## ai-emergency-audit: Autonomous disaster recovery analysis for the Anker site
 ai-emergency-audit:
-	@"C:\Users\StudioPC\AppData\Local\Programs\Ollama\ollama.exe" run frawo-pro "Die Anker-Site (100.69.179.87) ist seit 2 Stunden offline. Basierend auf dem MASTERPLAN und LIVE_CONTEXT: Was sind die kritischen Risiken und welche 3 Schritte muss der Operator jetzt physisch prÃ¼fen? Antworte kurz und prÃ¤zise."
+	@"C:\Users\StudioPC\AppData\Local\Programs\Ollama\ollama.exe" run frawo-pro "Die Anker-Site (100.69.179.87) ist seit 2 Stunden offline. Basierend auf dem MASTERPLAN und LIVE_CONTEXT: Was sind die kritischen Risiken und welche 3 Schritte muss der Operator jetzt physisch prüfen? Antworte kurz und präzise."
 
+# --- OPENCLAW AGENT ---------------------------------------------------------
 
+## openclaw-provision: Install and configure the local high-performance runtime
+openclaw-provision:
+	powershell.exe -ExecutionPolicy Bypass -Command "mkdir C:\WORKSPACE\OPERATIONS\OpenClaw\bin -Force; mkdir C:\WORKSPACE\OPERATIONS\OpenClaw\config -Force; mkdir C:\WORKSPACE\OPERATIONS\OpenClaw\logs -Force"
+	cmd.exe /c "copy DOCS\Task_Archive\OPENCLAW_SYSTEM_PROMPT.md C:\WORKSPACE\OPERATIONS\OpenClaw\config\system_prompt.md"
+	powershell.exe -ExecutionPolicy Bypass -Command "$$src='C:\Users\Admin\Documents\Private_Networking\Codex\openclaw_id_ed25519'; if (!(Test-Path $$src)) { throw 'OpenClaw private key missing from local-only Private_Networking path. Never commit private keys to this repo.' }; Copy-Item $$src C:\WORKSPACE\OPERATIONS\OpenClaw\config\id_ed25519 -Force"
+	cmd.exe /c "icacls C:\WORKSPACE\OPERATIONS\OpenClaw\config\id_ed25519 /inheritance:r /grant:r %COMPUTERNAME%\\%USERNAME%:(F) /grant:r *S-1-5-18:(F) /grant:r *S-1-5-32-544:(F)"
 
+## openclaw-shell: Start the specialized OpenClaw agent session
+openclaw-shell:
+	powershell.exe -ExecutionPolicy Bypass -File C:\WORKSPACE\OPERATIONS\OpenClaw\start_openclaw.ps1
 
+## openclaw-terminal: Open OpenClaw in Windows Terminal (non-blocking)
+openclaw-terminal:
+	wt.exe -w 0 new-tab --title OpenClaw --startingDirectory C:/WORKSPACE/OPERATIONS/OpenClaw powershell.exe -NoExit -NoProfile -ExecutionPolicy Bypass -File C:/WORKSPACE/OPERATIONS/OpenClaw/start_openclaw.ps1
 
+## openclaw-sync: Regenerate shared OpenClaw onboard snapshot
+openclaw-sync:
+	powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:/WORKSPACE/OPERATIONS/OpenClaw/start_openclaw.ps1 -Sync
 
-# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# ─────────────────────────────────────────────────────────────────────────────
 
 refresh-context:
 	./scripts/refresh_live_context.sh
@@ -501,6 +536,9 @@ rpi-resource-check:
 
 radio-ops-check:
 	./scripts/radio_operations_check.sh
+
+radio-daily-health-gate:
+	./scripts/radio_daily_health_gate.sh "$(TARGET_HOST)"
 
 anydesk-zenbook-install:
 	./scripts/install_anydesk_zenbook.sh

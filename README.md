@@ -234,6 +234,7 @@ make rpi-radio-check
 make rpi-radio-integration-check
 make rpi-azuracast-check
 make rpi-resource-check
+make radio-daily-health-gate
 make business-drift-check
 make basics-check
 make ansible-syntax-check-toolbox

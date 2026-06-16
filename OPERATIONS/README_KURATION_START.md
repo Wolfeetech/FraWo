@@ -114,22 +114,23 @@ Web UI → Media → Scan for Media
 
 ## 📚 WAS FERTIG IST (HEUTE ERSTELLT)
 
-### Dokumentation (11 Files)
-1. [RADIO_NETWORK_CONSOLIDATION.md](RADIO_NETWORK_CONSOLIDATION.md) - Master Plan
-2. [RADIO_PLAYER_V2_DEPLOYMENT.md](RADIO_PLAYER_V2_DEPLOYMENT.md) - Frontend Guide
-3. [RADIO_NETWORK_STATUS.md](RADIO_NETWORK_STATUS.md) - Infrastructure Status
-4. [AZURACAST_PRODUCTION_READY_PLAN.md](AZURACAST_PRODUCTION_READY_PLAN.md) - Full Production Plan
-5. [AZURACAST_QUICK_WIN_TODAY.md](AZURACAST_QUICK_WIN_TODAY.md) - Quick Win Strategy
-6. [AZURACAST_STATUS_2026-04-30.md](AZURACAST_STATUS_2026-04-30.md) - Heute's Status
-7. [AZURACAST_WEB_UI_SETUP.md](AZURACAST_WEB_UI_SETUP.md) - Web UI Guide
-8. [README_KURATION_START.md](README_KURATION_START.md) - This file
+### Dokumentation (9 Files)
+1. [RADIO_OPERATIONS_SSOT.md](RADIO_OPERATIONS_SSOT.md) - Verbindliche Runtime-SSOT
+2. [RADIO_NETWORK_CONSOLIDATION.md](RADIO_NETWORK_CONSOLIDATION.md) - Master Plan
+3. [RADIO_PLAYER_V2_DEPLOYMENT.md](RADIO_PLAYER_V2_DEPLOYMENT.md) - Frontend Guide
+4. [RADIO_NETWORK_STATUS.md](RADIO_NETWORK_STATUS.md) - Historischer Infrastruktur-Status
+5. [AZURACAST_PRODUCTION_READY_PLAN.md](AZURACAST_PRODUCTION_READY_PLAN.md) - Full Production Plan
+6. [AZURACAST_QUICK_WIN_TODAY.md](AZURACAST_QUICK_WIN_TODAY.md) - Quick Win Strategy
+7. [AZURACAST_STATUS_2026-04-30.md](AZURACAST_STATUS_2026-04-30.md) - Historischer Tagesstatus
+8. [AZURACAST_WEB_UI_SETUP.md](AZURACAST_WEB_UI_SETUP.md) - Web UI Guide
+9. [README_KURATION_START.md](README_KURATION_START.md) - This file
 
 ### Scripts
-9. [scripts/radio/fix_stocki_storage_critical.sh](../scripts/radio/fix_stocki_storage_critical.sh) - Storage Fix
-10. [scripts/radio/migrate_stocki_to_storage_node.sh](../scripts/radio/migrate_stocki_to_storage_node.sh) - Migration
+10. [scripts/radio/fix_stocki_storage_critical.sh](../scripts/radio/fix_stocki_storage_critical.sh) - Storage Fix
+11. [scripts/radio/migrate_stocki_to_storage_node.sh](../scripts/radio/migrate_stocki_to_storage_node.sh) - Migration
 
 ### Frontend
-11. [apps/radio-player-frontend/site/index_v2.html](../apps/radio-player-frontend/site/index_v2.html) - Radio Player V2
+12. [apps/radio-player-frontend/site/index_v2.html](../apps/radio-player-frontend/site/index_v2.html) - Radio Player V2
 
 ### Infrastructure
 - ✅ **Storage Node:** Music Directories bereit (`frawo_curated`, `frawo_incoming`)

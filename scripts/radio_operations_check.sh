@@ -2,7 +2,8 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-service_output="$(timeout 20 "${ROOT_DIR}/scripts/rpi_azuracast_service_check.sh" 2>/dev/null || true)"
+TARGET_HOST="${1:-100.64.23.77}"
+service_output="$(timeout 20 "${ROOT_DIR}/scripts/rpi_azuracast_service_check.sh" "${TARGET_HOST}" 2>/dev/null || true)"
 
 extract_value() {
   local key="$1"

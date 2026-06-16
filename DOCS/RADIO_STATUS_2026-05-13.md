@@ -1,5 +1,11 @@
 # Radio / AzuraCast Status - 2026-05-13
 
+> [!WARNING]
+> **HISTORISCHER SNAPSHOT (nicht entscheidungsfuehrend).**
+> Verbindliche Runtime-SSOT: `OPERATIONS/RADIO_OPERATIONS_SSOT.md`
+
+
+
 **Update:** Nach Studio PC Cleanup & DSGVO-Compliance
 **Ziel:** funk.frawo-tech.de für AzuraCast einrichten
 
