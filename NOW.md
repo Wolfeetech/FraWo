@@ -1,5 +1,5 @@
 # NOW — Echter Live-Stand (BITTE ZUERST LESEN)
-**Letzte Verifikation: 2026-06-16 (live gemessen vom StudioPC in Rothkreuz).**
+**Letzte Verifikation: 2026-06-17 (live gemessen vom StudioPC in Rothkreuz).**
 
 > Diese Datei ist die **einzige Echtzeit-Wahrheit** für jeden Agenten/Menschen.
 > Alle anderen Docs (LIVE_CONTEXT, MASTERPLAN, ROADMAP, INFRASTRUCTURE_MAP, AI_BOOTSTRAP_CONTEXT) sind **älter und teils stale** — als Architektur-/Historie-Referenz nutzen, NICHT als aktuellen Zustand.
@@ -11,7 +11,7 @@
 3. Claude-Memory `project_frawo_2026-06-10_session.md` = bestätigte Topologie-Korrektur.
 4. Live verifizieren statt glauben (Tailscale-Status, SSH `frawo-docker-1`).
 
-## 🟢🔴 Live-Status (2026-06-16)
+## 🟢🔴 Live-Status (2026-06-17)
 | Knoten | Tailscale / IP | Standort | Status | Rolle / Beschreibung |
 |--------|----------------|----------|--------|----------------------|
 | **frawo-docker-1** | 100.94.32.41 (Lokal: 10.30.8.22) | Stockenweiler | 🟢 ONLINE | **Außen/Prod (gedrosselt)**: n8n, Grafana, Portainer, Prometheus, Node Exporter, LS25 Server. *Hinweis: Alle Dienste leiden unter VPS-Drossel (150 kbps).* |
@@ -20,7 +20,7 @@
 | **wolfstudiopc** | 100.98.31.60 | Rothkreuz | 🟢 ONLINE | Dev-Workstation. Ethernet: `10.1.0.x` (Gigabit-Direktzugriff). WLAN: `192.168.2.x` (AP-isoliert). |
 | **win-j1aenasv2fj** | 100.97.147.67 | Flo's ESXi | 🔴 OFFLINE | Windows Server VM (derzeit ausgeschaltet/nicht erreichbar). |
 
-## 🧭 Soll-Architektur (von Wolf bestätigt 2026-06-16)
+## 🧭 Soll-Architektur (von Wolf bestätigt 2026-06-17)
 - **Außen** → docker-node (frawo-docker-1). **Intern** → Anker + ProDesk (physisch zugreifbar, Rothkreuz).
 - Stockenweiler bleibt Ziel-Prod-Standort (sicher hinter Firewall), sauber nutzbar für **Wolf & Franz**.
 - Estate-Login: private User (Wolf, Franz – Gaming/Surfen) · **FraWo** (Business) · **Admin**.
