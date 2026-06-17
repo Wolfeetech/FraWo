@@ -1,9 +1,9 @@
 $ErrorActionPreference = "Stop"
 
-$scriptsDir = Join-Path "c:\WORKSPACE\FraWo" "scripts"
+$scriptsDir = "c:\WORKSPACE\FraWo\scripts"
 $proxmoxExec = Join-Path $scriptsDir "proxmox_windows_ssh_exec.ps1"
 
-$pythonScriptPath = Join-Path "c:\WORKSPACE\FraWo" "scratch\list_odoo_tasks.py"
+$pythonScriptPath = "c:\WORKSPACE\FraWo\scratch\update_surface_task.py"
 $pythonScriptBytes = [System.IO.File]::ReadAllBytes($pythonScriptPath)
 $pythonScriptBase64 = [Convert]::ToBase64String($pythonScriptBytes)
 
@@ -11,10 +11,10 @@ $remote = @"
 qm guest exec 220 -- bash -lc 'python3 - <<'"'"'PY'"'"'
 from pathlib import Path
 import base64
-Path("/tmp/list_odoo_tasks.py").write_bytes(base64.b64decode("$pythonScriptBase64"))
+Path("/tmp/update_surface_task.py").write_bytes(base64.b64decode("$pythonScriptBase64"))
 PY
 cd /opt/homeserver2027/stacks/odoo
-docker-compose exec -T web odoo shell -d FraWo_GbR --db_host=db --db_user=odoo --db_password=odoo_db_pass_final_v1 --no-http < /tmp/list_odoo_tasks.py'
+docker-compose exec -T web odoo shell -d FraWo_GbR --db_host=db --db_user=odoo --db_password=odoo_db_pass_final_v1 --no-http < /tmp/update_surface_task.py'
 "@
 
 $responseString = & $proxmoxExec -RemoteCommand $remote -SshHost "anker-pve" | Out-String
@@ -31,15 +31,11 @@ try {
             Write-Output "--- STDERR ---"
             Write-Output $err
         }
-        if ($json.exitcode -ne 0) {
-            Write-Error "Command exited with code $($json.exitcode)"
-        }
     } else {
-        Write-Output "Raw response is not guest-exec JSON:"
+        Write-Output "Raw response:"
         Write-Output $responseString
     }
 } catch {
     Write-Output "Failed to parse response as JSON. Raw response:"
     Write-Output $responseString
 }
-

@@ -1,128 +1,85 @@
-> ⚠️ **TEILWEISE VERALTET.** Aktueller Live-Stand: **[NOW.md](NOW.md)**. Kern-Korrekturen: frawo-docker-1 = VMware-VM auf **Flos** Host (kein HW-Zugriff; Wolfs Eltern = Testkunden). Echte Subnetze: Rothkreuz 10.1.0.0/24 + 10.3.0.0/24 (Radio-DMZ), Stockenweiler-ESXi 10.30.8.0/24, ProDesk/Easybox 192.168.2.0/24 (NICHT 10.4.0.x). Domain = **frawo.tech** (nicht frawo-tech.de).
+> ⚠️ **TEILWEISE VERALTET.** Aktueller Live-Stand: **[NOW.md](NOW.md)**. Kern-Korrekturen: frawo-docker-1 = VMware-VM auf **Flos** Host (kein HW-Zugriff; Wolfs Eltern = Testkunden). Echte Subnetze: Rothkreuz 10.1.0.0/24 + 10.3.0.0/24 (Radio-DMZ), Stockenweiler-ESXi 10.30.8.0/24. Domain = **frawo.tech** (nicht frawo-tech.de).
 
 # FraWo GbR — Infrastruktur-Karte
-**Stand: 2026-05-30 | Verifiziert durch Live-Check**
+**Stand: 2026-06-17 | Verifiziert durch Live-Check**
 
 ## Übersicht
 
 ```mermaid
 graph TB
     subgraph INTERNET["🌐 Internet"]
-        CF["☁️ Cloudflare<br/>frawo-tech.de<br/>cloud/funk/vault.frawo-tech.de"]
+        CF["☁️ Cloudflare<br/>frawo.tech<br/>cloud/funk/vault.frawo.tech"]
     end
 
     subgraph TAILSCALE["🔒 Tailscale Mesh VPN (100.x.x.x)"]
         direction TB
 
-        subgraph ANKER["🖥️ ANKER PVE — Primär-Produktion<br/>10.4.0.99 | TS: 100.69.179.87"]
-            CT100["📦 CT 100 TOOLBOX<br/>10.4.0.20 | TS: 100.82.26.53<br/>━━━━━━━━━━━━━━━━<br/>Caddy (Reverse Proxy)<br/>AdGuard Home (DNS)<br/>cloudflared (CF Tunnel)<br/>Uptime Kuma"]
-
-            CT101["📦 CT 101<br/>AdGuard Slave<br/>10.4.0.101"]
-
-            CT110["📦 CT 110 Storage-Node<br/>10.4.0.30<br/>CIFS/Samba Media+Docs"]
-
-            CT120["🔐 CT 120 Vaultwarden<br/>10.4.0.26<br/>Bitwarden-kompatibel<br/>437 Credentials"]
-
-            CT130["📻 CT 130 Radio-Node<br/>10.4.0.28 | TS: 100.78.88.33<br/>━━━━━━━━━━━━━━━━<br/>AzuraCast (funk.frawo-tech.de)<br/>Navidrome<br/>Radio Backend API :9500"]
-
-            VM210["🏠 VM 210 HAOS<br/>10.4.0.24<br/>Home Assistant OS"]
-
-            VM220["⚙️ VM 220 ODOO<br/>10.4.0.22<br/>Odoo 17 ERP<br/>DB: FraWo_GbR"]
-
-            VM240["💾 VM 240 PBS<br/>10.4.0.25<br/>⚠️ kein Netzwerk"]
-
-            VM300["☁️ VM 300 Nextcloud<br/>10.4.0.21<br/>cloud.frawo-tech.de<br/>Dokument-Hub"]
-
-            VM330["📄 VM 330 Paperless<br/>10.4.0.23<br/>OCR + Archiv<br/>→ NC/Archiv"]
+        subgraph PRODESK["🖥️ PRODESK PVE — Master / Workhorse<br/>10.1.0.128 | TS: 100.91.20.116"]
+            CT101["📦 CT 101 AdGuard<br/>10.1.0.52"]
+            CT103["📦 CT 103 NPM Proxy<br/>10.1.0.149"]
+            CT108["🔐 CT 108 Vaultwarden<br/>10.1.0.95"]
+            CT110_P["📦 CT 110 n8n<br/>10.1.0.100"]
+            CT120_P["📦 CT 120 Fileserver NAS<br/>10.1.0.94"]
+            CT140["📦 CT 140 Odoo ERP<br/>10.1.0.112<br/>(odoo:17 + postgres:15)"]
+            VM360["🏠 VM 360 HAOS Eltern<br/>192.168.2.154"]
         end
 
-        subgraph STOCKENWEILER["🐳 STOCKENWEILER — Site B<br/>frawo-docker-1 | 10.30.8.22 | TS: 100.94.32.41"]
-            D_N8N["🔄 n8n Automation<br/>:5678"]
-            D_OC["🦞 OpenClaw AI Gateway<br/>:19000<br/>@Frawo_ClawBot<br/>gpt-4o primär"]
-            D_GRAF["📊 Grafana<br/>:3001"]
-            D_PROM["📈 Prometheus<br/>:9091"]
-            D_ICE["📡 Icecast Relay<br/>:8000"]
-            D_PORT["🐳 Portainer<br/>:9000"]
+        subgraph ANKER["🖥️ ANKER PVE — Sekundär-Produktion<br/>10.1.0.92 | TS: 100.69.179.87"]
+            VM210["🏠 VM 210 HAOS Intern<br/>10.4.0.24 (routed)"]
+            VM220["⚙️ VM 220 Odoo (Legacy)<br/>10.4.0.22"]
+            CT101_A["📦 CT 101 AdGuard Slave"]
+            CT110_A["📦 CT 110 Storage Node"]
+        end
+
+        subgraph STOCKENWEILER["🐳 STOCKENWEILER — Site B (Flos ESXi Host)<br/>Netz: 10.30.8.x"]
+            D_DOCKER["🐳 frawo-docker-1 (10.30.8.22)<br/>TS: 100.94.32.41<br/>━━━━━━━━━━━━━━━━<br/>n8n / Grafana / Portainer<br/>Prometheus / LS25 Server"]
+            D_WIN["🖥️ win-j1aenasv2fj (10.30.8.21)<br/>TS: 100.97.147.67<br/>(Windows Server - Offline)"]
         end
 
         subgraph CLIENTS["💻 Clients"]
             SPC["🖥️ wolfstudiopc<br/>TS: 100.98.31.60<br/>Dev-Workstation"]
-            TELEGRAM["📱 Telegram<br/>@Frawo_ClawBot"]
         end
     end
 
-    CF -->|"CF Tunnel<br/>HTTPS"| CT100
-    CT100 -->|"proxy"| CT130
-    CT100 -->|"proxy"| VM220
-    CT100 -->|"proxy"| VM300
-    CT100 -->|"proxy"| CT120
-    CT100 -->|"proxy"| VM210
-    CT100 -->|"DNS"| CT101
-    CT130 -->|"Icecast Stream"| D_ICE
-    VM330 -->|"post-consume →"| VM300
-    D_OC -->|"XML-RPC"| VM220
-    D_OC -->|"Webhook"| D_N8N
-    TELEGRAM -->|"Messages"| D_OC
-    SPC -->|"SSH/Browser"| CT100
+    CF -->|"CF Tunnel (FraWo-RK)<br/>HTTPS"| CT140
+    CF -->|"CF Tunnel<br/>HTTPS"| CT108
+    CT103 -->|"proxy"| CT140
+    CT103 -->|"proxy"| CT108
+    SPC -->|"SSH/Samba"| PRODESK
 ```
 
 ---
 
-## Storage-Architektur (Anker PVE)
+## Storage-Architektur
 
-```mermaid
-graph LR
-    subgraph NVMe["💨 NVMe (primär)"]
-        LVM["local-lvm<br/>LVM-Thin Pool<br/>156 GB<br/>30% genutzt"]
-    end
-    subgraph USB["🔌 USB-SSD (nur Backup)"]
-        SSD["ssd2tb<br/>1.9 TB<br/>9% genutzt<br/>⚠️ Bad Sectors"]
-    end
-    subgraph CLOUD["☁️ Cloud"]
-        GDRIVE["Google Drive<br/>5.4 TB<br/>CT 110 Disk"]
-    end
-
-    LVM --> CT100_S["CT 100-130<br/>VM 210-330"]
-    SSD --> DUMPS["Alte Backups<br/>(images leer!)"]
-    GDRIVE --> CT110_S["CT 110 Storage-Node<br/>Disk"]
-```
+- **ProDesk local-lvm**: Speicherpool für Container (CT 101-140) auf ProDesk.
+- **Samba Fileserver (CT 120)**: Stellt das Musikarchiv (`music`) und Scanner-Ablagen (`scans`) im Netzwerk unter `\\10.1.0.94` zur Verfügung.
+- **Google Drive**: Synchronisation mit `gdrive:` erfolgt über rclone vom Storage-Node.
+- **ssd2tb (Anker)**: ⚠️ **Achtung: Physisch nicht vorhanden!** Inactive/Phantom-Config, keine Datensicherungen dorthin schreiben.
 
 ---
 
 ## Datenfluss: Dokumente
 
 ```
-Eingang → cloud.frawo-tech.de/Dokumente/Eingang
-             ↓ rclone (alle 5 Min, VM 330 cron)
-         Paperless consume_dir (VM 330)
-             ↓ OCR + Klassifizierung
-         Paperless DB + paperless-to-nc.sh
-             ↓
-         cloud.frawo-tech.de/Dokumente/Archiv/{Korrespondent}/{Jahr}/
-```
-
-## Datenfluss: Radio
-
-```
-FraWo Musikarchiv (CT 110 Samba) → AzuraCast (CT 130)
-                                       ↓ Icecast Stream :8000
-                                   frawo-docker-1 Icecast-Relay
-                                       ↓ CF Tunnel
-                                   funk.frawo-tech.de (öffentlich)
+Eingang → Scanner/Upload → Samba scans Share (CT 120)
+                             ↓ rclone (alle 5 Min)
+                         Paperless-ngx (Legacy VM 330 / Neu TBD)
+                             ↓ OCR + Archivierung
+                         Nextcloud-Archiv (frawo.tech)
 ```
 
 ---
 
 ## Was noch fehlt / offen
 
-| Problem | Prio | Fix |
-|---------|------|-----|
-| PVE Firewall nicht aktiv | 🔴 | PVE Web UI → Datacenter → Firewall |
-| VM 240 PBS kein Netzwerk | 🟡 | VNC Console → Netzwerk konfigurieren |
-| Anthropic API kein Guthaben | 🟡 | console.anthropic.com → Billing |
-| Tailscale Subnet Route nicht approved | 🟡 | admin.tailscale.com → proxmox-anker → approve |
-| OpenClaw Email Channel fehlt | 🟢 | agent@frawo-tech.de IMAP/SMTP konfigurieren |
+| Problem | Prio | Fix | Status |
+|---|---|---|---|
+| Windows VM offline | 🔴 | Flo muss die Windows Server VM auf dem ESXi starten. | Ausstehend |
+| Odoo Repatriierung abschließen | 🔴 | DNS-Einträge von `frawo.tech` auf den ProDesk CT 140 Tunnel umleiten. | In Arbeit |
+| Radio Konsolidierung | 🟡 | Medienspeicher CT 120 mit AzuraCast CT 141 verbinden und Playlisten synchronisieren. | Ausstehend |
+| PBS Backups einrichten | 🟡 | Datensicherung auf dem ProDesk PBS (CT 109) aktivieren (ohne ssd2tb). | Ausstehend |
 
 ---
 
-*Verifiziert: 2026-05-30 — Live-Check aller Services durch Claude Sonnet 4.6 + Wolf*
+*Verifiziert: 2026-06-17 — Live-Check der ProDesk- und Anker-Topologie durch Antigravity.*
