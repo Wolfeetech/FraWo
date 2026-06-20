@@ -11,6 +11,12 @@ _logger = logging.getLogger(__name__)
 
 class RadioController(http.Controller):
 
+    def _get_azuracast_config(self):
+        get_param = request.env['ir.config_parameter'].sudo().get_param
+        base_url = get_param('frawo_agent.azuracast_api_url', 'https://10.1.0.38').rstrip('/')
+        api_key = get_param('frawo_agent.azuracast_api_key', 'aa55fde5c0958c9b:33afc91702c99268813d2376736de3e4')
+        return base_url, api_key
+
     @http.route('/radio/vote', type='json', auth='user', cors='*', methods=['POST'])
     def radio_vote(self, song_id, vote_type, **kwargs):
         user = request.env.user
@@ -27,8 +33,8 @@ class RadioController(http.Controller):
             
             # If vote is 'hate' (Skip), call AzuraCast API to skip the current track
             if vote_type == 'hate':
-                api_url = "https://10.1.0.38/api/station/1/backend/skip"
-                api_key = "aa55fde5c0958c9b:33afc91702c99268813d2376736de3e4"
+                base_url, api_key = self._get_azuracast_config()
+                api_url = f"{base_url}/api/station/1/backend/skip"
                 headers = {
                     "X-API-Key": api_key
                 }
@@ -51,8 +57,8 @@ class RadioController(http.Controller):
         if not query:
             return {"status": "success", "tracks": []}
         try:
-            api_url = "https://10.1.0.38/api/station/1/requests"
-            api_key = "aa55fde5c0958c9b:33afc91702c99268813d2376736de3e4"
+            base_url, api_key = self._get_azuracast_config()
+            api_url = f"{base_url}/api/station/1/requests"
             headers = {"X-API-Key": api_key}
             r = requests.get(api_url, headers=headers, verify=False, timeout=5)
             if r.status_code != 200:
@@ -86,8 +92,8 @@ class RadioController(http.Controller):
         if not request_id:
             return {"status": "error", "message": "Missing request_id"}
         try:
-            api_url = f"https://10.1.0.38/api/station/1/request/{request_id}"
-            api_key = "aa55fde5c0958c9b:33afc91702c99268813d2376736de3e4"
+            base_url, api_key = self._get_azuracast_config()
+            api_url = f"{base_url}/api/station/1/request/{request_id}"
             headers = {"X-API-Key": api_key}
             _logger.info("Sending song request to AzuraCast for request_id %s...", request_id)
             r = requests.post(api_url, headers=headers, verify=False, timeout=5)

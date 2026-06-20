@@ -16,5 +16,13 @@
       <field name="key">frawo_agent.ollama_num_predict</field>
       <field name="value">300</field>
     </record>
+    <record id="param_azuracast_api_url" model="ir.config_parameter">
+      <field name="key">frawo_agent.azuracast_api_url</field>
+      <field name="value">https://10.1.0.38</field>
+    </record>
+    <record id="param_azuracast_api_key" model="ir.config_parameter">
+      <field name="key">frawo_agent.azuracast_api_key</field>
+      <field name="value">aa55fde5c0958c9b:33afc91702c99268813d2376736de3e4</field>
+    </record>
   </data>
 </odoo>

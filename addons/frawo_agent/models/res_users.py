@@ -23,8 +23,12 @@ class ResUsers(models.Model):
     def _cron_sync_azuracast_users(self):
         _logger.info("Starting Odoo-AzuraCast User Synchronization...")
         
-        api_url = "https://10.1.0.38/api/admin/users"
-        api_key = "aa55fde5c0958c9b:33afc91702c99268813d2376736de3e4"
+        # Fetch configurations from System Parameters
+        get_param = self.env['ir.config_parameter'].sudo().get_param
+        base_url = get_param('frawo_agent.azuracast_api_url', 'https://10.1.0.38').rstrip('/')
+        api_key = get_param('frawo_agent.azuracast_api_key', 'aa55fde5c0958c9b:33afc91702c99268813d2376736de3e4')
+        
+        api_url = f"{base_url}/api/admin/users"
         headers = {
             "X-API-Key": api_key,
             "Content-Type": "application/json"
