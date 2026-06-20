@@ -17,6 +17,24 @@ class RadioController(http.Controller):
         api_key = get_param('frawo_agent.azuracast_api_key', 'aa55fde5c0958c9b:33afc91702c99268813d2376736de3e4')
         return base_url, api_key
 
+    def _get_pve_bridge_config(self):
+        get_param = request.env['ir.config_parameter'].sudo().get_param
+        bridge_url = get_param('frawo_agent.pve_bridge_url', 'http://10.1.0.128:8888').rstrip('/')
+        bridge_token = get_param('frawo_agent.pve_bridge_token', 'frawo_radio_bridge_secret_2026')
+        return bridge_url, bridge_token
+
+    def _is_internal_user(self):
+        """Check if the current user is an internal (non-portal, non-public) user."""
+        user = request.env.user
+        if not user or user._is_public():
+            return False
+        # Check if user has internal user group
+        return user.has_group('base.group_user')
+
+    # ─────────────────────────────────────────────────────────────
+    # Public Radio Endpoints
+    # ─────────────────────────────────────────────────────────────
+
     @http.route('/radio/vote', type='json', auth='user', cors='*', methods=['POST'])
     def radio_vote(self, song_id, vote_type, **kwargs):
         user = request.env.user
@@ -119,3 +137,133 @@ class RadioController(http.Controller):
         except Exception as e:
             _logger.error("Failed to submit radio request: %s", str(e))
             return {"status": "error", "message": str(e)}
+
+    # ─────────────────────────────────────────────────────────────
+    # Admin-Only: PVE Bridge Proxy Endpoints
+    # ─────────────────────────────────────────────────────────────
+
+    @http.route('/radio/admin/status', type='http', auth='user', methods=['GET'], csrf=False)
+    def radio_admin_status(self, **kwargs):
+        if not self._is_internal_user():
+            return request.make_response(
+                '{"status":"error","message":"Forbidden"}',
+                headers=[('Content-Type', 'application/json')],
+                status=403
+            )
+        try:
+            bridge_url, bridge_token = self._get_pve_bridge_config()
+            r = requests.get(
+                f"{bridge_url}/status",
+                headers={"Authorization": f"Bearer {bridge_token}"},
+                timeout=8
+            )
+            return request.make_response(
+                r.text,
+                headers=[('Content-Type', 'application/json')],
+                status=r.status_code
+            )
+        except Exception as e:
+            _logger.error("PVE bridge status error: %s", str(e))
+            return request.make_response(
+                f'{{"status":"error","message":"{str(e)}"}}',
+                headers=[('Content-Type', 'application/json')],
+                status=500
+            )
+
+    @http.route('/radio/admin/curate', type='http', auth='user', methods=['POST'], csrf=False)
+    def radio_admin_curate(self, **kwargs):
+        if not self._is_internal_user():
+            return request.make_response(
+                '{"status":"error","message":"Forbidden"}',
+                headers=[('Content-Type', 'application/json')],
+                status=403
+            )
+        try:
+            bridge_url, bridge_token = self._get_pve_bridge_config()
+            r = requests.post(
+                f"{bridge_url}/curate",
+                headers={"Authorization": f"Bearer {bridge_token}"},
+                timeout=10
+            )
+            _logger.info("Curation triggered via API. Status: %s", r.status_code)
+            return request.make_response(
+                r.text,
+                headers=[('Content-Type', 'application/json')],
+                status=r.status_code
+            )
+        except Exception as e:
+            _logger.error("PVE bridge curate error: %s", str(e))
+            return request.make_response(
+                f'{{"status":"error","message":"{str(e)}"}}',
+                headers=[('Content-Type', 'application/json')],
+                status=500
+            )
+
+    @http.route('/radio/admin/upload', type='http', auth='user', methods=['POST'], csrf=False)
+    def radio_admin_upload(self, **kwargs):
+        if not self._is_internal_user():
+            return request.make_response(
+                '{"status":"error","message":"Forbidden"}',
+                headers=[('Content-Type', 'application/json')],
+                status=403
+            )
+        try:
+            bridge_url, bridge_token = self._get_pve_bridge_config()
+            # Forward the raw multipart request body to the PVE daemon
+            content_type = request.httprequest.content_type
+            body = request.httprequest.get_data()
+            r = requests.post(
+                f"{bridge_url}/upload",
+                headers={
+                    "Authorization": f"Bearer {bridge_token}",
+                    "Content-Type": content_type,
+                },
+                data=body,
+                timeout=120
+            )
+            _logger.info("File upload forwarded to PVE bridge. Status: %s", r.status_code)
+            return request.make_response(
+                r.text,
+                headers=[('Content-Type', 'application/json')],
+                status=r.status_code
+            )
+        except Exception as e:
+            _logger.error("PVE bridge upload error: %s", str(e))
+            return request.make_response(
+                f'{{"status":"error","message":"{str(e)}"}}',
+                headers=[('Content-Type', 'application/json')],
+                status=500
+            )
+
+    @http.route('/radio/admin/delete', type='http', auth='user', methods=['POST'], csrf=False)
+    def radio_admin_delete(self, **kwargs):
+        if not self._is_internal_user():
+            return request.make_response(
+                '{"status":"error","message":"Forbidden"}',
+                headers=[('Content-Type', 'application/json')],
+                status=403
+            )
+        try:
+            bridge_url, bridge_token = self._get_pve_bridge_config()
+            body = request.httprequest.get_data()
+            r = requests.post(
+                f"{bridge_url}/delete",
+                headers={
+                    "Authorization": f"Bearer {bridge_token}",
+                    "Content-Type": "application/json",
+                },
+                data=body,
+                timeout=10
+            )
+            return request.make_response(
+                r.text,
+                headers=[('Content-Type', 'application/json')],
+                status=r.status_code
+            )
+        except Exception as e:
+            _logger.error("PVE bridge delete error: %s", str(e))
+            return request.make_response(
+                f'{{"status":"error","message":"{str(e)}"}}',
+                headers=[('Content-Type', 'application/json')],
+                status=500
+            )
