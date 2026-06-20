@@ -33,10 +33,12 @@
 - **Drossel-Ursache gelöst:** `frawo-docker-1` (Flo/Stockenweiler) routet allen Internet-Traffic über einen **gedrosselten netcup-VPS-Tunnel** (Gateway `10.30.8.1`, Exit `188.68.45.193`=`exp.tekoda.cloud`, ~150 kbit symmetrisch), NICHT übers Fiber. Deshalb ist alles dort zäh.
 - **Odoo-Repatriierung:** Aufgrund der Drosselung wird Odoo nach Rothkreuz auf den ProDesk (`CT 140` / `10.1.0.112`) migriert. Der Cloudflare-Tunnel „FraWo-RK" ist dafür aktiv.
 
+## 🟢 Resolved Blockers (Recent)
+- **Odoo-Cutover abgeschlossen**: Der neue Cloudflare-Tunnel „FraWo-RK" läuft stabil in CT 140 und routet Odoo erfolgreich über `frawo.tech`.
+- **Radio-Dienste konsolidiert**: VM 210 (`10.1.0.38`) ist als Master-Radiostation definiert und über die Odoo-API (`frawo_agent`) sowie die autonome beets-Ingestion (`curate_radio.py` auf PVE) angebunden.
+
 ## 🔴 P1-Blocker (Kurzliste)
 1. **Windows VM auf Flo's ESXi booten**: Die VM ist offline und via AnyDesk/SSH/Tailscale nicht erreichbar (Flo ist informiert).
-2. **Odoo-Cutover abschließen**: DNS-Einträge auf den neuen Cloudflare-Tunnel „FraWo-RK" umschreiben, sobald Odoo-Repatriierung fertig verifiziert ist.
-3. **Radio-Dienste konsolidieren**: Abstimmung zwischen VM210 (Anker) und CT141 (azuracast-rk auf ProDesk) für die Master-Radiostation.
 
 ---
 *Vollständige Bestandsaufnahme (Hardware, Strom, Roadmap): auf dem StudioPC unter `Desktop/FRAWO Ops/Bestandsaufnahme_2026-06-11/`.*
