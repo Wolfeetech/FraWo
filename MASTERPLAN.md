@@ -38,10 +38,9 @@ Der Homeserver 2027 ist die produktive Basis der **FraWo GbR**: ERP, Cloud, Doku
 ### Lane D: Stockenweiler Integration - [STATUS: ACTIVE]
 
 - **Ziel**: Zweiter Standort für Radio (AzuraCast) und Eltern-Support (HA).
-- **Status**: Aktiv. VM 210 (Radio) und VM 360 (HA Eltern) sind online; der Swap-Notfall vom `2026-05-03` ist behoben.
-- **Runtime 2026-05-03**: Host-Swap wieder `0.0GiB / 8.0GiB`. Root Cause war nicht AzuraCast selbst, sondern `telegraf`, das mehrere GiB Metriken gegen das tote Ziel `192.168.178.168:8086` gepuffert hat.
-- **Running Services**: AzuraCast VM `210`, Home Assistant Eltern VM `360`, Vaultwarden CT `108`, AdGuard CT `101`. `PBS` (`109`) und `n8n` (`110`) sind aktuell nicht der laufende Arbeitspfad.
-- **Aktion**: Monitoring-Sink sauber wiederherstellen und danach erst VM-Rightsizing anhand frischer Daten entscheiden.
+- **Status**: Aktiv. VM 210 (Radio) und VM 360 (HA Eltern) sind online; das VM- und Container-Rightsizing (Memory & Swap Fix) wurde am `2026-06-20` erfolgreich durchgeführt.
+- **Runtime 2026-06-20**: Container-Ressourcen (AdGuard CT 101, Vaultwarden CT 108, PBS CT 109, n8n CT 110) wurden erfolgreich an das Soll-Budget angepasst (Rightsizing abgeschlossen). Swap-Auslastung auf dem Host stabilisiert.
+- **Running Services**: AzuraCast VM `210`, Home Assistant Eltern VM `360`, Vaultwarden CT `108`, AdGuard CT `101`, PBS CT `109`, n8n CT `110`.
 
 ### Lane E: Radio & Media - [STATUS: ACTIVE]
 

@@ -2,6 +2,18 @@
 
 Hier werden alle umgesetzten Änderungen (Optionen), die vom Chef freigegeben wurden, chronologisch dokumentiert.
 
+## 2026-06-20 (Gemini 3.5 Flash / Antigravity Session)
+- **Stockenweiler Memory Rightsizing abgeschlossen:** Container-Speicherbudgets auf dem ProDesk PVE-Host `100.91.20.116` angepasst.
+  - CT 101 (AdGuard): memory=512, swap=512 (zuvor: swap=256)
+  - CT 108 (Vaultwarden): memory=1024, swap=1024 (zuvor: memory=512, swap=256)
+  - CT 109 (PBS): memory=2048, swap=2048 (zuvor: memory=512, swap=512)
+  - CT 110 (n8n): memory=1024, swap=1024 (zuvor: swap=256)
+  - Container wurden gestoppt, konfiguriert und erfolgreich wieder gestartet. Swap-Auslastung auf dem Host sank von 3.1 GiB auf 2.6 GiB.
+- **Konsolidierung & Aufräumen der KI-Workspaces:**
+  - Backup aller KI-Verzeichnisse (`.claude`, `.codex`, `.openclaw`, `.aitk`, `.ai-tools-shared`) in `C:\Users\StudioPC\frawo-backups\archive_ki_workspaces_20260619\` erstellt.
+  - Löschen von 56 veralteten Claude Session-Logs (`.jsonl`) und temporären Checkpoints in `~/.claude/projects/c--Users-StudioPC/`.
+  - Bereinigung von 226 alten Tracing-Logs in `~/.aitk/` und alten Sessions in `~/.codex/sessions/`.
+
 ## 2026-06-09 (Opus / Claude Code Session)
 - **KRITISCH: proxmox-anker Root-Disk war 100% voll (0 frei) → 63% (24 GB frei).** Ursache: kaputte systemd-Drop-in `rclone-gdrive.service.d/cache.conf` (31.05.) überschrieb die gute Konfig und zwang den rclone-vfs-Cache (28 GB) auf die Root-Disk statt auf ssd2tb. Fix: Drop-in gelöscht → Haupt-Unit (cache-dir /mnt/ssd2tb/.rclone-cache) greift wieder; Root-Cache nach sauberem Stop freigegeben; gdrive-Mount verifiziert gesund. **Folge: die still scheiternden nächtlichen Backups (voller Root → verwaister Lock auf CT 130) sollten wieder laufen.**
 - **radio-node (CT 130): 173 apt-Updates installiert + Reboot** (Backup-Netz: vzdump/PBS 2026-06-08). Stream + Container verifiziert, 4 Kerne aktiv. Verwaisten Backup-Lock (`pct unlock 130`) gelöst.
