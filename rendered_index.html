@@ -334,7 +334,9 @@
             <div class="view-container" id="main-view">
                 <div class="dashboard-grid" id="dashboard-grid">
                     
-                    <div class="service-card" onclick="openService('http://100.82.26.53:8444/apps/files/files?dir=/Paperless/Eingang')">
+                    
+                    <div class="service-card offline" style="opacity: 0.45; cursor: not-allowed;" onclick="alert('Dienst Nextcloud Eingang ist derzeit archiviert / offline.')">
+                    
                         <div class="service-icon">
                             📂
                             
@@ -343,7 +345,9 @@
                         <div class="service-desc">Dokumente</div>
                     </div>
                     
-                    <div class="service-card" onclick="openService('http://100.82.26.53:8443/')">
+                    
+                    <div class="service-card offline" style="opacity: 0.45; cursor: not-allowed;" onclick="alert('Dienst Paperless ist derzeit archiviert / offline.')">
+                    
                         <div class="service-icon">
                             📂
                             
@@ -352,7 +356,20 @@
                         <div class="service-desc">Dokumente</div>
                     </div>
                     
-                    <div class="service-card" onclick="openService('http://100.82.26.53:8445/web#action=118&active_id=8&model=project.task&view_type=kanban&menu_id=352')">
+                    
+                    <div class="service-card" onclick="openService('http://vault.hs27.internal/')">
+                    
+                        <div class="service-icon">
+                            🔐
+                            
+                        </div>
+                        <div class="service-name">Vaultwarden</div>
+                        <div class="service-desc">Vault</div>
+                    </div>
+                    
+                    
+                    <div class="service-card" onclick="openService('http://odoo.hs27.internal/web#action=118&active_id=8&model=project.task&view_type=kanban&menu_id=352')">
+                    
                         <div class="service-icon">
                             💼
                             
@@ -361,7 +378,9 @@
                         <div class="service-desc">Odoo</div>
                     </div>
                     
-                    <div class="service-card" onclick="openService('http://100.82.26.53:8445/web#action=252&model=project.project&view_type=kanban&menu_id=141')">
+                    
+                    <div class="service-card" onclick="openService('http://odoo.hs27.internal/web#action=252&model=project.project&view_type=kanban&menu_id=141')">
+                    
                         <div class="service-icon">
                             💼
                             
@@ -370,7 +389,9 @@
                         <div class="service-desc">Odoo</div>
                     </div>
                     
-                    <div class="service-card" onclick="openService('http://100.82.26.53:8445/web#action=517&model=project.task&view_type=calendar&menu_id=357')">
+                    
+                    <div class="service-card" onclick="openService('http://odoo.hs27.internal/web#action=517&model=project.task&view_type=calendar&menu_id=357')">
+                    
                         <div class="service-icon">
                             💼
                             
@@ -379,7 +400,9 @@
                         <div class="service-desc">Odoo</div>
                     </div>
                     
-                    <div class="service-card" onclick="openService('http://100.91.20.116:8080/public/frawo-funk')">
+                    
+                    <div class="service-card" onclick="openService('http://10.1.0.38:8000/radio.mp3')">
+                    
                         <div class="service-icon">
                             📻
                             
@@ -388,7 +411,9 @@
                         <div class="service-desc">Radio</div>
                     </div>
                     
-                    <div class="service-card" onclick="openService('http://100.91.20.116:8080/login')">
+                    
+                    <div class="service-card" onclick="openService('http://10.1.0.38/login')">
+                    
                         <div class="service-icon">
                             📻
                             
@@ -397,7 +422,9 @@
                         <div class="service-desc">Radio</div>
                     </div>
                     
+                    
                     <div class="service-card" onclick="openService('http://192.168.178.179:8123')">
+                    
                         <div class="service-icon">
                             🏠
                             
@@ -406,7 +433,9 @@
                         <div class="service-desc">Stockenweiler</div>
                     </div>
                     
+                    
                     <div class="service-card" onclick="openService('http://100.98.31.60:5555/api/status')">
+                    
                         <div class="service-icon">
                             🚀
                         </div>

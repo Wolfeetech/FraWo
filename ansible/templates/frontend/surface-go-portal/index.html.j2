@@ -334,12 +334,17 @@
             <div class="view-container" id="main-view">
                 <div class="dashboard-grid" id="dashboard-grid">
                     {% for action in surface_go_actions_manifest.actions %}
+                    {% if action.status == 'offline' %}
+                    <div class="service-card offline" style="opacity: 0.45; cursor: not-allowed;" onclick="alert('Dienst {{ action.label }} ist derzeit archiviert / offline.')">
+                    {% else %}
                     <div class="service-card" onclick="openService('{{ action.target_url }}')">
+                    {% endif %}
                         <div class="service-icon">
                             {% if action.group == 'Dokumente' %}📂
                             {% elif action.group == 'Odoo' %}💼
                             {% elif action.group == 'Radio' %}📻
                             {% elif action.group == 'Stockenweiler' %}🏠
+                            {% elif action.group == 'Vault' %}🔐
                             {% else %}🚀{% endif %}
                         </div>
                         <div class="service-name">{{ action.label }}</div>
