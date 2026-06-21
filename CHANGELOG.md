@@ -48,3 +48,10 @@ Hier werden alle umgesetzten Änderungen (Optionen), die vom Chef freigegeben wu
 - **VM 240 (Proxmox Backup Server):** 
   - Die 500GB Daten-Festplatte (`vm-240-disk-1`) wurde von der NVMe (`local-lvm`) auf die `ssd2tb` verschoben.
   - **Grund:** Der LVM-Thin Pool war zu 90,4% gefüllt, was Backups blockiert hat. Durch den Umzug wurde massiv Speicherplatz auf der NVMe freigegeben.
+
+## 2026-06-22 (Gemini 3.5 Flash / Antigravity Session)
+- **Odoo Projekt-Roadmaps & DoDs (Definition of Done) definiert:**
+  - Audit aller 13 Odoo-Projekte durchgeführt.
+  - Für alle 9 leeren Projekte (darunter `FraWo-tech`, `Radio Community`, `Infrastruktur & Ops`, `IT-Support / Server`, `Business & Automation`, `Corporate Identity frawo.tech`, `Mobiles Stromsystem`, `Mobile Streaming-Station (VT-Koffer)`, `Lautsprecherbau FraWo`) wurden detaillierte Projektbeschreibungen direkt in Odoo eingepflegt.
+  - Diese enthalten nun jeweils eine klare **Vision/Fokus**, eine **Roadmap in Phasen** (passend zum aktuellen Entwicklungsstand und GitHub-Backlog) sowie eine konkrete, projektspezifische **Definition of Done (DoD)** gemäß den Spielregeln des Odoo-SSOT-Projektmanagements.
+  - **Eingriff:** Python-Update-Skript auf ProDesk CT140 ausgeführt zur direkten Aktualisierung der Datenbank.
