@@ -72,6 +72,15 @@ artifacts/security_inventory/
 vaultwarden_import.csv
 vaultwarden_import_consolidated.csv
 
+# Local scratch / cleanup exports can contain live environment data
+scratch/
+archive/studiopc_cleanup/
+odoo-compose-edit.yml
+frawo_agent_deploy.zip
+
+# Windows reserved device names accidentally created from shell redirection
+NUL
+
 # wrangler files
 .wrangler
 .dev.vars*
