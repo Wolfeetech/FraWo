@@ -20,7 +20,7 @@ Tailscale ist unser privates Tunnel-Netzwerk. Es macht den Homeserver von uebera
 
 Hinweis:
 
-- Der aktuelle MVP-Mobilpfad fuer `Franz` nutzt den direkten Tailscale-Start unter `http://100.82.26.53:8447/franz/`.
+- Der aktuelle MVP-Mobilpfad fuer `Franz` nutzt den direkten Start unter `http://100.91.20.116/franz/` (oder lokal im WLAN `http://10.1.0.149/franz/`).
 - Fuer diesen aktuellen MVP-Pfad ist kein zusaetzlicher Zertifikatsschritt noetig.
 
 ## 3. Das Franz-Portal aufrufen
@@ -28,8 +28,7 @@ Hinweis:
 Unser zentraler Einstiegspunkt ist das Portal.
 
 1. [ ] Oeffne **Safari** auf dem iPhone.
-2. [ ] Gib die Adresse: `http://100.82.26.53:8447/franz/` ein.
-   - *Hinweis:* Dies ist der aktuelle mobile MVP-Pfad ueber das Tailnet.
+2. [ ] Gib die Adresse: `http://10.1.0.149/franz/` (im lokalen WLAN) oder `http://100.91.20.116/franz/` (via Tailscale) ein.
 3. [ ] Klicke in Safari auf das **Teilen-Icon** (das Quadrat mit dem Pfeil nach oben).
 4. [ ] Waehle **"Zum Home-Bildschirm"**.
 5. [ ] Gib als Name **"Franz Mobil Start"** ein und klicke auf `Hinzufuegen`.
@@ -38,20 +37,19 @@ Unser zentraler Einstiegspunkt ist das Portal.
 
 Du hast nun ein Icon auf deinem iPhone-Startbildschirm. Wenn du darauf klickst, hast du direkten Zugriff auf:
 
-- **Nextcloud:** (Dokumente und Fotos) -> Logge dich mit deinem Franz-Login ein.
-- **Paperless:** (GbR Beleg-Archiv) -> Logge dich ein, um Belege zu suchen.
+- **Nextcloud:** (Archiviert / Offline)
+- **Paperless:** (Archiviert / Offline)
 - **Odoo:** (Rechnungen und ERP) -> Odoo-Login unter `/web/login`.
+- **Vaultwarden:** (Passwort-Tresor)
 
 ## 5. Sichtbare Abnahme fuer den MVP
 
 - [ ] `Franz Mobil Start` laedt sichtbar auf dem iPhone
-- [ ] `Nextcloud` ist vom mobilen Startpfad sichtbar erreichbar
-- [ ] `Paperless` ist vom mobilen Startpfad sichtbar erreichbar
 - [ ] `Odoo` ist vom mobilen Startpfad sichtbar erreichbar
 - [ ] `Vaultwarden` ist vom mobilen Startpfad sichtbar erreichbar
 
 ## 6. Wenn es nicht klappt
 
-1. [ ] Pruefe, ob die Tailscale App gruen (`Connected`) leuchtet.
+1. [ ] Pruefe, ob die Tailscale App gruen (`Connected`) leuchtet (falls du nicht im lokalen WLAN bist).
 2. [ ] Pruefe, ob du WLAN oder eine gute LTE-Verbindung hast.
-3. [ ] Falls die Seite `http://100.82.26.53:8447/franz/` nicht laedt, frage den Operator (Wolf).
+3. [ ] Falls die Seite nicht laedt, frage den Operator (Wolf).

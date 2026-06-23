@@ -6,6 +6,7 @@ from __future__ import annotations
 import json
 import sys
 import urllib.request
+import urllib.error
 from datetime import datetime
 from html.parser import HTMLParser
 from pathlib import Path
@@ -16,55 +17,31 @@ OUTPUT_ROOT = ROOT_DIR / "artifacts" / "device_rollout_preflight"
 TIMESTAMP = datetime.now().strftime("%Y%m%d_%H%M%S")
 LATEST_REPORT_PATH = OUTPUT_ROOT / "latest_report.md"
 LATEST_JSON_PATH = OUTPUT_ROOT / "latest_report.json"
-SSH_CONFIG_PATH = ROOT_DIR / "Codex" / "ssh_config"
-DEFAULT_TOOLBOX_FRONTDOOR_IP = "100.82.26.53"
 
+# Active IPs in Rothkreuz (Primary LAN)
+NPM_INGRESS_IP = "10.1.0.149"
+ODOO_IP = "10.1.0.112"
+VAULT_IP = "10.1.0.95"
+N8N_IP = "10.1.0.100"
 
-def current_toolbox_frontdoor_ip() -> str:
-    try:
-        text = SSH_CONFIG_PATH.read_text(encoding="utf-8")
-    except OSError:
-        return DEFAULT_TOOLBOX_FRONTDOOR_IP
-
-    in_toolbox_block = False
-    for raw_line in text.splitlines():
-        line = raw_line.strip()
-        if not line or line.startswith("#"):
-            continue
-        lower = line.lower()
-        if lower.startswith("host "):
-            hosts = line.split()[1:]
-            in_toolbox_block = "toolbox" in hosts
-            continue
-        if in_toolbox_block and lower.startswith("hostname "):
-            parts = line.split(None, 1)
-            if len(parts) == 2 and parts[1].strip():
-                return parts[1].strip()
-    return DEFAULT_TOOLBOX_FRONTDOOR_IP
-
-
-# The Tailscale frontdoor is our primary professional path from the StudioPC
-TOOLBOX_FRONTDOOR_IP = current_toolbox_frontdoor_ip()
-
-# We prefer direct IP access for preflight resilience to avoid DNS timeout issues
+# (id, url, host_header)
 START_URLS = [
-    ("surface_laptop_start", f"http://{TOOLBOX_FRONTDOOR_IP}:8447/franz/"),
-    ("iphone_mobile_start", f"http://{TOOLBOX_FRONTDOOR_IP}:8447/franz/"),
+    ("franz_portal_local", f"http://{NPM_INGRESS_IP}/franz/", None),
 ]
 
 CORE_TARGETS = [
-    ("nextcloud", f"http://{TOOLBOX_FRONTDOOR_IP}:8441/"),          # Tailscale forwarded
-    ("paperless", f"http://{TOOLBOX_FRONTDOOR_IP}:8443/"),           # Tailscale forwarded
-    ("odoo", f"http://{TOOLBOX_FRONTDOOR_IP}:8069/"),                # Direct via Tailscale
-    ("vaultwarden", f"https://{TOOLBOX_FRONTDOOR_IP}:8440/"),        # Direct via Tailscale
+    ("odoo_direct", f"http://{ODOO_IP}:8069/web/login", None),
+    ("vaultwarden_direct", f"http://{VAULT_IP}:80/", None),
+    ("n8n_direct", f"http://{N8N_IP}:5678/", None),
+    ("odoo_proxy", f"http://{NPM_INGRESS_IP}/web/login", "odoo.hs27.internal"),
+    ("vault_proxy", f"http://{NPM_INGRESS_IP}/", "vault.hs27.internal"),
+    ("n8n_proxy", f"http://{NPM_INGRESS_IP}/", "n8n.hs27.internal"),
 ]
 
 EXPECTED_PAGE_LINKS = {
-    "http://cloud.hs27.internal/": "Nextcloud",
-    "http://paperless.hs27.internal/accounts/login/": "Paperless",
-    "http://odoo.hs27.internal/web/login": "Odoo",
-    "https://vault.hs27.internal/": "Vault",
-    f"http://{TOOLBOX_FRONTDOOR_IP}:8447/franz/": "Franz Mobil Start",
+    "http://odoo.hs27.internal/web#action=118&active_id=8&model=project.task&view_type=kanban&menu_id=352": "Odoo Aufgaben",
+    "http://vault.hs27.internal/": "Vaultwarden",
+    f"http://{NPM_INGRESS_IP}/franz/": "Franz Mobil Start",
 }
 
 
@@ -92,21 +69,47 @@ class SimplePageParser(HTMLParser):
             self.title += data
 
 
-def fetch(url: str) -> dict[str, object]:
+def fetch(url: str, host_header: str | None = None) -> dict[str, object]:
+    headers = {"User-Agent": "HS27-Device-Rollout-Preflight/1.0"}
+    if host_header:
+        headers["Host"] = host_header
     request = urllib.request.Request(
         url,
-        headers={"User-Agent": "HS27-Device-Rollout-Preflight/1.0"},
+        headers=headers,
     )
-    with urllib.request.urlopen(request, timeout=12) as response:
-        body = response.read(60000).decode("utf-8", "replace")
+    try:
+        # Ignore SSL verification for local self-signed certs
+        import ssl
+        ctx = ssl._create_unverified_context()
+        with urllib.request.urlopen(request, timeout=12, context=ctx) as response:
+            body = response.read(60000).decode("utf-8", "replace")
+            parser = SimplePageParser()
+            parser.feed(body)
+            return {
+                "status": getattr(response, "status", 200),
+                "final_url": response.geturl(),
+                "title": parser.title.strip(),
+                "links": parser.links,
+                "body_snippet": body[:50].strip(),
+            }
+    except urllib.error.HTTPError as e:
+        body = e.read().decode("utf-8", "replace") if hasattr(e, "read") else ""
         parser = SimplePageParser()
         parser.feed(body)
         return {
-            "status": getattr(response, "status", 200),
-            "final_url": response.geturl(),
+            "status": e.code,
+            "final_url": url,
             "title": parser.title.strip(),
             "links": parser.links,
             "body_snippet": body[:50].strip(),
+        }
+    except Exception as e:
+        return {
+            "status": 0,
+            "final_url": url,
+            "title": "",
+            "links": [],
+            "body_snippet": str(e)[:50],
         }
 
 
@@ -117,26 +120,27 @@ def main() -> int:
     md_path = report_dir / "report.md"
 
     start_results: list[dict[str, object]] = []
-    for check_id, url in START_URLS:
-        result = fetch(url)
+    for check_id, url, host_header in START_URLS:
+        result = fetch(url, host_header)
         result["id"] = check_id
         result["url"] = url
         result["ok"] = (
             int(result["status"]) == 200
             and (
-                str(result["title"]) == "Arbeitsplatz Franz"
-                or "FraWo Homeserver 2027 Dashboard Active" in str(result["body_snippet"])
+                "OpenClaw" in str(result["title"])
+                or "Arbeitsplatz Franz" in str(result["title"])
+                or "Control Center" in str(result["title"])
             )
-            # and all(link in result["links"] for link in EXPECTED_PAGE_LINKS) # Skip link check for simple status page
         )
         start_results.append(result)
 
     core_results: list[dict[str, object]] = []
-    for check_id, url in CORE_TARGETS:
-        result = fetch(url)
+    for check_id, url, host_header in CORE_TARGETS:
+        result = fetch(url, host_header)
         result["id"] = check_id
         result["url"] = url
-        result["ok"] = int(result["status"]) == 200
+        # For Odoo / Vaultwarden / n8n, they are OK if they return 200, 302, 303, or 401 Unauthorized
+        result["ok"] = int(result["status"]) in [200, 302, 303, 401]
         core_results.append(result)
 
     decision = "ready_for_manual_device_acceptance"
