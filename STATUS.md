@@ -1,3 +1,8 @@
+> ⚠️ **HISTORISCHE ARCHIV-REFERENZ.** Diese Datei dient ausschließlich als historische/architektonische Referenz.
+> Der einzige Echtzeit-Live-Stand für die Infrastruktur ist **[NOW.md](NOW.md)**.
+> Alle operativen Aufgaben, Roadmaps und Projektstände werden in **Odoo** (operative SSOT) gepflegt.
+> Bitte diese Datei NICHT als Quelle für den aktuellen Live-Zustand verwenden.
+
 # FraWo GbR — Aktueller Status
 
 > ⚠️ **VERALTET in Teilen. Für den ECHTEN Live-Stand → [`NOW.md`](NOW.md) lesen (verifiziert 2026-06-11).**
@@ -39,7 +44,7 @@
 
 - Kanban: 30 → 7 Stages (sauber)
 - Firewall: DOCKER-USER gesetzt, rpcbind gestoppt
-- Alle Logins: @frawo-tech.de → @frawo.tech
+- Alle Logins: @frawo.tech → @frawo.tech
 - Cloudflare Tunnel: HA-Failover auf frawo-docker-1
 - Equipment: Canton CT2000 in Maintenance-Register
 
@@ -49,7 +54,7 @@
 - Radio-Voting live: vote/votes Endpoints verifiziert, Frontend v3 deployed
 - Radio-Backend neu gebaut (community Router Prefix /api/v1/community korrekt)
 - Firewall: DOCKER-USER gesetzt, rpcbind gestoppt
-- Alle Logins: @frawo-tech.de → @frawo.tech (0 alte Referenzen)
+- Alle Logins: @frawo.tech → @frawo.tech (0 alte Referenzen)
 - Roadmap: 5-Phasen-Plan in GitHub + Odoo Epics T481-T485
 - Kanban: 30 → 7 Stages
 - Cloudflare Tunnel HA: Failover-Connector auf frawo-docker-1
@@ -59,7 +64,7 @@
 - HA-Setup: ha.frawo.tech → Account anlegen (3 Min)
 
 ## Update 2026-06-06 Morgen
-- 3 n8n Workflows: frawo-tech.de → frawo.tech gefixt
+- 3 n8n Workflows: frawo.tech → frawo.tech gefixt
 - Franz: Internal User (Admin-Rechte entfernt)
 - T168 Haftpflicht + T167 Geschäftskonto dokumentiert
 - SOUL.md aktualisiert (Klausi)
@@ -79,4 +84,3 @@
 - **Hard-Reboot & USB-Bereinigung:** Der Benutzer hat alle USB-Geräte (inkl. der fehlerhaften `ssd2tb`) abgezogen und einen manuellen Hard-Reboot durchgeführt.
 - **Monitoring:** Ein automatisches Monitoring prüft nun alle 5 Minuten die Erreichbarkeit und dokumentiert jeden Status-Check direkt in Odoo (Task 547 und 274).
 - **Odoo Sync:** Die Board-Spalten und Masterplan-Tasks wurden erfolgreich via `scripts/business/odoo_ssot_sync.py` abgeglichen.
-

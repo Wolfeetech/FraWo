@@ -1,4 +1,7 @@
-> ⚠️ **TEILWEISE VERALTET.** Aktueller Live-Stand: **[NOW.md](NOW.md)**. Kern-Korrekturen: frawo-docker-1 = VMware-VM auf **Flos** Host (kein HW-Zugriff; Wolfs Eltern = Testkunden). Echte Subnetze: Rothkreuz 10.1.0.0/24 + 10.3.0.0/24 (Radio-DMZ), Stockenweiler-ESXi 10.30.8.0/24, ProDesk/Easybox 192.168.2.0/24 (NICHT 10.4.0.x). Domain = **frawo.tech** (nicht frawo-tech.de).
+> ⚠️ **HISTORISCHE ARCHIV-REFERENZ.** Diese Datei dient ausschließlich als historische/architektonische Referenz.
+> Der einzige Echtzeit-Live-Stand für die Infrastruktur ist **[NOW.md](NOW.md)**.
+> Alle operativen Aufgaben, Roadmaps und Projektstände werden in **Odoo** (operative SSOT) gepflegt.
+> Bitte diese Datei NICHT als Quelle für den aktuellen Live-Zustand verwenden.
 
 # MASTERPLAN - FraWo Homeserver 2027
 
@@ -20,7 +23,7 @@ Der Homeserver 2027 ist die produktive Basis der **FraWo GbR**: ERP, Cloud, Doku
 
 ### Lane B: Website & Public Activation - [STATUS: ACTIVE/PROV]
 
-- **Ziel**: `www.frawo-tech.de` über Cloudflare Tunnel freigeben (technisch erledigt).
+- **Ziel**: `www.frawo.tech` über Cloudflare Tunnel freigeben (technisch erledigt).
 - **Status**: HTTPS ist aktiv. Content ist noch im Aufbau ("halb fertig").
 - **Wichtig**: Optionale Cloudflare Access Rule für Baustellen-Schutz geplant.
 
@@ -60,7 +63,7 @@ Der Homeserver 2027 ist die produktive Basis der **FraWo GbR**: ERP, Cloud, Doku
 
 - Primaeres Netz: `10.4.0.0/24`
 - Gateway: UCG-Ultra `10.4.0.1`
-- Toolbox / Frontdoor: CT 100 `10.4.0.20`, Tailscale `100.82.26.53`
+- Toolbox / Frontdoor: CT 100 `10.1.0.149`, Tailscale `10.1.0.149 (CT 103 NPM)`
 - DNS: AdGuard auf CT 100/101, langfristig ueber UniFi/Tailscale Split-DNS statt Windows Hosts-Datei
 - Reverse Proxy: Caddy in CT 100
 - TLS intern: Caddy internal CA fuer `*.hs27.internal`
@@ -69,13 +72,13 @@ Der Homeserver 2027 ist die produktive Basis der **FraWo GbR**: ERP, Cloud, Doku
 
 | ID  | Typ | Dienst                               | IP               | Status         |
 | --- | --- | ------------------------------------ | ---------------- | -------------- |
-| 100 | CT  | Toolbox / Caddy / AdGuard / Jellyfin | `10.4.0.20`      | LIVE           |
+| 100 | CT  | Toolbox / Caddy / AdGuard / Jellyfin | `10.1.0.149`      | LIVE           |
 | 101 | CT  | AdGuard Slave                        | `10.4.0.101`     | LIVE           |
 | 110 | CT  | Storage Node / SMB / NFS             | `10.4.0.30`      | LIVE           |
 | 120 | CT  | Vaultwarden                          | `10.4.0.26:8080` | LIVE           |
 | 200 | VM  | Nextcloud                            | `10.4.0.21:80`   | LIVE           |
-| 210 | VM  | Home Assistant OS                    | `10.4.0.24:8123` | LIVE           |
-| 220 | VM  | Odoo / Website Origin                | `10.4.0.22:8069` | LIVE           |
+| 210 | VM  | Home Assistant OS                    | `10.1.0.40:8123 (VM 210 haos)` | LIVE           |
+| 220 | VM  | Odoo / Website Origin                | `10.1.0.112:8069 (CT 140 frawotech-web)` | LIVE           |
 | 230 | VM  | Paperless                            | `10.4.0.23:8000` | LIVE           |
 | 240 | VM  | PBS                                  | `10.4.0.x`       | watch / verify |
 
@@ -84,25 +87,25 @@ Der Homeserver 2027 ist die produktive Basis der **FraWo GbR**: ERP, Cloud, Doku
 | Domain                    | Backend             | Status                             |
 | ------------------------- | ------------------- | ---------------------------------- |
 | `portal.hs27.internal`    | local `/srv/portal` | `HTTP 200`                         |
-| `odoo.hs27.internal`      | `10.4.0.22:8069`    | `HTTP 200`                         |
+| `odoo.hs27.internal`      | `10.1.0.112:8069 (CT 140 frawotech-web)`    | `HTTP 200`                         |
 | `vault.hs27.internal`     | `10.4.0.26:8080`    | `HTTP 200`                         |
-| `ha.hs27.internal`        | `10.4.0.24:8123`    | `HTTP 200`                         |
+| `ha.hs27.internal`        | `10.1.0.40:8123 (VM 210 haos)`    | `HTTP 200`                         |
 | `cloud.hs27.internal`     | `10.4.0.21:80`      | `HTTP 302` login/HTTPS redirect    |
 | `paperless.hs27.internal` | `10.4.0.23:8000`    | `HTTP 302` login redirect          |
-| `media.hs27.internal`     | `10.4.0.20:8096`    | `HTTP 302` Jellyfin login redirect |
+| `media.hs27.internal`     | `10.1.0.149:8096`    | `HTTP 302` Jellyfin login redirect |
 
 ---
 
 ## 4. Restore Notes 2026-04-22
 
 - CT 100 was restored and Caddy stack rebuilt.
-- Odoo outage root cause: VM 220 Proxmox NIC firewall blocked CT 100 to `10.4.0.22:8069`.
+- Odoo outage root cause: VM 220 Proxmox NIC firewall blocked CT 100 to `10.1.0.112:8069 (CT 140 frawotech-web)`.
 - HAOS had the same VM-level firewall problem on VM 210.
 - Temporary service-safe state: VM 210 and VM 220 `net0 firewall=0`.
 - Security follow-up: re-enable only after a tested bridge/firewall design proves CT 100 traffic still reaches Odoo and HAOS.
 - Vaultwarden Caddy upstream was wrong: service is `10.4.0.26:8080`, not `:80`.
-- HAOS Caddy frontdoor was missing and is now `ha.hs27.internal -> 10.4.0.24:8123`.
-- Jellyfin frontdoor is now `media.hs27.internal -> 10.4.0.20:8096`; `localhost` is wrong from inside the Caddy container.
+- HAOS Caddy frontdoor was missing and is now `ha.hs27.internal -> 10.1.0.40:8123 (VM 210 haos)`.
+- Jellyfin frontdoor is now `media.hs27.internal -> 10.1.0.149:8096`; `localhost` is wrong from inside the Caddy container.
 - rclone Google Drive mount is active; API quota/rate limits were observed during backup traffic.
 
 ### Runtime Note 2026-05-03

@@ -1,4 +1,7 @@
-> ⚠️ **TEILWEISE VERALTET.** Aktueller Live-Stand: **[NOW.md](NOW.md)**. Kern-Korrekturen: frawo-docker-1 = VMware-VM auf **Flos** Host (kein HW-Zugriff; Wolfs Eltern = Testkunden). Echte Subnetze: Rothkreuz 10.1.0.0/24 + 10.3.0.0/24 (Radio-DMZ), Stockenweiler-ESXi 10.30.8.0/24. Domain = **frawo.tech** (nicht frawo-tech.de).
+> ⚠️ **HISTORISCHE ARCHIV-REFERENZ.** Diese Datei dient ausschließlich als historische/architektonische Referenz.
+> Der einzige Echtzeit-Live-Stand für die Infrastruktur ist **[NOW.md](NOW.md)**.
+> Alle operativen Aufgaben, Roadmaps und Projektstände werden in **Odoo** (operative SSOT) gepflegt.
+> Bitte diese Datei NICHT als Quelle für den aktuellen Live-Zustand verwenden.
 
 # LIVE CONTEXT — FraWo GbR Infrastruktur
 **Single Source of Truth für technischen Zustand**
@@ -36,7 +39,7 @@
 
 | ID/LXC | Name | IP | Rolle | Status |
 |---|---|---|---|---|
-| VM 360 | homeassistant-eltern | 192.168.2.154 | HomeAssistant Eltern (Master-VM) | ✅ running |
+| VM 360 | homeassistant-eltern | 10.1.0.248 (VM 360 HA-Eltern) | HomeAssistant Eltern (Master-VM) | ✅ running |
 | CT 101 | adguard | 10.1.0.52 | DNS / Ad-Blocking | ✅ running |
 | CT 103 | npm | 10.1.0.149 | Reverse-Proxy | ✅ running |
 | CT 106 | wireguard | — | VPN | ✅ running |
@@ -55,8 +58,8 @@
 
 | ID/LXC | Name | IP | Rolle | Status |
 |---|---|---|---|---|
-| VM 210 | haos | 10.4.0.24 | Home Assistant OS (FraWo intern) | ✅ running (routed) |
-| VM 220 | odoo | 10.4.0.22 | Odoo 17 ERP (Legacy, gestoppt/archiviert) | ✅ running |
+| VM 210 | haos | 10.1.0.40 | Home Assistant OS (FraWo intern) | ✅ running (routed) |
+| VM 220 | odoo | 10.1.0.112 | Odoo 17 ERP (Legacy, gestoppt/archiviert) | ✅ running |
 | VM 240 | PBS-FraWo | — | Backup-VM (Keine Backups auf ssd2tb!) | ⏹ stopped |
 | VM 300 | nextcloud | — | Nextcloud (Legacy, archivieren) | ⏹ stopped |
 | VM 330 | paperless | — | Paperless (Legacy, archivieren) | ⏹ stopped |
@@ -103,7 +106,7 @@
 ## EMAIL / SMTP (Brevo / Strato)
 
 - **Brevo SMTP (Odoo-Mails)**: `smtp-relay.brevo.com:2525`, Login: `ae8c51001@smtp-brevo.com`, Key in `frawo_credentials_2026-05-30.txt`.
-- **Strato SMTP (Infrastruktur)**: `smtp.strato.de:465` (SSL), Login: `webmaster@frawo-tech.de`.
+- **Strato SMTP (Infrastruktur)**: `smtp.strato.de:465` (SSL), Login: `webmaster@frawo.tech`.
 
 ---
 

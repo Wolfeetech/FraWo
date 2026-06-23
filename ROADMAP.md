@@ -1,4 +1,7 @@
-> ⚠️ **TEILWEISE VERALTET.** Aktueller Live-Stand: **[NOW.md](NOW.md)**. Kern-Korrekturen: frawo-docker-1 = VMware-VM auf **Flos** Host (kein HW-Zugriff; Wolfs Eltern = Testkunden). Echte Subnetze: Rothkreuz 10.1.0.0/24 + 10.3.0.0/24, Stockenweiler-ESXi 10.30.8.0/24, ProDesk/Easybox 192.168.2.0/24 (NICHT 10.4.0.x). Domain = **frawo.tech**. Easybox → UCG → 10.1.0.x.
+> ⚠️ **HISTORISCHE ARCHIV-REFERENZ.** Diese Datei dient ausschließlich als historische/architektonische Referenz.
+> Der einzige Echtzeit-Live-Stand für die Infrastruktur ist **[NOW.md](NOW.md)**.
+> Alle operativen Aufgaben, Roadmaps und Projektstände werden in **Odoo** (operative SSOT) gepflegt.
+> Bitte diese Datei NICHT als Quelle für den aktuellen Live-Zustand verwenden.
 
 # ROADMAP — FraWo GbR Infrastruktur
 **Stand: 2026-05-28 | Letzte Konsolidierung: Claude Sonnet 4.6 + Wolf**
@@ -30,9 +33,9 @@ ANKER PVE (Primary)              STOCKENWEILER (Site B, 10.30.8.x)
 └── adguard CT 100+101
 
 ÖFFENTLICH                       INTERN (via AdGuard + Caddy CT 100)
-├── frawo-tech.de ✅ (Odoo)      ├── odoo.hs27.internal ✅
-├── cloud.frawo-tech.de ←fix CF  ├── cloud.hs27.internal ✅
-├── radio.frawo-tech.de ←TODO    ├── radio.hs27.internal ✅ (CT 130)
+├── frawo.tech ✅ (Odoo)      ├── odoo.hs27.internal ✅
+├── cloud.frawo.tech ←fix CF  ├── cloud.hs27.internal ✅
+├── radio.frawo.tech ←TODO    ├── radio.hs27.internal ✅ (CT 130)
 └── Cloudflare Tunnel            ├── ha/media/paperless/vault ✅
                                  └── navidrome.hs27.internal ✅
 ```
@@ -83,9 +86,9 @@ ANKER PVE (Primary)              STOCKENWEILER (Site B, 10.30.8.x)
 
 | Task | Was | Fix |
 |------|-----|-----|
-| **Tailscale Split DNS** | hs27.internal → 100.82.26.53 (war 10.4.0.20) | Dashboard konfiguriert, DNS-Test ✅ |
+| **Tailscale Split DNS** | hs27.internal → 10.1.0.149 (CT 103 NPM) (war 10.1.0.149) | Dashboard konfiguriert, DNS-Test ✅ |
 | **#235** | Hosts-Datei cleanup | hs27.internal Einträge bereinigt ✅ |
-| **cloud.frawo-tech.de** | CF Tunnel Nextcloud | HTTP 302→200 bestätigt ✅ (war 502) |
+| **cloud.frawo.tech** | CF Tunnel Nextcloud | HTTP 302→200 bestätigt ✅ (war 502) |
 | **KRITISCH: Vault-Recovery** | vw_newkey.py hatte falschen sym key generiert — alle 429 Org-Items verschlüsselt mit falschem Key | Backup von 2026-05-26-02:12 extrahiert, original sym key wiederhergestellt, wolf akey neu verschlüsselt ✅ |
 | **Vault Crypto-Kette** | Vollständige Python-Implementierung Bitwarden E2E Crypto: PBKDF2→HKDF→AES-CBC→RSA-OAEP→AES-CBC | Alle 437 Items entschlüsselbar, Cloudflare + Tailscale API-Token in Vault gespeichert ✅ |
 | **Vault-Recovery** | Operator-Vaultzugriff nach Recovery bestaetigt | Alle Items sichtbar, keine Klartext-Referenz mehr im Repo ✅ |
@@ -104,7 +107,7 @@ ANKER PVE (Primary)              STOCKENWEILER (Site B, 10.30.8.x)
 |------|-----|-----|-----------|
 | #235 | ~~Tailscale DNS Fix~~ | ✅ DONE | Split DNS konfiguriert (Wolf 2026-05-26) |
 | #224 | ~~CF Tunnel~~ | ✅ DONE | alle 6 Routen korrekt, alle Backends 200/302 (Wolf 2026-05-26) |
-| ~~#244~~ | ~~Passwort-Audit~~ | ✅ DONE | 19 Credentials in Vaultwarden, agent@frawo-tech.de ✅ |
+| ~~#244~~ | ~~Passwort-Audit~~ | ✅ DONE | 19 Credentials in Vaultwarden, agent@frawo.tech ✅ |
 | CT 130 | ~~Tailscale Auth~~ | ✅ DONE | radio-node 100.78.88.33 live |
 | #159 | PBS Netzwerk-Fix | PVE Web UI | VM 240 → Console → ip addr / cloud-init prüfen |
 | ~~#249~~ | ~~Odoo Admin-PW~~ | 🛑 Blockiert bis Go-Live | Vault-Eintrag aktualisiert, Repo enthaelt keine Klartext-Referenz mehr |
@@ -113,7 +116,7 @@ ANKER PVE (Primary)              STOCKENWEILER (Site B, 10.30.8.x)
 
 | Odoo | Was | Wartet auf | Priorität |
 |------|-----|-----------|-----------|
-| #240 | ~~funk.frawo-tech.de CF-Tunnel~~ | ✅ DONE — 10.4.0.28 korrekt | — |
+| #240 | ~~funk.frawo.tech CF-Tunnel~~ | ✅ DONE — 10.4.0.28 korrekt | — |
 | #225 | hs27-media: Radio-Library auf music_ssd | PVE-Neustart (CIFS-Stale) → prüfen ob jetzt OK | Mittel |
 | #234 | frawo-docker-1 Rolle dokumentieren | ✅ NETWORK_PLAN.md erstellt | Agent |
 | #84/#159 | PBS produktiv setzen | Netzwerk-Fix Wolf | Mittel |
@@ -164,7 +167,7 @@ ANKER PVE (Primary)              STOCKENWEILER (Site B, 10.30.8.x)
 | Node | Tailscale | Lokal-IP | Typ | Rolle |
 |------|-----------|----------|-----|-------|
 | proxmox-anker | 100.69.179.87 | 10.4.0.99 | PVE | Primary Hypervisor |
-| toolbox | 100.82.26.53 | 10.4.0.20 | CT 100 | Edge/Ingress/Monitoring |
+| toolbox | 10.1.0.149 (CT 103 NPM) | 10.1.0.149 | CT 100 | Edge/Ingress/Monitoring |
 | radio-node | **100.78.88.33** | 10.4.0.28 | CT 130 | AzuraCast + Navidrome + Radio Backend (neu: Tailscale ✅) |
 | frawo-docker-1 | 100.94.32.41 | 10.30.8.22 | Phys. Server | Production Secondary Node: Monitoring, Relay, kuratierte Automation |
 | stockenweiler-pve | 100.91.20.116 | 192.168.178.172 | HP ProDesk / PVE | 🔧 In Reparatur (Rothkreuz) — nach Fix: Eltern-PC + Fallback-Server (#265) |

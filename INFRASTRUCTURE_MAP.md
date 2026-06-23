@@ -1,4 +1,7 @@
-> ⚠️ **TEILWEISE VERALTET.** Aktueller Live-Stand: **[NOW.md](NOW.md)**. Kern-Korrekturen: frawo-docker-1 = VMware-VM auf **Flos** Host (kein HW-Zugriff; Wolfs Eltern = Testkunden). Echte Subnetze: Rothkreuz 10.1.0.0/24 + 10.3.0.0/24 (Radio-DMZ), Stockenweiler-ESXi 10.30.8.0/24. Domain = **frawo.tech** (nicht frawo-tech.de).
+> ⚠️ **HISTORISCHE ARCHIV-REFERENZ.** Diese Datei dient ausschließlich als historische/architektonische Referenz.
+> Der einzige Echtzeit-Live-Stand für die Infrastruktur ist **[NOW.md](NOW.md)**.
+> Alle operativen Aufgaben, Roadmaps und Projektstände werden in **Odoo** (operative SSOT) gepflegt.
+> Bitte diese Datei NICHT als Quelle für den aktuellen Live-Zustand verwenden.
 
 # FraWo GbR — Infrastruktur-Karte
 **Stand: 2026-06-17 | Verifiziert durch Live-Check**
@@ -21,12 +24,12 @@ graph TB
             CT110_P["📦 CT 110 n8n<br/>10.1.0.100"]
             CT120_P["📦 CT 120 Fileserver NAS<br/>10.1.0.94"]
             CT140["📦 CT 140 Odoo ERP<br/>10.1.0.112<br/>(odoo:17 + postgres:15)"]
-            VM360["🏠 VM 360 HAOS Eltern<br/>192.168.2.154"]
+            VM360["🏠 VM 360 HAOS Eltern<br/>10.1.0.248 (VM 360 HA-Eltern)"]
         end
 
         subgraph ANKER["🖥️ ANKER PVE — Sekundär-Produktion<br/>10.1.0.92 | TS: 100.69.179.87"]
-            VM210["🏠 VM 210 HAOS Intern<br/>10.4.0.24 (routed)"]
-            VM220["⚙️ VM 220 Odoo (Legacy)<br/>10.4.0.22"]
+            VM210["🏠 VM 210 HAOS Intern<br/>10.1.0.40 (routed)"]
+            VM220["⚙️ VM 220 Odoo (Legacy)<br/>10.1.0.112"]
             CT101_A["📦 CT 101 AdGuard Slave"]
             CT110_A["📦 CT 110 Storage Node"]
         end
