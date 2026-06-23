@@ -1,9 +1,16 @@
 # NOW — Echter Live-Stand (BITTE ZUERST LESEN)
-**Letzte Verifikation: 2026-06-17 (live gemessen vom StudioPC in Rothkreuz).**
+**Letzte Verifikation: 2026-06-24 (live, StudioPC Rothkreuz).**
 
-> Diese Datei ist die **einzige Echtzeit-Wahrheit** für jeden Agenten/Menschen.
-> Alle anderen Docs (LIVE_CONTEXT, MASTERPLAN, ROADMAP, INFRASTRUCTURE_MAP, AI_BOOTSTRAP_CONTEXT) sind **älter und teils stale** — als Architektur-/Historie-Referenz nutzen, NICHT als aktuellen Zustand.
-> **Odoo ist KEINE verlässliche Infra-Infoquelle.**
+> Diese Datei ist die **einzige Echtzeit-Wahrheit** für Infra. Andere Docs (LIVE_CONTEXT, MASTERPLAN, ROADMAP, INFRASTRUCTURE_MAP, AI_BOOTSTRAP_CONTEXT, STATUS, todo) sind **stale** = nur Historie.
+> **Odoo (CT140, 10.1.0.112:8069) ist ab 2026-06-23 die operative SSOT für Projekte/Aufgaben** (restrukturiert, Konventionen Task #599). Für *Live-Infra-State* gilt weiter: NOW.md + live verifizieren.
+
+## 🆕 Tagesabschluss 2026-06-23/24 (verifiziert)
+- **Netz/VLAN-KORREKTUR:** Netz ist sauber VLAN-segmentiert (UCG 10.1.0.1). **`10.4.0.x` = Anker-IoT (VLAN104), NICHT tot!** VLAN101=Server(10.1.0.x), 102 DMZ, 103 DMZ-Radio, 104 IoT, 105 Guest, 110/111 Stockenweiler. Voll-IP-Tabelle = Odoo #622 + Memory `reference_frawo_network_vlan`.
+- **Haupt-HA (haos VM210/anker) wieder ONLINE → 10.1.0.40** (statisch VLAN101, DHCP-Reservierung). War auf 10.4.0.24 + NM verklemmt; Fix: static + `qm reboot 210`. HA-Stockenweiler/Eltern = VM360 **10.1.0.248** (MCP-Server gewired).
+- **Website frawo.tech:** 6 Security-Header live (A/A+, via CF Transform Rule), Meta-Description/Menü gefixt. Odoo-Stilfehler (Migrations-Asset-Komposition) via `-u web,website` → Backend/Frontend kompilieren sauber.
+- **Mail:** Strato von CT140 unerreichbar → **Brevo** ist aktiver SMTP. Angebot S00015 zugestellt.
+- **Odoo:** Board restrukturiert (10 Domain-Projekte, Stages, Rollen-Tags, Paten, Mitarbeiter), autonome Automation St.1+2 live (#596). Tageslog/Tagesziele = Task #623.
+- **API-Zugänge (lokal, nicht im Repo):** UniFi Cloud + lokaler UCG-Key, CF-API-Token (Transform Rules), HA-Token Stockenweiler, Odoo-MCP-Key.
 
 ## ⚡ Bootstrap für Agenten (Reihenfolge)
 1. **Diese `NOW.md`** (Live-Stand + was stale ist).
