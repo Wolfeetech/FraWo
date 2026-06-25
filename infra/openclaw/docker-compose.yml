@@ -1,0 +1,13 @@
+services:
+  openclaw:
+    build: .
+    container_name: openclaw
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - ./openclaw.json:/root/.openclaw/openclaw.json:ro
+      - openclaw-data:/root/.openclaw/data
+    ports:
+      - "19000:19000"
+volumes:
+  openclaw-data:
