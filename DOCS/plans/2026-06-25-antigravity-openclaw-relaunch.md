@@ -41,12 +41,14 @@ Erwartet: Download-Erfolgsmeldung oder "already exists".
 
 - [ ] **Step 3: Container erstellen (VMID 150, 2 vCPU, 2GB RAM, 16GB Disk, VLAN101)**
 
+> ⚠️ **KEIN `tag=101` verwenden!** `vmbr0` auf anker-pve ist NICHT vlan-aware (`vlan_filtering 0`), der physische Uplink ist bereits ein Access-Port für VLAN101 (kein Trunk). Alle bestehenden Container auf diesem Host (101, 110, 130) laufen ohne `tag=`-Parameter — ein gesetztes Tag bricht die Konnektivität komplett (verifiziert 25.06.: Container ohne Tag-Fix konnte nicht mal den Gateway pingen). Falls trotzdem versehentlich mit `tag=101` erstellt: `pct set <vmid> -net0 name=eth0,bridge=vmbr0,gw=10.1.0.1,hwaddr=<bestehende-mac>,ip=<ip>/24,type=veth` (ohne tag), dann `pct stop <vmid> && pct start <vmid>`.
+
 ```bash
 ssh anker-pve "pct create 150 local:vztmpl/debian-12-standard_12.7-1_amd64.tar.zst \
   --hostname openclaw \
   --cores 2 --memory 2048 --swap 512 \
   --rootfs local-lvm:16 \
-  --net0 name=eth0,bridge=vmbr0,tag=101,ip=10.1.0.31/24,gw=10.1.0.1 \
+  --net0 name=eth0,bridge=vmbr0,ip=10.1.0.31/24,gw=10.1.0.1 \
   --features nesting=1 \
   --unprivileged 1 \
   --onboot 1"
