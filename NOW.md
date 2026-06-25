@@ -20,6 +20,7 @@
 - **API-Zugänge (lokal, nicht im Repo):** UniFi Cloud + lokaler UCG-Key, CF-API-Token (Transform Rules), HA-Token Stockenweiler + Haupt-HA (seit 25.06.), Odoo-MCP-Key, Tailscale-API-Key (seit 25.06., von Wolf bereitgestellt — Claude-Memory `reference_frawo_tailscale_api`).
 
 ## ⚡ Bootstrap für Agenten (Reihenfolge)
+0. **[`AGENT_ONBOARDING.md`](AGENT_ONBOARDING.md)** — EIN Prompt um einen komplett neuen Agenten einzuschulen (Identität, Zugänge, Arbeitsweise). Bei Bedarf direkt als Einstiegsprompt kopieren.
 1. **Diese `NOW.md`** (Live-Stand + was stale ist).
 2. `STATUS.md` (Verlauf), dann bei Bedarf `LIVE_CONTEXT.md` (⚠️ veraltete IPs/Domain — siehe Korrekturen unten).
 3. Claude-Memory `project_frawo_2026-06-10_session.md` = bestätigte Topologie-Korrektur.

@@ -1,30 +1,12 @@
 # FraWo Agent Operating Contract
 
-This repository has one canonical writable workspace.
+> ⚠️ **VERALTET (Pfade/Projektboard-Name stammen aus früherem Setup).** Für aktuelles Onboarding siehe **[`AGENT_ONBOARDING.md`](AGENT_ONBOARDING.md)**. Dieser Abschnitt bleibt nur als historische Referenz.
 
-## Canonical Workspace
-
-- GitHub repository: `Wolfeetech/FraWo`
-- Canonical local checkout: `C:\Users\Admin\Workspace\Repos\FraWo`
-- Convenience junctions that must point to the canonical checkout:
-  - `C:\Users\Admin\Workspace\FraWo`
-  - `C:\WORKSPACE\FraWo`
-
-Agents must not treat any other checkout as writable project truth.
+This repository has one canonical writable workspace — on the current machine (StudioPC, Rothkreuz) that is wherever the repo was cloned per `AGENT_ONBOARDING.md` / `reference_frawo_github` (typically a temp checkout, re-cloned per session). The `C:\Users\Admin\...` paths below are from an earlier, different workstation setup and do not exist on StudioPC.
 
 ## First Step For Every Agent
 
-1. `cd C:\Users\Admin\Workspace\Repos\FraWo`
-2. `git status -sb`
-3. Read:
-   - `AGENTS.md`
-   - `OPERATIONS/ODOO_OPERATIONS.md`
-   - `OPS_HOME.md`
-   - `LIVE_CONTEXT.md`
-   - `COMMUNICATION/agent_board.md`
-4. Confirm the current active task, priority, and blocker state in the Odoo project board `🚀 Homeserver 2027: Masterplan` before making planning assumptions.
-5. Pull before work if the tree is clean.
-6. If the current directory is not the canonical checkout, stop and switch to it.
+See `AGENT_ONBOARDING.md`. Summary: read `NOW.md`, then check Odoo (operative SSOT for tasks since 2026-06-23, not this repo's old roadmap files).
 
 ## Communication Rule
 
