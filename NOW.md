@@ -17,7 +17,7 @@
 - **Website frawo.tech:** 6 Security-Header live (A/A+, via CF Transform Rule), Meta-Description/Menü gefixt. Odoo-Stilfehler (Migrations-Asset-Komposition) via `-u web,website` → Backend/Frontend kompilieren sauber.
 - **Mail:** Strato von CT140 unerreichbar → **Brevo** ist aktiver SMTP. Angebot S00015 zugestellt.
 - **Odoo:** Board restrukturiert (10 Domain-Projekte, Stages, Rollen-Tags, Paten, Mitarbeiter), autonome Automation St.1+2 live (#596). Tageslog/Tagesziele = Task #623.
-- **API-Zugänge (lokal, nicht im Repo):** UniFi Cloud + lokaler UCG-Key, CF-API-Token (Transform Rules), HA-Token Stockenweiler, Odoo-MCP-Key.
+- **API-Zugänge (lokal, nicht im Repo):** UniFi Cloud + lokaler UCG-Key, CF-API-Token (Transform Rules), HA-Token Stockenweiler + Haupt-HA (seit 25.06.), Odoo-MCP-Key, Tailscale-API-Key (seit 25.06., von Wolf bereitgestellt — Claude-Memory `reference_frawo_tailscale_api`).
 
 ## ⚡ Bootstrap für Agenten (Reihenfolge)
 1. **Diese `NOW.md`** (Live-Stand + was stale ist).
