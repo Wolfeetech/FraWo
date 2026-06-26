@@ -21,9 +21,15 @@ git config --global user.email "agent@frawo.tech" 2>/dev/null || true
 git config --global init.defaultBranch main 2>/dev/null || true
 git config --global pull.rebase false 2>/dev/null || true
 
-# Clone FraWo repo if not present and GitHub key is trusted
+# Clone FraWo repo if not present (needs GitHub deploy key)
 if [ ! -d /root/.openclaw/FraWo/.git ]; then
   git clone git@github.com:Wolfeetech/FraWo.git /root/.openclaw/FraWo 2>/dev/null || true
+fi
+
+# gh CLI: auth via SSH (no PAT needed if deploy key is set)
+if command -v gh >/dev/null 2>&1 && [ ! -f /root/.config/gh/config.yml ]; then
+  gh config set git_protocol ssh 2>/dev/null || true
+  gh config set prompt disabled 2>/dev/null || true
 fi
 
 if [ -n "${AZURACAST_API_KEY}" ] && ! openclaw mcp show azuracast >/dev/null 2>&1; then
