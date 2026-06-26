@@ -15,6 +15,17 @@ if [ ! -f /root/.openclaw/ssh/id_ed25519 ]; then
 fi
 ln -sfn /root/.openclaw/ssh /root/.ssh
 
+# Git identity (persistent via volume)
+git config --global user.name "ServAssi" 2>/dev/null || true
+git config --global user.email "agent@frawo.tech" 2>/dev/null || true
+git config --global init.defaultBranch main 2>/dev/null || true
+git config --global pull.rebase false 2>/dev/null || true
+
+# Clone FraWo repo if not present and GitHub key is trusted
+if [ ! -d /root/.openclaw/FraWo/.git ]; then
+  git clone git@github.com:Wolfeetech/FraWo.git /root/.openclaw/FraWo 2>/dev/null || true
+fi
+
 if [ -n "${AZURACAST_API_KEY}" ] && ! openclaw mcp show azuracast >/dev/null 2>&1; then
   openclaw mcp add azuracast \
     --command python3 \
