@@ -1,7 +1,7 @@
 FROM node:22-slim
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends python3 curl ca-certificates \
+    && apt-get install -y --no-install-recommends python3 curl ca-certificates openssh-client \
     && update-ca-certificates \
     && curl -LsSf https://astral.sh/uv/install.sh | env HOME=/root sh \
     && /root/.local/bin/uv tool install mcp-server-odoo \
