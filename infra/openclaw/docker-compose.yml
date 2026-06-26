@@ -4,9 +4,8 @@ services:
     container_name: openclaw
     restart: unless-stopped
     env_file: .env
+    network_mode: host
     volumes:
       - openclaw-data:/root/.openclaw
-    ports:
-      - "19000:19000"
 volumes:
   openclaw-data:
