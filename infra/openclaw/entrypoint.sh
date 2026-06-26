@@ -7,6 +7,14 @@ if [ ! -f /root/.openclaw/openclaw.json ]; then
   cp /app/openclaw.default.json /root/.openclaw/openclaw.json
 fi
 
+# SSH-Key im persistenten Volume speichern
+mkdir -p /root/.openclaw/ssh
+chmod 700 /root/.openclaw/ssh
+if [ ! -f /root/.openclaw/ssh/id_ed25519 ]; then
+  ssh-keygen -t ed25519 -C "openclaw@frawo.tech" -f /root/.openclaw/ssh/id_ed25519 -N ""
+fi
+ln -sfn /root/.openclaw/ssh /root/.ssh
+
 if [ -n "${ODOO_API_KEY}" ] && ! openclaw mcp show odoo >/dev/null 2>&1; then
   openclaw mcp add odoo \
     --command /root/.local/bin/uvx \
@@ -33,13 +41,15 @@ done
 if ! openclaw cron list 2>/dev/null | grep -q "odoo-agent-poll"; then
   openclaw cron add \
     --name odoo-agent-poll \
-    --every 3m \
-    --message 'Prüfe Odoo auf offene Tasks mit Tag DevOps-Agent (Tag-ID 75, stage_id in [1,3]). Nutze das Odoo-MCP-Tool search_records auf project.task. Führe lösbare Tasks aus und melde Wolf per Telegram. Keine Tasks = kein Output.' \
+    --every 15m \
+    --model 'anthropic/claude-haiku-4-5-20251001' \
+    --thinking off \
+    --session isolated \
+    --timeout-seconds 90 \
+    --announce \
     --channel telegram \
     --to 5924907152 \
-    --timeout-seconds 240 \
-    --session isolated \
-    --announce || true
+    --message 'Prüfe Odoo auf neue Tasks im Backlog (stage_id=1) mit Tag DevOps-Agent (Tag-ID 75). Nutze search_records auf project.task mit domain [["tag_ids","in",[75]],["stage_id","=",1]]. Kein Task = sofort aufhören, KEIN Output. Wenn Tasks: sofort stage_id=3 + post_message Übernommen, erledigen, stage_id=6 + Telegram-Zusammenfassung.' || true
 fi
 
 wait $GW_PID
