@@ -14,6 +14,7 @@ RUN npm install -g openclaw
 
 COPY openclaw.json /app/openclaw.default.json
 COPY entrypoint.sh /app/entrypoint.sh
+COPY mcp_azuracast.py /app/mcp_azuracast.py
 RUN chmod +x /app/entrypoint.sh
 
 WORKDIR /app

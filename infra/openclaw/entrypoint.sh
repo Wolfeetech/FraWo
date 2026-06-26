@@ -15,6 +15,16 @@ if [ ! -f /root/.openclaw/ssh/id_ed25519 ]; then
 fi
 ln -sfn /root/.openclaw/ssh /root/.ssh
 
+if [ -n "${AZURACAST_API_KEY}" ] && ! openclaw mcp show azuracast >/dev/null 2>&1; then
+  openclaw mcp add azuracast \
+    --command python3 \
+    --arg /app/mcp_azuracast.py \
+    --env "AZURACAST_URL=${AZURACAST_URL:-http://10.1.0.38}" \
+    --env "AZURACAST_API_KEY=${AZURACAST_API_KEY}" \
+    --env "AZURACAST_STATION_ID=${AZURACAST_STATION_ID:-1}" \
+    --no-probe || true
+fi
+
 if [ -n "${ODOO_API_KEY}" ] && ! openclaw mcp show odoo >/dev/null 2>&1; then
   openclaw mcp add odoo \
     --command /root/.local/bin/uvx \
