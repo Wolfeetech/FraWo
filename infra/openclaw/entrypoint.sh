@@ -65,6 +65,8 @@ for i in $(seq 1 30); do
 done
 
 # Register Odoo poll cron job if not present
+# WICHTIG: Dieser Cron ist READ-ONLY. Er darf KEINE Odoo-Stages ändern.
+# Nur suchen und Telegram-Notification senden. Wolf entscheidet selbst.
 if ! openclaw cron list 2>/dev/null | grep -q "odoo-agent-poll"; then
   openclaw cron add \
     --name odoo-agent-poll \
@@ -72,11 +74,11 @@ if ! openclaw cron list 2>/dev/null | grep -q "odoo-agent-poll"; then
     --model 'anthropic/claude-haiku-4-5-20251001' \
     --thinking off \
     --session isolated \
-    --timeout-seconds 60 \
+    --timeout-seconds 30 \
     --announce \
     --channel telegram \
     --to 5924907152 \
-    --message 'Prüfe Odoo auf neue Tasks im Backlog (stage_id=1) mit Tag DevOps-Agent (Tag-ID 75). Nutze search_records auf project.task mit domain [["tag_ids","in",[75]],["stage_id","=",1]]. Kein Task = sofort STOP, kein Output. Wenn Tasks gefunden: NUR stage_id=3 setzen + Chatter-Nachricht "Übernommen - wartet auf manuelle Ausführung" posten + Telegram-Zusammenfassung mit Task-Name und ID. NIEMALS stage_id=6 setzen - das macht Wolf manuell nach Verifikation.' || true
+    --message 'READONLY-TASK: Prüfe Odoo auf offene Tasks mit Tag DevOps-Agent (Tag-ID 75) und stage_id=1 (Backlog). Nutze NUR search_records auf project.task mit domain [["tag_ids","in",[75]],["stage_id","=",1]]. Kein Ergebnis = sofort stoppen, kein Output. Bei Ergebnissen: Sende NUR eine Telegram-Nachricht mit den Task-Namen und IDs. VERBOTEN: update_record, stage ändern, create_record, post_message. Du darfst AUSSCHLIESSLICH lesen und Telegram senden.' || true
 fi
 
 wait $GW_PID
