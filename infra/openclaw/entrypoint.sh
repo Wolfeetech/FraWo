@@ -68,15 +68,15 @@ done
 if ! openclaw cron list 2>/dev/null | grep -q "odoo-agent-poll"; then
   openclaw cron add \
     --name odoo-agent-poll \
-    --every 15m \
+    --every 1h \
     --model 'anthropic/claude-haiku-4-5-20251001' \
     --thinking off \
     --session isolated \
-    --timeout-seconds 90 \
+    --timeout-seconds 60 \
     --announce \
     --channel telegram \
     --to 5924907152 \
-    --message 'Prüfe Odoo auf neue Tasks im Backlog (stage_id=1) mit Tag DevOps-Agent (Tag-ID 75). Nutze search_records auf project.task mit domain [["tag_ids","in",[75]],["stage_id","=",1]]. Kein Task = sofort aufhören, KEIN Output. Wenn Tasks: sofort stage_id=3 + post_message Übernommen, erledigen, stage_id=6 + Telegram-Zusammenfassung.' || true
+    --message 'Prüfe Odoo auf neue Tasks im Backlog (stage_id=1) mit Tag DevOps-Agent (Tag-ID 75). Nutze search_records auf project.task mit domain [["tag_ids","in",[75]],["stage_id","=",1]]. Kein Task = sofort STOP, kein Output. Wenn Tasks gefunden: NUR stage_id=3 setzen + Chatter-Nachricht "Übernommen - wartet auf manuelle Ausführung" posten + Telegram-Zusammenfassung mit Task-Name und ID. NIEMALS stage_id=6 setzen - das macht Wolf manuell nach Verifikation.' || true
 fi
 
 wait $GW_PID
