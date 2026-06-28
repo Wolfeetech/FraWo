@@ -1,0 +1,63 @@
+# ============================================================
+# FRAWO RADIO — Beets Stack (ProDesk / PVE)
+# Läuft als LXC auf ProDesk (10.1.0.128)
+#
+# Start:  docker compose -f docker-compose.beets.yml up -d
+# Import: docker compose -f docker-compose.beets.yml run --rm beets import /mnt/source/
+# Web UI: http://10.1.0.128:8337
+# ============================================================
+
+services:
+  beets:
+    image: lscr.io/linuxserver/beets:latest
+    container_name: frawo-beets
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Berlin
+      - DISCOGS_TOKEN=${DISCOGS_TOKEN}
+    volumes:
+      # Config & Datenbank
+      - ./beets:/config
+      # Quellen (read-only — beets verschiebt intern, schreibt nach radio_master)
+      - /mnt/musicstick:/mnt/musicstick:ro
+      - /mnt/music_hdd:/mnt/music_hdd:ro
+      # Output — hier landet die saubere Bibliothek
+      - /mnt/music_hdd/Radio_Master:/mnt/radio_master
+    ports:
+      - "8337:8337"    # beets Web UI (Live-Kuration)
+    networks:
+      - radio-net
+
+  # ── Navidrome (Curation UI / Subsonic API) ──────────────
+  # Schönes Web-Interface für Live-Kuration und Playlists
+  # Kompatibel mit DSub, Symfonium, Finamp (Mobile)
+  navidrome:
+    image: deluan/navidrome:latest
+    container_name: frawo-navidrome
+    restart: unless-stopped
+    user: "1000:1000"
+    environment:
+      - ND_SCANSCHEDULE=1h
+      - ND_LOGLEVEL=info
+      - ND_BASEURL=
+      - ND_MUSICFOLDER=/music
+      - ND_ENABLETRANSCODINGCONFIG=true
+      - ND_TRANSCODINGCACHESIZE=150MB
+    volumes:
+      - navidrome_data:/data
+      - /mnt/music_hdd/Radio_Master:/music:ro
+    ports:
+      - "4533:4533"    # Navidrome Web UI
+    networks:
+      - radio-net
+    depends_on:
+      - beets
+
+volumes:
+  navidrome_data:
+
+networks:
+  radio-net:
+    driver: bridge
