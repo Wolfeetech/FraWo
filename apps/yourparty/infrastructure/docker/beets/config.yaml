@@ -1,95 +1,113 @@
-# ============================================================
-# BEETS CONFIGURATION - YourParty.tech V2
-# Library Manager with Auto-Ingest Pipeline
-# ============================================================
+# FRAWO RADIO — Beets Library Config v2.0
+# Standard: EBU R128 | MusicBrainz + Discogs + AcoustID
+# Workflow:  MOVE (keine Kopien, kein doppelter Speicher)
+# Erste Nutzung: beet import --pretend /mnt/source/
 
-# Directory settings
-directory: /music
-library: /config/musiclibrary.db
+directory: /mnt/radio_master
+library: /config/library.db
+log: /config/import.log
 
-# Import settings
 import:
     write: yes
     copy: no
     move: yes
     resume: yes
     incremental: yes
-    quiet_fallback: skip
+    quiet_fallback: asis
     timid: no
-    log: /config/beets.log
-    
-# Watch plugin settings (auto-import from /downloads)
+    duplicate_action: ask
+    languages: [de, en]
+
 plugins:
+    - chroma
     - fetchart
     - embedart
     - lastgenre
     - discogs
     - web
-    - convert
     - scrub
     - replaygain
+    - duplicates
+    - mbsync
+    - edit
+    - info
 
-# Discogs authentication (for metadata lookup)
+match:
+    strong_rec_thresh: 0.10
+    medium_rec_thresh: 0.25
+    rec_gap_thresh: 0.20
+    preferred:
+        media: ['Digital Media', 'CD']
+        countries: ['DE', 'AT', 'CH', 'GB', 'US']
+
+musicbrainz:
+    searchlimit: 5
+    extra_tags: [year, catalognum, country, media, label]
+
+chroma:
+    auto: yes
+
 discogs:
     user_token: ${DISCOGS_TOKEN}
-    source_weight: 0.5
+    source_weight: 0.7
 
-# Fetch album art
 fetchart:
     auto: yes
     cautious: yes
-    sources: 
+    minwidth: 500
+    sources:
         - filesystem
         - coverart
         - albumart
         - discogs
         - lastfm
 
-# Embed art into files
 embedart:
     auto: yes
     ifempty: yes
+    maxwidth: 1000
 
-# Last.fm genre lookup
 lastgenre:
     auto: yes
     canonical: yes
-    count: 3
-    fallback: ''
+    count: 1
+    fallback: 'Electronic'
     force: no
     source: album
 
-# Web interface (for debugging)
-web:
-    host: 0.0.0.0
-    port: 8337
+replaygain:
+    auto: yes
+    backend: ffmpeg
+    overwrite: yes
+    threads: 4
 
-# File naming
-paths:
-    default: '%the{$albumartist}/$album%aunique{}/$track - $title'
-    singleton: 'Singles/%the{$artist}/$title'
-    comp: 'Compilations/$album%aunique{}/$track - $title'
+duplicates:
+    checksum: no
+    copy: no
+    move: no
+    delete: no
+    tag: dup
 
-# Audio format preferences
-convert:
-    auto: no
-    ffmpeg: /usr/bin/ffmpeg
-    opts: -aq 2
-    embed: yes
-    format: mp3
-
-# Clean metadata
 scrub:
     auto: yes
 
-# ReplayGain for volume normalization
-replaygain:
-    backend: ffmpeg
-    auto: yes
-    overwrite: no
+paths:
+    default: '%the{$albumartist}/$year - $album%aunique{}/$disc$track - $title'
+    singleton: '_Singles/%the{$artist}/$year - $title'
+    comp: '_Compilations/$year - $album%aunique{}/$disc$track - $title'
 
-# Custom hook: Push metadata to Directus
-# This runs after each import
-afterimport:
-    # Custom script to sync with Directus
-    # Will be handled by external watcher or API hook
+web:
+    host: 0.0.0.0
+    port: 8337
+    readonly: no
+
+convert:
+    auto: no
+    ffmpeg: /usr/bin/ffmpeg
+    format: mp3
+    formats:
+        mp3:
+            command: ffmpeg -i $source -b:a 320k $dest
+            extension: mp3
+
+id3v23: no
