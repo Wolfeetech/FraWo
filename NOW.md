@@ -1,8 +1,19 @@
 # NOW — Echter Live-Stand (BITTE ZUERST LESEN)
-**Letzte Verifikation: 2026-06-25 (live, StudioPC Rothkreuz, Agent).**
+**Letzte Verifikation: 2026-07-01 (live, StudioPC Rothkreuz, Claude-Agent — vollständiger Fan-Out aller Systeme).**
 
-> Diese Datei ist die **einzige Echtzeit-Wahrheit** für Infra. Andere Docs (LIVE_CONTEXT, MASTERPLAN, ROADMAP, INFRASTRUCTURE_MAP, AI_BOOTSTRAP_CONTEXT, STATUS, todo) sind **stale** = nur Historie.
-> **Odoo (CT140, 10.1.0.112:8069) ist ab 2026-06-23 die operative SSOT für Projekte/Aufgaben** (restrukturiert, Konventionen Task #599). Für *Live-Infra-State* gilt weiter: NOW.md + live verifizieren.
+> **Odoo (CT140, 10.1.0.112:8069) = EINZIGE SSOT für ALLES** — Tasks, Infra-Entscheidungen, Roadmap. NOW.md = nur Live-Infra-State (was wirklich läuft). Alle anderen Docs (LIVE_CONTEXT, MASTERPLAN, ROADMAP, AI_BOOTSTRAP_CONTEXT, STATUS, todo) = **STALE, nicht mehr lesen**.
+> Agenten: IMMER zuerst Odoo-Projekte/Tasks lesen, NICHT andere MD-Files als Planungsgrundlage verwenden.
+
+## 🆕 Tagesabschluss 2026-07-01 (verifiziert — Fan-Out aller Systeme)
+
+- **frawo-docker-1 = OFFIZIELL STILLGELEGT.** Seit 13 Tagen offline (Tailscale last seen 2026-06-17), SSH timeout. Alle Tasks bereinigt (#586 done, #226/#227/#242/#331/#341/#554 cancelled). Netcup/Flo-Vertrag noch kündigen. n8n migriert auf CT110 (10.1.0.100) ✅. Grafana/Monitoring-Stack noch ausstehend (CT150 ProDesk ist stopped).
+- **Odoo-Bereinigung:** 92 Tasks hatten stage=Erledigt aber state=01_in_progress → korrigiert zu 1_done. 14 Tasks stage=Abgebrochen aber state=01_in_progress → korrigiert zu 1_canceled. 3 stale Tageslog-Tasks (#623/#636/#643) geschlossen.
+- **⚠️ SPLIT BRAIN RADIO (ungeklärt):** CT130 radio-node (anker-pve, 10.1.0.200) läuft eine zweite AzuraCast-Instanz + frawo-radio-backend + navidrome + funk-community (alle seit 14h = frisch gestartet). Master-AzuraCast = VM210 stockenweiler (10.1.0.38). Zwei Instanzen aktiv — muss geklärt werden ob CT130-Stack absichtlich parallel läuft.
+- **⚠️ Unbekanntes Gerät 10.1.0.142** antwortet auf Ping, nicht in Dokumentation. Identifizieren!
+- **OpenClaw CT150 (anker-pve):** Läuft und funktioniert. Telegram Bot @Frawo_bot aktiv, Anthropic Haiku-Credits funktionieren. Zugänglich via Tailscale 100.72.154.15. LAN 10.1.0.31 nicht pingbar von StudioPC (PVE-Firewall blockt ICMP, aber Gerät ist im ARP-Cache = erreichbar auf L2).
+- **ProDesk unter Last:** Load 7.9 / RAM 434 MB frei / 3.6 GB Swap. Monitoring-Stack CT150 wäre Entlastung (noch stopped).
+- **anker-pve Root-Disk: 76% voll** (49/68 GB). Bald handeln.
+- **SSOT-Entscheidung (Wolf 2026-07-01):** Odoo = SSOT für alles inkl. Agenten. NOW.md = nur Infra-Live-State. Alle Agenten sollen primär Odoo lesen statt MD-Dateien.
 
 ## 🆕 Tagesabschluss 2026-06-25 (verifiziert)
 - **HA-MCP-Lücke gefixt (#608):** Haupt-HA (10.1.0.40) hatte trotz Doku-Behauptung KEINE `mcp_server`-Integration installiert (404 auf `/mcp_server/sse`). Via HA config_entries-Flow-API live nachinstalliert, danach Remote-HA-Verbindung 10.1.0.40↔10.1.0.248 über "Remote Home Assistant"-Integration eingerichtet. **Lehre:** bei `secure`/`verify_ssl` auf Default `true` lassen führt bei plain-HTTP-Zielen zu Verbindungsfehlern → explizit `false` setzen; `max_message_size` braucht `16777216`, nicht leer/`0`.
@@ -26,20 +37,69 @@
 3. Claude-Memory `project_frawo_2026-06-10_session.md` = bestätigte Topologie-Korrektur.
 4. Live verifizieren statt glauben (Tailscale-Status, SSH `frawo-docker-1`).
 
-## 🟢🔴 Live-Status (2026-06-24)
-| Knoten | Tailscale / IP | Standort | Status | Rolle / Beschreibung |
-|--------|----------------|----------|--------|----------------------|
-| **frawo-docker-1** | 100.94.32.41 (Lokal: 10.30.8.22) | Stockenweiler | 🟢 ONLINE | **Außen/Prod (gedrosselt)**: n8n, Grafana, Portainer, Prometheus, Node Exporter, LS25 Server. *Hinweis: Alle Dienste leiden unter VPS-Drossel (150 kbps).* |
-| **proxmox-anker** | 100.69.179.87 (Lokal: 10.1.0.92) | Rothkreuz | 🟢 ONLINE | **PVE-Node A**: haos (VM 210, running, IP: 10.1.0.40), radio-node (CT 130, running, IP: 10.1.0.200), adguard-slave (CT 101, running, IP: 10.1.0.27), storage-node (CT 110, running, IP: 10.1.0.81). Alt-Dienste (gestoppt): odoo (VM 220), PBS-FraWo (VM 240), nextcloud (VM 300), paperless (VM 330), toolbox (CT 100). Storage-Warnung: `ssd2tb` existiert physisch nicht! |
-| **stockenweiler-pve** (ProDesk) | 100.91.20.116 (Lokal: 10.1.0.128) | Rothkreuz | 🟢 ONLINE | **PVE-Node B (Master-Workhorse)**: HomeAssistant-Eltern (VM 360, running, IP: 10.1.0.248), azuracast-vm (VM 210, running, IP: 10.1.0.38 - Master-Radio), adguard (CT 101: 10.1.0.52), npm (CT 103: 10.1.0.149), wireguard (CT 106: 10.1.0.239), vaultwarden (CT 108: 10.1.0.95), pbs (CT 109: 10.1.0.7), n8n (CT 110: 10.1.0.100), fileserver (CT 120: 10.1.0.94), frawotech-web (CT 140: 10.1.0.112 - Odoo). Gestoppt: monitoring-stack (CT 150), mail-relay (CT 130). |
-| **wolfstudiopc** | 100.98.31.60 | Rothkreuz | 🟢 ONLINE | Dev-Workstation. Ethernet: `10.1.0.211` (Gigabit-Direktzugriff). WLAN: getrennt (AP-isoliert). |
-| **win-j1aenasv2fj** | 100.97.147.67 | Flo's ESXi | 🔴 OFFLINE | Windows Server VM (derzeit ausgeschaltet/nicht erreichbar). |
+## 🟢🔴 Live-Status (2026-07-01, vollständig verifiziert)
 
-## 🧭 Soll-Architektur (von Wolf bestätigt 2026-06-17)
-- **Außen** → docker-node (frawo-docker-1). **Intern** → Anker + ProDesk (physisch zugreifbar, Rothkreuz).
-- Stockenweiler bleibt Ziel-Prod-Standort (sicher hinter Firewall), sauber nutzbar für **Wolf & Franz**.
-- Estate-Login: private User (Wolf, Franz – Gaming/Surfen) · **FraWo** (Business) · **Admin**.
-- Mobil einsetzbar bauen.
+### PVE-Nodes
+| Knoten | Tailscale / LAN-IP | Status | Load / RAM |
+|--------|-------------------|--------|------------|
+| **proxmox-anker** (Lenovo ThinkCentre) | 100.69.179.87 / 10.1.0.92 | 🟢 ONLINE | 2.86 / 8 GB frei |
+| **stockenweiler-pve** (HP ProDesk) | 100.91.20.116 / 10.1.0.128 | 🟢 ONLINE ⚠️ | Load 7.9, RAM 434 MB frei |
+| **wolfstudiopc** | 100.98.31.60 / 10.1.0.211 | 🟢 ONLINE | — |
+| ~~frawo-docker-1~~ | ~~100.94.32.41~~ | 🔴 **STILLGELEGT** | Seit 13d offline |
+
+### stockenweiler-pve (ProDesk) — CT/VM-Übersicht
+| ID | Name | IP | Status | Dienste |
+|----|------|----|--------|---------|
+| CT101 | adguard | 10.1.0.52 | 🟢 | DNS |
+| CT103 | npm (nginx) | 10.1.0.149 | 🟢 | Reverse Proxy |
+| CT106 | wireguard | 10.1.0.239 | 🟢 | VPN |
+| CT108 | vaultwarden | 10.1.0.95 | 🟢 healthy | Passwort-Manager |
+| CT109 | pbs | 10.1.0.7 | ⏹ stopped | Backup Server |
+| CT110 | n8n | 10.1.0.100 | 🟢 | n8n + uptime-kuma |
+| CT120 | fileserver | 10.1.0.94 | 🟢 | Samba (Musik-Library) |
+| CT130 | mail-relay | — | ⏹ stopped | — |
+| CT140 | frawotech-web | 10.1.0.112 | 🟢 (30h!) | Odoo 19 + CF-Tunnel |
+| CT150 | monitoring-stack | — | ⏹ stopped | Grafana/Prometheus (nie migriert) |
+| VM210 | azuracast-vm | 10.1.0.38 | 🟢 | **Master-AzuraCast** |
+| VM360 | homeassistant-eltern | 10.1.0.248 | 🟢 | HA Eltern/Testkunden |
+
+### proxmox-anker (Lenovo) — CT/VM-Übersicht
+| ID | Name | IP | Status | Dienste |
+|----|------|----|--------|---------|
+| CT100 | toolbox | — | ⏹ stopped | — |
+| CT101 | adguard-slave | 10.1.0.27 | 🟢 | DNS-Slave |
+| CT110 | storage-node | 10.1.0.81 | 🟢 | Storage |
+| CT130 | radio-node | 10.1.0.200 | 🟢 ⚠️ | azuracast(2.Instanz!), frawo-radio-backend, navidrome, funk-community, uptime-kuma |
+| CT150 | openclaw | 10.1.0.31 | 🟢 | @Frawo_bot (Haiku), Tailscale 100.72.154.15 |
+| VM210 | haos | 10.1.0.40 | 🟢 | Home Assistant Haupt |
+| VM240 | PBS-FraWo | — | 🟢 | Proxmox Backup Server |
+| VM220 | odoo (alt) | — | ⏹ stopped | v17 Rollback |
+| VM300 | nextcloud | — | ⏹ stopped | — |
+| VM330 | paperless | — | ⏹ stopped | — |
+
+### Tailscale-Netz (Stand 2026-07-01)
+| Status | Node | IP |
+|--------|------|----|
+| 🟢 | wolfstudiopc | 100.98.31.60 |
+| 🟢 | stockenweiler-pve | 100.91.20.116 |
+| 🟢 | proxmox-anker | 100.69.179.87 |
+| 🟢 | openclaw-ct150 | 100.72.154.15 |
+| 🟢 | radio-node | 100.78.88.33 |
+| 🟢 | fileserver-rk | 100.64.130.24 |
+| 🟢 | DESKTOP-7LMP02S (wolf-surface?) | 100.79.103.59 |
+| 🟢 | Pixel 9 Pro | 100.83.213.17 |
+| 🔴 4d | VillaRechner420 | 100.85.153.121 |
+| 🔴 3d | wolf-ZenBook | 100.76.249.126 |
+| 🔴 10d | surface-go-frontend | 100.106.67.127 |
+| 🔴 25d | franz-iphone15 | 100.106.111.38 |
+| 🔴 **STILLGELEGT** | ~~frawo-docker-1~~ | ~~100.94.32.41~~ |
+
+## 🧭 Soll-Architektur (bestätigt 2026-07-01)
+- **Intern (alles)** → anker-pve + stockenweiler-pve (Rothkreuz). frawo-docker-1 = abgeschrieben.
+- **Odoo = SSOT** für alle Mitarbeiter UND Agenten (Tasks, Planung, Entscheidungen).
+- **OpenClaw (@Frawo_bot)** = Sekretär/Assistent für Wolf & Franz. Übernimmt alle Bürokratie, Notizen, Aufgaben-Routing.
+- **Wolf & Franz** = nur physische Arbeit (verkabeln, bauen, Events). Alles digitale → Agent.
+- **Roadmap (3 Ziele):** 1) Radio auf frawo.tech (AzuraCast eingebettet) 2) Professionelle Website 3) Selbstverwaltetes Odoo via Agent.
 
 ## ✅ Korrekturen gegenüber älteren Docs (WICHTIG)
 - **frawo-docker-1 ist eine VMware-ESXi-VM** (8 vCPU / 31 GB / 200 GB, Host-CPU Xeon Gold 6138), **kein Bare-Metal** „Debian 13, 188G" wie LIVE_CONTEXT sagt. Der **ESXi-Host gehört Flo** (Eigentümer + Administrator der Hardware, ~Zulieferer) und steht in einem **Container auf dem Gelände von Wolfs Eltern** in Stockenweiler (eigenes Internet). Wir haben KEINEN Hardware-Zugriff — nur Mieter-VM. **Eltern = Testkunden** von FraWo (kein Admin/Eigentum).
@@ -53,8 +113,14 @@
 - **Radio-Dienste konsolidiert**: VM 210 (`10.1.0.38`) ist als Master-Radiostation definiert und über die Odoo-API (`frawo_agent`) sowie die autonome beets-Ingestion (`curate_radio.py` auf PVE) angebunden.
 - **Geräte-Infrastruktur konsolidiert (Option 2)**: Ingress läuft jetzt über den Nginx Proxy Manager auf ProDesk (`CT 103` / `10.1.0.149`). Der veraltete Toolbox-Container (`CT 100` / `100.82.26.53`) ist gestoppt. Das Franz-Portal (`http://10.1.0.149/franz/`) wurde aktualisiert und Nextcloud/Paperless wurden als offline markiert.
 
-## 🔴 P1-Blocker (Kurzliste)
-1. **Windows VM auf Flo's ESXi booten**: Die VM ist offline und via AnyDesk/SSH/Tailscale nicht erreichbar (Flo ist informiert).
+## 🔴 Offene Punkte / Sofort-Klärungsbedarf
+1. **CT130 radio-node (anker, 10.1.0.200):** Zweite AzuraCast-Instanz läuft dort. Absicht oder Zombie? Klären und ggf. stoppen.
+2. **10.1.0.142:** Unbekanntes Gerät im Server-VLAN. Identifizieren (UCG-API oder `arp-scan`).
+3. **anker-pve Root-Disk 76% voll** (49/68 GB) → aufräumen bevor es kritisch wird.
+4. **ProDesk Last zu hoch** (Load 7.9, RAM 434 MB frei) → monitoring-stack CT150 starten, Ursache finden.
+5. **Grafana/Prometheus** → monitoring-stack CT150 (ProDesk) noch nie gestartet nach Migration. Starten oder Entscheidung treffen.
+6. **Netcup/Flo VPS-Vertrag kündigen** (frawo-docker-1 Nachfolge abgeschlossen).
+7. **Franz Onboarding (#262/#542)** → Franz-iPhone 25 Tage offline, Franz nicht aktiv im System.
 
 ---
 *Vollständige Bestandsaufnahme (Hardware, Strom, Roadmap): auf dem StudioPC unter `Desktop/FRAWO Ops/Bestandsaufnahme_2026-06-11/`.*
