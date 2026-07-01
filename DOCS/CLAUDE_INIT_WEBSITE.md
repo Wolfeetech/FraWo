@@ -13,7 +13,7 @@ Gemini kümmert sich parallel um **FraWo Funk (Radio)**.
 ## Aktueller Status
 
 ### Website Stack
-- **CMS**: Odoo 17 Website Builder (10.4.0.22:8069, DB: FraWo_GbR)
+- **CMS**: Odoo 17 Website Builder (10.1.0.112:8069, DB: FraWo_GbR)
 - **Live**: https://www.frawo-tech.de
 - **Design**: kabaus.at-inspiriert + NTS Radio Minimal + FraWo CI
 - **Letztes Deployment**: 2026-05-14 (Content-Simplification)
@@ -100,7 +100,7 @@ scripts/upload_images_to_odoo.py     # Bilder (IDs 993-1000)
 ### Credentials
 ```
 ~/.ai-tools-shared/.env
-ODOO_RPC_URL=http://10.4.0.22:8069
+ODOO_RPC_URL=http://10.1.0.112:8069
 ODOO_RPC_DB=FraWo_GbR
 ODOO_RPC_USER=...
 ODOO_RPC_API_KEY=...

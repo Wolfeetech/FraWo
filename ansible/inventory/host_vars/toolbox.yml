@@ -52,7 +52,7 @@ toolbox_network_internal_proxy_hosts:
     scheme: https
     tls_internal: true
   - hostname: odoo.hs27.internal
-    upstream: 10.4.0.22:80
+    upstream: 10.1.0.112:80
     scheme: https
     tls_internal: true
   - hostname: paperless.hs27.internal
@@ -94,7 +94,7 @@ toolbox_network_public_redirect_hosts:
     target: https://www.frawo-tech.de{uri}
 toolbox_network_public_proxy_hosts:
   - hostname: www.frawo-tech.de
-    upstream: 10.4.0.22:80
+    upstream: 10.1.0.112:80
 toolbox_network_placeholder_hosts: []
 # Radio placeholder removed - dual-site radio infrastructure active (VLAN 103 + VLAN 111)
 toolbox_network_portal_links:
@@ -132,7 +132,7 @@ toolbox_network_status_targets:
     summary: Dokumentenarchiv
   - key: odoo
     label: Odoo
-    check_url: http://10.4.0.22/web/login
+    check_url: http://10.1.0.112/web/login
     success_codes: [200]
     summary: Betrieb und Kunden
   - key: portal
@@ -152,7 +152,7 @@ toolbox_network_tailscale_mobile_proxies:
     host_header: ha.hs27.internal
   - name: odoo_mobile
     listen_port: 8444
-    upstream: 10.4.0.22:80
+    upstream: 10.1.0.112:80
     host_header: odoo.hs27.internal
   - name: nextcloud_mobile
     listen_port: 8445

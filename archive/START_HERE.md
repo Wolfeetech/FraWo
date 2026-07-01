@@ -141,7 +141,7 @@ FraWo/
 ## 🔗 WICHTIGE LINKS
 
 - **Website:** https://www.frawo-tech.de
-- **Odoo:** http://10.4.0.22:8069 (aktuell offline)
+- **Odoo:** http://10.1.0.112:8069 (aktuell offline)
 - **Tailscale Admin:** https://login.tailscale.com
 - **GitHub Repo:** https://github.com/[your-repo]/FraWo
 

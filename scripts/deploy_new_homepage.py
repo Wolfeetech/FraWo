@@ -19,7 +19,7 @@ from dotenv import load_dotenv
 env_path = Path.home() / '.ai-tools-shared' / '.env'
 load_dotenv(env_path)
 
-ODOO_URL = os.getenv('ODOO_RPC_URL', os.getenv('ODOO_URL', 'http://10.4.0.22:8069'))
+ODOO_URL = os.getenv('ODOO_RPC_URL', os.getenv('ODOO_URL', 'http://10.1.0.112:8069'))
 ODOO_DB = os.getenv('ODOO_RPC_DB', os.getenv('ODOO_DB', 'FraWo_GbR'))
 ODOO_USER = os.getenv('ODOO_RPC_USER', os.getenv('ODOO_USER'))
 ODOO_SECRET = os.getenv('ODOO_RPC_API_KEY')

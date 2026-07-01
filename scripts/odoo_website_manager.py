@@ -17,7 +17,7 @@ env_path = Path.home() / '.ai-tools-shared' / '.env'
 load_dotenv(env_path)
 
 # Odoo connection
-ODOO_URL = os.getenv('ODOO_URL', 'http://10.4.0.22:8069')
+ODOO_URL = os.getenv('ODOO_URL', 'http://10.1.0.112:8069')
 ODOO_DB = 'FraWo_GbR'  # Corrected database name
 ODOO_USER = os.getenv('ODOO_USER')
 ODOO_PASSWORD = os.getenv('ODOO_PASSWORD')

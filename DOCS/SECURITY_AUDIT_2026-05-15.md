@@ -2,7 +2,7 @@
 
 **Date**: 2026-05-15 21:50 UTC
 **Auditor**: Claude Code (Automated Security Scan)
-**Target**: www.frawo-tech.de (Odoo 17 @ 10.4.0.22:8069)
+**Target**: www.frawo-tech.de (Odoo 17 @ 10.1.0.112:8069)
 **Status**: 🟡 **MEDIUM RISK** - Critical improvements needed
 
 ---

@@ -14,5 +14,5 @@ def search_text(folder, query):
                 except Exception:
                     pass
 
-search_text(r"C:\Users\StudioPC\OneDrive\Dokumente\GitHub\FraWo\ansible", "10.4.0.22")
+search_text(r"C:\Users\StudioPC\OneDrive\Dokumente\GitHub\FraWo\ansible", "10.1.0.112")
 search_text(r"C:\Users\StudioPC\OneDrive\Dokumente\GitHub\FraWo\ansible", "odoo")

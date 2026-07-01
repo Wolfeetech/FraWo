@@ -158,14 +158,14 @@ qm start 220
 - Web UI: `https://100.69.179.87:8006`
 
 **Odoo VM 220**:
-- Internal IP: 10.4.0.22:8069
+- Internal IP: 10.1.0.112:8069
 - SSH: `ssh root@100.69.179.87 "qm guest exec 220 -- bash"`
 - Database: FraWo_GbR
 - User: wolf@frawo-tech.de
 - Password: [Stored in .env]
 
 **Cloudflare**:
-- Tunnel: `www.frawo-tech.de` → `10.4.0.22:8069`
+- Tunnel: `www.frawo-tech.de` → `10.1.0.112:8069`
 - Dashboard: https://dash.cloudflare.com
 
 ---

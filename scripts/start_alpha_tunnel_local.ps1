@@ -3,7 +3,7 @@ $artifactDir = Join-Path $repoRoot "artifacts\workstation_alpha_tunnel"
 $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
 $logFile = Join-Path $artifactDir "tunnel_alpha_$timestamp.log"
 $errFile = Join-Path $artifactDir "tunnel_alpha_$timestamp.err"
-$target = "http://10.4.0.22:8069"
+$target = "http://10.1.0.112:8069"
 
 New-Item -ItemType Directory -Path $artifactDir -Force | Out-Null
 

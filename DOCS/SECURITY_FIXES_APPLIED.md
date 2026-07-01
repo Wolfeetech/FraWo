@@ -71,7 +71,7 @@ Set-Cookie: session_id=...; HttpOnly; Path=/
 - ⚠️ `Secure` flag still missing (may be Cloudflare Tunnel issue)
 
 **Why Secure Flag Is Missing**:
-The `Secure` flag requires the connection between Cloudflare and origin to be HTTPS. Since the Odoo backend is accessed via HTTP at `10.4.0.22:8069` (Cloudflare Tunnel handles SSL termination), the Secure flag is not automatically added by Odoo.
+The `Secure` flag requires the connection between Cloudflare and origin to be HTTPS. Since the Odoo backend is accessed via HTTP at `10.1.0.112:8069` (Cloudflare Tunnel handles SSL termination), the Secure flag is not automatically added by Odoo.
 
 **Workaround**: Cloudflare automatically converts cookies to Secure when proxying HTTPS traffic, so this is **LOW RISK**.
 

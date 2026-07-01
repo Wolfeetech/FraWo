@@ -71,7 +71,7 @@ class Settings(BaseSettings):
     azuracast_verify_ssl: bool = Field(default=True, description="Verify SSL for AzuraCast")
 
     # Odoo ERP Integration (SSOT for partners, leads & supporter status)
-    odoo_url: str = Field(default="http://10.4.0.22:8069", description="Odoo instance URL")
+    odoo_url: str = Field(default="http://10.1.0.112:8069", description="Odoo instance URL")
     odoo_db: str = Field(default="FraWo_GbR", description="Odoo database name")
     odoo_user: str = Field(default="wolf@frawo-tech.de", description="Odoo XML-RPC user email")
     odoo_password: str = Field(default="", description="Odoo XML-RPC password (set in .env!)")

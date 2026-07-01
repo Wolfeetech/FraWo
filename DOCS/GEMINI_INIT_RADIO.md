@@ -68,7 +68,7 @@ Enthält:
 - Proxmox/Tailscale Zugänge (wenn vorhanden)
 
 ### DO NOT TOUCH
-- ❌ Odoo Website (10.4.0.22:8069)
+- ❌ Odoo Website (10.1.0.112:8069)
 - ❌ frawo-tech.de HTML/CSS
 - ❌ GitHub Repo außer `/DOCS/RADIO_*` Files
 - ❌ Alles was mit "Veranstaltungstechnik" zu tun hat

@@ -1,7 +1,7 @@
 import xmlrpc.client
 import os
 
-URL = os.environ.get("ODOO_URL", "http://10.4.0.22:8069")
+URL = os.environ.get("ODOO_URL", "http://10.1.0.112:8069")
 DB = os.environ.get("ODOO_DB", "FraWo_GbR")
 USER = os.environ.get("ODOO_USER", "wolf@frawo-tech.de")
 PASSWORD = os.environ.get("ODOO_PASSWORD", "")

@@ -243,7 +243,7 @@ cat > "${OUTPUT_FILE}" <<EOF
 - Router baseline: \`192.168.2.1\` Vodafone Easy Box
 - UCG transition gateway: \`UniFi Cloud Gateway Ultra (UCG-Ultra)\` active for \`proxmox-anker\` on VLAN 101 (\`10.4.0.92/24\`), with legacy aliases \`192.168.2.10/24\` + temporary \`192.168.2.1/24\`
 - UCG static route \`Anker-Legacy-Bridge\` set: \`192.168.2.0/24 -> 10.4.0.92\`; WAN overlap keeps it shadowed and it now serves only as an emergency fallback
-- Core business nodes: \`10.4.0.20\` toolbox, \`10.4.0.21\` nextcloud, \`10.4.0.22\` odoo, \`10.4.0.23\` paperless, \`10.4.0.24\` haos, \`10.4.0.26\` vaultwarden, \`10.4.0.30\` storage-node
+- Core business nodes: \`10.4.0.20\` toolbox, \`10.4.0.21\` nextcloud, \`10.1.0.112\` odoo, \`10.4.0.23\` paperless, \`10.4.0.24\` haos, \`10.4.0.26\` vaultwarden, \`10.4.0.30\` storage-node
 - Latest stress summary: \`${latest_stress_summary:-missing}\`
 - Latest release-MVP gate: \`${latest_release_mvp_gate:-missing}\` -> \`${release_mvp_decision}\`
 - Latest production gate: \`${latest_production_gate:-missing}\` -> \`${production_decision}\`

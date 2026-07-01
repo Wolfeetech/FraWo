@@ -15,7 +15,7 @@ addEventListener("fetch", event => {
 async function handleRequest(request) {
   // CORS: Allow requests from our Odoo domain
   const corsHeaders = {
-    "Access-Control-Allow-Origin": "http://10.4.0.22:8069",
+    "Access-Control-Allow-Origin": "http://10.1.0.112:8069",
     "Access-Control-Allow-Methods": "POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type, X-Radio-Token",
     "Content-Type": "application/json"

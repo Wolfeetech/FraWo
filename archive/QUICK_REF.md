@@ -29,7 +29,7 @@ free -h
 
 | Server | IP | Tailscale | Status |
 |--------|-------|-----------|--------|
-| Odoo | 10.4.0.22 | - | ❌ offline |
+| Odoo | 10.1.0.112 | - | ❌ offline |
 | Anker | - | 100.69.179.87 | ❌ 10h ago |
 | Stockenweiler | - | 100.91.20.116 | ❌ 3d ago |
 
@@ -59,7 +59,7 @@ free -h
 # Status prüfen
 git status
 tailscale status
-ping 10.4.0.22
+ping 10.1.0.112
 
 # Server verbinden
 ssh root@100.69.179.87     # Anker

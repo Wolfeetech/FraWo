@@ -5,7 +5,7 @@ sys.stdout.reconfigure(encoding='utf-8')
 ips = {
     "PVE Tailscale": "100.91.20.116",
     "PVE local EasyBox": "192.168.2.10",
-    "Odoo local IP": "10.4.0.22",
+    "Odoo local IP": "10.1.0.112",
     "UCG Tailscale IP": "100.69.179.87"
 }
 

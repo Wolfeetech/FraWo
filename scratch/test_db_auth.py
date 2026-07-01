@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 env_path = Path.home() / '.ai-tools-shared' / '.env'
 load_dotenv(env_path)
 
-ODOO_URL = os.getenv('ODOO_URL', 'http://10.4.0.22:8069')
+ODOO_URL = os.getenv('ODOO_URL', 'http://10.1.0.112:8069')
 users = ['wolf@frawo-tech.de', 'franz@frawo-tech.de']
 passwords = ['Wolf2024!Frawo', '11Vaudeville!!']
 dbs = ['FraWo_GbR', 'FraWo_Live']

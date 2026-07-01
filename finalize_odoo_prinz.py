@@ -11,7 +11,7 @@ Finalisierung PRJ-2026-MED-PRINZ in Odoo
 import xmlrpc.client, sys, io
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
 
-HOST = "http://10.4.0.22:8069"
+HOST = "http://10.1.0.112:8069"
 DB = "FraWo_GbR"
 UID = 6
 import os
@@ -337,8 +337,8 @@ except Exception as e:
 # ─── 7. Zusammenfassung ───────────────────────────────────────────────────────
 print("\n" + "="*70)
 print("FINALISIERUNG ABGESCHLOSSEN")
-print(f"  Projekt:    http://10.4.0.22:8069/odoo/project/{PROJECT_ID}")
-print(f"  S00012 GW1: http://10.4.0.22:8069/odoo/sales/12")
-print(f"  S00013 GW2: http://10.4.0.22:8069/odoo/sales/13")
-print(f"  Task 297:   http://10.4.0.22:8069/odoo/project/{PROJECT_ID}?task=297")
+print(f"  Projekt:    http://10.1.0.112:8069/odoo/project/{PROJECT_ID}")
+print(f"  S00012 GW1: http://10.1.0.112:8069/odoo/sales/12")
+print(f"  S00013 GW2: http://10.1.0.112:8069/odoo/sales/13")
+print(f"  Task 297:   http://10.1.0.112:8069/odoo/project/{PROJECT_ID}?task=297")
 print("="*70)

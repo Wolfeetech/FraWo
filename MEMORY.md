@@ -19,7 +19,7 @@
 - Hardware: Lenovo ThinkCentre M920q (i5-8500T, 15 GB RAM)
 - Primarhost: `proxmox-anker` (`10.4.0.99`, `100.69.179.87`)
 - Zentraler Ingress: `toolbox` (`10.4.0.20`, `100.82.26.53`)
-- Produktionsdienste: `odoo` (`10.4.0.22`), `nextcloud` (`10.4.0.21`), `paperless` (`10.4.0.23`), `vaultwarden` (`10.4.0.26`), `storage-node` (`10.4.0.30`)
+- Produktionsdienste: `odoo` (`10.1.0.112`), `nextcloud` (`10.4.0.21`), `paperless` (`10.4.0.23`), `vaultwarden` (`10.4.0.26`), `storage-node` (`10.4.0.30`)
 - Radio-Node: `CT 130` (`10.4.0.28`, `100.78.88.33`)
 - Produktionssekundaer: `frawo-docker-1` (`10.30.8.22`, `100.94.32.41`) fuer Monitoring, Relay und kuratierte Automation
 - `stockenweiler-pve` bleibt Legacy-/Fallback-Pfad und ist keine aktive Produktionsbasis
@@ -32,7 +32,7 @@
 | 100 | CT | Toolbox | Caddy, AdGuard, Uptime, Jellyfin, Open-WebUI, cloudflared | **10.4.0.20** | zentrale Frontdoor |
 | 200 | VM | Nextcloud | Cloud & Files | **10.4.0.21** | dedizierte VM |
 | 210 | VM | HAOS | Smart Home | **10.4.0.24** | dedizierte HAOS-VM |
-| 220 | VM | Odoo | Business ERP | **10.4.0.22** | dedizierte VM |
+| 220 | VM | Odoo | Business ERP | **10.1.0.112** | dedizierte VM |
 | 230 | VM | Paperless | DMS | **10.4.0.23** | dedizierte VM |
 | 240 | VM | PBS | Backup Server | **10.4.0.25** | **DEGRADED / VERIFY** – Netzwerkfix offen |
 | 110 | CT | Storage | NFS/SMB Data Node | **10.4.0.30** | CT 110 |

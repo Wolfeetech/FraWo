@@ -36,7 +36,7 @@ Der Proxmox Host nutzt verschiedene Storage-Pools zur Bereitstellung von Disks f
 | VMID | Name          | Status   | RAM (MB) | IP               | Storage / Bemerkung                                    |
 | ---- | ------------- | -------- | -------- | ---------------- | ------------------------------------------------------ |
 | 210  | haos          | Running  | 2048     | (dhcp/mac)       | Home Assistant OS (Root-Disk auf `local-lvm`)         |
-| 220  | odoo          | Running  | 4096     | 10.4.0.22        | Odoo 17 / Website (Root-Disk auf `local-lvm`)          |
+| 220  | odoo          | Running  | 4096     | 10.1.0.112        | Odoo 17 / Website (Root-Disk auf `local-lvm`)          |
 | 240  | PBS-FraWo     | Running  | 2048     | 10.4.0.25        | Proxmox Backup Server (Disks auf `ssd2tb`)             |
 | 300  | nextcloud     | Running  | 3072     | 10.4.0.21        | **Neue Instanz** (ersetzt VM 200, auf `ssd2tb`)        |
 | 330  | paperless     | Running  | 3072     | 10.4.0.23        | **Neue Instanz** (ersetzt VM 230, auf `ssd2tb`)        |

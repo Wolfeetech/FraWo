@@ -1,7 +1,7 @@
 import xmlrpc.client
 import os
 
-ODOO_URL = 'http://10.4.0.22'
+ODOO_URL = 'http://10.1.0.112'
 ODOO_USER = 'wolf@frawo-tech.de'
 ODOO_PASSWORD = '11Vaudeville!!' # From the .env file!
 ODOO_DB = 'FraWo_GbR'

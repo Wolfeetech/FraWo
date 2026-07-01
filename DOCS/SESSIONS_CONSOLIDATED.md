@@ -60,7 +60,7 @@
 
 | Service | IP | URL | Zweck |
 |---------|----|----|-------|
-| **Odoo** | 10.4.0.22 | http://10.4.0.22:8069 | CRM/Website-Backend |
+| **Odoo** | 10.1.0.112 | http://10.1.0.112:8069 | CRM/Website-Backend |
 | **Home Assistant** | 10.1.0.24 | http://10.1.0.24:8123 | Smart Home |
 | **Nextcloud** | 10.1.0.21 | http://10.1.0.21 | Cloud Storage |
 | **Vaultwarden** | 10.1.0.26 | http://10.1.0.26 | Password Manager |
@@ -107,7 +107,7 @@ pct config 110  # n8n RAM-Limits prüfen
 ### Website
 - **Live URL:** https://www.frawo-tech.de
 - **Status:** 🔴 LIVE OHNE DSGVO-Compliance!
-- **Backend:** Odoo Website Builder (10.4.0.22:8069)
+- **Backend:** Odoo Website Builder (10.1.0.112:8069)
 
 ### 🚨 KRITISCHE PROBLEME
 
@@ -118,7 +118,7 @@ pct config 110  # n8n RAM-Limits prüfen
    - Action: `python scripts/generate_legal_pages.py`
 
 2. **Odoo nicht erreichbar**
-   - IP: 10.4.0.22
+   - IP: 10.1.0.112
    - Port: 8069
    - Grund: Proxmox Anker offline
 

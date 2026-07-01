@@ -72,7 +72,7 @@ paperless_ok="no"
 if run_inventory_guest_remote nextcloud_vm "systemctl is-active --quiet homeserver-compose-nextcloud.service" "wolf" >/dev/null 2>&1 && tcp_open 10.4.0.21 80 >/dev/null 2>&1; then
   nextcloud_ok="yes"
 fi
-if run_inventory_guest_remote odoo_vm "systemctl is-active --quiet homeserver-compose-odoo.service" "wolf" >/dev/null 2>&1 && tcp_open 10.4.0.22 8069 >/dev/null 2>&1; then
+if run_inventory_guest_remote odoo_vm "systemctl is-active --quiet homeserver-compose-odoo.service" "wolf" >/dev/null 2>&1 && tcp_open 10.1.0.112 8069 >/dev/null 2>&1; then
   odoo_ok="yes"
 fi
 if run_inventory_guest_remote paperless_vm "systemctl is-active --quiet homeserver-compose-paperless.service" "wolf" >/dev/null 2>&1 && tcp_open 10.4.0.23 8000 >/dev/null 2>&1; then

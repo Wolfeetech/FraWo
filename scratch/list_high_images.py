@@ -9,7 +9,7 @@ if env_file.exists():
             k, v = line.split("=", 1)
             os.environ[k.strip()] = v.strip()
 
-url = os.getenv("ODOO_URL", "http://10.4.0.22:8069")
+url = os.getenv("ODOO_URL", "http://10.1.0.112:8069")
 db = os.getenv("ODOO_DB_GBR", "FraWo_GbR")
 user = os.getenv("ODOO_USER", "wolf@frawo-tech.de")
 pw = os.getenv("ODOO_PASSWORD", "Wolf2024!Frawo")

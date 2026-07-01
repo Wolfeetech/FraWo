@@ -299,7 +299,7 @@ def main():
                 k, v = line.split("=", 1)
                 os.environ[k.strip()] = v.strip()
 
-    url = os.getenv("ODOO_RPC_URL", os.getenv("ODOO_URL", "http://10.4.0.22:8069"))
+    url = os.getenv("ODOO_RPC_URL", os.getenv("ODOO_URL", "http://10.1.0.112:8069"))
     db = os.getenv("ODOO_RPC_DB", os.getenv("ODOO_DB_GBR", "FraWo_GbR"))
     user = os.getenv("ODOO_RPC_USER", os.getenv("ODOO_USER"))
     secret = os.getenv("ODOO_RPC_API_KEY")

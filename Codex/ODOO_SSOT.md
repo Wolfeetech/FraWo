@@ -1,17 +1,17 @@
 # Odoo — SSOT Projektmanagement
-**Stand: 2026-05-30 | FraWo_GbR auf 10.4.0.22:8069**
+**Stand: 2026-05-30 | FraWo_GbR auf 10.1.0.112:8069**
 
 ## Zugang
 
 | Methode | Details |
 |---------|---------|
-| Web | http://10.4.0.22:8069 (intern) / https://frawo-tech.de (CF Tunnel) |
+| Web | http://10.1.0.112:8069 (intern) / https://frawo-tech.de (CF Tunnel) |
 | Login | wolf@frawo-tech.de (Vault: Odoo ERP — Admin) |
-| XML-RPC | uid=6, db=FraWo_GbR, IP: 10.4.0.22:8069 (NIEMALS DNS von PVE!) |
+| XML-RPC | uid=6, db=FraWo_GbR, IP: 10.1.0.112:8069 (NIEMALS DNS von PVE!) |
 
 ```python
 import xmlrpc.client
-url = 'http://10.4.0.22:8069'
+url = 'http://10.1.0.112:8069'
 db = 'FraWo_GbR'
 uid = 6  # wolf@frawo-tech.de
 # Password im Vault: Odoo ERP — Admin
@@ -57,7 +57,7 @@ m = xmlrpc.client.ServerProxy(url + '/xmlrpc/2/object')
 Installiert auf frawo-docker-1 via `npx clawhub install odoo-erp-connector`.
 
 **Konfiguration:** `~/.openclaw/skills/odoo-erp-connector/config.json`
-- server: http://10.4.0.22:8069
+- server: http://10.1.0.112:8069
 - database: FraWo_GbR
 - username: wolf@frawo-tech.de
 

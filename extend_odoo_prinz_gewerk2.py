@@ -10,7 +10,7 @@ Erweiterung PRJ-2026-MED-PRINZ: Gewerk 2 Signolux-Sicherheitssystem
 import xmlrpc.client, sys, io
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
 
-HOST = "http://10.4.0.22:8069"
+HOST = "http://10.1.0.112:8069"
 DB = "FraWo_GbR"
 UID = 6
 import os
@@ -283,9 +283,9 @@ print("\n" + "="*70)
 print("ERGEBNIS:")
 print(f"  Neue Produkte: {len(HMV_PRODUCTS)} Signolux-Hardware + 1 Service")
 print(f"  Neue Tasks:    {len(PHASE5_TASKS)} x Phase 5 + {len(PHASE6_TASKS)} x Phase 6")
-print(f"  Angebot GW2:   http://10.4.0.22:8069/odoo/sales/{gw2_order_id}")
-print(f"  Angebot GW1:   http://10.4.0.22:8069/odoo/sales/12  (unveraendert)")
-print(f"  Projekt 22:    http://10.4.0.22:8069/odoo/project/{PROJECT_ID}")
+print(f"  Angebot GW2:   http://10.1.0.112:8069/odoo/sales/{gw2_order_id}")
+print(f"  Angebot GW1:   http://10.1.0.112:8069/odoo/sales/12  (unveraendert)")
+print(f"  Projekt 22:    http://10.1.0.112:8069/odoo/project/{PROJECT_ID}")
 print("="*70)
 print("\nNaechste Schritte:")
 print("  1. GW2-Angebot in Odoo pruefen und PDF exportieren (fuer KK-Antrag)")

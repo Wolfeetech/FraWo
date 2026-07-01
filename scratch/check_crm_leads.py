@@ -2,7 +2,7 @@ import os
 import sys
 import xmlrpc.client
 
-ODOO_URL = 'http://10.4.0.22:8069'
+ODOO_URL = 'http://10.1.0.112:8069'
 ODOO_DB = 'FraWo_GbR'
 ODOO_USER = 'wolf@frawo-tech.de'
 ODOO_PASSWORD = 'Wolf2024!Frawo'

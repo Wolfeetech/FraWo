@@ -1,6 +1,6 @@
 param(
     [string]$HaIp = "10.4.0.24",
-    [string]$OdooIp = "10.4.0.22:8069",
+    [string]$OdooIp = "10.1.0.112:8069",
     [string]$RadioIp = "100.64.23.77:80",
     [string]$VaultIp = "10.4.0.26:8080"
 )

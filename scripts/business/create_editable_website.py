@@ -10,7 +10,7 @@ sys.path.append(str(SCRIPT_ROOT))
 from odoo_env import resolve_connection
 import xmlrpc.client
 
-settings = resolve_connection("http://10.4.0.22:8069", "FraWo_GbR", "wolf@frawo-tech.de")
+settings = resolve_connection("http://10.1.0.112:8069", "FraWo_GbR", "wolf@frawo-tech.de")
 url = settings.url
 db = settings.db
 username = settings.user

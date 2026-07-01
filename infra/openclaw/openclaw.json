@@ -1,15 +1,22 @@
 {
   "gateway": { "mode": "local", "port": 19000 },
-  "plugins": { "entries": { "openai": {}, "anthropic": {} } },
+  "plugins": {
+    "entries": {
+      "openai": {
+        "baseURL": "https://models.inference.ai.azure.com"
+      },
+      "anthropic": {}
+    }
+  },
   "agents": {
     "defaults": {
       "model": {
-        "primary": "anthropic/claude-haiku-4-5-20251001",
-        "fallbacks": ["openai/gpt-5.5"]
+        "primary": "openai/gpt-4o-mini",
+        "fallbacks": ["openai/gpt-4o"]
       }
     }
   },
   "channels": {
     "telegram": { "enabled": true, "dmPolicy": "pairing" }
-  },
+  }
 }

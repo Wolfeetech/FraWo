@@ -44,8 +44,8 @@
 
 ### FALSCH (verwendet am 13. Mai):
 ```
-❌ Odoo IP: 10.4.0.22  (EXISTIERT NICHT!)
-❌ Ping 10.4.0.22      (Zielhost nicht erreichbar)
+❌ Odoo IP: 10.1.0.112  (EXISTIERT NICHT!)
+❌ Ping 10.1.0.112      (Zielhost nicht erreichbar)
 ```
 
 ### RICHTIG (aus Sessions 4.-8. Mai):
@@ -89,7 +89,7 @@ Vaultwarden (10.1.0.26)    - ❌ OFFLINE (Tailscale down)
 ### 1. Odoo ERP testen (RICHTIGE IP)
 ```bash
 # FALSCH (bisher verwendet):
-ping 10.4.0.22  ❌
+ping 10.1.0.112  ❌
 
 # RICHTIG (jetzt testen):
 ping 10.1.0.22  ✅
@@ -126,7 +126,7 @@ tailscale ping stockenweiler-pve
 ### 1. IP-VERWECHSLUNG
 - **10.1.0.x** = Lokales Netzwerk (Services)
 - **10.4.0.x** = Tailscale Direct Connection IPs (dynamisch!)
-- **NIEMALS** 10.4.0.22 für Odoo verwenden!
+- **NIEMALS** 10.1.0.112 für Odoo verwenden!
 
 ### 2. Netzwerk-Problem
 - Beide Proxmox-Server: Tailscale offline

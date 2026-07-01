@@ -56,7 +56,7 @@ TAILSCALE_FRONTDOORS = {
 }
 
 ANKER_DIRECT_CHECKS = {
-    "odoo_direct": "http://10.4.0.22:8069/web/login",
+    "odoo_direct": "http://10.1.0.112:8069/web/login",
     "nextcloud_direct": "http://10.4.0.21/",
     "paperless_direct": "http://10.4.0.23/accounts/login/",
     "ha_direct": "http://10.4.0.24:8123/",

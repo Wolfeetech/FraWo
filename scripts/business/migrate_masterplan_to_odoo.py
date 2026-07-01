@@ -23,7 +23,7 @@ def migrate_to_odoo(lanes):
     print("Connecting to Odoo SSOT...")
     # Use environment or known defaults
     session = connect(
-        url=os.getenv("ODOO_RPC_URL", "http://10.4.0.22:8069"),
+        url=os.getenv("ODOO_RPC_URL", "http://10.1.0.112:8069"),
         db=os.getenv("ODOO_RPC_DB", "FraWo_Live"),
         default_user="wolf@frawo-tech.de",
         secret_label="Odoo SSOT Password"

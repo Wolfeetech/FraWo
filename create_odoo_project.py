@@ -1,6 +1,6 @@
 import xmlrpc.client
 
-url = 'http://10.4.0.22:8069'
+url = 'http://10.1.0.112:8069'
 db = 'FraWo_GbR'
 user = 'wolf@frawo-tech.de'
 import os
@@ -360,4 +360,4 @@ print(f'Customer: Familie Prinz (id={partner_id})')
 print(f'Project:  PRJ-2026-MED-PRINZ (id={proj_id})')
 print(f'Tasks:    {len(task_ids)} tasks in 4 phases')
 print(f'Products: {len(hardware_products)} hardware + {len(service_products)} service items')
-print(f'Odoo URL: http://10.4.0.22:8069/odoo/project')
+print(f'Odoo URL: http://10.1.0.112:8069/odoo/project')

@@ -6,7 +6,7 @@ Erstellt sale.order (Angebot) in Odoo für Partner 42, Projekt 22
 import xmlrpc.client
 from datetime import date
 
-HOST = "http://10.4.0.22:8069"
+HOST = "http://10.1.0.112:8069"
 DB = "FraWo_GbR"
 UID = 6
 import os
@@ -80,5 +80,5 @@ def create_quote():
 
 if __name__ == "__main__":
     oid = create_quote()
-    print(f"\nAngebot unter http://10.4.0.22:8069/odoo/sales/{oid} abrufbar.")
+    print(f"\nAngebot unter http://10.1.0.112:8069/odoo/sales/{oid} abrufbar.")
     print("Zum PDF-Export: Angebot öffnen → Drucken → 'Angebot / Auftragsbestätigung'")

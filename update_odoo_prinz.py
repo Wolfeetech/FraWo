@@ -1,6 +1,6 @@
 import xmlrpc.client
 
-url = 'http://10.4.0.22:8069'
+url = 'http://10.1.0.112:8069'
 db = 'FraWo_GbR'
 import os
 pw = os.environ.get('ODOO_PASSWORD', 'INSERT_PASSWORD_HERE')
@@ -257,5 +257,5 @@ for p in all_products:
     print(f'  Created: {p["code"]} {p["name"]} (id={pid})')
 
 print('\nFERTIG!')
-print('Projekt: http://10.4.0.22:8069/odoo/project')
-print('Produkte: http://10.4.0.22:8069/odoo/inventory/products')
+print('Projekt: http://10.1.0.112:8069/odoo/project')
+print('Produkte: http://10.1.0.112:8069/odoo/inventory/products')

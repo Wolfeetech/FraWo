@@ -12,7 +12,7 @@ http://www.frawo-tech.de, https://www.frawo-tech.de {
   @blocked path /web/login /web/database/* /web/session/logout
   respond @blocked \"403 Forbidden - Zero Trust Security\" 403
 
-  reverse_proxy 10.4.0.22:8069 {
+  reverse_proxy 10.1.0.112:8069 {
     header_up X-Forwarded-Proto https
   }
 }

@@ -4,7 +4,7 @@ import xmlrpc.client
 from pathlib import Path
 
 def main():
-    url = "http://10.4.0.22:8069"
+    url = "http://10.1.0.112:8069"
     db = "FraWo_GbR"
     user = "wolf@frawo-tech.de"
     pw = "Wolf2024!Frawo"

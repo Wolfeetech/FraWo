@@ -41,7 +41,7 @@ cd OneDrive/Dokumente/GitHub/FraWo
 python scripts/generate_legal_pages.py
 
 # Oder manuell in Odoo:
-# http://10.4.0.22:8069 → Website Editor
+# http://10.1.0.112:8069 → Website Editor
 # Impressum + Datenschutz Seiten erstellen
 ```
 

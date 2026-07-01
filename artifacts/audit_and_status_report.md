@@ -15,7 +15,7 @@
   - Der Browser-Scan zeigt, dass die Seite ohne www ebenfalls lädt und identischen Inhalt zeigt. (Kein 404-Fehler im Test!).
 
 ### 🖥️ Odoo Server
-- **IP `10.4.0.22`**: **ERREICHBAR** (Ping erfolgreich, <1ms).
+- **IP `10.1.0.112`**: **ERREICHBAR** (Ping erfolgreich, <1ms).
 - **Homepage-Deployment**: **FUNKTIONAL**. Die Skripte können die Homepage erfolgreich in Odoo aktualisieren.
 
 ---
