@@ -2,6 +2,13 @@
 
 Hier werden alle umgesetzten Änderungen (Optionen), die vom Chef freigegeben wurden, chronologisch dokumentiert.
 
+## 2026-07-11 (Gemini 2.5 Pro / Antigravity Session)
+- **Odoo Website-Ausbau (Phase 3 & 4) abgeschlossen:**
+  - **Preistabelle (Phase 3):** Integrierte eine dark glassmorphic Preise- & Miete-Sektion auf der Homepage unter Nutzung realer Odoo-Produktdaten für Services und Equipment-Mietpreise.
+  - **Referenzen-Seite (Phase 4):** Neue XML-View `/referenzen` mit 6 Projektkacheln (Inselhalle Lindau, Rave on SUP, Traversensysteme, Akustik-Holzbau, Fußball-Dart, Smart Home) und echten Odoo-WebP-Bild-Attachments erstellt und im Menü sowie Footer verlinkt.
+  - **Responsive & Layout-Feinschliff:** Mobile Stapelung des Headers für Breiten < 768px repariert (kein horizontaler Scrollbar/Overflow mehr), Rufnummern-Korrektur auf **+49 1515 524 3164** im Footer vorgenommen und alte Platzhalter gelöscht.
+  - **Reconciled Stages (SSOT):** Odoo Tasks **717**, **718** und **719** (Projekt ID 46) wurden per Odoo-Shell in den Status *✅ Erledigt* (Stage 6) überführt und Chatter-Evidenzen gepostet.
+
 ## 2026-06-20 (Gemini 3.5 Flash / Antigravity Session)
 - **Stockenweiler Memory Rightsizing abgeschlossen:** Container-Speicherbudgets auf dem ProDesk PVE-Host `100.91.20.116` angepasst.
   - CT 101 (AdGuard): memory=512, swap=512 (zuvor: swap=256)

@@ -1,33 +1,46 @@
-import xmlrpc.client
-import os
 import sys
 sys.stdout.reconfigure(encoding='utf-8')
-from pathlib import Path
-from dotenv import load_dotenv
+import xmlrpc.client
+import socket
+socket.setdefaulttimeout(15.0)
 
-env_path = Path.home() / '.ai-tools-shared' / '.env'
-load_dotenv(env_path)
+url = "http://10.1.0.112:8069"
+db = "FraWo_GbR"
+user = "wolf@frawo.tech"
+password = "FrawoWolf2026!"
 
-ODOO_URL = os.getenv('ODOO_URL', 'http://10.1.0.112:8069')
-ODOO_DB = 'FraWo_GbR'
-ODOO_USER = os.getenv('ODOO_USER', 'wolf@frawo-tech.de')
-ODOO_PASSWORD = os.getenv('ODOO_PASSWORD', 'Wolf2024!Frawo')
-
-common = xmlrpc.client.ServerProxy(f'{ODOO_URL}/xmlrpc/2/common')
-uid = common.authenticate(ODOO_DB, ODOO_USER, ODOO_PASSWORD, {})
-models = xmlrpc.client.ServerProxy(f'{ODOO_URL}/xmlrpc/2/object')
-
-# Search for open tasks (exclude done/cancelled stages)
-# Let's get the stages first
-stages = models.execute_kw(ODOO_DB, uid, ODOO_PASSWORD, 'project.task.type', 'search_read', [[]], {'fields': ['id', 'name']})
-done_stages = [s['id'] for s in stages if 'erledigt' in s['name'].lower() or 'abgeschlossen' in s['name'].lower()]
-
-# Get tasks
-tasks = models.execute_kw(ODOO_DB, uid, ODOO_PASSWORD, 'project.task', 'search_read', 
-    [[('stage_id', 'not in', done_stages)]], 
-    {'fields': ['id', 'name', 'stage_id', 'description']}
-)
-
-for t in tasks:
-    stage_name = next((s['name'] for s in stages if s['id'] == t['stage_id'][0]), "Unknown")
-    print(f"[{stage_name}] ID {t['id']}: {t['name']}")
+print(f"Connecting to Odoo at {url}...")
+common = xmlrpc.client.ServerProxy(f"{url}/xmlrpc/2/common", allow_none=True)
+try:
+    uid = common.authenticate(db, user, password, {})
+    if not uid:
+         # Try other DB
+         db = "FraWo_Live"
+         print(f"Failed GbR, trying DB {db}...")
+         uid = common.authenticate(db, user, password, {})
+         if not uid:
+             raise RuntimeError("Authentication failed.")
+             
+    print(f"Connected successfully. UID: {uid}, DB: {db}")
+    models = xmlrpc.client.ServerProxy(f"{url}/xmlrpc/2/object", allow_none=True)
+    
+    # Let's search for Project 35 or projects containing 'Infrastruktur'
+    projects = models.execute_kw(db, uid, password, 'project.project', 'search_read', [[]], {'fields': ['id', 'name']})
+    print("\n=== PROJECTS ===")
+    for p in projects:
+        print(f"ID: {p['id']} | Name: {p['name']}")
+        
+    # Get all active tasks for Project 35 or project '🏗️ Infrastruktur & Betrieb'
+    # We will search for all tasks in any project, then filter
+    print("\n=== TASKS ===")
+    tasks = models.execute_kw(db, uid, password, 'project.task', 'search_read', 
+                              [[('stage_id.name', 'not ilike', 'Erledigt'), ('stage_id.name', 'not ilike', 'Done')]], 
+                              {'fields': ['id', 'name', 'project_id', 'stage_id', 'description']})
+    
+    for t in tasks:
+        p_id = t['project_id'][0] if t['project_id'] else None
+        p_name = t['project_id'][1] if t['project_id'] else "None"
+        s_name = t['stage_id'][1] if t['stage_id'] else "None"
+        print(f"ID: {t['id']} | Project: [{p_id}] {p_name:<25} | Stage: {s_name:<15} | Name: {t['name']}")
+except Exception as e:
+    print(f"Error: {e}")
