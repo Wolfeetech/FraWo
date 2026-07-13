@@ -18,3 +18,10 @@ This document defines strict operational rules and behavior constraints for all 
 - While working: Log progress or intermediate findings by posting messages to the task.
 - When blocked: Set stage to `Blockiert` (Stage ID 5) and detail the blocker.
 - When finished: Verify changes live, then mark the task as `Erledigt` (Stage ID 6).
+
+## 4. Corporate Identity (VERBINDLICH)
+- **CI v3.0 is the absolute and sole branding of FraWo GbR** (approved by Wolf 2026-07-12, supersedes CI v2.0 and the live look v4.1). The single source of truth is [`SSOT/FRAWO_CI_GUIDELINES.md`](SSOT/FRAWO_CI_GUIDELINES.md), mirrored in Odoo **Task 97**.
+- **Before producing ANY design or public text** (website, Odoo QWeb/print templates, Home Assistant dashboards, social, email signatures, vehicles, workwear), check it against that document first. If an older source conflicts, v3.0 wins.
+- Core, non-negotiable: colors **Forest `#004030` + Violet `#a050f0`** (from the logo); strictly **flat, 0px radius, NO shadows / gradients / glassmorphism**; font **Inter** only; address the reader as **Du**; obey **KCanG §6** wording for anything gardening-related (never "Growbox/Homegrow/Weed/Ertrag/Steckling/Bud" or hemp/neon-green imagery in public — use "Smart Grow Systems" / herbs framing).
+- Use the CSS custom-property set from §6 of the guidelines verbatim for all web/Odoo/HA styling.
+- Rollout tracking: Odoo Task **489** (Wave 1 — web + radio), Task **197** (Waves 2–3 — print/backoffice/HA/physical).
