@@ -1,8 +1,23 @@
 # NOW — Echter Live-Stand (BITTE ZUERST LESEN)
-**Letzte Verifikation: 2026-07-01 (live, StudioPC Rothkreuz, Claude-Agent — vollständiger Fan-Out aller Systeme).**
+**Letzte Verifikation: 2026-07-15 (live, StudioPC Rothkreuz, Claude-Agent — Werkstatt-Reinigung + Fan-Out beider PVE-Nodes).**
 
 > **Odoo (CT140, 10.1.0.112:8069) = EINZIGE SSOT für ALLES** — Tasks, Infra-Entscheidungen, Roadmap. NOW.md = nur Live-Infra-State (was wirklich läuft). Alle anderen Docs (LIVE_CONTEXT, MASTERPLAN, ROADMAP, AI_BOOTSTRAP_CONTEXT, STATUS, todo) = **STALE, nicht mehr lesen**.
 > Agenten: IMMER zuerst Odoo-Projekte/Tasks lesen, NICHT andere MD-Files als Planungsgrundlage verwenden.
+
+## 🆕 Tagesabschluss 2026-07-15 (verifiziert — „Werkstatt-Reinigung", Claude-Agent)
+
+- **🔓 Anker wieder voll im LAN erreichbar — Root-Cause gefunden & behoben.** Zwei Altlasten: 1) `tailscale accept-routes` zog auf anker/openclaw/radio-node die Route `10.1.0.0/24 → tailscale0` (Policy-Tabelle 52) — Antworten an LAN-Nachbarn gingen in den VPN-Tunnel (asymmetrisch = tot, Pakete kamen laut tcpdump an, Antwort nahm falschen Weg). Fix: `tailscale set --accept-routes=false` auf **allen drei** Nodes. 2) sshd auf anker war via `/etc/ssh/sshd_config.d/listen.conf` an die tote Alt-IP `10.4.0.99` gebunden — Datei entfernt (Backup `/root/altlast_sshd-listen.conf_2026-07-15.bak`). **Lehre:** LAN-Mitglieder dürfen NIE die Route ihres eigenen Subnetzes via Tailscale akzeptieren. Ping+SSH auf 10.1.0.92 / .31 / .200 vom StudioPC: ✅.
+- **Firewall anker:** `cluster.fw` um `IN ACCEPT -source 10.1.0.0/24` ergänzt — das eigene Server-VLAN fehlte komplett (nur Tailscale/10.4.0.x/Alt-LANs waren erlaubt).
+- **Updates:** anker (73 Pakete) + ProDesk (140 Pakete) voll aktualisiert. ⚠️ **ProDesk: Reboot ausstehend** (neuer Kernel, 2–3 Min Downtime aller Dienste) — wartet auf Wolfs Zeitfenster. anker: kein Reboot nötig; `autoremove` −10 GB (root 32%→18%).
+- **anker Thin-Pool entschärft: 94,7% → 66,1%** (fstrim aller CTs + VM240-PBS-Discard). Kein Speicheralarm mehr.
+- **Backup-Hygiene:** 4 tote Jobs auf anker gelöscht (hs27-interim + 3 Legacy), 1 Legacy-Job auf ProDesk gelöscht — der wollte 9 nicht existente VMIDs sichern und war die Ursache der „job errors" vom 14.07. Stale Storages disabled: `pbs-usb`, `ssd2tb` (anker), `anker-music` (ProDesk). **Aktiv:** anker `daily-all-pbs`→GDrive 04:00 · ProDesk →pbs-frawo 04:00 + hdd-backup 05:30 (kritische Gäste).
+- **Kaputte Units anker bereinigt:** `homeserver2027-local-business-backup` (Quelle wiederkehrender vzdump-200-Fehler) + `openipmi` disabled, `mnt-hs27`-Leiche weg → `systemctl --failed` = leer.
+- **📻 Radio Split-Brain GELÖST:** CT130 radio-node hat kein zweites AzuraCast mehr. Verwaiste Alt-Stack-Container `radio-redis`/`radio-db` (Compose-Projekt „deployment") gestoppt, restart=no, Volumes erhalten. **VM210 (10.1.0.38) = einzige Radiostation.**
+- **10.1.0.142 identifiziert:** MAC-Präfix 74:ac:b9 = **Ubiquiti** — eigenes UniFi-Gerät (AP/Switch), kein Fremdgerät. Punkt geschlossen.
+- **ProDesk gesund:** Load ~2.0 (war 7.9), CT150 monitoring-stack läuft. Swap 4 GB belegt (Reboot löst das). CT109/CT130 existieren auf ProDesk nicht mehr.
+- **anker:** CT100 toolbox + VM300 nextcloud laufen (wieder) — klären ob gewollt. Journals beider Nodes vakuumiert.
+- **Odoo:** #779 Sissy-Rückgabe abgeschlossen (14.07. alles zurück, von Wolf bestätigt). Produktdaten-Messung 15.07.: 148 physische Produkte — SKU 87% · VK 95% · EK 55% · Lieferant 24%. **Thomann-Datei fehlt weiterhin** (als erledigt markiert, aber nie übergeben; Handeinträge haben die Metriken nicht bewegt).
+- **StudioPC Werkstatt:** Desktop + „FRAWO Ops" aufgeräumt (PLAN_odoo17to19, SSOT_NOW.md, frawo-homepage.html → Archive_Outdated). ⚠️ Klartext-Credentials auf Desktop (`pw safe.txt`, `servAssi_deploy_key.txt`) → sollen in Vaultwarden, wartet auf Wolf-OK. ⚠️ Lokaler Clone `~/FraWo` ist 17 Tage stale + dirty (u.a. untracked `odoo_devops_task_bridge.py`) — sichten, nicht blind überschreiben.
 
 ## 🆕 Tagesabschluss 2026-07-01 (verifiziert — Fan-Out aller Systeme)
 
