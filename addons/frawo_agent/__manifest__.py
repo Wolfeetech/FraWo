@@ -9,6 +9,7 @@
         "security/ir.model.access.csv",
         "data/config_params.xml",
         "data/ir_cron.xml",
+        "data/base_automation.xml",
         "views/agent_log_views.xml",
     ],
     "post_init_hook": "post_init",

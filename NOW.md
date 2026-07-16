@@ -1,5 +1,5 @@
 # NOW — Echter Live-Stand (BITTE ZUERST LESEN)
-**Letzte Verifikation: 2026-07-16 (live, StudioPC Rothkreuz, Claude-Agent — Werkstatt-Inventur Teil 2 + Sicherheitsfund).**
+**Letzte Verifikation: 2026-07-16 (live, StudioPC Rothkreuz, Claude-Agent — Werkstatt-Inventur Teil 2 + Odoo-DevOps-Automatik + Repo-Sync).**
 
 > **Odoo (CT140, 10.1.0.112:8069) = EINZIGE SSOT für ALLES** — Tasks, Infra-Entscheidungen, Roadmap. NOW.md = nur Live-Infra-State (was wirklich läuft). Alle anderen Docs (LIVE_CONTEXT, MASTERPLAN, ROADMAP, AI_BOOTSTRAP_CONTEXT, STATUS, todo) = **STALE, nicht mehr lesen**.
 > Agenten: IMMER zuerst Odoo-Projekte/Tasks lesen, NICHT andere MD-Files als Planungsgrundlage verwenden.
@@ -34,6 +34,23 @@
 - **ProDesk unter Last:** Load 7.9 / RAM 434 MB frei / 3.6 GB Swap. Monitoring-Stack CT150 wäre Entlastung (noch stopped).
 - **anker-pve Root-Disk: 76% voll** (49/68 GB). Bald handeln.
 - **SSOT-Entscheidung (Wolf 2026-07-01):** Odoo = SSOT für alles inkl. Agenten. NOW.md = nur Infra-Live-State. Alle Agenten sollen primär Odoo lesen statt MD-Dateien.
+
+## 🆕 Session 2026-07-16 (verifiziert)
+- **Odoo → ServAssi Task-Automatik gebaut:** Task mit Tag "DevOps-Agent" im Backlog → CT150 holt sich das per Poll alle 5 Min (`openclaw-devops-bridge.timer`/`.service`, Script `infra/odoo/odoo_devops_task_bridge.py`), lässt den Agenten ran, schreibt Antwort in den Task-Chatter, markiert per Tag "ServAssi-Ausgeloest" als erledigt (kein Doppel-Verarbeiten). Einzelner kaputter/gelöschter Task killt nicht mehr den ganzen Lauf (try/except pro Task).
+- **⚠️ WICHTIG — Push-Webhook (`base.automation` `frawo_agent.automation_servassi_devops_trigger`) ist bewusst DEAKTIVIERT:** Odoo-Host (CT140, 10.1.0.112) kann CT150 (10.1.0.31) auf Host-Ebene zwar erreichen (Anker-LAN-Fix von gestern hält), aber der **Docker-Container `frawotech-web-1` selbst** kommt nach außen zu 10.1.0.31 nicht raus (eigenes Docker-Netzwerk-Problem, nicht weiter untersucht — Poll-Weg ist der Workaround). Nicht wieder aktivieren ohne das Docker-Networking-Problem zu lösen, sonst 5s-Hänger bei jedem Task-Save.
+- **⚠️ Lehre — Datei-Drift zwischen Server und Repo:** `addons/frawo_agent/__manifest__.py` und `models/project_task.py` waren auf CT140 direkt bearbeitet worden (nicht übers Repo), und ein bislang ungeklärter Mechanismus hat beide Dateien zwischenzeitlich auf einen älteren Stand zurückgesetzt (project_task.py mtime zeigte 2026-06-25, obwohl an dem Tag noch gar keine Webhook-Methode existierte). Ursache nicht gefunden (kein Git-Repo auf dem Server, kein Cron/Timer der sync't) — im Zweifel nach Server-seitigen Odoo-Addon-Änderungen IMMER direkt zurück ins Repo committen, nicht nur auf dem Server lassen.
+- **Lokales Ollama auf CT140 installiert** (`qwen2.5:3b-instruct`, 0.0.0.0:11434) als Notfall-Rückfalloption für den Telegram-Agenten (openclaw `models.providers.ollama-ct140`), da Anthropic-Kontingent bis 2026-08-01 gesperrt und OpenAI ohne Guthaben ist. **Funktioniert aber nicht wirklich** — der volle Agent-Systemprompt (~12-15k Tokens) sprengt selbst mit 16k-Kontext-Modell den Speicher/Kontext auf der kleinen VM (4 GB RAM). Nur technisch verdrahtet, keine echte Lösung. Echte Fixes: OpenAI-Guthaben auffüllen (Wolf) oder auf 1.8. warten (Anthropic-Reset).
+- **Odoo-Board-Umbau seit 2026-06-23 hat Projekt-IDs verschoben:** alter Test-Task hatte project_id 35 verloren/umgehängt auf 49, stage_id dabei auf `false` zurückgesetzt (private-task-Falle). Bei künftigen DevOps-Agent-Tasks IMMER project_id 49 ("P4 · 🤖 Automatisierung & KI-Agenten") + stage_id 1 (Backlog) explizit setzen.
+
+## 🆕 Session 2026-06-26 (verifiziert)
+- **ServAssi / OpenClaw vollständig aufgerüstet:** CT150 (anker-pve, 10.1.0.31, Tailscale 100.72.154.15) läuft mit neuem Image (git 2.39.5 + gh 2.95.0 baked in). Gateway bind=lan, Port 19000, OPENCLAW_GATEWAY_PASSWORD in .env. Web-UI via SSH-Tunnel `ssh -L 19001:127.0.0.1:19000 root@100.72.154.15` → `http://127.0.0.1:19001`.
+- **StudioPC als Node gepairt:** `openclaw node` als Windows Scheduled Task (AtLogon, auto-restart). Passwort `FraWoGateway2026secure` → Vaultwarden eintragen. Node: `fd6bc49e...`, Status: paired·connected·approved.
+- **GitHub:** Deploy Key (ed25519, `openclaw@frawo.tech`) in Wolfeetech/FraWo hinterlegt. `gh` CLI mit PAT authentifiziert (PAT im Chat exponiert — bitte rotieren unter github.com/settings/tokens). `GH_TOKEN` in `/opt/openclaw/.env`.
+- **Jarvis-Skills:** `claw-vision` + `openai-whisper-api` installiert. Fotos/Sprachmemos an @ServAssi_bot → Odoo-Tasks möglich. OPENAI_API_KEY war bereits in .env.
+- **exec-Allowlist:** 20 Tools freigegeben (git, gh, bash, sh, curl, ssh, python3, cat, ls, find, grep, awk, sed, docker etc.).
+- **Cron:** Modell auf `anthropic/claude-sonnet-4-6` upgraded (von Haiku).
+- **LVM Thin Pool:** Session 2026-06-26 Beginn: war ~54%, Snapshots bereinigt. Rollback-Snapshot Odoo19 gelöscht.
+- **OPENCLAW.md:** PR-Workflow-Regeln, Agent-Scope-Tabelle, SSH-Tabelle → live in Container unter `/root/.openclaw/workspace/OPENCLAW.md`.
 
 ## 🆕 Tagesabschluss 2026-06-25 (verifiziert)
 - **HA-MCP-Lücke gefixt (#608):** Haupt-HA (10.1.0.40) hatte trotz Doku-Behauptung KEINE `mcp_server`-Integration installiert (404 auf `/mcp_server/sse`). Via HA config_entries-Flow-API live nachinstalliert, danach Remote-HA-Verbindung 10.1.0.40↔10.1.0.248 über "Remote Home Assistant"-Integration eingerichtet. **Lehre:** bei `secure`/`verify_ssl` auf Default `true` lassen führt bei plain-HTTP-Zielen zu Verbindungsfehlern → explizit `false` setzen; `max_message_size` braucht `16777216`, nicht leer/`0`.

@@ -110,3 +110,26 @@ class ProjectTask(models.Model):
             note=note,
             user_id=wolf.id or self.env.uid,
         )
+
+    def _trigger_servassi_webhook(self):
+        import urllib.request
+        import json
+        for record in self:
+            try:
+                payload = json.dumps({
+                    "task_id": record.id,
+                    "name": record.name,
+                    "description": record.description or "",
+                }).encode("utf-8")
+                req = urllib.request.Request(
+                    "http://10.1.0.31:19001/odoo-task",
+                    data=payload,
+                    headers={
+                        "Content-Type": "application/json",
+                        "X-Webhook-Secret": "frawo-odoo-webhook-2026",
+                    },
+                    method="POST",
+                )
+                urllib.request.urlopen(req, timeout=5)
+            except Exception:
+                pass
