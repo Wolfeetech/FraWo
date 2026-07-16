@@ -114,6 +114,10 @@ class ProjectTask(models.Model):
     def _trigger_servassi_webhook(self):
         import urllib.request
         import json
+        secret = self.env["ir.config_parameter"].sudo().get_param(
+            "frawo_agent.servassi_webhook_secret", "")
+        url = self.env["ir.config_parameter"].sudo().get_param(
+            "frawo_agent.servassi_webhook_url", "http://10.1.0.31:19001/odoo-task")
         for record in self:
             try:
                 payload = json.dumps({
@@ -122,11 +126,11 @@ class ProjectTask(models.Model):
                     "description": record.description or "",
                 }).encode("utf-8")
                 req = urllib.request.Request(
-                    "http://10.1.0.31:19001/odoo-task",
+                    url,
                     data=payload,
                     headers={
                         "Content-Type": "application/json",
-                        "X-Webhook-Secret": "frawo-odoo-webhook-2026",
+                        "X-Webhook-Secret": secret,
                     },
                     method="POST",
                 )
