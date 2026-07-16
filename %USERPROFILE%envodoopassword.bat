@@ -1,1 +1,0 @@
-SET ODOO_PASSWORD=<Password>]

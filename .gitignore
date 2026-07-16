@@ -88,3 +88,11 @@ NUL
 .env*
 !.env.example
 scripts/quarantine/legacy_sensitive/vault_setup.mjs
+
+# 2026-07-16 Werkstatt-Inventur: Klartext-Credentials NIE committen (Repo ist PUBLIC)
+vaultwarden_import.csv
+*envodoopassword.bat
+crack_vault.py
+*.vault_pass
+*password*.bat
+*password*.txt
