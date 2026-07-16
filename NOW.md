@@ -1,8 +1,13 @@
 # NOW — Echter Live-Stand (BITTE ZUERST LESEN)
-**Letzte Verifikation: 2026-07-15 (live, StudioPC Rothkreuz, Claude-Agent — Werkstatt-Reinigung + Fan-Out beider PVE-Nodes).**
+**Letzte Verifikation: 2026-07-16 (live, StudioPC Rothkreuz, Claude-Agent — Werkstatt-Inventur Teil 2 + Sicherheitsfund).**
 
 > **Odoo (CT140, 10.1.0.112:8069) = EINZIGE SSOT für ALLES** — Tasks, Infra-Entscheidungen, Roadmap. NOW.md = nur Live-Infra-State (was wirklich läuft). Alle anderen Docs (LIVE_CONTEXT, MASTERPLAN, ROADMAP, AI_BOOTSTRAP_CONTEXT, STATUS, todo) = **STALE, nicht mehr lesen**.
 > Agenten: IMMER zuerst Odoo-Projekte/Tasks lesen, NICHT andere MD-Files als Planungsgrundlage verwenden.
+
+## 🆕 Werkstatt-Inventur Teil 2 — 2026-07-16 (Claude-Agent)
+- **🔴 Sicherheitsbereinigung durchgeführt (Details intern in Odoo #815):** versehentlich eingecheckte Secret-Dateien aus HEAD entfernt + `.gitignore` gehärtet (Commit dfcd9c8). Passwort-Rotation als offener Wolf-Punkt in Odoo dokumentiert. _(Betroffene Systeme/Konten bewusst NUR intern in Odoo, nicht hier im public Repo.)_
+- **Repo entrümpelt (Commit 58d2684):** großes Zip-im-Repo, leere/stray Dateien, alte JSON-Dumps, gerendertes HTML gelöscht; Einmal-Skripte → `archive/scripts_2026-07-16/`. Aktiv belassen: openclaw_web_server.py+.yaml, frawo_llama3.modelfile. `todo.md` gegen Ist-Stand abgeglichen.
+- **Lokaler dirty Clone `~/FraWo` gesichtet (NICHT gelöscht):** enthält unfertige, wertvolle Idee `infra/odoo/odoo_devops_task_bridge.py` (Odoo→OpenClaw Task-Bridge, CT150-Poller, env-basiert, keine Secrets) — sollte künftig sauber committet werden.
 
 ## 🆕 Tagesabschluss 2026-07-15 (verifiziert — „Werkstatt-Reinigung", Claude-Agent)
 
