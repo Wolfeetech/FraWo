@@ -14,13 +14,13 @@ class RadioController(http.Controller):
     def _get_azuracast_config(self):
         get_param = request.env['ir.config_parameter'].sudo().get_param
         base_url = get_param('frawo_agent.azuracast_api_url', 'https://10.1.0.38').rstrip('/')
-        api_key = get_param('frawo_agent.azuracast_api_key', 'aa55fde5c0958c9b:33afc91702c99268813d2376736de3e4')
+        api_key = get_param('frawo_agent.azuracast_api_key', '')
         return base_url, api_key
 
     def _get_pve_bridge_config(self):
         get_param = request.env['ir.config_parameter'].sudo().get_param
         bridge_url = get_param('frawo_agent.pve_bridge_url', 'http://10.1.0.128:8888').rstrip('/')
-        bridge_token = get_param('frawo_agent.pve_bridge_token', 'frawo_radio_bridge_secret_2026')
+        bridge_token = get_param('frawo_agent.pve_bridge_token', '')
         return bridge_url, bridge_token
 
     def _is_internal_user(self):
