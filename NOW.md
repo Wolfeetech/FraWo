@@ -1,4 +1,12 @@
 # NOW — Echter Live-Stand (BITTE ZUERST LESEN)
+
+> ## 🔴 ÜBERGABE / HANDOFF 2026-07-23 (Claude Code → Antigravity)
+> Claude Code hatte Session-Limit erreicht. **Antigravity: bitte übernehmen, wie ein Angestellter, nach Best Practice.**
+> 1. **Neues Projekt „IT-Abteilung / Multi-Agenten-Koordination"** (von Wolf freigegeben): Plan + nächste Schritte in [`DOCS/superpowers/plans/2026-07-23-it-department-agents.md`](DOCS/superpowers/plans/2026-07-23-it-department-agents.md). Zuerst die 2 Rückfragen an Wolf klären (siehe Plan), dann Schritt 1. Beanspruche die Arbeit sichtbar (Wolf kurz sagen „Antigravity übernimmt").
+> 2. **HEUTE-Vorfall (kritisch, verifiziert):** ProDesk-Host-Kollaps durch defekte SATA-Platte (ata2 link down) → per SysRq-Reboot gerettet, ALLES wieder oben (Odoo/Website ✅, Radio-Stream ✅ auf Fallback, Host-Last 1,4). **Defekte Platte NICHT ersetzbar (Wolf: „mit dem was wir haben").**
+> 3. **Radio-Musik-Wiederherstellung = SEPARATES offenes Projekt** (nicht mit #1 vermischen): AzuraCast-Bibliothek leer, weil sie vom stillgelegten Stockenweiler-Testserver (NFS 192.168.178.25, tot) kam. Master-Musik ist HEIL auf dem Fileserver. Repariert: toter NFS aus VM210-fstab raus, Samba-Creds erneuert (`//10.1.0.94/music` läuft). **Noch offen:** `//10.1.0.94/radio` weist VM210 ab (fileserver-seitig prüfen) → dann AzuraCast neu einlesen + Playlists/Dayparting neu. Details siehe Claude-Memory-Hinweis unten / dieser Block.
+> 4. **StudioPC-Routing-Fix:** `tailscale set --accept-routes=false` (LAN direkt/schnell statt 500ms-Tunnel). Nie die eigene Subnetz-Route via Tailscale akzeptieren.
+
 **Letzte Verifikation: 2026-07-16 (live, StudioPC Rothkreuz, Claude-Agent — Werkstatt-Inventur Teil 2 + Odoo-DevOps-Automatik + Repo-Sync).**
 
 > **Odoo (CT140, 10.1.0.112:8069) = EINZIGE SSOT für ALLES** — Tasks, Infra-Entscheidungen, Roadmap. NOW.md = nur Live-Infra-State (was wirklich läuft). Alle anderen Docs (LIVE_CONTEXT, MASTERPLAN, ROADMAP, AI_BOOTSTRAP_CONTEXT, STATUS, todo) = **STALE, nicht mehr lesen**.
