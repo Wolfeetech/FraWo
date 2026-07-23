@@ -73,3 +73,24 @@ Für JEDEN der Alt-Ordner (`frawo-audit-2026-06-10`, `frawotech_stage`, `odoo_mi
 - **Identitäts-Frage GEKLÄRT (Wolf 2026-07-23):** EINE Identität `agent@frawo.tech` (UID 7). KEINE getrennten User. Worker unterscheiden sich per Namens-Signatur in Task-Kommentaren. Siehe Kernentscheidungen 2–4.
 - **Nächster Schritt für Antigravity:** Schritt 2 ist der Kern — die kanonische `AGENTS.md` um Worker-Selbstidentifikation + Claim-Konvention erweitern (Schritt 1 ist nur eine kurze Odoo-Verifikation). Beanspruche diese Arbeit sichtbar: kurz Wolf sagen „Antigravity übernimmt den IT-Abteilungs-Plan" (bis Schritt 4/Odoo-Task steht).
 - **Wichtig:** Radio-Wiederherstellung (AzuraCast-Musik) ist ein SEPARATES offenes Projekt — siehe Claude-Memory `project_frawo_2026-07-23_prodesk_disk_meltdown`. Nicht mit dieser Aufgabe vermischen.
+
+---
+
+## Zielbild: Professioneller AV/IT-Arbeitsplatz StudioPC (Wolf, 2026-07-23)
+Wolf-Ansage: StudioPC ist vermüllt, kein professionelles System für Programme/Zuweisung/Struktur, kein Zugriff auf Musikdateien im Server. Anspruch: **so professionell wie in einem echten AV/IT-Unternehmen** — Netzzugriff auf alle relevanten Ordner/Shares, native Tool-Bedienung, kein Rätselraten was noch läuft.
+
+**So sieht „professionell" konkret aus (Zielbild):**
+1. **Struktur:** eine dokumentierte Ordner-Taxonomie (`C:\WORKSPACE\PROJEKTE\{Active,Archive}` existiert als Ansatz — daraus DEN Standard machen). **Ein** kanonischer Arbeitsort pro Agent, keine verstreuten Klone.
+2. **Netzzugriff (professionell + verlässlich):** dauerhafte Laufwerks-Mappings zu ALLEN relevanten Server-Shares mit korrekten (rotierten) Zugangsdaten, immer verfügbar: `M: → \\10.1.0.94\music` (Musik-Master), `R: → \\10.1.0.94\radio`, ggf. Backups/Server-Config-Shares.
+3. **Tools nativ + klare Rollen:** Claude Code / Antigravity / OpenClaw-ServAssi sauber konfiguriert, startbar, mit definierten Rollen (Tool-/Rollen-Register). Keine deaktivierten Leichen-Tasks, die auf tote Klone zeigen.
+4. **„Was läuft"-Register:** EINE Quelle (Odoo + NOW.md), die sagt welche Dienste/Tasks/Autostarts laufen, wofür, auf welchem Host → **kein Rätselraten**.
+5. **Aufgeräumt:** Archiv getrennt von Aktiv (begonnen ✓), stale `NOW.md`/`AGENTS.md`-Kopien an GitHub `main` angeglichen.
+
+**Arbeitspakete (Reihenfolge, jeweils als Odoo-Task beanspruchen):**
+- **AP1 — Fileserver-SMB gesundstellen + Laufwerke professionell mappen.** ⚠️ AKTUELL KAPUTT: SMB von StudioPC UND VM210 zum Fileserver (CT120, 10.1.0.94) klemmt/hängt („net use /delete" hängt, VM210 `//…/radio` = „Host is down", nur `//…/music` ging kurz). **Root-Cause fileserver-seitig prüfen** (CT120 Samba: Verbindungslimit/`max connections`/`deadtime`, hängende Sessions, ggf. `smbd` neu starten). Danach StudioPC-Creds erneuern (`cmdkey /add:10.1.0.94 /user:wolf /pass:<rotiert>`) + `M:`/`R:` dauerhaft mappen. Wedged StudioPC-Session ggf. via Neustart des LanmanWorkstation-Dienstes lösen.
+- **AP2 — Kanonische Ordner-/Klon-Struktur** (eine Wahrheit pro Agent, alle ziehen von `main`; OneDrive-Klon entwirren). Braucht Koordination mit laufendem Antigravity/MCP.
+- **AP3 — Tool-/Rollen-Register** (native Bedienung, Leichen-Tasks aufräumen: „OpenClaw-Agent"/„…-Telegram-Bridge" Disabled → prüfen ob endgültig weg).
+- **AP4 — „Was läuft"-Register** in Odoo/NOW.md (alle Dienste/Tasks/Autostarts inventarisieren).
+- **AP5 — Rest-Entrümpelung** (Transfer-Skripte `frawotech_transfer*.sh`, frawo-backups sichten).
+
+**Stand 2026-07-23 (Claude):** Schritt 5 begonnen (4 Alt-Projekte archiviert, Klon-Landkarte da). AP1 diagnostiziert (Fileserver-SMB klemmt = die eigentliche Wurzel von „kein Zugriff Musik") — Fix nicht mehr geschafft (Session-Limit). **Antigravity: AP1 zuerst, das schmerzt Wolf am meisten.**
