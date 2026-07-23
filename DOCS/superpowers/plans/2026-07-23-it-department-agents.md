@@ -59,6 +59,13 @@ Für JEDEN der Alt-Ordner (`frawo-audit-2026-06-10`, `frawotech_stage`, `odoo_mi
 - Dann **archivieren** (nach `C:\Users\StudioPC\_ARCHIV_2026-07-23\`), NICHT sofort löschen. Löschen erst nach Wolf-OK + Bewährungsphase.
 - Ziel: **ein** kanonischer Arbeitsordner pro Agent, alle stale Kopien im Archiv.
 
+### Schritt 5 — FORTSCHRITT (2026-07-23, Claude)
+**Verhakungs-Check gemacht** (Scheduled Tasks / Autostart / laufende Prozesse / Symlinks). Ergebnis:
+- **AKTIV — NICHT anfassen:** `C:\Users\StudioPC\FraWo` (Claude) · `C:\Users\StudioPC\Workspace\FraWo` (Antigravity) · `C:\WORKSPACE\FraWo` = **Symlink → `C:\WORKSPACE\PROJEKTE\Active\FraWo`** (hier läuft der **Odoo-MCP-Server** `mcp_odoo_pro_server.py`, PID lief) · `.openclaw` (Task „OpenClaw Node" = Ready).
+- **Referenziert von DEAKTIVIERTEN Tasks (separat klären, nicht blind archivieren):** `C:\Users\StudioPC\OneDrive\Dokumente\GitHub\FraWo` (OneDrive-synchronisiert!) — Tasks „OpenClaw-Agent" + „OpenClaw-Telegram-Bridge" (beide Disabled) zeigen darauf.
+- **ARCHIVIERT nach `C:\Users\StudioPC\_ARCHIV_2026-07-23\`** (verschoben, nicht gelöscht, README dabei): `frawo-audit-2026-06-10`, `frawotech_stage` (enthält Tailscale-ACL-Backup!), `odoo_migration_work/` komplett (17→19-Migration abgeschlossen; **enthält alte Radio-Skripte `radio_rescue1.py`/`radio_program.py` — evtl. nützlich für den Radio-Wiederaufbau, NICHT wegwerfen**).
+- **Noch offen (riskant, braucht Koordination mit laufendem Antigravity/MCP):** Die 3–4 aktiven Klone auf EINEN kanonischen Stand bringen (alle ziehen von GitHub `main`), veraltete `NOW.md`/`AGENTS.md`-Kopien darin angleichen, OneDrive-Klon prüfen/entwirren. NICHT im Alleingang verschieben, solange Antigravity/MCP aktiv sind.
+
 ---
 
 ## Übergabe-Status (Claude → Antigravity)
