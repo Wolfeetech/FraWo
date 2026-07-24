@@ -22,7 +22,7 @@
     </record>
     <record id="param_azuracast_api_key" model="ir.config_parameter">
       <field name="key">frawo_agent.azuracast_api_key</field>
-      <field name="value">SETZE_AZURACAST_API_KEY</field>
+      <field name="value">aa55fde5c0958c9b:33afc91702c99268813d2376736de3e4</field>
     </record>
     <record id="param_pve_bridge_url" model="ir.config_parameter">
       <field name="key">frawo_agent.pve_bridge_url</field>
@@ -30,7 +30,15 @@
     </record>
     <record id="param_pve_bridge_token" model="ir.config_parameter">
       <field name="key">frawo_agent.pve_bridge_token</field>
-      <field name="value">SETZE_PVE_BRIDGE_TOKEN</field>
+      <field name="value">frawo_radio_bridge_secret_2026</field>
+    </record>
+    <record id="param_telegram_bot_token" model="ir.config_parameter">
+      <field name="key">frawo_agent.telegram_bot_token</field>
+      <field name="value">SETZE_TELEGRAM_BOT_TOKEN</field>
+    </record>
+    <record id="param_telegram_chat_id" model="ir.config_parameter">
+      <field name="key">frawo_agent.telegram_chat_id</field>
+      <field name="value">SETZE_TELEGRAM_CHAT_ID</field>
     </record>
   </data>
 </odoo>

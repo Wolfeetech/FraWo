@@ -3,13 +3,13 @@
     <field name="name">frawo.agent.log.tree</field>
     <field name="model">frawo.agent.log</field>
     <field name="arch" type="xml">
-      <tree decoration-danger="level=='error'" decoration-warning="level=='warning'">
+      <list decoration-danger="level=='error'" decoration-warning="level=='warning'">
         <field name="create_date"/>
         <field name="name"/>
         <field name="level"/>
         <field name="task_id"/>
         <field name="message"/>
-      </tree>
+      </list>
     </field>
   </record>
 
@@ -32,7 +32,7 @@
   <record id="action_agent_log" model="ir.actions.act_window">
     <field name="name">Agent-Logbuch</field>
     <field name="res_model">frawo.agent.log</field>
-    <field name="view_mode">tree,form</field>
+    <field name="view_mode">list,form</field>
   </record>
 
   <menuitem id="menu_frawo_agent_root" name="🤖 Agent" sequence="95"/>

@@ -1,3 +1,7 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_agent_log_user,frawo.agent.log.user,model_frawo_agent_log,base.group_user,1,0,0,0
 access_agent_log_system,frawo.agent.log.system,model_frawo_agent_log,base.group_system,1,1,1,1
+access_anker_tracker_consumer,anker.tracker.consumer,model_anker_tracker_consumer,base.group_user,1,1,1,1
+access_anker_tracker_product,anker.tracker.product,model_anker_tracker_product,base.group_user,1,1,1,1
+access_anker_tracker_consumption,anker.tracker.consumption,model_anker_tracker_consumption,base.group_user,1,1,1,1
+

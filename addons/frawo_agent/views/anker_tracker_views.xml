@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ============================================================
+         ANKER TRACKER – Odoo Backend Views + Menus
+         Getränke, Personen, Verbrauchshistorie, Abrechnung
+         ============================================================ -->
+
+    <!-- PRODUCTS list view -->
+    <record id="view_anker_product_list" model="ir.ui.view">
+        <field name="name">anker.tracker.product.list</field>
+        <field name="model">anker.tracker.product</field>
+        <field name="arch" type="xml">
+            <list string="Getränkeliste"
+                  decoration-muted="not active"
+                  decoration-success="is_alcoholic == False"
+                  decoration-warning="is_alcoholic == True">
+                <field name="emoji"/>
+                <field name="name"/>
+                <field name="manufacturer"/>
+                <field name="volume" string="Inhalt (L)"/>
+                <field name="crate_size" string="Fl./Kiste"/>
+                <field name="price_per_bottle" string="€/Fl." widget="monetary" options="{'currency_field': False}"/>
+                <field name="is_alcoholic" string="Alkohol" widget="boolean_toggle"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- PRODUCTS form view -->
+    <record id="view_anker_product_form" model="ir.ui.view">
+        <field name="name">anker.tracker.product.form</field>
+        <field name="model">anker.tracker.product</field>
+        <field name="arch" type="xml">
+            <form string="Getränk">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="emoji" style="font-size:2rem;margin-right:8px;"/>
+                            <field name="name" placeholder="Getränkename"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Produkt">
+                            <field name="manufacturer"/>
+                            <field name="volume"/>
+                            <field name="crate_size"/>
+                            <field name="price_per_bottle"/>
+                        </group>
+                        <group string="Einstellungen">
+                            <field name="is_alcoholic"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- PRODUCTS action -->
+    <record id="action_anker_products" model="ir.actions.act_window">
+        <field name="name">🍺 Getränkeliste</field>
+        <field name="res_model">anker.tracker.product</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{"search_default_active": 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Noch kein Getränk angelegt</p>
+            <p>Füge hier alle Getränke vom Anker-Getränkemarkt mit Preis und Kisteneinheit ein.</p>
+        </field>
+    </record>
+
+    <!-- CONSUMERS list view -->
+    <record id="view_anker_consumer_list" model="ir.ui.view">
+        <field name="name">anker.tracker.consumer.list</field>
+        <field name="model">anker.tracker.consumer</field>
+        <field name="arch" type="xml">
+            <list string="Personen">
+                <field name="name"/>
+                <field name="added_at"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- CONSUMERS form view -->
+    <record id="view_anker_consumer_form" model="ir.ui.view">
+        <field name="name">anker.tracker.consumer.form</field>
+        <field name="model">anker.tracker.consumer</field>
+        <field name="arch" type="xml">
+            <form string="Person">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="added_at" readonly="1"/>
+                        <field name="active"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- CONSUMERS action -->
+    <record id="action_anker_consumers" model="ir.actions.act_window">
+        <field name="name">👤 Personen</field>
+        <field name="res_model">anker.tracker.consumer</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- CONSUMPTIONS list view -->
+    <record id="view_anker_consumption_list" model="ir.ui.view">
+        <field name="name">anker.tracker.consumption.list</field>
+        <field name="model">anker.tracker.consumption</field>
+        <field name="arch" type="xml">
+            <list string="Verbrauchshistorie"
+                  decoration-muted="billed == True"
+                  decoration-success="billed == False">
+                <field name="timestamp" string="Zeitstempel"/>
+                <field name="consumer_id" string="Person"/>
+                <field name="product_id" string="Getränk"/>
+                <field name="billed" string="Abgerechnet" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- CONSUMPTIONS search view with filters -->
+    <record id="view_anker_consumption_search" model="ir.ui.view">
+        <field name="name">anker.tracker.consumption.search</field>
+        <field name="model">anker.tracker.consumption</field>
+        <field name="arch" type="xml">
+            <search string="Verbrauchshistorie">
+                <field name="consumer_id"/>
+                <field name="product_id"/>
+                <separator/>
+                <filter name="unbilled" string="Offen (nicht abgerechnet)" domain="[('billed','=',False)]"/>
+                <filter name="billed" string="Abgerechnet" domain="[('billed','=',True)]"/>
+                <separator/>
+                <filter name="by_person" string="Nach Person" context="{'group_by': 'consumer_id'}"/>
+                <filter name="by_product" string="Nach Getränk" context="{'group_by': 'product_id'}"/>
+                <filter name="by_day" string="Nach Tag" context="{'group_by': 'timestamp:day'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- CONSUMPTIONS action -->
+    <record id="action_anker_consumptions" model="ir.actions.act_window">
+        <field name="name">📋 Verbrauchshistorie</field>
+        <field name="res_model">anker.tracker.consumption</field>
+        <field name="view_mode">list</field>
+        <field name="context">{"search_default_unbilled": 1}</field>
+    </record>
+
+    <!-- MENUS under Agent root -->
+    <menuitem id="menu_anker_tracker" name="🍺 Anker Tracker"
+              parent="menu_frawo_agent_root"
+              sequence="5"/>
+    <menuitem id="menu_anker_products" name="Getränkeliste"
+              parent="menu_anker_tracker"
+              action="action_anker_products"
+              sequence="10"/>
+    <menuitem id="menu_anker_consumers" name="Personen"
+              parent="menu_anker_tracker"
+              action="action_anker_consumers"
+              sequence="20"/>
+    <menuitem id="menu_anker_consumptions" name="Verbrauchshistorie"
+              parent="menu_anker_tracker"
+              action="action_anker_consumptions"
+              sequence="30"/>
+    <menuitem id="menu_anker_kiosk" name="Kiosk öffnen"
+              parent="menu_anker_tracker"
+              action="base_setup.action_general_configuration"
+              sequence="90"/>
+</odoo>

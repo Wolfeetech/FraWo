@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Minimal QWeb stub: real HTML is served from the Python controller -->
+    <template id="anker_tracker_template" name="Anker Tracker Kiosk">
+        <t t-raw="kiosk_html"/>
+    </template>
+
+    <!-- Print template: A4 invoice for Getränkemarkt -->
+    <template id="anker_tracker_print_template" name="Anker Tracker Druckansicht">
+        &lt;!DOCTYPE html&gt;
+        <html lang="de">
+            <head>
+                <meta charset="UTF-8"/>
+                <title>Getränke-Abrechnung – FraWo GbR</title>
+                <style>
+                    * {{ box-sizing: border-box; }}
+                    body {{ font-family: 'Helvetica Neue', Arial, sans-serif; color: #111; margin: 30px 40px; font-size: 13px; line-height: 1.6; }}
+                    .no-print {{ margin-bottom: 20px; }}
+                    .print-btn {{ background:#111;color:#fff;border:none;padding:10px 22px;font-size:12px;font-weight:700;border-radius:6px;cursor:pointer;letter-spacing:.5px; }}
+                    hr {{ border: none; border-top: 2px solid #111; margin: 14px 0; }}
+                    hr.thin {{ border-top-width: 1px; border-color: #ddd; }}
+                    .hdr {{ display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:24px; }}
+                    .logo-area h1 {{ font-size:22px;font-weight:900;letter-spacing:-0.5px;text-transform:uppercase; margin:0; }}
+                    .logo-area p {{ color:#666;font-size:11px;margin:2px 0 0; }}
+                    .date-area {{ text-align:right;font-size:11px;color:#444; }}
+                    h2 {{ font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#333;margin:22px 0 10px; }}
+                    table {{ width:100%;border-collapse:collapse;margin-bottom:10px; }}
+                    th {{ font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#666;border-bottom:2px solid #111;padding:7px 8px;text-align:left; }}
+                    td {{ padding:9px 8px;border-bottom:1px solid #eee;font-size:12px; }}
+                    .r {{ text-align:right; }}
+                    .bold {{ font-weight:700; }}
+                    .total-row td {{ font-weight:800;border-top:2px solid #111;border-bottom:none;font-size:13px;padding-top:11px; }}
+                    .hl {{ color:#0ea5e9; }}
+                    .footer {{ margin-top:48px;font-size:10px;color:#999;text-align:center;border-top:1px solid #eee;padding-top:14px; }}
+                    @media print {{ .no-print{{display:none!important}}body{{margin:15mm 20mm}} }}
+                </style>
+            </head>
+            <body>
+                <div class="no-print">
+                    <button class="print-btn" onclick="window.print()">Drucken</button>
+                </div>
+                <div class="hdr">
+                    <div class="logo-area">
+                        <h1>Anker Tracker</h1>
+                        <p>Getraenke-Abrechnung · FraWo GbR</p>
+                    </div>
+                    <div class="date-area">
+                        Abrechnungsdatum<br/>
+                        <strong><t t-out="today_str"/></strong>
+                    </div>
+                </div>
+                <hr/>
+                <h2>1 — Gesamt-Bestellung Getraenkemarkt</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Getraenk</th>
+                            <th>Hersteller</th>
+                            <th>Inhalt</th>
+                            <th class="r">Flaschen</th>
+                            <th class="r">Kisten / Rest</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="product_totals" t-as="pt">
+                            <tr>
+                                <td><span class="bold"><t t-out="pt['product'].name"/></span></td>
+                                <td><t t-out="pt['product'].manufacturer or '-'"/></td>
+                                <td><t t-out="pt['product'].volume"/> L</td>
+                                <td class="r bold"><t t-out="pt['count']"/></td>
+                                <td class="r">
+                                    <t t-if="pt['crates'] > 0">
+                                        <span class="hl bold"><t t-out="pt['crates']"/> Kiste<t t-if="pt['crates'] > 1">n</t></span>
+                                        <t t-if="pt['bottles'] > 0"> + <t t-out="pt['bottles']"/> Fl.</t>
+                                    </t>
+                                    <t t-else="">
+                                        <t t-out="pt['bottles']"/> Fl.
+                                    </t>
+                                </td>
+                            </tr>
+                        </t>
+                        <tr class="total-row">
+                            <td colspan="3">Gesamt Flaschen</td>
+                            <td class="r hl"><t t-out="grand_total_bottles"/></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <hr class="thin"/>
+                <h2>2 — Aufteilung nach Person</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Person</th>
+                            <th>Details</th>
+                            <th class="r">Flaschen</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="consumer_totals" t-as="ct">
+                            <tr>
+                                <td class="bold"><t t-out="ct['consumer'].name"/></td>
+                                <td style="font-size:11px;color:#444;">
+                                    <t t-foreach="ct['details']" t-as="d">
+                                        <t t-out="d['manufacturer']"/> <t t-out="d['name']"/>: <strong><t t-out="d['count']"/> Fl.</strong>
+                                        <t t-if="not d_last">&#160;&#160;</t>
+                                    </t>
+                                </td>
+                                <td class="r bold"><t t-out="ct['count']"/></td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+                <div class="footer">
+                    Erstellt aus Odoo ERP · FraWo GbR
+                </div>
+                <script>window.onload=function(){{setTimeout(function(){{window.print();}},400);}};</script>
+            </body>
+        </html>
+    </template>
+</odoo>
