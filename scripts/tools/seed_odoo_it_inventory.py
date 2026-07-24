@@ -230,6 +230,81 @@ IT_ASSETS = [
         "serial_no": "VM300-NEXTCLOUD-HUB",
         "note": "FraWo Enterprise Nextcloud Cloud Storage (cloud.frawo.tech). Document management, team sync, and file sharing. Network: 10.1.0.111."
     },
+    {
+        "name": "CT100 toolbox (Admin Utility LXC)",
+        "equipment_assign_to": "other",
+        "ip_address": "10.1.0.98",
+        "tailscale_ip": "",
+        "vlan_id": "101",
+        "pve_host": "proxmox-anker",
+        "vm_ct_id": "CT100",
+        "equipment_role": "Admin CLI Toolbox & Diagnostics Container",
+        "is_critical": False,
+        "model": "Proxmox LXC Container (Debian 12)",
+        "location": "proxmox-anker (Host)",
+        "serial_no": "CT100-TOOLBOX-ANKER",
+        "note": "Admin Toolbox Container on Anker. Used for CLI network diagnostics, repair scripts, and management tools."
+    },
+    {
+        "name": "CT101 adguard-slave (Secondary DNS)",
+        "equipment_assign_to": "other",
+        "ip_address": "10.1.0.27",
+        "tailscale_ip": "",
+        "vlan_id": "101",
+        "pve_host": "proxmox-anker",
+        "vm_ct_id": "CT101",
+        "equipment_role": "Secondary DNS & AdGuard Home Failover",
+        "is_critical": True,
+        "model": "Proxmox LXC Container (Debian 12, AdGuard Home)",
+        "location": "proxmox-anker (Host)",
+        "serial_no": "CT101-ADGUARD-SLAVE",
+        "note": "Secondary DNS Server & AdGuard Home Failover Node on Anker. Ensures continuous DNS resolution if ProDesk is offline. Network: 10.1.0.27."
+    },
+    {
+        "name": "CT110 storage-node (Secondary Storage)",
+        "equipment_assign_to": "other",
+        "ip_address": "10.1.0.81",
+        "tailscale_ip": "",
+        "vlan_id": "101",
+        "pve_host": "proxmox-anker",
+        "vm_ct_id": "CT110",
+        "equipment_role": "Secondary Storage Node (Anker)",
+        "is_critical": False,
+        "model": "Proxmox LXC Container (Debian 12)",
+        "location": "proxmox-anker (Host)",
+        "serial_no": "CT110-STORAGE-ANKER",
+        "note": "Secondary Storage Node on Anker host for localized volume mounts and sync backups. Network: 10.1.0.81."
+    },
+    {
+        "name": "CT130 radio-node (Secondary Radio & Navidrome)",
+        "equipment_assign_to": "other",
+        "ip_address": "10.1.0.200",
+        "tailscale_ip": "100.78.88.33",
+        "vlan_id": "101",
+        "pve_host": "proxmox-anker",
+        "vm_ct_id": "CT130",
+        "equipment_role": "Secondary Radio Node & Navidrome Music Server",
+        "is_critical": False,
+        "model": "Proxmox LXC Container (Debian 12, Navidrome)",
+        "location": "proxmox-anker (Host)",
+        "serial_no": "CT130-RADIO-NODE-ANKER",
+        "note": "Secondary Radio Node & Navidrome streaming instance on Anker. Network: 10.1.0.200 / Tailscale 100.78.88.33."
+    },
+    {
+        "name": "Google Drive Encrypted Offsite Backup (Rclone)",
+        "equipment_assign_to": "other",
+        "ip_address": "Cloud Remote",
+        "tailscale_ip": "",
+        "vlan_id": "101",
+        "pve_host": "cloud",
+        "vm_ct_id": "Cloud Storage",
+        "equipment_role": "Offsite Encrypted Backup Storage (5.1 TB Rclone)",
+        "is_critical": True,
+        "model": "Google Drive Rclone Remote (5.1 TB Capacity)",
+        "location": "Cloud / External Offsite",
+        "serial_no": "GDRIVE-OFFSITE-ANKER",
+        "note": "Encrypted Offsite Backup Target mounted via rclone (gdrive{84KcY}:) on proxmox-anker (/mnt/google-drive). Capacity: 5.1 TB total, 2.8 TB used. Stores offsite PBS disaster recovery snapshots."
+    },
 ]
 
 def run_sql_script(sql: str):
@@ -266,25 +341,36 @@ SELECT id, '"de_DE"', '"de_DE"' FROM ir_model_fields WHERE name = 'lang' AND mod
     for a in IT_ASSETS:
         name_json = json.dumps({"de_DE": a["name"], "en_US": a["name"]})
         sql_assets.append(f"""
-UPDATE maintenance_equipment
-SET 
-    model = '{a["model"].replace("'", "''")}',
-    location = '{a["location"].replace("'", "''")}',
-    serial_no = '{a["serial_no"].replace("'", "''")}',
-    note = '{a["note"].replace("'", "''")}',
-    ip_address = '{a["ip_address"]}',
-    tailscale_ip = '{a["tailscale_ip"]}',
-    vlan_id = '{a["vlan_id"]}',
-    pve_host = '{a["pve_host"]}',
-    vm_ct_id = '{a["vm_ct_id"]}',
-    equipment_role = '{a["equipment_role"].replace("'", "''")}',
-    is_critical = {str(a["is_critical"]).upper()},
-    write_date = NOW()
-WHERE name->>'de_DE' = '{a["name"].replace("'", "''")}';
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM maintenance_equipment WHERE name->>'de_DE' = '{a["name"].replace("'", "''")}') THEN
+        UPDATE maintenance_equipment
+        SET 
+            model = '{a["model"].replace("'", "''")}',
+            location = '{a["location"].replace("'", "''")}',
+            serial_no = '{a["serial_no"].replace("'", "''")}',
+            note = '{a["note"].replace("'", "''")}',
+            ip_address = '{a["ip_address"]}',
+            tailscale_ip = '{a["tailscale_ip"]}',
+            vlan_id = '{a["vlan_id"]}',
+            pve_host = '{a["pve_host"]}',
+            vm_ct_id = '{a["vm_ct_id"]}',
+            equipment_role = '{a["equipment_role"].replace("'", "''")}',
+            is_critical = {str(a["is_critical"]).upper()},
+            write_date = NOW()
+        WHERE name->>'de_DE' = '{a["name"].replace("'", "''")}';
+    ELSE
+        INSERT INTO maintenance_equipment (
+            name, equipment_assign_to, effective_date, ip_address, tailscale_ip, vlan_id, pve_host, vm_ct_id, equipment_role, is_critical, model, location, serial_no, note, create_date, write_date
+        ) VALUES (
+            '{name_json}'::jsonb, '{a["equipment_assign_to"]}', CURRENT_DATE, '{a["ip_address"]}', '{a["tailscale_ip"]}', '{a["vlan_id"]}', '{a["pve_host"]}', '{a["vm_ct_id"]}', '{a["equipment_role"].replace("'", "''")}', {str(a["is_critical"]).upper()}, '{a["model"].replace("'", "''")}', '{a["location"].replace("'", "''")}', '{a["serial_no"].replace("'", "''")}', '{a["note"].replace("'", "''")}', NOW(), NOW()
+        );
+    END IF;
+END $$;
 """)
     
     run_sql_script("\n".join(sql_assets))
-    print("[OK] All 15 IT Equipment assets enriched with detailed technical specifications in Odoo!")
+    print("[OK] All 20 IT Equipment assets seeded and enriched in Odoo!")
 
 if __name__ == "__main__":
     main()
