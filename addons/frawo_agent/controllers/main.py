@@ -476,4 +476,211 @@ class RadioController(http.Controller):
             _logger.error("Anker settlement report error: %s", str(e))
             return request.make_response(f"<h2>Fehler bei der Abrechnungserstellung:</h2><p>{str(e)}</p>", status=500, headers=[('Content-Type', 'text/html')])
 
+    # ─────────────────────────────────────────────────────────────
+    # Surface Go Kiosk Terminal Landing Page (Task #826)
+    # ─────────────────────────────────────────────────────────────
+
+    @http.route('/kiosk', type='http', auth='public', methods=['GET'], csrf=False)
+    def kiosk_home(self, **kwargs):
+        """Touch-optimised Kiosk Landingpage for Surface Go (Werkstatt + Radio Curation)."""
+        try:
+            # Live AzuraCast now-playing
+            try:
+                base_url, api_key = self._get_azuracast_config()
+                r = requests.get(f"{base_url}/api/station/1/nowplaying", verify=False, timeout=3)
+                np = r.json() if r.status_code == 200 else {}
+                now_title  = np.get('now_playing', {}).get('song', {}).get('title', '—')
+                now_artist = np.get('now_playing', {}).get('song', {}).get('artist', '')
+                listeners  = np.get('listeners', {}).get('current', '—')
+                stream_url = np.get('station', {}).get('listen_url', '')
+            except Exception:
+                now_title = '—'; now_artist = ''; listeners = '—'; stream_url = ''
+
+            # Unbilled Anker-bottles quick count
+            try:
+                total_unbilled = sum(
+                    c.quantity
+                    for c in request.env['anker.tracker.consumption'].sudo().search([('billed', '=', False)])
+                )
+            except Exception:
+                total_unbilled = '?'
+
+            html = f"""<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <title>FraWo Kiosk</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after {{ box-sizing: border-box; margin: 0; padding: 0; }}
+    :root {{
+      --bg:      #0d0f14;
+      --surface: #161a23;
+      --card:    #1e2330;
+      --accent:  #00e5ff;
+      --accent2: #7c4dff;
+      --green:   #00c853;
+      --red:     #ff1744;
+      --text:    #e8eaf6;
+      --sub:     #7986cb;
+      --radius:  16px;
+    }}
+    html, body {{ height: 100%; background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; overflow: hidden; }}
+    body {{ display: grid; grid-template-rows: auto 1fr auto; gap: 0; height: 100vh; }}
+
+    /* ── HEADER ── */
+    header {{
+      background: var(--surface);
+      padding: 14px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid #1e2a3a;
+    }}
+    .logo {{ font-size: 22px; font-weight: 900; background: linear-gradient(90deg,var(--accent),var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }}
+    .clock {{ font-size: 28px; font-weight: 800; color: var(--accent); font-variant-numeric: tabular-nums; }}
+    .date-label {{ font-size: 13px; color: var(--sub); text-align: right; }}
+
+    /* ── MAIN GRID ── */
+    main {{
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 16px;
+      padding: 16px;
+      overflow: hidden;
+    }}
+    .tile {{
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 22px;
+      display: flex; flex-direction: column; gap: 12px;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      border: 1px solid #2a3044;
+      text-decoration: none; color: inherit;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }}
+    .tile:active {{ transform: scale(0.97); box-shadow: 0 0 0 3px var(--accent); }}
+    .tile-icon {{ font-size: 38px; line-height: 1; }}
+    .tile-title {{ font-size: 20px; font-weight: 800; }}
+    .tile-sub {{ font-size: 13px; color: var(--sub); }}
+    .tile-badge {{
+      align-self: flex-start;
+      background: var(--accent2);
+      color: #fff;
+      font-size: 12px; font-weight: 700;
+      padding: 3px 10px; border-radius: 999px;
+      margin-top: auto;
+    }}
+    .tile.green {{ border-color: var(--green); }}
+    .tile.green .tile-badge {{ background: var(--green); color: #000; }}
+    .tile.radio {{ border-color: var(--accent); }}
+    .tile.radio .tile-badge {{ background: var(--accent); color: #000; }}
+    .tile.repair {{ border-color: var(--red); }}
+    .tile.repair .tile-badge {{ background: var(--red); }}
+
+    /* ── RADIO BAR ── */
+    .radio-bar {{
+      background: var(--surface);
+      border-top: 1px solid #1e2a3a;
+      padding: 12px 24px;
+      display: flex; align-items: center; gap: 16px;
+    }}
+    .radio-bar .now-icon {{ font-size: 28px; animation: pulse 2s infinite; }}
+    @keyframes pulse {{ 0%,100%{{ opacity:1 }} 50%{{ opacity:.4 }} }}
+    .radio-bar .track-info {{ flex: 1; }}
+    .radio-bar .track-title {{ font-size: 15px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 400px; }}
+    .radio-bar .track-artist {{ font-size: 12px; color: var(--sub); }}
+    .radio-bar .listeners {{ font-size: 13px; color: var(--sub); white-space: nowrap; }}
+    .radio-bar .listeners span {{ font-weight: 700; color: var(--accent); }}
+    .radio-btn {{
+      background: var(--accent); color: #000;
+      border: none; border-radius: 12px;
+      padding: 10px 20px; font-size: 15px; font-weight: 800;
+      cursor: pointer; text-decoration: none;
+      transition: opacity 0.15s;
+    }}
+    .radio-btn:active {{ opacity: 0.7; }}
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">⚡ FraWo Kiosk</div>
+  <div style="text-align:right">
+    <div class="clock" id="clock">--:--</div>
+    <div class="date-label" id="dateline">--.--.----</div>
+  </div>
+</header>
+
+<main>
+  <!-- ODOO PROJECT BOARD -->
+  <a class="tile" href="https://frawo.tech/odoo/project" target="_blank">
+    <div class="tile-icon">📋</div>
+    <div class="tile-title">Werkstatt-Board</div>
+    <div class="tile-sub">Odoo Projekte &amp; Aufgaben</div>
+    <div class="tile-badge">🚀 Odoo öffnen</div>
+  </a>
+
+  <!-- ANKER TRACKER SETTLEMENT -->
+  <a class="tile green" href="/anker/report/settlement" target="_blank">
+    <div class="tile-icon">🍺</div>
+    <div class="tile-title">Getränke-Abrechnung</div>
+    <div class="tile-sub">Anker Tracker — offene Posten</div>
+    <div class="tile-badge">🧾 {total_unbilled} Flaschen offen</div>
+  </a>
+
+  <!-- RADIO CONTROL -->
+  <a class="tile radio" href="https://funk.frawo.tech" target="_blank">
+    <div class="tile-icon">🎛️</div>
+    <div class="tile-title">FraWo Funk</div>
+    <div class="tile-sub">AzuraCast Radio-Steuerung</div>
+    <div class="tile-badge">🎙️ Radio öffnen</div>
+  </a>
+
+  <!-- IT EQUIPMENT / MAINTENANCE -->
+  <a class="tile repair" href="https://frawo.tech/odoo/maintenance" target="_blank">
+    <div class="tile-icon">🔧</div>
+    <div class="tile-title">Wartung &amp; Reparaturen</div>
+    <div class="tile-sub">Geräte-Register &amp; offene Aufträge</div>
+    <div class="tile-badge">⚠️ Wartung öffnen</div>
+  </a>
+</main>
+
+<!-- NOW PLAYING BAR -->
+<div class="radio-bar">
+  <div class="now-icon">🎵</div>
+  <div class="track-info">
+    <div class="track-title">{now_title}</div>
+    <div class="track-artist">{now_artist}</div>
+  </div>
+  <div class="listeners">👂 <span>{listeners}</span> Hörer</div>
+  <a class="radio-btn" href="{stream_url}" target="_blank">▶ Stream</a>
+</div>
+
+<script>
+  function tick() {{
+    const now = new Date();
+    document.getElementById('clock').textContent =
+      now.toLocaleTimeString('de-DE', {{hour:'2-digit', minute:'2-digit', second:'2-digit'}});
+    document.getElementById('dateline').textContent =
+      now.toLocaleDateString('de-DE', {{weekday:'long', day:'2-digit', month:'long', year:'numeric'}});
+  }}
+  tick();
+  setInterval(tick, 1000);
+
+  // Auto-refresh every 60 seconds to pick up live data
+  setTimeout(() => location.reload(), 60000);
+</script>
+</body>
+</html>"""
+            return request.make_response(html, headers=[('Content-Type', 'text/html; charset=utf-8')])
+        except Exception as e:
+            _logger.error("Kiosk page error: %s", str(e))
+            return request.make_response(f"<h2>Kiosk Fehler:</h2><p>{str(e)}</p>", status=500, headers=[('Content-Type', 'text/html')])
+
+
 
