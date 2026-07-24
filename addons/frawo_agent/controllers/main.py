@@ -1,4 +1,4 @@
-from odoo import http
+from odoo import http, fields
 from odoo.http import request
 import logging
 import requests
@@ -303,4 +303,177 @@ class RadioController(http.Controller):
         except Exception as e:
             _logger.error("Anker metrics error: %s", str(e))
             return request.make_response(f"# Error: {str(e)}\n", status=500, headers=[('Content-Type', 'text/plain')])
+
+    # ─────────────────────────────────────────────────────────────
+    # Printable Settlement Report: Anker Tracker (Task #804)
+    # ─────────────────────────────────────────────────────────────
+
+    @http.route('/anker/report/settlement', type='http', auth='public', methods=['GET', 'POST'], csrf=False)
+    def anker_settlement_report(self, **kwargs):
+        """Printable settlement report for Anker Tracker drink consumption."""
+        try:
+            # Handle Mark as Billed action
+            if request.httprequest.method == 'POST' and kwargs.get('action') == 'mark_billed':
+                open_records = request.env['anker.tracker.consumption'].sudo().search([('billed', '=', False)])
+                open_records.write({'billed': True})
+                _logger.info("Anker Tracker: Marked %s consumption records as billed.", len(open_records))
+
+            # Fetch consumers and unbilled consumption
+            consumers = request.env['anker.tracker.consumer'].sudo().search([('active', '=', True)], order='sequence, name asc')
+            consumption_model = request.env['anker.tracker.consumption'].sudo()
+
+            consumer_reports = []
+            grand_total = 0.0
+            grand_bottles = 0
+            grand_crates = 0
+
+            for c in consumers:
+                unbilled = consumption_model.search([('consumer_id', '=', c.id), ('billed', '=', False)])
+                if not unbilled:
+                    continue
+
+                items_dict = {}
+                person_total = 0.0
+
+                for rec in unbilled:
+                    prod = rec.product_id
+                    key = prod.id
+                    if key not in items_dict:
+                        items_dict[key] = {
+                            'name': prod.name,
+                            'emoji': prod.emoji,
+                            'price': prod.price_per_bottle,
+                            'pfand_bottle': prod.pfand_per_bottle,
+                            'pfand_crate': prod.pfand_per_crate,
+                            'bottles': 0,
+                            'crates': 0,
+                            'subtotal': 0.0
+                        }
+
+                    if rec.unit_type == 'crate':
+                        items_dict[key]['crates'] += 1
+                        items_dict[key]['bottles'] += rec.quantity
+                        cost = (rec.quantity * prod.price_per_bottle) + (rec.quantity * prod.pfand_per_bottle) + prod.pfand_per_crate
+                    else:
+                        items_dict[key]['bottles'] += rec.quantity
+                        cost = (rec.quantity * prod.price_per_bottle) + (rec.quantity * prod.pfand_per_bottle)
+
+                    items_dict[key]['subtotal'] += cost
+                    person_total += cost
+                    grand_total += cost
+
+                    if rec.unit_type == 'crate':
+                        grand_crates += 1
+                    grand_bottles += rec.quantity
+
+                consumer_reports.append({
+                    'consumer': c,
+                    'items': list(items_dict.values()),
+                    'total': person_total
+                })
+
+            html_content = f"""<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Getränkemarkt-Abrechnung — FraWo GbR</title>
+    <style>
+        body {{ font-family: 'Helvetica Neue', Arial, sans-serif; margin: 30px; color: #222; background: #fff; }}
+        .header {{ border-bottom: 3px solid #1a237e; padding-bottom: 12px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-end; }}
+        .header h1 {{ margin: 0; font-size: 24px; color: #1a237e; }}
+        .header p {{ margin: 4px 0 0 0; font-size: 13px; color: #666; }}
+        .person-card {{ border: 1px solid #e0e0e0; border-radius: 8px; margin-bottom: 20px; padding: 16px; page-break-inside: avoid; }}
+        .person-title {{ font-size: 18px; font-weight: bold; color: #0d47a1; margin-bottom: 12px; border-bottom: 1px solid #eeeeee; padding-bottom: 6px; }}
+        table {{ width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 14px; }}
+        th {{ background: #f5f5f5; text-align: left; padding: 8px; font-weight: 600; border-bottom: 2px solid #ddd; }}
+        td {{ padding: 8px; border-bottom: 1px solid #eee; }}
+        .total-row {{ font-weight: bold; background: #f9f9f9; }}
+        .grand-summary {{ background: #e8eaf6; border: 2px solid #3f51b5; border-radius: 8px; padding: 18px; margin-top: 30px; font-size: 16px; display: flex; justify-content: space-between; align-items: center; }}
+        .grand-total {{ font-size: 24px; font-weight: 900; color: #1a237e; }}
+        .actions {{ margin-bottom: 20px; display: flex; gap: 12px; }}
+        .btn {{ padding: 10px 18px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; font-size: 14px; text-decoration: none; }}
+        .btn-print {{ background: #1a237e; color: #fff; }}
+        .btn-bill {{ background: #2e7d32; color: #fff; }}
+        @media print {{
+            .no-print {{ display: none !important; }}
+            body {{ margin: 0; padding: 0; }}
+            .person-card {{ border: 1px solid #ccc; }}
+        }}
+    </style>
+</head>
+<body>
+
+<div class="actions no-print">
+    <button class="btn btn-print" onclick="window.print()">🖨️ Abrechnung Drucken / PDF Export</button>
+    <form method="POST" action="/anker/report/settlement" style="display:inline;" onsubmit="return confirm('Möchtest du alle offenen Entnahmen wirklich als abgerechnet markieren?');">
+        <input type="hidden" name="action" value="mark_billed"/>
+        <button type="submit" class="btn btn-bill">✅ Als abgerechnet markieren</button>
+    </form>
+</div>
+
+<div class="header">
+    <div>
+        <h1>FraWo GbR — Anker Getränkemarkt</h1>
+        <p>Stockenweiler 3, 88138 Hergensweiler | Offene Verbrauchsabrechnung</p>
+    </div>
+    <div style="text-align:right;">
+        <p><strong>Datum:</strong> {fields.Date.today().strftime('%d.%m.%Y')}</p>
+        <p><strong>Status:</strong> Offene Posten</p>
+    </div>
+</div>
+
+{"".join([f'''
+<div class="person-card">
+    <div class="person-title">👤 {rep["consumer"].name}</div>
+    <table>
+        <thead>
+            <tr>
+                <th>Getränk</th>
+                <th>Anzahl Flaschen</th>
+                <th>Kisten</th>
+                <th>Einzelpreis (€)</th>
+                <th>Pfand (€)</th>
+                <th style="text-align:right;">Gesamt (€)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {"".join([f"""
+            <tr>
+                <td>{item["emoji"]} {item["name"]}</td>
+                <td>{item["bottles"]} Fl.</td>
+                <td>{item["crates"]} Kiste(n)</td>
+                <td>{item["price"]:.2f} €</td>
+                <td>{(item["bottles"] * item["pfand_bottle"] + item["crates"] * item["pfand_crate"]):.2f} €</td>
+                <td style="text-align:right;">{item["subtotal"]:.2f} €</td>
+            </tr>
+            """ for item in rep["items"]])}
+            <tr class="total-row">
+                <td colspan="5">Zwischensumme {rep["consumer"].name}</td>
+                <td style="text-align:right; color:#1a237e;">{rep["total"]:.2f} €</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+''' for rep in consumer_reports]) if consumer_reports else '<p style="font-size:16px; color:#666;">Keine offenen Entnahmen vorhanden. Alle Getränke sind abgerechnet! 🎉</p>'}
+
+<div class="grand-summary">
+    <div>
+        <strong>Gesamter offener Verbrauch:</strong><br/>
+        <small style="color:#555;">{grand_bottles} Flaschen ({grand_crates} Kisten)</small>
+    </div>
+    <div class="grand-total">{grand_total:.2f} €</div>
+</div>
+
+<div style="margin-top:40px; font-size:12px; color:#888; text-align:center;">
+    FraWo GbR | Anker Tracker Odoo System | Automatisch generiert am {fields.Datetime.now().strftime('%d.%m.%Y %H:%M:%S')}
+</div>
+
+</body>
+</html>"""
+            return request.make_response(html_content, headers=[('Content-Type', 'text/html; charset=utf-8')])
+        except Exception as e:
+            _logger.error("Anker settlement report error: %s", str(e))
+            return request.make_response(f"<h2>Fehler bei der Abrechnungserstellung:</h2><p>{str(e)}</p>", status=500, headers=[('Content-Type', 'text/html')])
+
 
