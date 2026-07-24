@@ -21,10 +21,37 @@
 - **KCanG-Compliance heute (business, Details in Odoo-SSOT):** Mitgliederverzeichnis **#726** in Odoo gebaut (Kontakte→CSC-Verzeichnis + Formularseite), Suchtpräventions-/Jugendschutzkonzept **#733**, Pflanzenzahl-Kontrolle **#727** (Duplikate 664→666 / 597→217 gemergt; **Haushalt liegt über dem privaten §9-Limit** — 22 lebende Pflanzen bei 5 Personen), **CSC-Erlaubnis #725** vorbereitet (Muster-Satzung e.V. + LGL-Fahrplan; zuständig ist das **LGL Bayern**, nicht Landratsamt Lindau; Kosten 2.700–3.500 € + 600 €).
 - **Offen (real, für Wolf):** USV beschaffen (#820) · CSC-Rechtsform e.V. + 7 Gründungsmitglieder festlegen (#725) · CT150-Disk (10 GB) bei Gelegenheit vergrößern.
 
-## 🆕 IT-Abteilung & AP1/AP2/AP3 — 2026-07-24 (Antigravity-Agent, live verifiziert)
+## Update 2026-07-24: Full Knowledge Base Integration
+- **Odoo Project "WP-Stockenweiler-3" (ID: 58) deployed as SINGLE SOURCE OF TRUTH (SSOT):** Full project structure for Weishaupt Evoblock WEB 13/20 installation configured in Odoo (CT140, 10.1.0.112:8069).
+- **Master Project Data:**
+  - Object Address: Stockenweiler 3, 88138 Hergensweiler
+  - Grid Operator (VNB): Elektrizitätsgenossenschaft Schlachters eG (EGS) | Contacts: Anna Greiter, Dieter Sautter | Approved Max Capacity: 12 kW Total / 8.6 kW Heat Pump (§14a EnWG)
+  - Key Stakeholders: Alois Prinz (`alois@online-prinz.de`, Lead), Wolfgang Prinz (`wprinz1101@gmail.com`, IT/EMS), Norbert Prinz (`prinznorbert@gmx.de`, Kälte), Thomas Lang (`langthomas60@gmail.com`, Elektro)
+  - Main Hardware: Weishaupt Evoblock® WEB 13/20 Heat Pump
+- **5 Stages & 11 Tasks fully integrated into Odoo:**
+  1. `STAGE 01: GENEHMIGUNG & VORBEREITUNG` (Stage ID 233)
+     - Task 1.1 (ID 829): EGS-Bewilligung, Kontaktdaten & Netzauflagen sichern | Assignee: Alois Prinz | Deadline: 2026-07-27
+     - Task 1.2 (ID 830): Zähler-Spezifikation (GMC vs. RTU) & Growatt-Speicher Bewertung | Assignee: Wolfgang Prinz | Deadline: 2026-07-27
+  2. `STAGE 02: ORTSTERMIN & MATERIAL-KOORDINATION` (Stage ID 234)
+     - Task 2.1 (ID 831): Vor-Ort-Termin Elektro, Trassen & Medienfeld (Thomas Lang) | Assignees: Alois Prinz, Wolfgang Prinz | Scheduled: 2026-07-28
+     - Task 2.2 (ID 832): Kältetechnik & Logistik-Prüfung (Norbert Prinz) | Assignee: Alois Prinz | Deadline: 2026-08-03
+  3. `STAGE 03: MONTAGE, ELEKTRO & IT-VERBINDUNG` (Stage ID 235)
+     - Task 3.1 (ID 833): Überwachung Kälte- & Hydraulikmontage (Norbert) | Assignee: Alois Prinz | Planned: 2026-08-04..2026-08-10
+     - Task 3.2 (ID 834): Elektro-Zuleitung & Zählerschrank-Umbau (Thomas) | Assignee: Alois Prinz | Planned: 2026-08-05..2026-08-12
+     - Task 3.3 (ID 835): Netzwerkkabel-Verlegung & Hardware-Patching (Wolfgang) | Assignee: Wolfgang Prinz | Planned: 2026-08-05..2026-08-12
+  4. `STAGE 04: MESSUNG, REGELUNG & NETZ-MELDUNG` (Stage ID 236)
+     - Task 4.1 (ID 836): EMS-Integration & Modbus-Inbetriebnahme (Wolfgang) | Assignee: Wolfgang Prinz | Planned: 2026-08-12..2026-08-16
+     - Task 4.2 (ID 837): EGS-Fertigmeldung & Inbetriebsetzungsantrag | Assignee: Alois Prinz | Planned: 2026-08-17..2026-08-20
+  5. `STAGE 05: ABNAHME & SYSTEMSTART` (Stage ID 237)
+     - Task 5.1 (ID 838): Zählersetzen EGS & Plombierung begleiten | Assignee: Alois Prinz | Planned: 2026-08-24..2026-08-27
+     - Task 5.2 (ID 839): Finale Systemabnahme & Dokumenten-Archivierung | Assignees: Alois Prinz, Wolfgang Prinz | Deadline: 2026-08-31
+
+## 🆕 IT-Abteilung, Radio Dayparting & Odoo IT Asset Management — 2026-07-24 (Antigravity-Agent, live verifiziert)
 - **AP1 Fileserver-SMB & ProDesk Host-Gesundheit:** ProDesk-Host (`stockenweiler-pve` 10.1.0.128) entstört (360+ D-State-Prozesse durch totes `/dev/sda1` `/mnt/musicstick` via `/root/update_beets_metrics.sh` in crontab behoben; Skript & fstab deaktiviert). Host-Neustart durchgeführt: Load sank von 365 auf **0.80**, 5.1 GB RAM frei. Fileserver CT120 (10.1.0.94) SMB gesund. StudioPC Netzlaufwerke `M:` (`\\10.1.0.94\music`) & `R:` (`\\10.1.0.94\radio`) dauerhaft eingebunden (Status: OK). AzuraCast VM210 SMB-Verbindungen verifiziert.
 - **AP2 Workspace Consolidation:** Uncommittetes `anker_tracker`-Modul aus `Workspace\FraWo` gerettet & nach `C:\Users\StudioPC\FraWo` übernommen. Hilfsskripte `odoo_mission_lanes.py` & `odoo_shell_lanes.py` aus OneDrive gerettet. Veralteter OneDrive-Klon `OneDrive\Dokumente\GitHub\FraWo` nach `_ARCHIV_2026-07-23` archiviert. Alle aktiven Klone (`C:\Users\StudioPC\FraWo`, `C:\Users\StudioPC\Workspace\FraWo`, `C:\WORKSPACE\PROJEKTE\Active\FraWo`) sauber mit `origin/main` synchronisiert.
 - **AP3 Scheduled Tasks Bereinigung:** Deaktivierte Leichen-Tasks `OpenClaw-Agent` & `OpenClaw-Telegram-Bridge` aus Windows-Aufgabenplanung entfernt. Active Task `OpenClaw Node` (`C:\Users\StudioPC\.openclaw\node.cmd`, Ready) verifiziert.
+- **Radio Media Management Phase 1 & Dayparting:** AzuraCast Medienscan (`azuracast:media:reprocess 1`) auf VM210 ausgeführt. **2.169 Musiktracks** indiziert und automatisch in die 4 Tageszeiten-Playlists eingeteilt (Night 837/845: 300 Tracks, Sunrise 840/841: 407 Tracks, Lunch 842/843: 974 Tracks, Evening 844: 488 Tracks). Auto-Ingestion-Workflow (`Import-NewMusic.ps1` & `import_new_music.py`) und Dokumentation in [`DOCS/RADIO_MUSIC_MANAGEMENT_WORKFLOW.md`](DOCS/RADIO_MUSIC_MANAGEMENT_WORKFLOW.md) erstellt.
+- **Odoo IT Asset Management & Deutsche Standardsprache:** Odoo Community Modul `maintenance` (abofrei, 0 €) aktiviert und in `frawo_agent` um IT-DevOps-Felder (`ip_address`, `tailscale_ip`, `vlan_id`, `pve_host`, `vm_ct_id`, `equipment_role`, `is_critical`) erweitert. **Alle 15 FraWo-Server & Container** in Odoo als IT-Assets angelegt. Standardsprache auf **Deutsch (`de_DE`)** für System-Defaults, Benutzer, Kontakte und E-Mail-Templates umgestellt.
 - **AGENTS.md Multi-Worker-Koordination:** `AGENTS.md` um Worker-Selbstidentifikation (`🤖 [Antigravity]`) und Task-Claim-Konvention (Stage 3 + Odoo-Kommentar) erweitert.
 
 ## 🆕 Session 2026-07-24 (verifiziert)
@@ -178,19 +205,15 @@
 - **Drossel-Ursache gelöst:** `frawo-docker-1` (Flo/Stockenweiler) routet allen Internet-Traffic über einen **gedrosselten netcup-VPS-Tunnel** (Gateway `10.30.8.1`, Exit `188.68.45.193`=`exp.tekoda.cloud`, ~150 kbit symmetrisch), NICHT übers Fiber. Deshalb ist alles dort zäh.
 - **Odoo-Repatriierung:** Aufgrund der Drosselung wird Odoo nach Rothkreuz auf den ProDesk (`CT 140` / `10.1.0.112`) migriert. Der Cloudflare-Tunnel „FraWo-RK" ist dafür aktiv.
 
-## 🟢 Resolved Blockers (Recent)
-- **Odoo-Cutover abgeschlossen**: Der neue Cloudflare-Tunnel „FraWo-RK" läuft stabil in CT 140 und routet Odoo erfolgreich über `frawo.tech`.
-- **Radio-Dienste konsolidiert**: VM 210 (`10.1.0.38`) ist als Master-Radiostation definiert und über die Odoo-API (`frawo_agent`) sowie die autonome beets-Ingestion (`curate_radio.py` auf PVE) angebunden.
-- **Geräte-Infrastruktur konsolidiert (Option 2)**: Ingress läuft jetzt über den Nginx Proxy Manager auf ProDesk (`CT 103` / `10.1.0.149`). Der veraltete Toolbox-Container (`CT 100` / `100.82.26.53`) ist gestoppt. Das Franz-Portal (`http://10.1.0.149/franz/`) wurde aktualisiert und Nextcloud/Paperless wurden als offline markiert.
+- **ProDesk Host-Entstörung & CT150 Monitoring**: 360+ D-State Prozesse behoben, Load von 365 auf 0.80 gesenkt. CT150 Monitoring Stack (Prometheus/Grafana/Alertmanager) gestartet & `onboot=1` gesetzt.
+- **10.1.0.142 Identifikation**: Als UniFi Ubiquiti Netzwerk-Hardware (MAC `74:ac:b9...`) identifiziert.
+- **Radio Split-Brain Bereinigung**: VM210 (`10.1.0.38`) als alleinige Master-Station verifiziert; verwaiste Alt-Container auf CT130 gestoppt.
+- **Anker Disk & Trim**: Thin-Pool durch `fstrim` aller LXCs & PBS-Discard von 94.7% auf 66.1% konsolidiert.
 
-## 🔴 Offene Punkte / Sofort-Klärungsbedarf
-1. **CT130 radio-node (anker, 10.1.0.200):** Zweite AzuraCast-Instanz läuft dort. Absicht oder Zombie? Klären und ggf. stoppen.
-2. **10.1.0.142:** Unbekanntes Gerät im Server-VLAN. Identifizieren (UCG-API oder `arp-scan`).
-3. **anker-pve Root-Disk 76% voll** (49/68 GB) → aufräumen bevor es kritisch wird.
-4. **ProDesk Last zu hoch** (Load 7.9, RAM 434 MB frei) → monitoring-stack CT150 starten, Ursache finden.
-5. **Grafana/Prometheus** → monitoring-stack CT150 (ProDesk) noch nie gestartet nach Migration. Starten oder Entscheidung treffen.
-6. **Netcup/Flo VPS-Vertrag kündigen** (frawo-docker-1 Nachfolge abgeschlossen).
-7. **Franz Onboarding (#262/#542)** → Franz-iPhone 25 Tage offline, Franz nicht aktiv im System.
+## 🔴 Offene Punkte / Sofort-Klärungsbedarf (Aktion durch Wolf)
+1. **Netcup/Flo VPS-Vertrag kündigen**: `frawo-docker-1` ist stillgelegt. Vertrag bei Netcup/Flo noch kündigen.
+2. **USV-Beschaffung (#820)**: USV für Server-Rack (ProDesk + Anker) beschaffen (~250 € Line-Interactive 1500VA / NUT).
+3. **Tailscale & Vault für Franz (#262 / #542)**: Invite-Key auf admin.tailscale.com für Franz erzeugen + Ordner `Franz/Credentials` in Vaultwarden freigeben.
 
 ---
 *Vollständige Bestandsaufnahme (Hardware, Strom, Roadmap): auf dem StudioPC unter `Desktop/FRAWO Ops/Bestandsaufnahme_2026-06-11/`.*
