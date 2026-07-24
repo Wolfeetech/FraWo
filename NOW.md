@@ -107,42 +107,44 @@
 
 ## 🟢🔴 Live-Status (2026-07-01, vollständig verifiziert)
 
-### PVE-Nodes
-| Knoten | Tailscale / LAN-IP | Status | Load / RAM |
-|--------|-------------------|--------|------------|
-| **proxmox-anker** (Lenovo ThinkCentre) | 100.69.179.87 / 10.1.0.92 | 🟢 ONLINE | 2.86 / 8 GB frei |
-| **stockenweiler-pve** (HP ProDesk) | 100.91.20.116 / 10.1.0.128 | 🟢 ONLINE ⚠️ | Load 7.9, RAM 434 MB frei |
-| **wolfstudiopc** | 100.98.31.60 / 10.1.0.211 | 🟢 ONLINE | — |
-| ~~frawo-docker-1~~ | ~~100.94.32.41~~ | 🔴 **STILLGELEGT** | Seit 13d offline |
+## 🟢🔴 Live-Status (2026-07-24, vollständig verifiziert)
+
+### PVE-Nodes & Workstations
+| Knoten | Tailscale / LAN-IP | Status | Load / RAM | Rolle / Bemerkung |
+|--------|-------------------|--------|------------|-------------------|
+| **proxmox-anker** (Lenovo ThinkCentre) | 100.69.179.87 / 10.1.0.92 | 🟢 ONLINE | 2.86 / 8 GB frei | PBS(240), HAOS(210), OpenClaw(150), Nextcloud(300) |
+| **stockenweiler-pve** (HP ProDesk) | 100.91.20.116 / 10.1.0.128 | 🟢 ONLINE | Load 0.80, RAM 5.1 GB frei | Odoo(140), Samba(120), NPM(103), AzuraCast(VM210), Monitoring(150) |
+| **wolfstudiopc** (StudioPC) | 100.98.31.60 / 10.1.0.211 | 🟢 ONLINE | Windows 11 | AV/IT Workstation, Netzlaufwerke M: + R:, Task `OpenClaw Node` |
+| ~~frawo-docker-1~~ | ~~100.94.32.41~~ | 🔴 **STILLGELEGT** | Offline | Netcup/Flo ESXi VM stillgelegt |
 
 ### stockenweiler-pve (ProDesk) — CT/VM-Übersicht
-| ID | Name | IP | Status | Dienste |
-|----|------|----|--------|---------|
-| CT101 | adguard | 10.1.0.52 | 🟢 | DNS |
-| CT103 | npm (nginx) | 10.1.0.149 | 🟢 | Reverse Proxy |
-| CT106 | wireguard | 10.1.0.239 | 🟢 | VPN |
-| CT108 | vaultwarden | 10.1.0.95 | 🟢 healthy | Passwort-Manager |
-| CT109 | pbs | 10.1.0.7 | ⏹ stopped | Backup Server |
-| CT110 | n8n | 10.1.0.100 | 🟢 | n8n + uptime-kuma |
-| CT120 | fileserver | 10.1.0.94 | 🟢 | Samba (Musik-Library) |
-| CT130 | mail-relay | — | ⏹ stopped | — |
-| CT140 | frawotech-web | 10.1.0.112 | 🟢 (30h!) | Odoo 19 + CF-Tunnel |
-| CT150 | monitoring-stack | — | ⏹ stopped | Grafana/Prometheus (nie migriert) |
-| VM210 | azuracast-vm | 10.1.0.38 | 🟢 | **Master-AzuraCast** |
-| VM360 | homeassistant-eltern | 10.1.0.248 | 🟢 | HA Eltern/Testkunden |
+| ID | Name | IP | Status | Dienste / Bemerkung |
+|----|------|----|--------|---------------------|
+| CT101 | adguard | 10.1.0.52 | 🟢 | Primary DNS |
+| CT103 | npm (nginx) | 10.1.0.149 | 🟢 | Nginx Proxy Manager (Reverse Proxy) |
+| CT106 | wireguard | 10.1.0.239 | 🟢 | VPN Gateway |
+| CT108 | vaultwarden | 10.1.0.95 | 🟢 healthy | Passwort-Manager (Bitwarden API) |
+| CT109 | pbs | 10.1.0.7 | ⏹ stopped | Alt-LXC (Ersetzt durch VM240 auf Anker) |
+| CT110 | n8n | 10.1.0.100 | 🟢 | n8n Workflows + Uptime-Kuma |
+| CT120 | fileserver | 10.1.0.94 | 🟢 | Samba (Musik `music` & Radio `radio` Master-Library) |
+| CT130 | mail-relay | — | ⏹ stopped | (Postfach via Brevo SMTP auf CT140) |
+| CT140 | frawotech-web | 10.1.0.112 | 🟢 | Odoo 19 (FraWo_GbR) + Cloudflare Tunnel "FraWo-RK" |
+| CT150 | monitoring-stack | 10.1.0.115 | 🟢 (`onboot=1`) | Prometheus, Grafana, Alertmanager, Dead-Man's-Switch |
+| VM210 | azuracast-vm | 10.1.0.38 | 🟢 | **Master-AzuraCast Radiostation** (Mounts `//10.1.0.94/music` & `/radio`) |
+| VM360 | homeassistant-eltern | 10.1.0.248 | 🟢 | Home Assistant Eltern/Testkunden |
 
 ### proxmox-anker (Lenovo) — CT/VM-Übersicht
-| ID | Name | IP | Status | Dienste |
-|----|------|----|--------|---------|
+| ID | Name | IP | Status | Dienste / Bemerkung |
+|----|------|----|--------|---------------------|
 | CT100 | toolbox | — | ⏹ stopped | — |
-| CT101 | adguard-slave | 10.1.0.27 | 🟢 | DNS-Slave |
+| CT101 | adguard-slave | 10.1.0.27 | 🟢 | Secondary DNS |
 | CT110 | storage-node | 10.1.0.81 | 🟢 | Storage |
-| CT130 | radio-node | 10.1.0.200 | 🟢 ⚠️ | azuracast(2.Instanz!), frawo-radio-backend, navidrome, funk-community, uptime-kuma |
-| CT150 | openclaw | 10.1.0.31 | 🟢 | @Frawo_bot (Haiku), Tailscale 100.72.154.15 |
-| VM210 | haos | 10.1.0.40 | 🟢 | Home Assistant Haupt |
-| VM240 | PBS-FraWo | — | 🟢 | Proxmox Backup Server |
+| CT130 | radio-node | 10.1.0.200 | 🟢 ⚠️ | azuracast(2.Instanz/Backup), navidrome |
+| CT150 | openclaw | 10.1.0.31 | 🟢 | @Frawo_bot (DevOps-Bridge Poller, Haiku), Tailscale 100.72.154.15 |
+| VM210 | haos | 10.1.0.40 | 🟢 | Home Assistant Haupt (10.1.0.40) |
+| VM240 | PBS-FraWo | 10.1.0.70 | 🟢 | Proxmox Backup Server (Daily 04:00) |
 | VM220 | odoo (alt) | — | ⏹ stopped | v17 Rollback |
-| VM300 | nextcloud | — | ⏹ stopped | — |
+| VM300 | nextcloud | 10.1.0.111 | 🟢 | Nextcloud (cloud.frawo.tech) |
 | VM330 | paperless | — | ⏹ stopped | — |
 
 ### Tailscale-Netz (Stand 2026-07-01)
