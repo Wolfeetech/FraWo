@@ -4,7 +4,7 @@
     "summary": "Autonomer Task-Agent: formatiert neue Tasks nach CI via lokalem Ollama",
     "author": "FraWo GbR",
     "license": "LGPL-3",
-    "depends": ["project", "mail"],
+    "depends": ["project", "mail", "maintenance"],
     "data": [
         "security/ir.model.access.csv",
         "data/config_params.xml",
@@ -12,6 +12,7 @@
         "views/agent_log_views.xml",
         "views/anker_tracker_views.xml",
         "views/anker_tracker_templates.xml",
+        "views/it_equipment_views.xml",
     ],
     "post_init_hook": "post_init",
     "application": False,

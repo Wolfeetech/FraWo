@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Inherit Equipment Form View -->
+    <record id="hr_equipment_view_form_it" model="ir.ui.view">
+        <field name="name">maintenance.equipment.form.it</field>
+        <field name="model">maintenance.equipment</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="IT Network &amp; Infrastructure">
+                    <group>
+                        <group string="Network Details">
+                            <field name="ip_address"/>
+                            <field name="tailscale_ip"/>
+                            <field name="vlan_id"/>
+                            <field name="is_critical"/>
+                        </group>
+                        <group string="Host &amp; Virtualization">
+                            <field name="pve_host"/>
+                            <field name="vm_ct_id"/>
+                            <field name="equipment_role"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Inherit Equipment Tree View -->
+    <record id="hr_equipment_view_tree_it" model="ir.ui.view">
+        <field name="name">maintenance.equipment.tree.it</field>
+        <field name="model">maintenance.equipment</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_view_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="ip_address"/>
+                <field name="tailscale_ip"/>
+                <field name="pve_host"/>
+                <field name="vm_ct_id"/>
+                <field name="is_critical"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
