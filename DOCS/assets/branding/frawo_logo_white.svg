@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 120" width="400" height="120">
+  <!-- FraWo Corporate Identity Logo - White Variant -->
+  <defs>
+    <linearGradient id="brandGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00E5FF" />
+      <stop offset="100%" stop-color="#7C4DFF" />
+    </linearGradient>
+  </defs>
+  <!-- Icon Symbol: Cybernetic Waves & Hexagon -->
+  <g transform="translate(10, 10)">
+    <polygon points="50,5 90,28 90,72 50,95 10,72 10,28" fill="none" stroke="url(#brandGrad)" stroke-width="4" />
+    <path d="M 30,50 L 50,30 L 70,50 L 50,70 Z" fill="url(#brandGrad)" opacity="0.9" />
+    <circle cx="50" cy="50" r="8" fill="#FFFFFF" />
+  </g>
+  <!-- Typography -->
+  <text x="120" y="62" font-family="'Inter', 'Helvetica', 'Arial', sans-serif" font-weight="900" font-size="42" fill="#FFFFFF" letter-spacing="1">FraWo</text>
+  <text x="120" y="85" font-family="'Inter', 'Helvetica', 'Arial', sans-serif" font-weight="600" font-size="14" fill="#00E5FF" letter-spacing="4">TECHNOLOGY &amp; MEDIA</text>
+</svg>
