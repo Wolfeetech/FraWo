@@ -267,3 +267,40 @@ class RadioController(http.Controller):
                 headers=[('Content-Type', 'application/json')],
                 status=500
             )
+
+    # ─────────────────────────────────────────────────────────────
+    # Prometheus Metrics Exporter: Anker Tracker
+    # ─────────────────────────────────────────────────────────────
+
+    @http.route('/anker/metrics', type='http', auth='public', methods=['GET'], csrf=False)
+    def anker_prometheus_metrics(self, **kwargs):
+        """Prometheus metrics endpoint for Anker Tracker drink consumption."""
+        try:
+            lines = [
+                "# HELP anker_unbilled_bottles Total unbilled bottles per product",
+                "# TYPE anker_unbilled_bottles gauge",
+            ]
+            products = request.env['anker.tracker.product'].sudo().search([('active', '=', True)])
+            for p in products:
+                # Count unbilled bottles
+                unbilled = sum(
+                    c.quantity for c in request.env['anker.tracker.consumption'].sudo().search([
+                        ('product_id', '=', p.id),
+                        ('billed', '=', False)
+                    ])
+                )
+                safe_name = p.name.replace('"', '\\"')
+                lines.append(f'anker_unbilled_bottles{{product="{safe_name}",emoji="{p.emoji}"}} {unbilled}')
+
+            # Consumers metric
+            lines.append("# HELP anker_active_consumers Total active consumers")
+            lines.append("# TYPE anker_active_consumers gauge")
+            consumer_count = request.env['anker.tracker.consumer'].sudo().search_count([('active', '=', True)])
+            lines.append(f'anker_active_consumers {consumer_count}')
+
+            content = "\n".join(lines) + "\n"
+            return request.make_response(content, headers=[('Content-Type', 'text/plain; version=0.0.4; charset=utf-8')])
+        except Exception as e:
+            _logger.error("Anker metrics error: %s", str(e))
+            return request.make_response(f"# Error: {str(e)}\n", status=500, headers=[('Content-Type', 'text/plain')])
+
