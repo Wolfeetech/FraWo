@@ -1,0 +1,100 @@
+# FraWo Smart Automation Template: Home Assistant + Shelly
+# Target: GrowBox & Indoor Gardening Climate / Light Automation
+
+blueprint:
+  name: "FraWo Indoor Gardening Climate & Lighting Control"
+  description: "Automates LED Grow Light schedule, exhaust fan based on humidity/temp, and safety shutoff via Shelly Plugs & Home Assistant."
+  domain: automation
+  input:
+    light_switch:
+      name: "LED Light Switch (Shelly Plug)"
+      selector:
+        entity:
+          domain: switch
+    temp_sensor:
+      name: "Temperature Sensor"
+      selector:
+        entity:
+          domain: sensor
+          device_class: temperature
+    humidity_sensor:
+      name: "Humidity Sensor"
+      selector:
+        entity:
+          domain: sensor
+          device_class: humidity
+    exhaust_fan:
+      name: "Exhaust Fan Switch (Shelly Plug)"
+      selector:
+        entity:
+          domain: switch
+    light_on_time:
+      name: "Light Turn ON Time"
+      default: "06:00:00"
+      selector:
+        time: {}
+    light_off_time:
+      name: "Light Turn OFF Time"
+      default: "00:00:00"
+      selector:
+        time: {}
+    max_humidity:
+      name: "Max Humidity Threshold (%)"
+      default: 65
+      selector:
+        number:
+          min: 40
+          max: 90
+          unit_of_measurement: "%"
+
+mode: restart
+
+trigger:
+  - platform: time
+    at: !input light_on_time
+    id: "light_on"
+  - platform: time
+    at: !input light_off_time
+    id: "light_off"
+  - platform: numeric_state
+    entity_id: !input humidity_sensor
+    above: !input max_humidity
+    id: "high_humidity"
+  - platform: numeric_state
+    entity_id: !input humidity_sensor
+    below: !input max_humidity
+    id: "normal_humidity"
+
+action:
+  - choose:
+      - conditions:
+          - condition: trigger
+            id: "light_on"
+        sequence:
+          - service: switch.turn_on
+            target:
+              entity_id: !input light_switch
+
+      - conditions:
+          - condition: trigger
+            id: "light_off"
+        sequence:
+          - service: switch.turn_off
+            target:
+              entity_id: !input light_switch
+
+      - conditions:
+          - condition: trigger
+            id: "high_humidity"
+        sequence:
+          - service: switch.turn_on
+            target:
+              entity_id: !input exhaust_fan
+
+      - conditions:
+          - condition: trigger
+            id: "normal_humidity"
+        sequence:
+          - service: switch.turn_off
+            target:
+              entity_id: !input exhaust_fan
