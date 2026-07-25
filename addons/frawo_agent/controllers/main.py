@@ -477,6 +477,54 @@ class RadioController(http.Controller):
             return request.make_response(f"<h2>Fehler bei der Abrechnungserstellung:</h2><p>{str(e)}</p>", status=500, headers=[('Content-Type', 'text/html')])
 
     # ─────────────────────────────────────────────────────────────
+    # Agent & Bot Status API (Task #827)
+    # ─────────────────────────────────────────────────────────────
+
+    @http.route('/api/agent/summary', type='http', auth='public', methods=['GET'], csrf=False)
+    def agent_summary_api(self, **kwargs):
+        """JSON summary endpoint for OpenClaw & Telegram Bots."""
+        import json
+        try:
+            # Unbilled Anker bottles
+            try:
+                unbilled = sum(
+                    c.quantity
+                    for c in request.env['anker.tracker.consumption'].sudo().search([('billed', '=', False)])
+                )
+            except Exception:
+                unbilled = 0
+
+            # Open tasks count
+            try:
+                open_tasks = request.env['project.task'].sudo().search_count([('active', '=', True), ('stage_id', 'in', [1, 2, 143, 144, 159])])
+            except Exception:
+                open_tasks = 0
+
+            # Live Radio Now Playing
+            try:
+                base_url, api_key = self._get_azuracast_config()
+                r = requests.get(f"{base_url}/api/station/1/nowplaying", verify=False, timeout=3)
+                np = r.json() if r.status_code == 200 else {}
+                song = np.get('now_playing', {}).get('song', {})
+                now_playing = f"{song.get('artist', '')} - {song.get('title', '')}".strip(" -")
+                listeners = np.get('listeners', {}).get('current', 0)
+            except Exception:
+                now_playing = "—"
+                listeners = 0
+
+            data = {
+                "status": "ok",
+                "unbilled_bottles": unbilled,
+                "open_tasks_count": open_tasks,
+                "radio_now_playing": now_playing,
+                "radio_listeners": listeners,
+                "timestamp": fields.Datetime.now().isoformat()
+            }
+            return request.make_response(json.dumps(data, indent=2), headers=[('Content-Type', 'application/json')])
+        except Exception as e:
+            return request.make_response(json.dumps({"status": "error", "message": str(e)}), status=500, headers=[('Content-Type', 'application/json')])
+
+    # ─────────────────────────────────────────────────────────────
     # Surface Go Kiosk Terminal Landing Page (Task #826)
     # ─────────────────────────────────────────────────────────────
 
