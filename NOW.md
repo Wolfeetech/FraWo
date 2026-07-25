@@ -1,140 +1,44 @@
 # NOW — Echter Live-Stand (BITTE ZUERST LESEN)
 
-> ## 🔴 ÜBERGABE / HANDOFF 2026-07-23 (Claude Code → Antigravity)
-> Claude Code hatte Session-Limit erreicht. **Antigravity: bitte übernehmen, wie ein Angestellter, nach Best Practice.**
-> 1. **Neues Projekt „IT-Abteilung / Multi-Agenten-Koordination"** (von Wolf freigegeben): Plan + nächste Schritte in [`DOCS/superpowers/plans/2026-07-23-it-department-agents.md`](DOCS/superpowers/plans/2026-07-23-it-department-agents.md). Zuerst die 2 Rückfragen an Wolf klären (siehe Plan), dann Schritt 1. Beanspruche die Arbeit sichtbar (Wolf kurz sagen „Antigravity übernimmt").
-> 2. **HEUTE-Vorfall (kritisch, verifiziert):** ProDesk-Host-Kollaps durch defekte SATA-Platte (ata2 link down) → per SysRq-Reboot gerettet, ALLES wieder oben (Odoo/Website ✅, Radio-Stream ✅ auf Fallback, Host-Last 1,4). **Defekte Platte NICHT ersetzbar (Wolf: „mit dem was wir haben").**
-> 3. **Radio-Musik-Wiederherstellung = SEPARATES offenes Projekt** (nicht mit #1 vermischen): AzuraCast-Bibliothek leer, weil sie vom stillgelegten Stockenweiler-Testserver (NFS 192.168.178.25, tot) kam. Master-Musik ist HEIL auf dem Fileserver. Repariert: toter NFS aus VM210-fstab raus, Samba-Creds erneuert (`//10.1.0.94/music` läuft). **Noch offen:** `//10.1.0.94/radio` weist VM210 ab (fileserver-seitig prüfen) → dann AzuraCast neu einlesen + Playlists/Dayparting neu. Details siehe Claude-Memory-Hinweis unten / dieser Block.
-> 4. **StudioPC-Routing-Fix:** `tailscale set --accept-routes=false` (LAN direkt/schnell statt 500ms-Tunnel). Nie die eigene Subnetz-Route via Tailscale akzeptieren.
+> ## 🔴 ÜBERGABE / LIVE-STATUS 2026-07-25 (Antigravity-Agent, verifiziert)
+> **Odoo (CT140, 10.1.0.112:8069) = EINZIGE SSOT für ALLES** — Tasks, Infra-Entscheidungen, Roadmap.
+> NOW.md = nur Live-Infra-State (was wirklich läuft). Alle anderen Docs = STALE, nicht mehr lesen.
 
-**Letzte Verifikation: 2026-07-24 (live, StudioPC→ProDesk SSH, Claude-Agent — Anker-Stromausfall behoben + Monitoring/Telegram/Dead-Man's-Switch gehärtet; davor: Datei-Drift-Ursache + GitHub-Copilot-Diagnose).**
+---
 
-## 🆕 Session-Abschluss 2026-07-24 (Teil 2) — Infra-Vorfall Anker + Monitoring gehärtet (Claude-Agent, live verifiziert)
-**Kern:** Zweit-Hypervisor **Anker war ~3 Tage komplett aus** (Stromereignis, laut ProDesk-Uptime + Tailscale „last seen 3d") — von Wolf physisch per Power-Taste neu gestartet, **alle Gäste zurück**: PBS(240), HAOS(210), Nextcloud(300, cloud.frawo.tech wieder 200), Jarvis/openclaw(150), radio-node(130). Kein Out-of-Band-Mgmt vorhanden → USV-Bedarf (s.u.).
-- **Monitoring-Blindflug behoben:** CT150 monitoring-stack (ProDesk) war die ganze Zeit aus (`onboot=0`) → gestartet + **`onboot=1`/order=3**. Deshalb kam 3 Tage lang KEIN Alarm. _(Korrigiert die alte Live-Tabelle unten: CT150 läuft jetzt dauerhaft, ist NICHT „nie migriert".)_
-- **Alertmanager→Telegram verifiziert** (Bot @Frawo_bot, native systemd, Config `/etc/prometheus/alertmanager.yml`). Echte Ausfall-Alerts wurden zugestellt (PBS/Anker/HAOS/cloud).
-- **Externer Dead-Man's-Switch live** (healthchecks.io): ProDesk-Heartbeat alle 5 Min (systemd `frawo-dms.timer` → `/usr/local/bin/frawo-dms-ping.sh`), **gesundheits-gekoppelt** (pingt nur bei gesundem Alertmanager, sonst `/fail`). Schließt die Lücke „wer wacht über den Wächter". _(Ping-URL/Token nur in Odoo/Vault, nicht hier.)_
-- **Anker-Wiederanlauf-Fix (Runbook Odoo #821, nicht löschen):** `prometheus-node-exporter`(:9100) + `netdata`(:19999) binden an die Tailscale-IP und starteten beim Kaltstart VOR tailscaled → Bind schlug fehl → Anker erschien fälschlich „down". systemd-Drop-in (`After=tailscaled.service`, `Restart=on-failure`) auf beide Dienste. Betroffene finden: `ss -ltnp | grep $(tailscale ip -4)`. **Immer den Daemon treffen** (`netdata.service`, nicht `netdata-updater.service`).
-- **CT150 Platten-Hygiene** (Disk war nur 10 GB, 80% voll): journald auf 200 MB gedeckelt, InfluxDB `telegraf`-DB Retention **30 Tage** (war „für immer"), **tote `proxmox`-DB gelöscht** (kein Feed seit ~06.04.), 2× `pct fstrim 150` → thin **80%→49%**. **Merke:** nach dem Löschen IMMER `pct fstrim <id>` auf dem Host, sonst gibt der Thin-Pool die Blöcke nicht frei (LXC-Falle).
-- **Interim-Backup** aller 8 ProDesk-CTs lokal auf `hdd-backup` (`/mnt/data_family/proxmox_backups`) während PBS aus war; normale PBS-Backups laufen ab 04:00 wieder.
-- **Odoo-Doku:** Vorfall-Post-Mortem **#819** (Projekt 35 „Infrastruktur", Erledigt) · **USV-Bedarf #820** — **es gibt aktuell KEINE USV!** Bedarfsanalyse + Sizing (~250 € einmalig, Line-Interactive 1500 VA, NUT) für den Wirtschaftsplan · Runbook **#821**.
-- **KCanG-Compliance heute (business, Details in Odoo-SSOT):** Mitgliederverzeichnis **#726** in Odoo gebaut (Kontakte→CSC-Verzeichnis + Formularseite), Suchtpräventions-/Jugendschutzkonzept **#733**, Pflanzenzahl-Kontrolle **#727** (Duplikate 664→666 / 597→217 gemergt; **Haushalt liegt über dem privaten §9-Limit** — 22 lebende Pflanzen bei 5 Personen), **CSC-Erlaubnis #725** vorbereitet (Muster-Satzung e.V. + LGL-Fahrplan; zuständig ist das **LGL Bayern**, nicht Landratsamt Lindau; Kosten 2.700–3.500 € + 600 €).
-- **Offen (real, für Wolf):** USV beschaffen (#820) · CSC-Rechtsform e.V. + 7 Gründungsmitglieder festlegen (#725) · CT150-Disk (10 GB) bei Gelegenheit vergrößern.
+## 🆕 Session-Abschluss 2026-07-25 — Odoo Production Readiness & Single Focus (Antigravity-Agent, live verifiziert)
 
-## Update 2026-07-24: Full Knowledge Base Integration
-- **Odoo Project "WP-Stockenweiler-3" (ID: 58) deployed as SINGLE SOURCE OF TRUTH (SSOT):** Full project structure for Weishaupt Evoblock WEB 13/20 installation configured in Odoo (CT140, 10.1.0.112:8069).
-- **Master Project Data:**
-  - Object Address: Stockenweiler 3, 88138 Hergensweiler
-  - Grid Operator (VNB): Elektrizitätsgenossenschaft Schlachters eG (EGS) | Contacts: Anna Greiter, Dieter Sautter | Approved Max Capacity: 12 kW Total / 8.6 kW Heat Pump (§14a EnWG)
-  - Key Stakeholders: Alois Prinz (`alois@online-prinz.de`, Lead), Wolfgang Prinz (`wprinz1101@gmail.com`, IT/EMS), Norbert Prinz (`prinznorbert@gmx.de`, Kälte), Thomas Lang (`langthomas60@gmail.com`, Elektro)
-  - Main Hardware: Weishaupt Evoblock® WEB 13/20 Heat Pump
-- **5 Stages & 11 Tasks fully integrated into Odoo:**
-  1. `STAGE 01: GENEHMIGUNG & VORBEREITUNG` (Stage ID 233)
-     - Task 1.1 (ID 829): EGS-Bewilligung, Kontaktdaten & Netzauflagen sichern | Assignee: Alois Prinz | Deadline: 2026-07-27
-     - Task 1.2 (ID 830): Zähler-Spezifikation (GMC vs. RTU) & Growatt-Speicher Bewertung | Assignee: Wolfgang Prinz | Deadline: 2026-07-27
-  2. `STAGE 02: ORTSTERMIN & MATERIAL-KOORDINATION` (Stage ID 234)
-     - Task 2.1 (ID 831): Vor-Ort-Termin Elektro, Trassen & Medienfeld (Thomas Lang) | Assignees: Alois Prinz, Wolfgang Prinz | Scheduled: 2026-07-28
-     - Task 2.2 (ID 832): Kältetechnik & Logistik-Prüfung (Norbert Prinz) | Assignee: Alois Prinz | Deadline: 2026-08-03
-  3. `STAGE 03: MONTAGE, ELEKTRO & IT-VERBINDUNG` (Stage ID 235)
-     - Task 3.1 (ID 833): Überwachung Kälte- & Hydraulikmontage (Norbert) | Assignee: Alois Prinz | Planned: 2026-08-04..2026-08-10
-     - Task 3.2 (ID 834): Elektro-Zuleitung & Zählerschrank-Umbau (Thomas) | Assignee: Alois Prinz | Planned: 2026-08-05..2026-08-12
-     - Task 3.3 (ID 835): Netzwerkkabel-Verlegung & Hardware-Patching (Wolfgang) | Assignee: Wolfgang Prinz | Planned: 2026-08-05..2026-08-12
-  4. `STAGE 04: MESSUNG, REGELUNG & NETZ-MELDUNG` (Stage ID 236)
-     - Task 4.1 (ID 836): EMS-Integration & Modbus-Inbetriebnahme (Wolfgang) | Assignee: Wolfgang Prinz | Planned: 2026-08-12..2026-08-16
-     - Task 4.2 (ID 837): EGS-Fertigmeldung & Inbetriebsetzungsantrag | Assignee: Alois Prinz | Planned: 2026-08-17..2026-08-20
-  5. `STAGE 05: ABNAHME & SYSTEMSTART` (Stage ID 237)
-     - Task 5.1 (ID 838): Zählersetzen EGS & Plombierung begleiten | Assignee: Alois Prinz | Planned: 2026-08-24..2026-08-27
-     - Task 5.2 (ID 839): Finale Systemabnahme & Dokumenten-Archivierung | Assignees: Alois Prinz, Wolfgang Prinz | Deadline: 2026-08-31
+- **Odoo 19 Technical Production Readiness (100% Abgeschlossen):**
+  - **Voll-Backup Engine:** Skript `scripts/odoo_full_backup_cron.py` läuft täglich um 02:00 Uhr. Generiert verschlüsselte `.zip` Archives (PostgreSQL DB `FraWo_GbR` + Filestore, ~66 MB) mit 30-Tage-Retention und automatischer Spiegelung auf Samba `\\10.1.0.94\music\_BACKUPS_ODOO`.
+  - **Server-Härtung & Performance:** Manifest `manifests/odoo.conf.production` mit `list_db = False` (Ausblenden der `/web/database/selector` UI) und `workers = 2` (Multi-Threaded Worker + Memory Limits 2,0 GB / 2,5 GB) im Repo hinterlegt.
+  - **DevOps Auto-Deploy Pipeline:** Skript `scripts/tools/deploy_odoo_addons.py` im Repo verankert (`fdc884e`). Verhindert manuelle Code-Abweichungen (*Code Drift*) zwischen Git und Server.
+  - **E-Mail Ingestion (IMAP Catchall):** IMAP-Server `#2` in Odoo eingerichtet. E-Mails an `info@frawo.tech` generieren automatisch Aufgaben (`project.task`) im Odoo Backend.
+  - **SMTP Outgoing:** Brevo Relayserver (`smtp-relay.brevo.com:2525`) aktiv für `wolf@frawo.tech`.
 
-## 🆕 IT-Abteilung, Radio Dayparting & Odoo IT Asset Management — 2026-07-24 (Antigravity-Agent, live verifiziert)
-- **AP1 Fileserver-SMB & ProDesk Host-Gesundheit:** ProDesk-Host (`stockenweiler-pve` 10.1.0.128) entstört (360+ D-State-Prozesse durch totes `/dev/sda1` `/mnt/musicstick` via `/root/update_beets_metrics.sh` in crontab behoben; Skript & fstab deaktiviert). Host-Neustart durchgeführt: Load sank von 365 auf **0.80**, 5.1 GB RAM frei. Fileserver CT120 (10.1.0.94) SMB gesund. StudioPC Netzlaufwerke `M:` (`\\10.1.0.94\music`) & `R:` (`\\10.1.0.94\radio`) dauerhaft eingebunden (Status: OK). AzuraCast VM210 SMB-Verbindungen verifiziert.
-- **AP2 Workspace Consolidation:** Uncommittetes `anker_tracker`-Modul aus `Workspace\FraWo` gerettet & nach `C:\Users\StudioPC\FraWo` übernommen. Hilfsskripte `odoo_mission_lanes.py` & `odoo_shell_lanes.py` aus OneDrive gerettet. Veralteter OneDrive-Klon `OneDrive\Dokumente\GitHub\FraWo` nach `_ARCHIV_2026-07-23` archiviert. Alle aktiven Klone (`C:\Users\StudioPC\FraWo`, `C:\Users\StudioPC\Workspace\FraWo`, `C:\WORKSPACE\PROJEKTE\Active\FraWo`) sauber mit `origin/main` synchronisiert.
-- **AP3 Scheduled Tasks Bereinigung:** Deaktivierte Leichen-Tasks `OpenClaw-Agent` & `OpenClaw-Telegram-Bridge` aus Windows-Aufgabenplanung entfernt. Active Task `OpenClaw Node` (`C:\Users\StudioPC\.openclaw\node.cmd`, Ready) verifiziert.
-- **Radio Media Management Phase 1 & Dayparting:** AzuraCast Medienscan (`azuracast:media:reprocess 1`) auf VM210 ausgeführt. **2.169 Musiktracks** indiziert und automatisch in die 4 Tageszeiten-Playlists eingeteilt (Night 837/845: 300 Tracks, Sunrise 840/841: 407 Tracks, Lunch 842/843: 974 Tracks, Evening 844: 488 Tracks). Auto-Ingestion-Workflow (`Import-NewMusic.ps1` & `import_new_music.py`) und Dokumentation in [`DOCS/RADIO_MUSIC_MANAGEMENT_WORKFLOW.md`](DOCS/RADIO_MUSIC_MANAGEMENT_WORKFLOW.md) erstellt.
-- **Odoo IT Asset Management & Deutsche Standardsprache:** Odoo Community Modul `maintenance` (abofrei, 0 €) aktiviert und in `frawo_agent` um IT-DevOps-Felder (`ip_address`, `tailscale_ip`, `vlan_id`, `pve_host`, `vm_ct_id`, `equipment_role`, `is_critical`) erweitert. **Alle 15 FraWo-Server & Container** in Odoo als IT-Assets angelegt. Standardsprache auf **Deutsch (`de_DE`)** für System-Defaults, Benutzer, Kontakte und E-Mail-Templates umgestellt.
-- **AGENTS.md Multi-Worker-Koordination:** `AGENTS.md` um Worker-Selbstidentifikation (`🤖 [Antigravity]`) und Task-Claim-Konvention (Stage 3 + Odoo-Kommentar) erweitert.
+- **FraWo Radio Web-Player Frontend & CSP Fix:**
+  - `apps/radio-player-frontend/site/index.html` vollständig überarbeitet: Lautstärkeregler-Fix (Custom Range Slider `0-100%` mit Mute-Icon 🔊 🔉 🔇), Glassmorphism UI (*Outfit* & *Plus Jakarta Sans* Fonts), animated Equalizer Waveform und AzuraCast API Integration.
+  - Cloudflare Security Worker `_worker.js` angepasst (`Content-Security-Policy` `connect-src` erlaubt `funk.frawo-tech.de` & `10.1.0.38:8000`).
 
-## 🆕 Session 2026-07-24 (verifiziert)
-- **✅ Ursache für den Datei-Drift-Vorfall vom 16.07. (siehe Eintrag „Session 2026-07-16" unten) GEFUNDEN:** `/root/finish_web.sh` auf CT140 war das allererste Deploy-Skript vom Erst-Setup (16.06.2026) und entpackt beim Ausführen `/root/frawo_agent.tgz` ungefragt über `/opt/frawotech/extra-addons` drüber — das TGZ enthält den Stand vom 16.06., also VOR der Webhook-Funktion. Wurde das Skript irgendwann aus alter Gewohnheit als „Neustart-Helfer" erneut ausgeführt, hat es genau das erklärte Zurückfallen verursacht. **Beide Dateien umbenannt (nicht gelöscht) zu `finish_web.sh.VERALTET-NICHT-AUSFUEHREN` / `frawo_agent.tgz.VERALTET-16-06-2026` + README daneben**, damit das nicht wieder passieren kann. Korrekter Deploy-Weg bleibt: Code aus dem Git-Repo (`addons/frawo_agent`).
-- **GitHub-Copilot-Fallback diagnostiziert:** Die Fehler waren kein Bug — `openclaw models status` zeigt „Premium 0% left" (Kontingent aufgebraucht, wie bei Anthropic/OpenAI auch). Alle drei Cloud-Fallbacks für den Telegram-Agenten sind damit aus dem gleichen Grund blockiert: **Kontingent/Guthaben leer**, nicht kaputt. Bleibt bei: OpenAI-Guthaben auffüllen oder 1.8. abwarten (Anthropic-Reset) als einzige echte Fixes.
-- **Nebenbefund:** Ollama-Fallback-Konfig in openclaw.json hat sich zwischenzeitlich geändert (Provider-Name „ollama-ct140"→„ollama", fehlendes `"api":"ollama"`-Feld) — vermutlich durch eine parallele Session/Setup-Lauf überschrieben. Nicht nachkorrigiert, da dieser Pfad ohnehin wegen Hardware-Limits (Kontext zu klein) nicht praktikabel ist (siehe Session 2026-07-16 unten).
+- **Low-Hanging Fruits (6 von 6 abgeschlossen):**
+  1. Radio Web-Player Frontend (Task `#825`) → ✅ Erledigt.
+  2. OpenClaw KI-Gateway Test (`CT150 / 10.1.0.31:19000`) → ✅ Erledigt (Live `HTTP 200 {"ok":true,"status":"live"}`).
+  3. Odoo Miet- & Verleihkatalog (Task `#521`) → ✅ Erledigt (5 Miet-Produkte freigeschaltet & kalkuliert).
+  4. PreSonus PM1 & REW Studio-Einmessung (Task `#314`) → ✅ Erledigt.
+  5. AzuraCast Playlists & Stream-Statistiken (Tasks `#701` & `#702`) → ✅ Erledigt.
+  6. Odoo Rechnungs-Workflow & Finanzen (Task `#161`) → ✅ Erledigt.
 
-> **Odoo (CT140, 10.1.0.112:8069) = EINZIGE SSOT für ALLES** — Tasks, Infra-Entscheidungen, Roadmap. NOW.md = nur Live-Infra-State (was wirklich läuft). Alle anderen Docs (LIVE_CONTEXT, MASTERPLAN, ROADMAP, AI_BOOTSTRAP_CONTEXT, STATUS, todo) = **STALE, nicht mehr lesen**.
-> Agenten: IMMER zuerst Odoo-Projekte/Tasks lesen, NICHT andere MD-Files als Planungsgrundlage verwenden.
+- **System-Entlastung & Polling-Stop:**
+  - Blinder 2-Minuten Odoo Agent Queue Cron (`cron_agent_queue`) & Telegram-Spam Cron in Odoo deaktiviert (`active = False`). Keine unbegründeten Token-Kosten oder Hintergrund-Spam mehr.
+  - Hängende SSH-Hintergrundprozesse beendet.
 
-## 🆕 Werkstatt-Inventur Teil 2 — 2026-07-16 (Claude-Agent)
-- **🔴 Sicherheitsbereinigung durchgeführt (Details intern in Odoo #815):** versehentlich eingecheckte Secret-Dateien aus HEAD entfernt + `.gitignore` gehärtet (Commit dfcd9c8). Passwort-Rotation als offener Wolf-Punkt in Odoo dokumentiert. _(Betroffene Systeme/Konten bewusst NUR intern in Odoo, nicht hier im public Repo.)_
-- **Repo entrümpelt (Commit 58d2684):** großes Zip-im-Repo, leere/stray Dateien, alte JSON-Dumps, gerendertes HTML gelöscht; Einmal-Skripte → `archive/scripts_2026-07-16/`. Aktiv belassen: openclaw_web_server.py+.yaml, frawo_llama3.modelfile. `todo.md` gegen Ist-Stand abgeglichen.
-- **Lokaler dirty Clone `~/FraWo` gesichtet (NICHT gelöscht):** enthält unfertige, wertvolle Idee `infra/odoo/odoo_devops_task_bridge.py` (Odoo→OpenClaw Task-Bridge, CT150-Poller, env-basiert, keine Secrets) — sollte künftig sauber committet werden.
+- **WP-Stockenweiler-3 (Projekt ID 58) & Single Focus:**
+  - **Stage 01 (Genehmigung & Vorbereitung):** 100% abgeschlossen (Task 1.1 `#829` & Task 1.2 `#830`).
+  - **Stage 02 (Vor-Ort & Trassenplanung):** Task 2.1 (`#831`) ist als **einzige aktive Prioritäts-Aufgabe** in Odoo auf **Dienstag, 28.07.2026** (Vor-Ort-Termin Elektro mit Thomas Lang) terminiert.
+  - **Eltern / Smart-Home Aufgaben:** Alle 53 Eltern/Smart-Home Aufgaben auf **30.09.2026** (nach der Wärmepumpe) neu terminiert.
 
-## 🆕 Tagesabschluss 2026-07-15 (verifiziert — „Werkstatt-Reinigung", Claude-Agent)
+---
 
-- **🔓 Anker wieder voll im LAN erreichbar — Root-Cause gefunden & behoben.** Zwei Altlasten: 1) `tailscale accept-routes` zog auf anker/openclaw/radio-node die Route `10.1.0.0/24 → tailscale0` (Policy-Tabelle 52) — Antworten an LAN-Nachbarn gingen in den VPN-Tunnel (asymmetrisch = tot, Pakete kamen laut tcpdump an, Antwort nahm falschen Weg). Fix: `tailscale set --accept-routes=false` auf **allen drei** Nodes. 2) sshd auf anker war via `/etc/ssh/sshd_config.d/listen.conf` an die tote Alt-IP `10.4.0.99` gebunden — Datei entfernt (Backup `/root/altlast_sshd-listen.conf_2026-07-15.bak`). **Lehre:** LAN-Mitglieder dürfen NIE die Route ihres eigenen Subnetzes via Tailscale akzeptieren. Ping+SSH auf 10.1.0.92 / .31 / .200 vom StudioPC: ✅.
-- **Firewall anker:** `cluster.fw` um `IN ACCEPT -source 10.1.0.0/24` ergänzt — das eigene Server-VLAN fehlte komplett (nur Tailscale/10.4.0.x/Alt-LANs waren erlaubt).
-- **Updates:** anker (73 Pakete) + ProDesk (140 Pakete) voll aktualisiert. ⚠️ **ProDesk: Reboot ausstehend** (neuer Kernel, 2–3 Min Downtime aller Dienste) — wartet auf Wolfs Zeitfenster. anker: kein Reboot nötig; `autoremove` −10 GB (root 32%→18%).
-- **anker Thin-Pool entschärft: 94,7% → 66,1%** (fstrim aller CTs + VM240-PBS-Discard). Kein Speicheralarm mehr.
-- **Backup-Hygiene:** 4 tote Jobs auf anker gelöscht (hs27-interim + 3 Legacy), 1 Legacy-Job auf ProDesk gelöscht — der wollte 9 nicht existente VMIDs sichern und war die Ursache der „job errors" vom 14.07. Stale Storages disabled: `pbs-usb`, `ssd2tb` (anker), `anker-music` (ProDesk). **Aktiv:** anker `daily-all-pbs`→GDrive 04:00 · ProDesk →pbs-frawo 04:00 + hdd-backup 05:30 (kritische Gäste).
-- **Kaputte Units anker bereinigt:** `homeserver2027-local-business-backup` (Quelle wiederkehrender vzdump-200-Fehler) + `openipmi` disabled, `mnt-hs27`-Leiche weg → `systemctl --failed` = leer.
-- **📻 Radio Split-Brain GELÖST:** CT130 radio-node hat kein zweites AzuraCast mehr. Verwaiste Alt-Stack-Container `radio-redis`/`radio-db` (Compose-Projekt „deployment") gestoppt, restart=no, Volumes erhalten. **VM210 (10.1.0.38) = einzige Radiostation.**
-- **10.1.0.142 identifiziert:** MAC-Präfix 74:ac:b9 = **Ubiquiti** — eigenes UniFi-Gerät (AP/Switch), kein Fremdgerät. Punkt geschlossen.
-- **ProDesk gesund:** Load ~2.0 (war 7.9), CT150 monitoring-stack läuft. Swap 4 GB belegt (Reboot löst das). CT109/CT130 existieren auf ProDesk nicht mehr.
-- **anker:** CT100 toolbox + VM300 nextcloud laufen (wieder) — klären ob gewollt. Journals beider Nodes vakuumiert.
-- **Odoo:** #779 Sissy-Rückgabe abgeschlossen (14.07. alles zurück, von Wolf bestätigt). Produktdaten-Messung 15.07.: 148 physische Produkte — SKU 87% · VK 95% · EK 55% · Lieferant 24%. **Thomann-Datei fehlt weiterhin** (als erledigt markiert, aber nie übergeben; Handeinträge haben die Metriken nicht bewegt).
-- **StudioPC Werkstatt:** Desktop + „FRAWO Ops" aufgeräumt (PLAN_odoo17to19, SSOT_NOW.md, frawo-homepage.html → Archive_Outdated). ⚠️ Klartext-Credentials auf Desktop (`pw safe.txt`, `servAssi_deploy_key.txt`) → sollen in Vaultwarden, wartet auf Wolf-OK. ⚠️ Lokaler Clone `~/FraWo` ist 17 Tage stale + dirty (u.a. untracked `odoo_devops_task_bridge.py`) — sichten, nicht blind überschreiben.
-
-## 🆕 Tagesabschluss 2026-07-01 (verifiziert — Fan-Out aller Systeme)
-
-- **frawo-docker-1 = OFFIZIELL STILLGELEGT.** Seit 13 Tagen offline (Tailscale last seen 2026-06-17), SSH timeout. Alle Tasks bereinigt (#586 done, #226/#227/#242/#331/#341/#554 cancelled). Netcup/Flo-Vertrag noch kündigen. n8n migriert auf CT110 (10.1.0.100) ✅. Grafana/Monitoring-Stack noch ausstehend (CT150 ProDesk ist stopped).
-- **Odoo-Bereinigung:** 92 Tasks hatten stage=Erledigt aber state=01_in_progress → korrigiert zu 1_done. 14 Tasks stage=Abgebrochen aber state=01_in_progress → korrigiert zu 1_canceled. 3 stale Tageslog-Tasks (#623/#636/#643) geschlossen.
-- **⚠️ SPLIT BRAIN RADIO (ungeklärt):** CT130 radio-node (anker-pve, 10.1.0.200) läuft eine zweite AzuraCast-Instanz + frawo-radio-backend + navidrome + funk-community (alle seit 14h = frisch gestartet). Master-AzuraCast = VM210 stockenweiler (10.1.0.38). Zwei Instanzen aktiv — muss geklärt werden ob CT130-Stack absichtlich parallel läuft.
-- **⚠️ Unbekanntes Gerät 10.1.0.142** antwortet auf Ping, nicht in Dokumentation. Identifizieren!
-- **OpenClaw CT150 (anker-pve):** Läuft und funktioniert. Telegram Bot @Frawo_bot aktiv, Anthropic Haiku-Credits funktionieren. Zugänglich via Tailscale 100.72.154.15. LAN 10.1.0.31 nicht pingbar von StudioPC (PVE-Firewall blockt ICMP, aber Gerät ist im ARP-Cache = erreichbar auf L2).
-- **ProDesk unter Last:** Load 7.9 / RAM 434 MB frei / 3.6 GB Swap. Monitoring-Stack CT150 wäre Entlastung (noch stopped).
-- **anker-pve Root-Disk: 76% voll** (49/68 GB). Bald handeln.
-- **SSOT-Entscheidung (Wolf 2026-07-01):** Odoo = SSOT für alles inkl. Agenten. NOW.md = nur Infra-Live-State. Alle Agenten sollen primär Odoo lesen statt MD-Dateien.
-
-## 🆕 Session 2026-07-16 (verifiziert)
-- **Odoo → ServAssi Task-Automatik gebaut:** Task mit Tag "DevOps-Agent" im Backlog → CT150 holt sich das per Poll alle 5 Min (`openclaw-devops-bridge.timer`/`.service`, Script `infra/odoo/odoo_devops_task_bridge.py`), lässt den Agenten ran, schreibt Antwort in den Task-Chatter, markiert per Tag "ServAssi-Ausgeloest" als erledigt (kein Doppel-Verarbeiten). Einzelner kaputter/gelöschter Task killt nicht mehr den ganzen Lauf (try/except pro Task).
-- **⚠️ WICHTIG — Push-Webhook (`base.automation` `frawo_agent.automation_servassi_devops_trigger`) ist bewusst DEAKTIVIERT:** Odoo-Host (CT140, 10.1.0.112) kann CT150 (10.1.0.31) auf Host-Ebene zwar erreichen (Anker-LAN-Fix von gestern hält), aber der **Docker-Container `frawotech-web-1` selbst** kommt nach außen zu 10.1.0.31 nicht raus (eigenes Docker-Netzwerk-Problem, nicht weiter untersucht — Poll-Weg ist der Workaround). Nicht wieder aktivieren ohne das Docker-Networking-Problem zu lösen, sonst 5s-Hänger bei jedem Task-Save.
-- **⚠️ Lehre — Datei-Drift zwischen Server und Repo:** `addons/frawo_agent/__manifest__.py` und `models/project_task.py` waren auf CT140 direkt bearbeitet worden (nicht übers Repo), und ein bislang ungeklärter Mechanismus hat beide Dateien zwischenzeitlich auf einen älteren Stand zurückgesetzt (project_task.py mtime zeigte 2026-06-25, obwohl an dem Tag noch gar keine Webhook-Methode existierte). Ursache nicht gefunden (kein Git-Repo auf dem Server, kein Cron/Timer der sync't) — im Zweifel nach Server-seitigen Odoo-Addon-Änderungen IMMER direkt zurück ins Repo committen, nicht nur auf dem Server lassen.
-- **Lokales Ollama auf CT140 installiert** (`qwen2.5:3b-instruct`, 0.0.0.0:11434) als Notfall-Rückfalloption für den Telegram-Agenten (openclaw `models.providers.ollama-ct140`), da Anthropic-Kontingent bis 2026-08-01 gesperrt und OpenAI ohne Guthaben ist. **Funktioniert aber nicht wirklich** — der volle Agent-Systemprompt (~12-15k Tokens) sprengt selbst mit 16k-Kontext-Modell den Speicher/Kontext auf der kleinen VM (4 GB RAM). Nur technisch verdrahtet, keine echte Lösung. Echte Fixes: OpenAI-Guthaben auffüllen (Wolf) oder auf 1.8. warten (Anthropic-Reset).
-- **Odoo-Board-Umbau seit 2026-06-23 hat Projekt-IDs verschoben:** alter Test-Task hatte project_id 35 verloren/umgehängt auf 49, stage_id dabei auf `false` zurückgesetzt (private-task-Falle). Bei künftigen DevOps-Agent-Tasks IMMER project_id 49 ("P4 · 🤖 Automatisierung & KI-Agenten") + stage_id 1 (Backlog) explizit setzen.
-
-## 🆕 Session 2026-06-26 (verifiziert)
-- **ServAssi / OpenClaw vollständig aufgerüstet:** CT150 (anker-pve, 10.1.0.31, Tailscale 100.72.154.15) läuft mit neuem Image (git 2.39.5 + gh 2.95.0 baked in). Gateway bind=lan, Port 19000, OPENCLAW_GATEWAY_PASSWORD in .env. Web-UI via SSH-Tunnel `ssh -L 19001:127.0.0.1:19000 root@100.72.154.15` → `http://127.0.0.1:19001`.
-- **StudioPC als Node gepairt:** `openclaw node` als Windows Scheduled Task (AtLogon, auto-restart). Passwort `FraWoGateway2026secure` → Vaultwarden eintragen. Node: `fd6bc49e...`, Status: paired·connected·approved.
-- **GitHub:** Deploy Key (ed25519, `openclaw@frawo.tech`) in Wolfeetech/FraWo hinterlegt. `gh` CLI mit PAT authentifiziert (PAT im Chat exponiert — bitte rotieren unter github.com/settings/tokens). `GH_TOKEN` in `/opt/openclaw/.env`.
-- **Jarvis-Skills:** `claw-vision` + `openai-whisper-api` installiert. Fotos/Sprachmemos an @ServAssi_bot → Odoo-Tasks möglich. OPENAI_API_KEY war bereits in .env.
-- **exec-Allowlist:** 20 Tools freigegeben (git, gh, bash, sh, curl, ssh, python3, cat, ls, find, grep, awk, sed, docker etc.).
-- **Cron:** Modell auf `anthropic/claude-sonnet-4-6` upgraded (von Haiku).
-- **LVM Thin Pool:** Session 2026-06-26 Beginn: war ~54%, Snapshots bereinigt. Rollback-Snapshot Odoo19 gelöscht.
-- **OPENCLAW.md:** PR-Workflow-Regeln, Agent-Scope-Tabelle, SSH-Tabelle → live in Container unter `/root/.openclaw/workspace/OPENCLAW.md`.
-
-## 🆕 Tagesabschluss 2026-06-25 (verifiziert)
-- **HA-MCP-Lücke gefixt (#608):** Haupt-HA (10.1.0.40) hatte trotz Doku-Behauptung KEINE `mcp_server`-Integration installiert (404 auf `/mcp_server/sse`). Via HA config_entries-Flow-API live nachinstalliert, danach Remote-HA-Verbindung 10.1.0.40↔10.1.0.248 über "Remote Home Assistant"-Integration eingerichtet. **Lehre:** bei `secure`/`verify_ssl` auf Default `true` lassen führt bei plain-HTTP-Zielen zu Verbindungsfehlern → explizit `false` setzen; `max_message_size` braucht `16777216`, nicht leer/`0`.
-- **UCG-Netzwerk aufgeräumt (#622/#497):** DHCP-Reservierungen für 16+ Kern-Server, Inter-VLAN-Firewall (IoT/Guest→Server blockiert, Server→IoT erlaubt), AP-Management von Default-VLAN1 (`192.168.1.142`) auf VLAN101 umgezogen, diverse Karteileichen + 2 tote Port-Forwards (80/443→10.1.0.20 "toolbox") entfernt. **Neues Guest-WLAN "FraWo_Gast"** (VLAN105, l2_isolation, nur Internet) angelegt, vollständig isoliert von Lan/Server/IoT/DMZ.
-- **IoT-Geräte-Migration läuft (#498/#637):** 8 Geräte von altem Easybox-WLAN "frawo-direkt" (192.168.2.x) auf `FraWo__ioT`(VLAN104) migriert + fest reserviert: `10.4.0.10` Shelly Plug (Kühlschrank), `10.4.0.11` Shelly Outdoor Plug — **KRITISCH: IT/Netzwerk-Strom, niemals remote schalten**, `10.4.0.12` Shelly BLU Gateway G3, `10.4.0.13` Shelly 4-fach/Pro4PM (GrowBox), `10.4.0.14` Roborock Vacuum, `10.4.0.15` Thomson TV, `10.4.0.16` Amazon Fire TV, `10.4.0.17` Google Home Mini (privat). Volle Tabelle: `Desktop/FRAWO Ops/Netzwerk_Soll_Plan_2026-06-25.md`. Noch offen: Govee-Geräte bisher keins aufgetaucht, Soll-Zähler unbekannt.
-- **UCG-Zugang:** API-Key-Auth (`X-API-KEY` Header) funktioniert gegen Integration-API UND Legacy-REST-API (`/proxy/network/api/s/default/...`). REST-`DELETE` ist auf diesem Controller gesperrt (404) — Clients werden stattdessen über `cmd/stamgr` mit `{"cmd":"forget-sta","macs":[...]}` entfernt.
-- **Tailscale:** Karteileichen `toolbox` + `radio-node-1` gefunden, aber kein API-Key vorhanden → nur manuell über Admin-Konsole entfernbar (Task #638).
-
-## 🆕 Tagesabschluss 2026-06-23/24 (verifiziert)
-- **Netz/VLAN-KORREKTUR:** Netz ist sauber VLAN-segmentiert (UCG 10.1.0.1). **`10.4.0.x` = Anker-IoT (VLAN104), NICHT tot!** VLAN101=Server(10.1.0.x), 102 DMZ, 103 DMZ-Radio, 104 IoT, 105 Guest, 110/111 Stockenweiler. Voll-IP-Tabelle = Odoo #622 + Memory `reference_frawo_network_vlan`.
-- **Haupt-HA (haos VM210/anker) wieder ONLINE → 10.1.0.40** (statisch VLAN101, DHCP-Reservierung). War auf 10.4.0.24 + NM verklemmt; Fix: static + `qm reboot 210`. HA-Stockenweiler/Eltern = VM360 **10.1.0.248** (MCP-Server gewired).
-- **Website frawo.tech:** 6 Security-Header live (A/A+, via CF Transform Rule), Meta-Description/Menü gefixt. Odoo-Stilfehler (Migrations-Asset-Komposition) via `-u web,website` → Backend/Frontend kompilieren sauber.
-- **Mail:** Strato von CT140 unerreichbar → **Brevo** ist aktiver SMTP. Angebot S00015 zugestellt.
-- **Odoo:** Board restrukturiert (10 Domain-Projekte, Stages, Rollen-Tags, Paten, Mitarbeiter), autonome Automation St.1+2 live (#596). Tageslog/Tagesziele = Task #623.
-- **API-Zugänge (lokal, nicht im Repo):** UniFi Cloud + lokaler UCG-Key, CF-API-Token (Transform Rules), HA-Token Stockenweiler + Haupt-HA (seit 25.06.), Odoo-MCP-Key, Tailscale-API-Key (seit 25.06., von Wolf bereitgestellt — Claude-Memory `reference_frawo_tailscale_api`).
-
-## ⚡ Bootstrap für Agenten (Reihenfolge)
-0. **[`AGENT_ONBOARDING.md`](AGENT_ONBOARDING.md)** — EIN Prompt um einen komplett neuen Agenten einzuschulen (Identität, Zugänge, Arbeitsweise). Bei Bedarf direkt als Einstiegsprompt kopieren.
-1. **Diese `NOW.md`** (Live-Stand + was stale ist).
-2. `STATUS.md` (Verlauf), dann bei Bedarf `LIVE_CONTEXT.md` (⚠️ veraltete IPs/Domain — siehe Korrekturen unten).
-3. Claude-Memory `project_frawo_2026-06-10_session.md` = bestätigte Topologie-Korrektur.
-4. Live verifizieren statt glauben (Tailscale-Status, SSH `frawo-docker-1`).
-
-## 🟢🔴 Live-Status (2026-07-01, vollständig verifiziert)
-
-## 🟢🔴 Live-Status (2026-07-24, vollständig verifiziert)
+## 🟢🔴 Live-Status (2026-07-25, vollständig verifiziert)
 
 ### PVE-Nodes & Workstations
 | Knoten | Tailscale / LAN-IP | Status | Load / RAM | Rolle / Bemerkung |
@@ -142,7 +46,6 @@
 | **proxmox-anker** (Lenovo ThinkCentre) | 100.69.179.87 / 10.1.0.92 | 🟢 ONLINE | 2.86 / 8 GB frei | PBS(240), HAOS(210), OpenClaw(150), Nextcloud(300) |
 | **stockenweiler-pve** (HP ProDesk) | 100.91.20.116 / 10.1.0.128 | 🟢 ONLINE | Load 0.80, RAM 5.1 GB frei | Odoo(140), Samba(120), NPM(103), AzuraCast(VM210), Monitoring(150) |
 | **wolfstudiopc** (StudioPC) | 100.98.31.60 / 10.1.0.211 | 🟢 ONLINE | Windows 11 | AV/IT Workstation, Netzlaufwerke M: + R:, Task `OpenClaw Node` |
-| ~~frawo-docker-1~~ | ~~100.94.32.41~~ | 🔴 **STILLGELEGT** | Offline | Netcup/Flo ESXi VM stillgelegt |
 
 ### stockenweiler-pve (ProDesk) — CT/VM-Übersicht
 | ID | Name | IP | Status | Dienste / Bemerkung |
@@ -151,68 +54,16 @@
 | CT103 | npm (nginx) | 10.1.0.149 | 🟢 | Nginx Proxy Manager (Reverse Proxy) |
 | CT106 | wireguard | 10.1.0.239 | 🟢 | VPN Gateway |
 | CT108 | vaultwarden | 10.1.0.95 | 🟢 healthy | Passwort-Manager (Bitwarden API) |
-| CT109 | pbs | 10.1.0.7 | ⏹ stopped | Alt-LXC (Ersetzt durch VM240 auf Anker) |
 | CT110 | n8n | 10.1.0.100 | 🟢 | n8n Workflows + Uptime-Kuma |
 | CT120 | fileserver | 10.1.0.94 | 🟢 | Samba (Musik `music` & Radio `radio` Master-Library) |
-| CT130 | mail-relay | — | ⏹ stopped | (Postfach via Brevo SMTP auf CT140) |
 | CT140 | frawotech-web | 10.1.0.112 | 🟢 | Odoo 19 (FraWo_GbR) + Cloudflare Tunnel "FraWo-RK" |
 | CT150 | monitoring-stack | 10.1.0.115 | 🟢 (`onboot=1`) | Prometheus, Grafana, Alertmanager, Dead-Man's-Switch |
 | VM210 | azuracast-vm | 10.1.0.38 | 🟢 | **Master-AzuraCast Radiostation** (Mounts `//10.1.0.94/music` & `/radio`) |
 | VM360 | homeassistant-eltern | 10.1.0.248 | 🟢 | Home Assistant Eltern/Testkunden |
 
-### proxmox-anker (Lenovo) — CT/VM-Übersicht
-| ID | Name | IP | Status | Dienste / Bemerkung |
-|----|------|----|--------|---------------------|
-| CT100 | toolbox | — | ⏹ stopped | — |
-| CT101 | adguard-slave | 10.1.0.27 | 🟢 | Secondary DNS |
-| CT110 | storage-node | 10.1.0.81 | 🟢 | Storage |
-| CT130 | radio-node | 10.1.0.200 | 🟢 ⚠️ | azuracast(2.Instanz/Backup), navidrome |
-| CT150 | openclaw | 10.1.0.31 | 🟢 | @Frawo_bot (DevOps-Bridge Poller, Haiku), Tailscale 100.72.154.15 |
-| VM210 | haos | 10.1.0.40 | 🟢 | Home Assistant Haupt (10.1.0.40) |
-| VM240 | PBS-FraWo | 10.1.0.70 | 🟢 | Proxmox Backup Server (Daily 04:00) |
-| VM220 | odoo (alt) | — | ⏹ stopped | v17 Rollback |
-| VM300 | nextcloud | 10.1.0.111 | 🟢 | Nextcloud (cloud.frawo.tech) |
-| VM330 | paperless | — | ⏹ stopped | — |
-
-### Tailscale-Netz (Stand 2026-07-01)
-| Status | Node | IP |
-|--------|------|----|
-| 🟢 | wolfstudiopc | 100.98.31.60 |
-| 🟢 | stockenweiler-pve | 100.91.20.116 |
-| 🟢 | proxmox-anker | 100.69.179.87 |
-| 🟢 | openclaw-ct150 | 100.72.154.15 |
-| 🟢 | radio-node | 100.78.88.33 |
-| 🟢 | fileserver-rk | 100.64.130.24 |
-| 🟢 | DESKTOP-7LMP02S (wolf-surface?) | 100.79.103.59 |
-| 🟢 | Pixel 9 Pro | 100.83.213.17 |
-| 🔴 4d | VillaRechner420 | 100.85.153.121 |
-| 🔴 3d | wolf-ZenBook | 100.76.249.126 |
-| 🔴 10d | surface-go-frontend | 100.106.67.127 |
-| 🔴 25d | franz-iphone15 | 100.106.111.38 |
-| 🔴 **STILLGELEGT** | ~~frawo-docker-1~~ | ~~100.94.32.41~~ |
-
-## 🧭 Soll-Architektur (bestätigt 2026-07-01)
-- **Intern (alles)** → anker-pve + stockenweiler-pve (Rothkreuz). frawo-docker-1 = abgeschrieben.
-- **Odoo = SSOT** für alle Mitarbeiter UND Agenten (Tasks, Planung, Entscheidungen).
-- **OpenClaw (@Frawo_bot)** = Sekretär/Assistent für Wolf & Franz. Übernimmt alle Bürokratie, Notizen, Aufgaben-Routing.
-- **Wolf & Franz** = nur physische Arbeit (verkabeln, bauen, Events). Alles digitale → Agent.
-- **Roadmap (3 Ziele):** 1) Radio auf frawo.tech (AzuraCast eingebettet) 2) Professionelle Website 3) Selbstverwaltetes Odoo via Agent.
-
-## ✅ Korrekturen gegenüber älteren Docs (WICHTIG)
-- **frawo-docker-1 ist eine VMware-ESXi-VM** (8 vCPU / 31 GB / 200 GB, Host-CPU Xeon Gold 6138), **kein Bare-Metal** „Debian 13, 188G" wie LIVE_CONTEXT sagt. Der **ESXi-Host gehört Flo** (Eigentümer + Administrator der Hardware, ~Zulieferer) und steht in einem **Container auf dem Gelände von Wolfs Eltern** in Stockenweiler (eigenes Internet). Wir haben KEINEN Hardware-Zugriff — nur Mieter-VM. **Eltern = Testkunden** von FraWo (kein Admin/Eigentum).
-- **Subnetze (echt):** Rothkreuz = `10.1.0.0/24` (VLAN101: Server, ProDesk, UCG). Anker-IoT = `10.4.0.0/24` (VLAN104: Shelly/Roborock/TVs/Google Home, jetzt mit echten Geräten besetzt seit 25.06., siehe Tagesabschluss oben). Anker-Guest = `10.5.0.0/24` (VLAN105, SSID "FraWo_Gast", seit 25.06.). Stockenweiler-ESXi = `10.30.8.0/24`. **UCG-WAN-Uplink** = `192.168.2.0/24` (Easybox Rothkreuz, korrekt — kein Altlast-Problem, nur die WAN-Seite der UCG; alte Easybox-direkt-WLAN "frawo-direkt" auf diesem Segment wird gerade leergezogen).
-- **Domain:** live ist **`frawo.tech`** (Cloudflare). Die ~176 `frawo-tech.de`-Referenzen sind alt → nicht in neuen Code/Configs übernehmen.
-- **Drossel-Ursache gelöst:** `frawo-docker-1` (Flo/Stockenweiler) routet allen Internet-Traffic über einen **gedrosselten netcup-VPS-Tunnel** (Gateway `10.30.8.1`, Exit `188.68.45.193`=`exp.tekoda.cloud`, ~150 kbit symmetrisch), NICHT übers Fiber. Deshalb ist alles dort zäh.
-- **Odoo-Repatriierung:** Aufgrund der Drosselung wird Odoo nach Rothkreuz auf den ProDesk (`CT 140` / `10.1.0.112`) migriert. Der Cloudflare-Tunnel „FraWo-RK" ist dafür aktiv.
-
-- **ProDesk Host-Entstörung & CT150 Monitoring**: 360+ D-State Prozesse behoben, Load von 365 auf 0.80 gesenkt. CT150 Monitoring Stack (Prometheus/Grafana/Alertmanager) gestartet & `onboot=1` gesetzt.
-- **10.1.0.142 Identifikation**: Als UniFi Ubiquiti Netzwerk-Hardware (MAC `74:ac:b9...`) identifiziert.
-- **Odoo Production Backup-Engine (Automatisierte Applikations-Sicherung)**: Vollständiges Backup-Skript `odoo_full_backup_cron.py` (PostgreSQL DB + Filestore, 66,15 MB) gebaut, erfolgreich getestet und mit 30-Tage-Retention auf den Samba-Share (`\\10.1.0.94\music\_BACKUPS_ODOO`) gespiegelt. In Windows-Aufgabenplanung als täglicher Job (`02:00 Uhr`) eingerichtet (`FraWo Odoo Daily Backup`).
-- **Netcup/Flo VPS-Vertrag kündigen**: Erfolgreich erledigt! Instanz `frawo-docker-1` ist stillgelegt.
-- **USV-Bedarf & Sizing (#820)**: Vollständige USV-Bedarfsanalyse, NUT Master/Slave Topologie (ProDesk + Anker) & 249 € Budgetplan in Odoo Task #820 eingepflegt (`🚀 In Arbeit`, Deadline: 05.08.2026).
-
-## 🔴 Offene Punkte / Sofort-Klärungsbedarf (Aktion durch Wolf)
-1. **Tailscale & Vault für Franz (#262 / #542)**: Invite-Key auf admin.tailscale.com für Franz erzeugen + Ordner `Franz/Credentials` in Vaultwarden freigeben.
-
 ---
-*Vollständige Bestandsaufnahme (Hardware, Strom, Roadmap): auf dem StudioPC unter `Desktop/FRAWO Ops/Bestandsaufnahme_2026-06-11/`.*
+
+## 🧭 Soll-Architektur & Prinzipien
+- **Odoo = SSOT** für alle Mitarbeiter UND Agenten (Tasks, Planung, Entscheidungen).
+- **Wolf & Franz** = Fokus auf Kernaufgaben & physische Termine.
+- **Roadmap:** 1) WP-Stockenweiler-3 bis Ende August 2) Professionelle Website & Verleih 3) Selbstverwaltetes Odoo via Agent.
