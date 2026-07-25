@@ -30,7 +30,7 @@ DEEP_NIGHT_KEYWORDS = [
 
 SUNRISE_MORNING_KEYWORDS = [
     "disco", "italo disco", "nu disco", "pop", "funk", "freestyle",
-    "electronic", "indie", "hi-nrg", "eurodance", "space disco"
+    "indie", "hi-nrg", "eurodance", "space disco"
 ]
 
 EVENING_PEAK_KEYWORDS = [
