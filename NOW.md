@@ -207,13 +207,12 @@
 
 - **ProDesk Host-Entstörung & CT150 Monitoring**: 360+ D-State Prozesse behoben, Load von 365 auf 0.80 gesenkt. CT150 Monitoring Stack (Prometheus/Grafana/Alertmanager) gestartet & `onboot=1` gesetzt.
 - **10.1.0.142 Identifikation**: Als UniFi Ubiquiti Netzwerk-Hardware (MAC `74:ac:b9...`) identifiziert.
-- **Radio Split-Brain Bereinigung**: VM210 (`10.1.0.38`) als alleinige Master-Station verifiziert; verwaiste Alt-Container auf CT130 gestoppt.
-- **Anker Disk & Trim**: Thin-Pool durch `fstrim` aller LXCs & PBS-Discard von 94.7% auf 66.1% konsolidiert.
+- **Odoo Production Backup-Engine (Automatisierte Applikations-Sicherung)**: Vollständiges Backup-Skript `odoo_full_backup_cron.py` (PostgreSQL DB + Filestore, 66,15 MB) gebaut, erfolgreich getestet und mit 30-Tage-Retention auf den Samba-Share (`\\10.1.0.94\music\_BACKUPS_ODOO`) gespiegelt. In Windows-Aufgabenplanung als täglicher Job (`02:00 Uhr`) eingerichtet (`FraWo Odoo Daily Backup`).
+- **Netcup/Flo VPS-Vertrag kündigen**: Erfolgreich erledigt! Instanz `frawo-docker-1` ist stillgelegt.
+- **USV-Bedarf & Sizing (#820)**: Vollständige USV-Bedarfsanalyse, NUT Master/Slave Topologie (ProDesk + Anker) & 249 € Budgetplan in Odoo Task #820 eingepflegt (`🚀 In Arbeit`, Deadline: 05.08.2026).
 
 ## 🔴 Offene Punkte / Sofort-Klärungsbedarf (Aktion durch Wolf)
-1. **Netcup/Flo VPS-Vertrag kündigen**: `frawo-docker-1` ist stillgelegt. Vertrag bei Netcup/Flo noch kündigen.
-2. **USV-Beschaffung (#820)**: USV für Server-Rack (ProDesk + Anker) beschaffen (~250 € Line-Interactive 1500VA / NUT).
-3. **Tailscale & Vault für Franz (#262 / #542)**: Invite-Key auf admin.tailscale.com für Franz erzeugen + Ordner `Franz/Credentials` in Vaultwarden freigeben.
+1. **Tailscale & Vault für Franz (#262 / #542)**: Invite-Key auf admin.tailscale.com für Franz erzeugen + Ordner `Franz/Credentials` in Vaultwarden freigeben.
 
 ---
 *Vollständige Bestandsaufnahme (Hardware, Strom, Roadmap): auf dem StudioPC unter `Desktop/FRAWO Ops/Bestandsaufnahme_2026-06-11/`.*
