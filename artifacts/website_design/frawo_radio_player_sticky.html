@@ -62,38 +62,17 @@
 
             <!-- Station Selection -->
             <div class="fw-radio-stations">
-                <button class="fw-radio-station" data-stream="https://radio.hs27.internal/listen/frawo_bodensee/stream" data-name="FraWo Bodensee" onclick="fwRadioSelectStation(this)">
-                    <div class="fw-station-icon">🌊</div>
+                <button class="fw-radio-station active" data-stream="https://funk.frawo.tech/listen/frawo_funk/radio.mp3" data-name="FraWo Funk Live" onclick="fwRadioSelectStation(this)">
+                    <div class="fw-station-icon">📻</div>
                     <div class="fw-station-info">
-                        <div class="fw-station-name">FraWo Bodensee</div>
-                        <div class="fw-station-genre">Vibes vom See</div>
+                        <div class="fw-station-name">FraWo Funk Live</div>
+                        <div class="fw-station-genre">Bodensee · Dayparting Rotation</div>
                     </div>
                     <div class="fw-station-status">
                         <span class="fw-status-badge"></span>
                     </div>
                 </button>
 
-                <button class="fw-radio-station" data-stream="https://radio-stock.hs27.internal/listen/yourparty_hardstyle/stream" data-name="YourParty Hardstyle" onclick="fwRadioSelectStation(this)">
-                    <div class="fw-station-icon">⚡</div>
-                    <div class="fw-station-info">
-                        <div class="fw-station-name">YourParty Hardstyle</div>
-                        <div class="fw-station-genre">Hard & Fast</div>
-                    </div>
-                    <div class="fw-station-status">
-                        <span class="fw-status-badge"></span>
-                    </div>
-                </button>
-
-                <button class="fw-radio-station" data-stream="https://radio.hs27.internal/listen/frawo_chill/stream" data-name="FraWo Chill" onclick="fwRadioSelectStation(this)">
-                    <div class="fw-station-icon">☁️</div>
-                    <div class="fw-station-info">
-                        <div class="fw-station-name">FraWo Chill</div>
-                        <div class="fw-station-genre">Lounge & Ambient</div>
-                    </div>
-                    <div class="fw-station-status">
-                        <span class="fw-status-badge"></span>
-                    </div>
-                </button>
             </div>
 
             <!-- Now Playing Display -->
@@ -514,7 +493,7 @@ function fwRadioUpdateNowPlaying() {
 
     // Example: Fetch from AzuraCast API
     // Replace with your actual API endpoint
-    const apiUrl = fwCurrentStation.url.replace('/stream', '/nowplaying');
+    const apiUrl = 'https://funk.frawo.tech/api/nowplaying/frawo_funk';
 
     fetch(apiUrl)
         .then(res => res.json())
