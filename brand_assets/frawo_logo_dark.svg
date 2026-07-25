@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 150" width="100%" height="100%">
+  <defs>
+    <linearGradient id="frawoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00F0FF" />
+      <stop offset="50%" stop-color="#7000FF" />
+      <stop offset="100%" stop-color="#FF007A" />
+    </linearGradient>
+  </defs>
+  <rect width="600" height="150" fill="#0A0E1A" rx="16"/>
+  <!-- Emblem Icon -->
+  <g transform="translate(30, 25)">
+    <polygon points="25,10 75,10 95,50 75,90 25,90 5,50" fill="url(#frawoGrad)" opacity="0.15" />
+    <path d="M 20,25 L 50,25 L 35,75 Z" fill="url(#frawoGrad)" />
+    <path d="M 50,25 L 80,25 L 65,75 Z" fill="url(#frawoGrad)" />
+    <circle cx="50" cy="50" r="12" fill="#0A0E1A" stroke="url(#frawoGrad)" stroke-width="4" />
+  </g>
+  <!-- Brand Text -->
+  <text x="140" y="88" font-family="Inter, Roboto, sans-serif" font-weight="900" font-size="52" fill="#FFFFFF" letter-spacing="1">FraWo<tspan fill="url(#frawoGrad)">.tech</tspan></text>
+  <text x="142" y="115" font-family="Inter, Roboto, sans-serif" font-weight="500" font-size="16" fill="#8A99AD" letter-spacing="4">AUDIO &amp; SYSTEM ENGINEERING</text>
+</svg>
