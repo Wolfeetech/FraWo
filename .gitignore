@@ -96,3 +96,5 @@ crack_vault.py
 *.vault_pass
 *password*.bat
 *password*.txt
+_BACKUPS_ODOO/
+
