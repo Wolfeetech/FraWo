@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FraWo GbR — Control Center & Startportal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0f172a;
+      --bg-card: rgba(30, 41, 59, 0.7);
+      --bg-card-hover: rgba(51, 65, 85, 0.8);
+      --border-card: rgba(255, 255, 255, 0.1);
+      --accent-cyan: #06b6d4;
+      --accent-blue: #3b82f6;
+      --accent-emerald: #10b981;
+      --accent-purple: #8b5cf6;
+      --accent-amber: #f59e0b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --radius: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg-dark);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(6, 182, 212, 0.15) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.15) 0px, transparent 50%);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Header & Branding */
+    header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .logo-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border-card);
+      padding: 8px 20px;
+      border-radius: 9999px;
+      backdrop-filter: blur(12px);
+      margin-bottom: 1rem;
+    }
+
+    .logo-badge span {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      letter-spacing: 1px;
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-size: 1.2rem;
+    }
+
+    h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    p.subtitle {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+    }
+
+    /* Role Switcher Tabs */
+    .view-switcher {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 2.5rem;
+    }
+
+    .tab-btn {
+      background: rgba(30, 41, 59, 0.5);
+      border: 1px solid var(--border-card);
+      color: var(--text-muted);
+      padding: 12px 28px;
+      border-radius: 12px;
+      font-size: 1.05rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+      color: #fff;
+      border-color: transparent;
+      box-shadow: 0 4px 20px rgba(6, 182, 212, 0.3);
+    }
+
+    .tab-btn:hover:not(.active) {
+      background: rgba(51, 65, 85, 0.6);
+      color: var(--text-main);
+    }
+
+    /* Section Headers */
+    .section-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text-main);
+    }
+
+    /* Cards Grid */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 3rem;
+    }
+
+    .franz-grid {
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    }
+
+    /* Card Item */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      backdrop-filter: blur(16px);
+      text-decoration: none;
+      color: var(--text-main);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, var(--accent-cyan), var(--accent-blue));
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      background: var(--bg-card-hover);
+      border-color: rgba(255, 255, 255, 0.2);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .card:hover::before {
+      opacity: 1;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    .card-icon {
+      font-size: 2.2rem;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--accent-emerald);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent-emerald);
+      box-shadow: 0 0 8px var(--accent-emerald);
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+    }
+
+    .card-desc {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      line-height: 1.4;
+      flex-grow: 1;
+    }
+
+    .card-footer {
+      margin-top: 1.2rem;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--accent-cyan);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Views visibility */
+    .view-content {
+      display: none;
+    }
+    .view-content.active {
+      display: block;
+    }
+
+    /* Quick Info Banner */
+    .info-banner {
+      background: rgba(30, 41, 59, 0.4);
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .info-banner h3 {
+      font-size: 1.1rem;
+      margin-bottom: 0.8rem;
+      color: var(--accent-cyan);
+    }
+
+    .info-list {
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 0.8rem;
+    }
+
+    .info-list li {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 3rem;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header>
+      <div class="logo-badge">
+        <span>⚡ FraWo GbR</span>
+      </div>
+      <h1>Digital Control Center</h1>
+      <p class="subtitle">Zentrales Startportal für Wolf & Franz</p>
+    </header>
+
+    <!-- View Switcher -->
+    <div class="view-switcher">
+      <button class="tab-btn active" onclick="switchView('franz')">
+        🟢 Franz Schnellzugang
+      </button>
+      <button class="tab-btn" onclick="switchView('wolf')">
+        🛠️ Wolf Schaltzentrale
+      </button>
+    </div>
+
+    <!-- FRANZ VIEW -->
+    <div id="franz-view" class="view-content active">
+      <div class="section-title">
+        <span>📌 Deine täglichen Hauptwerkzeuge</span>
+      </div>
+
+      <div class="cards-grid franz-grid">
+        <!-- Odoo -->
+        <a href="http://10.1.0.112:8069" target="_blank" class="card">
+          <div class="card-header">
+            <span class="card-icon">💼</span>
+            <div class="status-badge"><span class="status-dot"></span> Online</div>
+          </div>
+          <div class="card-title">Odoo ERP</div>
+          <div class="card-desc">Stundenzettel erfassen, Auslagen/Spesen eintragen, Projekt-Aufgaben einsehen.</div>
+          <div class="card-footer">Öffnen ➔</div>
+        </a>
+
+        <!-- Nextcloud -->
+        <a href="https://cloud.frawo.tech" target="_blank" class="card">
+          <div class="card-header">
+            <span class="card-icon">📁</span>
+            <div class="status-badge"><span class="status-dot"></span> Online</div>
+          </div>
+          <div class="card-title">Nextcloud</div>
+          <div class="card-desc">Baupläne, Skizzen, Werkstatt-Dateien & Dokumente einsehen und hochladen.</div>
+          <div class="card-footer">Öffnen ➔</div>
+        </a>
+
+        <!-- Telegram Bot -->
+        <a href="https://t.me/ServAssi_bot" target="_blank" class="card">
+          <div class="card-header">
+            <span class="card-icon">💬</span>
+            <div class="status-badge"><span class="status-dot"></span> Aktiv</div>
+          </div>
+          <div class="card-title">Telegram Bot (@ServAssi_bot)</div>
+          <div class="card-desc">Klausi Digitaler Assistent — Sprachnachrichten, Notizen & schnelle Aufgaben per Telegram.</div>
+          <div class="card-footer">Telegram Chat ➔</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- WOLF VIEW -->
+    <div id="wolf-view" class="view-content">
+      
+      <!-- Business -->
+      <div class="section-title">💼 Business & Finanzen</div>
+      <div class="cards-grid">
+        <a href="http://10.1.0.112:8069" target="_blank" class="card">
+          <div class="card-header"><span class="card-icon">💼</span><div class="status-badge"><span class="status-dot"></span> Online</div></div>
+          <div class="card-title">Odoo Master ERP</div>
+          <div class="card-desc">Haupt-SSOT: CRM, Verkauf, Projektverwaltung, Rechnungen & Zeiterfassung.</div>
+          <div class="card-footer">Öffnen ➔</div>
+        </a>
+        <a href="https://vault.yourparty.tech" target="_blank" class="card">
+          <div class="card-header"><span class="card-icon">🔒</span><div class="status-badge"><span class="status-dot"></span> Online</div></div>
+          <div class="card-title">Vaultwarden</div>
+          <div class="card-desc">Zentraler Passwort-Manager für alle Zugänge, Keys & Logins.</div>
+          <div class="card-footer">Öffnen ➔</div>
+        </a>
+        <a href="https://cloud.frawo.tech" target="_blank" class="card">
+          <div class="card-header"><span class="card-icon">📁</span><div class="status-badge"><span class="status-dot"></span> Online</div></div>
+          <div class="card-title">Nextcloud</div>
+          <div class="card-desc">Dateispeicher & Dokumenten-Archiv.</div>
+          <div class="card-footer">Öffnen ➔</div>
+        </a>
+      </div>
+
+      <!-- Radio & Media -->
+      <div class="section-title">📻 FraWo Funk & Media</div>
+      <div class="cards-grid">
+        <a href="https://funk.frawo-tech.de" target="_blank" class="card">
+          <div class="card-header"><span class="card-icon">🎙️</span><div class="status-badge"><span class="status-dot"></span> Live</div></div>
+          <div class="card-title">AzuraCast Studio</div>
+          <div class="card-desc">FraWo Funk Radio-Verwaltung, Playlists, Sendeschema & DJ-Accounts.</div>
+          <div class="card-footer">Studio öffnen ➔</div>
+        </a>
+        <a href="https://funk.frawo-tech.de/public/frawo_funk" target="_blank" class="card">
+          <div class="card-header"><span class="card-icon">🔊</span><div class="status-badge"><span class="status-dot"></span> Webstream</div></div>
+          <div class="card-title">FraWo Funk Webplayer</div>
+          <div class="card-desc">Öffentlicher Radio-Stream Player für Hörer.</div>
+          <div class="card-footer">Anhören ➔</div>
+        </a>
+      </div>
+
+      <!-- Infrastructure -->
+      <div class="section-title">⚙️ Server & IT-Infrastruktur</div>
+      <div class="cards-grid">
+        <a href="https://10.1.0.128:8006" target="_blank" class="card">
+          <div class="card-header"><span class="card-icon">🖥️</span><div class="status-badge"><span class="status-dot"></span> ProDesk PVE</div></div>
+          <div class="card-title">Proxmox PVE (ProDesk)</div>
+          <div class="card-desc">Virtuelle Maschinen & LXC Container Verwaltung (10.1.0.128).</div>
+          <div class="card-footer">PVE öffnen ➔</div>
+        </a>
+        <a href="http://10.1.0.110:5678" target="_blank" class="card">
+          <div class="card-header"><span class="card-icon">⚡</span><div class="status-badge"><span class="status-dot"></span> n8n Engine</div></div>
+          <div class="card-title">n8n Automationen</div>
+          <div class="card-desc">Automatische Workflows, Webhooks & System-Brücken.</div>
+          <div class="card-footer">Workflows öffnen ➔</div>
+        </a>
+        <a href="http://10.1.0.103:81" target="_blank" class="card">
+          <div class="card-header"><span class="card-icon">🌐</span><div class="status-badge"><span class="status-dot"></span> NPM</div></div>
+          <div class="card-title">Nginx Proxy Manager</div>
+          <div class="card-desc">SSL-Zertifikate, Domain-Routing & Inbound Proxies (Port 81).</div>
+          <div class="card-footer">NPM öffnen ➔</div>
+        </a>
+        <a href="http://10.1.0.101/admin" target="_blank" class="card">
+          <div class="card-header"><span class="card-icon">🛡️</span><div class="status-badge"><span class="status-dot"></span> AdGuard</div></div>
+          <div class="card-title">AdGuard DNS Home</div>
+          <div class="card-desc">Netzwerkweiter DNS-Filter & lokale Domain-Auflösung.</div>
+          <div class="card-footer">DNS Dashboard ➔</div>
+        </a>
+      </div>
+
+    </div>
+
+    <!-- Quick Info / Help Section -->
+    <div class="info-banner">
+      <h3>💡 Schnellanleitung für den Alltag</h3>
+      <ul class="info-list">
+        <li>🔒 <b>VPN unterwegs:</b> Tailscale auf dem Smartphone / Laptop aktivieren (grüner Punkt).</li>
+        <li>🔑 <b>Passwörter:</b> Alle Logins liegen sicher in Vaultwarden (vault.yourparty.tech).</li>
+        <li>📄 <b>Handout für Franz:</b> Liegt unter <code>docs/franz_onboarding_quickstart.md</code>.</li>
+        <li>💾 <b>Backups:</b> Laufen automatisch jeden Morgen um 04:00 Uhr auf PBS.</li>
+      </ul>
+    </div>
+
+    <footer>
+      FraWo GbR — Audio & System Engineering © 2026 | System SSOT: Odoo ERP
+    </footer>
+  </div>
+
+  <script>
+    function switchView(viewName) {
+      document.querySelectorAll('.view-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+      
+      document.getElementById(viewName + '-view').classList.add('active');
+      event.currentTarget.classList.add('active');
+    }
+  </script>
+</body>
+</html>
