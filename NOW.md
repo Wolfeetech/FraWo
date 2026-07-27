@@ -63,7 +63,21 @@
 
 ---
 
-## 💾 Odoo-Backup (Stand 27.07.2026, verifiziert)
+## 💾 Sicherungslage gesamt (Stand 27.07.2026, alles einzeln verifiziert)
+
+| Was | Wohin | Wann | Andere Maschine? |
+|-----|-------|------|------------------|
+| **Odoo** DB + Filestore | `/mnt/data_family/odoo-sql-dumps` + Anker `10.1.0.92` | 02:15 | ✅ ja |
+| **Radio** (AzuraCast DB/Config) | `/mnt/data_family/backups/azuracast` + Anker | 03:00 | ✅ ja |
+| **Container** 101–150 | PBS auf dem Anker (`10.1.0.7`) | 04:00 | ✅ ja |
+| **VMs** 210 + 360 | `hdd-backup` = `sdb1` im ProDesk | 05:30 | 🔴 **nein** |
+| Anker-Gäste | Google Drive (`rclone`) | 04:00 | ✅ ja |
+
+🔴 **Offene Lücke (Odoo #872):** Die beiden ProDesk-VMs liegen samt Sicherung auf derselben Maschine. Auslagern zum PBS geht aktuell nicht — dort sind nur 43 GB frei, VM 210 allein braucht 33 GB.
+
+⚠️ **Beide App-Backups waren bis zum 27.07.2026 wirkungslos** und meldeten trotzdem Erfolg (Odoo #863, Radio #871). Gleiche Ursache: `pct`/`qm` fehlten im Cron-PATH, und ohne `set -e` lief das Skript einfach weiter. **Lehre: Ein Skript im Cron ist kein Backup — prüfen, ob Dateien existieren, ob sie grösser als 0 sind und ob sie sich lesen lassen.**
+
+## 💾 Odoo-Backup im Detail (Stand 27.07.2026, verifiziert)
 
 - **Skript:** `/usr/local/bin/odoo-sql-backup.sh` auf dem ProDesk-Host, Quelle im Repo unter `scripts/odoo-sql-backup.sh`. Cron: `15 2 * * *`.
 - **Repariert am 27.07.2026:** absoluter PATH, Schreiben in `.part`-Datei und erst nach bestandener Grössenprüfung umbenennen, Filestore wird mitgesichert. Getestet mit `env -i` (leere Umgebung wie Cron) — läuft.
