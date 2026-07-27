@@ -51,49 +51,18 @@ body, #wrapwrap {
     transition: width 0.1s linear;
 }
 
-/* 3. Odoo-Adminleiste im Frontend (nur für angemeldete Benutzer sichtbar) */
-.o_website_navbar,
-#oe_main_menu_navbar,
-.o_frontend_to_backend_nav,
-header.o_navbar {
-    background-color: var(--fw-bg) !important;
-    border-bottom: 1px solid var(--fw-border) !important;
-    padding: 4px 16px !important;
-    min-height: 42px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: flex-start !important;
-    flex-wrap: wrap !important;
-    gap: 8px !important;
-    font-family: var(--fw-font) !important;
-    z-index: 10000 !important;
-}
-
-.o_website_navbar a, .o_website_navbar button, .o_website_navbar .nav-link,
-#oe_main_menu_navbar a, #oe_main_menu_navbar button, #oe_main_menu_navbar .nav-link,
-.o_frontend_to_backend_nav a, .o_frontend_to_backend_nav button {
-    color: var(--fw-text-muted) !important;
-    font-size: 0.75rem !important;
-    font-weight: 600 !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.05em !important;
-    padding: 5px 10px !important;
-    margin: 0 !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    gap: 6px !important;
-    background: transparent !important;
-    border: none !important;
-    transition: all 0.15s ease !important;
-    white-space: nowrap !important;
-}
-
-.o_website_navbar a:hover, .o_website_navbar button:hover,
-#oe_main_menu_navbar a:hover, #oe_main_menu_navbar button:hover,
-.o_frontend_to_backend_nav a:hover, .o_frontend_to_backend_nav button:hover {
-    color: var(--fw-accent) !important;
-    background-color: var(--fw-surface) !important;
-}
+/* 3. Odoo-Adminleiste im Frontend — BEWUSST NICHT GESTALTET.
+ *
+ * Hier stand eine Umgestaltung der Adminleiste. Sie hat am 27.07.2026 die
+ * Leiste zerlegt: `display: inline-flex !important` auf allen Links darin
+ * überschreibt das `display: none`, mit dem Odoo die Klappmenüs zuhält —
+ * dadurch wurden sämtliche App-Einträge (Dialog, To-do, Kalender, CRM …) als
+ * zusammenhanglose Linkzeile ausgeklappt dargestellt.
+ *
+ * Die Adminleiste ist Odoos eigene Bedienoberfläche und ändert ihren Aufbau
+ * mit jeder Version. Sie sehen ohnehin nur angemeldete Benutzer. Der optische
+ * Gewinn rechtfertigt das Risiko nicht — deshalb bleibt sie unangetastet.
+ */
 
 /* 4. Öffentlicher Website-Header */
 header#top, .o_header_standard, .o_header_affixed, nav.navbar.navbar-light {
