@@ -1,0 +1,205 @@
+/* ==========================================================================
+   FraWo CI 3.0 — Frontend (öffentliche Website)
+   Wird über den assets-Key in __manifest__.py in web.assets_frontend geladen.
+   Keine externen Schriften: Google Fonts würden personenbezogene Daten an
+   Google übertragen (DSGVO) — daher System-Schriftstapel mit Inter zuerst.
+   ========================================================================== */
+
+:root {
+    --fw-bg: #0a0a0a;         /* Deep Void */
+    --fw-surface: #141816;    /* Spruce Surface */
+    --fw-surface2: #1e2421;
+    --fw-primary: #004030;    /* FraWo Forest */
+    --fw-accent: #a050f0;     /* FraWo Violet */
+    --fw-accent-hover: #9d4edd;
+    --fw-text-main: #e8e8e8;  /* Lumen Text */
+    --fw-text-muted: #98a29e; /* Muted Sage */
+    --fw-border: #2a2e2c;
+    --fw-radius: 0px;
+    --fw-font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+               'Helvetica Neue', Arial, sans-serif;
+}
+
+/* 1. Grundlayout & Typografie */
+html {
+    scroll-behavior: smooth;
+}
+
+body, #wrapwrap {
+    font-family: var(--fw-font) !important;
+    background-color: var(--fw-bg) !important;
+    color: var(--fw-text-main) !important;
+}
+
+/* Strict CI 3.0: 0px Radius, keine Schatten.
+   Bewusst auf #wrapwrap begrenzt — der Website-Editor und die Admin-Leisten
+   liegen ausserhalb davon und bleiben dadurch bedienbar. */
+#wrapwrap, #wrapwrap * {
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
+/* 2. Lesefortschritts-Balken */
+#fw-scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    background: var(--fw-accent);
+    width: 0%;
+    z-index: 99999;
+    transition: width 0.1s linear;
+}
+
+/* 3. Odoo-Adminleiste im Frontend (nur für angemeldete Benutzer sichtbar) */
+.o_website_navbar,
+#oe_main_menu_navbar,
+.o_frontend_to_backend_nav,
+header.o_navbar {
+    background-color: var(--fw-bg) !important;
+    border-bottom: 1px solid var(--fw-border) !important;
+    padding: 4px 16px !important;
+    min-height: 42px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    font-family: var(--fw-font) !important;
+    z-index: 10000 !important;
+}
+
+.o_website_navbar a, .o_website_navbar button, .o_website_navbar .nav-link,
+#oe_main_menu_navbar a, #oe_main_menu_navbar button, #oe_main_menu_navbar .nav-link,
+.o_frontend_to_backend_nav a, .o_frontend_to_backend_nav button {
+    color: var(--fw-text-muted) !important;
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    padding: 5px 10px !important;
+    margin: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    background: transparent !important;
+    border: none !important;
+    transition: all 0.15s ease !important;
+    white-space: nowrap !important;
+}
+
+.o_website_navbar a:hover, .o_website_navbar button:hover,
+#oe_main_menu_navbar a:hover, #oe_main_menu_navbar button:hover,
+.o_frontend_to_backend_nav a:hover, .o_frontend_to_backend_nav button:hover {
+    color: var(--fw-accent) !important;
+    background-color: var(--fw-surface) !important;
+}
+
+/* 4. Öffentlicher Website-Header */
+header#top, .o_header_standard, .o_header_affixed, nav.navbar.navbar-light {
+    background-color: var(--fw-surface) !important;
+    border-bottom: 1px solid var(--fw-border) !important;
+    padding: 0.75rem 0 !important;
+}
+
+.navbar-brand img {
+    max-height: 38px !important;
+    width: auto !important;
+}
+
+.navbar .nav-link, .o_header_standard .nav-link {
+    color: var(--fw-text-main) !important;
+    font-weight: 600 !important;
+    font-size: 0.813rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    padding: 0.5rem 1.25rem !important;
+    position: relative;
+}
+
+.navbar .nav-link:hover, .o_header_standard .nav-link:hover {
+    color: #ffffff !important;
+}
+
+.navbar .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 1.25rem;
+    right: 1.25rem;
+    height: 2px;
+    background-color: var(--fw-accent);
+    transform: scaleX(0);
+    transition: transform 0.2s ease;
+}
+
+.navbar .nav-link:hover::after {
+    transform: scaleX(1);
+}
+
+/* 5. Handlungsaufforderung (CTA) */
+.navbar .btn-primary, .o_header_standard .btn-primary, .btn-fw-cta {
+    background-color: var(--fw-accent) !important;
+    color: #ffffff !important;
+    border: none !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.08em !important;
+    font-size: 0.813rem !important;
+    padding: 0.65rem 1.4rem !important;
+    transition: background-color 0.15s ease !important;
+}
+
+.navbar .btn-primary:hover, .o_header_standard .btn-primary:hover, .btn-fw-cta:hover {
+    background-color: var(--fw-accent-hover) !important;
+}
+
+/* 6. Einblend-Animationen beim Scrollen */
+.fw-reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+}
+
+.fw-reveal.fw-reveal-active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.fw-reveal-scale {
+    opacity: 0;
+    transform: scale(0.95);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.fw-reveal-scale.fw-reveal-active {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Nutzer, die reduzierte Bewegung eingestellt haben, sehen die Inhalte sofort. */
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+    .fw-reveal, .fw-reveal-scale {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+}
+
+/* 7. Karten & Container */
+.fw-card {
+    background-color: var(--fw-surface);
+    border: 1px solid var(--fw-border);
+    padding: 2rem;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.fw-card:hover {
+    border-color: var(--fw-accent);
+    background-color: var(--fw-surface2);
+}

@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="frawo_homepage_ci3_content" name="FraWo Homepage CI 3.0 Content" inherit_id="website.homepage">
+        <xpath expr="//div[@id='wrap']" position="replace">
+            <div id="wrap" class="oe_structure">
+                <!-- HERO SECTION -->
+                <section class="fw-section" style="padding: 120px 0 90px; background: #0a0a0a; border-bottom: 1px solid #2a2e2c;">
+                    <div class="container">
+                        <div class="row align-items-center g-5">
+                            <div class="col-lg-7 fw-reveal">
+                                <div style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: #a050f0; margin-bottom: 1.5rem;">
+                                    FraWo GbR — Pragmatisches Neo-Handwerk
+                                </div>
+                                <h1 style="font-size: clamp(2.5rem, 5.5vw, 4.2rem); font-weight: 800; line-height: 1.08; color: #e8e8e8; margin-bottom: 1.8rem; letter-spacing: -0.02em; text-transform: uppercase;">
+                                    Veranstaltungstechnik &amp; Smart Home
+                                </h1>
+                                <p style="color: #98a29e; font-size: 1.15rem; line-height: 1.7; max-width: 44rem; margin-bottom: 2.5rem; font-weight: 400;">
+                                    Bits, Bytes und DMX-Protokolle verschmelzen mit Holz, Stahl und Zimmermannskunst. Cloudfrei, reparierbar, lokal am Bodensee.
+                                </p>
+                                <div class="d-flex flex-wrap gap-3">
+                                    <a class="btn btn-fw-cta" href="/contactus" style="background: #a050f0; color: #ffffff; padding: 14px 32px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; text-decoration: none; border-radius: 0px;">
+                                        Projekt Anfragen →
+                                    </a>
+                                    <a class="btn" href="#services" style="background: #141816; color: #e8e8e8; border: 1px solid #2a2e2c; padding: 14px 28px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; text-decoration: none; border-radius: 0px;">
+                                        Leistungen Erkunden
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-lg-5 fw-reveal fw-reveal-scale">
+                                <div style="border: 1px solid #2a2e2c; background: #141816; padding: 2rem;">
+                                    <div style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: #98a29e; margin-bottom: 1rem; border-bottom: 1px solid #2a2e2c; padding-bottom: 0.5rem;">
+                                        System Status &amp; Performance
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <span style="font-size: 0.9rem; font-weight: 600; color: #e8e8e8;">Home Assistant Local</span>
+                                        <span style="font-size: 0.75rem; font-weight: 700; color: #2ecc71; background: #0a0a0a; border: 1px solid #2a2e2c; padding: 3px 8px;">100% CLOUDFREI</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <span style="font-size: 0.9rem; font-weight: 600; color: #e8e8e8;">DMX / Audio Infrastructure</span>
+                                        <span style="font-size: 0.75rem; font-weight: 700; color: #a050f0; background: #0a0a0a; border: 1px solid #2a2e2c; padding: 3px 8px;">D&amp;B / MIDAS M32</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span style="font-size: 0.9rem; font-weight: 600; color: #e8e8e8;">FraWo Funk Stream</span>
+                                        <span style="font-size: 0.75rem; font-weight: 700; color: #2ecc71; background: #0a0a0a; border: 1px solid #2a2e2c; padding: 3px 8px;">320 KBPS HLS</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SPLIT SECTION: B2C / B2B -->
+                <section style="background: #141816; border-bottom: 1px solid #2a2e2c; padding: 80px 0;">
+                    <div class="container">
+                        <div class="row g-4">
+                            <div class="col-lg-6 fw-reveal">
+                                <div class="fw-card" style="height: 100%;">
+                                    <div style="font-size: 0.7rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: #98a29e; margin-bottom: 1rem;">
+                                        Privatkunden &amp; Smarthome
+                                    </div>
+                                    <h2 style="font-size: 1.8rem; font-weight: 700; color: #e8e8e8; margin-bottom: 1rem; text-transform: uppercase;">
+                                        Smart Home, Heimkino &amp; Akustik
+                                    </h2>
+                                    <p style="color: #98a29e; font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.5rem;">
+                                        Dein Smart Home. Deine Daten. Alles läuft lokal ohne Cloud-Zwang. Home Assistant Komplett-Einrichtung, Zigbee/Shelly Automatisierung und unsichtbare Akustik.
+                                    </p>
+                                    <a href="/contactus" style="color: #a050f0; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; text-decoration: none; letter-spacing: 0.05em;">
+                                        Smart Home Anfragen →
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 fw-reveal">
+                                <div class="fw-card" style="height: 100%;">
+                                    <div style="font-size: 0.7rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: #98a29e; margin-bottom: 1rem;">
+                                        Business &amp; Events
+                                    </div>
+                                    <h2 style="font-size: 1.8rem; font-weight: 700; color: #e8e8e8; margin-bottom: 1rem; text-transform: uppercase;">
+                                        Event-Infrastruktur &amp; Beschallung
+                                    </h2>
+                                    <p style="color: #98a29e; font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.5rem;">
+                                        Wir bauen Traversen und Anlagen, die halten. Keine halben Sachen. Transparente Technik-Pakete ab 50 bis 500 Personen inkl. FOH-Bühnendienst.
+                                    </p>
+                                    <a href="/contactus" style="color: #a050f0; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; text-decoration: none; letter-spacing: 0.05em;">
+                                        Event-Technik Anfragen →
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SERVICES GRID SECTION -->
+                <section id="services" style="padding: 90px 0; background: #0a0a0a; border-bottom: 1px solid #2a2e2c;">
+                    <div class="container">
+                        <div class="fw-reveal mb-5">
+                            <div style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: #a050f0; margin-bottom: 0.5rem;">
+                                Kernkompetenzen
+                            </div>
+                            <h2 style="font-size: 2.2rem; font-weight: 800; color: #e8e8e8; text-transform: uppercase; letter-spacing: -0.01em;">
+                                Sechs Felder. Ein Qualitätsversprechen.
+                            </h2>
+                        </div>
+
+                        <div class="row g-4">
+                            <!-- Card 1 -->
+                            <div class="col-md-4 fw-reveal">
+                                <div class="fw-card">
+                                    <h3 style="font-size: 1.1rem; font-weight: 700; color: #e8e8e8; text-transform: uppercase; margin-bottom: 1rem;">
+                                        Event-Infrastruktur
+                                    </h3>
+                                    <p style="color: #98a29e; font-size: 0.9rem; line-height: 1.6; margin-bottom: 1rem;">
+                                        Line-Arrays, Stage-Monitoring, FOH-Mixing &amp; DMX-Lichtkonzepte für Events.
+                                    </p>
+                                    <ul style="list-style: none; padding: 0; margin: 0; color: #98a29e; font-size: 0.85rem;">
+                                        <li style="padding: 4px 0; border-top: 1px solid #2a2e2c;">— d&amp;b / L-Acoustics Sound</li>
+                                        <li style="padding: 4px 0; border-top: 1px solid #2a2e2c;">— Midas M32 Digitalpult</li>
+                                        <li style="padding: 4px 0; border-top: 1px solid #2a2e2c;">— DMX-Lichtsteuerung</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Card 2 -->
+                            <div class="col-md-4 fw-reveal">
+                                <div class="fw-card">
+                                    <h3 style="font-size: 1.1rem; font-weight: 700; color: #e8e8e8; text-transform: uppercase; margin-bottom: 1rem;">
+                                        Smart Automation
+                                    </h3>
+                                    <p style="color: #98a29e; font-size: 0.9rem; line-height: 1.6; margin-bottom: 1rem;">
+                                        Lokale Smart Home Steuerung ohne Cloud-Zwang, voll reparierbar.
+                                    </p>
+                                    <ul style="list-style: none; padding: 0; margin: 0; color: #98a29e; font-size: 0.85rem;">
+                                        <li style="padding: 4px 0; border-top: 1px solid #2a2e2c;">— Home Assistant Production</li>
+                                        <li style="padding: 4px 0; border-top: 1px solid #2a2e2c;">— Shelly Hutschienen-Module</li>
+                                        <li style="padding: 4px 0; border-top: 1px solid #2a2e2c;">— Zigbee / MQTT Gateways</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Card 3 -->
+                            <div class="col-md-4 fw-reveal">
+                                <div class="fw-card">
+                                    <h3 style="font-size: 1.1rem; font-weight: 700; color: #e8e8e8; text-transform: uppercase; margin-bottom: 1rem;">
+                                        Akustik &amp; Holz
+                                    </h3>
+                                    <p style="color: #98a29e; font-size: 0.9rem; line-height: 1.6; margin-bottom: 1rem;">
+                                        Maßgefertigte Holzgehäuse &amp; Raumakustik-Messungen direkt aus der Werkstatt.
+                                    </p>
+                                    <ul style="list-style: none; padding: 0; margin: 0; color: #98a29e; font-size: 0.85rem;">
+                                        <li style="padding: 4px 0; border-top: 1px solid #2a2e2c;">— Werkstoff Holz trifft HiFi</li>
+                                        <li style="padding: 4px 0; border-top: 1px solid #2a2e2c;">— Schallpegel- &amp; Frequenzanalyse</li>
+                                        <li style="padding: 4px 0; border-top: 1px solid #2a2e2c;">— Clean Verkabelung</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- CONTACT & FOOTER INFO -->
+                <section style="padding: 80px 0; background: #141816;">
+                    <div class="container">
+                        <div class="row g-4 fw-reveal">
+                            <div class="col-lg-6">
+                                <h3 style="font-size: 1.1rem; font-weight: 700; color: #e8e8e8; text-transform: uppercase; margin-bottom: 1rem;">
+                                    Verfügbarkeit &amp; Ablauf
+                                </h3>
+                                <p style="color: #98a29e; font-size: 0.95rem; line-height: 1.7;">
+                                    Aktuell: Anfragen für 2026.<br/>
+                                    Schreib uns: Was, wann, deine größte technische Sorge.<br/>
+                                    Rückmeldung garantiert innerhalb von 2 Werktagen.
+                                </p>
+                            </div>
+                            <div class="col-lg-6">
+                                <h3 style="font-size: 1.1rem; font-weight: 700; color: #e8e8e8; text-transform: uppercase; margin-bottom: 1rem;">
+                                    FraWo GbR
+                                </h3>
+                                <p style="color: #98a29e; font-size: 0.95rem; line-height: 1.7;">
+                                    Wolf Prinz &amp; Franz Bienert<br/>
+                                    Rothkreuz 14, 88138 Weißensberg<br/>
+                                    E-Mail: <a href="mailto:info@frawo.tech" style="color: #a050f0; text-decoration: none; font-weight: 700;">info@frawo.tech</a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </xpath>
+    </template>
+</odoo>

@@ -1,0 +1,77 @@
+/* ==========================================================================
+   FraWo CI 3.0 — Backend (Odoo-Bedienoberfläche, obere Menüleiste)
+   Wird über den assets-Key in __manifest__.py in web.assets_backend geladen.
+   Bewusst eng auf die Navigationsleiste begrenzt, damit Listen, Formulare und
+   Dialoge von Odoo unverändert bedienbar bleiben.
+   ========================================================================== */
+
+.o_main_navbar, header.o_navbar {
+    background-color: #0a0a0a !important;  /* Deep Void */
+    border-bottom: 1px solid #2a2e2c !important;
+    box-shadow: none !important;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+                 'Helvetica Neue', Arial, sans-serif !important;
+}
+
+.o_main_navbar > a,
+.o_main_navbar > button,
+.o_main_navbar > ul > li > a,
+.o_main_navbar > ul > li > button,
+.o_main_navbar .o_nav_entry,
+.o_main_navbar .dropdown-toggle,
+header.o_navbar .nav-link,
+header.o_navbar .dropdown-toggle {
+    color: #e8e8e8 !important;  /* Lumen Text */
+    font-weight: 500 !important;
+    font-size: 0.813rem !important;
+    padding: 0.5rem 1rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.03em !important;
+    transition: all 0.2s ease !important;
+    border: none !important;
+}
+
+.o_main_navbar > a:hover,
+.o_main_navbar > button:hover,
+.o_main_navbar > ul > li > a:hover,
+.o_main_navbar > ul > li > button:hover,
+.o_main_navbar .o_nav_entry:hover,
+.o_main_navbar .dropdown-toggle:hover,
+.o_main_navbar .show .dropdown-toggle,
+header.o_navbar .nav-link:hover,
+header.o_navbar .dropdown-toggle:hover {
+    background-color: #141816 !important;  /* Spruce Surface */
+    color: #a050f0 !important;             /* FraWo Violet */
+}
+
+/* App-Umschalter (Waffel-Symbol) */
+.o_main_navbar .o_menu_toggle {
+    color: #a050f0 !important;
+}
+
+.o_main_navbar .o_menu_toggle:hover {
+    background-color: #141816 !important;
+}
+
+.o_menu_systray .nav-item {
+    color: #e8e8e8 !important;
+}
+
+/* Ausklappmenüs der oberen Leiste */
+.o_main_navbar .dropdown-menu {
+    background-color: #141816 !important;
+    border: 1px solid #2a2e2c !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
+.o_main_navbar .dropdown-menu .dropdown-item {
+    color: #e8e8e8 !important;
+    border-radius: 0 !important;
+}
+
+.o_main_navbar .dropdown-menu .dropdown-item:hover,
+.o_main_navbar .dropdown-menu .dropdown-item.active {
+    background-color: #a050f0 !important;
+    color: #ffffff !important;
+}
