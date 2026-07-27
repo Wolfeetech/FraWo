@@ -50,10 +50,41 @@ if [ "$STORE_SZ" -lt 1000 ]; then
 fi
 mv "$STORE_TMP" "$STORE"
 
-# --- 3. Aufräumen ---------------------------------------------------------
+# --- 3. Offsite-Kopie auf den Anker-Knoten --------------------------------
+# Ohne diesen Schritt liegen Datenbank und Sicherung auf derselben Maschine —
+# ein Plattenschaden am ProDesk nähme beides mit.
+OFFSITE_HOST=10.1.0.92
+OFFSITE_DIR=/var/backups/odoo-offsite
+OFFSITE_OK=nein
+
+offsite_ssh() {
+    ssh -o BatchMode=yes -o ConnectTimeout=15 "root@$OFFSITE_HOST" "$@"
+}
+
+if offsite_ssh "mkdir -p '$OFFSITE_DIR'" 2>/dev/null; then
+    if scp -q -o BatchMode=yes -o ConnectTimeout=15 "$OUT" "$STORE" \
+            "root@$OFFSITE_HOST:$OFFSITE_DIR/" 2>/dev/null; then
+        # Übertragung gegen die Quelle prüfen — eine vorhandene Datei ist
+        # noch kein gültiges Backup (Lehre aus den 0-Byte-Dumps).
+        LOCAL_SUM=$(md5sum "$OUT" | cut -d' ' -f1)
+        REMOTE_SUM=$(offsite_ssh "md5sum '$OFFSITE_DIR/$(basename "$OUT")'" 2>/dev/null | cut -d' ' -f1)
+        if [ -n "$REMOTE_SUM" ] && [ "$LOCAL_SUM" = "$REMOTE_SUM" ]; then
+            OFFSITE_OK=ja
+            offsite_ssh "find '$OFFSITE_DIR' -name '${DB}-*' -mtime +$RETENTION_DAYS -delete" 2>/dev/null || true
+        else
+            echo "WARNUNG: Offsite-Prüfsumme weicht ab — Kopie auf $OFFSITE_HOST unbrauchbar"
+        fi
+    else
+        echo "WARNUNG: Offsite-Übertragung auf $OFFSITE_HOST fehlgeschlagen"
+    fi
+else
+    echo "WARNUNG: Anker-Knoten $OFFSITE_HOST nicht erreichbar — keine Offsite-Kopie"
+fi
+
+# --- 4. Aufräumen ---------------------------------------------------------
 find "$DIR" -name "${DB}-*.dump" -mtime "+$RETENTION_DAYS" -delete
 find "$DIR" -name "${DB}-*-filestore.tar.gz" -mtime "+$RETENTION_DAYS" -delete
 # Altlasten der defekten Fassung entfernen.
 find "$DIR" -name "${DB}-*.dump" -size 0 -delete
 
-echo "OK $(date '+%Y-%m-%d %H:%M') DB=$(du -h "$OUT" | cut -f1) Filestore=$(du -h "$STORE" | cut -f1)"
+echo "OK $(date '+%Y-%m-%d %H:%M') DB=$(du -h "$OUT" | cut -f1) Filestore=$(du -h "$STORE" | cut -f1) Offsite=$OFFSITE_OK"

@@ -1,6 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="frawo_homepage_ci3_content" name="FraWo Homepage CI 3.0 Content" inherit_id="website.homepage">
+    <!-- BEWUSST DEAKTIVIERT (active="False"), Stand 27.07.2026.
+
+         Zwei Gründe:
+         1. Die Seite unter "/" wird aus der Kopie `website.homepage-1`
+            ausgeliefert, die beim Bearbeiten im Website-Baukasten entstanden
+            ist. Diese Vererbung hängt am Original `website.homepage` und
+            greift dort gar nicht.
+         2. Wichtiger: Der Entwurf ersetzt `#wrap` vollständig und ist
+            inhaltlich ärmer als die Live-Seite — es fehlen Preise &
+            Miete, Equipment-Mietpreise, "Wer wir sind" und das Studio
+            Rothkreuz. Aktivieren würde diese Inhalte entfernen.
+
+         Aufbewahrt als Gestaltungsvorlage: Hero-Bereich und die
+         System-Status-Kachel sind übernehmenswert — aber in die bestehende
+         Seite im Baukasten, nicht als Komplettersatz. Die CI-3.0-Stile
+         (static/src/css/ci3_frontend.css) sind bereits live und wirken
+         auch auf die aktuelle Startseite. -->
+    <template id="frawo_homepage_ci3_content" name="FraWo Homepage CI 3.0 Content"
+              inherit_id="website.homepage" active="False">
         <xpath expr="//div[@id='wrap']" position="replace">
             <div id="wrap" class="oe_structure">
                 <!-- HERO SECTION -->
