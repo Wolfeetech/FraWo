@@ -1,0 +1,67 @@
+# Alarme rund um die Sicherung der Radiostation (AzuraCast, VM 210).
+#
+# Anlass: Am 27.07.2026 stellte sich heraus, dass es überhaupt kein Radio-Backup
+# gab. Das alte Skript scheiterte jede Nacht an einem fehlenden PATH, übersprang
+# den Fehler mangels `set -e` und schrieb trotzdem "=== BACKUP COMPLETE ===" ins
+# Log. Genau derselbe blinde Fleck wie beim Odoo-Backup.
+#
+# Metriken schreibt /usr/local/bin/azuracast-backup.sh in den
+# textfile_collector des node_exporter auf dem ProDesk.
+
+groups:
+  - name: frawo_azuracast_backup
+    rules:
+      # Läuft täglich um 03:00. Nach 26 Stunden ohne Erfolg stimmt etwas nicht.
+      - alert: RadioBackupVeraltet
+        expr: >-
+          (time() - frawo_azuracast_backup_last_success_timestamp_seconds) > 26 * 3600
+        for: 30m
+        labels:
+          severity: critical
+          service: azuracast
+        annotations:
+          summary: "Radio-Backup seit über 26 Stunden nicht erfolgreich"
+          description: >-
+            Letzter Erfolg vor {{ $value | humanizeDuration }}. Log prüfen:
+            /var/log/azuracast_backup.log auf dem ProDesk. Achtung: Ein "OK" im
+            Log ist nur dann echt, wenn es aus dem neuen Skript stammt — die
+            alte Fassung meldete Erfolg auch im Fehlerfall.
+
+      # Fehlt die Metrik ganz, läuft das Skript nicht mehr.
+      - alert: RadioBackupMetrikFehlt
+        expr: absent(frawo_azuracast_backup_last_success_timestamp_seconds)
+        for: 2h
+        labels:
+          severity: critical
+          service: azuracast
+        annotations:
+          summary: "Keine Radio-Backup-Metrik mehr vorhanden"
+          description: >-
+            Der node_exporter liefert keinen Zeitstempel mehr. Entweder läuft
+            das Backup-Skript nicht oder es schreibt nicht nach
+            /var/lib/node_exporter/textfile_collector/azuracast_backup.prom.
+
+      # Ein deutlich kleineres Archiv deutet auf einen Teilabbruch hin.
+      - alert: RadioBackupZuKlein
+        expr: frawo_azuracast_backup_size_bytes < 15000000
+        for: 30m
+        labels:
+          severity: warning
+          service: azuracast
+        annotations:
+          summary: "Radio-Backup ist ungewöhnlich klein"
+          description: >-
+            Letztes Archiv nur {{ $value | humanize1024 }}B. Normal sind rund
+            42 MB. Inhalt prüfen: `tar tzf <datei>` muss db.sql enthalten.
+
+      - alert: RadioBackupOhneOffsiteKopie
+        expr: frawo_azuracast_backup_offsite_ok == 0
+        for: 2h
+        labels:
+          severity: warning
+          service: azuracast
+        annotations:
+          summary: "Radio-Backup ohne Kopie auf dem Anker-Knoten"
+          description: >-
+            Die Übertragung nach 10.1.0.92 schlug fehl oder die Prüfsumme wich
+            ab. Backup und Radiostation liegen damit auf derselben Maschine.
