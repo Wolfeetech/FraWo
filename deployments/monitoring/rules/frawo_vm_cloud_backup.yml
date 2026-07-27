@@ -1,0 +1,41 @@
+# Alarm für die Cloud-Auslagerung der ProDesk-VM-Sicherungen.
+#
+# Hintergrund: Die VMs 210 (AzuraCast) und 360 (Home Assistant Eltern) lagen
+# bis zum 27.07.2026 samt Sicherung auf derselben Maschine. Der PBS auf dem
+# Anker war als Ziel zu klein (43 GB frei, VM 210 braucht 33 GB), Google Drive
+# hat rund 3 TB frei.
+#
+# Der Upload läuft täglich um 07:00 (VM 360, ~85 min) und sonntags zusätzlich
+# für VM 210 (~4,5 h). Metriken schreibt /usr/local/bin/vm-backup-to-cloud.sh.
+
+groups:
+  - name: frawo_vm_cloud_backup
+    rules:
+      # Grosszügiges Fenster: der Upload selbst dauert über eine Stunde,
+      # und bei schlechter Leitung kann ein Lauf auch mal überzogen werden.
+      - alert: VMCloudBackupVeraltet
+        expr: >-
+          (time() - frawo_vm_cloud_backup_last_success_timestamp_seconds) > 30 * 3600
+        for: 1h
+        labels:
+          severity: warning
+          service: proxmox
+        annotations:
+          summary: "VM-Sicherung seit über 30 Stunden nicht in der Cloud"
+          description: >-
+            Letzter Erfolg vor {{ $value | humanizeDuration }}. Log prüfen:
+            /var/log/vm-cloud-backup.log auf dem ProDesk. Ohne diesen Upload
+            liegen die VM-Sicherungen nur noch auf derselben Maschine wie die
+            VMs selbst.
+
+      - alert: VMCloudBackupMetrikFehlt
+        expr: absent(frawo_vm_cloud_backup_last_success_timestamp_seconds)
+        for: 3h
+        labels:
+          severity: warning
+          service: proxmox
+        annotations:
+          summary: "Keine Metrik zur VM-Cloud-Sicherung vorhanden"
+          description: >-
+            Das Skript läuft offenbar nicht mehr oder schreibt nicht nach
+            /var/lib/node_exporter/textfile_collector/vm_cloud_backup.prom.

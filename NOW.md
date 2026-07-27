@@ -70,10 +70,20 @@
 | **Odoo** DB + Filestore | `/mnt/data_family/odoo-sql-dumps` + Anker `10.1.0.92` | 02:15 | ✅ ja |
 | **Radio** (AzuraCast DB/Config) | `/mnt/data_family/backups/azuracast` + Anker | 03:00 | ✅ ja |
 | **Container** 101–150 | PBS auf dem Anker (`10.1.0.7`) | 04:00 | ✅ ja |
-| **VMs** 210 + 360 | `hdd-backup` = `sdb1` im ProDesk | 05:30 | 🔴 **nein** |
+| **VMs** 210 + 360 | `hdd-backup` = `sdb1` im ProDesk | 05:30 | lokal |
+| **VM 360** in die Cloud | Google Drive `FraWo-ProDesk-VMs` | 07:00 täglich | ✅ ja |
+| **VM 210** in die Cloud | Google Drive `FraWo-ProDesk-VMs` | sonntags | ✅ ja |
 | Anker-Gäste | Google Drive (`rclone`) | 04:00 | ✅ ja |
 
-🔴 **Offene Lücke (Odoo #872):** Die beiden ProDesk-VMs liegen samt Sicherung auf derselben Maschine. Auslagern zum PBS geht aktuell nicht — dort sind nur 43 GB frei, VM 210 allein braucht 33 GB.
+### ⚡ Tempo-Falle bei Google Drive (gemessen 27.07.2026) — NICHT vergessen
+
+| Weg | Durchsatz |
+|-----|-----------|
+| Leitung neutral (Cloudflare) | **Download 5,6 MB/s · Upload 2,4 MB/s** |
+| rclone → Drive, Voreinstellung | 0,25 MB/s |
+| rclone → Drive, `--drive-chunk-size 64M` | **2,04 MB/s** |
+
+Die rclone-Voreinstellung (8-MB-Blöcke) kostet den **Faktor acht**. Die Leitung war nie das Problem. Jedes Skript, das grosse Dateien zu Google Drive schiebt, muss `--drive-chunk-size 64M --drive-upload-cutoff 64M` setzen — sonst wird aus 85 Minuten ein halber Tag.
 
 ⚠️ **Beide App-Backups waren bis zum 27.07.2026 wirkungslos** und meldeten trotzdem Erfolg (Odoo #863, Radio #871). Gleiche Ursache: `pct`/`qm` fehlten im Cron-PATH, und ohne `set -e` lief das Skript einfach weiter. **Lehre: Ein Skript im Cron ist kein Backup — prüfen, ob Dateien existieren, ob sie grösser als 0 sind und ob sie sich lesen lassen.**
 
