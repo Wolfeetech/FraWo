@@ -1,0 +1,60 @@
+groups:
+  - name: frawo_infra
+    rules:
+      - alert: HighCPU
+        expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU on {{ $labels.instance }}"
+          description: "CPU usage is {{ $value | printf \"%.1f\" }}%"
+
+      - alert: HighMemory
+        expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 85
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High memory on {{ $labels.instance }}"
+          description: "Memory usage is {{ $value | printf \"%.1f\" }}%"
+
+      - alert: DiskAlmostFull
+        expr: (1 - (node_filesystem_avail_bytes{fstype!="tmpfs",mountpoint="/"} / node_filesystem_size_bytes{fstype!="tmpfs",mountpoint="/"})) * 100 > 90
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Disk > 90% on {{ $labels.instance }}"
+          description: "Disk {{ $labels.mountpoint }} at {{ $value | printf \"%.1f\" }}%"
+
+      - alert: NodeDown
+        expr: up{job="node_exporter"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Node {{ $labels.instance }} is DOWN"
+          description: "Node exporter unreachable for 2+ minutes"
+
+      - alert: HighLoadAverage
+        expr: node_load5 > on(instance) count by(instance) (node_cpu_seconds_total{mode="idle"}) * 1.5
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High load on {{ $labels.instance }}"
+          description: "Load5 is {{ $value | printf \"%.2f\" }}"
+
+      - alert: ServiceDown
+        expr: probe_success{job=~"blackbox_.*"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Service DOWN: {{ $labels.instance }}"
+          description: "HTTP probe failed for 2+ minutes"
+      # HighSwapUsage wurde am 27.07.2026 entfernt: Die Regel maß die Swap-
+      # *Belegung* und stand deshalb dauerhaft an, obwohl der Host gar nicht
+      # mehr auslagerte (vmstat si/so = 0). Ersetzt durch SwapThrashing und
+      # SwapFastVoll in frawo_memory_pressure.yml.

@@ -1,0 +1,72 @@
+# Speicherdruck-Alarme — korrigierte Fassung vom 27.07.2026.
+#
+# Anlass: Zwei Alarme standen dauerhaft an, ohne dass ein Problem vorlag.
+#
+# 1. HighSwapUsage maß die *Belegung* des Swap (69 %). Das ist ein Altbestand:
+#    einmal ausgelagerte Seiten bleiben dort liegen, bis sie gebraucht werden.
+#    Gemessen wurde nichts, was gerade passiert — vmstat zeigte si/so = 0, der
+#    Host lagerte also überhaupt nicht mehr aus.
+#
+# 2. GuestMemoryHigh meldete VM 360 (Home Assistant) mit 95 %. Tatsächlich
+#    nutzte der Gast nur 1,4 GB von 6 GB; die übrigen 4,4 GB waren
+#    Dateizwischenspeicher, der jederzeit freigegeben wird. Innen waren
+#    4,5 GB verfügbar.
+#
+# Ein Alarm, der ohne Anlass anschlägt, ist schlimmer als keiner — man
+# gewöhnt sich das Wegklicken an. Deshalb: auf Aktivität prüfen, nicht auf
+# Bestand.
+#
+# Ersetzt HighSwapUsage aus frawo.yml und GuestMemoryHigh aus
+# frawo_pve_guests.yml. Diese beiden Regeln sind dort entfernt.
+
+groups:
+  - name: frawo_memory_pressure
+    rules:
+      # Der ehrliche Indikator: Der Host lagert *gerade* aus und wieder ein.
+      # Anhaltendes Ein- und Auslagern bremst alles spürbar aus.
+      - alert: SwapThrashing
+        expr: >-
+          rate(node_vmstat_pswpin[15m]) + rate(node_vmstat_pswpout[15m]) > 100
+        for: 20m
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.instance }} lagert dauerhaft Speicher aus"
+          description: >-
+            Seit 20 Minuten werden im Schnitt {{ $value | printf "%.0f" }}
+            Seiten pro Sekunde zwischen RAM und Platte geschoben. Das ist echter
+            Speicherdruck — im Gegensatz zu blosser Swap-Belegung. Prüfen:
+            `vmstat 2 5` auf dem Host, Spalten si/so.
+
+      # Backstop: Swap fast voll. Dann fehlt der Puffer für echte Lastspitzen.
+      - alert: SwapFastVoll
+        expr: >-
+          (node_memory_SwapTotal_bytes - node_memory_SwapFree_bytes)
+          / node_memory_SwapTotal_bytes * 100 > 90
+        for: 1h
+        labels:
+          severity: warning
+        annotations:
+          summary: "Swap auf {{ $labels.instance }} zu über 90 % belegt"
+          description: >-
+            {{ $value | printf "%.0f" }} % belegt. Nicht zwingend akut — aber
+            der Puffer für Lastspitzen ist aufgebraucht.
+
+      # Gast-Speicher: pve_exporter liefert "belegt" inklusive
+      # Dateizwischenspeicher. Deshalb hoher Schwellwert, langes Fenster und
+      # ein Hinweis, wie man vor dem Handeln gegenprüft.
+      - alert: GuestMemoryHigh
+        expr: >-
+          pve_memory_usage_bytes{id=~"(qemu|lxc)/.*"}
+          / pve_memory_size_bytes * 100 > 97
+        for: 2h
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.id }} auf {{ $labels.pve_node }}: RAM-Zuteilung fast ausgeschöpft"
+          description: >-
+            {{ $value | printf "%.0f" }} % der Zuteilung. ACHTUNG: Dieser Wert
+            enthält den Dateizwischenspeicher und ist deshalb regelmässig zu
+            hoch. Vor jeder Massnahme gegenprüfen, wie viel wirklich frei ist —
+            bei VMs mit Gast-Agent: `qm guest exec <ID> -- free -m` und dort die
+            Spalte "available" lesen, nicht "free".

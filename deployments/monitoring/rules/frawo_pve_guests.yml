@@ -1,0 +1,16 @@
+groups:
+  - name: frawo_pve_guests
+    rules:
+      # GuestMemoryHigh wurde am 27.07.2026 hierher entfernt und liegt jetzt in
+      # frawo_memory_pressure.yml mit höherem Schwellwert. Grund: der Messwert
+      # enthält den Dateizwischenspeicher des Gastes. VM 360 meldete 95 %,
+      # nutzte real aber nur 1,4 GB von 6 GB.
+
+      - alert: GuestDown
+        expr: pve_up{id=~"(qemu|lxc)/.*"} == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "VM/Container {{ $labels.id }} auf {{ $labels.pve_node }} ist AUS"
+          description: "Gast laeuft seit 5+ Minuten nicht (erwartet: running)"
