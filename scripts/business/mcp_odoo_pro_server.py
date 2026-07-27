@@ -27,6 +27,8 @@ if _env_file.exists():
             os.environ.setdefault(k.strip(), v.strip())
 
 ODOO_URL  = os.environ.get("ODOO_RPC_URL")  or os.environ.get("ODOO_URL",  "http://10.1.0.112:8069")
+if not ODOO_URL.startswith("http://") and not ODOO_URL.startswith("https://"):
+    ODOO_URL = f"http://{ODOO_URL}"
 ODOO_DB   = os.environ.get("ODOO_RPC_DB")   or os.environ.get("ODOO_DB_GBR", "FraWo_GbR")
 ODOO_USER = os.environ.get("ODOO_RPC_USER") or os.environ.get("ODOO_USER", "wolf@frawo.tech")
 ODOO_PASS = (os.environ.get("ODOO_RPC_PASSWORD")
@@ -154,11 +156,16 @@ def handle_odoo_get_open_tasks(args):
     return "\n".join(lines) if lines else "No open tasks found."
 
 def handle_odoo_get_project_tasks(args):
-    proj_name = args["project_name"]
-    projs = odoo_search_read("project.project", [("name", "ilike", proj_name)], ["id","name"], limit=5)
-    if not projs:
-        return f"No project found matching '{proj_name}'"
-    proj_ids = [p["id"] for p in projs]
+    if "project_id" in args:
+        proj_ids = [args["project_id"]]
+        projs = odoo_search_read("project.project", [("id", "=", args["project_id"])], ["id", "name"])
+    else:
+        proj_name = args.get("project_name", "")
+        projs = odoo_search_read("project.project", [("name", "ilike", proj_name)], ["id","name"], limit=5)
+        if not projs:
+            return f"No project found matching '{proj_name}'"
+        proj_ids = [p["id"] for p in projs]
+    
     domain = [("project_id", "in", proj_ids)]
     if args.get("stage"):
         domain.append(("stage_id.name", "ilike", args["stage"]))
@@ -166,6 +173,7 @@ def handle_odoo_get_project_tasks(args):
                              ["name", "stage_id", "priority", "date_deadline"],
                              limit=100)
     lines = [f"Project(s): {[p['name'] for p in projs]}\n"]
+
     for t in tasks:
         lines.append(f"  #{t['id']} [{t['stage_id'][1] if t['stage_id'] else '?'}] {t['name']}")
     return "\n".join(lines)
