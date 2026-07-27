@@ -1,0 +1,67 @@
+# Alarme rund um das Odoo-Backup.
+#
+# Anlass: Das Backup ist von etwa Mitte Juli bis zum 27.07.2026 jede Nacht
+# gescheitert (pct nicht im Cron-PATH) und hat dabei 0-Byte-Dateien erzeugt.
+# Aufgefallen ist es niemandem, weil nichts den Zustand ueberwacht hat.
+# Die Metriken schreibt /usr/local/bin/odoo-sql-backup.sh in den
+# textfile_collector des node_exporter auf dem ProDesk.
+
+groups:
+  - name: frawo_odoo_backup
+    rules:
+      # Backup laeuft taeglich um 02:15. Nach 26 Stunden ohne Erfolg stimmt etwas nicht.
+      - alert: OdooBackupVeraltet
+        expr: >-
+          (time() - frawo_odoo_backup_last_success_timestamp_seconds) > 26 * 3600
+        for: 30m
+        labels:
+          severity: critical
+          service: odoo
+        annotations:
+          summary: "Odoo-Backup seit über 26 Stunden nicht erfolgreich"
+          description: >-
+            Letzter Erfolg vor
+            {{ $value | humanizeDuration }}. Log prüfen:
+            /var/log/odoo-sql-backup.log auf dem ProDesk. Häufige Ursache war
+            ein fehlender PATH im Cron-Umfeld.
+
+      # Fehlt die Metrik ganz, laeuft das Skript gar nicht mehr (oder der
+      # textfile_collector schreibt nicht). Das ist derselbe blinde Fleck wie zuvor.
+      - alert: OdooBackupMetrikFehlt
+        expr: absent(frawo_odoo_backup_last_success_timestamp_seconds)
+        for: 2h
+        labels:
+          severity: critical
+          service: odoo
+        annotations:
+          summary: "Keine Odoo-Backup-Metrik mehr vorhanden"
+          description: >-
+            Der node_exporter liefert keinen Backup-Zeitstempel mehr. Entweder
+            läuft das Backup-Skript nicht oder es schreibt nicht nach
+            /var/lib/node_exporter/textfile_collector/odoo_backup.prom.
+
+      # Ein verdaechtig kleiner Dump deutet auf einen Teilabbruch hin.
+      - alert: OdooBackupZuKlein
+        expr: frawo_odoo_backup_size_bytes < 20000000
+        for: 30m
+        labels:
+          severity: warning
+          service: odoo
+        annotations:
+          summary: "Odoo-Datenbank-Dump ist ungewöhnlich klein"
+          description: >-
+            Der letzte Dump hat nur {{ $value | humanize1024 }}B. Normal sind
+            rund 73 MB. Bitte mit pg_restore --list gegenprüfen.
+
+      # Ohne Offsite-Kopie liegen Datenbank und Sicherung auf derselben Maschine.
+      - alert: OdooBackupOhneOffsiteKopie
+        expr: frawo_odoo_backup_offsite_ok == 0
+        for: 2h
+        labels:
+          severity: warning
+          service: odoo
+        annotations:
+          summary: "Odoo-Backup ohne Kopie auf dem Anker-Knoten"
+          description: >-
+            Die Übertragung nach 10.1.0.92 schlug fehl oder die Prüfsumme wich
+            ab. Backup und Datenbank liegen damit auf derselben Maschine.

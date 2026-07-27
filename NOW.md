@@ -57,7 +57,7 @@
 | CT110 | n8n | 10.1.0.100 | 🟢 | n8n Workflows + Uptime-Kuma |
 | CT120 | fileserver | 10.1.0.94 | 🟢 | Samba (Musik `music` & Radio `radio` Master-Library) |
 | CT140 | frawotech-web | 10.1.0.112 | 🟢 | Odoo 19 (FraWo_GbR) + Cloudflare Tunnel "FraWo-RK" |
-| CT150 | monitoring-stack | 10.1.0.115 | 🟢 (`onboot=1`) | Prometheus, Grafana, Alertmanager, Dead-Man's-Switch |
+| CT150 | monitoring-stack | **10.1.0.35** | 🟢 (`onboot=1`) | Prometheus `:9090`, Grafana `:3000`, Alertmanager `:9093` (27.07.2026 live geprüft; die frühere Angabe 10.1.0.115 war falsch) |
 | VM210 | azuracast-vm | 10.1.0.38 | 🟢 | **Master-AzuraCast Radiostation** (Mounts `//10.1.0.94/music` & `/radio`) |
 | VM360 | homeassistant-eltern | 10.1.0.248 | 🟢 | Home Assistant Eltern/Testkunden |
 
@@ -70,7 +70,8 @@
 - **Ablage:** `/mnt/data_family/odoo-sql-dumps/` (932 GB Platte, 449 GB frei), 14 Tage Aufbewahrung.
 - **Umfang je Lauf:** DB-Dump ~73 MB (`pg_dump -Fc`) + Filestore-Archiv ~20 KB.
 - **Wiederherstellung prüfen:** `pg_restore --list <datei>` muss tausende Objekte listen (aktuell 16.288). Achtung: nur mit echter Datei, nicht per Pipe — sonst „did not find magic string".
-- ⚠️ **Noch offen:** keine Kopie ausserhalb des ProDesk. Fällt die Platte aus, sind DB und Backup zusammen weg.
+- **Offsite-Kopie:** nach jedem Lauf per scp auf den Anker-Knoten `10.1.0.92` nach `/var/backups/odoo-offsite/`, mit md5-Abgleich gegen die Quelle. Schlägt das fehl, meldet das Skript eine Warnung und die Metrik `frawo_odoo_backup_offsite_ok` steht auf 0.
+- **Überwachung:** Das Skript schreibt Metriken in den node_exporter-textfile_collector des ProDesk. Prometheus-Regeln in `deployments/monitoring/rules/frawo_odoo_backup.yml` (deployt nach CT150 `/etc/prometheus/rules/`) schlagen Alarm bei: Backup älter als 26 h, fehlender Metrik, verdächtig kleinem Dump, fehlender Offsite-Kopie. **Genau dieser blinde Fleck hatte den wochenlangen Ausfall erst möglich gemacht.**
 
 ## 🧭 Soll-Architektur & Prinzipien
 - **Odoo = SSOT** für alle Mitarbeiter UND Agenten (Tasks, Planung, Entscheidungen).

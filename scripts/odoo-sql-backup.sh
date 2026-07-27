@@ -87,4 +87,27 @@ find "$DIR" -name "${DB}-*-filestore.tar.gz" -mtime "+$RETENTION_DAYS" -delete
 # Altlasten der defekten Fassung entfernen.
 find "$DIR" -name "${DB}-*.dump" -size 0 -delete
 
+# --- 5. Zustand ans Monitoring melden -------------------------------------
+# Der eigentliche Schaden war nicht der Fehler, sondern dass ihn wochenlang
+# niemand bemerkt hat. Prometheus liest diese Datei über den
+# textfile_collector; Alarm schlägt an, wenn der Zeitstempel veraltet.
+TEXTFILE_DIR=/var/lib/node_exporter/textfile_collector
+if [ -d "$TEXTFILE_DIR" ]; then
+    METRIC="$TEXTFILE_DIR/odoo_backup.prom"
+    OFFSITE_VAL=0
+    [ "$OFFSITE_OK" = "ja" ] && OFFSITE_VAL=1
+    cat > "$METRIC.tmp" <<METRICS
+# HELP frawo_odoo_backup_last_success_timestamp_seconds Zeitpunkt des letzten erfolgreichen Odoo-Backups.
+# TYPE frawo_odoo_backup_last_success_timestamp_seconds gauge
+frawo_odoo_backup_last_success_timestamp_seconds $(date +%s)
+# HELP frawo_odoo_backup_size_bytes Groesse des letzten Datenbank-Dumps.
+# TYPE frawo_odoo_backup_size_bytes gauge
+frawo_odoo_backup_size_bytes $(stat -c%s "$OUT")
+# HELP frawo_odoo_backup_offsite_ok Offsite-Kopie auf den Anker-Knoten erfolgreich und pruefsummengleich.
+# TYPE frawo_odoo_backup_offsite_ok gauge
+frawo_odoo_backup_offsite_ok $OFFSITE_VAL
+METRICS
+    mv "$METRIC.tmp" "$METRIC"
+fi
+
 echo "OK $(date '+%Y-%m-%d %H:%M') DB=$(du -h "$OUT" | cut -f1) Filestore=$(du -h "$STORE" | cut -f1) Offsite=$OFFSITE_OK"
