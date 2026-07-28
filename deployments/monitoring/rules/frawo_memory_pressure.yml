@@ -24,9 +24,14 @@ groups:
     rules:
       # Der ehrliche Indikator: Der Host lagert *gerade* aus und wieder ein.
       # Anhaltendes Ein- und Auslagern bremst alles spürbar aus.
+      # instance!="monitoring-stack": CT150 ist ein Container und liest ohne
+      # lxcfs das /proc des ProDesk. Ohne diesen Ausschluss meldet dieselbe
+      # Auslagerung zweimal - einmal unter dem Host, einmal unter dem
+      # Container. Nachgetragen am 28.07.2026, nachdem genau das passiert ist.
       - alert: SwapThrashing
         expr: >-
-          rate(node_vmstat_pswpin[15m]) + rate(node_vmstat_pswpout[15m]) > 100
+          rate(node_vmstat_pswpin{instance!="monitoring-stack"}[15m])
+          + rate(node_vmstat_pswpout{instance!="monitoring-stack"}[15m]) > 100
         for: 20m
         labels:
           severity: warning
@@ -41,8 +46,9 @@ groups:
       # Backstop: Swap fast voll. Dann fehlt der Puffer für echte Lastspitzen.
       - alert: SwapFastVoll
         expr: >-
-          (node_memory_SwapTotal_bytes - node_memory_SwapFree_bytes)
-          / node_memory_SwapTotal_bytes * 100 > 90
+          (node_memory_SwapTotal_bytes{instance!="monitoring-stack"}
+          - node_memory_SwapFree_bytes{instance!="monitoring-stack"})
+          / node_memory_SwapTotal_bytes{instance!="monitoring-stack"} * 100 > 90
         for: 1h
         labels:
           severity: warning
