@@ -1,8 +1,26 @@
+# WICHTIG zu instance!="monitoring-stack" (ergaenzt 28.07.2026):
+#
+# Von den drei node_exporter-Zielen ist "monitoring-stack" kein Rechner,
+# sondern der LXC-Container CT150 auf dem ProDesk. Ohne lxcfs liest ein
+# Container /proc des Wirtssystems - CPU, Last und Speicher sind dort also
+# die Werte des ProDesk, nicht die des Containers.
+#
+# Folge: Dieselbe Last erschien zweimal unter verschiedenen Namen, und der
+# Alarm zeigte auf den Container statt auf den echten Verursacher. Bei der
+# Fehlersuche schickt das in die Irre.
+#
+# Deshalb sind CPU-, Speicher- und Last-Alarme auf die beiden echten Hosts
+# begrenzt. Dateisystem-Alarme bleiben fuer alle gueltig - df liest echte
+# Einhaengepunkte und meldet pro Container korrekt.
+#
+# Saubere Loesung waere lxcfs auf beiden Knoten (siehe Odoo #877).
+
 groups:
   - name: frawo_infra
     rules:
       - alert: HighCPU
-        expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        expr: >-
+          100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle",instance!="monitoring-stack"}[5m])) * 100) > 80
         for: 5m
         labels:
           severity: warning
@@ -11,7 +29,9 @@ groups:
           description: "CPU usage is {{ $value | printf \"%.1f\" }}%"
 
       - alert: HighMemory
-        expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 85
+        expr: >-
+          (1 - (node_memory_MemAvailable_bytes{instance!="monitoring-stack"}
+          / node_memory_MemTotal_bytes{instance!="monitoring-stack"})) * 100 > 85
         for: 5m
         labels:
           severity: warning
@@ -38,13 +58,19 @@ groups:
           description: "Node exporter unreachable for 2+ minutes"
 
       - alert: HighLoadAverage
-        expr: node_load5 > on(instance) count by(instance) (node_cpu_seconds_total{mode="idle"}) * 1.5
-        for: 5m
+        expr: >-
+          node_load5{instance!="monitoring-stack"}
+          > on(instance) count by(instance) (node_cpu_seconds_total{mode="idle",instance!="monitoring-stack"}) * 1.5
+        for: 15m
         labels:
           severity: warning
         annotations:
           summary: "High load on {{ $labels.instance }}"
-          description: "Load5 is {{ $value | printf \"%.2f\" }}"
+          description: >-
+            Load5 ist {{ $value | printf "%.2f" }}. Hinweis: Auf dem ProDesk
+            zaehlt auch Warten auf die USB-Platten in die Last hinein
+            (ntfs-3g laeuft im Benutzerbereich). Vor Massnahmen mit
+            `vmstat 2 5` pruefen, ob wirklich CPU knapp ist oder nur E/A wartet.
 
       - alert: ServiceDown
         expr: probe_success{job=~"blackbox_.*"} == 0
