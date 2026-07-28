@@ -1,0 +1,47 @@
+# Rclone-Einbindung von Google Drive auf dem Anker-Knoten.
+# Ziel: /mnt/google-drive — dorthin sichert der taegliche vzdump-Lauf (04:00).
+#
+# Korrigiert am 28.07.2026 (Odoo #874). Zwei Fehler in der Vorgaengerfassung:
+#
+#   1. --cache-dir zeigte auf /mnt/ssd2tb/.rclone-cache. Diese USB-SSD wurde
+#      nach dem Bad-Sector-Vorfall im Mai ausgebaut; /mnt/ssd2tb ist seither
+#      nur noch ein leeres Verzeichnis und KEIN Einhaengepunkt mehr. Der
+#      Zwischenspeicher landete dadurch unbemerkt auf der 68-GB-Systemplatte.
+#      Es lief - aber aus Versehen, ohne dass jemand es wusste.
+#
+#   2. --vfs-cache-max-size stand auf 10G, waehrend einzelne Sicherungen
+#      12 GB gross sind (VM 300). Eine Datei, die nicht in den Zwischen-
+#      speicher passt, ist im Schreibmodus "full" ein Problem.
+#
+# Jetzt: echter Pfad unter /var/cache/rclone, Obergrenze 20G. Auf der
+# Systemplatte sind 52 GB frei, das passt mit Reserve.
+#
+# --drive-chunk-size 64M NICHT entfernen: ohne diesen Wert laedt rclone
+# achtmal langsamer zu Google Drive hoch (gemessen 0,25 statt 2,04 MB/s).
+
+[Unit]
+Description=Rclone Mount for Google Drive (5TB)
+After=network-online.target tailscaled.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+# Zwischenspeicher-Verzeichnis anlegen, falls es fehlt
+ExecStartPre=/bin/mkdir -p /var/cache/rclone
+ExecStart=/usr/bin/rclone mount gdrive: /mnt/google-drive \
+    --cache-dir /var/cache/rclone \
+    --vfs-cache-mode full \
+    --vfs-cache-max-age 24h \
+    --vfs-cache-max-size 20G \
+    --allow-other --allow-non-empty \
+    --buffer-size 32M \
+    --tpslimit 8 \
+    --tpslimit-burst 10 \
+    --drive-chunk-size 64M \
+    --log-level INFO
+ExecStop=/bin/fusermount -u /mnt/google-drive
+Restart=always
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target
