@@ -33,8 +33,27 @@
 
 - **WP-Stockenweiler-3 (Projekt ID 58) & Single Focus:**
   - **Stage 01 (Genehmigung & Vorbereitung):** 100% abgeschlossen (Task 1.1 `#829` & Task 1.2 `#830`).
-  - **Stage 02 (Vor-Ort & Trassenplanung):** Task 2.1 (`#831`) ist als **einzige aktive Prioritäts-Aufgabe** in Odoo auf **Dienstag, 28.07.2026** (Vor-Ort-Termin Elektro mit Thomas Lang) terminiert.
+  - **Stage 02 (Vor-Ort & Trassenplanung):** Vor-Ort-Termin Elektro mit Thomas Lang war für 28.07.2026 terminiert.
   - **Eltern / Smart-Home Aufgaben:** Alle 53 Eltern/Smart-Home Aufgaben auf **30.09.2026** (nach der Wärmepumpe) neu terminiert.
+
+### 🔴 BLOCKER seit 29.07.2026 — Anschlussleistung reicht nicht (Odoo #885)
+
+Die **EGS hat nur 12 kW Gesamtlast** am Anschluss genehmigt. Das reicht für die Weishaupt **WEB 13/20** plus Haushalt nicht:
+
+| Verbraucher | Leistung |
+|---|---|
+| Heizstäbe 3×3 kW | **9,0 kW** |
+| Verdichter WEB 13/20 (elektrisch, betriebspunktabhängig) | ca. 4–5 kW |
+| **Wärmepumpe allein** | **13–14 kW** |
+| Haushalt | kommt obendrauf |
+
+**Vor allen weiteren Elektro-Schritten muss mit der EGS nachverhandelt werden.**
+
+Vier Hebel, kombinierbar: §14a EnWG (Netzbetreiber **muss** anschliessen, darf auf min. 4,2 kW drosseln) · Lastmanagement per EMS (ist mit `#836`/`#855` ohnehin geplant — vermutlich der schnellste Weg) · Heizstäbe von 9 auf 3 kW reduzieren (grösster Einzelhebel) · Verriegelung Verdichter/Heizstäbe.
+
+**Auf „wartend" gesetzt:** `#834` Zählerschrank, `#845` Absicherung/FI Typ B, `#850` Verdichter-Zuleitung, `#851` VDE-Erstprüfung, `#837` Fertigmeldung, `#856` Antragspaket.
+
+**Läuft weiter ohne Strombezug:** Trassenplanung, Beton-Sockel `#846`, Kältetechnik-Logistik `#832`, Kernbohrung `#847`, Netzwerkverkabelung `#835`/`#852`.
 
 ---
 
