@@ -44,6 +44,10 @@ RCLONE_OPTS=(
     --exclude ".Trash*/**"
     --exclude "System Volume Information/**"
     --exclude "**/.DS_Store"
+    # Die aussortierten Dateien von der defekten USB-Platte sind nachweislich
+    # unlesbar (ffmpeg kann sie nicht dekodieren). 57 GB Datenmuell in die
+    # Cloud zu schieben waere sinnlos — sie bleiben nur lokal zur Ansicht.
+    --exclude "_RETTUNG_BESCHAEDIGT_*/**"
     --stats 30m
     --stats-one-line
 )
