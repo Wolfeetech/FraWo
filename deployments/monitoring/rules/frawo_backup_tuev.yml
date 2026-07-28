@@ -1,0 +1,55 @@
+# Alarme für den Backup-TÜV.
+#
+# Der TÜV (/usr/local/bin/frawo-backup-tuev.sh, täglich 08:00) prüft jede
+# Sicherung auf ihr ERGEBNIS statt auf ihren Ablauf: Gibt es eine Datei, ist
+# sie gross genug, ist sie jung genug, lässt sie sich lesen?
+#
+# Anlass: Am 27./28.07.2026 kamen an einem Tag drei Sicherungen ans Licht, die
+# jahrelang Erfolg gemeldet und nichts produziert hatten. Ein Exit-Code 0
+# beweist nichts — deshalb diese zweite Instanz.
+
+groups:
+  - name: frawo_backup_tuev
+    rules:
+      # Die wichtigste Regel: irgendeine Sicherung ist nicht mehr belastbar.
+      - alert: BackupTuevDurchgefallen
+        expr: frawo_backup_tuev_durchgefallen > 0
+        for: 30m
+        labels:
+          severity: critical
+          service: backup
+        annotations:
+          summary: "{{ $value }} Sicherungsprüfung(en) durchgefallen"
+          description: >-
+            Der Backup-TÜV hat Mängel gefunden. Welche genau, steht in
+            /var/log/frawo-backup-tuev.log auf dem ProDesk. Die Einzelmetrik
+            frawo_backup_tuev{pruefung="..."} zeigt, welche Prüfung auf 0 steht.
+
+      # Einzelne Prüfung benennen, damit man sofort sieht, wo es klemmt.
+      - alert: BackupPruefungFehlgeschlagen
+        expr: frawo_backup_tuev == 0
+        for: 30m
+        labels:
+          severity: warning
+          service: backup
+        annotations:
+          summary: "Sicherungsprüfung {{ $labels.pruefung }} durchgefallen"
+          description: >-
+            Die Prüfung {{ $labels.pruefung }} meldet kein verwertbares
+            Ergebnis. Details in /var/log/frawo-backup-tuev.log.
+
+      # Der TÜV selbst darf nicht ausfallen — sonst ist der Wächter blind.
+      - alert: BackupTuevLaeuftNicht
+        expr: >-
+          (time() - frawo_backup_tuev_letzter_lauf_timestamp_seconds) > 30 * 3600
+          or absent(frawo_backup_tuev_letzter_lauf_timestamp_seconds)
+        for: 1h
+        labels:
+          severity: critical
+          service: backup
+        annotations:
+          summary: "Backup-TÜV läuft nicht mehr"
+          description: >-
+            Seit über 30 Stunden kein Prüflauf. Damit ist unbemerkt, ob die
+            Sicherungen noch etwas produzieren — genau der Zustand, der zu den
+            drei kaputten Backups geführt hat.
