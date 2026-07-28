@@ -1,0 +1,46 @@
+# Alarme fuer den Wiederherstellungstest.
+#
+# Warum das die wichtigste Pruefung ueberhaupt ist:
+# Bis zum 28.07.2026 wurde bei FraWo nie geprueft, ob aus einer Sicherung
+# tatsaechlich wieder eine funktionierende Datenbank wird. Bekannt war nur,
+# dass die Dateien LESBAR sind. Das ist der Unterschied zwischen "das
+# Ersatzrad liegt im Kofferraum" und "das Ersatzrad passt auf die Achse".
+#
+# Der Test (/usr/local/bin/odoo-restore-test.sh, sonntags 09:00) spielt den
+# juengsten Dump in eine Wegwerf-Datenbank ein, vergleicht die Zeilenzahlen
+# wichtiger Tabellen mit der Produktivdatenbank und loescht die Kopie wieder.
+# Die Produktivdatenbank wird dabei nie angefasst.
+
+groups:
+  - name: frawo_restore_test
+    rules:
+      - alert: WiederherstellungFehlgeschlagen
+        expr: frawo_odoo_restore_test_ok == 0
+        for: 1h
+        labels:
+          severity: critical
+          service: backup
+        annotations:
+          summary: "Wiederherstellungstest der Odoo-Sicherung ist durchgefallen"
+          description: >-
+            Aus der juengsten Sicherung entsteht keine vollstaendige Datenbank.
+            Damit ist die Sicherung im Ernstfall wertlos, egal wie gross und
+            aktuell die Datei ist. Einzelheiten in
+            /var/log/odoo-restore-test.log auf dem ProDesk.
+
+      # Ein Test, der nicht mehr laeuft, ist so gut wie keiner. Der Lauf ist
+      # woechentlich, deshalb 9 Tage Toleranz.
+      - alert: WiederherstellungstestLaeuftNicht
+        expr: >-
+          (time() - frawo_odoo_restore_test_timestamp_seconds) > 9 * 24 * 3600
+          or absent(frawo_odoo_restore_test_timestamp_seconds)
+        for: 2h
+        labels:
+          severity: warning
+          service: backup
+        annotations:
+          summary: "Seit ueber 9 Tagen kein Wiederherstellungstest"
+          description: >-
+            Der woechentliche Test laeuft nicht mehr. Ohne ihn weiss niemand,
+            ob die Sicherungen im Ernstfall taugen - genau der Zustand, der bis
+            zum 28.07.2026 bestand.
