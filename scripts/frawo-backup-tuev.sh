@@ -140,6 +140,29 @@ for paar in "odoo_offsite:/var/backups/odoo-offsite/*.dump" \
     fi
 done
 
+# --- 4b. Odoo in der Cloud --------------------------------------------------
+# Ergaenzt 28.07.2026 nach dem Sicherungs-Audit: Die einzige Odoo-Kopie in
+# Google Drive war sechs Wochen alt. Die Geschaeftsdaten hatten damit keine
+# aktuelle Kopie ausser Haus.
+CLOUD_ODOO=$(rclone lsl gdrive:FraWo-Odoo-Sicherungen 2>/dev/null \
+             | grep '\.dump$' | sort -k2 | tail -1)
+if [ -z "$CLOUD_ODOO" ]; then
+    pruefe "odoo_cloud" 0 "keine Sicherung in Google Drive"
+else
+    # Feld 2 ist das Datum, Feld 3 die Uhrzeit. Beide werden gebraucht -
+    # sonst wird ab Mitternacht gerechnet und das Alter ist immer zu hoch.
+    CLOUD_DATUM=$(echo "$CLOUD_ODOO" | awk '{print $2" "$3}')
+    CLOUD_ALT=$(( ( $(date +%s) - $(date -d "$CLOUD_DATUM" +%s 2>/dev/null || echo 0) ) / 3600 ))
+    CLOUD_SZ=$(echo "$CLOUD_ODOO" | awk '{print $1}')
+    if [ "$CLOUD_ALT" -gt 26 ] || [ "$CLOUD_ALT" -lt 0 ]; then
+        pruefe "odoo_cloud" 0 "Kopie in der Cloud $CLOUD_ALT Stunden alt"
+    elif [ "$CLOUD_SZ" -lt 20000000 ]; then
+        pruefe "odoo_cloud" 0 "Kopie nur $((CLOUD_SZ/1024/1024)) MB — zu klein"
+    else
+        pruefe "odoo_cloud" 1 "$((CLOUD_SZ/1024/1024)) MB, $CLOUD_ALT h alt"
+    fi
+fi
+
 # --- 5. VM-Sicherungen lokal (vzdump) --------------------------------------
 for VMID in 210 360; do
     F=$(neueste "/mnt/data_family/proxmox_backups/dump/vzdump-qemu-${VMID}-*.vma.zst")

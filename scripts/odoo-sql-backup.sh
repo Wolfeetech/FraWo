@@ -81,6 +81,40 @@ else
     echo "WARNUNG: Anker-Knoten $OFFSITE_HOST nicht erreichbar — keine Offsite-Kopie"
 fi
 
+# --- 3b. Kopie in die Cloud ------------------------------------------------
+# Ergaenzt am 28.07.2026 nach dem Sicherungs-Audit. Befund: Die einzige
+# Odoo-Sicherung in Google Drive stammte vom 18.06. — sechs Wochen alt.
+# Damit hatten die Geschaeftsdaten (Rechnungen, Kontakte, Aufgaben) keine
+# aktuelle Kopie ausser Haus, waehrend taeglich Musik hochgeladen wurde.
+# Bei 74 MB pro Lauf ist das in unter einer Minute erledigt.
+#
+# --drive-chunk-size 64M nicht entfernen: ohne diesen Wert ist der Upload
+# achtmal langsamer (gemessen 0,25 statt 2,04 MB/s).
+CLOUD_OK=nein
+CLOUD_ZIEL=gdrive:FraWo-Odoo-Sicherungen
+
+if rclone copy "$OUT" "$CLOUD_ZIEL/" \
+        --drive-chunk-size 64M --drive-upload-cutoff 64M \
+        --retries 3 --low-level-retries 10 2>/dev/null \
+   && rclone copy "$STORE" "$CLOUD_ZIEL/" \
+        --drive-chunk-size 64M --drive-upload-cutoff 64M \
+        --retries 3 --low-level-retries 10 2>/dev/null; then
+    # Groesse gegenpruefen — eine Datei in der Cloud ist noch kein Backup.
+    CLOUD_BYTES=$(rclone size "$CLOUD_ZIEL/$(basename "$OUT")" --json 2>/dev/null \
+                  | grep -o '"bytes":[0-9]*' | cut -d: -f2)
+    if [ "$CLOUD_BYTES" = "$SZ" ]; then
+        CLOUD_OK=ja
+        # Nur die juengsten Staende in der Cloud behalten.
+        rclone lsf "$CLOUD_ZIEL/" 2>/dev/null | grep "^${DB}-" | sort -r \
+            | tail -n +$((RETENTION_DAYS + 1)) \
+            | while read -r alt; do rclone delete "$CLOUD_ZIEL/$alt" 2>/dev/null || true; done
+    else
+        echo "WARNUNG: Groesse in der Cloud ($CLOUD_BYTES) weicht ab ($SZ)"
+    fi
+else
+    echo "WARNUNG: Upload nach $CLOUD_ZIEL fehlgeschlagen"
+fi
+
 # --- 4. Aufräumen ---------------------------------------------------------
 find "$DIR" -name "${DB}-*.dump" -mtime "+$RETENTION_DAYS" -delete
 find "$DIR" -name "${DB}-*-filestore.tar.gz" -mtime "+$RETENTION_DAYS" -delete
@@ -96,6 +130,8 @@ if [ -d "$TEXTFILE_DIR" ]; then
     METRIC="$TEXTFILE_DIR/odoo_backup.prom"
     OFFSITE_VAL=0
     [ "$OFFSITE_OK" = "ja" ] && OFFSITE_VAL=1
+    CLOUD_VAL=0
+    [ "$CLOUD_OK" = "ja" ] && CLOUD_VAL=1
     cat > "$METRIC.tmp" <<METRICS
 # HELP frawo_odoo_backup_last_success_timestamp_seconds Zeitpunkt des letzten erfolgreichen Odoo-Backups.
 # TYPE frawo_odoo_backup_last_success_timestamp_seconds gauge
@@ -106,8 +142,11 @@ frawo_odoo_backup_size_bytes $(stat -c%s "$OUT")
 # HELP frawo_odoo_backup_offsite_ok Offsite-Kopie auf den Anker-Knoten erfolgreich und pruefsummengleich.
 # TYPE frawo_odoo_backup_offsite_ok gauge
 frawo_odoo_backup_offsite_ok $OFFSITE_VAL
+# HELP frawo_odoo_backup_cloud_ok Kopie in Google Drive erfolgreich und groessengleich.
+# TYPE frawo_odoo_backup_cloud_ok gauge
+frawo_odoo_backup_cloud_ok $CLOUD_VAL
 METRICS
     mv "$METRIC.tmp" "$METRIC"
 fi
 
-echo "OK $(date '+%Y-%m-%d %H:%M') DB=$(du -h "$OUT" | cut -f1) Filestore=$(du -h "$STORE" | cut -f1) Offsite=$OFFSITE_OK"
+echo "OK $(date '+%Y-%m-%d %H:%M') DB=$(du -h "$OUT" | cut -f1) Filestore=$(du -h "$STORE" | cut -f1) Offsite=$OFFSITE_OK Cloud=$CLOUD_OK"
