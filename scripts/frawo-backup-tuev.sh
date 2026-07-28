@@ -144,7 +144,11 @@ done
 # Ergaenzt 28.07.2026 nach dem Sicherungs-Audit: Die einzige Odoo-Kopie in
 # Google Drive war sechs Wochen alt. Die Geschaeftsdaten hatten damit keine
 # aktuelle Kopie ausser Haus.
-CLOUD_ODOO=$(rclone lsl gdrive:FraWo-Odoo-Sicherungen 2>/dev/null \
+# Seit 28.07.2026 verschluesselt: "gcrypt" ist ein rclone-crypt-Ziel ueber
+# gdrive:FraWo-Verschluesselt. Der Zugriff hier prueft damit zugleich, dass
+# die Entschluesselung funktioniert - waere der Schluessel kaputt, kaeme
+# keine Dateiliste zurueck und die Pruefung fiele durch.
+CLOUD_ODOO=$(rclone lsl gcrypt:Odoo 2>/dev/null \
              | grep '\.dump$' | sort -k2 | tail -1)
 if [ -z "$CLOUD_ODOO" ]; then
     pruefe "odoo_cloud" 0 "keine Sicherung in Google Drive"

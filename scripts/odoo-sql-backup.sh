@@ -91,7 +91,18 @@ fi
 # --drive-chunk-size 64M nicht entfernen: ohne diesen Wert ist der Upload
 # achtmal langsamer (gemessen 0,25 statt 2,04 MB/s).
 CLOUD_OK=nein
-CLOUD_ZIEL=gdrive:FraWo-Odoo-Sicherungen
+# VERSCHLUESSELT (seit 28.07.2026). "gcrypt" ist ein rclone-crypt-Ziel, das
+# gdrive:FraWo-Verschluesselt umhuellt. Google sieht nur unlesbare Datei- und
+# Ordnernamen und verschluesselte Inhalte.
+#
+# Bewusste Entscheidung: LOKAL bleibt unverschluesselt, nur die CLOUD wird
+# verschluesselt. Die lokalen Kopien stehen im Haus und erlauben eine
+# Wiederherstellung OHNE jeden Schluessel. Damit kann ein verlorener
+# Schluessel niemals dazu fuehren, dass gar nichts mehr geht.
+#
+# Schluessel: /root/.frawo-crypt-pw und -salt, zusaetzlich auf dem Anker
+# (10.1.0.92) unter denselben Pfaden. Siehe DOCS/VERSCHLUESSELUNG.md
+CLOUD_ZIEL=gcrypt:Odoo
 
 if rclone copy "$OUT" "$CLOUD_ZIEL/" \
         --drive-chunk-size 64M --drive-upload-cutoff 64M \
