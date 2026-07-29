@@ -48,6 +48,7 @@ RCLONE_OPTS=(
     # unlesbar (ffmpeg kann sie nicht dekodieren). 57 GB Datenmuell in die
     # Cloud zu schieben waere sinnlos — sie bleiben nur lokal zur Ansicht.
     --exclude "_RETTUNG_BESCHAEDIGT_*/**"
+    --exclude "_QUARANTAENE_*/**"
     --stats 30m
     --stats-one-line
 )

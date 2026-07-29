@@ -24,6 +24,11 @@
 SELECT 'vorher in General Rotation' AS was, COUNT(*) AS anzahl
 FROM station_playlist_media WHERE playlist_id = 835;
 
+-- Erst leeren, dann neu befuellen. Sonst blieben die Eintraege stehen, die
+-- auf den Ordner "Duplicates" zeigen — der Ausschluss unten wirkt nur auf
+-- das, was neu hinzukommt.
+DELETE FROM station_playlist_media WHERE playlist_id = 835;
+
 INSERT INTO station_playlist_media (playlist_id, media_id, weight, last_played, is_queued)
 SELECT 835, k.behalten, 1, 0, 0
 FROM (
@@ -31,8 +36,10 @@ FROM (
            SUBSTRING_INDEX(GROUP_CONCAT(id ORDER BY length DESC, id ASC), ',', 1)
          AS UNSIGNED) AS behalten
   FROM station_media
-  WHERE storage_location_id = (SELECT storage_location_id FROM station WHERE id = 1)
+  WHERE storage_location_id = (SELECT media_storage_location_id FROM station WHERE id = 1)
     AND length >= 60
+    -- Der Ordner "Duplicates" bleibt aussen vor, siehe kuration-tagesablauf.sql
+    AND path NOT LIKE char(37,68,117,112,108,105,99,97,116,101,115,37)
   GROUP BY LOWER(TRIM(COALESCE(artist,''))), LOWER(TRIM(COALESCE(title,'')))
 ) k
 LEFT JOIN station_playlist_media vorhanden

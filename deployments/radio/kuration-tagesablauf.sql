@@ -25,6 +25,21 @@
 --    Die Wiederholungssperre von AzuraCast arbeitet pro Datei, nicht pro
 --    Titel — ohne diese Regel läuft derselbe Song zweimal in einer Stunde.
 --
+--    NACHGETRAGEN 29.07.2026 — Vorrang für Dateien AUSSERHALB des Ordners
+--    "Ranger_07.26/Duplicates". Dort liegen 1800 Dateien mit 64 GB, von denen
+--    eine Stichprobe von 400 Titeln zu 398 auch anderswo vorhanden war.
+--
+--    Der Ordner enthält nachweislich beschädigte Kopien: "Kendal - Intacto"
+--    liegt dort elfmal, alle exakt 6:16 lang und als FLAC deklariert, aber
+--    mit 946, 585, 562, 305, 269, 205, 76, 16 und 14 kbps. Eine FLAC-Datei
+--    mit 14 kbps kann es nicht geben — FLAC ist verlustfrei, 6:16 müssten
+--    rund 900 kbps sein. Das ist das Muster der defekten USB-Platte aus
+--    Odoo #881, die "bei jedem Lesen andere Daten liefert".
+--
+--    1042 Playlist-Einträge zeigten in diesen Ordner. Mit dieser Regel
+--    wandern sie auf die intakten Fassungen, ohne dass ein Titel verloren
+--    geht. Erst danach kann der Ordner weggeräumt werden.
+--
 -- 3. Längenfenster je Sendeplatz.
 --    Ein 40-Sekunden-Fragment klingt nach Panne, ein 86-Minuten-DJ-Set
 --    mittags nach Versehen. Beides hat seinen Platz — nur nicht überall.
@@ -62,9 +77,15 @@ WHERE m.storage_location_id <> @loc;
 DELETE FROM station_playlist_media WHERE playlist_id = 840;
 INSERT INTO station_playlist_media (playlist_id, media_id, weight, last_played, is_queued)
 SELECT 840, k.id, 1, 0, 0 FROM (
-  SELECT CAST(SUBSTRING_INDEX(GROUP_CONCAT(id ORDER BY length DESC, id ASC), ',', 1) AS UNSIGNED) AS id
+  SELECT CAST(SUBSTRING_INDEX(GROUP_CONCAT(id ORDER BY (path NOT LIKE char(37,68,117,112,108,105,99,97,116,101,115,37)) DESC, length DESC, id ASC), ',', 1) AS UNSIGNED) AS id
   FROM station_media
   WHERE storage_location_id = @loc
+    -- Der Ordner "Duplicates" bleibt komplett aussen vor: 1800 Dateien,
+    -- 64 GB, davon eine Stichprobe von 400 Titeln zu 398 auch anderswo
+    -- vorhanden - und darunter nachweislich beschaedigte Kopien von der
+    -- defekten Platte (Odoo #881). Eine blosse Vorrangregel reichte nicht,
+    -- weil sie nur innerhalb jeder Genre-Abfrage wirkt.
+    AND path NOT LIKE char(37,68,117,112,108,105,99,97,116,101,115,37)
     AND length BETWEEN 240 AND 900
     AND CHAR_LENGTH(COALESCE(genre,'')) <= 40
     AND (   LOWER(genre) LIKE '%deep house%'
@@ -87,9 +108,15 @@ SELECT 840, k.id, 1, 0, 0 FROM (
 DELETE FROM station_playlist_media WHERE playlist_id = 841;
 INSERT INTO station_playlist_media (playlist_id, media_id, weight, last_played, is_queued)
 SELECT 841, k.id, 1, 0, 0 FROM (
-  SELECT CAST(SUBSTRING_INDEX(GROUP_CONCAT(id ORDER BY length DESC, id ASC), ',', 1) AS UNSIGNED) AS id
+  SELECT CAST(SUBSTRING_INDEX(GROUP_CONCAT(id ORDER BY (path NOT LIKE char(37,68,117,112,108,105,99,97,116,101,115,37)) DESC, length DESC, id ASC), ',', 1) AS UNSIGNED) AS id
   FROM station_media
   WHERE storage_location_id = @loc
+    -- Der Ordner "Duplicates" bleibt komplett aussen vor: 1800 Dateien,
+    -- 64 GB, davon eine Stichprobe von 400 Titeln zu 398 auch anderswo
+    -- vorhanden - und darunter nachweislich beschaedigte Kopien von der
+    -- defekten Platte (Odoo #881). Eine blosse Vorrangregel reichte nicht,
+    -- weil sie nur innerhalb jeder Genre-Abfrage wirkt.
+    AND path NOT LIKE char(37,68,117,112,108,105,99,97,116,101,115,37)
     AND length BETWEEN 180 AND 720
     AND CHAR_LENGTH(COALESCE(genre,'')) <= 40
     AND (   LOWER(genre) = 'house'
@@ -110,9 +137,15 @@ SELECT 841, k.id, 1, 0, 0 FROM (
 DELETE FROM station_playlist_media WHERE playlist_id = 842;
 INSERT INTO station_playlist_media (playlist_id, media_id, weight, last_played, is_queued)
 SELECT 842, k.id, 1, 0, 0 FROM (
-  SELECT CAST(SUBSTRING_INDEX(GROUP_CONCAT(id ORDER BY length DESC, id ASC), ',', 1) AS UNSIGNED) AS id
+  SELECT CAST(SUBSTRING_INDEX(GROUP_CONCAT(id ORDER BY (path NOT LIKE char(37,68,117,112,108,105,99,97,116,101,115,37)) DESC, length DESC, id ASC), ',', 1) AS UNSIGNED) AS id
   FROM station_media
   WHERE storage_location_id = @loc
+    -- Der Ordner "Duplicates" bleibt komplett aussen vor: 1800 Dateien,
+    -- 64 GB, davon eine Stichprobe von 400 Titeln zu 398 auch anderswo
+    -- vorhanden - und darunter nachweislich beschaedigte Kopien von der
+    -- defekten Platte (Odoo #881). Eine blosse Vorrangregel reichte nicht,
+    -- weil sie nur innerhalb jeder Genre-Abfrage wirkt.
+    AND path NOT LIKE char(37,68,117,112,108,105,99,97,116,101,115,37)
     AND length BETWEEN 180 AND 600
     AND CHAR_LENGTH(COALESCE(genre,'')) <= 40
     AND (   LOWER(genre) LIKE '%disco%'
@@ -132,9 +165,15 @@ SELECT 842, k.id, 1, 0, 0 FROM (
 DELETE FROM station_playlist_media WHERE playlist_id = 843;
 INSERT INTO station_playlist_media (playlist_id, media_id, weight, last_played, is_queued)
 SELECT 843, k.id, 1, 0, 0 FROM (
-  SELECT CAST(SUBSTRING_INDEX(GROUP_CONCAT(id ORDER BY length DESC, id ASC), ',', 1) AS UNSIGNED) AS id
+  SELECT CAST(SUBSTRING_INDEX(GROUP_CONCAT(id ORDER BY (path NOT LIKE char(37,68,117,112,108,105,99,97,116,101,115,37)) DESC, length DESC, id ASC), ',', 1) AS UNSIGNED) AS id
   FROM station_media
   WHERE storage_location_id = @loc
+    -- Der Ordner "Duplicates" bleibt komplett aussen vor: 1800 Dateien,
+    -- 64 GB, davon eine Stichprobe von 400 Titeln zu 398 auch anderswo
+    -- vorhanden - und darunter nachweislich beschaedigte Kopien von der
+    -- defekten Platte (Odoo #881). Eine blosse Vorrangregel reichte nicht,
+    -- weil sie nur innerhalb jeder Genre-Abfrage wirkt.
+    AND path NOT LIKE char(37,68,117,112,108,105,99,97,116,101,115,37)
     AND length BETWEEN 240 AND 900
     AND CHAR_LENGTH(COALESCE(genre,'')) <= 40
     AND (   LOWER(genre) LIKE '%tech house%'
@@ -153,9 +192,15 @@ SELECT 843, k.id, 1, 0, 0 FROM (
 DELETE FROM station_playlist_media WHERE playlist_id = 844;
 INSERT INTO station_playlist_media (playlist_id, media_id, weight, last_played, is_queued)
 SELECT 844, k.id, 1, 0, 0 FROM (
-  SELECT CAST(SUBSTRING_INDEX(GROUP_CONCAT(id ORDER BY length DESC, id ASC), ',', 1) AS UNSIGNED) AS id
+  SELECT CAST(SUBSTRING_INDEX(GROUP_CONCAT(id ORDER BY (path NOT LIKE char(37,68,117,112,108,105,99,97,116,101,115,37)) DESC, length DESC, id ASC), ',', 1) AS UNSIGNED) AS id
   FROM station_media
   WHERE storage_location_id = @loc
+    -- Der Ordner "Duplicates" bleibt komplett aussen vor: 1800 Dateien,
+    -- 64 GB, davon eine Stichprobe von 400 Titeln zu 398 auch anderswo
+    -- vorhanden - und darunter nachweislich beschaedigte Kopien von der
+    -- defekten Platte (Odoo #881). Eine blosse Vorrangregel reichte nicht,
+    -- weil sie nur innerhalb jeder Genre-Abfrage wirkt.
+    AND path NOT LIKE char(37,68,117,112,108,105,99,97,116,101,115,37)
     AND length BETWEEN 240 AND 900
     AND CHAR_LENGTH(COALESCE(genre,'')) <= 40
     AND (   LOWER(genre) LIKE '%peak time%'
@@ -176,9 +221,15 @@ SELECT 844, k.id, 1, 0, 0 FROM (
 DELETE FROM station_playlist_media WHERE playlist_id = 845;
 INSERT INTO station_playlist_media (playlist_id, media_id, weight, last_played, is_queued)
 SELECT 845, k.id, 1, 0, 0 FROM (
-  SELECT CAST(SUBSTRING_INDEX(GROUP_CONCAT(id ORDER BY length DESC, id ASC), ',', 1) AS UNSIGNED) AS id
+  SELECT CAST(SUBSTRING_INDEX(GROUP_CONCAT(id ORDER BY (path NOT LIKE char(37,68,117,112,108,105,99,97,116,101,115,37)) DESC, length DESC, id ASC), ',', 1) AS UNSIGNED) AS id
   FROM station_media
   WHERE storage_location_id = @loc
+    -- Der Ordner "Duplicates" bleibt komplett aussen vor: 1800 Dateien,
+    -- 64 GB, davon eine Stichprobe von 400 Titeln zu 398 auch anderswo
+    -- vorhanden - und darunter nachweislich beschaedigte Kopien von der
+    -- defekten Platte (Odoo #881). Eine blosse Vorrangregel reichte nicht,
+    -- weil sie nur innerhalb jeder Genre-Abfrage wirkt.
+    AND path NOT LIKE char(37,68,117,112,108,105,99,97,116,101,115,37)
     AND length BETWEEN 360 AND 2400
     AND CHAR_LENGTH(COALESCE(genre,'')) <= 40
     AND (   LOWER(genre) LIKE '%raw%'
@@ -203,9 +254,15 @@ SELECT 845, k.id, 1, 0, 0 FROM (
 DELETE FROM station_playlist_media WHERE playlist_id = 838;
 INSERT INTO station_playlist_media (playlist_id, media_id, weight, last_played, is_queued)
 SELECT 838, k.id, 1, 0, 0 FROM (
-  SELECT CAST(SUBSTRING_INDEX(GROUP_CONCAT(id ORDER BY length DESC, id ASC), ',', 1) AS UNSIGNED) AS id
+  SELECT CAST(SUBSTRING_INDEX(GROUP_CONCAT(id ORDER BY (path NOT LIKE char(37,68,117,112,108,105,99,97,116,101,115,37)) DESC, length DESC, id ASC), ',', 1) AS UNSIGNED) AS id
   FROM station_media
   WHERE storage_location_id = @loc
+    -- Der Ordner "Duplicates" bleibt komplett aussen vor: 1800 Dateien,
+    -- 64 GB, davon eine Stichprobe von 400 Titeln zu 398 auch anderswo
+    -- vorhanden - und darunter nachweislich beschaedigte Kopien von der
+    -- defekten Platte (Odoo #881). Eine blosse Vorrangregel reichte nicht,
+    -- weil sie nur innerhalb jeder Genre-Abfrage wirkt.
+    AND path NOT LIKE char(37,68,117,112,108,105,99,97,116,101,115,37)
     AND length >= 1200
     AND (LOWER(COALESCE(genre,'')) LIKE '%dj set%' OR length >= 2400)
   GROUP BY LOWER(TRIM(COALESCE(artist,''))), LOWER(TRIM(COALESCE(title,'')))
