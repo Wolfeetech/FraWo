@@ -47,6 +47,32 @@ Die drei `socat`-Weiterleitungen **19022** (SSH zu OpenClaw CT150), **19100** (A
 `exports.backup-20260729` · `hosts.backup-20260729` · `host.fw.backup-20260729` · `nginx-host-konfiguration-20260729.tar.gz`
 Notfall ohne Netz: an der Konsole `pve-firewall stop`.
 
+### 🔑 Anker: SSH-Anmeldung mit Passwort war offen
+
+Odoo #884 behauptete, SSH sei „auf beiden Knoten sauber". **Für den Anker stimmte das nicht.** Der ProDesk hat seit 11/2025 `/etc/ssh/sshd_config.d/99-hardening.conf`, beim Anker war das Verzeichnis leer und `PasswordAuthentication` nur auskommentiert → Voreinstellung **`yes`**. Betroffen: Benutzer `wolf` (Shell + Passwort gesetzt). Root war durch `without-password` geschützt.
+
+Reichweite: LAN + Tailscale. **Nicht** aus dem Internet (0 Portweiterleitungen, nachgezählt) und **nicht** aus Gäste-/IoT-Netz (Port 22 dort gesperrt).
+
+Behoben über `deployments/anker/99-hardening.conf`. ⚠️ Die ProDesk-Datei wurde **bewusst nicht kopiert** — sie enthält `Banner /etc/ssh/banner.txt`, und diese Datei gibt es auf dem Anker nicht: `sshd` wäre beim nächsten Start nicht mehr hochgekommen.
+
+### 📻 Radio: der Ton wird jetzt geprüft, nicht nur die Weboberfläche
+
+In CT130 (Anker) läuft ein **zweites Überwachungssystem** — `uptime-kuma` auf `10.1.0.200:3001`, 8 Prüfungen, **drei standen auf Rot ohne dass es jemand sah**. Nachgemessen: zwei sind Altlasten (Navidrome existiert nicht mehr; „AzuraCast Stream" zeigt auf `10.1.0.200:8000`, AzuraCast läuft aber als VM 210 auf `10.1.0.38`), der dritte war ein **Fehlalarm** — der Stream lief einwandfrei, die Prüfung war falsch gebaut.
+
+Der berechtigte Kern: **Grafana prüfte den Ton überhaupt nicht.** Jetzt in `deployments/monitoring/blackbox.yml` das Modul `radio_stream` — Range-Kopf begrenzt auf 128 KB (Server antwortet mit 206), zusätzlich Prüfung auf Inhaltstyp `audio/*`. Zwei Ziele mit Absicht: über Cloudflare **und** direkt am Sender — fällt nur das erste aus, liegt es am Weg dorthin. Dazu zwei Alarmregeln in `frawo_radio_stream.yml`.
+
+⚠️ **Merksatz:** Ein Stream hat kein Ende. Eine normale HTTP-Prüfung läuft daran immer ins Zeitlimit und meldet ewig Fehler.
+
+### ✅ Odoo-Aufgaben an diesem Tag geschlossen / neu
+
+| # | Status |
+|---|---|
+| #867 Gäste-WLAN → Grafana/Prometheus | **erledigt** — war längst umgesetzt, nur nicht geschlossen (Regel zeigt auf `Allowed_Guest_Ports` = 53,123) |
+| #877 CPU-Alarme nannten falschen Container | **erledigt** — Ausschluss greift, CPU-Regel meldet nur noch die 2 echten Hosts |
+| #884 Sicherheits-Audit Teil 1 | **erledigt** — mit Korrektur der falschen SSH-Aussage |
+| #887 CT130 ist der einzige privilegierte Container (von 13) | **neu** — kein Schalter, braucht Wartungsfenster (vzdump → `pct restore --unprivileged 1`) |
+| #888 uptime-kuma: aufräumen oder abschalten? | **neu** — Empfehlung: abschalten, Grafana kann seit heute dasselbe und mehr |
+
 ---
 
 ## 🆕 Session-Abschluss 2026-07-25 — Odoo Production Readiness & Single Focus (Antigravity-Agent, live verifiziert)
