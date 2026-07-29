@@ -1,0 +1,31 @@
+127.0.0.1 localhost.localdomain localhost
+
+# Der Knoten selbst. Korrigiert am 29.07.2026 im Sicherheits-Audit.
+#
+# Vorher stand hier 192.168.178.172 — eine Adresse aus dem Netz, das es bei
+# uns seit der Umnummerierung nicht mehr gibt. Die echte Adresse des ProDesk
+# ist 10.1.0.128 auf vmbr0.
+#
+# Das war nicht nur kosmetisch: Proxmox liest hier seine eigene Adresse
+# heraus. Weil sie ins Leere zeigte, hielt "pve-firewall localnet" nur
+# 127.0.0.0/8 fuer das Verwaltungsnetz — die eingebaute Freigabe fuer
+# SSH (22), Weboberflaeche (8006), Konsole (5900-5999) und spiceproxy (3128)
+# griff also fuer kein einziges Geraet im LAN. Haette man in dem Zustand die
+# Host-Firewall eingeschaltet, waere die Oberflaeche nur noch ueber Tailscale
+# erreichbar gewesen.
+#
+# Sicherung der Vorfassung auf dem Host: /root/hosts.backup-20260729
+10.1.0.128 pve.fritz.box pve
+
+::1     ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+ff02::3 ip6-allhosts
+
+# Ebenfalls Altbestand aus dem 192.168.178-Netz: radio.yourparty.tech zeigte
+# auf 192.168.178.175, was es nicht mehr gibt. Der Radio-Server ist heute
+# VM 210 unter 10.1.0.38. Eintrag korrigiert statt geloescht, damit alte
+# Skripte, die den Namen verwenden, wieder am richtigen Ziel landen.
+10.1.0.38 radio.yourparty.tech

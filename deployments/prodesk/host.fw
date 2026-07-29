@@ -1,0 +1,66 @@
+# Host-Firewall ProDesk (Knoten "pve", 10.1.0.128) — eingeschaltet 29.07.2026
+#
+# Bis heute stand hier "enable: 0", die Firewall war also aus. Der Anker
+# laeuft seit laengerem mit eingeschalteter Firewall und policy_in DROP.
+# Diese Datei zieht den ProDesk nach.
+#
+# Sicherung der Vorfassung auf dem Host: /root/host.fw.backup-20260729
+# Zurueckdrehen, falls etwas nicht mehr erreichbar ist:
+#   cp /root/host.fw.backup-20260729 /etc/pve/local/host.fw
+# Notfall ohne Netz: an der Konsole "pve-firewall stop"
+#
+# WICHTIG — warum das vorher gefaehrlich gewesen waere:
+# In /etc/hosts stand die alte Adresse 192.168.178.172. Proxmox erkannte
+# daraus nur 127.0.0.0/8 als Verwaltungsnetz, und die eingebaute Freigabe
+# fuer SSH, Weboberflaeche und Konsole haette fuer kein Geraet im LAN
+# gegriffen. Seit der Korrektur meldet "pve-firewall localnet" korrekt
+# 10.1.0.0/24 — damit sind Port 22, 8006, 5900-5999 und 3128 aus dem
+# Server-VLAN automatisch erlaubt. Die Regeln unten kommen zusaetzlich.
+#
+# Die Grundregel ist DROP (aus cluster.fw). Alles, was nicht hier steht,
+# ist von aussen zu.
+
+[OPTIONS]
+
+enable: 1
+
+[RULES]
+
+# --- Verwaltung ---
+# Tailscale: von dort kommt die Fernwartung und der Anker.
+IN ACCEPT -source 100.64.0.0/10 -log nolog
+# Ausdruecklich zusaetzlich zur eingebauten Freigabe, damit das Einschalten
+# der Firewall auch dann nicht aussperrt, wenn die Netzerkennung mal kippt.
+IN ACCEPT -source 10.1.0.0/24 -p tcp -dport 22 -log nolog
+IN ACCEPT -source 10.1.0.0/24 -p tcp -dport 8006 -log nolog
+
+# --- Ueberwachung ---
+# Nur der Prometheus-Container CT150 (10.1.0.35) darf Messwerte abholen.
+# Vorher waren diese Ports fuer das ganze Netz offen — darunter 19022, das
+# auf den SSH-Zugang von OpenClaw CT150 durchreicht. Jeder im Server-VLAN
+# haette den erreichen koennen, ohne in Tailscale zu sein.
+IN ACCEPT -source 10.1.0.35 -p tcp -dport 9100 -log nolog
+IN ACCEPT -source 10.1.0.35 -p tcp -dport 19022 -log nolog
+IN ACCEPT -source 10.1.0.35 -p tcp -dport 19100 -log nolog
+IN ACCEPT -source 10.1.0.35 -p tcp -dport 19182 -log nolog
+
+# --- Radio-Bruecke ---
+# Der Dienst verlangt zusaetzlich einen Schluessel (ohne: HTTP 401).
+IN ACCEPT -source 10.1.0.0/24 -p tcp -dport 8888 -log nolog
+
+# --- NFS ---
+# Der Anker kommt ueber Tailscale und ist oben schon erlaubt. Diese Regeln
+# sind fuer das Server-VLAN, wo nur noch lesende Exporte mit root_squash
+# angeboten werden.
+IN ACCEPT -source 10.1.0.0/24 -p tcp -dport 111 -log nolog
+IN ACCEPT -source 10.1.0.0/24 -p udp -dport 111 -log nolog
+IN ACCEPT -source 10.1.0.0/24 -p tcp -dport 2049 -log nolog
+
+# --- Syncthing ---
+# Spiegelt Radio-Inhalte zwischen ProDesk und Anker. 21027/udp ist die
+# Nachbarschaftssuche im LAN, 22000/tcp die eigentliche Uebertragung.
+IN ACCEPT -source 10.1.0.0/24 -p tcp -dport 22000 -log nolog
+IN ACCEPT -source 10.1.0.0/24 -p udp -dport 21027 -log nolog
+
+# --- Diagnose ---
+IN ACCEPT -p icmp -log nolog

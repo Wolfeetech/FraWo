@@ -1,0 +1,39 @@
+# NFS-Exporte ProDesk (stockenweiler-pve) — Stand 29.07.2026
+#
+# Ueberarbeitet im Sicherheits-Audit Teil 3. Die Vorfassung liegt auf dem
+# Host unter /root/exports.backup-20260729.
+#
+# Zurueckdrehen, falls etwas nicht mehr erreichbar ist:
+#   cp /root/exports.backup-20260729 /etc/exports && exportfs -ra
+#
+# Grundsatz: so eng wie moeglich — und jede Zeile sagt, WER sie braucht
+# und WOFUER. Was das nicht mehr beantworten kann, fliegt raus.
+#
+# "no_root_squash" heisst: wer sich verbindet, ist auf DIESEM Server root.
+# Das steht deshalb nur noch in der einen Zeile, wo es zwingend noetig ist.
+#
+# Was vorher falsch war:
+#   - /mnt/musicstick stand dem GANZEN Netz 10.1.0.0/24 mit Schreibrecht und
+#     no_root_squash offen. Dort lag die Passwortliste pw.txt (Odoo-DB,
+#     Paperless, AzuraCast-MariaDB, n8n, Samba) mit Rechten 777 — von jedem
+#     Geraet im Server-Netz les- UND ueberschreibbar. Datei ist am 29.07.2026
+#     nach /root/vertraulich/pw.txt verschoben worden (600, nur root).
+#   - /mnt/music_hdd war zusaetzlich an 192.168.178.210 exportiert. Diese
+#     Adresse liegt in einem Netz, das es bei uns nicht mehr gibt — Altbestand
+#     aus der Zeit vor der Umnummerierung auf 10.1.x.
+#   - /mnt/data war zusaetzlich an 100.106.67.127 exportiert
+#     (surface-go-frontend, zu dem Zeitpunkt seit 26 Tagen offline).
+
+# Musikarchiv fuer den Radio-Server VM210 (AzuraCast). Nur lesen.
+# Die Ordner sind durchgaengig 777, root_squash bricht das Lesen daher nicht.
+/mnt/music_hdd 10.1.0.38(ro,no_subtree_check,root_squash)
+
+# Sicherungsziel fuer den Anker (Tailscale 100.69.179.87, proxmox-anker).
+# Schreibrecht und no_root_squash sind hier noetig, damit Sicherungen ihre
+# Eigentuemer und Rechte behalten. Genau eine Adresse, kein ganzes Netz.
+/mnt/data 100.69.179.87(rw,sync,no_subtree_check,no_root_squash,insecure)
+
+# Party-Musik vom 24.07.2026 (yourparty.radio). Jetzt nur noch lesen,
+# Root wird abgewertet. Falls wieder geschrieben werden muss:
+# ro auf rw aendern, dann "exportfs -ra".
+/mnt/musicstick 10.1.0.0/24(ro,sync,no_subtree_check,root_squash,fsid=42)
