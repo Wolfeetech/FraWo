@@ -1,0 +1,48 @@
+# Alarme für den Radio-Stream — angelegt 29.07.2026
+#
+# Bis heute wurde nur geprüft, ob die AzuraCast-Weboberfläche antwortet. Das
+# sagt nichts darüber aus, ob tatsächlich Ton gesendet wird: Die Oberfläche
+# läuft weiter, auch wenn der Stream steht.
+#
+# Zwei Ziele werden geprüft, und die Unterscheidung ist der eigentliche Zweck:
+#   - https://funk.frawo.tech/...  = der Weg, den Hörer nehmen (über Cloudflare)
+#   - http://10.1.0.38:8000/...    = direkt am Sender vorbei an Cloudflare
+#
+# Fällt nur der öffentliche Weg aus, sendet der Sender weiter und das Problem
+# liegt im Weg dorthin. Fallen beide aus, steht der Sender selbst.
+
+groups:
+  - name: frawo_radio_stream
+    rules:
+      - alert: RadioStreamAus
+        expr: probe_success{job="blackbox_radio_stream"} == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Radio liefert keinen Ton: {{ $labels.instance }}"
+          description: >-
+            Seit 5 Minuten kommt von {{ $labels.instance }} kein Audio mehr.
+            Geprüft wird der Inhaltstyp, ein reiner Fehler-Text würde also
+            nicht als Erfolg durchgehen. Erste Schritte: Läuft die VM 210?
+            Steht in AzuraCast eine Wiedergabeliste auf leer? Gegenprobe von
+            Hand: `curl -r 0-100000 -o /dev/null -w '%{http_code} %{size_download}'
+            http://10.1.0.38:8000/radio.mp3` — erwartet wird 206 und rund
+            100000 Bytes.
+
+      # Wenn nur der öffentliche Weg ausfällt, sendet der Sender weiter. Das
+      # ist ärgerlich, aber kein Sendeausfall — deshalb eine eigene, mildere
+      # Meldung mit klarem Fingerzeig auf die Ursache.
+      - alert: RadioStreamNurOeffentlichAus
+        expr: >-
+          probe_success{job="blackbox_radio_stream",instance=~"https://funk.*"} == 0
+          and on() probe_success{job="blackbox_radio_stream",instance=~"http://10.1.0.38.*"} == 1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Radio sendet, ist aber von aussen nicht erreichbar"
+          description: >-
+            Der Sender liefert direkt weiterhin Ton, über funk.frawo.tech kommt
+            aber nichts an. Das Problem liegt also nicht am Sender, sondern im
+            Weg dorthin — Cloudflare-Tunnel oder Proxy prüfen.

@@ -1,0 +1,77 @@
+# Blackbox-Exporter — Prüfmodule
+#
+# Läuft in CT150 (monitoring-stack, 10.1.0.35) auf Port 9115.
+# Version 0.23.0.
+#
+# Diese Datei gehört ins Repo und wird von hier ausgerollt:
+#   scp ... stock-pve:/tmp/blackbox.yml
+#   pct push 150 /tmp/blackbox.yml /etc/prometheus/blackbox.yml
+#   pct exec 150 -- systemctl restart prometheus-blackbox-exporter
+
+modules:
+  http_2xx:
+    prober: http
+    http:
+      preferred_ip_protocol: "ip4"
+
+  http_2xx_insecure:
+    prober: http
+    http:
+      preferred_ip_protocol: "ip4"
+      tls_config:
+        insecure_skip_verify: true
+
+  http_post_2xx:
+    prober: http
+    http:
+      method: POST
+      preferred_ip_protocol: "ip4"
+
+  tcp_connect:
+    prober: tcp
+    tcp:
+      preferred_ip_protocol: "ip4"
+
+  ssh_banner:
+    prober: tcp
+    tcp:
+      preferred_ip_protocol: "ip4"
+      query_response:
+      - expect: "^SSH-2.0-"
+
+  icmp:
+    prober: icmp
+    icmp:
+      preferred_ip_protocol: "ip4"
+
+  # Prüft, ob der Radio-Stream tatsächlich Ton liefert — nicht nur, ob die
+  # Weboberfläche antwortet. Angelegt am 29.07.2026.
+  #
+  # Anlass: In CT130 auf dem Anker läuft ein zweites Überwachungssystem
+  # (uptime-kuma), das eine Stream-Prüfung hatte. Grafana hatte keine. Der
+  # Sender kann also "online" aussehen, während gar kein Ton fliesst — die
+  # Weboberfläche antwortet davon unabhängig.
+  #
+  # Zwei Feinheiten, ohne die es nicht funktioniert:
+  #
+  # 1. Ein Stream hat kein Ende. Ohne Begrenzung würde die Prüfung bis zum
+  #    Zeitlimit lesen und immer als Fehler enden — genau der Grund, warum
+  #    uptime-kuma "Radio Stream AUSGEFALLEN" meldete, obwohl der Sender lief
+  #    (nachgemessen: 200 KB Audio empfangen, 2 Hörer, Titel spielte).
+  #    Der Range-Kopf begrenzt die Antwort auf 128 KB, der Server liefert
+  #    daraufhin sauber 206 statt 200.
+  #
+  # 2. Ein 200er allein beweist nichts. Deshalb wird zusätzlich geprüft, dass
+  #    der Inhaltstyp wirklich Audio ist. Eine Fehlerseite käme als text/html
+  #    zurück und fiele damit auf.
+  radio_stream:
+    prober: http
+    timeout: 15s
+    http:
+      preferred_ip_protocol: "ip4"
+      valid_status_codes: [200, 206]
+      headers:
+        Range: "bytes=0-131071"
+      fail_if_header_not_matches:
+        - header: Content-Type
+          regexp: "audio/.*"

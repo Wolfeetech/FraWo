@@ -81,6 +81,30 @@ scrape_configs:
       - target_label: __address__
         replacement: localhost:9115
 
+  # Prueft, ob der Sender wirklich Ton liefert — nicht nur, ob die
+  # Weboberflaeche antwortet. Angelegt 29.07.2026.
+  #
+  # Zwei Ziele mit Absicht: Faellt nur das erste aus, liegt es am Weg ueber
+  # Cloudflare. Faellt auch das zweite aus, liegt es am Sender selbst.
+  # Das Modul begrenzt die Antwort per Range-Kopf auf 128 KB und prueft, dass
+  # der Inhaltstyp Audio ist — sonst wuerde die Pruefung an einem endlosen
+  # Stream ins Zeitlimit laufen und immer fehlschlagen.
+  - job_name: blackbox_radio_stream
+    metrics_path: /probe
+    params:
+      module: [radio_stream]
+    static_configs:
+      - targets:
+          - https://funk.frawo.tech/listen/frawo_funk/radio.mp3  # oeffentlicher Weg
+          - http://10.1.0.38:8000/radio.mp3                      # direkt am Sender
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: localhost:9115
+
   # openclaw is not reachable from ProDesk's LAN segment; liveness via
   # openclaw-ssh-proxy.service on the PVE host (socat 19022 -> Tailscale :22)
   - job_name: blackbox_tcp
