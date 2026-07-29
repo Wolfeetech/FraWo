@@ -480,10 +480,54 @@ class RadioController(http.Controller):
     # Agent & Bot Status API (Task #827)
     # ─────────────────────────────────────────────────────────────
 
+    # Token für den Zugriff auf die Zusammenfassung. Steht ausschliesslich in
+    # der Datenbank, niemals im Quellcode — das Repo ist öffentlich.
+    SUMMARY_TOKEN_PARAM = 'frawo_agent.summary_token'
+
+    def _check_summary_auth(self):
+        """Lässt angemeldete Benutzer durch, sonst wird ein Token verlangt.
+
+        BEFUND 29.07.2026: Dieser Endpunkt stand auf auth='public' OHNE jede
+        Prüfung und las per sudo() interne Zahlen. Über den Cloudflare-Tunnel
+        war er aus dem offenen Internet erreichbar:
+
+            curl https://frawo.tech/api/agent/summary
+            {"unbilled_bottles": 134, "open_tasks_count": 168, ...}
+
+        Kein Einbruch, aber eine unnötige Auskunft an jeden, der die Adresse
+        kennt. Gleiches Muster wie beim Kiosk (_check_kiosk_auth): Token aus
+        ir.config_parameter, Vergleich mit consteq gegen Zeitmessung, und
+        fail closed — ist kein Token gesetzt, ist der Endpunkt zu.
+        """
+        from odoo.tools import consteq
+
+        user = request.env.user
+        if user and not user._is_public():
+            return True
+
+        expected = (request.env['ir.config_parameter'].sudo()
+                    .get_param(self.SUMMARY_TOKEN_PARAM, '') or '').strip()
+        if not expected:
+            _logger.warning(
+                "Agent-Zusammenfassung abgelehnt — Systemparameter %s ist nicht gesetzt.",
+                self.SUMMARY_TOKEN_PARAM,
+            )
+            return False
+
+        token = (request.httprequest.headers.get('X-Agent-Token')
+                 or request.params.get('token') or '')
+        return consteq(token, expected)
+
     @http.route('/api/agent/summary', type='http', auth='public', methods=['GET'], csrf=False)
     def agent_summary_api(self, **kwargs):
         """JSON summary endpoint for OpenClaw & Telegram Bots."""
         import json
+        if not self._check_summary_auth():
+            return request.make_response(
+                json.dumps({'error': 'unauthorized'}),
+                headers=[('Content-Type', 'application/json')],
+                status=401,
+            )
         try:
             # Unbilled Anker bottles
             try:
