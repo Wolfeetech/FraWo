@@ -205,6 +205,29 @@ else
     pruefe "pbs_container" 1 "$PBS_NEU Sicherungen von heute"
 fi
 
+# --- 8. PBS-Konfiguration ---------------------------------------------------
+# Nachgetragen am 29.07.2026. Anlass: pve_not_backed_up meldete VM 240
+# (PBS-FraWo) als nicht gesichert. Der Sicherungsserver selbst muss nicht in
+# sich hinein gesichert werden — seine Konfiguration aber sehr wohl, sonst
+# weiss nach einem Verlust niemand mehr, wie die Datastores, Rechte und
+# Sync-Auftraege eingerichtet waren.
+PBSCFG=$(neueste "/mnt/data_family/pbs-config/pbs-config-*.tar.gz")
+if [ -z "$PBSCFG" ]; then
+    pruefe "pbs_konfiguration" 0 "keine Sicherung vorhanden"
+else
+    PBSCFG_ALTER=$(alter_stunden "$PBSCFG")
+    PBSCFG_GROESSE=$(stat -c%s "$PBSCFG" 2>/dev/null || echo 0)
+    if [ "$PBSCFG_ALTER" -gt 48 ]; then
+        pruefe "pbs_konfiguration" 0 "letzte Sicherung ist $PBSCFG_ALTER Stunden alt"
+    elif [ "$PBSCFG_GROESSE" -lt 3000 ]; then
+        pruefe "pbs_konfiguration" 0 "Archiv nur $PBSCFG_GROESSE Bytes gross"
+    elif ! tar tzf "$PBSCFG" 2>/dev/null | grep -q 'proxmox-backup/datastore.cfg'; then
+        pruefe "pbs_konfiguration" 0 "Archiv nicht lesbar oder datastore.cfg fehlt"
+    else
+        pruefe "pbs_konfiguration" 1 "$PBSCFG_ALTER h alt, $PBSCFG_GROESSE Bytes, datastore.cfg enthalten"
+    fi
+fi
+
 # --- Ergebnis ---------------------------------------------------------------
 melde ""
 melde "ERGEBNIS: $((GEPRUEFT - DURCHGEFALLEN)) von $GEPRUEFT Prüfungen bestanden"
