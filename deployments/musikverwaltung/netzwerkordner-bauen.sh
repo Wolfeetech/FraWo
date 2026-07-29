@@ -51,6 +51,26 @@ sicher() {
     echo "$1" | tr '\\/:*?"<>|' '_________' | cut -c1-120
 }
 
+# Die 16 kanonischen Genres. Alles andere landet in _Sonstige.
+#
+# Warum diese Liste hier nochmal steht: Die Vereinheitlichung
+# (genres-vereinheitlichen.py) lässt Angaben unangetastet, die weder zuordenbar
+# noch erkennbarer Müll sind — "France", "XDJ-RX", "Game", "Blues". Das ist
+# dort richtig so: lieber stehenlassen als falsch einsortieren.
+#
+# Für die Ordneransicht wäre es aber Unsinn. Aus 16 übersichtlichen Ordnern
+# würden 80, und genau das war das Problem, das wir lösen wollten. Deshalb
+# hier die Klappe: Was nicht auf der Liste steht, kommt nach _Sonstige und
+# kann von dort in Ruhe einsortiert werden.
+ist_kanonisch() {
+    case "$1" in
+        House|Techno|Trance|Bass|Disco|"Funk & Soul"|"Indie & Wave"|\
+        "Hip Hop"|Reggae|Jazz|Rock|Pop|Soundtrack|Ambient|Electronic|DJ-Sets)
+            return 0 ;;
+        *) return 1 ;;
+    esac
+}
+
 echo "=== Alte Sicht entfernen ==="
 rm -rf "$GENRE_DIR" "$LABEL_DIR"
 mkdir -p "$GENRE_DIR" "$LABEL_DIR"
@@ -64,7 +84,11 @@ beet ls -f '${genre}|${albumartist}|${album}|${artist}|${title}|${path}' 2>/dev/
     [ -n "$genre" ] || continue
     [ -f "$pfad" ] || continue
     endung="${pfad##*.}"
-    g=$(sicher "$genre")
+    if ist_kanonisch "$genre"; then
+        g=$(sicher "$genre")
+    else
+        g="_Sonstige"
+    fi
     # Album-Ebene mit hinein, damit Alben zusammenbleiben — das war der
     # ganze Punkt der Genre-Vereinheitlichung.
     if [ -n "$album" ]; then
