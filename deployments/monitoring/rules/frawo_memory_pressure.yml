@@ -36,6 +36,7 @@ groups:
         labels:
           severity: warning
         annotations:
+          dashboard: "http://100.100.115.80:3000/d/frawo-server"
           summary: "{{ $labels.instance }} lagert dauerhaft Speicher aus"
           description: >-
             Seit 20 Minuten werden im Schnitt {{ $value | printf "%.0f" }}
@@ -53,6 +54,7 @@ groups:
         labels:
           severity: warning
         annotations:
+          dashboard: "http://100.100.115.80:3000/d/frawo-server"
           summary: "Swap auf {{ $labels.instance }} zu über 90 % belegt"
           description: >-
             {{ $value | printf "%.0f" }} % belegt. Nicht zwingend akut — aber
@@ -69,6 +71,7 @@ groups:
         labels:
           severity: warning
         annotations:
+          dashboard: "http://100.100.115.80:3000/d/frawo-server"
           summary: "{{ $labels.id }} auf {{ $labels.pve_node }}: RAM-Zuteilung fast ausgeschöpft"
           description: >-
             {{ $value | printf "%.0f" }} % der Zuteilung. ACHTUNG: Dieser Wert

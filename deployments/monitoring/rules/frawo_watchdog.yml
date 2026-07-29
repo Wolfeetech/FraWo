@@ -25,6 +25,7 @@ groups:
         labels:
           severity: warning
         annotations:
+          dashboard: "http://100.100.115.80:3000/d/frawo-ueberblick"
           summary: "Die Wache über die Überwachung läuft nicht mehr"
           description: >-
             Der letzte Lauf ist {{ $value | humanizeDuration }} her, erwartet
@@ -43,6 +44,7 @@ groups:
         labels:
           severity: critical
         annotations:
+          dashboard: "http://100.100.115.80:3000/d/frawo-ueberblick"
           summary: "Wache meldet: Überwachungsdienste antworten nicht"
           description: >-
             Die Wache auf dem ProDesk-Wirt erreicht mindestens einen der drei

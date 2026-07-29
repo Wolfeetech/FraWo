@@ -25,6 +25,7 @@ groups:
         labels:
           severity: warning
         annotations:
+          dashboard: "http://100.100.115.80:3000/d/frawo-server"
           summary: "High CPU on {{ $labels.instance }}"
           description: "CPU usage is {{ $value | printf \"%.1f\" }}%"
 
@@ -36,6 +37,7 @@ groups:
         labels:
           severity: warning
         annotations:
+          dashboard: "http://100.100.115.80:3000/d/frawo-server"
           summary: "High memory on {{ $labels.instance }}"
           description: "Memory usage is {{ $value | printf \"%.1f\" }}%"
 
@@ -45,6 +47,7 @@ groups:
         labels:
           severity: critical
         annotations:
+          dashboard: "http://100.100.115.80:3000/d/frawo-server"
           summary: "Disk > 90% on {{ $labels.instance }}"
           description: "Disk {{ $labels.mountpoint }} at {{ $value | printf \"%.1f\" }}%"
 
@@ -54,6 +57,7 @@ groups:
         labels:
           severity: critical
         annotations:
+          dashboard: "http://100.100.115.80:3000/d/frawo-server"
           summary: "Node {{ $labels.instance }} is DOWN"
           description: "Node exporter unreachable for 2+ minutes"
 
@@ -65,6 +69,7 @@ groups:
         labels:
           severity: warning
         annotations:
+          dashboard: "http://100.100.115.80:3000/d/frawo-server"
           summary: "High load on {{ $labels.instance }}"
           description: >-
             Load5 ist {{ $value | printf "%.2f" }}. Hinweis: Auf dem ProDesk
@@ -78,6 +83,7 @@ groups:
         labels:
           severity: critical
         annotations:
+          dashboard: "http://100.100.115.80:3000/d/frawo-server"
           summary: "Service DOWN: {{ $labels.instance }}"
           description: "HTTP probe failed for 2+ minutes"
       # HighSwapUsage wurde am 27.07.2026 entfernt: Die Regel maß die Swap-

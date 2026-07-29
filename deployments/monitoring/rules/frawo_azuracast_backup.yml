@@ -20,6 +20,7 @@ groups:
           severity: critical
           service: azuracast
         annotations:
+          dashboard: "http://100.100.115.80:3000/d/frawo-sicherungen"
           summary: "Radio-Backup seit über 26 Stunden nicht erfolgreich"
           description: >-
             Letzter Erfolg vor {{ $value | humanizeDuration }}. Log prüfen:
@@ -35,6 +36,7 @@ groups:
           severity: critical
           service: azuracast
         annotations:
+          dashboard: "http://100.100.115.80:3000/d/frawo-sicherungen"
           summary: "Keine Radio-Backup-Metrik mehr vorhanden"
           description: >-
             Der node_exporter liefert keinen Zeitstempel mehr. Entweder läuft
@@ -49,6 +51,7 @@ groups:
           severity: warning
           service: azuracast
         annotations:
+          dashboard: "http://100.100.115.80:3000/d/frawo-sicherungen"
           summary: "Radio-Backup ist ungewöhnlich klein"
           description: >-
             Letztes Archiv nur {{ $value | humanize1024 }}B. Normal sind rund
@@ -61,6 +64,7 @@ groups:
           severity: warning
           service: azuracast
         annotations:
+          dashboard: "http://100.100.115.80:3000/d/frawo-sicherungen"
           summary: "Radio-Backup ohne Kopie auf dem Anker-Knoten"
           description: >-
             Die Übertragung nach 10.1.0.92 schlug fehl oder die Prüfsumme wich

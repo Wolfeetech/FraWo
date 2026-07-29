@@ -12,5 +12,6 @@ groups:
         labels:
           severity: critical
         annotations:
+          dashboard: "http://100.100.115.80:3000/d/frawo-server"
           summary: "VM/Container {{ $labels.id }} auf {{ $labels.pve_node }} ist AUS"
           description: "Gast laeuft seit 5+ Minuten nicht (erwartet: running)"

@@ -19,6 +19,7 @@ groups:
           severity: critical
           service: backup
         annotations:
+          dashboard: "http://100.100.115.80:3000/d/frawo-sicherungen"
           summary: "{{ $value }} Sicherungsprüfung(en) durchgefallen"
           description: >-
             Der Backup-TÜV hat Mängel gefunden. Welche genau, steht in
@@ -33,6 +34,7 @@ groups:
           severity: warning
           service: backup
         annotations:
+          dashboard: "http://100.100.115.80:3000/d/frawo-sicherungen"
           summary: "Sicherungsprüfung {{ $labels.pruefung }} durchgefallen"
           description: >-
             Die Prüfung {{ $labels.pruefung }} meldet kein verwertbares
@@ -48,6 +50,7 @@ groups:
           severity: critical
           service: backup
         annotations:
+          dashboard: "http://100.100.115.80:3000/d/frawo-sicherungen"
           summary: "Backup-TÜV läuft nicht mehr"
           description: >-
             Seit über 30 Stunden kein Prüflauf. Damit ist unbemerkt, ob die

@@ -59,8 +59,8 @@ echo "  erledigt"
 echo
 echo "=== Nach Genre ==="
 ANZ_G=0
-beet ls -f '${genre}\x1f${albumartist}\x1f${album}\x1f${artist}\x1f${title}\x1f${path}' 2>/dev/null \
-| while IFS=$'\x1f' read -r genre aartist album artist title pfad; do
+beet ls -f '${genre}|${albumartist}|${album}|${artist}|${title}|${path}' 2>/dev/null \
+| while IFS='|' read -r genre aartist album artist title pfad; do
     [ -n "$genre" ] || continue
     [ -f "$pfad" ] || continue
     endung="${pfad##*.}"
@@ -92,8 +92,8 @@ while IFS= read -r label; do
     l=$(sicher "$label")
     unter="$LABEL_DIR/$l"
     mkdir -p "$unter" 2>/dev/null
-    beet ls -f '${artist}\x1f${title}\x1f${path}' "label:$label" 2>/dev/null \
-    | while IFS=$'\x1f' read -r artist title pfad; do
+    beet ls -f '${artist}|${title}|${path}' "label:$label" 2>/dev/null \
+    | while IFS='|' read -r artist title pfad; do
         [ -f "$pfad" ] || continue
         endung="${pfad##*.}"
         ziel="$unter/$(sicher "$artist - $title").$endung"

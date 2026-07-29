@@ -23,6 +23,7 @@ groups:
         labels:
           severity: warning
         annotations:
+          dashboard: "http://100.100.115.80:3000/d/frawo-server"
           summary: "{{ $labels.instance }} ist im laufenden Betrieb ausgefallen"
           description: >-
             Das Gerät war in der letzten Stunde noch erreichbar und meldet
@@ -43,6 +44,7 @@ groups:
         labels:
           severity: warning
         annotations:
+          dashboard: "http://100.100.115.80:3000/d/frawo-server"
           summary: "{{ $labels.instance }}: Speicherkarte zu {{ $value | printf \"%.0f\" }} % voll"
           description: >-
             Auf einem Raspberry Pi läuft das System auf der SD-Karte. Ist sie
@@ -58,6 +60,7 @@ groups:
         labels:
           severity: warning
         annotations:
+          dashboard: "http://100.100.115.80:3000/d/frawo-server"
           summary: "{{ $labels.instance }} wird zu heiss: {{ $value | printf \"%.0f\" }} °C"
           description: >-
             Ab etwa 80 °C drosselt sich der Raspberry Pi selbst. Beim

@@ -21,6 +21,7 @@ groups:
           severity: warning
           service: proxmox
         annotations:
+          dashboard: "http://100.100.115.80:3000/d/frawo-sicherungen"
           summary: "VM-Sicherung seit über 30 Stunden nicht in der Cloud"
           description: >-
             Letzter Erfolg vor {{ $value | humanizeDuration }}. Log prüfen:
@@ -35,6 +36,7 @@ groups:
           severity: warning
           service: proxmox
         annotations:
+          dashboard: "http://100.100.115.80:3000/d/frawo-sicherungen"
           summary: "Keine Metrik zur VM-Cloud-Sicherung vorhanden"
           description: >-
             Das Skript läuft offenbar nicht mehr oder schreibt nicht nach

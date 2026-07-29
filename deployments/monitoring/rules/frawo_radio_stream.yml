@@ -20,6 +20,7 @@ groups:
         labels:
           severity: critical
         annotations:
+          dashboard: "http://100.100.115.80:3000/d/frawo-dienste"
           summary: "Radio liefert keinen Ton: {{ $labels.instance }}"
           description: >-
             Seit 5 Minuten kommt von {{ $labels.instance }} kein Audio mehr.
@@ -41,6 +42,7 @@ groups:
         labels:
           severity: warning
         annotations:
+          dashboard: "http://100.100.115.80:3000/d/frawo-dienste"
           summary: "Radio sendet, ist aber von aussen nicht erreichbar"
           description: >-
             Der Sender liefert direkt weiterhin Ton, über funk.frawo.tech kommt

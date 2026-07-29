@@ -21,6 +21,7 @@ groups:
           severity: critical
           service: backup
         annotations:
+          dashboard: "http://100.100.115.80:3000/d/frawo-sicherungen"
           summary: "Wiederherstellungstest der Odoo-Sicherung ist durchgefallen"
           description: >-
             Aus der juengsten Sicherung entsteht keine vollstaendige Datenbank.
@@ -39,6 +40,7 @@ groups:
           severity: warning
           service: backup
         annotations:
+          dashboard: "http://100.100.115.80:3000/d/frawo-sicherungen"
           summary: "Seit ueber 9 Tagen kein Wiederherstellungstest"
           description: >-
             Der woechentliche Test laeuft nicht mehr. Ohne ihn weiss niemand,
