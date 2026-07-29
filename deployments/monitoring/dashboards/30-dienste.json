@@ -1,0 +1,170 @@
+{
+  "uid": "frawo-dienste",
+  "title": "FraWo — Dienste & Zertifikate",
+  "description": "Für jeden Dienst die drei Fragen, auf die es ankommt: Antwortet er? Wie schnell? Und wie lange ist sein Sicherheitszertifikat noch gültig?",
+  "tags": ["frawo", "dienste"],
+  "timezone": "browser",
+  "editable": true,
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "1m",
+  "time": { "from": "now-24h", "to": "now" },
+  "panels": [
+    {
+      "type": "row",
+      "title": "Erreichbarkeit",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "type": "state-timeline",
+      "title": "Wann war welcher Dienst erreichbar?",
+      "description": "Grün heißt erreichbar. Jeder rote Streifen ist eine Störung — mit Uhrzeit, damit man sie mit anderen Ereignissen zusammenbringen kann.",
+      "datasource": { "type": "prometheus", "uid": "cfqrxzeq29fcwb" },
+      "gridPos": { "h": 11, "w": 24, "x": 0, "y": 1 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "probe_success",
+          "legendFormat": "{{instance}}",
+          "datasource": { "type": "prometheus", "uid": "cfqrxzeq29fcwb" }
+        }
+      ],
+      "options": {
+        "showValue": "never",
+        "mergeValues": true,
+        "rowHeight": 0.9,
+        "legend": { "displayMode": "list", "placement": "bottom", "showLegend": false }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": { "lineWidth": 0, "fillOpacity": 90 },
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": { "text": "gestört", "color": "red", "index": 0 },
+                "1": { "text": "erreichbar", "color": "green", "index": 1 }
+              }
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [{ "color": "red", "value": null }, { "color": "green", "value": 1 }]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "bargauge",
+      "title": "Verfügbarkeit der letzten 7 Tage",
+      "description": "Anteil der Zeit, in der der Dienst geantwortet hat. 99 Prozent klingen viel, sind aber gut 1,7 Stunden Ausfall pro Woche.",
+      "datasource": { "type": "prometheus", "uid": "cfqrxzeq29fcwb" },
+      "gridPos": { "h": 9, "w": 12, "x": 0, "y": 12 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "avg_over_time(probe_success[7d]) * 100",
+          "instant": true,
+          "legendFormat": "{{instance}}",
+          "datasource": { "type": "prometheus", "uid": "cfqrxzeq29fcwb" }
+        }
+      ],
+      "options": {
+        "displayMode": "gradient",
+        "orientation": "horizontal",
+        "showUnfilled": true,
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 90,
+          "max": 100,
+          "decimals": 2,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "orange", "value": 99 },
+              { "color": "green", "value": 99.9 }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "Antwortzeit",
+      "description": "Wie lange der Dienst zum Antworten braucht. Ein langsam steigender Verlauf ist oft die Vorwarnung, bevor etwas ganz ausfällt.",
+      "datasource": { "type": "prometheus", "uid": "cfqrxzeq29fcwb" },
+      "gridPos": { "h": 9, "w": 12, "x": 12, "y": 12 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "probe_duration_seconds",
+          "legendFormat": "{{instance}}",
+          "datasource": { "type": "prometheus", "uid": "cfqrxzeq29fcwb" }
+        }
+      ],
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true },
+        "tooltip": { "mode": "multi", "sort": "desc" }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "custom": { "lineWidth": 1, "fillOpacity": 0, "showPoints": "never" }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "row",
+      "title": "Sicherheitszertifikate",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 21 },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "type": "bargauge",
+      "title": "Zertifikate — verbleibende Tage",
+      "description": "Läuft ein Zertifikat ab, meldet der Browser eine unsichere Seite. Die Verlängerung passiert automatisch; wird ein Balken trotzdem orange, hakt die Automatik.",
+      "datasource": { "type": "prometheus", "uid": "cfqrxzeq29fcwb" },
+      "gridPos": { "h": 9, "w": 24, "x": 0, "y": 22 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "(probe_ssl_earliest_cert_expiry > 0) - time()",
+          "instant": true,
+          "legendFormat": "{{instance}}",
+          "datasource": { "type": "prometheus", "uid": "cfqrxzeq29fcwb" }
+        }
+      ],
+      "options": {
+        "displayMode": "gradient",
+        "orientation": "horizontal",
+        "showUnfilled": true,
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "decimals": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "orange", "value": 1209600 },
+              { "color": "green", "value": 2592000 }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    }
+  ]
+}

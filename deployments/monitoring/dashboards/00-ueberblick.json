@@ -1,0 +1,336 @@
+{
+  "uid": "frawo-ueberblick",
+  "title": "FraWo — Überblick",
+  "description": "Die Startseite. Oben fünf Kacheln, die alle grün und alle auf 0 stehen müssen. Steht eine auf rot, sagen die Tabellen darunter, was los ist.",
+  "tags": ["frawo", "uebersicht"],
+  "timezone": "browser",
+  "editable": true,
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "1m",
+  "time": { "from": "now-6h", "to": "now" },
+  "panels": [
+    {
+      "type": "row",
+      "title": "Ist alles in Ordnung?",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "type": "stat",
+      "title": "Aktive Alarme",
+      "description": "Wie viele Alarme gerade anstehen. Soll 0 sein.",
+      "datasource": { "type": "prometheus", "uid": "cfqrxzeq29fcwb" },
+      "gridPos": { "h": 5, "w": 5, "x": 0, "y": 1 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "count(ALERTS{alertstate=\"firing\"}) or vector(0)",
+          "instant": true,
+          "datasource": { "type": "prometheus", "uid": "cfqrxzeq29fcwb" }
+        }
+      ],
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "auto",
+        "justifyMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "orange", "value": 1 },
+              { "color": "red", "value": 3 }
+            ]
+          },
+          "mappings": [
+            { "type": "value", "options": { "0": { "text": "keine", "index": 0 } } }
+          ]
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Dienste ausgefallen",
+      "description": "Webseiten und Anwendungen, die gerade nicht antworten. Soll 0 sein.",
+      "datasource": { "type": "prometheus", "uid": "cfqrxzeq29fcwb" },
+      "gridPos": { "h": 5, "w": 5, "x": 5, "y": 1 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "count(probe_success == 0) or vector(0)",
+          "instant": true,
+          "datasource": { "type": "prometheus", "uid": "cfqrxzeq29fcwb" }
+        }
+      ],
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "red", "value": 1 }
+            ]
+          },
+          "mappings": [
+            { "type": "value", "options": { "0": { "text": "alle da", "index": 0 } } }
+          ]
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Sicherungen durchgefallen",
+      "description": "Ergebnis des täglichen Sicherungs-TÜV. Geprüft wird nicht, ob die Sicherung gelaufen ist, sondern ob am Ende eine lesbare Datei herauskam. Soll 0 sein.",
+      "datasource": { "type": "prometheus", "uid": "cfqrxzeq29fcwb" },
+      "gridPos": { "h": 5, "w": 5, "x": 10, "y": 1 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "frawo_backup_tuev_durchgefallen or vector(0)",
+          "instant": true,
+          "datasource": { "type": "prometheus", "uid": "cfqrxzeq29fcwb" }
+        }
+      ],
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "red", "value": 1 }
+            ]
+          },
+          "mappings": [
+            { "type": "value", "options": { "0": { "text": "alle gut", "index": 0 } } }
+          ]
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Server offline",
+      "description": "Rechner, die sich nicht mehr melden: ProDesk, Anker, StudioPC, Überwachung. Soll 0 sein.",
+      "datasource": { "type": "prometheus", "uid": "cfqrxzeq29fcwb" },
+      "gridPos": { "h": 5, "w": 5, "x": 15, "y": 1 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "count(up{job=~\"node_exporter|windows_studiopc\"} == 0) or vector(0)",
+          "instant": true,
+          "datasource": { "type": "prometheus", "uid": "cfqrxzeq29fcwb" }
+        }
+      ],
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "red", "value": 1 }
+            ]
+          },
+          "mappings": [
+            { "type": "value", "options": { "0": { "text": "alle da", "index": 0 } } }
+          ]
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Wiederherstellungstest",
+      "description": "Einmal pro Woche wird die Odoo-Sicherung testweise in eine Wegwerf-Datenbank zurückgespielt und mit dem Original verglichen. Nur das beweist, dass eine Sicherung wirklich etwas taugt.",
+      "datasource": { "type": "prometheus", "uid": "cfqrxzeq29fcwb" },
+      "gridPos": { "h": 5, "w": 4, "x": 20, "y": 1 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "frawo_odoo_restore_test_ok",
+          "instant": true,
+          "datasource": { "type": "prometheus", "uid": "cfqrxzeq29fcwb" }
+        }
+      ],
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "green", "value": 1 }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": { "text": "FEHLGESCHLAGEN", "index": 0 },
+                "1": { "text": "bestanden", "index": 1 }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "row",
+      "title": "Was ist gerade nicht in Ordnung?",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 6 },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "type": "table",
+      "title": "Anstehende Alarme",
+      "description": "Bleibt leer, wenn alles läuft.",
+      "datasource": { "type": "prometheus", "uid": "cfqrxzeq29fcwb" },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 7 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "ALERTS{alertstate=\"firing\"}",
+          "instant": true,
+          "format": "table",
+          "datasource": { "type": "prometheus", "uid": "cfqrxzeq29fcwb" }
+        }
+      ],
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "Value": true,
+              "__name__": true,
+              "alertstate": true,
+              "env": true,
+              "job": true
+            },
+            "renameByName": {
+              "alertname": "Alarm",
+              "instance": "Betrifft",
+              "severity": "Schwere"
+            }
+          }
+        }
+      ],
+      "fieldConfig": { "defaults": { "custom": { "align": "auto" } }, "overrides": [] },
+      "options": { "showHeader": true }
+    },
+    {
+      "type": "table",
+      "title": "Nicht erreichbare Dienste",
+      "description": "Bleibt leer, wenn alles läuft.",
+      "datasource": { "type": "prometheus", "uid": "cfqrxzeq29fcwb" },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 7 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "probe_success == 0",
+          "instant": true,
+          "format": "table",
+          "datasource": { "type": "prometheus", "uid": "cfqrxzeq29fcwb" }
+        }
+      ],
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "Value": true,
+              "__name__": true,
+              "env": true,
+              "module": true
+            },
+            "renameByName": {
+              "instance": "Dienst",
+              "job": "Art der Prüfung"
+            }
+          }
+        }
+      ],
+      "fieldConfig": { "defaults": { "custom": { "align": "auto" } }, "overrides": [] },
+      "options": { "showHeader": true }
+    },
+    {
+      "type": "row",
+      "title": "Speicherplatz",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 15 },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "type": "bargauge",
+      "title": "Belegung der Datenträger",
+      "description": "Ab 85 Prozent orange, ab 95 Prozent rot. Eine volle Platte legt Dienste lahm, ohne dass vorher etwas kaputtgeht.",
+      "datasource": { "type": "prometheus", "uid": "cfqrxzeq29fcwb" },
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 16 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "100 - (node_filesystem_avail_bytes{fstype!~\"tmpfs|squashfs|overlay|fuse.*\",mountpoint!~\"/run.*|/dev.*|/var/lib/lxcfs.*\"} / node_filesystem_size_bytes * 100)",
+          "instant": true,
+          "legendFormat": "{{instance}} — {{mountpoint}}",
+          "datasource": { "type": "prometheus", "uid": "cfqrxzeq29fcwb" }
+        }
+      ],
+      "options": {
+        "displayMode": "gradient",
+        "orientation": "horizontal",
+        "showUnfilled": true,
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "decimals": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "orange", "value": 85 },
+              { "color": "red", "value": 95 }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    }
+  ]
+}

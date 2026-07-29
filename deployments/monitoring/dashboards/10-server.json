@@ -1,0 +1,379 @@
+{
+  "uid": "frawo-server",
+  "title": "FraWo — Server & Maschinen",
+  "description": "Auslastung der beiden Proxmox-Server, des Arbeitsplatz-PC und aller virtuellen Maschinen und Container. Aufgebaut nach der USE-Regel: für jede Ressource Auslastung, Sättigung und Fehler.",
+  "tags": ["frawo", "server"],
+  "timezone": "browser",
+  "editable": true,
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "1m",
+  "time": { "from": "now-12h", "to": "now" },
+  "panels": [
+    {
+      "type": "row",
+      "title": "Die beiden Proxmox-Server",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "type": "timeseries",
+      "title": "Prozessor-Auslastung",
+      "description": "Der Überwachungs-Container ist bewusst ausgeblendet: er ist ein Container ohne lxcfs und liest die Werte des ProDesk, würde also dieselbe Zahl ein zweites Mal anzeigen.",
+      "datasource": { "type": "prometheus", "uid": "cfqrxzeq29fcwb" },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 1 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "100 - (avg by(instance) (rate(node_cpu_seconds_total{mode=\"idle\",instance!=\"monitoring-stack\"}[5m])) * 100)",
+          "legendFormat": "{{instance}}",
+          "datasource": { "type": "prometheus", "uid": "cfqrxzeq29fcwb" }
+        }
+      ],
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true },
+        "tooltip": { "mode": "multi", "sort": "desc" }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "custom": { "lineWidth": 2, "fillOpacity": 10, "showPoints": "never" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "orange", "value": 80 },
+              { "color": "red", "value": 95 }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "Arbeitsspeicher — tatsächlich belegt",
+      "description": "Gemessen wird, was wirklich fehlt, nicht was belegt aussieht. Der Dateizwischenspeicher zählt nicht mit, weil er jederzeit freigegeben wird.",
+      "datasource": { "type": "prometheus", "uid": "cfqrxzeq29fcwb" },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 1 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "(1 - node_memory_MemAvailable_bytes{instance!=\"monitoring-stack\"} / node_memory_MemTotal_bytes) * 100",
+          "legendFormat": "{{instance}}",
+          "datasource": { "type": "prometheus", "uid": "cfqrxzeq29fcwb" }
+        }
+      ],
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true },
+        "tooltip": { "mode": "multi", "sort": "desc" }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "custom": { "lineWidth": 2, "fillOpacity": 10, "showPoints": "never" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "orange", "value": 85 },
+              { "color": "red", "value": 95 }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "Auslagerung — Seiten pro Sekunde",
+      "description": "Der ehrliche Hinweis auf Speichermangel. Nicht wie viel im Auslagerungsbereich liegt, sondern ob gerade aktiv ausgelagert wird. Bleibt der Wert länger über 100, bremst das spürbar.",
+      "datasource": { "type": "prometheus", "uid": "cfqrxzeq29fcwb" },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 9 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "rate(node_vmstat_pswpin{instance!=\"monitoring-stack\"}[15m]) + rate(node_vmstat_pswpout{instance!=\"monitoring-stack\"}[15m])",
+          "legendFormat": "{{instance}}",
+          "datasource": { "type": "prometheus", "uid": "cfqrxzeq29fcwb" }
+        }
+      ],
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true },
+        "tooltip": { "mode": "multi", "sort": "desc" }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "min": 0,
+          "custom": { "lineWidth": 2, "fillOpacity": 10, "showPoints": "never" }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "Systemlast (15-Minuten-Mittel)",
+      "description": "Wie viele Aufgaben im Schnitt auf Bearbeitung warten. Grober Richtwert: dauerhaft über der Anzahl der Prozessorkerne heißt, der Rechner kommt nicht hinterher.",
+      "datasource": { "type": "prometheus", "uid": "cfqrxzeq29fcwb" },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 9 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "node_load15{instance!=\"monitoring-stack\"}",
+          "legendFormat": "{{instance}}",
+          "datasource": { "type": "prometheus", "uid": "cfqrxzeq29fcwb" }
+        }
+      ],
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true },
+        "tooltip": { "mode": "multi", "sort": "desc" }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "min": 0,
+          "custom": { "lineWidth": 2, "fillOpacity": 10, "showPoints": "never" }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Betriebszeit seit dem letzten Neustart",
+      "datasource": { "type": "prometheus", "uid": "cfqrxzeq29fcwb" },
+      "gridPos": { "h": 5, "w": 24, "x": 0, "y": 17 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "time() - node_boot_time_seconds{instance!=\"monitoring-stack\"}",
+          "instant": true,
+          "legendFormat": "{{instance}}",
+          "datasource": { "type": "prometheus", "uid": "cfqrxzeq29fcwb" }
+        }
+      ],
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "decimals": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [{ "color": "blue", "value": null }]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "row",
+      "title": "Arbeitsplatz-PC (StudioPC)",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 22 },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "type": "timeseries",
+      "title": "StudioPC — Prozessor und Arbeitsspeicher",
+      "datasource": { "type": "prometheus", "uid": "cfqrxzeq29fcwb" },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 23 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "100 - (avg by(instance) (rate(windows_cpu_time_total{mode=\"idle\"}[5m])) * 100)",
+          "legendFormat": "Prozessor",
+          "datasource": { "type": "prometheus", "uid": "cfqrxzeq29fcwb" }
+        },
+        {
+          "refId": "B",
+          "expr": "100 * (1 - windows_os_physical_memory_free_bytes / windows_cs_physical_memory_bytes)",
+          "legendFormat": "Arbeitsspeicher",
+          "datasource": { "type": "prometheus", "uid": "cfqrxzeq29fcwb" }
+        }
+      ],
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true },
+        "tooltip": { "mode": "multi", "sort": "desc" }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "custom": { "lineWidth": 2, "fillOpacity": 10, "showPoints": "never" }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "bargauge",
+      "title": "StudioPC — freier Platz auf den Laufwerken",
+      "datasource": { "type": "prometheus", "uid": "cfqrxzeq29fcwb" },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 23 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "windows_logical_disk_free_bytes",
+          "instant": true,
+          "legendFormat": "{{volume}}",
+          "datasource": { "type": "prometheus", "uid": "cfqrxzeq29fcwb" }
+        }
+      ],
+      "options": {
+        "displayMode": "gradient",
+        "orientation": "horizontal",
+        "showUnfilled": true,
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes",
+          "decimals": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "orange", "value": 21474836480 },
+              { "color": "green", "value": 107374182400 }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "row",
+      "title": "Virtuelle Maschinen und Container",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 31 },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "type": "state-timeline",
+      "title": "Läuft jede Maschine?",
+      "description": "Grün heißt: läuft. Rot heißt: gestoppt. Die Namen kommen direkt aus Proxmox.",
+      "datasource": { "type": "prometheus", "uid": "cfqrxzeq29fcwb" },
+      "gridPos": { "h": 12, "w": 24, "x": 0, "y": 32 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "pve_up{id=~\"(qemu|lxc)/.*\"} * on(id, job) group_left(name, pve_node) pve_guest_info",
+          "legendFormat": "{{name}} ({{id}}) — {{pve_node}}",
+          "datasource": { "type": "prometheus", "uid": "cfqrxzeq29fcwb" }
+        }
+      ],
+      "options": {
+        "showValue": "never",
+        "mergeValues": true,
+        "rowHeight": 0.9,
+        "legend": { "displayMode": "list", "placement": "bottom", "showLegend": false }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": { "lineWidth": 0, "fillOpacity": 90 },
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": { "text": "gestoppt", "color": "red", "index": 0 },
+                "1": { "text": "läuft", "color": "green", "index": 1 }
+              }
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [{ "color": "red", "value": null }, { "color": "green", "value": 1 }]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "bargauge",
+      "title": "Arbeitsspeicher je Maschine",
+      "description": "Achtung: Proxmox zählt hier den Dateizwischenspeicher mit. Ein hoher Wert ist deshalb oft harmlos — im Zweifel innen nachsehen, wie viel wirklich verfügbar ist.",
+      "datasource": { "type": "prometheus", "uid": "cfqrxzeq29fcwb" },
+      "gridPos": { "h": 12, "w": 12, "x": 0, "y": 44 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "(pve_memory_usage_bytes{id=~\"(qemu|lxc)/.*\"} / pve_memory_size_bytes * 100) * on(id, job) group_left(name) pve_guest_info",
+          "instant": true,
+          "legendFormat": "{{name}}",
+          "datasource": { "type": "prometheus", "uid": "cfqrxzeq29fcwb" }
+        }
+      ],
+      "options": {
+        "displayMode": "gradient",
+        "orientation": "horizontal",
+        "showUnfilled": true,
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "decimals": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "orange", "value": 90 },
+              { "color": "red", "value": 98 }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "bargauge",
+      "title": "Prozessor je Maschine",
+      "datasource": { "type": "prometheus", "uid": "cfqrxzeq29fcwb" },
+      "gridPos": { "h": 12, "w": 12, "x": 12, "y": 44 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "(pve_cpu_usage_ratio{id=~\"(qemu|lxc)/.*\"} * 100) * on(id, job) group_left(name) pve_guest_info",
+          "instant": true,
+          "legendFormat": "{{name}}",
+          "datasource": { "type": "prometheus", "uid": "cfqrxzeq29fcwb" }
+        }
+      ],
+      "options": {
+        "displayMode": "gradient",
+        "orientation": "horizontal",
+        "showUnfilled": true,
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "decimals": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "orange", "value": 80 },
+              { "color": "red", "value": 95 }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    }
+  ]
+}
