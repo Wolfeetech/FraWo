@@ -42,16 +42,24 @@ TELEGRAM=0
 SQL="/tmp/titelliste-$$.sql"
 ERG="/tmp/titelliste-$$.txt"
 
+# ZWEI FEHLER AUS DEM ERSTEN ANLAUF, hier festgehalten damit sie nicht
+# wiederkommen:
+#
+# 1. timestamp_start ist ein DATETIME, kein Unix-Zeitstempel. FROM_UNIXTIME()
+#    lieferte deshalb durchgehend NULL — die Uhrzeit blieb leer.
+#
+# 2. Der Umweg über station_media war unnötig UND falsch: Nur 591 von 9161
+#    Zeilen haben überhaupt eine media_id, der Rest lief auf "Unbekannt".
+#    song_history führt Künstler und Titel selbst.
 cat > "$SQL" <<SQLENDE
 SELECT
-  DATE_FORMAT(FROM_UNIXTIME(h.timestamp_start), '%H:%i') AS zeit,
-  COALESCE(NULLIF(TRIM(m.artist), ''), 'Unbekannt') AS kuenstler,
-  COALESCE(NULLIF(TRIM(m.title),  ''), h.text)      AS titel
+  DATE_FORMAT(h.timestamp_start, '%H:%i') AS zeit,
+  COALESCE(NULLIF(TRIM(h.artist), ''), '') AS kuenstler,
+  COALESCE(NULLIF(TRIM(h.title),  ''), h.text) AS titel
 FROM song_history h
-LEFT JOIN station_media m ON m.id = h.media_id
 WHERE h.station_id = 1
   AND h.timestamp_start IS NOT NULL
-  AND h.timestamp_start > UNIX_TIMESTAMP() - ${STUNDEN}*3600
+  AND h.timestamp_start > NOW() - INTERVAL ${STUNDEN} HOUR
 ORDER BY h.timestamp_start ASC;
 SQLENDE
 
@@ -75,7 +83,13 @@ fi
     echo "FraWo Funk — Titelliste"
     echo "$(date '+%d.%m.%Y'), letzte $STUNDEN Stunden"
     echo
-    printf '%b' "$ROH" | awk -F'\t' 'NF>=3 {printf "%s  %s — %s\n", $1, $2, $3}'
+    # Steht kein Künstler getrennt da, enthält das Titelfeld bereits die
+    # ganze Zeile ("Künstler - Album - Titel"). Dann nicht künstlich einen
+    # Gedankenstrich davorsetzen.
+    printf '%b' "$ROH" | awk -F'\t' 'NF>=3 {
+        if ($2 == "") printf "%s  %s\n", $1, $3
+        else          printf "%s  %s — %s\n", $1, $2, $3
+    }'
     echo
     echo "funk.frawo.tech"
 } > "$ERG"
