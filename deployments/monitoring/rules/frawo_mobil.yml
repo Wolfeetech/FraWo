@@ -1,0 +1,67 @@
+# Alarme für mobile Geräte — angelegt 29.07.2026
+#
+# Der Grundgedanke: Ein mobiles Gerät ist die meiste Zeit AUS. Das ist der
+# Normalfall und kein Fehler. Ein Alarm "Gerät nicht erreichbar" würde hier
+# dauerhaft anstehen und damit genau das anrichten, was wir heute an drei
+# Stellen abgestellt haben — man gewöhnt sich das Wegklicken an, und dann
+# geht der echte Ausfall genauso unter.
+#
+# Deshalb: KEIN Alarm, wenn ein Gerät ausgeschaltet ist. Aber sehr wohl einer,
+# wenn es mitten im Betrieb wegbricht. Der Unterschied lässt sich messen —
+# ein Gerät, das in der letzten Stunde noch da war und jetzt weg ist, wurde
+# gerade benutzt.
+
+groups:
+  - name: frawo_mobil
+    rules:
+      # Weggebrochen statt weggeräumt: war in der letzten Stunde erreichbar,
+      # ist es jetzt nicht mehr. Bei einem Gerät, das seit Tagen im Schrank
+      # liegt, schlägt das nicht an.
+      - alert: MobilesGeraetWaehrendBetriebAusgefallen
+        expr: up{job="mobil"} == 0 and max_over_time(up{job="mobil"}[1h]) == 1
+        for: 3m
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.instance }} ist im laufenden Betrieb ausgefallen"
+          description: >-
+            Das Gerät war in der letzten Stunde noch erreichbar und meldet
+            sich jetzt seit 3 Minuten nicht mehr. Bei einem Einsatz vor Ort
+            heisst das meist: Strom weg, Akku leer, oder die
+            Mobilfunkverbindung ist abgerissen. Läuft gerade kein Einsatz,
+            kann die Meldung ignoriert werden — dann wurde es einfach
+            ausgeschaltet.
+
+      # Die SD-Karte ist bei einem Raspberry Pi das Bauteil, das als erstes
+      # stirbt. Eine volle Karte legt das Gerät still, ohne dass vorher etwas
+      # kaputtgeht — deshalb früh warnen, nicht erst bei 95 Prozent.
+      - alert: MobilesGeraetSpeicherKnapp
+        expr: >-
+          100 - (node_filesystem_avail_bytes{job="mobil",mountpoint="/"}
+          / node_filesystem_size_bytes{job="mobil",mountpoint="/"} * 100) > 80
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.instance }}: Speicherkarte zu {{ $value | printf \"%.0f\" }} % voll"
+          description: >-
+            Auf einem Raspberry Pi läuft das System auf der SD-Karte. Ist sie
+            voll, bleibt das Gerät stehen. Aufräumen: `sudo journalctl --vacuum-size=50M`
+            und `sudo apt clean`.
+
+      # Ein Pi im geschlossenen Koffer wird heiss. Ab etwa 80 Grad drosselt er
+      # sich selbst — dann bricht der Ton weg, ohne dass etwas "ausfällt".
+      # Genau die Sorte Fehler, die man vor Ort nicht findet.
+      - alert: MobilesGeraetZuHeiss
+        expr: node_hwmon_temp_celsius{job="mobil"} > 75
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.instance }} wird zu heiss: {{ $value | printf \"%.0f\" }} °C"
+          description: >-
+            Ab etwa 80 °C drosselt sich der Raspberry Pi selbst. Beim
+            Icecast-Relais bedeutet das Aussetzer im Ton, ohne dass ein Dienst
+            abstürzt — man sucht dann lange an der falschen Stelle. Meist
+            steht das Gerät im geschlossenen Koffer: Deckel auf, oder einen
+            Kühlkörper montieren.

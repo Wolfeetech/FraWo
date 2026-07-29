@@ -1,0 +1,26 @@
+# Vorlage für ein mobiles Gerät.
+#
+# So wird ein Raspberry Pi oder das Surface Go in die Überwachung aufgenommen:
+# Diese Datei kopieren, Werte anpassen, als <name>.yml in
+# /etc/prometheus/ziele/mobil/ in CT150 ablegen. Prometheus liest das
+# Verzeichnis alle 30 Sekunden neu ein — kein Neustart, kein Eingriff in
+# prometheus.yml nötig.
+#
+# Das Bereitstellungs-Skript auf dem Pi
+# (deployments/mobil/raspberry/bereitstellung.sh) legt diese Datei selbst an.
+# Von Hand braucht man das nur, wenn ein Gerät ohne das Skript eingerichtet
+# wurde.
+#
+# WICHTIG — Adresse: Immer die Tailscale-Adresse (100.x.y.z) eintragen, nicht
+# die LAN-Adresse. Ein mobiles Gerät hängt mal am Anker-WLAN, mal am
+# Handy-Hotspot beim Event. Nur über Tailscale ist es unter derselben Adresse
+# erreichbar, egal wo es steht.
+
+- targets:
+    - "100.0.0.0:9100"        # <-- Tailscale-Adresse des Geräts eintragen
+  labels:
+    instance: "funk-relais"   # <-- sprechender Name, taucht so im Dashboard auf
+    env: "frawo"
+    mobil: "ja"               # <-- Pflicht: schaltet die sanfteren Alarme frei
+    rolle: "icecast-relais"   # icecast-relais | kiosk | messplatz | reserve
+    geraet: "raspberry-pi-3b" # raspberry-pi-3b | raspberry-pi-3b-plus | surface-go

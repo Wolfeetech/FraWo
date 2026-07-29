@@ -39,6 +39,24 @@ scrape_configs:
         replacement: anker-pve
         target_label: instance
 
+  # Mobile Geraete: Raspberry Pi im VT-Koffer, Surface Go, alles was mitgeht.
+  #
+  # Bewusst ein EIGENER Auftragsname und keine Ergaenzung von node_exporter:
+  # Die NodeDown-Regel greift auf job="node_exporter" und wuerde bei jedem
+  # Geraet, das im Schrank liegt, Dauer-Alarm schlagen. Mobile Geraete sind
+  # die meiste Zeit aus - das ist der Normalfall, kein Fehler.
+  #
+  # Datei-basierte Erkennung: Ein neues Geraet wird aufgenommen, indem eine
+  # Datei in /etc/prometheus/ziele/mobil/ abgelegt wird. Prometheus liest das
+  # Verzeichnis alle 30 Sekunden neu ein - ohne Neustart und ohne dass jemand
+  # diese Datei hier anfassen muss. Das Bereitstellungs-Skript auf dem Pi legt
+  # sie selbst an.
+  - job_name: mobil
+    file_sd_configs:
+      - files:
+          - /etc/prometheus/ziele/mobil/*.yml
+        refresh_interval: 30s
+
   - job_name: blackbox_http
     metrics_path: /probe
     params:
