@@ -91,6 +91,44 @@ Die Dienstdatei kapselt ihre Hilfsbefehle; in einem LXC-Container kann systemd d
 ```
 Prüft die Konfiguration vorher, schickt das Signal direkt an den Prozess und prüft am Messwert `prometheus_config_last_reload_successful` nach, ob es wirklich geklappt hat.
 
+### 📻 Radio: Sendetag gebaut, Playlisten bereinigt
+
+⚠️ **Zugang zuerst:** Der API-Schlüssel aus `reference_frawo_azuracast` ist **tot** („You must be logged in"). Verwaltung läuft über die Datenbank:
+`ssh stock-pve` → `qm guest exec 210 -- docker exec azuracast sh -c 'mariadb -u$MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE …'`
+Grössere Abfragen als Datei einspielen (`docker cp`), sonst schluckt der Rückweg die Ausgabe.
+
+⚠️ **Tabellennamen haben sich geändert:** `station_playlists` (Plural), nicht `station_playlist`.
+
+🔴 **FALLE, die mich erwischt hat:** `(SELECT storage_location_id FROM station …)` — **diese Spalte gibt es in `station` nicht**, sie heisst `media_storage_location_id`. MariaDB bezieht den Namen stillschweigend auf die **äussere** Tabelle, die Bedingung ist damit immer wahr, und man zählt **beide Speicherorte zusammen**. Meine ersten Zahlen waren dadurch rund doppelt so hoch.
+
+**Station 1 nutzt ausschliesslich Speicherort 7** (`/var/azuracast/hdd_library` = CIFS `//10.1.0.94/music`, 1,9 TB). Speicherort 9 mit 11.229 Dateien ist ungenutzt.
+
+| Gemessen (nur Ort 7) | Wert |
+|---|---|
+| Dateien | 12.157 |
+| Länge 0 (unlesbar) | 1.038 |
+| ohne Genre / ohne Cover | 2.550 / 2.437 |
+| überzählige Doubletten | 2.809 |
+
+**Der Sendetag ist jetzt real** (vorher waren 4 von 7 Plätzen leer und trotzdem aktiviert — dieselbe Konstellation wie beim Ausfall am 22.06.):
+
+| Sendeplatz | Titel | Material |
+|---|---|---|
+| Sunrise 06–09 | 599 | 63 h |
+| Morning Drive 09–12 | 1.477 | 154 h |
+| Lunch 12–14 | 728 | 77 h |
+| Afternoon 14–18 | 2.943 | 305 h |
+| Evening 18–22 | 2.778 | 286 h |
+| Night 22–06 | 1.270 | 149 h |
+| **Shows Fr/Sa** | **426** | **734 h** |
+| General Rotation (Netz) | 8.191 | 1.508 h |
+
+⭐ **Fund:** 98 komplette DJ-Sets (Ø 86 min) lagen ungenutzt in der Bibliothek, während „Shows (Fr/Sa)" — die Playlist mit der **höchsten** Priorität — leer war.
+
+Skripte in `deployments/radio/`, alles zurückdrehbar. Sicherung der alten Zuordnungen: `/tmp/playlist-zuordnung-20260729.tsv` im Container (6.514 Zeilen). Nach DB-Änderungen **immer** `azuracast_cli azuracast:radio:restart 1`, sonst merkt liquidsoap nichts.
+
+**Offen (redaktionell/technisch):** Lautheits-Angleichung ist aus **und** die Dateien tragen keine ReplayGain-Angabe → Bibliothek muss einmal durchgemessen werden, **direkt am ProDesk gegen `/mnt/music_hdd`, nicht über den CIFS-Umweg**. Ausserdem: keine Jingles/Station-IDs.
+
 ### ✅ Odoo-Aufgaben an diesem Tag geschlossen / neu
 
 | # | Status |
