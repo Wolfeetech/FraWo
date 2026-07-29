@@ -1,0 +1,97 @@
+# FraWo Funk — erlaubte Genres
+# Angelegt 29.07.2026.
+#
+# Warum eine feste Liste:
+# In der Bibliothek stehen 600 verschiedene Genre-Angaben für 12.157 Titel.
+# Darunter Schreibvarianten desselben Genres ("minimal / deep tech",
+# "minimal; deep tech", "Minimal / Deep Tech"), ganze Beatport-Kataloge in
+# einem Feld (über 200 Zeichen) und schlicht Werbung ("www.electronicfresh.com").
+#
+# Damit lässt sich nicht kuratieren. Ein Sender braucht ein Vokabular, das
+# man beim Playlistbauen im Kopf hat — erfahrungsgemäss 30 bis 50 Begriffe.
+#
+# Diese Liste ist aus der tatsächlich vorhandenen Musik abgeleitet, nicht
+# erfunden: Jeder Eintrag steht für Material, das wir wirklich haben.
+# Alles, was beets sonst finden würde ("seen live", "favourites", Ortsnamen),
+# wird verworfen.
+#
+# Erweitern ist ausdrücklich vorgesehen — aber bewusst, nicht nebenbei.
+
+# --- House-Familie ---
+house
+deep house
+tech house
+progressive house
+afro house
+jackin house
+bass house
+organic house
+melodic house
+acid house
+disco house
+
+# --- Techno-Familie ---
+techno
+minimal
+hard techno
+hypnotic techno
+detroit techno
+dub techno
+
+# --- Trance und Verwandtes ---
+trance
+progressive trance
+psytrance
+goa
+
+# --- Bass und Breaks ---
+drum and bass
+jungle
+breakbeat
+dubstep
+uk garage
+bassline
+
+# --- Disco und Funk ---
+disco
+italo disco
+nu disco
+funk
+soul
+boogie
+
+# --- Elektronisch, weiter gefasst ---
+electronic
+electronica
+electro
+idm
+ambient
+downtempo
+chillout
+dub
+industrial
+ebm
+
+# --- Indie und Pop-Elektronik ---
+indie dance
+synthpop
+new wave
+post-punk
+electropop
+
+# --- Ausserhalb der Elektronik ---
+rock
+alternative rock
+pop
+hip hop
+trip hop
+reggae
+dancehall
+jazz
+nu jazz
+soundtrack
+
+# --- Formatbezeichnungen (keine Genres im engeren Sinn, aber wir brauchen sie) ---
+dj set
+live set
+radio show

@@ -1,0 +1,165 @@
+# FraWo — zentrale Musikverwaltung (beets)
+# Angelegt 29.07.2026. Läuft in CT120 (fileserver), wo die Platte direkt
+# eingehängt ist — nicht über den Netzwerkumweg, an dem der AzuraCast-Scan
+# schon einmal hängengeblieben ist.
+#
+# ===========================================================================
+# WAS BEETS IST UND WARUM AUSGERECHNET DAS
+# ===========================================================================
+# beets ist der Standard für Musikbibliotheken. Es gleicht jede Datei gegen
+# MusicBrainz ab — die offene Musikdatenbank, aus der auch Plattenläden und
+# Streamingdienste ihre Stammdaten ziehen — und schreibt daraus einheitliche
+# Tags in die Datei.
+#
+# Damit lösen sich vier Probleme auf einmal, die wir gemessen haben:
+#   600 verschiedene Genres     -> kontrolliertes Vokabular
+#   1427 Labels, viele doppelt  -> "Sony Music", "Sony BMG Music
+#                                  Entertainment", "Sony Music Media" und
+#                                  "Sony Music Entertainment" sind dieselbe
+#                                  Firma. MusicBrainz kennt die richtige.
+#   540 Dateien mit Werbemüll   -> electronicfresh.com, sharing-db.club,
+#                                  djsoundtop.com, ein Torrent-Tracker als
+#                                  "Label"
+#   55 % ohne eindeutige Kennung -> MusicBrainz-ID und ISRC für jeden Titel
+#
+# ===========================================================================
+# DIE WICHTIGSTE EINSTELLUNG ZUERST
+# ===========================================================================
+# copy/move stehen auf NEIN. beets fasst die Ordnerstruktur NICHT an.
+# Würde es Dateien verschieben, zeigten sämtliche AzuraCast-Playlisten ins
+# Leere und der Sender stünde. Geändert werden nur die Tags IN den Dateien.
+
+directory: /mnt/music
+library: /var/lib/beets/musik.db
+
+import:
+    copy: no              # Dateien bleiben, wo sie sind
+    move: no              # ebenso
+    write: yes            # Tags werden in die Datei geschrieben
+    incremental: yes      # bereits bearbeitete Ordner werden übersprungen
+    resume: ask
+    # ===== HIER STECKT DIE WICHTIGSTE ERKENNTNIS =====
+    # Ursprünglich stand hier "skip": bei unsicherem Treffer überspringen.
+    # Ein Testlauf über 22 Alben hat gezeigt, dass das für diese Bibliothek
+    # die falsche Vorgabe ist — MusicBrainz kennt sie schlicht nicht:
+    #
+    #   22 von 22 Alben übersprungen, null Treffer.
+    #
+    # Das ist bei Underground-Elektronik der Normalfall. MusicBrainz ist stark
+    # bei Album-Veröffentlichungen, dünn bei Netlabel- und Promo-Material,
+    # und genau daraus besteht der grösste Teil unserer Bibliothek.
+    #
+    # Mit "skip" wäre die Verwaltung leer geblieben. Mit "asis" werden die
+    # Dateien mit ihren vorhandenen Angaben aufgenommen — und danach mit
+    # eigenen Regeln geputzt. Das wirkt auf 100 % der Bibliothek statt auf 0 %.
+    quiet_fallback: asis
+    timid: no
+    log: /var/log/beets-import.log
+
+match:
+    # Ab welcher Übereinstimmung gilt ein Treffer als sicher.
+    strong_rec_thresh: 0.10      # 90 % Übereinstimmung = automatisch
+    medium_rec_thresh: 0.25
+    rec_gap_thresh: 0.25
+    max_rec:
+        missing_tracks: medium
+        unmatched_tracks: medium
+    # Bei elektronischer Musik sind Länderangaben oft uneinheitlich gepflegt;
+    # sie sollen einen guten Treffer nicht verhindern.
+    ignored: []
+    preferred:
+        countries: ['DE', 'GB', 'US', 'XW']
+        media: ['Digital Media', 'CD', 'Vinyl']
+        original_year: yes
+
+plugins: >
+    chroma
+    scrub
+    fetchart
+    embedart
+    replaygain
+    lastgenre
+    duplicates
+    info
+    missing
+    mbsync
+    edit
+    fromfilename
+
+# --- Akustischer Fingerabdruck -------------------------------------------
+# Erkennt Titel an der Musik selbst, nicht am Dateinamen. Genau das brauchen
+# wir für die Dateien, deren Tags nur "49 - Space Kids djsoundtop.com" sagen.
+chroma:
+    auto: yes
+
+# --- Aufräumen der Tags ---------------------------------------------------
+# scrub entfernt ALLE vorhandenen Tags und schreibt danach die sauberen neu.
+# Das ist der einzige zuverlässige Weg, Werbeeinträge loszuwerden — sie
+# stecken oft in Feldern, die kein normales Programm anzeigt.
+scrub:
+    auto: yes
+
+# --- Cover ----------------------------------------------------------------
+fetchart:
+    auto: yes
+    minwidth: 500
+    sources: coverart itunes albumart
+embedart:
+    auto: yes
+    maxwidth: 1000
+
+# --- Lautheit -------------------------------------------------------------
+# Zusätzlich zur Berechnung im Sendeweg. In der Datei ist der Wert dauerhaft
+# und funktioniert auch in Rekordbox, Mixxx und jedem Player.
+replaygain:
+    auto: yes
+    backend: ffmpeg
+    threads: 2
+    r128: [Opus]
+
+# --- Genres ---------------------------------------------------------------
+# Hier liegt der grösste Kurationsgewinn. Statt 600 gewachsener Bezeichnungen
+# ein fester Baum: aus "techno (raw / deep / hypnotic)" wird "Techno", aus
+# "minimal / deep tech" wird "Minimal".
+lastgenre:
+    auto: yes
+    source: album
+    count: 2
+    canonical: yes
+    fallback: ''
+    force: no
+    # Ohne Whitelist übernimmt beets auch Unsinn wie "seen live" oder
+    # "favourites" aus Nutzer-Tags. Die eigene Liste steht in
+    # genres-frawo.txt und wird beim Ausrollen mitkopiert.
+    whitelist: /etc/beets/genres-frawo.txt
+
+# --- Doubletten -----------------------------------------------------------
+# Nur MELDEN, niemals automatisch löschen. Bei Doubletten ist oft eine
+# Fassung besser als die andere, und eine defekte USB-Platte hat hier
+# nachweislich beschädigte Kopien hinterlassen (Odoo #881).
+duplicates:
+    keys: [mb_trackid, artist, title]
+    full: no
+    delete: no
+    move: ''
+    copy: ''
+
+# --- Aus Dateinamen lesen -------------------------------------------------
+# Rettet Angaben für Dateien ganz ohne Tags.
+fromfilename:
+    auto: yes
+
+# --- Ordnerstruktur (aktuell UNGENUTZT, weil move: no) --------------------
+# Steht hier als Ziel, falls wir später einmal umräumen wollen. Dann aber
+# geplant und mit anschliessendem AzuraCast-Neueinlesen, nicht nebenbei.
+paths:
+    default: $genre/$albumartist/$album%aunique{}/$track $title
+    singleton: $genre/$artist/Einzeltitel/$title
+    comp: $genre/Sampler/$album%aunique{}/$track $title
+
+ui:
+    color: yes
+
+# Nicht anfassen: die Rettungskopie von der defekten Platte enthält
+# nachweislich beschädigte Dateien. Die gehören geprüft, nicht getaggt.
+ignore: ['_RETTUNG_*', '.*', '*.tmp', '*.part', 'lost+found']

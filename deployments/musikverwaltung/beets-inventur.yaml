@@ -1,0 +1,61 @@
+# FraWo — Bestandsaufnahme der Musikbibliothek (beets, rein lesend)
+# Angelegt 29.07.2026.
+#
+# Zweck: Die gesamte Bibliothek in eine durchsuchbare Datenbank bringen,
+# OHNE eine einzige Datei anzufassen. Damit lässt sich sofort nach Genre,
+# Künstler und Label sortieren und gruppieren — und man sieht, was drin ist,
+# bevor man entscheidet, was geändert werden soll.
+#
+# WARUM GETRENNT VON DER HAUPTKONFIGURATION
+# Die Hauptkonfiguration schreibt Tags in die Dateien. Das ist gewollt, hat
+# aber eine teure Nebenwirkung: Die Musik wird stündlich in die Cloud
+# gesichert. Ändern sich alle 12.157 Dateien, lädt rclone 567 GB neu hoch —
+# rund 78 Stunden, in denen die Kopie ausser Haus unvollständig ist.
+#
+# Deshalb in zwei Schritten:
+#   1. Diese Konfiguration: nur lesen, Datenbank aufbauen, nichts ändern.
+#   2. Erst wenn klar ist, was geputzt werden soll: gezielt schreiben —
+#      und zwar nur für die betroffenen Dateien, nicht für alle.
+#
+# WARUM OHNE ABGLEICH GEGEN MUSICBRAINZ
+# Ein Testlauf über 22 Alben ergab: 22 übersprungen, null Treffer.
+# MusicBrainz ist stark bei regulären Album-Veröffentlichungen und dünn bei
+# Netlabel- und Promo-Material — und genau daraus besteht der grösste Teil
+# dieser Bibliothek. Der Abgleich lohnt sich später gezielt für die
+# Mainstream-Alben (Bowie, Depeche Mode, Pet Shop Boys), nicht als
+# Grundlage für alles.
+
+directory: /mnt/music
+library: /var/lib/beets/musik.db
+
+import:
+    copy: no
+    move: no
+    write: no             # <- nichts wird in Dateien geschrieben
+    autotag: no           # <- kein Abgleich, Angaben werden übernommen wie sie sind
+    incremental: yes      # Wiederaufnahme nach Abbruch möglich
+    resume: yes
+    quiet: yes
+    log: /var/log/beets-inventur.log
+
+# Bewusst wenige Bausteine: Jeder zusätzliche kostet Zeit oder will schreiben.
+# fromfilename rettet Angaben für Dateien ganz ohne Tags — das ist reines
+# Lesen und deshalb hier richtig.
+plugins: >
+    fromfilename
+    duplicates
+    info
+    missing
+
+duplicates:
+    keys: [artist, title]
+    full: no
+    delete: no
+
+ui:
+    color: no
+
+# Die Rettungskopie von der defekten Platte bleibt aussen vor: Sie enthält
+# nachweislich beschädigte Dateien (Odoo #881). Die gehören geprüft, nicht
+# inventarisiert.
+ignore: ['_RETTUNG_*', '.*', '*.tmp', '*.part', 'lost+found']
