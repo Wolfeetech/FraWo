@@ -1,0 +1,51 @@
+# Gegenseitige Aufsicht — angelegt 29.07.2026
+#
+# Die Wache /usr/local/bin/monitoring-watchdog.sh läuft alle 10 Minuten auf
+# dem ProDesk-Wirt und meldet per Telegram, wenn Prometheus, Alertmanager
+# oder Grafana in CT150 ausfallen. Sie schickt direkt, ohne den Alertmanager
+# zu benutzen — der wäre in genau dem Moment ja weg.
+#
+# Diese Regel schliesst den Kreis in die andere Richtung: Prometheus achtet
+# darauf, dass die Wache selbst noch läuft. Ohne das hätte man nur die
+# Blindstelle verschoben — eine Wache, die stillschweigend nicht mehr startet,
+# ist genauso wertlos wie gar keine.
+#
+# Jede der beiden Seiten deckt also den blinden Fleck der anderen ab:
+#   Wache        -> merkt, wenn die Überwachung tot ist
+#   Überwachung  -> merkt, wenn die Wache tot ist
+
+groups:
+  - name: frawo_watchdog
+    rules:
+      - alert: WacheLaeuftNichtMehr
+        # Die Wache schreibt bei jedem Lauf einen Zeitstempel. Wird der älter
+        # als 35 Minuten, sind mindestens drei Läufe ausgefallen.
+        expr: time() - frawo_monitoring_watchdog_last_run_timestamp_seconds > 2100
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Die Wache über die Überwachung läuft nicht mehr"
+          description: >-
+            Der letzte Lauf ist {{ $value | humanizeDuration }} her, erwartet
+            wird alle 10 Minuten. Damit fehlt die Absicherung für den Fall,
+            dass die Überwachung selbst ausfällt. Prüfen auf dem ProDesk:
+            `tail /var/log/monitoring-watchdog.log` und
+            `crontab -l | grep watchdog`.
+
+      # Falls die Wache läuft und einen Ausfall sieht, Prometheus aber noch
+      # lebt: dann ist einer der drei Dienste weg, nicht der ganze Container.
+      # Die Telegram-Nachricht der Wache geht ohnehin raus; diese Regel macht
+      # es zusätzlich im Dashboard sichtbar.
+      - alert: UeberwachungTeilweiseAusgefallen
+        expr: frawo_monitoring_watchdog_ok == 0
+        for: 10m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Wache meldet: Überwachungsdienste antworten nicht"
+          description: >-
+            Die Wache auf dem ProDesk-Wirt erreicht mindestens einen der drei
+            Dienste in CT150 nicht (Prometheus 9090, Alertmanager 9093,
+            Grafana 3000). Dass diese Meldung überhaupt ankommt, heisst:
+            Prometheus lebt noch — es fehlt also nur ein Teil.
