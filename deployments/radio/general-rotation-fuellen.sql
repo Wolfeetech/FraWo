@@ -40,6 +40,7 @@ FROM (
     AND length >= 60
     -- Der Ordner "Duplicates" bleibt aussen vor, siehe kuration-tagesablauf.sql
     AND path NOT LIKE char(37,68,117,112,108,105,99,97,116,101,115,37)
+    AND path NOT LIKE char(37,95,81,85,65,82,65,78,84,65,69,78,69,95,37)
   GROUP BY LOWER(TRIM(COALESCE(artist,''))), LOWER(TRIM(COALESCE(title,'')))
 ) k
 LEFT JOIN station_playlist_media vorhanden

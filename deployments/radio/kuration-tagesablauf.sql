@@ -86,6 +86,7 @@ SELECT 840, k.id, 1, 0, 0 FROM (
     -- defekten Platte (Odoo #881). Eine blosse Vorrangregel reichte nicht,
     -- weil sie nur innerhalb jeder Genre-Abfrage wirkt.
     AND path NOT LIKE char(37,68,117,112,108,105,99,97,116,101,115,37)
+    AND path NOT LIKE char(37,95,81,85,65,82,65,78,84,65,69,78,69,95,37)
     AND length BETWEEN 240 AND 900
     AND CHAR_LENGTH(COALESCE(genre,'')) <= 40
     AND (   LOWER(genre) LIKE '%deep house%'
@@ -117,6 +118,7 @@ SELECT 841, k.id, 1, 0, 0 FROM (
     -- defekten Platte (Odoo #881). Eine blosse Vorrangregel reichte nicht,
     -- weil sie nur innerhalb jeder Genre-Abfrage wirkt.
     AND path NOT LIKE char(37,68,117,112,108,105,99,97,116,101,115,37)
+    AND path NOT LIKE char(37,95,81,85,65,82,65,78,84,65,69,78,69,95,37)
     AND length BETWEEN 180 AND 720
     AND CHAR_LENGTH(COALESCE(genre,'')) <= 40
     AND (   LOWER(genre) = 'house'
@@ -146,6 +148,7 @@ SELECT 842, k.id, 1, 0, 0 FROM (
     -- defekten Platte (Odoo #881). Eine blosse Vorrangregel reichte nicht,
     -- weil sie nur innerhalb jeder Genre-Abfrage wirkt.
     AND path NOT LIKE char(37,68,117,112,108,105,99,97,116,101,115,37)
+    AND path NOT LIKE char(37,95,81,85,65,82,65,78,84,65,69,78,69,95,37)
     AND length BETWEEN 180 AND 600
     AND CHAR_LENGTH(COALESCE(genre,'')) <= 40
     AND (   LOWER(genre) LIKE '%disco%'
@@ -174,6 +177,7 @@ SELECT 843, k.id, 1, 0, 0 FROM (
     -- defekten Platte (Odoo #881). Eine blosse Vorrangregel reichte nicht,
     -- weil sie nur innerhalb jeder Genre-Abfrage wirkt.
     AND path NOT LIKE char(37,68,117,112,108,105,99,97,116,101,115,37)
+    AND path NOT LIKE char(37,95,81,85,65,82,65,78,84,65,69,78,69,95,37)
     AND length BETWEEN 240 AND 900
     AND CHAR_LENGTH(COALESCE(genre,'')) <= 40
     AND (   LOWER(genre) LIKE '%tech house%'
@@ -201,6 +205,7 @@ SELECT 844, k.id, 1, 0, 0 FROM (
     -- defekten Platte (Odoo #881). Eine blosse Vorrangregel reichte nicht,
     -- weil sie nur innerhalb jeder Genre-Abfrage wirkt.
     AND path NOT LIKE char(37,68,117,112,108,105,99,97,116,101,115,37)
+    AND path NOT LIKE char(37,95,81,85,65,82,65,78,84,65,69,78,69,95,37)
     AND length BETWEEN 240 AND 900
     AND CHAR_LENGTH(COALESCE(genre,'')) <= 40
     AND (   LOWER(genre) LIKE '%peak time%'
@@ -230,6 +235,7 @@ SELECT 845, k.id, 1, 0, 0 FROM (
     -- defekten Platte (Odoo #881). Eine blosse Vorrangregel reichte nicht,
     -- weil sie nur innerhalb jeder Genre-Abfrage wirkt.
     AND path NOT LIKE char(37,68,117,112,108,105,99,97,116,101,115,37)
+    AND path NOT LIKE char(37,95,81,85,65,82,65,78,84,65,69,78,69,95,37)
     AND length BETWEEN 360 AND 2400
     AND CHAR_LENGTH(COALESCE(genre,'')) <= 40
     AND (   LOWER(genre) LIKE '%raw%'
@@ -263,6 +269,7 @@ SELECT 838, k.id, 1, 0, 0 FROM (
     -- defekten Platte (Odoo #881). Eine blosse Vorrangregel reichte nicht,
     -- weil sie nur innerhalb jeder Genre-Abfrage wirkt.
     AND path NOT LIKE char(37,68,117,112,108,105,99,97,116,101,115,37)
+    AND path NOT LIKE char(37,95,81,85,65,82,65,78,84,65,69,78,69,95,37)
     AND length >= 1200
     AND (LOWER(COALESCE(genre,'')) LIKE '%dj set%' OR length >= 2400)
   GROUP BY LOWER(TRIM(COALESCE(artist,''))), LOWER(TRIM(COALESCE(title,'')))
