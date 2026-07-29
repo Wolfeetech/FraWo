@@ -6,6 +6,49 @@
 
 ---
 
+## 🆕 2026-07-29 — Sicherheits-Audit Teil 3 + eigene Dashboards
+
+### 🖥️ Überwachung: vier eigene Dashboards (Grafana `http://10.1.0.35:3000`)
+
+Startseite ist jetzt **„FraWo — Überblick"**. Dashboards liegen als Dateien in
+`deployments/monitoring/dashboards/` und werden über die Grafana-Provisionierung
+eingespielt — ein Neuaufbau des Containers stellt sie automatisch wieder her.
+
+| Dashboard | UID | Wofür |
+|---|---|---|
+| **FraWo — Überblick** | `frawo-ueberblick` | Startseite: 5 Ampel-Kacheln, alle müssen 0/grün sein |
+| **FraWo — Server & Maschinen** | `frawo-server` | USE-Regel: CPU/RAM/Auslagerung/Last + alle 18 Gäste mit Klarnamen |
+| **FraWo — Sicherungen** | `frawo-sicherungen` | TÜV-Verlauf, Alter + Grösse, Zweitkopien, Wiederherstellungstest |
+| **FraWo — Dienste & Zertifikate** | `frawo-dienste` | RED-Regel: Erreichbarkeit, Verfügbarkeit 7 Tage, Antwortzeit, Zertifikatsablauf |
+
+- **Neu überwacht:** `vault.frawo.tech` und `frawo.tech` — liefen bis heute völlig ungeprüft.
+- **Neu ausgewertet:** `pve_not_backed_up` → aktuell **1 Maschine ohne Sicherungsauftrag: VM 240 „PBS-FraWo" (Anker)**. Das ist der Sicherungsserver selbst; erwartbar, aber seine *Konfiguration* (`/etc/proxmox-backup`) sollte gesichert werden. **OFFEN.**
+- ⚠️ **Gotcha:** `prometheus.yml` nur noch über `deployments/monitoring/prometheus.yml` im Repo bearbeiten. Beim Nachtragen per `sed` gerieten Ziele zwei Leerzeichen zu tief — `promtool` meldete trotzdem „valid", weil YAML tiefer eingerückte Zeilen an den *vorherigen* Wert anhängt. Ergebnis war ein Unsinns-Ziel aus drei URLs. **Nach jeder Änderung prüfen, was tatsächlich gescrapt wird**, nicht nur `promtool`.
+
+### 🔒 ProDesk abgedichtet (Sicherheits-Audit Teil 3)
+
+**Schwerster Fund:** `/mnt/musicstick` war per NFS an das **ganze** Netz `10.1.0.0/24` exportiert — `rw` + `no_root_squash`. Dort lag `pw.txt`: die Passwortliste der GbR (Odoo-DB, Paperless, AzuraCast-MariaDB, n8n, Samba), Rechte 777. **Von jedem Gerät im Server-VLAN les- und überschreibbar.** Datei nach `/root/vertraulich/pw.txt` (600) verschoben. → **Passwörter rotieren, Odoo #815.**
+
+| Was | Vorher | Jetzt |
+|---|---|---|
+| NFS `/mnt/musicstick` | `rw,no_root_squash` an `10.1.0.0/24` | `ro,root_squash` |
+| NFS an `192.168.178.210` / `100.106.67.127` | aktiv | entfernt (totes Netz / 26 Tage offline) |
+| Samba auf dem Host (139/445) | lief, 0 Verbindungen | **aus** — StudioPC hängt an CT120 (10.1.0.94) |
+| nginx auf dem Host (8080) | lief, alle Ziele im toten 192.168.178-Netz, Log 0 Bytes | **aus** — Vaultwarden läuft in CT108 |
+| `grafana-socat.service` (3000) | `ExecStart` endete auf `TCP:` **ohne Ziel** | **aus** — Grafana direkt unter 10.1.0.35:3000 |
+| `/etc/hosts` | Knoten hielt sich für `192.168.178.172` | `10.1.0.128` |
+| Host-Firewall | `enable: 0` | **`enable: 1`, Grundregel DROP** |
+
+⚠️ **Wichtig verstanden:** Die falsche `/etc/hosts` war kein Schönheitsfehler — `pve-firewall localnet` erkannte deshalb nur `127.0.0.0/8`. Hätte man die Firewall in dem Zustand eingeschaltet, wäre die Weboberfläche für **kein** Gerät im LAN mehr erreichbar gewesen.
+
+Die drei `socat`-Weiterleitungen **19022** (SSH zu OpenClaw CT150), **19100** (Anker-Messwerte) und **19182** (StudioPC-Messwerte) reichten Tailscale-Dienste ungeschützt ins LAN durch. Jetzt nur noch für **10.1.0.35** (Prometheus) offen. Gegenprobe vom StudioPC (10.1.0.211): `8006` offen, `19022`/`19100`/`19182`/`445` **zu**.
+
+**Rücknahme, falls nötig** (alles auf dem ProDesk unter `/root/`):
+`exports.backup-20260729` · `hosts.backup-20260729` · `host.fw.backup-20260729` · `nginx-host-konfiguration-20260729.tar.gz`
+Notfall ohne Netz: an der Konsole `pve-firewall stop`.
+
+---
+
 ## 🆕 Session-Abschluss 2026-07-25 — Odoo Production Readiness & Single Focus (Antigravity-Agent, live verifiziert)
 
 - **Odoo 19 Technical Production Readiness (100% Abgeschlossen):**
