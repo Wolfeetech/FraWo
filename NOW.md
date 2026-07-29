@@ -63,6 +63,34 @@ Der berechtigte Kern: **Grafana prüfte den Ton überhaupt nicht.** Jetzt in `de
 
 ⚠️ **Merksatz:** Ein Stream hat kein Ende. Eine normale HTTP-Prüfung läuft daran immer ins Zeitlimit und meldet ewig Fehler.
 
+### 🐕 Wache über die Überwachung (neu)
+
+Alle Alarme laufen über CT150. Fällt der Container aus, fällt **jede** Alarmierung mit aus — und es herrscht Stille, die aussieht wie „alles gut". Deshalb läuft `/usr/local/bin/monitoring-watchdog.sh` alle 10 Minuten auf dem **ProDesk-Wirt**, also ausserhalb dessen, was es beobachtet, und meldet per Telegram **am Alertmanager vorbei**.
+
+Gegenrichtung: `frawo_watchdog.yml` lässt Prometheus prüfen, ob die Wache noch läuft. Jede Seite deckt den blinden Fleck der anderen ab.
+
+In beiden Richtungen erprobt (Ausfall → merken, melden, nicht wiederholen; Erholung → Entwarnung). Versandweg mit Testnachricht belegt (`ok:true`).
+
+- Zugangsschlüssel: `/root/.telegram-frawo` (600) auf dem ProDesk — **nicht im Repo**.
+- ⚠️ Beim Anlegen wurden die **Anführungszeichen aus der YAML mitkopiert** → Telegram antwortete `Not Found`. Sucht man nie beim Schlüssel. Das Skript wirft sie jetzt selbst weg.
+
+### 🔴 WICHTIG: `systemctl reload prometheus` funktioniert in CT150 NICHT
+
+```
+Failed to set up mount namespacing: /run/systemd/unit-root/dev
+status=226/NAMESPACE
+```
+
+Die Dienstdatei kapselt ihre Hilfsbefehle; in einem LXC-Container kann systemd das für den Reload-Befehl nicht aufbauen. **Der Hauptprozess läuft unbeeindruckt weiter, der Dienst bleibt `active`.**
+
+**Das ist die Falle:** Der Befehl scheitert, alles sieht normal aus, die Änderung ist trotzdem nicht aktiv. Am 29.07. sind so zwei Alarmregeln beinahe unbemerkt liegengeblieben — aufgefallen nur beim Nachsehen, was wirklich geladen ist.
+
+**Stattdessen immer:**
+```
+/usr/local/bin/prometheus-neu-laden.sh
+```
+Prüft die Konfiguration vorher, schickt das Signal direkt an den Prozess und prüft am Messwert `prometheus_config_last_reload_successful` nach, ob es wirklich geklappt hat.
+
 ### ✅ Odoo-Aufgaben an diesem Tag geschlossen / neu
 
 | # | Status |
