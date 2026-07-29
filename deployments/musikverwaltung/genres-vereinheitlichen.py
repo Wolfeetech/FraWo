@@ -100,6 +100,11 @@ REGELN = [
 
     (r'ambient|downtempo|chill',                                 'Ambient'),
     (r'idm|electronica|industrial|\bebm\b|electro',              'Electronic'),
+    # Nachgetragen nach dem ersten Lauf: Diese Angaben blieben ungemappt
+    # stehen. "Mainstage" ist eine Beatport-Kategorie fuer grosse Buehnen,
+    # "Électronique"/"Elektronisch" sind schlicht andere Sprachen.
+    (r'mainstage|main stage',                                    'Electronic'),
+    (r'électronique|electronique|elektronisch',                  'Electronic'),
     (r'dance|electronic',                                        'Electronic'),
 ]
 
@@ -115,13 +120,42 @@ MUELL = re.compile(r'(www\.|\.com|\.club|\.net|\.ru|sharing-db|torrent)', re.I)
 
 
 def kanonisch(roh):
-    """Kanonisches Genre für eine rohe Genre-Angabe, oder None."""
-    if not roh or MUELL.search(roh):
+    """Kanonisches Genre für eine rohe Genre-Angabe, oder None.
+
+    NACHGEBESSERT nach dem ersten Lauf: Damals blieben rund 145 Titel mit
+    ihrem alten Müll-Genre stehen — "Sharing-DB.club", "Mainstage",
+    "Électronique" und die riesigen Beatport-Kataloge. Der Fehler lag nicht
+    beim Erkennen, sondern in der Folge: Erkannter Müll führte zu None, und
+    None hiess "nichts ändern" statt "ersetzen".
+    """
+    if not roh:
         return None
-    # Die riesigen Beatport-Kataloge (über 200 Zeichen, alle Genres drin)
-    # sind wertlos für die Zuordnung — sie treffen sonst jede Regel.
+
+    # ===== WICHTIG: Das Ergebnis muss sich auf sich selbst abbilden =====
+    # Sonst zerstört ein zweiter Lauf die Arbeit des ersten. Genau das wäre
+    # hier passiert: "Indie & Wave" und "Bass" sind zwar Ergebnisse dieser
+    # Funktion, trafen aber auf keine der Regeln unten ("new wave" ja,
+    # "Indie & Wave" nein) — 444 Titel hätten beim nächsten Lauf ihr Genre
+    # verloren. Aufgefallen beim Vergleich zweier Probeläufe.
+    for g in GENRE_RANG:
+        if roh.strip().lower() == g.lower():
+            return g
+
+    if MUELL.search(roh):
+        # Müll ist kein Genre. None heisst hier: bitte über das Album
+        # bestimmen — nicht: alten Wert behalten.
+        return None
+
+    # Die riesigen Beatport-Kataloge listen SÄMTLICHE Genres in einem Feld
+    # (über 200 Zeichen). Als Ganzes wertlos — aber der ERSTE Eintrag ist
+    # in aller Regel der eigentliche, deshalb wird der ausgewertet.
     if len(roh) > 60:
-        return None
+        erster = re.split(r'[,;]', roh)[0].strip()
+        if erster and len(erster) <= 60:
+            roh = erster
+        else:
+            return None
+
     r = roh.lower()
     for muster, ziel in REGELN:
         if re.search(muster, r):
@@ -209,8 +243,17 @@ def main():
         schluessel = f'{albumkuenstler}\x1f{album}'
         neu_genre = album_genre.get(schluessel) or kanonisch(genre)
         neu_stil = stil(genre)
+
         if not neu_genre:
+            # Kein Genre bestimmbar. Steht dort aber noch Müll
+            # ("Sharing-DB.club", ein 200-Zeichen-Katalog), muss er weg —
+            # ein LEERES Feld ist ehrlich, ein falsches nicht.
+            # Beim ersten Lauf blieben so rund 145 Titel mit Müll stehen.
+            if genre and (MUELL.search(genre) or len(genre) > 60):
+                aenderungen.append((kennung, '', None))
+                verteilung['(geleert)'] += 1
             continue
+
         verteilung[neu_genre] += 1
         if neu_genre != genre or neu_stil:
             aenderungen.append((kennung, neu_genre, neu_stil))
