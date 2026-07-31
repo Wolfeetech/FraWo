@@ -21,6 +21,7 @@ Wer eine davon nicht kennt, sucht stundenlang am falschen Ende.
 | **AzuraCast-Wiederholsperre** | arbeitet pro **Datei**, nicht pro **Titel** — derselbe Song läuft zweimal die Stunde | Playlisten je Künstler+Titel entdoppeln |
 | **beets-Formatzeichen** | `\x1f` wird **wörtlich** ausgegeben, nicht als Trennzeichen | `|` als Trenner |
 | **`pgrep -f <name>`** | matcht den eigenen Befehl mit, wenn der Name darin vorkommt | Ergebnis gegenprüfen, nicht blind vertrauen |
+| **OpenClaw-Node meldet `ETIMEDOUT`** | verdeckt den **eigentlichen** Fehler: der PC meldete sich mit *Passwort* an, das Gateway verlangt *Token* → `token mismatch`, auch bei stehendem Netz | Anmeldung **nur per Token** (`OPENCLAW_GATEWAY_TOKEN`). Erst wenn die Zeitüberschreitung weg ist, sieht man den wahren Grund |
 
 ⚠️ **Nach direkten Datenbank-Änderungen an AzuraCast immer** `azuracast_cli azuracast:radio:restart 1` — sonst merkt liquidsoap nichts.
 
@@ -54,6 +55,8 @@ Wer eine davon nicht kennt, sucht stundenlang am falschen Ende.
 ### Anker
 
 CT130 `radio-node` (`10.1.0.200`) — **einziger privilegierter Container von 13** (Odoo #887). Betreibt Docker: Radio-Backend, PostgreSQL, Redis, **uptime-kuma** (`:3001`, zweites Überwachungssystem → Odoo #888). VM240 = **PBS-FraWo** (`10.1.0.7`).
+
+CT150 `openclaw` (`10.1.0.31` · TS `100.72.154.15`) — **das einzige OpenClaw-Gateway**, Docker, Port 19000, Anmeldung per **Token**. Übersteht einen Neustart (CT `onboot`, Docker aktiviert, Container `unless-stopped`). Arbeitsplätze verbinden sich als **Node** dorthin — auf dem StudioPC die Aufgabe „OpenClaw Node" (`.openclaw\node.cmd`, wartet auf Tailscale, startet sich selbst neu, Protokoll in `.openclaw\logs\node-host.log`). Ein **zweites** Gateway auf dem StudioPC gehört nicht dorthin und kann gar nicht starten (Odoo #893).
 
 ---
 
