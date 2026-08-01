@@ -85,41 +85,74 @@ Erwartet: `Indexed: 15/15 files · 57 chunks`, `Sources: memory`, `Embeddings: r
 - Verbraucht: die Sicherungskopie aus Aufgabe 1.
 - Liefert: einen Index, der auch Gesprächsverläufe enthält — Voraussetzung für Aufgabe 4 und 5.
 
-- [ ] **Schritt 1: Änderung zuerst trocken prüfen**
+> ### ⚠ Beim Ausführen am 01.08. gefunden: es sind ZWEI Schalter
+>
+> `sources` allein bewirkt **nichts**. Ein zweiter, davon unabhängiger Schalter
+> gibt die Sitzungsindexierung erst frei:
+> `agents.defaults.memorySearch.experimental.sessionMemory`
+>
+> **Und das Tückische:** Ohne ihn meldet `openclaw memory index --force`
+> trotzdem **„Memory index updated (main)"**, ist nach Sekunden fertig — und
+> hat nichts getan. Keine Fehlermeldung, keine Warnung. Nur die Nachmessung
+> verrät es.
+>
+> Ein Gateway-Neustart hilft **nicht**. Es fehlt schlicht der zweite Schalter.
+
+- [ ] **Schritt 1: Platz prüfen, bevor irgendetwas läuft** — **[IN CT150]**
+
+```sh
+df -h /
+```
+CT150 hat 16 GB. Der Sitzungsindex braucht erfahrungsgemäß 1,5–3 GB.
+**Unter 4 GB frei nicht starten** — eine volle Platte legt das Gateway lahm.
+
+- [ ] **Schritt 2: Beide Änderungen trocken prüfen**
 
 ```sh
 openclaw config set agents.defaults.memorySearch.sources '["memory","sessions"]' --strict-json --dry-run
+openclaw config set agents.defaults.memorySearch.experimental.sessionMemory true --strict-json --dry-run
 ```
-Erwartet: Ausgabe ohne Fehler, zeigt die geplante Änderung. Bei Schema-Fehler abbrechen.
+Erwartet: je „Dry run successful: 1 update(s) validated".
 
-- [ ] **Schritt 2: Änderung setzen**
+- [ ] **Schritt 3: Beide Änderungen setzen und prüfen**
 
 ```sh
 openclaw config set agents.defaults.memorySearch.sources '["memory","sessions"]' --strict-json
-```
-
-- [ ] **Schritt 3: Konfiguration auf Gültigkeit prüfen**
-
-```sh
+openclaw config set agents.defaults.memorySearch.experimental.sessionMemory true --strict-json
 openclaw config validate
 ```
-Erwartet: gültig. Bei Fehler sofort Rückweg (siehe unten).
+Erwartet: gültig.
 
-- [ ] **Schritt 4: Index neu aufbauen — das dauert**
-
+Der Hinweis „No gateway restart needed" ist irreführend — der laufende Dienst
+liest die Agentenprofile beim Start. **Trotzdem neu starten** — **[IN CT150]**:
 ```sh
-time openclaw memory index --force
+docker restart openclaw
 ```
-1.105 Dateien mit einem CPU-Einbettungsmodell. **Laufzeit im Bereich einer halben bis mehrerer Stunden erwarten.** Nicht abbrechen, weil es lange dauert — nur bei Fehlermeldungen.
 
-- [ ] **Schritt 5: Ergebnis messen**
+- [ ] **Schritt 4: Index abgekoppelt neu aufbauen — das dauert** — **[IN CT150]**
+
+Nicht im Vordergrund starten: die Verbindung würde den Lauf mitreißen.
+```sh
+docker exec -d openclaw sh -c 'date > /root/.openclaw/reindex-20260801.log; openclaw memory index --force >> /root/.openclaw/reindex-20260801.log 2>&1; echo INDEXLAUF-FERTIG >> /root/.openclaw/reindex-20260801.log; date >> /root/.openclaw/reindex-20260801.log'
+```
+
+1.105 Dateien mit einem CPU-Einbettungsmodell. **Laufzeit von einer halben bis zu mehreren Stunden erwarten.**
+
+**Währenddessen den Plattenplatz überwachen** — **[IN CT150]**, alle zwei Minuten:
+```sh
+df --output=avail -m /
+```
+**Fällt der Wert unter 1.500 MB, Lauf abbrechen** (`docker restart openclaw`) und Rückweg gehen. Eine volle Platte in CT150 legt Gateway und Telegram-Bot lahm.
+
+- [ ] **Schritt 5: Ergebnis messen — die entscheidende Prüfung**
 
 ```sh
+tail -3 /root/.openclaw/reindex-20260801.log
 openclaw memory status --deep
 ```
-Erwartet: `Sources: memory, sessions`, Dateizahl **deutlich über 15**, Abschnitte **deutlich über 57**, `Dirty: no`, `Vector store: ready`.
+Erwartet: `INDEXLAUF-FERTIG` im Protokoll, `Sources: memory, sessions`, Dateizahl **deutlich über 15**, Abschnitte **deutlich über 57**, `Dirty: no`, `Vector store: ready`.
 
-**Wenn die Zahl bei 15/57 steht, hat die Änderung nicht gegriffen — nicht weitermachen, Ursache suchen.**
+**Wenn die Zahl bei 15/57 steht, hat die Änderung nicht gegriffen — nicht weitermachen.** Die Erfolgsmeldung des Indexlaufs beweist gar nichts; sie erscheint auch dann, wenn nichts indexiert wurde. **Nur diese Zahl zählt.**
 
 - [ ] **Schritt 6: Rückweg dokumentieren**
 
@@ -163,45 +196,18 @@ ssh anker-pve "pct exec 150 -- ls -l /opt/frawo-repo/NOW.md"
 ```
 Erwartet: Datei existiert, ca. 11 KB.
 
-- [ ] **Schritt 3: Sync-Skript anlegen**
+- [ ] **Schritt 3: Sync-Skript — liegt im Repo, nicht auf dem Container**
 
-In CT150 unter `/usr/local/bin/frawo-wissen-sync.sh`:
-```sh
-#!/bin/bash
-# Holt NUR die lebenden FraWo-Dokumente ins Gedaechtnis.
-# Bewusst NICHT: DOCS/, artifacts/, archive/ - das ist Ablagerung.
-set -euo pipefail
+Das Skript ist versioniert: **`scripts/frawo-wissen-sync.sh`** im FraWo-Repo. Damit ist es nachlesbar, änderbar und geht beim Neuaufsetzen von CT150 nicht verloren. Der Klon aus Schritt 1 bringt es automatisch mit.
 
-REPO=/opt/frawo-repo
-VOL=$(docker volume inspect openclaw_openclaw-data --format '{{.Mountpoint}}')
-ZIEL="$VOL/workspace/memory/frawo"
+Es baut in einen Nebenordner und schwenkt **erst bei Erfolg** um — ein fehlgeschlagener Lauf kann das bestehende Gedächtnis nicht leerräumen. Die Prüfung auf mindestens 5 Dateien ist der Wächter davor.
 
-git -C "$REPO" fetch --depth 1 origin main
-git -C "$REPO" reset --hard origin/main
+Das Repo-Update macht **der Cron**, nicht das Skript: sonst überschriebe es sich während der eigenen Ausführung.
 
-mkdir -p "$ZIEL"
-rm -rf "${ZIEL:?}"/*
-cp "$REPO/NOW.md" "$ZIEL/"
-cp -r "$REPO/OPERATIONS" "$ZIEL/"
-cp -r "$REPO/SSOT" "$ZIEL/"
-
-ANZAHL=$(find "$ZIEL" -name '*.md' | wc -l)
-if [ "$ANZAHL" -lt 5 ]; then
-  echo "FEHLER: nur $ANZAHL Dateien uebernommen - Abbruch, Index nicht angefasst" >&2
-  exit 1
-fi
-echo "$ANZAHL Dateien uebernommen"
-
-docker exec openclaw openclaw memory index
-```
-
-Die Prüfung auf mindestens 5 Dateien ist Absicht: ein leerer Kopiervorgang darf nicht dazu führen, dass der Index leergeräumt wird.
-
-- [ ] **Schritt 4: Ausführbar machen und einmal laufen lassen**
+- [ ] **Schritt 4: Einmal laufen lassen** — **[IN CT150]**
 
 ```sh
-ssh anker-pve "pct exec 150 -- chmod +x /usr/local/bin/frawo-wissen-sync.sh"
-ssh anker-pve "pct exec 150 -- /usr/local/bin/frawo-wissen-sync.sh"
+bash /opt/frawo-repo/scripts/frawo-wissen-sync.sh
 ```
 Erwartet: „N Dateien uebernommen" mit N ≥ 40.
 
@@ -212,11 +218,11 @@ openclaw memory status --deep
 ```
 Erwartet: Dateizahl um etwa 42 höher als nach Aufgabe 2.
 
-- [ ] **Schritt 6: Täglich nachziehen**
+- [ ] **Schritt 6: Täglich nachziehen** — **[IN CT150]**
 
-In CT150 als Cron-Eintrag, nachts vor den Sicherungen:
+Cron-Eintrag, nachts vor den Sicherungen. Das Repo-Update steht **vor** dem Skriptaufruf, nicht darin:
 ```
-15 1 * * * /usr/local/bin/frawo-wissen-sync.sh >> /var/log/frawo-wissen-sync.log 2>&1
+15 1 * * * cd /opt/frawo-repo && git fetch --depth 1 origin main -q && git reset --hard origin/main -q && bash scripts/frawo-wissen-sync.sh >> /var/log/frawo-wissen-sync.log 2>&1
 ```
 
 - [ ] **Schritt 7: Prüfen, dass der Eintrag steht**
