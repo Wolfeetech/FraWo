@@ -22,6 +22,7 @@ Wer eine davon nicht kennt, sucht stundenlang am falschen Ende.
 | **beets-Formatzeichen** | `\x1f` wird **wörtlich** ausgegeben, nicht als Trennzeichen | `|` als Trenner |
 | **`pgrep -f <name>`** | matcht den eigenen Befehl mit, wenn der Name darin vorkommt | Ergebnis gegenprüfen, nicht blind vertrauen |
 | **OpenClaw-Node meldet `ETIMEDOUT`** | verdeckt den **eigentlichen** Fehler: der PC meldete sich mit *Passwort* an, das Gateway verlangt *Token* → `token mismatch`, auch bei stehendem Netz | Anmeldung **nur per Token** (`OPENCLAW_GATEWAY_TOKEN`). Erst wenn die Zeitüberschreitung weg ist, sieht man den wahren Grund |
+| **`/dev/sdX` in Anleitungen** | Buchstaben verschieben sich beim Neustart. Hier stand einmal „defekte Platte `/dev/sdc` ausbauen" — `sdc` ist inzwischen die Platte mit **allen Sicherungen** | Platten **nie** über den Buchstaben benennen, immer über Modell + Seriennummer (`lsblk -o NAME,SIZE,MODEL,SERIAL`) |
 
 ⚠️ **Nach direkten Datenbank-Änderungen an AzuraCast immer** `azuracast_cli azuracast:radio:restart 1` — sonst merkt liquidsoap nichts.
 
@@ -136,6 +137,19 @@ Läuft dort, weil die Platte **direkt eingehängt** ist (`/mnt/music`) — nicht
 | VM 210 → Cloud | Google Drive | sonntags | ✅ |
 | Musik → Cloud | Google Drive | stündlich | ✅ |
 
+### Welche Platte ist welche (ProDesk, geprüft 01.08.2026)
+
+Buchstaben verschieben sich — **Seriennummer entscheidet**.
+
+| Gerät | Modell / Seriennummer | Eingebunden | Zustand |
+|---|---|---|---|
+| `sdc` | **WD Elements 1 TB** · `WD-WXD1A47ATEJL` | `/mnt/data_family` — **alle Sicherungen** | ✅ gesund, 0 Fehler |
+| `sdd` | **WD Elements 2 TB** · `WD-WX62E302VF6E` | `/mnt/music_hdd` — Musik | ✅ gesund, 0 Fehler |
+| `sdb` | USB Disk 3.0, 58 GB | `/mnt/sdc-ssd` | in Ordnung |
+| `sda` | **„VendorCo ProductCode", USB `048d:1234`** | **nirgends** | 🔴 **Fälschung — raus damit** |
+
+🔴 **`sda` ist kein Defekt, sondern eine Fälschung.** Controller *Chipsbank CBM2199*, meldet 982 GB, hat real **~64 GB**: bis 60 GB liest sie stabil, ab 65 GB bei jedem Lesen etwas anderes. Alles darüber Geschriebene war nie gespeichert. **Nicht formatieren, nicht wiederverwenden — wegwerfen.** Erkennbar als das einzige Gerät, das **kein** „WD Elements" ist.
+
 **Backup-TÜV** (`frawo-backup-tuev.sh`, 08:00) prüft **11 Ergebnisse**, nicht Vorgänge: Ist eine Datei da, ist sie gross genug, jung genug — **und lesbar**? Genau dieser blinde Fleck hatte den wochenlangen Ausfall möglich gemacht.
 
 **Wiederherstellungstest** sonntags 09:00: spielt die Odoo-Sicherung in eine Wegwerf-Datenbank und vergleicht Zeile für Zeile.
@@ -171,7 +185,7 @@ Notfall ohne Netz: an der Konsole `pve-firewall stop`.
 | Was | Wer | Odoo |
 |---|---|---|
 | Passwörter rotieren (Klartext-Fund im Netz **und** im öffentlichen Repo) | Wolf | #815 |
-| Defekte USB-Platte ausbauen (`/dev/sdc`, liefert bei jedem Lesen andere Daten) | Wolf | #881 |
+| **Gefälschten USB-Stick entsorgen** — meldet 982 GB, hat real **64 GB** (siehe unten) | Wolf | #881 |
 | EGS-Nachverhandlung: 12 kW genehmigt, WP braucht 13–14 kW | Wolf | #885 |
 | Punkte, die nur Wolf erledigen kann | Wolf | #886 |
 | CT130 ist der einzige privilegierte Container | geplant | #887 |
