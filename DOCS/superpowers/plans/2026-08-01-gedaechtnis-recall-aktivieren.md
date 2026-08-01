@@ -10,6 +10,23 @@
 
 ---
 
+## ✅ Ausgeführt in der Nacht 31.07. → 01.08.2026 — Ergebnis
+
+| Aufgabe | Ergebnis |
+|---|---|
+| 1 · Sicherung + Ausgangswert | ✅ |
+| 2 · Sitzungsverlauf | 🔴 **gescheitert** — 6 h Laufzeit, 373 CPU-Minuten, **0 von 582 Dateien**, Einbettungs-Cache unverändert. Zurückgesetzt, kein Schaden. Odoo #899 |
+| 3 · FraWo-Livedokumente | ✅ **15 → 57 Dateien, 57 → 267 Abschnitte**, täglicher Abgleich per `/etc/cron.d/frawo-wissen-sync` |
+| 4 · Trefferqualität | ✅ echte Treffer **0,63–0,66**, Gegenprobe **0,37** — klarer Abstand, brauchbare Schwelle ≈ 0,50 |
+| 5 · Active Memory | ⏸ **bewusst nicht ausgeführt** — kostet pro Antwort einen Modellaufruf, Abnahme braucht einen Menschen |
+| 6 · Kosten + Sicherheit | ⏸ entfällt vorerst: ohne indexierte Sitzungen wurden keine alten Zugangsdaten durchsuchbar |
+
+**Aufgabe 2 bleibt offen.** Nächster Versuch nicht mit allen 1.105 Sitzungen, sondern mit wenigen Wochen Material — und erst, nachdem die Ursache des Leerlaufs verstanden ist.
+
+---
+
+---
+
 ## Ausgangslage (am 01.08.2026 gemessen, nicht geschätzt)
 
 | Was | Zustand |
