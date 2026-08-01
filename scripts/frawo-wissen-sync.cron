@@ -1,0 +1,9 @@
+# Taeglicher Abgleich der FraWo-Livedokumente ins Agenten-Gedaechtnis (CT150).
+# Nach /etc/cron.d/frawo-wissen-sync kopieren (OHNE Endung, sonst ignoriert cron die Datei).
+#
+# 01:15 - vor den naechtlichen Sicherungen, nach dem Nachtmodus-Beginn.
+# Das Repo-Update steht VOR dem Skriptaufruf: sonst wuerde sich das Skript
+# waehrend der eigenen Ausfuehrung ueberschreiben.
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+15 1 * * * root cd /opt/frawo-repo && git fetch --depth 1 origin main -q && git reset --hard origin/main -q && bash scripts/frawo-wissen-sync.sh >> /var/log/frawo-wissen-sync.log 2>&1
