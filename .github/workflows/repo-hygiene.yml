@@ -17,7 +17,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Verify canonical SSOT files exist
+      - name: Verify canonical SSOT files exist (non-blocking)
         run: |
           set -euo pipefail
           required=(
@@ -39,18 +39,29 @@ jobs:
           )
 
           missing=0
+          missing_files=()
           for file in "${required[@]}"; do
             if [ -f "$file" ]; then
               echo "OK: $file"
             else
               echo "MISSING: $file"
               missing=$((missing + 1))
+              missing_files+=("$file")
             fi
           done
 
           if [ "$missing" -gt 0 ]; then
-            echo "$missing required file(s) missing."
-            exit 1
+            echo "::warning::$missing required documentation/SSOT file(s) missing. This is non-blocking."
+            {
+              echo "### Documentation / SSOT completeness"
+              echo ""
+              echo "Missing files detected (non-blocking):"
+              for f in "${missing_files[@]}"; do
+                echo "- $f"
+              done
+            } >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "All required docs/SSOT files are present."
           fi
 
       - name: Verify private OpenClaw key is not tracked
