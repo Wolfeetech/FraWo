@@ -51,13 +51,40 @@ Wer eine davon nicht kennt, sucht stundenlang am falschen Ende.
 | CT140 | frawotech-web | `10.1.0.112` | **Odoo 19** → `frawo.tech` |
 | CT150 | monitoring-stack | `10.1.0.35` · TS `100.100.115.80` | Prometheus, Grafana, Alertmanager |
 | VM210 | azuracast-vm | `10.1.0.38` | **Radio** → `funk.frawo.tech` |
-| VM360 | homeassistant-eltern | `10.1.0.40` | Home Assistant Testkunden |
+| VM360 | homeassistant-eltern | `10.1.0.248` | Home Assistant Testkunden (Eltern) — **IP hier korrigiert 04.08.2026, stand fälschlich auf `.40`** |
+
+Zum Vergleich: `10.1.0.40` ist ein **anderes** haos (VM210 **auf proxmox-anker**, nicht ProDesk) — nicht verwechseln, zwei getrennte Home-Assistant-Instanzen.
 
 ### Anker
 
 CT130 `radio-node` (`10.1.0.200`) — **einziger privilegierter Container von 13** (Odoo #887). Betreibt Docker: Radio-Backend, PostgreSQL, Redis, **uptime-kuma** (`:3001`, zweites Überwachungssystem → Odoo #888). VM240 = **PBS-FraWo** (`10.1.0.7`).
 
 CT150 `openclaw` (`10.1.0.31` · TS `100.72.154.15`) — **das einzige OpenClaw-Gateway**, Docker, Port 19000, Anmeldung per **Token**. Übersteht einen Neustart (CT `onboot`, Docker aktiviert, Container `unless-stopped`). Arbeitsplätze verbinden sich als **Node** dorthin — auf dem StudioPC die Aufgabe „OpenClaw Node" (`.openclaw\node.cmd`, wartet auf Tailscale, startet sich selbst neu, Protokoll in `.openclaw\logs\node-host.log`). Ein **zweites** Gateway auf dem StudioPC gehört nicht dorthin und kann gar nicht starten (Odoo #893).
+
+---
+
+## 🏠 Alopri-Anbindung (Eltern, Stockenweiler) — neu 04.08.2026
+
+Standort-Kopplung zwischen Rothkreuz und dem **Heimnetz der Eltern** (Fritzbox, `192.168.178.0/24`, WLAN "alopriwlan" — **nicht** dasselbe Netz wie der Flo-verwaltete ESXi/`frawo-docker-1` unter `10.30.8.0/24`, siehe Stockenweiler-Uplink-Notiz weiter unten).
+
+**Aufbau:** WireGuard-Site-to-Site auf **CT106** (`10.1.0.239`), zweites Interface `wg1` neben dem bestehenden `wg0` (StudioPC-Fernzugang, unverändert). `wg1` **wählt sich aktiv nach draußen** zur MyFRITZ-Adresse der Eltern-Fritzbox (`yourparty.tech:59156`) — **keine neue Portweiterleitung am Rothkreuz-Gateway nötig**, passt zur bestehenden Regel „keine Portweiterleitung, alles von innen aufgebaut". Grund: das Rothkreuz-Gateway hängt hinter einer weiteren Vodafone-Box (Doppel-NAT, WAN-IP ist selbst schon `192.168.2.x`) — von dort wäre Port-Forwarding ohnehin brüchig gewesen.
+
+Route `192.168.178.0/24` → nächster Sprung `10.1.0.239` liegt als statische Route auf dem UCG.
+
+**Freigegeben (Least Privilege, in `wg1.conf` PostUp/PostDown, CT106):**
+| Von | Nach | Zweck |
+|---|---|---|
+| `10.1.0.248` (HA-Eltern) | ganzes `192.168.178.0/24` | Smart-Home-Steuerung, volle Sicht |
+| `192.168.178.153` (Drucker) | `10.1.0.94:445` (Fileserver SMB) | Scan-Ablage, nur dieser eine Port |
+| ganzes `192.168.178.0/24` | `10.1.0.239:22` | Wolfs persönlicher Admin-Sprungbrett-Zugang (Standard-INPUT-Policy ist ACCEPT, kein neues Loch) |
+
+Alles andere zwischen den Netzen: **DROP** (Catch-all am Ende der `wg1`-Regeln).
+
+**Scan-Ablage** (CT120 Fileserver, Samba-Freigabe `[scans]`, Pfad `/mnt/music/Scans`, existierte als leere Hülle schon vorher): Unterordner `Alois/`, `Heidi/`, `Franz/`, `Wolfgang/` angelegt. Eigener Samba-Nutzer `scanner` (nur Schreibrecht auf `[scans]`, sonst nirgends) — **Passwort liegt NICHT hier im Repo**, muss noch nach Vaultwarden (siehe Offen-Tabelle, analog #815-Konvention).
+
+**Gefundene Geräte im Alopri-Netz (Stand 04.08.2026, per Scan über den Tunnel):** 1 Drucker (`.153`), 15× Shelly-Schalter/Steckdosen (`.61 .62 .64 .65 .72 .73 .78 .152 .171 .178 .189 .191 .193 .195 .198`), 3× Cast-fähige Geräte (`.161 .167 .170`), 1× HPE-Instant-On-Switch/AP (`.184`). Rest (`.119 .182 .185 .192 .173 .199 .214`) unklassifiziert (vermutlich Telefone/Tablets ohne eigenen Dienst).
+
+⚠️ **Offen:** Scan → Paperless-Weiterleitung (automatische Dokumentenerkennung) fehlt noch — der Paperless-Host in Stockenweiler (früher `frawo-docker-1`, `100.94.32.41`) antwortet seit ~48 Tagen nicht (Tailscale offline), unabhängig von dieser Anbindung. Bis geklärt landen Scans nur als Dateien in den Ordnern.
 
 ---
 
@@ -192,6 +219,10 @@ Notfall ohne Netz: an der Konsole `pve-firewall stop`.
 | uptime-kuma: aufräumen oder abschalten | Entscheidung | #888 |
 | Jingles / Station-IDs einsprechen | Wolf | — |
 | Tags in die Dateien schreiben (~7.400 Dateien, entsprechender Cloud-Upload) | Entscheidung | — |
+| Feste IP (DHCP-Reservierung) für Alopri-Drucker `.153` auf der Fritzbox | Wolf | — |
+| Alopri-Smart-Geräte (15 Shelly, 3 Cast) innerhalb Home-Assistant hinzufügen (Netzwerk-Weg steht, fehlt nur noch in der HA-Oberfläche) | Wolf | — |
+| Scanner-SMB-Passwort (CT120) nach Vaultwarden übertragen, nicht nur auf dem Drucker gespeichert | Wolf | — |
+| Paperless-Host Stockenweiler (`frawo-docker-1`) seit ~48 Tagen offline — prüfen ob gewollt/bekannt | Wolf | — |
 
 ---
 
