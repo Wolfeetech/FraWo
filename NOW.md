@@ -48,6 +48,7 @@ Wer eine davon nicht kennt, sucht stundenlang am falschen Ende.
 | CT108 | vaultwarden | `10.1.0.95` | Passwortsafe → `vault.frawo.tech` |
 | CT110 | n8n | `10.1.0.100` | Automatisierung |
 | CT120 | fileserver | `10.1.0.94` | Samba **und Musikverwaltung (beets)** |
+| CT121 | paperless | `10.1.0.145` | **Paperless-ngx** (Dokumente), neu 05.08.2026 — ersetzt das alte, endgültig abgeschaltete Paperless auf Flos `frawo-docker-1` |
 | CT140 | frawotech-web | `10.1.0.112` | **Odoo 19** → `frawo.tech` |
 | CT150 | monitoring-stack | `10.1.0.35` · TS `100.100.115.80` | Prometheus, Grafana, Alertmanager |
 | VM210 | azuracast-vm | `10.1.0.38` | **Radio** → `funk.frawo.tech` |
@@ -84,7 +85,7 @@ Alles andere zwischen den Netzen: **DROP** (Catch-all am Ende der `wg1`-Regeln).
 
 **Gefundene Geräte im Alopri-Netz (Stand 04.08.2026, per Scan über den Tunnel):** 1 Drucker (`.153`), 15× Shelly-Schalter/Steckdosen (`.61 .62 .64 .65 .72 .73 .78 .152 .171 .178 .189 .191 .193 .195 .198`), 3× Cast-fähige Geräte (`.161 .167 .170`), 1× HPE-Instant-On-Switch/AP (`.184`). Rest (`.119 .182 .185 .192 .173 .199 .214`) unklassifiziert (vermutlich Telefone/Tablets ohne eigenen Dienst).
 
-⚠️ **Offen:** Scan → Paperless-Weiterleitung (automatische Dokumentenerkennung) fehlt noch. Der alte Paperless-Host (`frawo-docker-1`, Flo-Hardware) ist **endgültig abgeschaltet** (Wolf bestätigt 05.08.2026) — Paperless müsste komplett neu auf eigener Hardware aufgesetzt werden, falls noch gewünscht. Bis dahin landen Scans nur als Dateien in den Ordnern, unabhängig von dieser Anbindung hier.
+✅ **Scan → Paperless steht** (05.08.2026): neues Paperless-ngx auf **CT121** (`10.1.0.145:8123`, ProDesk), da der alte Paperless-Host (`frawo-docker-1`, Flo-Hardware) **endgültig abgeschaltet** ist (Wolf bestätigt). Konsum-Ordner ist der Host-CIFS-Mount `/mnt/paperless_scans` (Bind-Mount `/mnt/scans` in CT121, da unprivilegierte LXC-Container CIFS nicht selbst mounten dürfen — Muster wie beim Fileserver-Mount selbst). `PAPERLESS_CONSUMER_SUBDIRS_AS_TAGS=true` — die Familienordner (Alois/Heidi/Franz/Wolfgang) werden automatisch zu Tags. In den nächtlichen PBS-Job (04:00, `pbs-frawo`) aufgenommen.
 
 ---
 
@@ -221,8 +222,8 @@ Notfall ohne Netz: an der Konsole `pve-firewall stop`.
 | Tags in die Dateien schreiben (~7.400 Dateien, entsprechender Cloud-Upload) | Entscheidung | — |
 | Feste IP (DHCP-Reservierung) für Alopri-Drucker `.153` auf der Fritzbox | Wolf | — |
 | Alopri-Smart-Geräte (15 Shelly, 3 Cast) innerhalb Home-Assistant hinzufügen (Netzwerk-Weg steht, fehlt nur noch in der HA-Oberfläche) | Wolf | — |
-| Scanner-SMB-Passwort (CT120) nach Vaultwarden übertragen, nicht nur auf dem Drucker gespeichert | Wolf | — |
-| **Flos Server ("frawo-docker-1") ist endgültig weg** (Wolf bestätigt 05.08.2026) — Paperless, Nextcloud, lokale AzuraCast, n8n-Alt, ollama, qdrant liefen dort. Was noch gebraucht wird, muss neu auf eigener Hardware (ProDesk/Anker) aufgesetzt werden. Paperless-Neuaufsetzen für die Scan-Ablage: Bedarf klären | Wolf | — |
+| Scanner-SMB-Passwort (CT120) und Paperless-Admin-Login (CT121, Nutzer `wolf`) nach Vaultwarden übertragen, aktuell nur in `/root/paperless_admin_pw.txt` auf CT121 | Wolf | — |
+| **Flos Server ("frawo-docker-1") ist endgültig weg** (Wolf bestätigt 05.08.2026) — Paperless ist neu aufgesetzt (CT121, siehe oben). Nextcloud, lokale AzuraCast, n8n-Alt, ollama, qdrant liefen dort ebenfalls — Bedarf für Neuaufsetzen jeweils einzeln klären | Wolf | — |
 
 ---
 
