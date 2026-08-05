@@ -4,8 +4,8 @@
   "scope": "Alopri-Netz-Scan 04.08.2026, nur Eltern-Geraete fuer homeassistant_stocki",
   "source_now_md_section": "Alopri-Anbindung (Eltern, Stockenweiler)",
   "devices": [
-    { "ip": "192.168.178.61",  "assumed_type": "shelly", "ha_device_id": "", "shelly_cloud_name": "", "party": "", "ha_area": "", "ha_label": "", "status": "pending" },
-    { "ip": "192.168.178.62",  "assumed_type": "shelly", "ha_device_id": "", "shelly_cloud_name": "", "party": "", "ha_area": "", "ha_label": "", "status": "pending" },
+    { "ip": "192.168.178.61",  "assumed_type": "shelly", "ha_device_id": "", "shelly_cloud_name": "", "party": "", "ha_area": "", "ha_label": "", "status": "already_configured" },
+    { "ip": "192.168.178.62",  "assumed_type": "shelly", "ha_device_id": "", "shelly_cloud_name": "", "party": "", "ha_area": "", "ha_label": "", "status": "already_configured" },
     { "ip": "192.168.178.64",  "assumed_type": "shelly", "ha_device_id": "", "shelly_cloud_name": "", "party": "", "ha_area": "", "ha_label": "", "status": "pending" },
     { "ip": "192.168.178.65",  "assumed_type": "shelly", "ha_device_id": "", "shelly_cloud_name": "", "party": "", "ha_area": "", "ha_label": "", "status": "pending" },
     { "ip": "192.168.178.72",  "assumed_type": "shelly", "ha_device_id": "", "shelly_cloud_name": "", "party": "", "ha_area": "", "ha_label": "", "status": "pending" },
