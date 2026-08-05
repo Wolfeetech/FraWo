@@ -84,7 +84,7 @@ Alles andere zwischen den Netzen: **DROP** (Catch-all am Ende der `wg1`-Regeln).
 
 **Gefundene Geräte im Alopri-Netz (Stand 04.08.2026, per Scan über den Tunnel):** 1 Drucker (`.153`), 15× Shelly-Schalter/Steckdosen (`.61 .62 .64 .65 .72 .73 .78 .152 .171 .178 .189 .191 .193 .195 .198`), 3× Cast-fähige Geräte (`.161 .167 .170`), 1× HPE-Instant-On-Switch/AP (`.184`). Rest (`.119 .182 .185 .192 .173 .199 .214`) unklassifiziert (vermutlich Telefone/Tablets ohne eigenen Dienst).
 
-⚠️ **Offen:** Scan → Paperless-Weiterleitung (automatische Dokumentenerkennung) fehlt noch — der Paperless-Host in Stockenweiler (früher `frawo-docker-1`, `100.94.32.41`) antwortet seit ~48 Tagen nicht (Tailscale offline), unabhängig von dieser Anbindung. Bis geklärt landen Scans nur als Dateien in den Ordnern.
+⚠️ **Offen:** Scan → Paperless-Weiterleitung (automatische Dokumentenerkennung) fehlt noch. Der alte Paperless-Host (`frawo-docker-1`, Flo-Hardware) ist **endgültig abgeschaltet** (Wolf bestätigt 05.08.2026) — Paperless müsste komplett neu auf eigener Hardware aufgesetzt werden, falls noch gewünscht. Bis dahin landen Scans nur als Dateien in den Ordnern, unabhängig von dieser Anbindung hier.
 
 ---
 
@@ -222,7 +222,7 @@ Notfall ohne Netz: an der Konsole `pve-firewall stop`.
 | Feste IP (DHCP-Reservierung) für Alopri-Drucker `.153` auf der Fritzbox | Wolf | — |
 | Alopri-Smart-Geräte (15 Shelly, 3 Cast) innerhalb Home-Assistant hinzufügen (Netzwerk-Weg steht, fehlt nur noch in der HA-Oberfläche) | Wolf | — |
 | Scanner-SMB-Passwort (CT120) nach Vaultwarden übertragen, nicht nur auf dem Drucker gespeichert | Wolf | — |
-| Paperless-Host Stockenweiler (`frawo-docker-1`) seit ~48 Tagen offline — prüfen ob gewollt/bekannt | Wolf | — |
+| **Flos Server ("frawo-docker-1") ist endgültig weg** (Wolf bestätigt 05.08.2026) — Paperless, Nextcloud, lokale AzuraCast, n8n-Alt, ollama, qdrant liefen dort. Was noch gebraucht wird, muss neu auf eigener Hardware (ProDesk/Anker) aufgesetzt werden. Paperless-Neuaufsetzen für die Scan-Ablage: Bedarf klären | Wolf | — |
 
 ---
 
