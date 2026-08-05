@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "site_name": "Stockenweiler",
+  "scope": "Alopri-Netz-Scan 04.08.2026, nur Eltern-Geraete fuer homeassistant_stocki",
+  "source_now_md_section": "Alopri-Anbindung (Eltern, Stockenweiler)",
+  "devices": [
+    { "ip": "192.168.178.61",  "assumed_type": "shelly", "ha_device_id": "", "shelly_cloud_name": "", "party": "", "ha_area": "", "ha_label": "", "status": "pending" },
+    { "ip": "192.168.178.62",  "assumed_type": "shelly", "ha_device_id": "", "shelly_cloud_name": "", "party": "", "ha_area": "", "ha_label": "", "status": "pending" },
+    { "ip": "192.168.178.64",  "assumed_type": "shelly", "ha_device_id": "", "shelly_cloud_name": "", "party": "", "ha_area": "", "ha_label": "", "status": "pending" },
+    { "ip": "192.168.178.65",  "assumed_type": "shelly", "ha_device_id": "", "shelly_cloud_name": "", "party": "", "ha_area": "", "ha_label": "", "status": "pending" },
+    { "ip": "192.168.178.72",  "assumed_type": "shelly", "ha_device_id": "", "shelly_cloud_name": "", "party": "", "ha_area": "", "ha_label": "", "status": "pending" },
+    { "ip": "192.168.178.73",  "assumed_type": "shelly", "ha_device_id": "", "shelly_cloud_name": "", "party": "", "ha_area": "", "ha_label": "", "status": "pending" },
+    { "ip": "192.168.178.78",  "assumed_type": "shelly", "ha_device_id": "", "shelly_cloud_name": "", "party": "", "ha_area": "", "ha_label": "", "status": "pending" },
+    { "ip": "192.168.178.152", "assumed_type": "shelly", "ha_device_id": "", "shelly_cloud_name": "", "party": "", "ha_area": "", "ha_label": "", "status": "pending" },
+    { "ip": "192.168.178.171", "assumed_type": "shelly", "ha_device_id": "", "shelly_cloud_name": "", "party": "", "ha_area": "", "ha_label": "", "status": "pending" },
+    { "ip": "192.168.178.178", "assumed_type": "shelly", "ha_device_id": "", "shelly_cloud_name": "", "party": "", "ha_area": "", "ha_label": "", "status": "pending" },
+    { "ip": "192.168.178.189", "assumed_type": "shelly", "ha_device_id": "", "shelly_cloud_name": "", "party": "", "ha_area": "", "ha_label": "", "status": "pending" },
+    { "ip": "192.168.178.191", "assumed_type": "shelly", "ha_device_id": "", "shelly_cloud_name": "", "party": "", "ha_area": "", "ha_label": "", "status": "pending" },
+    { "ip": "192.168.178.193", "assumed_type": "shelly", "ha_device_id": "", "shelly_cloud_name": "", "party": "", "ha_area": "", "ha_label": "", "status": "pending" },
+    { "ip": "192.168.178.195", "assumed_type": "shelly", "ha_device_id": "", "shelly_cloud_name": "", "party": "", "ha_area": "", "ha_label": "", "status": "pending" },
+    { "ip": "192.168.178.198", "assumed_type": "shelly", "ha_device_id": "", "shelly_cloud_name": "", "party": "", "ha_area": "", "ha_label": "", "status": "pending" },
+    { "ip": "192.168.178.161", "assumed_type": "cast",   "ha_device_id": "", "shelly_cloud_name": "", "party": "", "ha_area": "", "ha_label": "", "status": "pending" },
+    { "ip": "192.168.178.167", "assumed_type": "cast",   "ha_device_id": "", "shelly_cloud_name": "", "party": "", "ha_area": "", "ha_label": "", "status": "pending" },
+    { "ip": "192.168.178.170", "assumed_type": "cast",   "ha_device_id": "", "shelly_cloud_name": "", "party": "", "ha_area": "", "ha_label": "", "status": "pending" }
+  ]
+}
