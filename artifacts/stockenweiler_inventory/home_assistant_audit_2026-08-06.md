@@ -98,3 +98,18 @@ Wolf geht das mit Claude "Schritt für Schritt" durch — Reihenfolge noch offen
 Ueber die neu verbundene UniFi-Integration sichtbar: 3 Geraete sind tatsaechlich schon im Anker/Rothkreuz-Netz aktiv (nicht mehr in Alopri): BLU-Gateway (shellyblugwg3-34cdb07897c8), shellyoutdoorsg3-e4b063d5661c, shellyplugsg3-8cbfea968024 (MAC 8c:bf:ea:96:80:24). Deren alte, tote Alopri-seitige FRITZ!Box-Tools-Eintraege in dieser Instanz wurden deaktiviert. Die echten, aktiven Geraete-Eintraege laufen jetzt korrekt ueber UniFi auf der Anker-Seite.
 
 FRITZ!Repeater 3000 (Host 192.168.178.187) zeigt sich NICHT im Anker-Netz - vermutlich weiterhin in Alopri, dort aber offline (kein Standortwechsel, echtes Erreichbarkeitsproblem).
+
+## Update 2026-08-06 (Abend): Kiosk-Dashboard + Energie-Grundlage
+
+- Neues Dashboard "Eltern" (`/eltern-kiosk/zuhause`) erstellt, zeigt ausschliesslich die 4 Eltern-Bereiche (Buero_Eltern, Buero_Controlroom_Eltern, Wohnkueche_Eltern, Garten) - keine Container/ELW/Lotti-Daten sichtbar. Fuer nicht-Admin-Nutzer freigegeben (require_admin: false).
+- Neue Nutzer "Alois" und "Heide" angelegt (nicht-Admin, nur lokaler Netzwerkzugriff) - Passwoerter muss Wolf selbst setzen (Dialog dafuer wurde vorbereitet).
+- Label "lotti" angelegt und auf ihre 4 Shelly-Pro-4PM-Kanaele (Herd, Kueche, Wohnung, Kueche/Zentral) angewendet, analog zum Label "container" von vorhin.
+- Naechster konkreter Schritt fuer Task "Energie-Split": 3 Template-Sensoren (Familie Prinz / Lotti / Container) auf Basis der jetzt vorhandenen Labels bauen, je einen Utility-Meter-Helfer fuer Monatsauswertung, dann Dashboard-Kachel. Noch nicht umgesetzt, nur vorbereitet.
+
+## Offene Punkte, die nur Wolf erledigen kann (Stand 06.08.2026 Abend)
+
+- FRITZ!Repeater 600 Passwort (401-Fehler)
+- FRITZ!Repeater 3000 Standort/Hardware pruefen (Host unerreichbar)
+- Home-Assistant-Passwoerter fuer "Alois" und "Heide" setzen (Dialog vorbereitet)
+- Paperless-Passwoerter fuer heidi/alois/luis setzen (Kommando siehe Chat-Verlauf)
+- CT121-Zweitinstanz (leeres Paperless) - loeschen oder migrieren, Entscheidung offen
