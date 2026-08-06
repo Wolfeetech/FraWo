@@ -77,3 +77,18 @@ Zusätzlich unter "Entdeckt" (noch nie eingerichtet): ein zweiter, neuer FRITZ!R
 ## Nächster Schritt
 
 Wolf geht das mit Claude "Schritt für Schritt" durch — Reihenfolge noch offen, Vorschlag: (1) Bereichs-Zuordnung + Umbenennung der oben gelisteten Lücken, (2) Container/Studio/Server-Migrationsentscheidung, (3) kaputte Integrationen einzeln (teils braucht es Wolfs Passwort-Eingabe).
+
+---
+
+## Update 2026-08-06 (Nachmittag): Aufraeumen abgeschlossen
+
+- UniFi/UCG erfolgreich verbunden (Host 10.1.0.1, SSL-Verifikation aus).
+- Raw-benannte Geraete final identifiziert: shellyplugsg3-e4b063e5ec38 (Buero_Eltern) = "Mutters Zusatzheizung".
+- Kuechenlicht RGBW2 und BLU-Gateway (beide dauerhaft offline, vermutlich nach Rothkreuz umgezogen) deaktiviert statt geloescht (Integration "FRITZ!Box Tools" unterstuetzt kein Einzel-Loeschen von Geraeten per API).
+- Balkonkraftwerk-Klaerung: "BKW Stockenweiler" (Garten, Growatt+Speicher) und "Balkonkraftwerk" (Container-4PM-Kanal) sind zwei echte, verschiedene Anlagen (Eltern vs. Container/Lotti) - keine Dopplung, beide bleiben.
+- Integrations-Fehler von 7 auf 3 reduziert:
+  - Growatt Server + Brother-Drucker (direkt) haben sich selbst erholt (waren vorruebergehende Fehler).
+  - fritz.box (Duplikat, XML-Parse-Bug in pyfritzhome) entfernt - echte Funktion laeuft ueber den separaten, funktionierenden Eintrag "FRITZ!Box 5690 Pro".
+  - Brother-ueber-Mac-IPP (redundant zum direkten Drucker-Eintrag) entfernt.
+  - 2x kaputte UPnP-Discovery-Eintraege (nie erfolgreich) entfernt.
+  - Verbleibend: Google Home (nie eingerichtet), FRITZ!Repeater 3000 (Host 192.168.178.187 nicht erreichbar), FRITZ!Repeater 600 (401, Passwort noetig - Wolf).
