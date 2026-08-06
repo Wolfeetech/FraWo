@@ -123,3 +123,14 @@ FRITZ!Repeater 3000 (Host 192.168.178.187) zeigt sich NICHT im Anker-Netz - verm
   - Beide liefern plausible kumulierte kWh-Werte, jetzt auch als Kachel im Eltern-Kiosk-Dashboard sichtbar.
 - **Lotti bewusst ausgelassen:** ihre Kanal-Sensor-Namen sind uneinheitlich (Mix aus alter/neuer Shelly-Firmware-Namenskonvention), zusammenrechnen haette Risiko von Doppelzaehlung/Luecke gehabt. Naechster Schritt: die 6 gefundenen Lotti-Sensoren (sensor.unbekannt_consumed_energy, sensor.kueche_consumed_energy, sensor.whg_steckdosen_consumed_energy, sensor.herd_energie, sensor.kuche_energie, sensor.wohnung_energie) einzeln pruefen, welche das echte kumulierte Total sind (nicht consumed/returned-Teilwerte), bevor ein Gruppen-Sensor gebaut wird.
 - Fuer echte Monats-/Jahresauswertung (nicht nur Lifetime-Summe) waeren noch Utility-Meter-Helfer auf beiden Gruppen-Sensoren sinnvoll - vorbereitet, nicht umgesetzt.
+
+## Update 2026-08-06 (Nacht): Lotti-Sensor auch geloest, Energie-Split komplett
+
+Lotti-Frage geklaert: die 3 "_consumed_energy"-Sensoren existierten gar nicht wirklich (keine Werte, Karteileichen von "Kueche / Zentral"). Die 3 echten, aktiven Lebenszeit-Zaehler sind Herd/Kueche/Wohnung. `sensor.lotti_gesamtverbrauch` erstellt (1.368,56 kWh), alle 3 Partei-Sensoren jetzt im Eltern-Dashboard sichtbar.
+
+**Alle 3 Energie-Split-Sensoren live:**
+- Familie Prinz: 3.006,28 kWh
+- Lotti: 1.368,56 kWh
+- Container: 6.186,52 kWh
+
+Gegenprobe (Lotti + Container = 7.555 kWh) kann Wolf jetzt gegen die naechste Ablesung des analogen ELW-Hauptzaehlers halten.
