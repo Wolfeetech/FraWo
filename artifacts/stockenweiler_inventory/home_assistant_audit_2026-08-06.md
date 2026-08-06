@@ -134,3 +134,14 @@ Lotti-Frage geklaert: die 3 "_consumed_energy"-Sensoren existierten gar nicht wi
 - Container: 6.186,52 kWh
 
 Gegenprobe (Lotti + Container = 7.555 kWh) kann Wolf jetzt gegen die naechste Ablesung des analogen ELW-Hauptzaehlers halten.
+
+## Update 2026-08-06 (spaet Nacht): Monatsauswertung ergaenzt
+
+3 Utility-Meter-Helfer erstellt (monatlicher Reset) auf Basis der 3 Gesamtverbrauchs-Sensoren:
+- sensor.familie_prinz_verbrauch_monat
+- sensor.lotti_verbrauch_monat
+- sensor.container_verbrauch_monat
+
+Zaehlen ab jetzt (nicht rueckwirkend), sichtbar als zweite Kachel "Verbrauch diesen Monat" im Eltern-Dashboard. Damit ist der Energie-Split jetzt vollstaendig: Lebenszeit-Summe UND laufender Monat pro Partei.
+
+**Session-Ende 2026-08-06.** Naechste Schritte siehe Notiz in Odoo-Task "Multi-Tenant HA-Architektur & Kiosk — Testkunde Prinz".
