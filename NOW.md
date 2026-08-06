@@ -78,6 +78,7 @@ Route `192.168.178.0/24` → nächster Sprung `10.1.0.239` liegt als statische R
 | `10.1.0.248` (HA-Eltern) | ganzes `192.168.178.0/24` | Smart-Home-Steuerung, volle Sicht |
 | `192.168.178.153` (Drucker) | `10.1.0.94:445` (Fileserver SMB) | Scan-Ablage, nur dieser eine Port |
 | ganzes `192.168.178.0/24` | `10.1.0.239:22` | Wolfs persönlicher Admin-Sprungbrett-Zugang (Standard-INPUT-Policy ist ACCEPT, kein neues Loch) |
+| ganzes `192.168.178.0/24` | `10.1.0.145:8123` (Paperless CT121) | **Neu 06.08.2026:** Alois soll Dokumente von seinem PC aus erreichen können, nur dieser eine Port |
 
 Alles andere zwischen den Netzen: **DROP** (Catch-all am Ende der `wg1`-Regeln).
 
