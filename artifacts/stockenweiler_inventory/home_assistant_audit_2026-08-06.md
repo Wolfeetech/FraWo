@@ -92,3 +92,9 @@ Wolf geht das mit Claude "Schritt für Schritt" durch — Reihenfolge noch offen
   - Brother-ueber-Mac-IPP (redundant zum direkten Drucker-Eintrag) entfernt.
   - 2x kaputte UPnP-Discovery-Eintraege (nie erfolgreich) entfernt.
   - Verbleibend: Google Home (nie eingerichtet), FRITZ!Repeater 3000 (Host 192.168.178.187 nicht erreichbar), FRITZ!Repeater 600 (401, Passwort noetig - Wolf).
+
+## Update 2026-08-06 (spaeter): Anker-Umzug bestaetigt
+
+Ueber die neu verbundene UniFi-Integration sichtbar: 3 Geraete sind tatsaechlich schon im Anker/Rothkreuz-Netz aktiv (nicht mehr in Alopri): BLU-Gateway (shellyblugwg3-34cdb07897c8), shellyoutdoorsg3-e4b063d5661c, shellyplugsg3-8cbfea968024 (MAC 8c:bf:ea:96:80:24). Deren alte, tote Alopri-seitige FRITZ!Box-Tools-Eintraege in dieser Instanz wurden deaktiviert. Die echten, aktiven Geraete-Eintraege laufen jetzt korrekt ueber UniFi auf der Anker-Seite.
+
+FRITZ!Repeater 3000 (Host 192.168.178.187) zeigt sich NICHT im Anker-Netz - vermutlich weiterhin in Alopri, dort aber offline (kein Standortwechsel, echtes Erreichbarkeitsproblem).
