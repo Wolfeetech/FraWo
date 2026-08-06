@@ -113,3 +113,13 @@ FRITZ!Repeater 3000 (Host 192.168.178.187) zeigt sich NICHT im Anker-Netz - verm
 - Home-Assistant-Passwoerter fuer "Alois" und "Heide" setzen (Dialog vorbereitet)
 - Paperless-Passwoerter fuer heidi/alois/luis setzen (Kommando siehe Chat-Verlauf)
 - CT121-Zweitinstanz (leeres Paperless) - loeschen oder migrieren, Entscheidung offen
+
+## Update 2026-08-06 (spaeter Abend): Energie-Split umgesetzt (Container + Familie Prinz)
+
+- Label "eltern" vervollstaendigt auf alle Geraete in Buero_Eltern/Buero_Controlroom_Eltern/Wohnkueche_Eltern (vorher nur 7 von vielen).
+- 2 Gruppen-Sensoren (Summe, HA-natives "Group"-Helper) erstellt:
+  - `sensor.container_gesamtverbrauch` (4 Kanaele Container-4PM)
+  - `sensor.familie_prinz_gesamtverbrauch` (9 einzeln gemessene Eltern-Geraete inkl. Growatt, Kuehlschraenke, Mutters Zusatzheizung, Sauna Kueche etc.)
+  - Beide liefern plausible kumulierte kWh-Werte, jetzt auch als Kachel im Eltern-Kiosk-Dashboard sichtbar.
+- **Lotti bewusst ausgelassen:** ihre Kanal-Sensor-Namen sind uneinheitlich (Mix aus alter/neuer Shelly-Firmware-Namenskonvention), zusammenrechnen haette Risiko von Doppelzaehlung/Luecke gehabt. Naechster Schritt: die 6 gefundenen Lotti-Sensoren (sensor.unbekannt_consumed_energy, sensor.kueche_consumed_energy, sensor.whg_steckdosen_consumed_energy, sensor.herd_energie, sensor.kuche_energie, sensor.wohnung_energie) einzeln pruefen, welche das echte kumulierte Total sind (nicht consumed/returned-Teilwerte), bevor ein Gruppen-Sensor gebaut wird.
+- Fuer echte Monats-/Jahresauswertung (nicht nur Lifetime-Summe) waeren noch Utility-Meter-Helfer auf beiden Gruppen-Sensoren sinnvoll - vorbereitet, nicht umgesetzt.
