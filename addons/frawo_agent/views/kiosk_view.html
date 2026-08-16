@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>FraWo GbR — Command Center &amp; Anker Tracker</title>
+
+  <!-- Inter ist laut CI v3.0 (SSOT/FRAWO_CI_GUIDELINES.md §3/§6) die einzige Hausschrift -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* CSS Custom Properties 1:1 aus SSOT/FRAWO_CI_GUIDELINES.md §6 übernommen */
+    :root {
+      --fw-bg: #0a0a0a;
+      --fw-surface: #141816;
+      --fw-primary: #004030;
+      --fw-accent: #a050f0;
+      --fw-accent-hover: #9d4edd;
+      --fw-text-main: #e8e8e8;
+      --fw-text-muted: #98a29e;
+      --fw-border: #2a2e2c;
+
+      --fw-font-family: 'Inter', sans-serif;
+      --fw-radius: 0px; /* Strikt kantige Vorgabe, keine Ausnahmen */
+
+      --fw-btn-padding: 0.75rem 1.5rem;
+      --fw-btn-bg: var(--fw-accent);
+      --fw-btn-color: #ffffff;
+      --fw-btn-border: 1px solid transparent;
+      --fw-btn-transition: background-color 0.2s ease;
+
+      --fw-card-bg: var(--fw-surface);
+      --fw-card-border: 1px solid var(--fw-border);
+      --fw-card-padding: 1.5rem;
+      --fw-card-shadow: none;
+
+      --fw-input-bg: var(--fw-bg);
+      --fw-input-border: 1px solid var(--fw-border);
+      --fw-input-color: var(--fw-text-main);
+      --fw-input-focus: 2px solid var(--fw-accent);
+
+      --fw-table-border: 1px solid var(--fw-border);
+      --fw-table-header-bg: var(--fw-primary);
+      --fw-table-header-color: #ffffff;
+
+      /* Statusfarben §2.3 — nur für Dashboards/Badges, nicht als zusätzliche Akzentfarben */
+      --fw-status-online: #2ecc71;
+      --fw-status-alert: #e63946;
+      --fw-status-warn: #f39c12;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--fw-font-family);
+      background: var(--fw-bg);
+      color: var(--fw-text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .app-shell {
+      max-width: 1400px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      flex: 1;
+    }
+
+    /* HEADER BAR — flach, keine Glasoptik, kein Schatten (CI v3.0 §5) */
+    header {
+      background: var(--fw-card-bg);
+      border: var(--fw-card-border);
+      border-radius: var(--fw-radius);
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-logo {
+      width: 44px;
+      height: 44px;
+      background: var(--fw-primary);
+      border-radius: var(--fw-radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      color: #fff;
+    }
+
+    .brand-text h1 {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--fw-text-main);
+      letter-spacing: -0.02em;
+      text-transform: uppercase;
+    }
+
+    .brand-text p {
+      font-size: 0.8rem;
+      color: var(--fw-text-muted);
+      font-weight: 500;
+    }
+
+    /* NAVIGATION TABS */
+    .nav-tabs {
+      display: flex;
+      background: var(--fw-bg);
+      border: var(--fw-card-border);
+      padding: 4px;
+      border-radius: var(--fw-radius);
+      gap: 4px;
+    }
+
+    .nav-btn {
+      background: transparent;
+      border: none;
+      color: var(--fw-text-muted);
+      padding: 10px 20px;
+      border-radius: var(--fw-radius);
+      font-family: var(--fw-font-family);
+      font-weight: 600;
+      font-size: 0.813rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: var(--fw-btn-transition);
+    }
+
+    .nav-btn:hover {
+      color: var(--fw-text-main);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-btn.active {
+      background: var(--fw-accent);
+      color: #ffffff;
+      font-weight: 700;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--fw-bg);
+      border: 1px solid var(--fw-status-online);
+      color: var(--fw-status-online);
+      padding: 6px 14px;
+      border-radius: var(--fw-radius);
+      font-size: 0.813rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--fw-status-online);
+      border-radius: 50%; /* Statusindikator bleibt rund, ist keine UI-Kante im CI-Sinn */
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* MAIN VIEW CONTAINER */
+    .view-content { display: none; flex-direction: column; gap: 20px; }
+    .view-content.active { display: flex; }
+
+    /* CARDS — flach, kein Blur, kein Schatten */
+    .card {
+      background: var(--fw-card-bg);
+      border: var(--fw-card-border);
+      border-radius: var(--fw-radius);
+      padding: var(--fw-card-padding);
+      box-shadow: var(--fw-card-shadow);
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--fw-text-main);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    /* MODUL 1: STRICHLISTE & CONSUMER SELECTOR */
+    .consumer-bar {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      scrollbar-width: none;
+    }
+
+    .consumer-card {
+      background: var(--fw-bg);
+      border: var(--fw-card-border);
+      border-radius: var(--fw-radius);
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: border-color 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .consumer-card:hover { border-color: var(--fw-accent); }
+
+    .consumer-card.active {
+      background: var(--fw-surface);
+      border-color: var(--fw-accent);
+    }
+
+    .avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: var(--fw-radius);
+      background: var(--fw-bg);
+      border: 1px solid var(--fw-accent);
+      color: var(--fw-accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1.1rem;
+    }
+
+    .consumer-info h4 { font-size: 0.95rem; font-weight: 700; color: var(--fw-text-main); }
+    .consumer-info p { font-size: 0.8rem; color: var(--fw-status-online); font-weight: 600; }
+
+    /* KATEGORIE-FILTER */
+    .filter-bar { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+
+    .filter-chip {
+      background: var(--fw-bg);
+      border: var(--fw-card-border);
+      color: var(--fw-text-muted);
+      padding: 8px 16px;
+      border-radius: var(--fw-radius);
+      font-size: 0.813rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      transition: var(--fw-btn-transition);
+    }
+
+    .filter-chip.active { background: var(--fw-accent); color: #ffffff; }
+
+    /* GETRÄNKE-GRID */
+    .drink-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .drink-card {
+      background: var(--fw-bg);
+      border: var(--fw-card-border);
+      border-radius: var(--fw-radius);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      transition: border-color 0.2s ease;
+    }
+
+    .drink-card:hover { border-color: var(--fw-accent); }
+
+    .drink-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: var(--fw-radius);
+      text-transform: uppercase;
+    }
+
+    /* Statusfarben §2.3 nutzen statt frei erfundener Rose/Emerald-Paarung */
+    .drink-badge.alc  { background: var(--fw-bg); color: var(--fw-status-warn);   border: 1px solid var(--fw-status-warn); }
+    .drink-badge.free { background: var(--fw-bg); color: var(--fw-status-online); border: 1px solid var(--fw-status-online); }
+
+    .drink-emoji { font-size: 2.5rem; margin-bottom: 6px; }
+    .drink-brand { font-size: 0.75rem; color: var(--fw-text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+    .drink-name { font-size: 1.05rem; font-weight: 700; color: var(--fw-text-main); margin: 2px 0; }
+    .drink-meta { font-size: 0.8rem; color: var(--fw-text-muted); margin-bottom: 12px; }
+    .drink-price { font-size: 1.1rem; font-weight: 800; color: var(--fw-accent); margin-bottom: 14px; }
+
+    .drink-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; }
+
+    .btn-book {
+      background: var(--fw-accent);
+      border: var(--fw-btn-border);
+      color: #ffffff;
+      padding: 8px 0;
+      border-radius: var(--fw-radius);
+      font-family: var(--fw-font-family);
+      font-weight: 700;
+      font-size: 0.813rem;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: var(--fw-btn-transition);
+    }
+    .btn-book:hover { background: var(--fw-accent-hover); }
+
+    /* Kiste = gleiche Akzentfarbe, nur als Outline statt Füllung (CI: eine Akzentfarbe, keine zweite Hue) */
+    .btn-book.crate {
+      background: transparent;
+      border: 1px solid var(--fw-accent);
+      color: var(--fw-accent);
+    }
+    .btn-book.crate:hover { background: var(--fw-accent); color: #ffffff; }
+
+    /* MODUL 2: ABRECHNUNG & FINANZEN */
+    .settlement-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+    @media (max-width: 900px) { .settlement-grid { grid-template-columns: 1fr; } }
+
+    .table-summary { width: 100%; border-collapse: collapse; margin-top: 10px; }
+
+    .table-summary th {
+      text-align: left;
+      padding: 12px;
+      font-size: 0.75rem;
+      background: var(--fw-table-header-bg);
+      color: var(--fw-table-header-color);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .table-summary td {
+      padding: 14px 12px;
+      border-bottom: var(--fw-table-border);
+      font-size: 0.9rem;
+    }
+
+    .total-box {
+      background: var(--fw-card-bg);
+      border: 1px solid var(--fw-accent);
+      border-radius: var(--fw-radius);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .total-amount { font-size: 2.4rem; font-weight: 800; color: var(--fw-text-main); }
+
+    .btn-settle {
+      background: var(--fw-status-online);
+      border: none;
+      color: #0a0a0a;
+      padding: 16px;
+      border-radius: var(--fw-radius);
+      font-family: var(--fw-font-family);
+      font-weight: 800;
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: filter 0.2s ease;
+    }
+    .btn-settle:hover { filter: brightness(1.1); }
+
+    /* MODUL 3: VERWALTUNG */
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 16px; }
+
+    .form-group label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--fw-text-muted);
+      display: block;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .form-control {
+      width: 100%;
+      background: var(--fw-input-bg);
+      border: var(--fw-input-border);
+      color: var(--fw-input-color);
+      padding: 10px 14px;
+      border-radius: var(--fw-radius);
+      font-family: var(--fw-font-family);
+      font-size: 0.9rem;
+      outline: none;
+    }
+    .form-control:focus { border: var(--fw-input-focus); }
+
+    .btn-add {
+      background: var(--fw-accent);
+      color: #ffffff;
+      border: none;
+      padding: 12px 24px;
+      border-radius: var(--fw-radius);
+      font-family: var(--fw-font-family);
+      font-weight: 700;
+      font-size: 0.813rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+    }
+    .btn-add:hover { background: var(--fw-accent-hover); }
+
+    /* MODUL 4: MEDIA & CLUSTER */
+    .media-grid { display: grid; grid-template-columns: 1.6fr 1fr; gap: 20px; }
+    @media (max-width: 900px) { .media-grid { grid-template-columns: 1fr; } }
+
+    .radio-cover {
+      width: 90px;
+      height: 90px;
+      border-radius: var(--fw-radius);
+      object-fit: cover;
+    }
+
+    /* TOAST */
+    .toast-container { position: fixed; bottom: 24px; right: 24px; display: flex; flex-direction: column; gap: 10px; z-index: 9999; }
+
+    .toast {
+      background: var(--fw-status-online);
+      color: #0a0a0a;
+      padding: 14px 24px;
+      border-radius: var(--fw-radius);
+      font-weight: 700;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .toast-undo-btn {
+      background: #0a0a0a;
+      color: #ffffff;
+      border: none;
+      padding: 6px 14px;
+      border-radius: var(--fw-radius);
+      font-family: var(--fw-font-family);
+      font-weight: 700;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .toast-undo-btn:hover { background: var(--fw-accent); }
+  </style>
+</head>
+<body>
+
+<div class="app-shell">
+
+  <!-- HEADER -->
+  <header>
+    <div class="brand">
+      <div class="brand-logo">🤖</div>
+      <div class="brand-text">
+        <h1>FraWo GbR Command Center</h1>
+        <p>Anker Tracker &amp; Studio Operations</p>
+      </div>
+    </div>
+
+    <!-- NAV TABS -->
+    <div class="nav-tabs">
+      <button class="nav-btn active" id="tab-btn-tracker" onclick="switchTab('tracker')">
+        🍺 <span>Strichliste</span>
+      </button>
+      <button class="nav-btn" id="tab-btn-settlement" onclick="switchTab('settlement')">
+        📊 <span>Abrechnung</span>
+      </button>
+      <button class="nav-btn" id="tab-btn-manage" onclick="switchTab('manage')">
+        ⚙️ <span>Verwaltung</span>
+      </button>
+      <button class="nav-btn" id="tab-btn-media" onclick="switchTab('media')">
+        📻 <span>Studio Media</span>
+      </button>
+    </div>
+
+    <div class="header-right">
+      <div class="status-pill">
+        <span class="status-dot"></span> Live
+      </div>
+    </div>
+  </header>
+
+  <!-- MODUL 1: STRICHLISTE & BUCHUNG -->
+  <div class="view-content active" id="view-tracker">
+    <div class="card">
+      <div class="card-title">👤 Person auswählen (Wer trinkt?)</div>
+      <div class="consumer-bar" id="consumer-bar"></div>
+    </div>
+
+    <div class="card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
+        <div class="card-title" style="margin-bottom: 0;">🍺 Getränk buchen</div>
+        <div class="filter-bar">
+          <button class="filter-chip active" onclick="filterCategory('all', this)">Alle</button>
+          <button class="filter-chip" onclick="filterCategory('alc', this)">🍺 Bier &amp; Wein</button>
+          <button class="filter-chip" onclick="filterCategory('free', this)">🥤 Softdrinks</button>
+        </div>
+      </div>
+      <div class="drink-grid" id="drink-grid"></div>
+    </div>
+  </div>
+
+  <!-- MODUL 2: ABRECHNUNG & FINANZEN -->
+  <div class="view-content" id="view-settlement">
+    <div class="settlement-grid">
+      <div class="card">
+        <div class="card-title">📊 Offene Posten &amp; Pfand-Übersicht</div>
+        <table class="table-summary">
+          <thead>
+            <tr><th>Person</th><th>Flaschen</th><th>Getränke (€)</th><th>Pfand (€)</th><th>Gesamt (€)</th></tr>
+          </thead>
+          <tbody id="settlement-table-body"></tbody>
+        </table>
+      </div>
+
+      <div class="total-box">
+        <div style="font-size: 0.813rem; font-weight: 700; color: var(--fw-accent); text-transform: uppercase; letter-spacing: 0.03em;">Offener Gesamtbetrag</div>
+        <div class="total-amount" id="grand-total-display">0.00 €</div>
+        <p style="font-size: 0.85rem; color: var(--fw-text-muted);">Enthält Flaschenpfand (0.08€) &amp; Kistenpfand (1.50€).</p>
+        <button class="btn-settle" onclick="executeSettlement()">🖨️ Abrechnen &amp; Drucken</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODUL 3: VERWALTUNG -->
+  <div class="view-content" id="view-manage">
+    <div class="card">
+      <div class="card-title">➕ Neues Getränk hinzufügen</div>
+      <form id="add-product-form" onsubmit="addNewProduct(event)">
+        <div class="form-grid">
+          <div class="form-group"><label>Emoji</label><input type="text" class="form-control" id="p-emoji" value="🍺" required></div>
+          <div class="form-group"><label>Getränke Name</label><input type="text" class="form-control" id="p-name" placeholder="z.B. Augustiner Hell" required></div>
+          <div class="form-group"><label>Hersteller / Brauerei</label><input type="text" class="form-control" id="p-manuf" placeholder="z.B. Augustiner Bräu" required></div>
+          <div class="form-group"><label>Größe (L)</label><input type="number" step="0.01" class="form-control" id="p-vol" value="0.5" required></div>
+          <div class="form-group"><label>Preis / Flasche (€)</label><input type="number" step="0.01" class="form-control" id="p-price" value="1.00" required></div>
+          <div class="form-group"><label>Gebindegröße (Flaschen/Kiste)</label><input type="number" step="1" min="1" class="form-control" id="p-crate" value="20" required></div>
+          <div class="form-group">
+            <label>Typ</label>
+            <select class="form-control" id="p-alc">
+              <option value="true">Alkoholisch (19% MwSt)</option>
+              <option value="false">Alkoholfrei (7% MwSt)</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit" class="btn-add">Hinzufügen</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODUL 4: MEDIA & CLUSTER -->
+  <div class="view-content" id="view-media">
+    <div class="media-grid">
+      <div class="card">
+        <div class="card-title">📻 FraWo Funk Studio Player</div>
+        <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 16px;">
+          <img id="radio-cover" class="radio-cover" src="https://funk.frawo.tech/static/uploads/frawo_funk/album_art.jpg" alt="Cover">
+          <div>
+            <h3 id="radio-title" style="font-size: 1.2rem;">FraWo Funk Stream</h3>
+            <p id="radio-artist" style="color: var(--fw-accent);">Auto-DJ</p>
+          </div>
+        </div>
+        <audio id="radio-player" crossorigin="anonymous"></audio>
+        <button class="btn-settle" style="background: var(--fw-accent); color: #fff;" onclick="toggleRadio()">
+          <span id="radio-play-icon">▶</span> Live Radio starten
+        </button>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🖥️ Telemetrie</div>
+        <div style="font-size: 0.9rem; line-height: 1.8;">
+          <div>Odoo ERP: <span style="color: var(--fw-status-online);">🟢 Online</span></div>
+          <div>AzuraCast: <span style="color: var(--fw-status-online);">🟢 Broadcasting</span></div>
+          <div>Ollama LLM: <span style="color: var(--fw-status-online);">🟢 6.2 tok/s</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast-container" id="toast-container"></div>
+
+<script>
+  let activeConsumerId = null;
+  let activeConsumerName = '';
+  let trackerData = { consumers: [], products: [], consumptions: [] };
+  let currentCategory = 'all';
+
+  function switchTab(tabId) {
+    document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.view-content').forEach(view => view.classList.remove('active'));
+    document.getElementById('tab-btn-' + tabId).classList.add('active');
+    document.getElementById('view-' + tabId).classList.add('active');
+  }
+
+  function showToast(msg, onUndo) {
+    const container = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    const span = document.createElement('span');
+    span.innerHTML = '✅ ' + msg;
+    toast.appendChild(span);
+    if (onUndo) {
+      const undoBtn = document.createElement('button');
+      undoBtn.className = 'toast-undo-btn';
+      undoBtn.textContent = 'Rückgängig';
+      undoBtn.onclick = function () {
+        toast.remove();
+        onUndo();
+      };
+      toast.appendChild(undoBtn);
+    }
+    container.appendChild(toast);
+    setTimeout(() => { toast.remove(); }, onUndo ? 8000 : 3000);
+  }
+
+  async function fetchTrackerData() {
+    try {
+      const res = await fetch('/anker_tracker/get_data', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ jsonrpc: '2.0', method: 'call', params: {} })
+      });
+      const json = await res.json();
+      if (json.result) {
+        trackerData = json.result;
+        renderConsumers();
+        renderDrinks();
+        renderSettlement();
+      }
+    } catch(e) { console.error(e); }
+  }
+
+  function renderConsumers() {
+    const bar = document.getElementById('consumer-bar');
+    bar.innerHTML = '';
+    const consumers = trackerData.consumers || [];
+
+    if (!activeConsumerId && consumers.length > 0) {
+      activeConsumerId = consumers[0].id;
+      activeConsumerName = consumers[0].name;
+    }
+
+    consumers.forEach(c => {
+      const card = document.createElement('div');
+      card.className = 'consumer-card ' + (c.id === activeConsumerId ? 'active' : '');
+      card.onclick = () => {
+        activeConsumerId = c.id;
+        activeConsumerName = c.name;
+        renderConsumers();
+      };
+
+      const initial = c.name ? c.name[0].toUpperCase() : 'P';
+      card.innerHTML = `
+        <div class="avatar">${initial}</div>
+        <div class="consumer-info">
+          <h4>${c.name}</h4>
+          <p>Aktiv</p>
+        </div>
+      `;
+      bar.appendChild(card);
+    });
+  }
+
+  function filterCategory(cat, el) {
+    currentCategory = cat;
+    document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+    if (el) el.classList.add('active');
+    renderDrinks();
+  }
+
+  function renderDrinks() {
+    const grid = document.getElementById('drink-grid');
+    grid.innerHTML = '';
+    let products = trackerData.products || [];
+
+    if (currentCategory === 'alc') products = products.filter(p => p.is_alcoholic);
+    if (currentCategory === 'free') products = products.filter(p => !p.is_alcoholic);
+
+    products.forEach(p => {
+      const card = document.createElement('div');
+      card.className = 'drink-card';
+      const alcBadge = p.is_alcoholic ? '<span class="drink-badge alc">19% MwSt</span>' : '<span class="drink-badge free">7% MwSt</span>';
+
+      card.innerHTML = `
+        ${alcBadge}
+        <div class="drink-emoji">${p.emoji || '🍺'}</div>
+        <div class="drink-brand">${p.manufacturer || ''}</div>
+        <div class="drink-name">${p.name}</div>
+        <div class="drink-meta">${p.volume || 0.5}L &bull; ${p.crate_size || 20}er Kiste</div>
+        <div class="drink-price">${(p.price_per_bottle || 0).toFixed(2)} €</div>
+        <div class="drink-actions">
+          <button class="btn-book" onclick="bookDrink(${p.id}, '${p.name}', 'bottle')">+1 Flasche</button>
+          <button class="btn-book crate" onclick="bookDrink(${p.id}, '${p.name}', 'crate')">📦 Kiste</button>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  async function bookDrink(prodId, prodName, unitType) {
+    if (!activeConsumerId) return alert('Bitte zuerst eine Person auswählen!');
+    try {
+      const res = await fetch('/anker_tracker/consume', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          jsonrpc: '2.0',
+          method: 'call',
+          params: { consumer_id: activeConsumerId, product_id: prodId, unit_type: unitType }
+        })
+      });
+      const json = await res.json();
+      if (json.result && json.result.status === 'success') {
+        const bookingId = json.result.id;
+        showToast((unitType === 'crate' ? '1x Kiste ' : '1x Flasche ') + prodName + ' gebucht!', function () {
+          undoBooking(bookingId);
+        });
+        fetchTrackerData();
+      }
+    } catch(e) { console.error(e); }
+  }
+
+  async function undoBooking(bookingId) {
+    try {
+      const res = await fetch('/anker_tracker/delete_item', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          jsonrpc: '2.0',
+          method: 'call',
+          params: { model_type: 'consumptions', item_id: bookingId }
+        })
+      });
+      const json = await res.json();
+      if (json.result && json.result.status === 'success') {
+        showToast('Buchung rückgängig gemacht.');
+        fetchTrackerData();
+      }
+    } catch(e) { console.error(e); }
+  }
+
+  function renderSettlement() {
+    const tbody = document.getElementById('settlement-table-body');
+    tbody.innerHTML = '';
+    const consumptions = trackerData.consumptions || [];
+    const consumers = trackerData.consumers || [];
+    const products = trackerData.products || [];
+
+    let totalSum = 0;
+
+    consumers.forEach(c => {
+      const userCons = consumptions.filter(cs => cs.consumerId === c.id);
+      if (userCons.length === 0) return;
+
+      let bottleCount = 0;
+      let userSum = 0;
+      let pfandSum = 0;
+
+      userCons.forEach(cs => {
+        const prod = products.find(p => p.id === cs.productId);
+        if (!prod) return;
+        const q = cs.quantity || 1;
+        bottleCount += q;
+        userSum += q * (prod.price_per_bottle || 0);
+        pfandSum += q * (prod.pfand_per_bottle || 0.08);
+      });
+
+      const grandUser = userSum + pfandSum;
+      totalSum += grandUser;
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><b>${c.name}</b></td>
+        <td>${bottleCount} Fl.</td>
+        <td>${userSum.toFixed(2)} €</td>
+        <td>${pfandSum.toFixed(2)} €</td>
+        <td><b style="color: var(--fw-accent);">${grandUser.toFixed(2)} €</b></td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    document.getElementById('grand-total-display').textContent = totalSum.toFixed(2) + ' €';
+  }
+
+  async function executeSettlement() {
+    if (confirm('Möchtest du alle offenen Posten jetzt abrechnen?')) {
+      const res = await fetch('/anker_tracker/bill_now', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ jsonrpc: '2.0', method: 'call', params: {} })
+      });
+      const json = await res.json();
+      if (json.result && json.result.status === 'success') {
+        showToast('Abrechnung abgeschlossen!');
+        fetchTrackerData();
+      }
+    }
+  }
+
+  async function addNewProduct(e) {
+    e.preventDefault();
+    const emoji = document.getElementById('p-emoji').value;
+    const name = document.getElementById('p-name').value;
+    const manufacturer = document.getElementById('p-manuf').value;
+    const volume = document.getElementById('p-vol').value;
+    const price = document.getElementById('p-price').value;
+    const crateSize = document.getElementById('p-crate').value;
+    const isAlc = document.getElementById('p-alc').value === 'true';
+
+    const res = await fetch('/anker_tracker/add_product', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        method: 'call',
+        params: { emoji, name, manufacturer, volume, price_per_bottle: price, crate_size: crateSize, is_alcoholic: isAlc }
+      })
+    });
+    const json = await res.json();
+    if (json.result && json.result.status === 'success') {
+      showToast('Neues Getränk ' + name + ' hinzugefügt!');
+      e.target.reset();
+      fetchTrackerData();
+    }
+  }
+
+  // Radio toggle
+  let radioPlaying = false;
+  const player = document.getElementById('radio-player');
+  function toggleRadio() {
+    if (!radioPlaying) {
+      player.src = 'https://funk.frawo.tech/listen/frawo_funk/radio.mp3';
+      player.play();
+      radioPlaying = true;
+      document.getElementById('radio-play-icon').textContent = '⏸';
+    } else {
+      player.pause();
+      radioPlaying = false;
+      document.getElementById('radio-play-icon').textContent = '▶';
+    }
+  }
+
+  // Auto Refresh
+  setInterval(fetchTrackerData, 4000);
+  fetchTrackerData();
+</script>
+</body>
+</html>

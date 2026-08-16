@@ -82,7 +82,7 @@ button:focus-visible,
   background: var(--fw-purple);
   color: #fff;
   padding: 0.75rem 1.5rem;
-  border-radius: 4px;
+  border-radius: 0px !important;
   text-decoration: none;
   font-weight: 600;
   z-index: 9999;
@@ -389,23 +389,14 @@ a.fw-btn-ghost.btn:hover {
 .fw-img-wrapper {
   overflow: hidden;
   background: #000;
-  aspect-ratio: 1/1 !important; /* Square images */
+  aspect-ratio: 16/10 !important; /* Square images */
   max-height: 450px !important;
-  border-radius: 4px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  border-radius: 0px !important;
+  box-shadow: none !important;
   position: relative;
 }
 
-.fw-img-wrapper::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 40%; /* Fade bottom 40% */
-  background: linear-gradient(to top, var(--fw-bg), transparent) !important;
-  pointer-events: none;
-}
+.fw-img-wrapper::after { display: none !important; }
 
 .fw-img-wrapper picture {
   display: block;
@@ -597,9 +588,9 @@ section {
 
 .fw-service-card {
   background: rgba(15, 23, 42, 0.4);
-  border-radius: 4px;
+  border-radius: 0px !important;
   border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  box-shadow: none !important;
   padding: 2rem 1.5rem !important;
   min-height: 320px !important;
   display: flex;
@@ -774,9 +765,9 @@ section {
   text-align: center;
   padding: 2rem 1.5rem;
   background: rgba(15, 23, 42, 0.3);
-  border-radius: 4px;
+  border-radius: 0px !important;
   border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: none !important;
   transition: all 0.3s ease;
   min-height: 140px;
   display: flex;
@@ -862,10 +853,10 @@ section {
 .fw-project-card {
   position: relative;
   overflow: hidden;
-  border-radius: 4px;
+  border-radius: 0px !important;
   aspect-ratio: 16/10;
   background: #000;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  box-shadow: none !important;
   min-height: 280px;
 }
 
@@ -1030,3 +1021,6 @@ body {
   color: #9d4edd !important;
   font-weight: 700 !important;
 }
+
+/* Hide default Odoo footer - use CI 3.0 custom footer only */
+footer.o_footer, .o_footer, #footer { display: none !important; }

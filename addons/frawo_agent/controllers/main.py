@@ -1,6 +1,8 @@
 from odoo import http, fields
 from odoo.http import request
 import logging
+import re
+import time
 import requests
 import urllib3
 
@@ -31,11 +33,26 @@ class RadioController(http.Controller):
         # Check if user has internal user group
         return user.has_group('base.group_user')
 
+    def _check_rate_limit(self, action, cooldown):
+        """Per-browser-session cooldown for public write endpoints (radio votes/requests,
+        lead form). These routes are intentionally auth='public' — anonymous website
+        visitors and radio listeners are the real users — so the guard is a cooldown,
+        not a login/kiosk-token requirement (that would just break the feature).
+        """
+        session = request.session
+        key = f'_frawo_rate_{action}'
+        now = time.time()
+        last = session.get(key, 0)
+        if now - last < cooldown:
+            return False
+        session[key] = now
+        return True
+
     # ─────────────────────────────────────────────────────────────
     # Public Radio Endpoints
     # ─────────────────────────────────────────────────────────────
 
-    @http.route('/radio/vote', type='json', auth='user', cors='*', methods=['POST'])
+    @http.route('/radio/vote', type='json', auth='public', cors='*', methods=['POST'])
     def radio_vote(self, song_id, vote_type, **kwargs):
         user = request.env.user
         _logger.info("Radio vote received: User %s (ID: %s) voted '%s' on song '%s'", user.name, user.id, vote_type, song_id)
@@ -51,6 +68,8 @@ class RadioController(http.Controller):
             
             # If vote is 'hate' (Skip), call AzuraCast API to skip the current track
             if vote_type == 'hate':
+                if not self._check_rate_limit('radio_skip', cooldown=30):
+                    return {"status": "error", "message": "Bitte kurz warten, bevor der nächste Skip-Vote gesendet wird."}
                 base_url, api_key = self._get_azuracast_config()
                 api_url = f"{base_url}/api/station/1/backend/skip"
                 headers = {
@@ -70,7 +89,7 @@ class RadioController(http.Controller):
             _logger.error("Failed to register radio vote: %s", str(e))
             return {"status": "error", "message": str(e)}
 
-    @http.route('/radio/search', type='json', auth='user', cors='*', methods=['POST'])
+    @http.route('/radio/search', type='json', auth='public', cors='*', methods=['POST'])
     def radio_search(self, query, **kwargs):
         if not query:
             return {"status": "success", "tracks": []}
@@ -105,10 +124,12 @@ class RadioController(http.Controller):
             _logger.error("Radio search failed: %s", str(e))
             return {"status": "error", "message": str(e)}
 
-    @http.route('/radio/request', type='json', auth='user', cors='*', methods=['POST'])
+    @http.route('/radio/request', type='json', auth='public', cors='*', methods=['POST'])
     def radio_request(self, request_id, **kwargs):
         if not request_id:
             return {"status": "error", "message": "Missing request_id"}
+        if not self._check_rate_limit('radio_request', cooldown=60):
+            return {"status": "error", "message": "Bitte warte kurz, bevor du den nächsten Song anfragst."}
         try:
             base_url, api_key = self._get_azuracast_config()
             api_url = f"{base_url}/api/station/1/request/{request_id}"
@@ -137,6 +158,31 @@ class RadioController(http.Controller):
         except Exception as e:
             _logger.error("Failed to submit radio request: %s", str(e))
             return {"status": "error", "message": str(e)}
+
+
+    @http.route('/radio/nowplaying', type='http', auth='public', methods=['GET'], cors='*', csrf=False)
+    def radio_nowplaying_proxy(self, **kwargs):
+        try:
+            base_url, api_key = self._get_azuracast_config()
+            r = requests.get(f"{base_url}/api/station/1/nowplaying", verify=False, timeout=5)
+            if r.status_code == 200:
+                text = r.text.replace("https://10.1.0.38", "https://funk.frawo.tech").replace("http://10.1.0.38", "https://funk.frawo.tech")
+                return request.make_response(
+                    text,
+                    headers=[
+                        ('Content-Type', 'application/json'),
+                        ('Access-Control-Allow-Origin', '*'),
+                        ('Cache-Control', 'no-cache')
+                    ],
+                    status=200
+                )
+            return request.make_response(r.text, status=r.status_code, headers=[('Content-Type', 'application/json')])
+        except Exception as e:
+            return request.make_response(
+                f'{{"status":"error","message":"{str(e)}"}}',
+                headers=[('Content-Type', 'application/json')],
+                status=500
+            )
 
     # ─────────────────────────────────────────────────────────────
     # Admin-Only: PVE Bridge Proxy Endpoints
@@ -773,6 +819,44 @@ class RadioController(http.Controller):
         except Exception as e:
             _logger.error("Kiosk page error: %s", str(e))
             return request.make_response(f"<h2>Kiosk Fehler:</h2><p>{str(e)}</p>", status=500, headers=[('Content-Type', 'text/html')])
+
+    _EMAIL_RE = re.compile(r'^[^@\s]+@[^@\s]+\.[^@\s]+$')
+
+    @http.route('/website/lead/create', type='json', auth='public', cors='*', methods=['POST'], csrf=False)
+    def website_lead_create(self, name=None, email=None, phone=None, message=None, subject=None, **kwargs):
+        """Public API endpoint for website contact form -> Odoo CRM Lead creation."""
+        try:
+            name = (name or '').strip()
+            email = (email or '').strip()
+            phone = (phone or '').strip()
+            message = (message or '').strip()
+            subject = (subject or '').strip()
+
+            if not name or not (email or phone):
+                return {"status": "error", "message": "Name und E-Mail oder Telefon sind erforderlich."}
+            if email and not self._EMAIL_RE.match(email):
+                return {"status": "error", "message": "Bitte eine gültige E-Mail-Adresse angeben."}
+            if len(name) > 200 or len(email) > 200 or len(phone) > 50 or len(subject) > 200 or len(message) > 5000:
+                return {"status": "error", "message": "Eingabe zu lang."}
+            if not self._check_rate_limit('website_lead', cooldown=60):
+                return {"status": "error", "message": "Bitte warte kurz, bevor du eine weitere Anfrage sendest."}
+
+            lead_vals = {
+                "name": subject or f"Website-Anfrage: {name}",
+                "contact_name": name,
+                "email_from": email or "",
+                "phone": phone or "",
+                "description": message or "",
+                "type": "lead",
+                "user_id": 7,  # Assigned to Agent
+            }
+            lead = request.env["crm.lead"].sudo().create(lead_vals)
+            _logger.info("Website Lead created successfully: ID %s (%s)", lead.id, name)
+            return {"status": "success", "lead_id": lead.id, "message": "Vielen Dank für Ihre Anfrage!"}
+        except Exception as e:
+            _logger.error("Failed to create website lead: %s", str(e))
+            return {"status": "error", "message": "Anfrage konnte nicht gespeichert werden."}
+
 
 
 

@@ -1,521 +1,337 @@
-<!-- FraWo Funk Radio Player — Premium Glassmorphism Edition -->
-
+<!-- NTS-Inspired FraWo Funk Radio UX Page -->
 <style>
-/*<![CDATA[*/
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&amp;display=swap');
-
-:root {
-  --neon-purple: #8a2be2;
-  --neon-blue: #00ffff;
-  --neon-pink: #ff007f;
-  --glass-bg: rgba(10, 10, 15, 0.75);
-  --glass-border: rgba(255, 255, 255, 0.1);
+/* NTS Radio Aesthetic: Pure Monochromatic Brutalismus + Violet Highlights */
+.nts-wrapper {
+  background-color: #000000 !important;
+  color: #e8e8e8 !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+  min-height: 100vh;
+  padding: 0 0 100px 0;
 }
 
-.fw-radio-player {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: calc(100% - 40px);
-  max-width: 1000px;
-  background: var(--glass-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--glass-border);
-  border-radius: 24px;
-  padding: 1.2rem;
-  z-index: 9999;
-  font-family: 'Outfit', sans-serif;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4),
-              inset 0 1px 0 var(--glass-border);
-  overflow: hidden;
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+.nts-header-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid #222222; padding: 20px 40px;
+  background: #000000;
 }
-
-.fw-radio-player::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle, rgba(138, 43, 226, 0.15) 0%, transparent 60%),
-              radial-gradient(circle at 80% 20%, rgba(0, 255, 255, 0.15) 0%, transparent 50%);
-  z-index: -1;
-  animation: bgGlow 10s infinite alternate ease-in-out;
-}
-
-@keyframes bgGlow {
-  0% { transform: translate(0, 0) scale(1); }
-  100% { transform: translate(-5%, 5%) scale(1.05); }
-}
-
-.fw-radio-player-inner {
-  display: grid;
-  grid-template-columns: auto 1fr auto auto;
-  gap: 1.5rem;
-  align-items: center;
-  position: relative;
-  z-index: 2;
-}
-
-/* Album Art */
-.fw-radio-art-container {
-  width: 60px;
-  height: 60px;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 8px 16px rgba(0,0,0,0.3);
-  border: 1px solid rgba(255,255,255,0.1);
-  position: relative;
-}
-
-.fw-radio-art {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.5s ease;
-}
-
-.fw-radio-player.playing .fw-radio-art {
-  animation: slowRotate 20s linear infinite;
-}
-
-@keyframes slowRotate {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-/* Track Info */
-.fw-track-info {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  min-width: 0;
-}
-
-.fw-station-name {
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.2em;
-  color: var(--neon-blue);
-  font-weight: 700;
-  margin-bottom: 0.2rem;
-  text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
-}
-
-.fw-track-title {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: #ffffff;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.fw-track-artist {
-  font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.6);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* Controls */
-.fw-radio-controls {
-  display: flex;
-  gap: 1.2rem;
-  align-items: center;
-}
-
-.fw-play-btn {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--neon-purple), var(--neon-pink));
-  border: none;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 0 15px rgba(138, 43, 226, 0.5);
-}
-
-.fw-play-btn:hover {
-  transform: scale(1.1);
-  box-shadow: 0 0 25px rgba(138, 43, 226, 0.8),
-              0 0 35px rgba(255, 0, 127, 0.5);
-}
-
-.fw-play-btn svg {
-  width: 20px;
-  height: 20px;
-  fill: currentColor;
-  transition: transform 0.2s ease;
-}
-
-/* Volume */
-.fw-volume-container {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-}
-
-.fw-volume-slider {
-  -webkit-appearance: none;
-  width: 80px;
-  height: 4px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 2px;
-  outline: none;
-  cursor: pointer;
-}
-
-.fw-volume-slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: var(--neon-blue);
-  box-shadow: 0 0 10px var(--neon-blue);
-  cursor: pointer;
-}
-
-/* Visualizer Canvas */
-.fw-visualizer-container {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 30px;
-  z-index: 1;
-  opacity: 0.5;
-  pointer-events: none;
-}
-
-.fw-visualizer {
-  width: 100%;
-  height: 100%;
-}
-
-/* Close Btn */
-.fw-close-btn {
-  background: none;
-  border: none;
-  color: rgba(255, 255, 255, 0.4);
-  cursor: pointer;
-  padding: 0.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: color 0.2s ease;
-}
-
-.fw-close-btn:hover {
-  color: #ffffff;
-}
-
-/* Responsive */
 @media (max-width: 768px) {
-  .fw-radio-player {
-    bottom: 10px;
-    left: 10px;
-    transform: none;
-    width: calc(100% - 20px);
-    border-radius: 16px;
-    padding: 0.8rem;
-  }
-
-  .fw-radio-player-inner {
-    grid-template-columns: auto 1fr auto;
-    gap: 0.8rem;
-  }
-
-  .fw-volume-container {
-    display: none;
-  }
+  .nts-header-bar { padding: 16px 20px; }
 }
-/*]]>*/
+
+.nts-logo-title {
+  font-size: 1.4rem; font-weight: 900; letter-spacing: -0.02em;
+  text-transform: uppercase; color: #ffffff; text-decoration: none;
+}
+.nts-tagline {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.7rem;
+  color: #888888; text-transform: uppercase; letter-spacing: 0.1em;
+}
+
+.nts-channel-strip {
+  display: flex; border-bottom: 1px solid #222222; background: #080808;
+}
+.nts-ch-tab {
+  padding: 14px 28px; font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem; font-weight: 700; text-transform: uppercase;
+  color: #888888; border-right: 1px solid #222222; cursor: pointer;
+  letter-spacing: 0.08em; transition: all 0.15s ease;
+}
+.nts-ch-tab.active {
+  background: #000000; color: #a050f0; border-bottom: 2px solid #a050f0;
+}
+
+.nts-main-hero {
+  border-bottom: 1px solid #222222; padding: 60px 40px;
+  max-width: 1200px; margin: 0 auto;
+}
+@media (max-width: 768px) {
+  .nts-main-hero { padding: 40px 20px; }
+}
+
+.nts-live-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.7rem;
+  font-weight: 700; color: #ffffff; background: #004030;
+  border: 1px solid #006048; padding: 4px 12px; margin-bottom: 24px;
+}
+.nts-dot {
+  width: 6px; height: 6px; background: #2ecc71;
+  box-shadow: 0 0 8px #2ecc71; animation: ntsPulse 1.5s infinite;
+}
+@keyframes ntsPulse { 0%,100%{ opacity: 1; } 50%{ opacity: 0.3; } }
+
+.nts-show-name {
+  font-size: clamp(2rem, 5vw, 4rem); font-weight: 900;
+  text-transform: uppercase; letter-spacing: -0.03em;
+  color: #ffffff; line-height: 1; margin-bottom: 12px;
+}
+.nts-show-host {
+  font-family: 'JetBrains Mono', monospace; font-size: 1rem;
+  color: #a050f0; text-transform: uppercase; margin-bottom: 32px;
+}
+
+.nts-player-box {
+  background: #080808; border: 1px solid #222222;
+  padding: 32px; display: flex; align-items: center; gap: 32px;
+  flex-wrap: wrap; margin-bottom: 40px;
+}
+
+.nts-play-tile {
+  background: #ffffff; color: #000000; border: none;
+  font-size: 1rem; font-weight: 900; text-transform: uppercase;
+  letter-spacing: 0.1em; padding: 24px 48px; cursor: pointer;
+  transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 12px;
+}
+.nts-play-tile:hover {
+  background: #a050f0; color: #ffffff;
+}
+
+.nts-ticks-vis {
+  flex-grow: 1; height: 50px; display: flex; align-items: flex-end;
+  gap: 3px; background: #000000; border: 1px solid #222222; padding: 8px 12px;
+}
+.nts-tick {
+  flex: 1; background: #222222; height: 20%; transition: height 0.1s ease;
+}
+.nts-tick.active { background: #a050f0; }
+
+.nts-grid-container {
+  max-width: 1200px; margin: 0 auto; padding: 60px 40px 0;
+}
+@media (max-width: 768px) {
+  .nts-grid-container { padding: 40px 20px 0; }
+}
+
+.nts-section-head {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;
+  font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em;
+  color: #888888; margin-bottom: 24px; border-bottom: 1px solid #222222;
+  padding-bottom: 12px; display: flex; justify-content: space-between;
+}
+
+.nts-schedule-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 1px; background: #222222; border: 1px solid #222222;
+  margin-bottom: 60px;
+}
+@media (max-width: 900px) {
+  .nts-schedule-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 600px) {
+  .nts-schedule-grid { grid-template-columns: 1fr; }
+}
+
+.nts-card {
+  background: #000000; padding: 24px; display: flex;
+  flex-direction: column; justify-content: space-between; height: 100%;
+}
+.nts-card:hover { background: #080808; }
+
+.nts-card-time {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.75rem;
+  color: #a050f0; font-weight: 700; margin-bottom: 12px;
+}
+.nts-card-title {
+  font-size: 1.1rem; font-weight: 800; text-transform: uppercase;
+  color: #ffffff; margin-bottom: 8px; line-height: 1.2;
+}
+.nts-card-tags {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.68rem;
+  color: #888888; text-transform: uppercase; margin-top: 16px;
+}
+
+.nts-stream-links {
+  background: #080808; border: 1px solid #222222; padding: 24px;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.75rem;
+}
+.nts-link-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 0; border-bottom: 1px solid #1a1a1a;
+}
+.nts-link-row:last-child { border-bottom: none; }
+.nts-link-row a {
+  color: #a050f0; text-decoration: none; font-weight: 700;
+}
+.nts-link-row a:hover { color: #ffffff; }
 </style>
 
-<div class="fw-radio-player" id="frawo-radio-player">
-  <div class="fw-visualizer-container">
-    <canvas id="fw-visualizer-canvas" class="fw-visualizer"></canvas>
+<div class="nts-wrapper">
+  <!-- Top Navigation Header -->
+  <div class="nts-header-bar">
+    <div>
+      <a href="/" class="nts-logo-title">FraWo Funk</a>
+      <div class="nts-tagline">NTS-Style Audio Stream &middot; Bodensee</div>
+    </div>
+    <a href="/" style="color: #888888; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; text-decoration: none; text-transform: uppercase; font-weight: 700;">
+      &larr; frawo-tech.de
+    </a>
   </div>
 
-  <div class="fw-radio-player-inner">
-    <!-- Art -->
-    <div class="fw-radio-art-container">
-      <img src="https://via.placeholder.com/150" alt="Cover" class="fw-radio-art" id="fw-player-art" />
+  <!-- Channel Selectors -->
+  <div class="nts-channel-strip">
+    <div class="nts-ch-tab active">Ch 1: FraWo Funk Live (320k)</div>
+    <div class="nts-ch-tab">Ch 2: Radio4yourparty (Guest Mixes)</div>
+    <div class="nts-ch-tab">Archive &amp; Podcasts</div>
+  </div>
+
+  <!-- Main Hero Stream Section -->
+  <div class="nts-main-hero">
+    <div class="nts-live-badge">
+      <span class="nts-dot"></span> LIVE NOW &middot; LINDAU STUDIO
     </div>
 
-    <!-- Info -->
-    <div class="fw-track-info">
-      <div class="fw-station-name">FraWo Funk Live</div>
-      <div class="fw-track-title" id="fw-player-title">Stream bereit</div>
-      <div class="fw-track-artist" id="fw-player-artist">Klick auf Play</div>
-    </div>
+    <div class="nts-show-name" id="nts-show-title">Bodensee Deep Sessions</div>
+    <div class="nts-show-host" id="nts-show-sub">Hosted by Wolf &amp; Guest DJs &middot; 320kbps HiFi Audio</div>
 
-    <!-- Controls -->
-    <div class="fw-radio-controls">
-      <button class="fw-play-btn" id="fw-player-play-btn" aria-label="Play">
-        <!-- Play Icon -->
-        <svg id="fw-svg-play" viewBox="0 0 24 24">
-          <path d="M8 5v14l11-7z"/>
-        </svg>
-        <!-- Pause Icon (Hidden initially) -->
-        <svg id="fw-svg-pause" viewBox="0 0 24 24" style="display:none;">
-          <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
-        </svg>
+    <!-- Audio Player Box -->
+    <div class="nts-player-box">
+      <button class="nts-play-tile" id="nts-btn-play">
+        <span id="nts-play-ico">&#9654;</span> <span id="nts-play-txt">LISTEN LIVE</span>
       </button>
 
-      <div class="fw-volume-container">
-        <svg style="width:18px;height:18px;fill:rgba(255,255,255,0.6);" viewBox="0 0 24 24">
-          <path d="M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.03,19.86 21,16.28 21,12C21,7.72 18.03,4.14 14,3.23M16.5,12C16.5,10.23 15.5,8.71 14,7.97V16C15.5,15.29 16.5,13.77 16.5,12M3,9V15H7L12,20V4L7,9H3Z"/>
-        </svg>
-        <input type="range" class="fw-volume-slider" id="fw-player-volume" min="0" max="1" step="0.05" value="0.7" />
+      <!-- 32-Tick NTS Visualizer -->
+      <div class="nts-ticks-vis" id="nts-vis-container">
+        <!-- 32 tick bars generated by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Broadcast Schedule & Archive Grid -->
+  <div class="nts-grid-container">
+    <div class="nts-section-head">
+      <span>Today's Broadcast Schedule</span>
+      <span>CET / Bodensee Time</span>
+    </div>
+
+    <div class="nts-schedule-grid">
+      <div class="nts-card">
+        <div>
+          <div class="nts-card-time">14:00 - 16:00 (ON AIR)</div>
+          <div class="nts-card-title">Bodensee Deep Sessions</div>
+          <p style="font-size: 0.8rem; color: #888888; margin: 0; line-height: 1.5;">
+            Deep House, Dub Techno &amp; Chillout Beats live vom Bodensee.
+          </p>
+        </div>
+        <div class="nts-card-tags">Ch 1 &middot; Live Stream</div>
+      </div>
+
+      <div class="nts-card">
+        <div>
+          <div class="nts-card-time">16:00 - 18:00 (NEXT)</div>
+          <div class="nts-card-title">Werkstatt &amp; Holz Sessions</div>
+          <p style="font-size: 0.8rem; color: #888888; margin: 0; line-height: 1.5;">
+            Selektion von Franz &amp; Wolf aus unserer Holzwerkstatt in Wei&szlig;ensberg.
+          </p>
+        </div>
+        <div class="nts-card-tags">Ch 1 &middot; Studio Mix</div>
+      </div>
+
+      <div class="nts-card">
+        <div>
+          <div class="nts-card-time">18:00 - 20:00</div>
+          <div class="nts-card-title">Radio4yourparty Takeover</div>
+          <p style="font-size: 0.8rem; color: #888888; margin: 0; line-height: 1.5;">
+            Party-Hits, Club-Tunes &amp; Festival-Vibes f&uuml;r den Feierabend.
+          </p>
+        </div>
+        <div class="nts-card-tags">Ch 2 &middot; Party Stream</div>
+      </div>
+
+      <div class="nts-card">
+        <div>
+          <div class="nts-card-time">20:00 - 02:00</div>
+          <div class="nts-card-title">Rave on SUP Live Set</div>
+          <p style="font-size: 0.8rem; color: #888888; margin: 0; line-height: 1.5;">
+            Live-Mitschnitt vom Floating Sound System auf dem Bodensee.
+          </p>
+        </div>
+        <div class="nts-card-tags">Archive &middot; Live Set</div>
       </div>
     </div>
 
-    <!-- Close -->
-    <button class="fw-close-btn" id="fw-player-close-btn" aria-label="Close">
-      <svg style="width:18px;height:18px;fill:currentColor;" viewBox="0 0 24 24">
-        <path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L12,12L19,6.41Z"/>
-      </svg>
-    </button>
+    <!-- Direct Stream URLs Panel -->
+    <div class="nts-section-head">
+      <span>Direct Stream Access &amp; Formats</span>
+    </div>
+
+    <div class="nts-stream-links">
+      <div class="nts-link-row">
+        <span>320kbps HiFi MP3 Stream</span>
+        <a href="https://funk.frawo.tech/listen/frawo_funk/radio.mp3" target="_blank">funk.frawo.tech/listen/frawo_funk/radio.mp3 &rarr;</a>
+      </div>
+      <div class="nts-link-row">
+        <span>64kbps Mobile AAC Stream</span>
+        <a href="https://funk.frawo.tech/listen/frawo_funk/radio.mp3" target="_blank">funk.frawo.tech/listen/frawo_funk/mobile.aac &rarr;</a>
+      </div>
+      <div class="nts-link-row">
+        <span>M3U Playlist File (VLC / iTunes)</span>
+        <a href="https://funk.frawo.tech/public/frawo_funk/playlist.m3u" target="_blank">Download .M3U &rarr;</a>
+      </div>
+    </div>
   </div>
 </div>
 
-<script>
-//<![CDATA[
+<script type="text/javascript">
 (function() {
-  var streamUrl = 'https://funk.frawo-tech.de/listen/frawo_funk/radio.mp3';
-  var apiUrl = 'https://funk.frawo-tech.de/api/nowplaying/frawo_funk';
+  var audio = null;
+  var isPlaying = false;
+  var streamUrl = 'https://funk.frawo.tech/listen/frawo_funk/radio.mp3';
 
-  function initPlayer() {
-    var playerEl = document.getElementById('frawo-radio-player');
-    var playBtn = document.getElementById('fw-player-play-btn');
-    var svgPlay = document.getElementById('fw-svg-play');
-    var svgPause = document.getElementById('fw-svg-pause');
-    var titleEl = document.getElementById('fw-player-title');
-    var artistEl = document.getElementById('fw-player-artist');
-    var artEl = document.getElementById('fw-player-art');
-    var volumeSlider = document.getElementById('fw-player-volume');
-    var closeBtn = document.getElementById('fw-player-close-btn');
-    var canvas = document.getElementById('fw-visualizer-canvas');
+  var btnPlay = document.getElementById('nts-btn-play');
+  var icoPlay = document.getElementById('nts-play-ico');
+  var txtPlay = document.getElementById('nts-play-txt');
+  var visBox = document.getElementById('nts-vis-container');
 
-    if (!playerEl || !playBtn) {
-      console.warn('FraWo Player components not loaded yet.');
-      return false;
+  // Generate 32 NTS visualizer tick bars
+  if (visBox &amp;&amp; visBox.children.length === 0) {
+    for (var i = 0; i &lt; 32; i++) {
+      var t = document.createElement('div');
+      t.className = 'nts-tick';
+      visBox.appendChild(t);
     }
+  }
 
-    console.log('FraWo Live Player active & initializing.');
-
-    var audio = null;
-    var isPlaying = false;
-    var animationFrameId = null;
-    var barHeights = null;
-    var numBars = 0;
-
-    // Simulated Neon Visualizer Render Loop (CORS-free, battery-saving)
-    function drawVisualizer() {
-      if (!canvas) return;
-      var ctx = canvas.getContext('2d');
-      if (!ctx) return;
-
-      // Handle dynamic canvas resizing
-      if (canvas.width !== canvas.clientWidth || canvas.height !== canvas.clientHeight) {
-        canvas.width = canvas.clientWidth;
-        canvas.height = canvas.clientHeight;
-        numBars = Math.ceil(canvas.width / 6); // 4px bar width + 2px gap
-        barHeights = new Float32Array(numBars);
+  var animInterval = null;
+  function animateTicks() {
+    if (!visBox) return;
+    var ticks = visBox.querySelectorAll('.nts-tick');
+    ticks.forEach(function(t) {
+      if (isPlaying) {
+        var h = Math.floor(Math.random() * 85) + 15;
+        t.style.height = h + '%';
+        t.classList.add('active');
+      } else {
+        t.style.height = '15%';
+        t.classList.remove('active');
       }
+    });
+  }
 
-      if (!numBars || !barHeights) {
-        numBars = Math.ceil(canvas.width / 6);
-        barHeights = new Float32Array(numBars);
-      }
-
-      if (!isPlaying) {
-        // Smoothly fade out visualizer bars
-        var active = false;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        for (var i = 0; i < numBars; i++) {
-          barHeights[i] *= 0.85;
-          if (barHeights[i] > 0.01) {
-            active = true;
-            var barHeight = barHeights[i] * canvas.height;
-            var x = i * 6;
-            var gradient = ctx.createLinearGradient(0, canvas.height, 0, 0);
-            gradient.addColorStop(0, 'rgba(138, 43, 226, 0.05)');
-            gradient.addColorStop(1, 'rgba(0, 255, 255, 0.3)');
-            ctx.fillStyle = gradient;
-            ctx.fillRect(x, canvas.height - barHeight, 4, barHeight);
-          }
-        }
-        if (active) {
-          animationFrameId = requestAnimationFrame(drawVisualizer);
-        } else {
-          animationFrameId = null;
-        }
-        return;
-      }
-
-      // Render beautiful responsive equalizer waves
-      animationFrameId = requestAnimationFrame(drawVisualizer);
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      var time = Date.now() * 0.004;
-
-      for (var i = 0; i < numBars; i++) {
-        var factor = (numBars - i) / numBars; // 1.0 down to 0.0 (high frequency falloff)
-        var sinWave = Math.sin(i * 0.15 + time) * Math.cos(i * 0.08 - time * 0.5);
-        var randJitter = Math.random() * 0.15;
-        
-        var multiplier = 0.2 + 0.6 * factor;
-        if (i % 4 === 0) multiplier *= 1.3;
-        if (i % 7 === 0) multiplier *= 0.7;
-
-        var target = Math.abs(sinWave) * multiplier + randJitter;
-        target = Math.max(0.02, Math.min(0.95, target));
-
-        // Smooth wave transition interpolation
-        barHeights[i] += (target - barHeights[i]) * 0.2;
-
-        var barHeight = barHeights[i] * canvas.height;
-        var x = i * 6;
-
-        var gradient = ctx.createLinearGradient(0, canvas.height, 0, 0);
-        gradient.addColorStop(0, 'rgba(138, 43, 226, 0.15)');
-        gradient.addColorStop(0.5, 'rgba(255, 0, 127, 0.35)');
-        gradient.addColorStop(1, 'rgba(0, 255, 255, 0.7)');
-
-        ctx.fillStyle = gradient;
-        ctx.fillRect(x, canvas.height - barHeight, 4, barHeight);
-      }
-    }
-
-    function startVisualizer() {
-      if (animationFrameId) cancelAnimationFrame(animationFrameId);
-      animationFrameId = requestAnimationFrame(drawVisualizer);
-    }
-
-    // Direct Live Stream Play / Stop Action
-    function togglePlay() {
-      if (titleEl) titleEl.textContent = 'Verbinde...';
-      if (artistEl) artistEl.textContent = 'Stream wird geladen';
-
+  if (btnPlay) {
+    btnPlay.addEventListener('click', function() {
       if (!audio) {
-        audio = new Audio();
-        if (volumeSlider) {
-          audio.volume = parseFloat(volumeSlider.value);
-        } else {
-          audio.volume = 0.7;
-        }
-
-        if (volumeSlider) {
-          volumeSlider.addEventListener('input', function() {
-            if (audio) audio.volume = parseFloat(volumeSlider.value);
-          });
-        }
+        audio = new Audio(streamUrl);
+        audio.volume = 0.85;
       }
 
       if (!isPlaying) {
-        // Load stream source live
-        audio.src = streamUrl;
-        audio.load();
-        
         audio.play().then(function() {
           isPlaying = true;
-          if (playerEl) playerEl.classList.add('playing');
-          if (svgPlay) svgPlay.style.display = 'none';
-          if (svgPause) svgPause.style.display = 'block';
-          updateNowPlaying();
-          startVisualizer();
-        }).catch(function(err) {
-          console.error('Audio Playback Failure:', err);
-          if (titleEl) titleEl.textContent = 'Fehler beim Laden';
-          if (artistEl) artistEl.textContent = 'Stream vorübergehend offline';
+          if (icoPlay) icoPlay.innerHTML = '&#10074;&#10074;';
+          if (txtPlay) txtPlay.textContent = 'PAUSE STREAM';
+          animInterval = setInterval(animateTicks, 100);
+        }).catch(function(e) {
+          console.log('Audio error:', e);
         });
       } else {
-        // Clean stop of streaming to free socket connections
         audio.pause();
-        audio.src = '';
-        audio.load();
         isPlaying = false;
-        if (playerEl) playerEl.classList.remove('playing');
-        if (svgPlay) svgPlay.style.display = 'block';
-        if (svgPause) svgPause.style.display = 'none';
-        if (titleEl) titleEl.textContent = 'Stream pausiert';
-        if (artistEl) artistEl.textContent = 'Klick auf Play';
+        if (icoPlay) icoPlay.innerHTML = '&#9654;';
+        if (txtPlay) txtPlay.textContent = 'LISTEN LIVE';
+        if (animInterval) clearInterval(animInterval);
+        animateTicks();
       }
-    }
-
-    // Attach Play Button Event Listener
-    playBtn.addEventListener('click', togglePlay);
-
-    // Attach Close Button Event Listener
-    if (closeBtn) {
-      closeBtn.addEventListener('click', function() {
-        if (audio) {
-          audio.pause();
-          audio.src = '';
-          audio.load();
-        }
-        isPlaying = false;
-        if (playerEl) playerEl.style.display = 'none';
-      });
-    }
-
-    // Now Playing Metadata Aggregator (CORS-safe, visibility-aware)
-    function updateNowPlaying() {
-      if (document.hidden) return;
-
-      fetch(apiUrl)
-        .then(function(res) { return res.json(); })
-        .then(function(data) {
-          if (data) {
-            if (data.now_playing) {
-              if (data.now_playing.song) {
-                var song = data.now_playing.song;
-                if (isPlaying) {
-                  if (titleEl) titleEl.textContent = song.title || 'Live Stream';
-                  if (artistEl) artistEl.textContent = song.artist || 'FraWo Funk';
-                  if (artEl) {
-                    if (song.art) {
-                      artEl.src = song.art;
-                    } else {
-                      artEl.src = 'https://via.placeholder.com/150';
-                    }
-                  }
-                }
-              }
-            }
-          }
-        })
-        .catch(function(err) {
-          console.error('Metadata API Error:', err);
-        });
-    }
-
-    var pollInterval = setInterval(updateNowPlaying, 10000);
-    updateNowPlaying();
-
-    window.addEventListener('beforeunload', function() {
-      clearInterval(pollInterval);
     });
-
-    return true;
-  }
-
-  // Initialize safely on load
-  if (!initPlayer()) {
-    document.addEventListener('DOMContentLoaded', initPlayer);
-    window.addEventListener('load', initPlayer);
   }
 })();
-//]]>
 </script>

@@ -1,6 +1,9 @@
 .DS_Store
 .idea/
 
+# Claude Code - persönliche lokale Einstellungen, nicht teamweit
+.claude/settings.local.json
+
 # VS Code - nur persönliche Settings ignorieren, nicht workspace settings
 .vscode/*.code-snippets
 .vscode/.history/
@@ -97,4 +100,9 @@ crack_vault.py
 *password*.bat
 *password*.txt
 _BACKUPS_ODOO/
+
+# 2026-08-04 Gemini/Antigravity VPN-Planung: WireGuard-Private-Key + HA-Token + WPA2-Passphrase im Klartext
+config/network/wg_site2site_stockenweiler_fritz5690.conf
+config/network/ha_remote_stocki_sync.yaml
+config/network/airbeam5max_p2p_blueprint.json
 
