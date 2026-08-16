@@ -23,6 +23,7 @@ Wer eine davon nicht kennt, sucht stundenlang am falschen Ende.
 | **`pgrep -f <name>`** | matcht den eigenen Befehl mit, wenn der Name darin vorkommt | Ergebnis gegenprüfen, nicht blind vertrauen |
 | **OpenClaw-Node meldet `ETIMEDOUT`** | verdeckt den **eigentlichen** Fehler: der PC meldete sich mit *Passwort* an, das Gateway verlangt *Token* → `token mismatch`, auch bei stehendem Netz | Anmeldung **nur per Token** (`OPENCLAW_GATEWAY_TOKEN`). Erst wenn die Zeitüberschreitung weg ist, sieht man den wahren Grund |
 | **`/dev/sdX` in Anleitungen** | Buchstaben verschieben sich beim Neustart. Hier stand einmal „defekte Platte `/dev/sdc` ausbauen" — `sdc` ist inzwischen die Platte mit **allen Sicherungen** | Platten **nie** über den Buchstaben benennen, immer über Modell + Seriennummer (`lsblk -o NAME,SIZE,MODEL,SERIAL`) |
+| **Crontab zeigt auf verschobenen/gelöschten Skriptpfad** | läuft täglich/stündlich lautlos ins Leere — „Kommando nicht gefunden" geht nirgends hin, kein lokales Mail-System. So blieben 14 Tage (02.–16.08.2026) Odoo-Cloud-, Radio- und PBS-Konfig-Sicherung unbemerkt aus | Nach jeder Skript-Umbenennung/-Verschiebung sofort `crontab -l` gegen die tatsächlichen Dateien in `/usr/local/bin/` abgleichen |
 
 ⚠️ **Nach direkten Datenbank-Änderungen an AzuraCast immer** `azuracast_cli azuracast:radio:restart 1` — sonst merkt liquidsoap nichts.
 
@@ -157,9 +158,9 @@ Läuft dort, weil die Platte **direkt eingehängt** ist (`/mnt/music`) — nicht
 
 | Was | Wohin | Wann | Ausser Haus? |
 |---|---|---|---|
-| Odoo DB + Filestore | `/mnt/data_family/odoo-sql-dumps` + Anker | 02:15 | ✅ |
-| Radio (AzuraCast) | `/mnt/data_family/backups/azuracast` + Anker | 03:00 | ✅ |
-| **PBS-Konfiguration** | `/mnt/data_family/pbs-config` + Cloud | 03:30 | ✅ |
+| Odoo DB + Filestore | `/mnt/data_family/odoo-sql-dumps` + Anker | stündlich :15 | ✅ |
+| Radio (AzuraCast) | `/mnt/data_family/backups/azuracast` + Anker | 03:30 | ✅ |
+| **PBS-Konfiguration** | `/mnt/data_family/pbs-config` + Cloud | 03:45 | ✅ |
 | Container 101–150 | PBS auf dem Anker | 04:00 | ✅ |
 | VMs 210 + 360 | `hdd-backup` (sdb1) | 05:30 | lokal |
 | VM 360 → Cloud | Google Drive | täglich 07:00 | ✅ |
@@ -180,6 +181,8 @@ Buchstaben verschieben sich — **Seriennummer entscheidet**.
 🔴 **`sda` ist kein Defekt, sondern eine Fälschung.** Controller *Chipsbank CBM2199*, meldet 982 GB, hat real **~64 GB**: bis 60 GB liest sie stabil, ab 65 GB bei jedem Lesen etwas anderes. Alles darüber Geschriebene war nie gespeichert. **Nicht formatieren, nicht wiederverwenden — wegwerfen.** Erkennbar als das einzige Gerät, das **kein** „WD Elements" ist.
 
 **Backup-TÜV** (`frawo-backup-tuev.sh`, 08:00) prüft **11 Ergebnisse**, nicht Vorgänge: Ist eine Datei da, ist sie gross genug, jung genug — **und lesbar**? Genau dieser blinde Fleck hatte den wochenlangen Ausfall möglich gemacht.
+
+🔴→✅ **16.08.2026:** Crontab auf `pve` zeigte 14 Tage auf gelöschte/falsche Skriptpfade (siehe Fallen-Tabelle oben) — Odoo-Cloud-, Radio- und PBS-Konfig-Sicherung liefen lautlos ins Leere. PBS-Containersicherung (ganze CT140) lief die ganze Zeit durch, akuter Datenverlust war nie gegeben. Crontab repariert (alte Fassung gesichert unter `/root/crontab.backup-20260816`), alle 4 Skripte manuell verifiziert, TÜV meldet wieder **11/11**.
 
 **Wiederherstellungstest** sonntags 09:00: spielt die Odoo-Sicherung in eine Wegwerf-Datenbank und vergleicht Zeile für Zeile.
 
