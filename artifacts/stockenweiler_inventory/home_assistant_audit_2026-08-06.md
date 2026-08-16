@@ -1,0 +1,147 @@
+# Home-Assistant-Audit — homeassistant_stocki (home.prinz-stockenweiler.de)
+
+**Datum:** 2026-08-06
+**Quelle:** vollständiger Registry-Dump per WebSocket-API (Agent-Nutzer, Long-Lived Token), read-only, nichts verändert.
+**Zahlen:** 10 Bereiche (3 Etagen-Gruppen: Eltern, Einliegerwohnung, Outdoor + 2 nicht-Eltern-Gruppen: Dachgeschoss, Container), 178 Geräte, 1497 Entitäten (915 aktive States), 65 Integrationen.
+
+> Ziel laut Wolf: Diese Instanz soll **nur noch für Eltern (Alois & Heide) und aktuelle Bewohner** (Lotti) sein. Alles was Admin/Wolfs eigener Rothkreuz-Betrieb ist, gehört zu `home.frawo.tech`.
+
+---
+
+## 1. Haushalts-/Parteien-Modell (Stand nach Wolfs Erklärung)
+
+| Partei | Wer | Bereiche | Stromzähler |
+|---|---|---|---|
+| **Familie Prinz (Eltern)** | Alois & Heide, gelegentlich Hund Dobby zu Besuch | Büro_Eltern, Buero_Controlroom_Eltern, Wohnküche_Eltern, **Garten** (Heidis Kräutergarten + Growatt-Balkonkraftwerk) | eigener Zähler (nicht auf dem geteilten) |
+| **Lotti** | Bewohnerin Einliegerwohnung | ELW_Bad, ELW_Wohnen — eigener Shelly 4PM (Küche, Bad etc.) | **teilt sich Gesamtzähler mit Container** |
+| **Container** (Techniklager/Serverraum) | Wolf/FraWo-Technik, eigenes Thema | Server, Studio — eigener Shelly 4PM (Server, Licht, Allgemein) | **teilt sich Gesamtzähler mit Lotti** |
+
+🔴 **Wichtig:** Lottis 4PM und der Container-4PM hängen am selben Gesamtzähler → der im Container getrackte Verbrauch ist nicht rein, sondern vermischt mit Lottis Anteil. Für saubere Abrechnung braucht es **3 getrennte Energie-Auswertungen** (Familie Prinz / Lotti / Container), nicht nur eine Summe.
+
+---
+
+## 2. Kaputte Integrationen (7 gefunden, alle live bestätigt)
+
+| Integration | Fehler | Vermutliche Ursache |
+|---|---|---|
+| Growatt Server "BKW Stockenweiler" | `setup_error: communication_error` | Cloud-Verbindung zum Growatt-Portal gestört (Login/API) |
+| Google Home | `not_loaded` | unklar, noch nicht untersucht |
+| Brother MFC-J5730DW (IPP, "@ MacBook Pro von Alois") | `setup_retry`, IPP-Kommunikationsfehler | Drucker/Netzwerk nicht erreichbar über diesen Pfad |
+| fritzbox (Smart-Home-Thermostate/Steckdosen) | `setup_error` | kein Grund angegeben, näher prüfen |
+| FRITZ!Repeater 3000 | `setup_retry`, Host `192.168.178.187` nicht erreichbar | Repeater offline oder IP hat sich geändert |
+| UPnP FRITZ!Box-Erkennung (2 Einträge, IGDv1+v2) | `setup_retry`, Gerät nicht gefunden | vermutlich UPnP am Router aus oder redundant zu fritzbox/fritz-Integration |
+| FRITZ!Repeater 600 | `setup_error`, **401 Unauthorized** | gespeichertes Passwort stimmt nicht mehr — **braucht dich**, ich darf das nicht selbst eintragen |
+
+Zusätzlich unter "Entdeckt" (noch nie eingerichtet): ein zweiter, neuer FRITZ!Repeater 600 und ein Tuya-Konto (`wwolfitec@gmail.com`) verlangen "Neu konfigurieren".
+
+**271 von 915 Entitäten (30%) stehen aktuell auf "nicht verfügbar/unbekannt"** — davon ist ein Großteil normal (52 Geräte-Tracker = Handys/Laptops, die gerade nicht im WLAN sind), aber **102 Sensoren + 52 Schalter unverfügbar** ist viel und hängt vermutlich direkt mit den obigen kaputten Integrationen zusammen (ein kaputter Repeater reißt alle seine Sensoren mit).
+
+---
+
+## 3. Geräte ohne Bereich (sollten aber einem zugeordnet sein)
+
+| Gerät | Modell | Vermutlich gehört zu |
+|---|---|---|
+| **Rentnerbüro** | Shelly Plug S Gen3 | Büro_Eltern oder Buero_Controlroom_Eltern (Name sagt es eigentlich schon) |
+| **ELW - BAD 301 #17** | FRITZ!Smart Thermo 301 | ELW_Bad |
+| **ELW - WohKü - 301 #18** | FRITZ!Smart Thermo 301 | ELW_Wohnen |
+| BZP2N6L0KY (Growatt) | — | vermutlich Garten (Schwestergerät von "BKW Stockenweiler", das schon korrekt in Garten liegt) |
+| [TV]wolf tv | Samsung UE48H6200 | 🟡 nach Wolfs eigenem Namen — Kandidat für Migration nach home.frawo.tech statt Bereichszuordnung hier |
+| Home mini / Wohnzimmer / Badezimmer / WohnzimmerTV (Google/Chromecast/Blaupunkt) | diverse | unklar wessen — bitte klären (Eltern, Lotti oder Wolf-Rest?) |
+| FRITZ!Repeater 600 / FRITZ!WLAN Repeater 1750E | — | Netzwerk-Infrastruktur, Bereich optional |
+
+## 4. Geräte ohne eigenen Namen (zeigen nur die rohe Geräte-ID)
+
+| Rohname | Modell | Bereich |
+|---|---|---|
+| shellyblugwg3-34cdb07897c8 | Shelly BLU Gateway Gen3 | ELW_Wohnen |
+| shellyrgbw2-D88F55 | Shelly RGBW2 (Lichtsteuerung) | keiner |
+| shellyplugsg3-e4b063e5ec38 | Shelly Plug S Gen3 | Büro_Eltern |
+
+*(zwei weitere "shelly...*"-Rohnamen sind nur Netzwerk-Tracking-Duplikate der FRITZ!Box, keine echten separaten Geräte — kein Handlungsbedarf)*
+
+## 5. Mögliche Fehlzuordnung zur Klärung mit Wolf
+
+- **"Balkonkraftwerk"** (Shelly Pro 4PM, Kanal im Container-4PM) liegt im Bereich **Studio** — das ist vermutlich technisch korrekt (misst den Container-seitigen Anschluss des Balkonkraftwerks), aber optisch verwirrend neben "BKW Stockenweiler" in Garten. Klären: zwei verschiedene Messpunkte am selben Kraftwerk, oder Dopplung?
+- **Container/Studio/Server-Bereiche insgesamt** (13 Geräte: Balkonkraftwerk, Container/Allgemein, Container/Licht, Pro4PM-container, Server, Shelly Licht Container, Growatt Noah2000, Keller Pumpe Shelly) — nach Wolfs neuer Ansage gehört das administrativ zu Rothkreuz/`home.frawo.tech`, nicht zu dieser Eltern-Instanz. **Migrations-Kandidat**, nicht nur Umbenennung.
+- **"Wolf ELW Kühlschrank"** (ELW_Wohnen) — nach Wolf ist die ELW eigentlich Lottis Wohnung. Gehört der Kühlschrank wirklich Wolf (dann eigener Fall), oder ist der Name nur ein Überbleibsel?
+
+## 6. Neue Nutzer/Zugänge (heute erledigt)
+
+- HA-Nutzer **"Agent"** (Benutzername `agent`) angelegt, Administrator, Passwort von Wolf selbst gesetzt.
+- Eigenes Long-Lived-Token für den Agent-Nutzer erstellt und für diese Prüfung verwendet (liegt nur lokal im Scratchpad, nicht im Repo).
+- 🔴 Offen: Wolf wollte `FrawoAgent2026!` in Vaultwarden sichern — das muss er **selbst** eintragen, das darf ich nicht für ihn tun.
+
+---
+
+## Nächster Schritt
+
+Wolf geht das mit Claude "Schritt für Schritt" durch — Reihenfolge noch offen, Vorschlag: (1) Bereichs-Zuordnung + Umbenennung der oben gelisteten Lücken, (2) Container/Studio/Server-Migrationsentscheidung, (3) kaputte Integrationen einzeln (teils braucht es Wolfs Passwort-Eingabe).
+
+---
+
+## Update 2026-08-06 (Nachmittag): Aufraeumen abgeschlossen
+
+- UniFi/UCG erfolgreich verbunden (Host 10.1.0.1, SSL-Verifikation aus).
+- Raw-benannte Geraete final identifiziert: shellyplugsg3-e4b063e5ec38 (Buero_Eltern) = "Mutters Zusatzheizung".
+- Kuechenlicht RGBW2 und BLU-Gateway (beide dauerhaft offline, vermutlich nach Rothkreuz umgezogen) deaktiviert statt geloescht (Integration "FRITZ!Box Tools" unterstuetzt kein Einzel-Loeschen von Geraeten per API).
+- Balkonkraftwerk-Klaerung: "BKW Stockenweiler" (Garten, Growatt+Speicher) und "Balkonkraftwerk" (Container-4PM-Kanal) sind zwei echte, verschiedene Anlagen (Eltern vs. Container/Lotti) - keine Dopplung, beide bleiben.
+- Integrations-Fehler von 7 auf 3 reduziert:
+  - Growatt Server + Brother-Drucker (direkt) haben sich selbst erholt (waren vorruebergehende Fehler).
+  - fritz.box (Duplikat, XML-Parse-Bug in pyfritzhome) entfernt - echte Funktion laeuft ueber den separaten, funktionierenden Eintrag "FRITZ!Box 5690 Pro".
+  - Brother-ueber-Mac-IPP (redundant zum direkten Drucker-Eintrag) entfernt.
+  - 2x kaputte UPnP-Discovery-Eintraege (nie erfolgreich) entfernt.
+  - Verbleibend: Google Home (nie eingerichtet), FRITZ!Repeater 3000 (Host 192.168.178.187 nicht erreichbar), FRITZ!Repeater 600 (401, Passwort noetig - Wolf).
+
+## Update 2026-08-06 (spaeter): Anker-Umzug bestaetigt
+
+Ueber die neu verbundene UniFi-Integration sichtbar: 3 Geraete sind tatsaechlich schon im Anker/Rothkreuz-Netz aktiv (nicht mehr in Alopri): BLU-Gateway (shellyblugwg3-34cdb07897c8), shellyoutdoorsg3-e4b063d5661c, shellyplugsg3-8cbfea968024 (MAC 8c:bf:ea:96:80:24). Deren alte, tote Alopri-seitige FRITZ!Box-Tools-Eintraege in dieser Instanz wurden deaktiviert. Die echten, aktiven Geraete-Eintraege laufen jetzt korrekt ueber UniFi auf der Anker-Seite.
+
+FRITZ!Repeater 3000 (Host 192.168.178.187) zeigt sich NICHT im Anker-Netz - vermutlich weiterhin in Alopri, dort aber offline (kein Standortwechsel, echtes Erreichbarkeitsproblem).
+
+## Update 2026-08-06 (Abend): Kiosk-Dashboard + Energie-Grundlage
+
+- Neues Dashboard "Eltern" (`/eltern-kiosk/zuhause`) erstellt, zeigt ausschliesslich die 4 Eltern-Bereiche (Buero_Eltern, Buero_Controlroom_Eltern, Wohnkueche_Eltern, Garten) - keine Container/ELW/Lotti-Daten sichtbar. Fuer nicht-Admin-Nutzer freigegeben (require_admin: false).
+- Neue Nutzer "Alois" und "Heide" angelegt (nicht-Admin, nur lokaler Netzwerkzugriff) - Passwoerter muss Wolf selbst setzen (Dialog dafuer wurde vorbereitet).
+- Label "lotti" angelegt und auf ihre 4 Shelly-Pro-4PM-Kanaele (Herd, Kueche, Wohnung, Kueche/Zentral) angewendet, analog zum Label "container" von vorhin.
+- Naechster konkreter Schritt fuer Task "Energie-Split": 3 Template-Sensoren (Familie Prinz / Lotti / Container) auf Basis der jetzt vorhandenen Labels bauen, je einen Utility-Meter-Helfer fuer Monatsauswertung, dann Dashboard-Kachel. Noch nicht umgesetzt, nur vorbereitet.
+
+## Offene Punkte, die nur Wolf erledigen kann (Stand 06.08.2026 Abend)
+
+- FRITZ!Repeater 600 Passwort (401-Fehler)
+- FRITZ!Repeater 3000 Standort/Hardware pruefen (Host unerreichbar)
+- Home-Assistant-Passwoerter fuer "Alois" und "Heide" setzen (Dialog vorbereitet)
+- Paperless-Passwoerter fuer heidi/alois/luis setzen (Kommando siehe Chat-Verlauf)
+- CT121-Zweitinstanz (leeres Paperless) - loeschen oder migrieren, Entscheidung offen
+
+## Update 2026-08-06 (spaeter Abend): Energie-Split umgesetzt (Container + Familie Prinz)
+
+- Label "eltern" vervollstaendigt auf alle Geraete in Buero_Eltern/Buero_Controlroom_Eltern/Wohnkueche_Eltern (vorher nur 7 von vielen).
+- 2 Gruppen-Sensoren (Summe, HA-natives "Group"-Helper) erstellt:
+  - `sensor.container_gesamtverbrauch` (4 Kanaele Container-4PM)
+  - `sensor.familie_prinz_gesamtverbrauch` (9 einzeln gemessene Eltern-Geraete inkl. Growatt, Kuehlschraenke, Mutters Zusatzheizung, Sauna Kueche etc.)
+  - Beide liefern plausible kumulierte kWh-Werte, jetzt auch als Kachel im Eltern-Kiosk-Dashboard sichtbar.
+- **Lotti bewusst ausgelassen:** ihre Kanal-Sensor-Namen sind uneinheitlich (Mix aus alter/neuer Shelly-Firmware-Namenskonvention), zusammenrechnen haette Risiko von Doppelzaehlung/Luecke gehabt. Naechster Schritt: die 6 gefundenen Lotti-Sensoren (sensor.unbekannt_consumed_energy, sensor.kueche_consumed_energy, sensor.whg_steckdosen_consumed_energy, sensor.herd_energie, sensor.kuche_energie, sensor.wohnung_energie) einzeln pruefen, welche das echte kumulierte Total sind (nicht consumed/returned-Teilwerte), bevor ein Gruppen-Sensor gebaut wird.
+- Fuer echte Monats-/Jahresauswertung (nicht nur Lifetime-Summe) waeren noch Utility-Meter-Helfer auf beiden Gruppen-Sensoren sinnvoll - vorbereitet, nicht umgesetzt.
+
+## Update 2026-08-06 (Nacht): Lotti-Sensor auch geloest, Energie-Split komplett
+
+Lotti-Frage geklaert: die 3 "_consumed_energy"-Sensoren existierten gar nicht wirklich (keine Werte, Karteileichen von "Kueche / Zentral"). Die 3 echten, aktiven Lebenszeit-Zaehler sind Herd/Kueche/Wohnung. `sensor.lotti_gesamtverbrauch` erstellt (1.368,56 kWh), alle 3 Partei-Sensoren jetzt im Eltern-Dashboard sichtbar.
+
+**Alle 3 Energie-Split-Sensoren live:**
+- Familie Prinz: 3.006,28 kWh
+- Lotti: 1.368,56 kWh
+- Container: 6.186,52 kWh
+
+Gegenprobe (Lotti + Container = 7.555 kWh) kann Wolf jetzt gegen die naechste Ablesung des analogen ELW-Hauptzaehlers halten.
+
+## Update 2026-08-06 (spaet Nacht): Monatsauswertung ergaenzt
+
+3 Utility-Meter-Helfer erstellt (monatlicher Reset) auf Basis der 3 Gesamtverbrauchs-Sensoren:
+- sensor.familie_prinz_verbrauch_monat
+- sensor.lotti_verbrauch_monat
+- sensor.container_verbrauch_monat
+
+Zaehlen ab jetzt (nicht rueckwirkend), sichtbar als zweite Kachel "Verbrauch diesen Monat" im Eltern-Dashboard. Damit ist der Energie-Split jetzt vollstaendig: Lebenszeit-Summe UND laufender Monat pro Partei.
+
+**Session-Ende 2026-08-06.** Naechste Schritte siehe Notiz in Odoo-Task "Multi-Tenant HA-Architektur & Kiosk — Testkunde Prinz".
