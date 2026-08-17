@@ -106,3 +106,4 @@ config/network/wg_site2site_stockenweiler_fritz5690.conf
 config/network/ha_remote_stocki_sync.yaml
 config/network/airbeam5max_p2p_blueprint.json
 
+deployments/musikverwaltung/rekordbox_sync/.env
