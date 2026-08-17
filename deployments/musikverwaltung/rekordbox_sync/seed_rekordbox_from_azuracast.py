@@ -12,6 +12,7 @@ einzeln nachschlagen.
 """
 import os
 import sys
+import time
 from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
@@ -29,12 +30,12 @@ STATION_ID = os.environ["AZURACAST_STATION_ID"]
 API_KEY = os.environ["AZURACAST_API_KEY"]
 HEADERS = {"X-API-Key": API_KEY}
 
-REKORDBOX_ROOT = "M:\\"  # ein Backslash - bewusst kein Raw-String (r"M:\\" waere zwei)
+REKORDBOX_ROOT = "M:/"  # Rekordbox speichert FolderPath intern mit Forward-Slashes
 FOLDER_NAME = "Radio (Import 2026-08-17)"
 
 
 def azuracast_path_to_rekordbox(az_path: str) -> str:
-    return REKORDBOX_ROOT + az_path.replace("/", "\\")
+    return REKORDBOX_ROOT + az_path
 
 
 def fetch_playlists():
@@ -43,15 +44,26 @@ def fetch_playlists():
     return [p for p in resp.json() if p.get("is_enabled") and p.get("num_songs", 0) > 0]
 
 
+def _get_with_retry(url: str, timeout: int, attempts: int = 4):
+    last = None
+    for i in range(attempts):
+        resp = requests.get(url, headers=HEADERS, verify=False, timeout=timeout)
+        if resp.status_code == 200:
+            return resp
+        last = resp
+        time.sleep(0.5 * (2 ** i))  # AzuraCast-Worker ist unter Last flackrig (Odoo #964)
+    return last
+
+
 def fetch_playlist_media_ids(playlist_id: int) -> list[int]:
-    resp = requests.get(f"{BASE_URL}/api/station/{STATION_ID}/playlist/{playlist_id}/queue", headers=HEADERS, verify=False, timeout=60)
+    resp = _get_with_retry(f"{BASE_URL}/api/station/{STATION_ID}/playlist/{playlist_id}/queue", timeout=60)
     resp.raise_for_status()
     return [item["media_id"] for item in resp.json()]
 
 
 def fetch_file_path(media_id: int) -> tuple[int, str | None]:
-    resp = requests.get(f"{BASE_URL}/api/station/{STATION_ID}/file/{media_id}", headers=HEADERS, verify=False, timeout=30)
-    if resp.status_code != 200:
+    resp = _get_with_retry(f"{BASE_URL}/api/station/{STATION_ID}/file/{media_id}", timeout=30)
+    if resp is None or resp.status_code != 200:
         return media_id, None
     return media_id, resp.json().get("path")
 
@@ -74,7 +86,7 @@ def main():
     print(f"{len(all_media_ids)} eindeutige Titel insgesamt, loese Pfade parallel auf...")
 
     path_cache: dict[int, str | None] = {}
-    with ThreadPoolExecutor(max_workers=20) as pool:
+    with ThreadPoolExecutor(max_workers=8) as pool:
         futures = [pool.submit(fetch_file_path, mid) for mid in all_media_ids]
         done = 0
         for fut in as_completed(futures):
@@ -104,10 +116,24 @@ def main():
         added, neu_registriert, missing = 0, 0, 0
         for p in paths:
             key = p.replace("\\", "/")
-            content = path_to_content.get(key)
+            content = path_to_content.get(key) or path_to_content.get(p.replace("/", "\\"))
             if content is None:
                 if os.path.exists(p):
-                    content = db.add_content(p)
+                    try:
+                        content = db.add_content(p)
+                    except ValueError:
+                        # Altlast aus dem ersten, fehlerhaften Lauf: Datenbank hat
+                        # bereits einen (evtl. mit Backslashes gespeicherten)
+                        # Eintrag fuer diesen Pfad, der nicht in path_to_content
+                        # gelandet ist - frisch nachschlagen statt abzubrechen.
+                        content = next(
+                            (c for c in db.get_content()
+                             if c.FolderPath in (key, p.replace("/", "\\"))),
+                            None,
+                        )
+                        if content is None:
+                            missing += 1
+                            continue
                     path_to_content[key] = content
                     neu_registriert += 1
                 else:

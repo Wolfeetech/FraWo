@@ -1,7 +1,9 @@
 """Liest Rekordbox-Playlisten sicher aus einer Kopie der Datenbank und
 synchronisiert sie nach AzuraCast."""
+import logging
 import os
 import shutil
+import sys
 import tempfile
 
 import requests
@@ -104,6 +106,35 @@ def sync_to_azuracast(playlists: dict[str, list[str]]) -> dict[str, dict]:
     return results
 
 
+LOG_PATH = os.path.join(os.path.dirname(__file__), "sync.log")
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(message)s",
+    handlers=[logging.FileHandler(LOG_PATH, encoding="utf-8"), logging.StreamHandler()],
+)
+
+
+def main():
+    playlists = read_rekordbox_playlists()
+    if not playlists:
+        logging.warning("Keine Rekordbox-Playlisten mit Titeln gefunden - nichts zu tun.")
+        return 0
+
+    results = sync_to_azuracast(playlists)
+    fehler = 0
+    for name, r in results.items():
+        if r["gesendet"] != r["bestaetigt"]:
+            logging.error(f"{name}: {r['gesendet']} gesendet, aber nur {r['bestaetigt']} in AzuraCast bestaetigt")
+            fehler += 1
+        else:
+            logging.info(f"{name}: {r['bestaetigt']} Titel bestaetigt")
+
+    if fehler:
+        logging.error(f"{fehler} Playlisten mit Abweichung - siehe oben")
+        return 1
+    logging.info("Alle Playlisten erfolgreich synchronisiert")
+    return 0
+
+
 if __name__ == "__main__":
-    for name, tracks in read_rekordbox_playlists().items():
-        print(f"{name}: {len(tracks)} Titel")
+    sys.exit(main())
