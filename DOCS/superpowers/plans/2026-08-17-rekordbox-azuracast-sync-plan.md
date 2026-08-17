@@ -565,6 +565,30 @@ git commit -m "feat: Gesamtlauf mit Protokoll und Ergebnis-Exitcode"
 
 ---
 
+## ⏸ Pause vor Aufgabe 7 (17.08.2026)
+
+Aufgaben 1–6 sind fertig und funktionieren (Live-Test gegen die echte
+AzuraCast-API bestanden). **Aufgabe 7 (automatischer 20-Minuten-Sync)
+ist bewusst noch NICHT eingerichtet:**
+
+Wolf hat beim ersten echten Testlauf gestoppt, weil in Rekordbox noch
+nichts kuratiert ist — die "Radio (Import 2026-08-17)"-Playlisten sind
+nur die 1:1-Kopie aus AzuraCast. Ein automatischer Sync in Rekordbox->
+AzuraCast-Richtung würde jetzt nur die unveränderte Kopie zurückschreiben,
+bringt also nichts und birgt das Risiko, spätere echte Kuration mit einem
+noch nicht fertigen Stand zu überschreiben.
+
+Nebenbei wurde entdeckt und behoben: Der erste Bootstrap-Lauf (Aufgabe 3)
+war unvollständig (6.280 von 8.145 Titeln, wegen AzuraCast-Flakiness unter
+Last, Odoo #964) und hatte teils Backslash- statt Forward-Slash-Pfade in
+Rekordbox eingetragen. Beides gefixt, kompletter Nachzieh-Lauf: 8.127 von
+8.142 Titeln jetzt vollständig in Rekordbox.
+
+**Weiter geht's, wenn Wolf sagt, dass er in Rekordbox kuratiert hat** —
+dann Aufgabe 7 (Scheduler) wie geplant einrichten.
+
+---
+
 ## Aufgabe 7: Windows-Aufgabenplanung einrichten
 
 **Dateien:**
