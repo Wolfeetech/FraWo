@@ -116,20 +116,30 @@ Alle Dashboards und Regeln liegen in `deployments/monitoring/` und werden von do
 
 ## 📻 Radio
 
-**Sendetag ist real** (vorher standen 4 von 7 Plätzen leer und waren trotzdem aktiviert):
+🔴→✅ **Sendeplan seit dem 29.07.2026 komplett umgebaut, beim Audit
+19.08.2026 entdeckt und hier nachgetragen** (die alte
+Zeitfenster-Tabelle unten war komplett veraltet — wer/wann umgebaut
+hat, ist noch nicht geklärt). **Kein Zeitplan mehr aktiv**
+(`GET /api/station/1/schedule` liefert eine leere Liste) — stattdessen
+vier gleichgewichtete Kanäle, die rund um die Uhr gemischt laufen:
 
-| Zeit | Playlist | Titel | Material |
-|---|---|---|---|
-| 06–09 | Sunrise | 596 | 63 h |
-| 09–12 | Morning Drive | 1.222 | 124 h |
-| 12–14 | Lunch | 491 | 50 h |
-| 14–18 | Afternoon | 2.875 | 298 h |
-| 18–22 | Evening | 2.717 | 279 h |
-| 22–06 | Night | 1.264 | 148 h |
-| **Fr/Sa ab 22** | **Shows** | **426** | **734 h** DJ-Sets |
-| — | General Rotation (Auffangnetz) | 7.833 | 1.468 h |
+| Playlist | Titel | Gewichtung |
+|---|---|---|
+| Channel 1 — Acoustik & Ambient | 1.299 | 3 |
+| Channel 2 — Soft Groove | 3.376 | 3 |
+| Channel 3 — Harder Styles | 1.963 | 3 |
+| Channel 4 — Roadtrip & Classics | 1.513 | 3 |
 
-**Lautheit nachgemessen:** Dateien schwanken um 11,7 dB, das **Sendesignal nur um 3,0 dB** bei −15,8 LUFS. Die Angleichung arbeitet.
+Alle vier gleich gewichtet, kein Tageszeit- oder Wochentag-Bezug mehr,
+keine separaten DJ-Show-Slots. **Wolf wusste davon nichts** (Stand
+19.08.2026, nachgefragt). Verdacht: die parallele Sitzung von heute
+arbeitet an einem "yourparty"-Projekt mit AzuraCast-Bezug (Skripte wie
+`update_live_radio.py`/`_v2`/`_v3`, `enable_azuracast_streamers.py` im
+selben Repo gefunden) und hat vermutlich schon länger am selben Sender
+gearbeitet. **Noch nicht geklärt, nicht rückgängig gemacht** — Wolf
+klärt das direkt mit der anderen Sitzung.
+
+**Lautheit (Stand 29.07.2026, nicht neu gemessen):** Dateien schwanken um 11,7 dB, das **Sendesignal nur um 3,0 dB** bei −15,8 LUFS. Die Angleichung arbeitet.
 
 ⚠️ Der API-Schlüssel aus `reference_frawo_azuracast` ist **tot**. Verwaltung über die Datenbank:
 `ssh stock-pve` → `qm guest exec 210 -- docker exec azuracast sh -c 'mariadb -u$MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE …'`
