@@ -52,6 +52,27 @@ eigenen Inventar-Skript. Zwei Lehren daraus, bevor es verworfen wurde:
 - **Deshalb der Wechsel auf Lynis**: nicht von derselben Partei
   geschrieben, die das System kennt/gebaut hat.
 
+## Behoben (19.08.2026, selber Tag)
+
+- **Paket-Updates:** ProDesk 149 Pakete + Kernel (7.0.14-12-pve), Anker 89
+  Pakete + Kernel, beide neu gestartet und vollständig verifiziert
+  (Radio-Stream, Odoo, Grafana, alle VMs/Container). Dabei einen
+  Grafana-Paketkonflikt gefunden und behoben (`plugins-bundled`-Verzeichnis
+  blockierte die Installation, verschoben statt gelöscht).
+- **fail2ban:** war auf dem ProDesk schon installiert (nur `jail.local`
+  gefehlt), auf dem Anker komplett neu installiert. Beide jetzt mit
+  aktivem SSH-Schutz (5 Fehlversuche = 1 Stunde Sperre).
+- **Rootkit-Scanner (rkhunter):** auf beiden installiert, Basis-Datenbank
+  aufgebaut, erster Lauf durchgeführt. **Keine Rootkits gefunden** auf
+  beiden Servern. Zwei harmlose Fehlalarme auf dem Anker (Perl-/Python-
+  Skript-Werkzeuge, die absichtlich Skripte statt Programme sind) als
+  bekannt-unbedenklich eingetragen.
+- **SSH-Konfiguration bereinigt (ProDesk):** eine überflüssige, aber
+  wirkungslose `PermitRootLogin yes`-Zeile in der Hauptkonfiguration
+  entfernt (wurde durch eine strengere Regel in einer zweiten Datei
+  bereits überschrieben — nur lesend, nicht funktional). Effektive
+  Einstellung bleibt: nur Schlüssel, kein Passwort.
+
 ## Offen für die nächste Runde
 
 - Lynis-Funde priorisiert abarbeiten (fail2ban, Paket-Updates,
