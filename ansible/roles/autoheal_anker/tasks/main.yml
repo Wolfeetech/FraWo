@@ -1,0 +1,33 @@
+---
+- name: Automatischen Neustart nach Kernel-Panik aktivieren
+  ansible.posix.sysctl:
+    name: kernel.panic
+    value: "10"
+    state: present
+    reload: true
+    sysctl_file: /etc/sysctl.d/99-autoheal.conf
+
+- name: Watchdog-Paket installieren
+  ansible.builtin.apt:
+    name: watchdog
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Watchdog-Geraet konfigurieren
+  ansible.builtin.lineinfile:
+    path: /etc/watchdog.conf
+    regexp: '^#?watchdog-device'
+    line: 'watchdog-device = /dev/watchdog'
+
+- name: Lastgrenze fuer Watchdog konfigurieren
+  ansible.builtin.lineinfile:
+    path: /etc/watchdog.conf
+    regexp: '^#?max-load-1\s*='
+    line: 'max-load-1            = 24'
+
+- name: Watchdog-Dienst aktiv und beim Start dabei
+  ansible.builtin.service:
+    name: watchdog
+    state: started
+    enabled: true
