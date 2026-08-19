@@ -3,7 +3,7 @@ import sys
 sys.stdout.reconfigure(encoding='utf-8')
 
 base_url = "https://funk.frawo-tech.de/api"
-api_key = "b9a8e51be992498c:c55ea5c67b8ff16bffbed39004b056b1"
+api_key = "__ROTATED_SECRET__"
 station_id = 1
 
 # Method 1: X-API-Key

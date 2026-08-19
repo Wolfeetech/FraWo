@@ -3,7 +3,7 @@ import os
 
 ODOO_URL = 'http://10.1.0.112'
 ODOO_USER = 'wolf@frawo-tech.de'
-ODOO_PASSWORD = '11Vaudeville!!' # From the .env file!
+ODOO_PASSWORD = '__ROTATED_SECRET__' # From the .env file!
 ODOO_DB = 'FraWo_GbR'
 
 print("[*] Connecting to Odoo at", ODOO_URL)

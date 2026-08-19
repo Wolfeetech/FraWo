@@ -13,14 +13,14 @@ $rawPath = Join-Path $artifactDir "credential_scan.txt"
 New-Item -ItemType Directory -Path $artifactDir -Force | Out-Null
 
 $patterns = @(
-  "OD-Wolf-2026!",
-  "Winselhalle!!",
-  "Frawo0426!!",
-  "odoo_db_pass_final_v1",
+  "__ROTATED_SECRET__",
+  "__ROTATED_SECRET__",
+  "__ROTATED_SECRET__",
+  "__ROTATED_SECRET__",
   "db_password = odoo",
-  "password='OD-Wolf-2026!'",
-  "password = 'OD-Wolf-2026!'",
-  'PASSWORD = "OD-Wolf-2026!"'
+  "password='__ROTATED_SECRET__'",
+  "password = '__ROTATED_SECRET__'",
+  'PASSWORD = "__ROTATED_SECRET__"'
 )
 
 $rgArgs = @(
@@ -29,7 +29,6 @@ $rgArgs = @(
   "-S",
   "-g", "!artifacts/**",
   "-g", "!.git/**",
-  "-g", "!apps/**",
   "-g", "!scripts/tools/repo_credential_scan.ps1",
   ($patterns -join "|"),
   $repoRoot

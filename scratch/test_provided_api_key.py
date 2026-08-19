@@ -2,7 +2,7 @@ import requests
 import json
 
 base_url = "https://funk.frawo-tech.de/api"
-api_key = "9199dc63da623190:c9f8c3a22e25932753dd3f4d57fa0d9c"
+api_key = "__ROTATED_SECRET__"
 station_id = 1
 
 # Try both X-API-Key and Authorization headers just to be sure

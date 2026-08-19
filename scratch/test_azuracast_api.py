@@ -2,7 +2,7 @@ import requests
 
 base_url = "https://funk.frawo-tech.de/api"
 email = "wolf@frawo-tech.de"
-password = "11Vaudeville!!"
+password = "__ROTATED_SECRET__"
 
 # In AzuraCast, there isn't a simple username/password auth for the REST API (you usually need an API key).
 # BUT, we can try to get an API key or see if there is an auth endpoint.

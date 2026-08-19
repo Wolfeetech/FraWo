@@ -4,7 +4,7 @@ import time
 ODOO_URL = 'http://10.1.0.112:8069'
 ODOO_DB = 'FraWo_GbR'
 ODOO_USER = 'wolf@frawo-tech.de'
-ODOO_PASSWORD = 'Wolf2024!Frawo'
+ODOO_PASSWORD = '__ROTATED_SECRET__'
 
 def test_from(email_from):
     print(f"\n[*] Testing Odoo sending with From: '{email_from}'...")

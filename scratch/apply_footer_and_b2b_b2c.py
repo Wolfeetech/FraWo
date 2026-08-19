@@ -5,7 +5,7 @@ import os
 url = 'http://10.1.0.22:8069'
 db = 'FraWo_GbR'
 username = 'wolf@frawo-tech.de'
-password = 'Wolf2024!Frawo'
+password = '__ROTATED_SECRET__'
 
 FOOTER_HTML = '''
 <div class="fw-radio-sticky">

@@ -4,7 +4,7 @@ from email.message import EmailMessage
 smtp_host = 'smtp.strato.de'
 smtp_port = 587
 smtp_user = 'webmaster@frawo-tech.de'
-smtp_password = 'Wolf2024!Frawo'
+smtp_password = '__ROTATED_SECRET__'
 
 try:
     print(f"Connecting to {smtp_host}:{smtp_port}...")

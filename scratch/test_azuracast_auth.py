@@ -2,7 +2,7 @@ import requests
 
 base_url = "https://funk.frawo-tech.de/api"
 email = "wolf@frawo-tech.de"
-password = "11Vaudeville!!"
+password = "__ROTATED_SECRET__"
 station_id = 1
 
 # Try to get playlists (requires auth)

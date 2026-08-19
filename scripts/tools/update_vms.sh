@@ -2,7 +2,7 @@
 
 set -euxo pipefail
 
-export HOMESERVER_PROXMOX_ROOT_PASSWORD='11011995'
+export HOMESERVER_PROXMOX_ROOT_PASSWORD='__ROTATED_SECRET__'
 
 # Update CT 100
 ./scripts/proxmox_remote_exec.sh 'pct exec 100 -- bash -c "export DEBIAN_FRONTEND=noninteractive; apt-get update && apt-get dist-upgrade -yq && apt-get autoremove -yq"'

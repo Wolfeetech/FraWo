@@ -3,7 +3,7 @@ import os
 
 url = 'http://10.1.0.112:8069'
 db = 'FraWo_GbR'
-pw = 'Wolf2024!Frawo'
+pw = '__ROTATED_SECRET__'
 user = 'wolf@frawo.tech'
 
 print('Authenticating with Odoo...')

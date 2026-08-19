@@ -10,7 +10,7 @@ load_dotenv(env_path)
 
 ODOO_URL = os.getenv('ODOO_URL', 'http://10.1.0.112:8069')
 users = ['wolf@frawo-tech.de', 'franz@frawo-tech.de']
-passwords = ['Wolf2024!Frawo', '11Vaudeville!!']
+passwords = ['__ROTATED_SECRET__', '__ROTATED_SECRET__']
 dbs = ['FraWo_GbR', 'FraWo_Live']
 
 common = xmlrpc.client.ServerProxy(f'{ODOO_URL}/xmlrpc/2/common')

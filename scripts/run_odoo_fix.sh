@@ -1,4 +1,4 @@
-qm guest exec 220 -- bash -c "docker exec -i odoo-web-1 odoo shell -d FraWo_GbR --db_host=db --db_user=odoo --db_password=odoo_db_pass_final_v1 --no-http" <<INNER
+qm guest exec 220 -- bash -c "docker exec -i odoo-web-1 odoo shell -d FraWo_GbR --db_host=db --db_user=odoo --db_password=__ROTATED_SECRET__ --no-http" <<INNER
 user = env['res.users'].search([('login', '=', 'agent@frawo-tech.de')])
 if user:
     print('Found user ID %s' % user.id)

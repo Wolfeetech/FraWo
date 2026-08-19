@@ -27,7 +27,7 @@ $pyBase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($pyt
 
 $remote = @"
 qm guest exec 220 -- bash -c 'echo "$pyBase64" | base64 -d > /tmp/restore_home.py'
-qm guest exec 220 -- bash -lc 'cd /opt/homeserver2027/stacks/odoo && docker-compose exec -T web odoo shell -d FraWo_GbR --db_host=db --db_user=odoo --db_password=odoo_db_pass_final_v1 --no-http < /tmp/restore_home.py'
+qm guest exec 220 -- bash -lc 'cd /opt/homeserver2027/stacks/odoo && docker-compose exec -T web odoo shell -d FraWo_GbR --db_host=db --db_user=odoo --db_password=__ROTATED_SECRET__ --no-http < /tmp/restore_home.py'
 qm guest exec 220 -- bash -lc 'cd /opt/homeserver2027/stacks/odoo && docker-compose restart web'
 "@
 

@@ -7,7 +7,7 @@ def main():
     url = "http://10.1.0.112:8069"
     db = "FraWo_GbR"
     user = "wolf@frawo-tech.de"
-    pw = "Wolf2024!Frawo"
+    pw = "__ROTATED_SECRET__"
 
     print(f"Connecting to {url}...")
     try:

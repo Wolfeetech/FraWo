@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 
 base_url = "https://funk.frawo-tech.de"
 email = "wolf@frawo-tech.de"
-password = "11Vaudeville!!"
+password = "__ROTATED_SECRET__"
 
 session = requests.Session()
 

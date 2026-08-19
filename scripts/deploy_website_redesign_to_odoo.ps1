@@ -85,7 +85,7 @@ env.cr.commit()
 "@
     
     $pyImgB64 = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($pyImgContent))
-    $remoteImgCmd = "qm guest exec 220 -- bash -c `"echo '$pyImgB64' | base64 -d > /tmp/deploy_img.py; docker exec -i odoo-web-1 odoo shell -d FraWo_GbR --db_host=db --db_user=odoo --db_password=odoo_db_pass_final_v1 --no-http < /tmp/deploy_img.py`""
+    $remoteImgCmd = "qm guest exec 220 -- bash -c `"echo '$pyImgB64' | base64 -d > /tmp/deploy_img.py; docker exec -i odoo-web-1 odoo shell -d FraWo_GbR --db_host=db --db_user=odoo --db_password=__ROTATED_SECRET__ --no-http < /tmp/deploy_img.py`""
     & $proxmoxExec -RemoteCommand $remoteImgCmd
 }
 
@@ -102,7 +102,7 @@ $pyContent = $pyContent.Replace('"""__B64_LOGO__"""', "False")
 $pyBase64 = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($pyContent))
 
 $remoteCommand = @"
-qm guest exec 220 -- bash -c "echo '$pyBase64' | base64 -d > /tmp/deploy_website.py; docker exec -i odoo-web-1 odoo shell -d FraWo_GbR --db_host=db --db_user=odoo --db_password=odoo_db_pass_final_v1 --no-http < /tmp/deploy_website.py"
+qm guest exec 220 -- bash -c "echo '$pyBase64' | base64 -d > /tmp/deploy_website.py; docker exec -i odoo-web-1 odoo shell -d FraWo_GbR --db_host=db --db_user=odoo --db_password=__ROTATED_SECRET__ --no-http < /tmp/deploy_website.py"
 "@
 
 Write-Host "Executing on VM 220..."

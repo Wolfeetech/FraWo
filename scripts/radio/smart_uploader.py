@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 ENV_PATH = Path.home() / '.ai-tools-shared' / '.env'
 load_dotenv(ENV_PATH)
 
-API_KEY = os.getenv('AZURACAST_API_KEY', 'b9a8e51be992498c:c55ea5c67b8ff16bffbed39004b056b1')
+API_KEY = os.getenv('AZURACAST_API_KEY', '__ROTATED_SECRET__')
 BASE_URL = os.getenv('AZURACAST_URL', 'https://funk.frawo-tech.de')
 STATION_ID = 1
 

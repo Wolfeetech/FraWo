@@ -18,7 +18,7 @@ define( 'WP_SITEURL', 'https://yourparty.tech' );
 
 // API Keys
 define('YOURPARTY_AZURACAST_URL', 'http://192.168.178.210');
-define('YOURPARTY_AZURACAST_API_KEY', '9199dc63da623190:c9f8c3a22e25932753dd3f4d57fa0d9c');
+define('YOURPARTY_AZURACAST_API_KEY', '__ROTATED_SECRET__');
 
 // Extra newline to prevent corruption merging
 define('FS_METHOD', 'direct');

@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 env_path = Path.home() / '.ai-tools-shared' / '.env'
 load_dotenv(env_path)
 
-password = os.getenv('ODOO_PASSWORD', 'Wolf2024!Frawo')
+password = os.getenv('ODOO_PASSWORD', '__ROTATED_SECRET__')
 
 def test_login(username):
     print(f"Testing login for {username}...")

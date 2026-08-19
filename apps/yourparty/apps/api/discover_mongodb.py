@@ -8,7 +8,7 @@ import json
 import sys
 
 AZURACAST_URL = "https://radio.yourparty.tech"
-AZURACAST_API_KEY = "9199dc63da623190:c9f8c3a22e25932753dd3f4d57fa0d9c"
+AZURACAST_API_KEY = "__ROTATED_SECRET__"
 STATION_ID = 1
 
 # Common MongoDB connection patterns for AzuraCast
