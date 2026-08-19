@@ -104,6 +104,77 @@ war — reines Zeitproblem, keine Fehlkonfiguration. Auf
 Ereignis-statt-Zeittakt-Prinzip von heute. Server zeigt jetzt 0
 fehlgeschlagene Dienste.
 
+## Schritt 1: Doku-gegen-Wirklichkeit-Abgleich (19.08.2026 nachmittags)
+
+Systematischer Abgleich von NOW.md gegen den tatsächlichen Zustand
+beider Server (frisches Inventar nach allen heutigen Reparaturen).
+**Das ist der Abgleich selbst — nicht jeder Fund wurde heute schon
+behoben, das ist bewusst getrennt (siehe Prinzip "eine Sache fertig
+machen, bevor wir größer denken").**
+
+### Bestätigt korrekt
+- Node-Tabelle (IPs, Rollen) — stimmt
+- ProDesk CT/VM-Tabelle (IDs, Namen, IPs) — stimmt
+- Firewall auf beiden Knoten aktiv (`pve-firewall enabled/running`,
+  eigene `PVEFW-INPUT`-Kette) — stimmt, aber auf dem ProDesk nicht bis
+  zum Ende durchgeprüft (siehe unten)
+- SSH nur Schlüssel, kein Passwort — stimmt (heute schon per
+  `sshd -T` verifiziert)
+- Backup-Zeitplan (Odoo stündlich, Radio/PBS-Config nachts) — stimmt
+- WD-Elements-Seriennummern/Zuordnung — stimmt
+
+### 🔴 Echte Lücken gefunden (NOW.md sagt nichts, obwohl es läuft)
+
+1. **CT121-Beschreibung veraltet:** NOW.md nennt nur "nie produktiv
+   geworden", erwähnt nicht die 1133×-Neustartschleife vom 17./18.08.
+   und dass die Container seither bewusst gestoppt sind (nicht nur
+   "leer").
+2. **`frawo_radio_daemon.py` (Port 8888) war komplett undokumentiert**
+   — heute gefunden und repariert, siehe oben und
+   `deployments/radio_bridge/`.
+3. **Anker hat eine eigene, komplett undokumentierte
+   Überwachungs-Ecke:** `netdata` (volle Suite), `glances`, ein
+   lokaler `cloudflared`-Proxy, ein `otel-plugin` (OpenTelemetry) —
+   NOW.md beschreibt im Überwachungs-Abschnitt nur die
+   Prometheus/Grafana/Alertmanager-Kette auf dem ProDesk, nichts davon.
+4. **Zwei weitere, nirgends erwähnte Netzwerk-Freigaben:**
+   `/mnt/wolf-ee` (NFS, Anker → ProDesk) und `/mnt/frawo-library`
+   (CIFS-Mount auf dem Anker, zeigt auf dieselbe `//10.1.0.94/radio`-
+   Freigabe wie VM210). Zweck unklar, nicht weiter untersucht.
+5. **Google-Drive-Speicher auf dem Anker ist zu 70% voll** (3,8 von
+   5,4 TB) — kein Alarm dafür in NOW.md/Grafana erwähnt.
+6. **Zwei neue Zeitpläne auf dem Anker ohne Dokumentation:**
+   `rclone-gdrive-watchdog.timer` (alle ~30 Min.) und
+   `pve-root-disk-monitor.timer`.
+7. **`sda`/`sdb`-Laufwerksbuchstaben auf dem ProDesk haben sich seit
+   dem 01.08. verschoben** (Quarantäne-Aufräumaktion heute hat das
+   nochmal gezeigt) — Tabelle in NOW.md nennt `sdc`/`sdd`/`sdb`/`sda`,
+   aktuell sind es andere Buchstaben für dieselben Platten. Text warnt
+   davor, aber die Tabelle selbst nutzt trotzdem Buchstaben statt nur
+   Seriennummern als Referenz.
+
+### ⚠️ Möglicher Konflikt mit einer parallelen Sitzung
+
+Zwischen zwei Inventar-Scans heute (11:47 und 17:34 Uhr) haben sich
+mehrere Arbeitsspeicher-Zuteilungen geändert (u. a. CT120 3072→2048,
+CT150 6144→2048, CT108 1024→512, CT121 2048→512, VM360-Balloon
+6144→3072), **ohne dass wir das veranlasst haben.** Zeitlich passt das
+zu dem parallelen Sicherheits-Commit von heute Nachmittag (Wolf hat
+bestätigt: gewollte parallele Sitzung). Sieht nach demselben
+"RAM-Neuplanung"-Vorhaben aus, das wir uns für Schritt 3 vorgenommen
+hatten — **möglicherweise arbeitet die andere Sitzung bereits daran.**
+Vor eigenen RAM-Änderungen abklären, damit sich nichts überschneidet.
+
+### Nicht abschliessend geprüft (fehlende Zeit heute)
+
+- Vollständige `PVEFW-INPUT`-Regelkette auf dem ProDesk (nur der
+  Kurzstatus, nicht jede einzelne Regel)
+- Alopri-Anbindung (wg1-Regeln, Freigaben) — nicht neu verifiziert
+- Odoo/Datenbank-Inhalte gegen die "Odoo = Quelle der Wahrheit"-Aussage
+- Radio-Sendeplan-Tabelle (Titelzahlen) — mit Sicherheit veraltet nach
+  der heutigen Quarantäne-Löschung (1,1 TB) und dem laufenden
+  Rekordbox-Projekt, nicht neu gemessen
+
 ## Offen für die nächste Runde
 
 - Lynis-Funde priorisiert abarbeiten (fail2ban, Paket-Updates,

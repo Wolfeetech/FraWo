@@ -3,7 +3,9 @@
 > **Zuerst lesen.** Diese Datei beschreibt, **was läuft** — nicht, was passiert ist.
 > Historie steht in der Git-Historie, Entscheidungen und Aufgaben in **Odoo (CT140, `10.1.0.112:8069`) = einzige Quelle der Wahrheit**.
 >
-> Stand: **29.07.2026**, alles an diesem Tag live nachgemessen.
+> Stand: **29.07.2026** als Grundgerüst, seither laufend punktuell
+> nachgetragen (zuletzt 19.08.2026 — Profi-Audit Schritt 1, siehe
+> `DOCS/infrastruktur-audit-2026-08-19.md` für den vollen Abgleich).
 
 ---
 
@@ -49,7 +51,7 @@ Wer eine davon nicht kennt, sucht stundenlang am falschen Ende.
 | CT108 | vaultwarden | `10.1.0.95` | Passwortsafe → `vault.frawo.tech` |
 | CT110 | n8n | `10.1.0.100` | Automatisierung + **echtes Paperless-ngx** (Docker `paperless-webserver`, Port 8000) — die von Odoo-Automatik verlinkte, aktiv genutzte Instanz |
 | CT120 | fileserver | `10.1.0.94` | Samba **und Musikverwaltung (beets)** |
-| CT121 | paperless | `10.1.0.145` | 🔴 **Leere Zweitinstanz** Paperless-ngx (Port 8123) — am 05.08.2026 als Ersatz für das alte Paperless auf Flos `frawo-docker-1` aufgesetzt, aber nie produktiv geworden; die echten Dokumente laufen unbemerkt über CT110/n8n. Klären: löschen oder doch migrieren (Odoo #900) |
+| CT121 | paperless | `10.1.0.145` | 🔴 **Leere Zweitinstanz** Paperless-ngx (Port 8123) — am 05.08.2026 als Ersatz für das alte Paperless auf Flos `frawo-docker-1` aufgesetzt, aber nie produktiv geworden; die echten Dokumente laufen unbemerkt über CT110/n8n. **Zusätzlich seit Erstellung in einer Neustartschleife hängengeblieben (RestartCount 1133, gefunden+gestoppt 17./18.08.2026)** — Container bewusst gestoppt, nicht nur "leer". Klären: löschen oder doch migrieren (Odoo #900) |
 | CT140 | frawotech-web | `10.1.0.112` | **Odoo 19** → `frawo.tech` |
 | CT150 | monitoring-stack | `10.1.0.35` · TS `100.100.115.80` | Prometheus, Grafana, Alertmanager |
 | VM210 | azuracast-vm | `10.1.0.38` | **Radio** → `funk.frawo.tech` |
@@ -62,6 +64,8 @@ Zum Vergleich: `10.1.0.40` ist ein **anderes** haos (VM210 **auf proxmox-anker**
 CT130 `radio-node` (`10.1.0.200`) — **einziger privilegierter Container von 13** (Odoo #887). Betreibt Docker: Radio-Backend, PostgreSQL, Redis, **uptime-kuma** (`:3001`, zweites Überwachungssystem → Odoo #888). VM240 = **PBS-FraWo** (`10.1.0.7`).
 
 CT150 `openclaw` (`10.1.0.31` · TS `100.72.154.15`) — **das einzige OpenClaw-Gateway**, Docker, Port 19000, Anmeldung per **Token**. Übersteht einen Neustart (CT `onboot`, Docker aktiviert, Container `unless-stopped`). Arbeitsplätze verbinden sich als **Node** dorthin — auf dem StudioPC die Aufgabe „OpenClaw Node" (`.openclaw\node.cmd`, wartet auf Tailscale, startet sich selbst neu, Protokoll in `.openclaw\logs\node-host.log`). Ein **zweites** Gateway auf dem StudioPC gehört nicht dorthin und kann gar nicht starten (Odoo #893).
+
+🔴 **Beim Audit 19.08.2026 gefunden, hier bisher nicht dokumentiert:** Der Anker betreibt zusätzlich eine eigene, komplett separate Überwachungs-Ecke direkt auf dem Wirt — `netdata` (volle Suite, Ports 19999/8125), `glances` (61209), ein lokaler `cloudflared`-Proxy (20241) und ein `otel-plugin` (OpenTelemetry, 4317). Verhältnis zur Prometheus/Grafana-Kette auf dem ProDesk ungeklärt — noch nicht untersucht, wer das wozu eingerichtet hat. Ausserdem zwei nirgends erwähnte Netzwerk-Freigaben: `/mnt/wolf-ee` (NFS, Anker → ProDesk) und `/mnt/frawo-library` (CIFS, zeigt auf dieselbe `//10.1.0.94/radio`-Freigabe wie VM210) — Zweck unklar.
 
 ---
 
@@ -139,11 +143,20 @@ Läuft dort, weil die Platte **direkt eingehängt** ist (`/mnt/music`) — nicht
 
 | | |
 |---|---|
-| Erfasst | 9.264 Titel, 420 GB |
+| Erfasst | 9.264 Titel, 420 GB (Stand 29.07., seither Rekordbox-Import + Radio-Bridge-Uploads dazugekommen — nicht neu gemessen) |
 | Genres | **16 kanonisch** statt 600 gewachsener Bezeichnungen |
 | Alben über mehrere Genres verteilt | **0** (vorher 100) |
 | Doubletten in der Rotation | **0** |
-| Freigeräumt | 64 GB + 160 Dateien (in Quarantäne, nicht gelöscht) |
+
+🔴→✅ **19.08.2026:** Die Platte (`/mnt/music_hdd`) war zu **100% voll**
+(0 Byte frei) — dadurch scheiterte u. a. die Radio-Bridge (siehe unten).
+Ursache: der `Quarantine`-Ordner war unbemerkt auf **1,4 TB**
+angewachsen (statt der früher vermerkten "64 GB, 160 Dateien"). Nach
+Rücksprache mit Wolf: `Duplicates` (1,1 TB, alle 25.737 Dateien
+einzeln gegen die Hauptbibliothek verifiziert) und `Corrupt` (34 GB,
+Stichprobe mit `ffmpeg` als wirklich unlesbar bestätigt) komplett
+gelöscht. `Unidentified_Research` (324 GB) bewusst **nicht** angefasst
+— braucht echte Durchsicht. Platte jetzt nur noch 43% voll.
 
 **Zweistufiges Modell nach Discogs-Vorbild:** `genre` breit und **eine pro Album** (Alben bleiben zusammen), `style` spezifisch pro Titel.
 
@@ -151,6 +164,15 @@ Läuft dort, weil die Platte **direkt eingehängt** ist (`/mnt/music`) — nicht
 
 **Playlisten für Rekordbox und Mixxx:**
 `playliste-exportieren.sh warmup 'genre:House length:240..600'` → erzeugt Linux- und Windows-Fassung.
+
+**Radio-Bridge (Fernbedienung, Details siehe `deployments/radio_bridge/`):**
+Wolf kann als DJ von unterwegs (Handy) Titel in den Eingangsordner
+hochladen — Webdienst auf `10.1.0.128:8888` (Token-geschützt), stößt
+`beet import` + AzuraCast-Rescan an. War bis 19.08.2026 komplett
+undokumentiert (per nmap-Audit gefunden), zwei echte Bugs behoben
+(beets' `incremental`-Einstellung blockierte Wiederholungen; die
+Erfolgsprüfung passte nicht zu `copy:no/move:no`). Über die echte API
+getestet und bestätigt funktionsfähig.
 
 ---
 
@@ -197,6 +219,10 @@ Buchstaben verschieben sich — **Seriennummer entscheidet**.
 - SSH auf beiden Knoten: **nur Schlüssel**, kein Passwort.
 - Gäste-WLAN erreicht vom Server-VLAN nur DNS und Zeitserver.
 - Die Überwachungs-Ports (19022/19100/19182) sind **nur für Prometheus** offen.
+- **19.08.2026:** `fail2ban` (SSH-Schutz) + `rkhunter` (Rootkit-Scanner,
+  keine Funde) auf beiden Servern installiert. Alle Pakete + Kernel
+  aktualisiert (ProDesk 149, Anker 89), beide sauber neu gestartet und
+  voll verifiziert. Details: `DOCS/infrastruktur-audit-2026-08-19.md`.
 
 **Rücknahme-Sicherungen** auf dem ProDesk unter `/root/`:
 `exports.backup-20260729` · `hosts.backup-20260729` · `host.fw.backup-20260729` · `nginx-host-konfiguration-20260729.tar.gz` · `crontab.backup-20260729`
