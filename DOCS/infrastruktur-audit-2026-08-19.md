@@ -73,6 +73,37 @@ eigenen Inventar-Skript. Zwei Lehren daraus, bevor es verworfen wurde:
   bereits überschrieben — nur lesend, nicht funktional). Effektive
   Einstellung bleibt: nur Schlüssel, kein Passwort.
 
+## nmap-Scan von außen (unabhängige Sicht, 19.08.2026 nachmittags)
+
+Von der StudioPC aus gescannt (nicht vom Server selbst aus).
+
+| Server | Offene Ports | Einordnung |
+|---|---|---|
+| ProDesk | 22 (SSH), 111+2049 (NFS), 3128 (Proxmox-Konsole, nmap zeigt "squid" — falsch geraten), **8888 (unbekannt!)** | |
+| Anker | 22 (SSH), 111 (rpcbind), 3128 (Proxmox-Konsole) | |
+
+✅ Bestätigt: Die Prometheus-Weiterleitungsports (19022/19100/19182) sind
+von hier aus **nicht** sichtbar — genau wie dokumentiert.
+
+🔴 **Fund: Port 8888 war ein komplett undokumentierter eigener
+Webdienst** (`frawo_radio_daemon.py`) — siehe
+`deployments/radio_bridge/README.md` für die volle Geschichte. Kurz:
+Fernbedienung fürs Radio-Programm (Upload vom Handy unterwegs), war
+gewollt aber kaputt — der Ziel-Ordner zeigte auf den gefälschten,
+nicht eingehängten USB-Stick vom Vormittag. Repariert, dokumentiert,
+ins Repo aufgenommen.
+
+## Boot-Zeitproblem behoben (ProDesk)
+
+Zwei Netzwerk-Freigaben (`/mnt/radio_rw`, `/mnt/paperless_scans`)
+scheiterten nach jedem Neustart, weil der ProDesk sie einzuhängen
+versuchte, bevor der Dateiserver-Container (CT120) mit Samba bereit
+war — reines Zeitproblem, keine Fehlkonfiguration. Auf
+"automatisch beim ersten Zugriff einhängen" umgestellt
+(`x-systemd.automount`) statt fest beim Hochfahren — passt zum
+Ereignis-statt-Zeittakt-Prinzip von heute. Server zeigt jetzt 0
+fehlgeschlagene Dienste.
+
 ## Offen für die nächste Runde
 
 - Lynis-Funde priorisiert abarbeiten (fail2ban, Paket-Updates,
