@@ -1,4 +1,13 @@
 ---
+# Die vier Watchdog-Paket-Tasks (Installation/Konfiguration/Dienst des
+# generischen Debian-Pakets "watchdog") wurden entfernt: Proxmox bringt mit
+# pve-ha-manager bereits seinen eigenen Watchdog-Mechanismus (watchdog-mux)
+# mit, der /dev/watchdog exklusiv haelt, und pve-ha-manager hat ein hartes
+# "Conflicts: watchdog" gegen genau dieses Paket. Ein echter Lauf haette
+# proxmox-ve/pve-container/pve-ha-manager/pve-manager/qemu-server entfernt,
+# um "watchdog" zu installieren. Live gegen anker-pve verifiziert am
+# 2026-08-20 (watchdog-mux laeuft bereits aktiv). Bitte nicht wieder
+# hinzufuegen, ohne das zu pruefen.
 - name: Automatischen Neustart nach Kernel-Panik aktivieren
   ansible.posix.sysctl:
     name: kernel.panic
@@ -6,28 +15,3 @@
     state: present
     reload: true
     sysctl_file: /etc/sysctl.d/99-autoheal.conf
-
-- name: Watchdog-Paket installieren
-  ansible.builtin.apt:
-    name: watchdog
-    state: present
-    update_cache: true
-    cache_valid_time: 3600
-
-- name: Watchdog-Geraet konfigurieren
-  ansible.builtin.lineinfile:
-    path: /etc/watchdog.conf
-    regexp: '^#?watchdog-device'
-    line: 'watchdog-device = /dev/watchdog'
-
-- name: Lastgrenze fuer Watchdog konfigurieren
-  ansible.builtin.lineinfile:
-    path: /etc/watchdog.conf
-    regexp: '^#?max-load-1\s*='
-    line: 'max-load-1            = 24'
-
-- name: Watchdog-Dienst aktiv und beim Start dabei
-  ansible.builtin.service:
-    name: watchdog
-    state: started
-    enabled: true
