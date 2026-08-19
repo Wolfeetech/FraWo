@@ -2,11 +2,11 @@
 // Deployed as Cloudflare Worker on vote.frawo-tech.de or similar
 // Receives vote requests from authenticated Odoo users and forwards to AzuraCast
 
-const AZURACAST_API_KEY = "b9a8e51be992498c:c55ea5c67b8ff16bffbed39004b056b1";
+const AZURACAST_API_KEY = "__ROTATED_SECRET__";
 const AZURACAST_URL = "https://funk.frawo-tech.de";
 const STATION_ID = 1;
 // Shared secret between Odoo frontend and this Worker so we know the vote came from a logged-in user
-const ODOO_SHARED_SECRET = "frawo-radio-bridge-2026";
+const ODOO_SHARED_SECRET = "__ROTATED_SECRET__";
 
 addEventListener("fetch", event => {
   event.respondWith(handleRequest(event.request));

@@ -14,7 +14,7 @@ import base64
 Path("/tmp/update_surface_task.py").write_bytes(base64.b64decode("$pythonScriptBase64"))
 PY
 cd /opt/homeserver2027/stacks/odoo
-docker-compose exec -T web odoo shell -d FraWo_GbR --db_host=db --db_user=odoo --db_password=odoo_db_pass_final_v1 --no-http < /tmp/update_surface_task.py'
+docker-compose exec -T web odoo shell -d FraWo_GbR --db_host=db --db_user=odoo --db_password=__ROTATED_SECRET__ --no-http < /tmp/update_surface_task.py'
 "@
 
 $responseString = & $proxmoxExec -RemoteCommand $remote -SshHost "anker-pve" | Out-String

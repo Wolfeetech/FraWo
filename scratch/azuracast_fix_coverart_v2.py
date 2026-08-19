@@ -7,7 +7,7 @@ import sys
 import json
 import os
 
-API_KEY = "b9a8e51be992498c:c55ea5c67b8ff16bffbed39004b056b1"
+API_KEY = "__ROTATED_SECRET__"
 BASE = "https://funk.frawo-tech.de"
 HEADERS = {"X-API-Key": API_KEY}
 PROGRESS_FILE = os.path.join(os.path.dirname(__file__), "coverart_fix_progress.json")

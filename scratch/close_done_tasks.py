@@ -12,7 +12,7 @@ load_dotenv(env_path)
 ODOO_URL = os.getenv('ODOO_URL', 'http://10.1.0.112:8069')
 ODOO_DB = 'FraWo_GbR'
 ODOO_USER = os.getenv('ODOO_USER', 'wolf@frawo-tech.de')
-ODOO_PASSWORD = os.getenv('ODOO_PASSWORD', 'Wolf2024!Frawo')
+ODOO_PASSWORD = os.getenv('ODOO_PASSWORD', '__ROTATED_SECRET__')
 
 def close_tasks(task_ids):
     common = xmlrpc.client.ServerProxy(f'{ODOO_URL}/xmlrpc/2/common')

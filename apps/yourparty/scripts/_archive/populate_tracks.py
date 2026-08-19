@@ -11,7 +11,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 # Configuration
 MONGO_URI = "mongodb://root:4f5cd00532af49b5941d6f6385b2e0bf@192.168.178.222:27017"
 AZURACAST_URL = "https://192.168.178.210"
-AZURACAST_API_KEY = "9199dc63da623190:c9f8c3a22e25932753dd3f4d57fa0d9c"
+AZURACAST_API_KEY = "__ROTATED_SECRET__"
 STATION_ID = 1
 
 def main():

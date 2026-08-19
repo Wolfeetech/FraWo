@@ -5,7 +5,7 @@ from email.header import Header
 SMTP_HOST = 'smtp.strato.de'
 SMTP_PORT = 587
 SMTP_USER = 'webmaster@frawo-tech.de'
-SMTP_PASS = 'Frawo0426!!'
+SMTP_PASS = '__ROTATED_SECRET__'
 
 def main():
     print("[*] Connecting to Strato SMTP at", SMTP_HOST, ":", SMTP_PORT)

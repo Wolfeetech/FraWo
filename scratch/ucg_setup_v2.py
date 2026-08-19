@@ -8,7 +8,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 UCG_IP = "10.1.0.1"
 USERNAME = "admin"
-PASSWORD = "OD-Wolf-2026!"
+PASSWORD = "__ROTATED_SECRET__"
 TOOLBOX_IP = "10.1.0.20"
 
 session = requests.Session()

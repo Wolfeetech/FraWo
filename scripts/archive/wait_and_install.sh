@@ -1,5 +1,5 @@
 #!/bin/bash
-export HOMESERVER_PROXMOX_ROOT_PASSWORD='11011995'
+export HOMESERVER_PROXMOX_ROOT_PASSWORD='__ROTATED_SECRET__'
 
 echo "Warte auf Proxmox Server 192.168.2.10..."
 while ! ping -c 1 192.168.2.10 &> /dev/null; do

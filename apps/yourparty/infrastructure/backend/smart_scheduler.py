@@ -14,7 +14,7 @@ MONGO_PORT = os.getenv("MONGO_PORT", "27017")
 MONGO_URI = f"mongodb://{MONGO_USER}:{MONGO_PASS}@{MONGO_HOST}:{MONGO_PORT}"
 
 AZURACAST_URL = os.getenv("AZURACAST_URL", "https://192.168.178.210")
-AZURACAST_API_KEY = os.getenv("AZURACAST_API_KEY", "9199dc63da623190:c9f8c3a22e25932753dd3f4d57fa0d9c")
+AZURACAST_API_KEY = os.getenv("AZURACAST_API_KEY", "__ROTATED_SECRET__")
 STATION_ID = os.getenv("AZURACAST_STATION_ID", "1")
 
 logger = logging.getLogger("SmartScheduler")

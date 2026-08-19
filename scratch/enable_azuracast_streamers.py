@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 env_path = Path.home() / '.ai-tools-shared' / '.env'
 load_dotenv(env_path)
 
-AC_API_KEY = os.getenv('AZURACAST_API_KEY', 'b9a8e51be992498c:c55ea5c67b8ff16bffbed39004b056b1')
+AC_API_KEY = os.getenv('AZURACAST_API_KEY', '__ROTATED_SECRET__')
 AC_URL = os.getenv('AZURACAST_URL', 'https://funk.frawo-tech.de').rstrip('/')
 if AC_URL.endswith('/api'):
     AC_URL = AC_URL[:-4]

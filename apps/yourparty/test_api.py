@@ -2,7 +2,7 @@ import requests
 import json
 import os
 
-API_KEY = "b67d671461fd35d0:9ba6fc04467491f28c29caf8895a5ca7"
+API_KEY = "__ROTATED_SECRET__"
 BASE_URL = "http://192.168.178.210/api"
 
 headers = {

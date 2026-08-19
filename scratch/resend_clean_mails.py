@@ -3,7 +3,7 @@ import xmlrpc.client
 ODOO_URL = 'http://10.1.0.112:8069'
 ODOO_DB = 'FraWo_GbR'
 ODOO_USER = 'wolf@frawo-tech.de'
-ODOO_PASSWORD = 'Wolf2024!Frawo'
+ODOO_PASSWORD = '__ROTATED_SECRET__'
 
 def copy_and_send(mail_id, new_to, models, uid):
     print(f"\n[*] Copying mail ID {mail_id} to new clean mail for {new_to}...")

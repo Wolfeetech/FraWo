@@ -3,7 +3,7 @@ from email.message import EmailMessage
 
 smtp_host = 'smtp.strato.de'
 smtp_port = 465
-smtp_password = 'Frawo0426!!'
+smtp_password = '__ROTATED_SECRET__'
 mailbox = 'webmaster@frawo-tech.de'
 
 try:

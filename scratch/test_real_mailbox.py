@@ -3,7 +3,7 @@ from email.message import EmailMessage
 
 smtp_host = 'smtp.strato.de'
 smtp_port = 587
-smtp_password = 'Wolf2024!Frawo'
+smtp_password = '__ROTATED_SECRET__'
 
 def test_real_send(mailbox):
     try:
