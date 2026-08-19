@@ -133,10 +133,15 @@ machen, bevor wir größer denken").**
    — heute gefunden und repariert, siehe oben und
    `deployments/radio_bridge/`.
 3. **Anker hat eine eigene, komplett undokumentierte
-   Überwachungs-Ecke:** `netdata` (volle Suite), `glances`, ein
-   lokaler `cloudflared`-Proxy, ein `otel-plugin` (OpenTelemetry) —
-   NOW.md beschreibt im Überwachungs-Abschnitt nur die
-   Prometheus/Grafana/Alertmanager-Kette auf dem ProDesk, nichts davon.
+   Überwachungs-Ecke:** `netdata` (volle Suite, seit 31.05.2026 laut
+   Konfig-Datum), `glances` (systemd-Dienst, seit heute Mittag aktiv —
+   evtl. von der parallelen Sitzung gestartet), `otel-plugin` gehört zu
+   netdata selbst (kein separater Dienst). NOW.md beschreibt im
+   Überwachungs-Abschnitt nur die Prometheus/Grafana/Alertmanager-Kette
+   auf dem ProDesk, nichts davon. **Geklärt:** der lokale
+   `cloudflared`-Tunnel mit Ziel `frawo-tech.de`/`10.4.0.x` ist die
+   **alte Domain vor der Umbenennung**, wird 1:1 weitergeleitet,
+   Wolf bestätigt harmlos — nicht weiter verfolgt.
 4. **Zwei weitere, nirgends erwähnte Netzwerk-Freigaben:**
    `/mnt/wolf-ee` (NFS, Anker → ProDesk) und `/mnt/frawo-library`
    (CIFS-Mount auf dem Anker, zeigt auf dieselbe `//10.1.0.94/radio`-
@@ -165,11 +170,22 @@ bestätigt: gewollte parallele Sitzung). Sieht nach demselben
 hatten — **möglicherweise arbeitet die andere Sitzung bereits daran.**
 Vor eigenen RAM-Änderungen abklären, damit sich nichts überschneidet.
 
-### Nicht abschliessend geprüft (fehlende Zeit heute)
+### Nachträglich geprüft (nach dem ersten Schritt-1-Durchgang)
 
-- Vollständige `PVEFW-INPUT`-Regelkette auf dem ProDesk (nur der
-  Kurzstatus, nicht jede einzelne Regel)
-- Alopri-Anbindung (wg1-Regeln, Freigaben) — nicht neu verifiziert
+- **`PVEFW-INPUT`-Kette komplett geprüft:** Grundregel ist wirklich
+  DROP, wie dokumentiert (1.932 abgewiesene Pakete, explizite
+  Sperrregel am Ende). Bestätigt korrekt.
+- **Alopri-Anbindung erneut verifiziert, aber zunächst am falschen
+  Ende getestet:** Direkte IP-Pings vom ProDesk zum Elternnetz
+  (192.168.178.x) scheitern — das ist aber **erwartungsgemäß**, der
+  ProDesk selbst steht gar nicht auf der Freigabeliste in NOW.md (nur
+  HA-Eltern, Drucker→Fileserver, Wolfs SSH-Zugang). Der echte,
+  vorgesehene Zugangsweg (`home.prinz-stockenweiler.de`, Alopris
+  eigene Domain für Home Assistant, von Wolf verwaltet/betreut)
+  antwortet mit **HTTP 200** — funktioniert einwandfrei.
+
+### Nicht abschliessend geprüft
+
 - Odoo/Datenbank-Inhalte gegen die "Odoo = Quelle der Wahrheit"-Aussage
 - Radio-Sendeplan-Tabelle (Titelzahlen) — mit Sicherheit veraltet nach
   der heutigen Quarantäne-Löschung (1,1 TB) und dem laufenden
