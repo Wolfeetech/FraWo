@@ -2,8 +2,6 @@
 inventory = ansible/inventory/hosts.yml
 interpreter_python = auto_silent
 retry_files_enabled = False
-vault_password_file = ansible/.vault_pass
-host_key_checking = True
 
 [ssh_connection]
 pipelining = True
