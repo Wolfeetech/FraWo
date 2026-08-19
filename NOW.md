@@ -167,6 +167,8 @@ Läuft dort, weil die Platte **direkt eingehängt** ist (`/mnt/music`) — nicht
 | VM 210 → Cloud | Google Drive | sonntags | ✅ |
 | Musik → Cloud | Google Drive | stündlich | ✅ |
 
+**DJ-Sticks → Cloud (neu 19.08.2026, ereignisbasiert statt Zeittakt):** Wolf nimmt als DJ mehrere USB-Sticks mit auf Tour. Steckt er einen an den ProDesk, sichert `dj-stick-sync@<Gerät>.service` (ausgelöst per udev-Regel `/etc/udev/rules.d/99-dj-stick.rules`, kein 5-Minuten-Zeittakt mehr) den Inhalt automatisch nach `gdrive:Stockenweiler/dj_sticks/<Name>`. Erkennung läuft über eine unsichtbare Markierungsdatei `.frawo-dj-stick` (bewusst getrennt vom sichtbaren Datenträgernamen, den Wolf frei wählt) — neue Sticks einmalig mit `/usr/local/bin/dj-stick-vorbereiten.sh <Einhängepfad>` vorbereiten. Ersetzt die alte `musicstick-sync.timer`-Lösung (lief alle 5 Min. ins Leere, seit 23.07. nichts mehr synchronisiert, weil das Auto-Einhängen zwischenzeitlich deaktiviert war) — alte Dateien liegen unter `/root/systemd-leichen-backup-20260819/`, nicht gelöscht. `/mnt/musicstick` per NFS nur noch für den StudioPC (`10.1.0.211`) freigegeben, vorher fürs ganze `10.1.0.0/24`-Netz lesbar (unnötig weit, jetzt Least-Privilege). ⚠️ **Noch nicht mit einem echten Stick End-zu-Ende getestet** — beim ersten benutzten Stick prüfen, ob die Sicherung wirklich ankommt.
+
 ### Welche Platte ist welche (ProDesk, geprüft 01.08.2026)
 
 Buchstaben verschieben sich — **Seriennummer entscheidet**.

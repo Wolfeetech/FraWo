@@ -1,0 +1,7 @@
+[Unit]
+Description=FraWo DJ-Stick Sicherung fuer %i
+After=local-fs.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/dj-stick-sync.sh %i

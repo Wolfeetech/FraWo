@@ -1,0 +1,6 @@
+# FraWo - loest Sicherung aus, wenn ein USB-Datentraeger neu angesteckt wird.
+# Ereignisbasiert statt Zeittakt (Wolf, 19.08.2026) - ersetzt die alte
+# musicstick-sync.timer-Abfrage alle 5 Minuten.
+# Echte Erkennung "ist das einer von unseren Sticks" macht dj-stick-sync.sh
+# selbst (Markierungsdatei), diese Regel loest nur grundsaetzlich aus.
+ACTION=="add", SUBSYSTEM=="block", ENV{ID_BUS}=="usb", ENV{DEVTYPE}=="partition", RUN+="/usr/bin/systemctl --no-block start dj-stick-sync@%k.service"
