@@ -1,0 +1,24 @@
+---
+- name: Sicherstellen, dass Passwort-Anmeldung per SSH aus ist
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?PasswordAuthentication\s'
+    line: 'PasswordAuthentication no'
+    validate: 'sshd -t -f %s'
+  notify: restart sshd
+
+- name: Sicherstellen, dass Root nur per Schluessel darf
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?PermitRootLogin\s'
+    line: 'PermitRootLogin prohibit-password'
+    validate: 'sshd -t -f %s'
+  notify: restart sshd
+
+- name: Sicherstellen, dass Schluessel-Anmeldung aktiv ist
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?PubkeyAuthentication\s'
+    line: 'PubkeyAuthentication yes'
+    validate: 'sshd -t -f %s'
+  notify: restart sshd
