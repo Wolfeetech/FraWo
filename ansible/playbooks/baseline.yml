@@ -1,0 +1,16 @@
+---
+- name: FraWo Server-Grundlinie
+  hosts: pve_hosts
+  become: false
+  roles:
+    - ssh_hardening
+    - firewall_baseline
+    - autostart_guests
+    - unattended_updates
+    - fail2ban
+
+- name: Anker-spezifische Zusatzhaertung
+  hosts: anker-pve
+  become: false
+  roles:
+    - autoheal_anker
