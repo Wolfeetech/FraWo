@@ -1,0 +1,24 @@
+---
+- name: Node-Firewall-Regeln aus der Vorlage bereitstellen (ProDesk)
+  ansible.builtin.copy:
+    src: stock-pve.cluster.fw
+    dest: /etc/pve/firewall/cluster.fw
+    owner: root
+    group: www-data
+    mode: "0640"
+  when: not is_anker
+
+- name: Node-Firewall-Regeln aus der Vorlage bereitstellen (Anker)
+  ansible.builtin.copy:
+    src: anker-pve.cluster.fw
+    dest: /etc/pve/firewall/cluster.fw
+    owner: root
+    group: www-data
+    mode: "0640"
+  when: is_anker
+
+- name: Sicherstellen, dass die Proxmox-Firewall wirklich laeuft
+  ansible.builtin.command: pve-firewall status
+  register: fw_status
+  changed_when: false
+  failed_when: "'enabled/running' not in fw_status.stdout"

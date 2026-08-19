@@ -1,0 +1,19 @@
+[OPTIONS]
+enable: 1
+policy_in: DROP
+policy_out: ACCEPT
+
+[RULES]
+# --- Management Networks (alle Ports erlaubt) ---
+IN ACCEPT -source 100.64.0.0/10 -log nolog            # Tailscale (alle Services)
+IN ACCEPT -source 10.1.0.0/24 -log nolog            # Server-VLAN101 Rothkreuz (StudioPC, ProDesk, Odoo)
+IN ACCEPT -source 10.4.0.0/24 -log nolog               # CT/VM-Netz (NFS, Monitoring, SSH)
+
+# --- Lokale LANs (nur kritische Ports) ---
+IN ACCEPT -source 192.168.2.0/24 -p tcp -dport 22 -log nolog   # Rothkreuz LAN: SSH
+IN ACCEPT -source 192.168.2.0/24 -p tcp -dport 8006 -log nolog # Rothkreuz LAN: PVE-UI
+IN ACCEPT -source 192.168.178.0/24 -p tcp -dport 22 -log nolog   # Heim-LAN: SSH
+IN ACCEPT -source 192.168.178.0/24 -p tcp -dport 8006 -log nolog # Heim-LAN: PVE-UI
+
+# --- Immer erlaubt ---
+IN ACCEPT -p icmp -log nolog                           # Ping / Diagnose

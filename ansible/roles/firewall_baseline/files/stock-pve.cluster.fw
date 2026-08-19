@@ -1,0 +1,6 @@
+[OPTIONS]
+
+enable: 1
+
+[RULES]
+IN ACCEPT -source 100.64.0.0/10 -log nolog
