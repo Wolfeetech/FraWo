@@ -2,3 +2,16 @@ ansible_host: 100.91.20.116
 ansible_user: root
 ansible_ssh_private_key_file: ~/.ssh/id_ed25519
 is_anker: false
+
+guests:
+  - { id: 101, type: pct }
+  - { id: 103, type: pct, order: 2 }
+  - { id: 106, type: pct, order: 2 }
+  - { id: 108, type: pct, order: 2 }
+  - { id: 110, type: pct, order: 2, up: 30 }
+  - { id: 120, type: pct, order: 1 }
+  - { id: 121, type: pct, order: 2, up: 30 }
+  - { id: 140, type: pct, order: 2 }
+  - { id: 150, type: pct, order: 2 }
+  - { id: 210, type: qm, order: 3 }
+  - { id: 360, type: qm, order: 4 }
