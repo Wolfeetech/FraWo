@@ -57,10 +57,26 @@ gemeinsame Bibliothek auch komplett unnötig.
 neu scannen lassen, fertig. Alte Fassung liegt auf dem ProDesk unter
 `/root/curate_radio.py.backup-20260819`.
 
-⚠️ **Noch nicht mit einer echten Datei über die API end-zu-Ende
-getestet** (nur der Leer-Fall — "Eingangsordner leer" — geprüft). Beim
-nächsten echten Upload prüfen, ob der Titel danach wirklich im Radio
-auftaucht.
+## Echt getestet (19.08.2026 nachmittags) — zwei weitere echte Fehler gefunden und behoben
+
+1. **beets' globales `incremental: yes`** (bewusst so gesetzt, wichtig
+   für die Hauptbibliothek) sorgte dafür, dass der Eingangsordner nach
+   dem ersten Versuch dauerhaft übersprungen wurde. Fix: `-I` /
+   `--noincremental` gezielt nur für diesen Aufruf.
+2. **Die Erfolgsprüfung war falsch:** beets läuft mit `copy: no,
+   move: no` — importierte Dateien bleiben im Eingangsordner liegen,
+   verschwinden nie. "Zählt Dateien im Ordner" konnte Erfolg deshalb
+   nie erkennen. Fix: fragt stattdessen die beets-Datenbank nach
+   kürzlich hinzugefügten Titeln (`added:<Zeit>..`) — das Muster, das
+   die alte Fassung schon fürs (inzwischen entfernte) Kopieren nutzte.
+
+**Nach beiden Fixes über die echte API bestätigt:** Hochladen →
+Importieren → Erfolg erkennen → AzuraCast-Neuscan auslösen läuft
+sauber durch. Der allerletzte Schritt ("taucht der Titel live im
+Radio auf") ließ sich mit einem künstlichen Test-Ton nicht zeigen —
+beets hat den automatisch als "Corrupt" aussortiert (vermutlich
+korrektes Verhalten, kein echter Song). Für den allerletzten Beweis
+müsste Wolf einmal eine echte Audiodatei hochladen.
 
 ## Deployment (ProDesk, `stock-pve`)
 
