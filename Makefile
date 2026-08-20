@@ -152,7 +152,7 @@ inventory-check:
 	bash ./scripts/inventory_check.sh
 
 ansible-ping:
-	$(ANSIBLE_CMD) proxmox,toolbox,nextcloud_vm,odoo_vm,paperless_vm -m ping
+	$(ANSIBLE_CMD) pve_hosts -m ping
 
 qga-check:
 	$(PROXMOX_REMOTE) 'qm agent 200 ping && echo vm200_qga_ok; qm agent 210 ping && echo vm210_qga_ok; qm agent 220 ping && echo vm220_qga_ok; qm agent 230 ping && echo vm230_qga_ok'
@@ -239,8 +239,20 @@ public-mail-dns-check:
 	python3 ./scripts/public_mail_dns_check.py
 
 ansible-syntax-check:
-	$(ANSIBLE_PLAYBOOK_CMD) --syntax-check ansible/playbooks/deploy_business_stacks.yml
+	$(ANSIBLE_PLAYBOOK_CMD) --syntax-check ansible/playbooks/baseline.yml
 
+# STALE (2026-08-20): every ansible-syntax-check-* target below this line,
+# plus the matching *-deploy/*-bootstrap/*-prep targets further down that
+# reference the same playbook filenames, point at the old "homeserver2027"
+# Ansible tree that was archived wholesale to archive/ansible-homeserver2027/
+# when the new ansible/ baseline (stock-pve/anker-pve only, see
+# DOCS/superpowers/specs/2026-08-19-ansible-baseline-design.md) was built.
+# None of those playbooks exist at these paths any more. Left as-is rather
+# than fixed or deleted: whether each one should be restored from the
+# archive, re-pointed there, or dropped entirely is an operator decision
+# (some services, e.g. toolbox/haos/pbs/rpi-radio, may still be live and
+# just unmanaged-by-Ansible now; needs a case-by-case call, not a blanket
+# fix here).
 ansible-syntax-check-toolbox:
 	$(ANSIBLE_PLAYBOOK_CMD) --syntax-check ansible/playbooks/deploy_toolbox_foundation.yml
 
