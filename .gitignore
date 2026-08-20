@@ -96,7 +96,8 @@ scripts/quarantine/legacy_sensitive/vault_setup.mjs
 vaultwarden_import.csv
 *envodoopassword.bat
 crack_vault.py
-*.vault_pass
+# *.vault_pass entfernt (2026-08-20): exaktes Duplikat, steht schon oben im
+# Abschnitt "Ansible secrets and local overrides"
 *password*.bat
 *password*.txt
 _BACKUPS_ODOO/
