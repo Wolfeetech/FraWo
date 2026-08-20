@@ -22,3 +22,17 @@
     line: 'PubkeyAuthentication yes'
     validate: 'sshd -t -f %s'
   notify: restart sshd
+
+# Ein vorhandenes Drop-in unter /etc/ssh/sshd_config.d/*.conf kann die
+# obigen Zeilen in der Hauptdatei per "first-obtained-value-wins" dauerhaft
+# ueberstimmen, ohne dass Ansible das je bemerkt (lineinfile prueft nur die
+# Hauptdatei, nicht die tatsaechlich wirksame Konfiguration). Deshalb hier
+# gegen die von sshd selbst berechnete effektive Konfiguration pruefen.
+- name: Sicherstellen, dass die tatsaechlich wirksame SSH-Konfiguration stimmt
+  ansible.builtin.command: sshd -T
+  register: sshd_effective
+  changed_when: false
+  failed_when: >
+    'permitrootlogin prohibit-password' not in sshd_effective.stdout.lower() or
+    'passwordauthentication no' not in sshd_effective.stdout.lower() or
+    'pubkeyauthentication yes' not in sshd_effective.stdout.lower()
