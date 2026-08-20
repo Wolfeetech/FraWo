@@ -9,10 +9,18 @@
 - name: Automatische Sicherheits-Updates konfigurieren, kein Auto-Reboot
   ansible.builtin.template:
     src: 50unattended-upgrades.j2
-    dest: /etc/apt/apt.conf.d/50unattended-upgrades.local
+    dest: /etc/apt/apt.conf.d/52frawo-unattended-upgrades
     owner: root
     group: root
     mode: "0644"
+
+# apt.conf.d liest nur Dateien ohne Endung oder mit ".conf" - ".local" wird
+# stillschweigend ignoriert (Dir::Ignore-Files-Silently). Die alte Datei war
+# auf beiden Servern nie wirksam, obwohl Ansible "changed"/"ok" meldete.
+- name: Alte, wirkungslose .local-Konfigurationsdatei entfernen
+  ansible.builtin.file:
+    path: /etc/apt/apt.conf.d/50unattended-upgrades.local
+    state: absent
 
 - name: Taeglichen Update-Check aktivieren
   ansible.builtin.copy:
