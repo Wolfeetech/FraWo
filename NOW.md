@@ -233,6 +233,13 @@ Buchstaben verschieben sich — **Seriennummer entscheidet**.
   keine Funde) auf beiden Servern installiert. Alle Pakete + Kernel
   aktualisiert (ProDesk 149, Anker 89), beide sauber neu gestartet und
   voll verifiziert. Details: `DOCS/infrastruktur-audit-2026-08-19.md`.
+- **20.08.2026:** Der gestrige Grundzustand ist jetzt **als Ansible-Code
+  festgehalten** (`ansible/`, siehe `ansible/README.md`) — SSH-Härtung,
+  Firewall-Drift-Schutz, Autostart-Flags, automatische
+  Sicherheits-Updates, fail2ban und (nur Anker) Kernel-Panic-Auto-Reboot.
+  Auf `stock-pve` **und** `anker-pve` real angewendet, gegen die
+  laufenden Dienste geprüft (Website/Radio/Vault/SSH/Firewall nach jedem
+  Lauf gesund), keine Ausfallzeit.
 
 **Rücknahme-Sicherungen** auf dem ProDesk unter `/root/`:
 `exports.backup-20260729` · `hosts.backup-20260729` · `host.fw.backup-20260729` · `nginx-host-konfiguration-20260729.tar.gz` · `crontab.backup-20260729`
