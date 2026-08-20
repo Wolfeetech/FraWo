@@ -35,6 +35,16 @@ neu erfunden):**
    — Grundidee (SSH nur auf internen Interfaces horchen lassen) wird
    übernommen, Umsetzung an die aktuellen Hosts angepasst.
 
+   **Nachtrag (2026-08-20, während der Umsetzung):** dieser Punkt wurde
+   NICHT umgesetzt, bewusst und nicht nur vergessen. `stock-pve`s
+   `ansible_host` im Inventory ist seine Tailscale-Adresse
+   (`100.91.20.116`); ein `ListenAddress {{ ansible_host }}` in sshd würde
+   SSH auf Loopback + Tailscale einschränken und genau das LAN
+   (`10.1.0.0/24`, `192.168.2.0/24`) aussperren, das erreichbar bleiben
+   muss — das Gegenteil vom Ziel. Die `ssh_hardening`-Rolle setzt daher nur
+   PasswordAuthentication/PermitRootLogin/PubkeyAuthentication, ohne
+   ListenAddress-Einschränkung.
+
 **Alles andere** (Nextcloud/Odoo/Paperless-VM-Playbooks, Surface-Go-
 Kiosk-Templates, Raspberry-Pi-Radio-Integration) wandert komplett nach
 `archive/ansible-homeserver2027/` — nicht gelöscht, aber aus dem
