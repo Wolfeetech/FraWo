@@ -6,7 +6,8 @@
     owner: root
     group: www-data
     mode: "0640"
-  when: not is_anker
+    backup: true
+  when: not (is_anker | default(false))
 
 - name: Node-Firewall-Regeln aus der Vorlage bereitstellen (Anker)
   ansible.builtin.copy:
@@ -15,7 +16,8 @@
     owner: root
     group: www-data
     mode: "0640"
-  when: is_anker
+    backup: true
+  when: is_anker | default(false)
 
 - name: Sicherstellen, dass die Proxmox-Firewall wirklich laeuft
   ansible.builtin.command: pve-firewall status

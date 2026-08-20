@@ -1,6 +1,9 @@
 [OPTIONS]
 
 enable: 1
+# Kein explizites policy_in hier - Proxmox' eigener Default fuer policy_in
+# ist bereits DROP, auch ohne diese Zeile. Kein Unterschied zur Anker-Datei,
+# die es der Klarheit halber explizit ausschreibt.
 
 [RULES]
 IN ACCEPT -source 100.64.0.0/10 -log nolog
