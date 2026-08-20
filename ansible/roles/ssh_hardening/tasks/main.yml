@@ -33,6 +33,7 @@
   register: sshd_effective
   changed_when: false
   failed_when: >
-    'permitrootlogin prohibit-password' not in sshd_effective.stdout.lower() or
+    ('permitrootlogin prohibit-password' not in sshd_effective.stdout.lower() and
+     'permitrootlogin without-password' not in sshd_effective.stdout.lower()) or
     'passwordauthentication no' not in sshd_effective.stdout.lower() or
     'pubkeyauthentication yes' not in sshd_effective.stdout.lower()
