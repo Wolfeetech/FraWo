@@ -49,9 +49,8 @@ Wer eine davon nicht kennt, sucht stundenlang am falschen Ende.
 | CT103 | npm | `10.1.0.149` | Reverse Proxy |
 | CT106 | wireguard | `10.1.0.239` | VPN |
 | CT108 | vaultwarden | `10.1.0.95` | Passwortsafe → `vault.frawo.tech` |
-| CT110 | n8n | `10.1.0.100` | Automatisierung + **echtes Paperless-ngx** (Docker `paperless-webserver`, Port 8000) — die von Odoo-Automatik verlinkte, aktiv genutzte Instanz |
+| CT110 | n8n | `10.1.0.100` | Automatisierung + **Paperless-ngx** (Docker `paperless-webserver`, Port 8000, extern `paperless.frawo.tech`) — seit 21.08.2026 die **einzige** Instanz, komplett neu verdrahtet: Google-Drive-Push-Inbox → OCR → Gemini-Klassifikation → Ablage in bestehende Drive-Ordner + Odoo-Aufgabe. Details: `OPERATIONS/PAPERLESS_OPERATIONS.md`, Odoo-Aufgabe #998 |
 | CT120 | fileserver | `10.1.0.94` | Samba **und Musikverwaltung (beets)** |
-| CT121 | paperless | `10.1.0.145` | 🔴 **Leere Zweitinstanz** Paperless-ngx (Port 8123) — am 05.08.2026 als Ersatz für das alte Paperless auf Flos `frawo-docker-1` aufgesetzt, aber nie produktiv geworden; die echten Dokumente laufen unbemerkt über CT110/n8n. **Zusätzlich seit Erstellung in einer Neustartschleife hängengeblieben (RestartCount 1133, gefunden+gestoppt 17./18.08.2026)** — Container bewusst gestoppt, nicht nur "leer". Klären: löschen oder doch migrieren (Odoo #900) |
 | CT140 | frawotech-web | `10.1.0.112` | **Odoo 19** → `frawo.tech` |
 | CT150 | monitoring-stack | `10.1.0.35` · TS `100.100.115.80` | Prometheus, Grafana, Alertmanager |
 | VM210 | azuracast-vm | `10.1.0.38` | **Radio** → `funk.frawo.tech` |
@@ -83,7 +82,7 @@ Route `192.168.178.0/24` → nächster Sprung `10.1.0.239` liegt als statische R
 | `10.1.0.248` (HA-Eltern) | ganzes `192.168.178.0/24` | Smart-Home-Steuerung, volle Sicht |
 | `192.168.178.153` (Drucker) | `10.1.0.94:445` (Fileserver SMB) | Scan-Ablage, nur dieser eine Port |
 | ganzes `192.168.178.0/24` | `10.1.0.239:22` | Wolfs persönlicher Admin-Sprungbrett-Zugang (Standard-INPUT-Policy ist ACCEPT, kein neues Loch) |
-| ganzes `192.168.178.0/24` | `10.1.0.100:8000` (Paperless, läuft auf CT110/n8n — **nicht** CT121, das ist eine leere Zweitinstanz) | **Neu 06.08.2026:** Alois soll Dokumente von seinem PC aus erreichen können, nur dieser eine Port |
+| ganzes `192.168.178.0/24` | `10.1.0.100:8000` (Paperless auf CT110) | **Neu 06.08.2026:** Alois soll Dokumente von seinem PC aus erreichen können, nur dieser eine Port |
 
 Alles andere zwischen den Netzen: **DROP** (Catch-all am Ende der `wg1`-Regeln).
 
@@ -91,7 +90,7 @@ Alles andere zwischen den Netzen: **DROP** (Catch-all am Ende der `wg1`-Regeln).
 
 **Gefundene Geräte im Alopri-Netz (Stand 04.08.2026, per Scan über den Tunnel):** 1 Drucker (`.153`), 15× Shelly-Schalter/Steckdosen (`.61 .62 .64 .65 .72 .73 .78 .152 .171 .178 .189 .191 .193 .195 .198`), 3× Cast-fähige Geräte (`.161 .167 .170`), 1× HPE-Instant-On-Switch/AP (`.184`). Rest (`.119 .182 .185 .192 .173 .199 .214`) unklassifiziert (vermutlich Telefone/Tablets ohne eigenen Dienst).
 
-✅ **Scan → Paperless steht** (05.08.2026): neues Paperless-ngx auf **CT121** (`10.1.0.145:8123`, ProDesk), da der alte Paperless-Host (`frawo-docker-1`, Flo-Hardware) **endgültig abgeschaltet** ist (Wolf bestätigt). Konsum-Ordner ist der Host-CIFS-Mount `/mnt/paperless_scans` (Bind-Mount `/mnt/scans` in CT121, da unprivilegierte LXC-Container CIFS nicht selbst mounten dürfen — Muster wie beim Fileserver-Mount selbst). `PAPERLESS_CONSUMER_SUBDIRS_AS_TAGS=true` — die Familienordner (Alois/Heidi/Franz/Wolfgang) werden automatisch zu Tags. In den nächtlichen PBS-Job (04:00, `pbs-frawo`) aufgenommen.
+✅ **Scan → Paperless** (überarbeitet 21.08.2026, siehe `OPERATIONS/PAPERLESS_OPERATIONS.md`): läuft jetzt über CT110 (`10.1.0.100:8000` / `paperless.frawo.tech`) statt der inzwischen entfernten CT121-Zweitinstanz. Alopri-Scan-Ablage (Samba `[scans]` auf CT120) besteht weiter, ist aber nicht an die neue Google-Drive-Pipeline angeschlossen — bei Bedarf separat verdrahten.
 
 ---
 
@@ -271,9 +270,10 @@ Notfall ohne Netz: an der Konsole `pve-firewall stop`.
 | Tags in die Dateien schreiben (~7.400 Dateien, entsprechender Cloud-Upload) | Entscheidung | — |
 | Feste IP (DHCP-Reservierung) für Alopri-Drucker `.153` auf der Fritzbox | Wolf | — |
 | ~~Alopri-Smart-Geräte (15 Shelly, 3 Cast) innerhalb Home-Assistant hinzufügen~~ — **erledigt 06.08.2026**, siehe `artifacts/stockenweiler_inventory/home_assistant_audit_2026-08-06.md` | — | — |
-| Scanner-SMB-Passwort (CT120) und Paperless-Admin-Login (CT110, Nutzer `wolf` — **nicht CT121**, siehe oben) nach Vaultwarden übertragen, Admin-Passwort aktuell noch fest in `docker-compose.yml` auf CT121 einprogrammiert (dort aber ungenutzt) | Wolf | — |
-| **CT121-Zweitinstanz** (leeres Paperless) klären: löschen oder Daten von CT110 dorthin migrieren, damit nur noch eine Instanz existiert | Wolf | #900 |
-| **Flos Server ("frawo-docker-1") ist endgültig weg** (Wolf bestätigt 05.08.2026) — Paperless läuft weiter auf CT110 (siehe oben, nicht CT121 wie hier ursprünglich vermerkt). Nextcloud, lokale AzuraCast, n8n-Alt, ollama, qdrant liefen dort ebenfalls — Bedarf für Neuaufsetzen jeweils einzeln klären | Wolf | — |
+| Scanner-SMB-Passwort (CT120) und Paperless-Zugangsdaten (API-Token, Gemini-Key, Webhook-Geheimnis) nach Vaultwarden übertragen | Wolf | #1010 |
+| Paperless: E-Mail-Postfächer (info@/wolf@frawo.tech) per IMAP anbinden — wartet auf Server/Zugangsdaten von Wolf | Wolf | #1008 |
+| Alopri-Scan-Ablage (Samba `[scans]` auf CT120) noch nicht an die neue Google-Drive-Paperless-Pipeline angeschlossen | offen | — |
+| **Flos Server ("frawo-docker-1") ist endgültig weg** (Wolf bestätigt 05.08.2026). Nextcloud, lokale AzuraCast, n8n-Alt, ollama, qdrant liefen dort ebenfalls — Bedarf für Neuaufsetzen jeweils einzeln klären | Wolf | — |
 
 ---
 
