@@ -28,14 +28,14 @@
       "OPERATIONS/USER_ONBOARDING_OPERATIONS.md"
     ],
     "wolfi": [
-      "MASTERPLAN.md",
+      "archive/MASTERPLAN.md",
       "MEMORY.md",
-      "LIVE_CONTEXT.md",
-      "AI_BOOTSTRAP_CONTEXT.md",
-      "CONSOLIDATION.md",
+      "archive/LIVE_CONTEXT.md",
+      "archive/AI_BOOTSTRAP_CONTEXT.md",
+      "archive/CONSOLIDATION.md",
       "INTRODUCTION_PROMPT.md",
       "README.md",
-      "OPS_HOME.md",
+      "archive/OPS_HOME.md",
       "todo.md"
     ]
   }
