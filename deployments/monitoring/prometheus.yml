@@ -68,7 +68,7 @@ scrape_configs:
           - https://funk.frawo.tech             # Radio
           - http://10.1.0.95                    # Paperless
           - http://10.1.0.100:5678              # n8n
-          - http://10.1.0.200:4533              # Navidrome (Musik-Streaming, Anker CT130)
+          - http://10.1.0.94:4533               # Navidrome (Musik-Streaming, CT120 ProDesk)
           - http://10.1.0.149:81                # Nginx Proxy Manager
           - https://cloud.frawo.tech/status.php # Nextcloud
           # Nachgetragen 29.07.2026: beide liefen ungeprueft. Ein Ausfall des
