@@ -270,7 +270,9 @@ Buchstaben verschieben sich — **Seriennummer entscheidet**.
 
 🔴 **Falle:** Wer die Anker-Gäste in PBS sucht, findet **nichts** und hält sie fälschlich für ungesichert. Genau das ist am 23.08. passiert. Immer `pvesm list google-drive` gegenprüfen. Verifiziert: alle Anker-Gäste haben je 3 Generationen, frisch vom selben Tag (CT130 11,9 GB, CT150 3,2 GB, VM210, VM300, CT101).
 
-🟡 **Blinder Fleck im TÜV:** Der Backup-TÜV prüft `pbs_container` = die **8 ProDesk**-Container. Die **Anker**-Gäste prüft er **nicht** — sie könnten monatelang ausfallen, ohne dass 11/11 kippt. *(Noch offen — sinnvolle Ergänzung für den TÜV.)*
+🟡→✅ **Blinder Fleck im TÜV geschlossen (23.08.2026):** Der TÜV prüfte mit `pbs_container` nur die **8 ProDesk**-Container. Die **Anker**-Gäste hätten monatelang ausfallen können, ohne dass 11/11 kippt — inklusive CT130 (Radio-Backend) und CT150 (OpenClaw-Gateway). Neue Prüfung **`anker_gaeste_cloud`** holt per SSH `pvesm list google-drive` vom Anker und verlangt für **jeden** der Gäste 101/130/150/210/300 eine Sicherung von heute oder gestern mit mindestens 50 MB. **TÜV steht jetzt bei 12 Prüfungen.**
+
+Die Alarmierung greift automatisch, weil die Regeln allgemein formuliert sind (`frawo_backup_tuev == 0`). **Gegenprobe gemacht:** mit einer erfundenen Gast-ID fällt die Prüfung korrekt durch und benennt den fehlenden Gast — eine Prüfung, die nicht durchfallen kann, wäre wertlos.
 
 ✅ **Vollprüfung 23.08.2026:** Backup-TÜV **11/11**, Cron feuert nachweislich (auch die 03:30- und 03:45-Jobs), PBS räumt sauber auf (Prune 7 Tage / 4 Wochen / 2 Monate, Garbage Collection täglich, letzter Lauf OK, PBS-Platte 55 %), Überwachung intakt (**39 Alarmregeln geladen, 0 fehlerhaft**). Die Thin-Pool-Alarme wurden **per Prometheus-Abfrage gegengeprüft**, nicht nur als Regeldatei gelesen — sie decken tatsächlich **beide** Knoten ab.
 
