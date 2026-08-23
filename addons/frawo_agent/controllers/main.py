@@ -614,6 +614,114 @@ class RadioController(http.Controller):
         except Exception as e:
             return request.make_response(json.dumps({"status": "error", "message": str(e)}), status=500, headers=[('Content-Type', 'application/json')])
 
+    @http.route('/api/agent/create_booking', type='json', auth='public', methods=['POST'], csrf=False)
+    def agent_create_booking(self, datum, ort, fest_typ=None, kunde_name=None, kunde_kontakt=None, notizen=None, **kwargs):
+        """Booking → Kalendertermin + Auftrags-Aufgabe + (falls vorhanden) Kundenkontakt.
+
+        Minimaler Input (Datum, Ort, optional Fest-Typ/Kunde) erzeugt automatisch
+        alles Weitere, statt dass Termin/Aufgabe/Packliste einzeln von Hand
+        angelegt werden. Kunde wird gesucht oder neu angelegt (per Name),
+        damit Aufträge künftig wirklich mit einem Kontakt verknüpft sind
+        (aktuell hat keine der 53 Auftrags-Aufgaben einen partner_id gesetzt).
+        """
+        import json
+        if not self._check_summary_auth():
+            return {'error': 'unauthorized'}
+
+        try:
+            env = request.env
+            titel = f"{fest_typ or 'Auftrag'} — {kunde_name or ort}"
+
+            partner = False
+            if kunde_name:
+                partner = env['res.partner'].sudo().search([('name', '=ilike', kunde_name)], limit=1)
+                if not partner:
+                    vals = {'name': kunde_name}
+                    if kunde_kontakt:
+                        if '@' in kunde_kontakt:
+                            vals['email'] = kunde_kontakt
+                        else:
+                            vals['phone'] = kunde_kontakt
+                    partner = env['res.partner'].sudo().create(vals)
+
+            start_dt = fields.Datetime.to_datetime(datum) or fields.Datetime.now()
+            from datetime import timedelta
+            # user_id=6 (wolf@frawo.tech) + dessen partner_id=7 als Teilnehmer:
+            # nur dieser Account hat aktive Google-Kalender-Synchronisierung,
+            # ohne das landet der Termin im Nirwana des Public-User-Kontexts
+            # und taucht nie in Google/HA (calendar.wolf_termine) auf.
+            event_vals = {
+                'name': titel,
+                'start': start_dt,
+                'stop': start_dt + timedelta(hours=8),
+                'location': ort,
+                'description': notizen or '',
+                'user_id': 6,
+                'partner_ids': [(4, 7), (4, 16)],
+            }
+            if partner:
+                event_vals['partner_ids'].append((4, partner.id))
+            event = env['calendar.event'].sudo().create(event_vals)
+
+            task_desc = (
+                f"<p><b>Ort:</b> {ort}<br/>"
+                f"<b>Fest-Typ:</b> {fest_typ or '–'}<br/>"
+                f"<b>Kalendertermin:</b> "
+                f"<a href='/odoo/calendar/{event.id}'>Termin öffnen</a></p>"
+                f"<p>{notizen or ''}</p>"
+                f"<p>📦 <b>Packliste:</b> noch keine Fest-Typ-Vorlagen hinterlegt — "
+                f"Unteraufgabe 'Packliste zusammenstellen' angelegt, bis die "
+                f"Standard-Listen pro Fest-Typ existieren.</p>"
+            )
+            task_vals = {
+                'name': titel,
+                'project_id': 104,  # FraWo GbR: Aufträge & Events
+                'date_deadline': start_dt,
+                'description': task_desc,
+            }
+            if partner:
+                task_vals['partner_id'] = partner.id
+            task = env['project.task'].sudo().create(task_vals)
+
+            env['project.task'].sudo().create({
+                'name': '📦 Packliste zusammenstellen',
+                'project_id': 104,
+                'parent_id': task.id,
+                'date_deadline': start_dt,
+            })
+
+            return {
+                'status': 'ok',
+                'task_id': task.id,
+                'task_url': f'/odoo/project.task/{task.id}',
+                'event_id': event.id,
+                'partner_id': partner.id if partner else False,
+            }
+        except Exception as e:
+            _logger.error("create_booking failed: %s", e)
+            return {'status': 'error', 'message': str(e)}
+
+    @http.route('/api/agent/bottles_detail', type='http', auth='public', methods=['GET'], csrf=False)
+    def agent_bottles_detail_api(self, **kwargs):
+        """JSON detail endpoint for unbilled Anker-Tracker consumption (Task #1052).
+
+        Reuses anker.tracker.consumption.generate_purchase_summary() (read-only,
+        does NOT bill anything) so the kiosk/dashboard can show itemised bottles
+        per product instead of just a total count.
+        """
+        import json
+        if not self._check_summary_auth():
+            return request.make_response(
+                json.dumps({'error': 'unauthorized'}),
+                headers=[('Content-Type', 'application/json')],
+                status=401,
+            )
+        try:
+            summary = request.env['anker.tracker.consumption'].sudo().generate_purchase_summary()
+            return request.make_response(json.dumps(summary, indent=2), headers=[('Content-Type', 'application/json')])
+        except Exception as e:
+            return request.make_response(json.dumps({"status": "error", "message": str(e)}), status=500, headers=[('Content-Type', 'application/json')])
+
     # ─────────────────────────────────────────────────────────────
     # Surface Go Kiosk Terminal Landing Page (Task #826)
     # ─────────────────────────────────────────────────────────────
