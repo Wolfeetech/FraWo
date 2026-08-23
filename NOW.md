@@ -50,7 +50,7 @@ Wer eine davon nicht kennt, sucht stundenlang am falschen Ende.
 | ID | Name | IP | Dienst |
 |---|---|---|---|
 | CT101 | adguard | `10.1.0.52` | DNS |
-| CT103 | npm | `10.1.0.149` | Reverse Proxy |
+| CT103 | npm | `10.1.0.149` | ⏹️ **gestoppt 23.08.2026** — hatte **0 Proxy-Einträge**, einziges Zertifikat für `monitor.yourparty.tech` (Domain antwortet nicht mehr). Lief 10 Monate ohne Funktion, offenbar abgelöst durch die Cloudflare-Tunnel. `onboot: 0`, nicht gelöscht |
 | CT106 | wireguard | `10.1.0.239` | VPN |
 | CT108 | vaultwarden | `10.1.0.95` | Passwortsafe → `vault.frawo.tech` |
 | CT110 | n8n | `10.1.0.100` | Automatisierung + **Paperless-ngx** (Docker `paperless-webserver`, Port 8000, extern `paperless.frawo.tech`) — seit 21.08.2026 die **einzige** Instanz, komplett neu verdrahtet: Google-Drive-Push-Inbox → OCR → Gemini-Klassifikation → Ablage in bestehende Drive-Ordner + Odoo-Aufgabe. Details: `OPERATIONS/PAPERLESS_OPERATIONS.md`, Odoo-Aufgabe #998 |
@@ -67,6 +67,10 @@ Zum Vergleich: `10.1.0.40` ist ein **anderes** haos (VM210 **auf proxmox-anker**
 ### Anker
 
 CT130 `radio-node` (`10.1.0.200`) — ✅ seit 20.08.2026 **unprivileged** (`nesting=1,keyctl=1`), war zuvor der einzige privilegierte Container von 13 (Odoo #887, jetzt erledigt). Betreibt Docker: Radio-Backend, PostgreSQL, Redis, **uptime-kuma** (`:3001`, zweites Überwachungssystem → Odoo #888). VM240 = **PBS-FraWo** (`10.1.0.7`) — 🔴 Backups liegen auf derselben Platte wie das Betriebssystem, Volume Group ist voll (0 freie PV-Extents auf `pve`) — braucht neue Hardware/Storage, nicht per Konfig lösbar.
+
+CT110 `storage-node` — ⏹️ **gestoppt 23.08.2026**. War **vollständig leer**: kein einziger laufender Dienst, kein Docker, 7,5 von 98 GB belegt (nur Grundsystem). Blockierte 100 GB Zuteilung im knappen Thin-Pool. `onboot: 0`, nicht gelöscht — zum Freigeben des Platzes müsste der Container entfernt werden (Wolfs Entscheidung, Odoo #1069).
+
+🔴→✅ **VM211 `azuracast-vm` (Anker) — scharfe Falle entschärft 23.08.2026.** Überbleibsel der Radio-Migration vom 21.08.: gestoppt, aber mit **`onboot: 1`** und **derselben MAC-Adresse `BC:24:11:DE:76:67` wie die produktiv laufende Radio-VM210 auf dem ProDesk**, beide an `vmbr0`. Beim nächsten Neustart des Ankers wäre sie automatisch gestartet → **doppelte MAC im selben Netz → Radioausfall** mit sehr schwer auffindbarem Fehlerbild. Jetzt `onboot: 0` (Konfig gesichert unter `/root/vm211.conf.backup-20260823`). Ihre Platte liegt als 37,5-GB-`.qcow2` auf `stockenweiler-data` (nicht im Thin-Pool) — als frische Rückfall-Kopie bewusst behalten.
 
 CT150 `openclaw` (`10.1.0.31` · TS `100.72.154.15`) — **das einzige OpenClaw-Gateway**, Docker, Port 19000, Anmeldung per **Token**. Übersteht einen Neustart (CT `onboot`, Docker aktiviert, Container `unless-stopped`). Arbeitsplätze verbinden sich als **Node** dorthin — auf dem StudioPC die Aufgabe „OpenClaw Node" (`.openclaw\node.cmd`, wartet auf Tailscale, startet sich selbst neu, Protokoll in `.openclaw\logs\node-host.log`). Ein **zweites** Gateway auf dem StudioPC gehört nicht dorthin und kann gar nicht starten (Odoo #893).
 
@@ -85,7 +89,26 @@ CT150 `openclaw` (`10.1.0.31` · TS `100.72.154.15`) — **das einzige OpenClaw-
 
 **Ehrliche Einordnung:** Es lag **kein aktives Leck** vor — über den Tunnel floss nichts, die Ziele antworteten nicht. `vault.frawo-tech.de` antwortet weiterhin (200), das läuft aber über die Produktivkette; Vaultwarden ist unter `vault.frawo.tech` ohnehin bewusst öffentlich. Der Nutzen war das Beseitigen einer **geladenen Waffe**: sobald irgendwann etwas unter einer der IoT-Adressen geantwortet hätte, wäre es schlagartig öffentlich gewesen. Konfigurationen gesichert (`/root/cloudflared-config-20260823-vor-abschaltung.yml`, je Wirt und CT100), Cloudflare-DNS **unangetastet** — voll umkehrbar. `odoo.frawo-tech.de` und `cloud.frawo-tech.de` liefern seither 404. Odoo-Aufgabe #1067.
 
-Ausserdem zwei nirgends erwähnte Netzwerk-Freigaben: `/mnt/wolf-ee` (NFS, Anker → ProDesk) und `/mnt/frawo-library` (CIFS, zeigt auf dieselbe `//10.1.0.94/radio`-Freigabe wie VM210) — **Zweck weiterhin unklar, noch nicht untersucht.**
+**Die zwei „Freigaben" — am 23.08.2026 aufgeklärt, beide harmlos:**
+
+- `/mnt/wolf-ee` ist **gar keine Netzwerk-Freigabe**, sondern ein lokales Verzeichnis mit 780 KB pip-Zwischenspeicher vom 27.05.2026 (`hs27_root_relief/root-home/.cache/pip`). Damals wurde Platz auf der Systemplatte geschaffen und der Cache hierher verschoben. Wegwerf-Daten, kein fstab-Eintrag.
+- `/mnt/frawo-library` (CIFS → `//10.1.0.94/radio`) **scheitert bei jedem Mount-Versuch mit `Permission denied`** — die Zugangsdaten in `/root/.smbcreds` stimmen nicht mehr. Wegen `nofail` meldet der Systemstart das nie. 🔴 **Das ist ein echter Funktionsausfall:** CT100 bindet die Freigabe als `mp0` nach `/srv/media-library/music-network` ein — dem dortigen **Jellyfin fehlt damit seine Musikbibliothek**. Fix braucht die korrekten SMB-Zugangsdaten des Fileservers (CT120).
+
+### 🔍 CT100 „toolbox" (`10.1.0.209`) — aktiv, aber nirgends dokumentiert
+
+Bei derselben Untersuchung gefunden: CT100 ist **keine Karteileiche**, sondern ein voll laufender Parallel-Stack (2 Kerne, 3 GB RAM, 23 GB Platte, `onboot: 1`). Alle Docker-Dienste seit **10 Monaten** aktiv:
+
+| Dienst | Port | Anmerkung |
+|---|---|---|
+| `caddy` | 80, 443 | Reverse Proxy |
+| `adguard` | 53, 3000 | 🟡 **doppelt** — AdGuard läuft auch in CT101 (`10.1.0.27`, aktiv, ist der Nameserver von CT100) |
+| `jellyfin` | 8096 | Medienserver — Musikbibliothek aktuell leer (s.o.) |
+| `uptime-kuma` | 3001 | 🟡 **doppelt** — läuft auch in CT130 (dort dokumentiert, Odoo #888) |
+| `open-webui` | 3000 (lokal) | AI-Oberfläche |
+
+Ausserdem läuft dort ein `openclaw.service` — **widerspricht** der Aussage weiter unten, CT150 sei „das einzige OpenClaw-Gateway". Noch nicht geklärt, ob Gateway oder Node.
+
+⚠️ **Nicht angetastet** — das benutzt offensichtlich jemand. Aber: CT100 belegt 3 GB RAM und ~16 GB im knappen Anker-Thin-Pool, dupliziert zwei dokumentierte Dienste, und beherbergte den 10 Monate verwaisten `frawo-tech.de`-Tunnel. **Wolf muss entscheiden, was davon bleibt.** Odoo-Aufgabe #1068.
 
 ---
 
