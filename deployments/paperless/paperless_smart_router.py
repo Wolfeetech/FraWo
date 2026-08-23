@@ -418,6 +418,26 @@ def create_odoo_task(info, doc_id, doc_title):
         upsert_todo_activity(models, uid, task_id, mapping["user_id"], due_date,
                               f"{info['vendor']}: {doc_title}")
         print(f"Odoo-Aufgabe #{task_id} angelegt für {info['entity']} (Dokument #{doc_id}).")
+
+        # PDF direkt als Anhang an die Odoo-Aufgabe haengen fuer In-App Vorschau
+        try:
+            pdf_req = urllib.request.Request(f"{PAPERLESS_URL}/documents/{doc_id}/download/")
+            pdf_req.add_header("Authorization", paperless_auth_header())
+            with urllib.request.urlopen(pdf_req, timeout=30) as r:
+                pdf_bytes = r.read()
+            import base64
+            att_vals = {
+                'name': f"{safe_filename(doc_title, 'dokument')}.pdf",
+                'datas': base64.b64encode(pdf_bytes).decode('ascii'),
+                'res_model': 'project.task',
+                'res_id': task_id,
+                'mimetype': 'application/pdf',
+            }
+            att_id = models.execute_kw(ODOO_DB, uid, ODOO_PASS, 'ir.attachment', 'create', [att_vals])
+            print(f"PDF #{att_id} direkt als Anhang an Odoo-Aufgabe #{task_id} gehaengt.")
+        except Exception as att_err:
+            print(f"Warnung: PDF-Anhang an Odoo fehlgeschlagen: {att_err}")
+
         return task_id
     except Exception as e:
         print(f"Fehler beim Anlegen der Odoo-Aufgabe: {e}")
