@@ -58,6 +58,8 @@ Wer eine davon nicht kennt, sucht stundenlang am falschen Ende.
 
 Zum Vergleich: `10.1.0.40` ist ein **anderes** haos (VM210 **auf proxmox-anker**, nicht ProDesk) — nicht verwechseln, zwei getrennte Home-Assistant-Instanzen.
 
+**Touchscreen-Kiosk (neu 23.08.2026):** Ein günstiger Touch-Monitor hängt per DP+USB direkt am **stock-pve** (dem HP ProDesk selbst, nicht an anker/Lenovo — das war am 22.08. kurz vertauscht). Lokaler User `kiosk` startet per Autologin auf `tty2` (tty1 bleibt normale Root-Konsole) einen Chromium-Vollbild-Kiosk, der die Home-Assistant-Übersicht `kiosk-frawo` von `10.1.0.40:8123` (VM210 haos auf **anker-pve**) anzeigt — Anzeige-Gerät und Dashboard-Inhalt liegen also bewusst auf zwei verschiedenen Knoten. `xserver-xorg-legacy` + `Xwrapper.config (allowed_users=anybody)` nötig, sonst VT-Berechtigungsfehler. Details/Fortschritt: Odoo-Aufgabe #1039.
+
 ### Anker
 
 CT130 `radio-node` (`10.1.0.200`) — ✅ seit 20.08.2026 **unprivileged** (`nesting=1,keyctl=1`), war zuvor der einzige privilegierte Container von 13 (Odoo #887, jetzt erledigt). Betreibt Docker: Radio-Backend, PostgreSQL, Redis, **uptime-kuma** (`:3001`, zweites Überwachungssystem → Odoo #888). VM240 = **PBS-FraWo** (`10.1.0.7`) — 🔴 Backups liegen auf derselben Platte wie das Betriebssystem, Volume Group ist voll (0 freie PV-Extents auf `pve`) — braucht neue Hardware/Storage, nicht per Konfig lösbar.
