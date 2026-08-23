@@ -90,7 +90,7 @@ Alles andere zwischen den Netzen: **DROP** (Catch-all am Ende der `wg1`-Regeln).
 
 **Gefundene Geräte im Alopri-Netz (Stand 04.08.2026, per Scan über den Tunnel):** 1 Drucker (`.153`), 15× Shelly-Schalter/Steckdosen (`.61 .62 .64 .65 .72 .73 .78 .152 .171 .178 .189 .191 .193 .195 .198`), 3× Cast-fähige Geräte (`.161 .167 .170`), 1× HPE-Instant-On-Switch/AP (`.184`). Rest (`.119 .182 .185 .192 .173 .199 .214`) unklassifiziert (vermutlich Telefone/Tablets ohne eigenen Dienst).
 
-✅ **Scan → Paperless** (überarbeitet 21.08.2026, siehe `OPERATIONS/PAPERLESS_OPERATIONS.md`): läuft jetzt über CT110 (`10.1.0.100:8000` / `paperless.frawo.tech`) statt der inzwischen entfernten CT121-Zweitinstanz. Alopri-Scan-Ablage (Samba `[scans]` auf CT120) besteht weiter, ist aber nicht an die neue Google-Drive-Pipeline angeschlossen — bei Bedarf separat verdrahten.
+✅ **Scan → Paperless** (überarbeitet 21.08.2026, erweitert 22.08.2026, siehe `OPERATIONS/PAPERLESS_OPERATIONS.md`): läuft jetzt über CT110 (`10.1.0.100:8000` / `paperless.frawo.tech`). Die Alopri-Scan-Ablage (Samba `[scans]` auf CT120) ist seit 22.08.2026 per systemd-Timer (`frawo-scan-ingest.timer` auf `stock-pve`) direkt an die Paperless-Consume-Pipeline angebunden — Scans in den Ordnern `Alois/`, `Heidi/`, `Franz/`, `Wolfgang/` werden alle 2 Min. abgeholt, mit Personen-Präfix versehen und vollautomatisch per Gemini OCR klassifiziert (Odoo-Aufgabe #1012 erledigt).
 
 ---
 
@@ -272,7 +272,7 @@ Notfall ohne Netz: an der Konsole `pve-firewall stop`.
 | ~~Alopri-Smart-Geräte (15 Shelly, 3 Cast) innerhalb Home-Assistant hinzufügen~~ — **erledigt 06.08.2026**, siehe `artifacts/stockenweiler_inventory/home_assistant_audit_2026-08-06.md` | — | — |
 | Scanner-SMB-Passwort (CT120) und Paperless-Zugangsdaten (API-Token, Gemini-Key, Webhook-Geheimnis) nach Vaultwarden übertragen | Wolf | #1010 |
 | Paperless: E-Mail-Postfächer (info@/wolf@frawo.tech) per IMAP anbinden — wartet auf Server/Zugangsdaten von Wolf | Wolf | #1008 |
-| Alopri-Scan-Ablage (Samba `[scans]` auf CT120) noch nicht an die neue Google-Drive-Paperless-Pipeline angeschlossen | offen | — |
+| ~~Alopri-Scan-Ablage (Samba `[scans]` auf CT120) noch nicht an die neue Google-Drive-Paperless-Pipeline angeschlossen~~ — **erledigt 22.08.2026** via `frawo-scan-ingest.timer` | — | #1012 |
 | **Flos Server ("frawo-docker-1") ist endgültig weg** (Wolf bestätigt 05.08.2026). Nextcloud, lokale AzuraCast, n8n-Alt, ollama, qdrant liefen dort ebenfalls — Bedarf für Neuaufsetzen jeweils einzeln klären | Wolf | — |
 
 ---
