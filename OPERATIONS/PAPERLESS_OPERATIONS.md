@@ -65,6 +65,10 @@ rclone dorthin reinegemountet)
 - `frawo-gdrive-watch-renew.timer` — erneuert den Google-Kanal alle 6 Tage
 - `frawo-gdrive-inbox-pull.timer` — Sicherheitsnetz alle 4 Std. (Google
   garantiert Zustellung nicht zu 100 %)
+- `frawo-scan-ingest.timer` — holt alle 2 Min. Scans aus der Samba-Ablage
+  `/mnt/music_hdd/Scans/[Alois,Heidi,Franz,Wolfgang]` (CT120) ab, versieht sie
+  mit Personen-Präfix und pusht sie direkt nach CT110 in den Paperless-Consume-Ordner
+  (erledigt Odoo-Aufgabe #1012, live seit 22.08.2026).
 
 ## Einmaliges Aufräumen (seit 21.08.2026, läuft noch)
 

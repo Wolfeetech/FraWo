@@ -8,18 +8,10 @@ policy_out: ACCEPT
 IN ACCEPT -source 100.64.0.0/10 -log nolog            # Tailscale (alle Services)
 IN ACCEPT -source 10.4.0.0/24 -log nolog               # CT/VM-Netz (NFS, Monitoring, SSH)
 
-# --- Server-VLAN101 Rothkreuz (StudioPC, ProDesk, Odoo) — eingeengt 20.08.2026 ---
-# War vorher "alle Ports erlaubt" (Odoo #Audit-2026-08-19) - das war die Ursache
-# fuer die frei erreichbare Radio-Datenbank (Redis/Postgres in CT130). Jetzt nur
-# die tatsaechlich gebrauchten Ports, per Live-Traffic-Analyse (conntrack) +
-# Dokumentation bestaetigt: SSH, Proxmox-Oberflaeche, PBS-Backup-API.
+# Server-VLAN101: Nur die tatsaechlich gebrauchten Ports erlaubt (20.08.2026 eingeengt, 22.08.2026 finalisiert)
 IN ACCEPT -source 10.1.0.0/24 -p tcp -dport 22 -log nolog     # SSH
 IN ACCEPT -source 10.1.0.0/24 -p tcp -dport 8006 -log nolog   # Proxmox-Weboberflaeche
 IN ACCEPT -source 10.1.0.0/24 -p tcp -dport 8007 -log nolog   # PBS-Backup-API (VM240)
-# UEBERGANGSWEISE, mit Protokollierung (nicht "nolog" wie sonst ueberall) - faengt
-# alles auf, was oben noch fehlt, damit nichts still kaputt geht. Nach ein paar
-# Tagen Logs durchsehen, echten Bedarf gezielt freigeben, diese Zeile entfernen.
-IN ACCEPT -source 10.1.0.0/24 -log info                       # TEMPORAER - siehe oben, Odoo #966-Folgeaufgabe
 
 # --- Lokale LANs (nur kritische Ports) ---
 IN ACCEPT -source 192.168.2.0/24 -p tcp -dport 22 -log nolog   # Rothkreuz LAN: SSH
