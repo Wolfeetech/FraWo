@@ -50,7 +50,7 @@ Wer eine davon nicht kennt, sucht stundenlang am falschen Ende.
 | ID | Name | IP | Dienst |
 |---|---|---|---|
 | CT101 | adguard | `10.1.0.52` | DNS |
-| CT103 | npm | `10.1.0.149` | ⏹️ **gestoppt 23.08.2026** — hatte **0 Proxy-Einträge**, einziges Zertifikat für `monitor.yourparty.tech` (Domain antwortet nicht mehr). Lief 10 Monate ohne Funktion, offenbar abgelöst durch die Cloudflare-Tunnel. `onboot: 0`, nicht gelöscht |
+| ~~CT103~~ | ~~npm~~ | ~~`10.1.0.149`~~ | 🗑️ **gelöscht 23.08.2026** — hatte **0 Proxy-Einträge**, einziges Zertifikat für `monitor.yourparty.tech` (Domain tot). Lief 10 Monate ohne Funktion, abgelöst durch die Cloudflare-Tunnel. Rückweg: PBS-Sicherung `pbs-frawo:backup/ct/103/2026-08-23T02:00:29Z`, Konfig unter `/root/ct103.conf.geloescht-20260823` |
 | CT106 | wireguard | `10.1.0.239` | VPN |
 | CT108 | vaultwarden | `10.1.0.95` | Passwortsafe → `vault.frawo.tech` |
 | CT110 | n8n | `10.1.0.100` | Automatisierung + **Paperless-ngx** (Docker `paperless-webserver`, Port 8000, extern `paperless.frawo.tech`) — seit 21.08.2026 die **einzige** Instanz, komplett neu verdrahtet: Google-Drive-Push-Inbox → OCR → Gemini-Klassifikation → Ablage in bestehende Drive-Ordner + Odoo-Aufgabe. Details: `OPERATIONS/PAPERLESS_OPERATIONS.md`, Odoo-Aufgabe #998 |
@@ -68,7 +68,7 @@ Zum Vergleich: `10.1.0.40` ist ein **anderes** haos (VM210 **auf proxmox-anker**
 
 CT130 `radio-node` (`10.1.0.200`) — ✅ seit 20.08.2026 **unprivileged** (`nesting=1,keyctl=1`), war zuvor der einzige privilegierte Container von 13 (Odoo #887, jetzt erledigt). Betreibt Docker: Radio-Backend, PostgreSQL, Redis, **uptime-kuma** (`:3001`, zweites Überwachungssystem → Odoo #888). VM240 = **PBS-FraWo** (`10.1.0.7`) — 🔴 Backups liegen auf derselben Platte wie das Betriebssystem, Volume Group ist voll (0 freie PV-Extents auf `pve`) — braucht neue Hardware/Storage, nicht per Konfig lösbar.
 
-CT110 `storage-node` — ⏹️ **gestoppt 23.08.2026**. War **vollständig leer**: kein einziger laufender Dienst, kein Docker, 7,5 von 98 GB belegt (nur Grundsystem). Blockierte 100 GB Zuteilung im knappen Thin-Pool. `onboot: 0`, nicht gelöscht — zum Freigeben des Platzes müsste der Container entfernt werden (Wolfs Entscheidung, Odoo #1069).
+~~CT110 `storage-node`~~ — 🗑️ **gelöscht 23.08.2026.** War **vollständig leer**: kein laufender Dienst, kein Docker, 7,5 von 98 GB belegt (nur Grundsystem), blockierte aber 100 GB Zuteilung im Thin-Pool. **Rückweg:** `google-drive:backup/vzdump-lxc-110-2026_08_23-04_02_52.tar.zst`, Konfig unter `/root/ct110.conf.geloescht-20260823`.
 
 🔴→✅ **VM211 `azuracast-vm` (Anker) — scharfe Falle entschärft 23.08.2026.** Überbleibsel der Radio-Migration vom 21.08.: gestoppt, aber mit **`onboot: 1`** und **derselben MAC-Adresse `BC:24:11:DE:76:67` wie die produktiv laufende Radio-VM210 auf dem ProDesk**, beide an `vmbr0`. Beim nächsten Neustart des Ankers wäre sie automatisch gestartet → **doppelte MAC im selben Netz → Radioausfall** mit sehr schwer auffindbarem Fehlerbild. Jetzt `onboot: 0` (Konfig gesichert unter `/root/vm211.conf.backup-20260823`). Ihre Platte liegt als 37,5-GB-`.qcow2` auf `stockenweiler-data` (nicht im Thin-Pool) — als frische Rückfall-Kopie bewusst behalten.
 
@@ -94,25 +94,19 @@ CT150 `openclaw` (`10.1.0.31` · TS `100.72.154.15`) — **das einzige OpenClaw-
 - `/mnt/wolf-ee` ist **gar keine Netzwerk-Freigabe**, sondern ein lokales Verzeichnis mit 780 KB pip-Zwischenspeicher vom 27.05.2026 (`hs27_root_relief/root-home/.cache/pip`). Damals wurde Platz auf der Systemplatte geschaffen und der Cache hierher verschoben. Wegwerf-Daten, kein fstab-Eintrag.
 - `/mnt/frawo-library` (CIFS → `//10.1.0.94/radio`) **scheitert bei jedem Mount-Versuch mit `Permission denied`** — die Zugangsdaten in `/root/.smbcreds` stimmen nicht mehr. Wegen `nofail` meldet der Systemstart das nie. 🔴 **Das ist ein echter Funktionsausfall:** CT100 bindet die Freigabe als `mp0` nach `/srv/media-library/music-network` ein — dem dortigen **Jellyfin fehlt damit seine Musikbibliothek**. Fix braucht die korrekten SMB-Zugangsdaten des Fileservers (CT120).
 
-### 🔍 CT100 „toolbox" (`10.1.0.209`) — aktiv, aber nirgends dokumentiert
+### 🗑️ CT100 „toolbox" — am 23.08.2026 gelöscht
 
-Bei derselben Untersuchung gefunden: CT100 ist **keine Karteileiche**, sondern ein voll laufender Parallel-Stack (2 Kerne, 3 GB RAM, 23 GB Platte, `onboot: 1`). Alle Docker-Dienste seit **10 Monaten** aktiv:
+War der Rest eines aufgegebenen Projekts **„homeserver2027" (hs27)** mit komplett anderer Netzstruktur (`10.4.0.x`, `*.hs27.internal`). Nichts davon bediente die heutige Produktion — im Einzelnen nachgemessen:
 
-| Dienst | Port | Anmerkung |
-|---|---|---|
-| `caddy` | 80, 443 | Reverse Proxy |
-| `adguard` | 53, 3000 | 🟡 **doppelt** — AdGuard läuft auch in CT101 (`10.1.0.27`, aktiv, ist der Nameserver von CT100) |
-| `uptime-kuma` | 3001 | 🟡 **doppelt** — läuft auch in CT130 (dort dokumentiert, Odoo #888) |
-| ~~`jellyfin`~~ | ~~8096~~ | 🗑️ **entfernt 23.08.2026** auf Wolfs Ansage — wurde nicht mehr gebraucht, Musikbibliothek war ohnehin seit Wochen nicht eingebunden |
-| ~~`open-webui`~~ | ~~3000~~ | 🗑️ **entfernt 23.08.2026** — KI-Chat-Oberfläche aus dem eingestellten Ollama-Versuch. Datenbank enthielt **0 Chats, 0 Benutzer, 0 Dokumente** → nie benutzt. Die 1,1 GB waren reiner Zwischenspeicher |
+| Dienst | Befund |
+|---|---|
+| `caddy` | proxyte **ausschliesslich** auf tote `10.4.0.x`/hs27-Ziele |
+| `adguard` | letzte Anfrage **16.07.2026** — die produktiven sind CT101 ProDesk (`10.1.0.52`, schreibt laufend) und CT101 Anker (`10.1.0.27`) |
+| `uptime-kuma` | lief zwar, überwachte aber fast nur tote Ziele; **0 Benachrichtigungen** aktiv, **0 Zugriffe** in 24 h. Die echte Instanz ist CT130 (8 Prüfungen auf die reale Produktion) |
+| `openclaw.service` | **Zombie** — systemd meldete „aktiv", antwortete aber nicht; **Ollama war nicht einmal installiert**. Kein Gateway, nur ein Rest des eingestellten Lokal-KI-Versuchs |
+| `jellyfin`, `open-webui` | vorab entfernt — open-webui hatte **0 Chats, 0 Benutzer, 0 Dokumente** |
 
-Ausserdem läuft dort ein `openclaw.service` — **widerspricht** der Aussage weiter unten, CT150 sei „das einzige OpenClaw-Gateway". Noch nicht geklärt, ob Gateway oder Node.
-
-Die Stapel liegen unter `/opt/homeserver2027/stacks/` — beide Compose-Dateien nannten als Adresse `10.1.0.20`, CT100 hat aber `.209` (weitere Altlast).
-
-✅ **Aufgeräumt 23.08.2026:** Jellyfin und open-webui auf Wolfs Ansage entfernt (Autostart-Einheit `homeserver-compose-toolbox-media.service` deaktiviert, Stapel heruntergefahren, Volume gelöscht). Konfigurationen **verschoben statt gelöscht** nach `/root/quarantaene-20260823/` in CT100. Ergebnis: **0,7 GB RAM frei**, Thin-Pool 79,07 → **78,37 %**.
-
-⚠️ **Offen:** CT100 dupliziert weiterhin **AdGuard** (auch in CT101) und **uptime-kuma** (auch in CT130), und beherbergte den 10 Monate verwaisten `frawo-tech.de`-Tunnel. Der `openclaw.service` dort ist noch ungeklärt. Odoo-Aufgabe #1068.
+Auch der 10 Monate verwaiste `frawo-tech.de`-Tunnel lief hier. **Rückweg:** Sicherung `google-drive:backup/vzdump-lxc-100-2026_08_23-04_00_17.tar.zst` (7,5 GB, vom Löschtag), Konfig unter `/root/ct100.conf.geloescht-20260823`. Odoo #1068.
 
 ---
 
@@ -266,6 +260,17 @@ Buchstaben verschieben sich — **Seriennummer entscheidet**.
 🔴→✅ **16.08.2026:** Crontab auf `pve` zeigte 14 Tage auf gelöschte/falsche Skriptpfade (siehe Fallen-Tabelle oben) — Odoo-Cloud-, Radio- und PBS-Konfig-Sicherung liefen lautlos ins Leere. PBS-Containersicherung (ganze CT140) lief die ganze Zeit durch, akuter Datenverlust war nie gegeben. Crontab repariert (alte Fassung gesichert unter `/root/crontab.backup-20260816`), alle 4 Skripte manuell verifiziert, TÜV meldet wieder **11/11**.
 
 **Wiederherstellungstest** sonntags 09:00: spielt die Odoo-Sicherung in eine Wegwerf-Datenbank und vergleicht Zeile für Zeile.
+
+⚠️ **Zwei getrennte Sicherungswege — nicht verwechseln (geklärt 23.08.2026):**
+
+| Wessen Gäste | Wohin | Auftrag |
+|---|---|---|
+| **ProDesk**-Container | **PBS** auf dem Anker | `28c8fb76…`, 04:00, `storage pbs-frawo` |
+| **Anker**-Gäste (101, 130, 150, 210, 300) | **Google Drive** | `daily-all-pbs`, 04:00, `storage google-drive`, `keep-last=3` — am 09.07.2026 bewusst von PBS umgestellt („entlastet PBS") |
+
+🔴 **Falle:** Wer die Anker-Gäste in PBS sucht, findet **nichts** und hält sie fälschlich für ungesichert. Genau das ist am 23.08. passiert. Immer `pvesm list google-drive` gegenprüfen. Verifiziert: alle Anker-Gäste haben je 3 Generationen, frisch vom selben Tag (CT130 11,9 GB, CT150 3,2 GB, VM210, VM300, CT101).
+
+🟡 **Blinder Fleck im TÜV:** Der Backup-TÜV prüft `pbs_container` = die **8 ProDesk**-Container. Die **Anker**-Gäste prüft er **nicht** — sie könnten monatelang ausfallen, ohne dass 11/11 kippt. *(Noch offen — sinnvolle Ergänzung für den TÜV.)*
 
 ✅ **Vollprüfung 23.08.2026:** Backup-TÜV **11/11**, Cron feuert nachweislich (auch die 03:30- und 03:45-Jobs), PBS räumt sauber auf (Prune 7 Tage / 4 Wochen / 2 Monate, Garbage Collection täglich, letzter Lauf OK, PBS-Platte 55 %), Überwachung intakt (**39 Alarmregeln geladen, 0 fehlerhaft**). Die Thin-Pool-Alarme wurden **per Prometheus-Abfrage gegengeprüft**, nicht nur als Regeldatei gelesen — sie decken tatsächlich **beide** Knoten ab.
 
