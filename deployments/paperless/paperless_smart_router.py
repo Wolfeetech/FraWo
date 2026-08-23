@@ -420,6 +420,7 @@ def create_odoo_task(info, doc_id, doc_title):
         print(f"Odoo-Aufgabe #{task_id} angelegt für {info['entity']} (Dokument #{doc_id}).")
 
         # PDF direkt als Anhang an die Odoo-Aufgabe haengen fuer In-App Vorschau
+        pdf_bytes = None
         try:
             pdf_req = urllib.request.Request(f"{PAPERLESS_URL}/documents/{doc_id}/download/")
             pdf_req.add_header("Authorization", paperless_auth_header())
@@ -438,9 +439,71 @@ def create_odoo_task(info, doc_id, doc_title):
         except Exception as att_err:
             print(f"Warnung: PDF-Anhang an Odoo fehlgeschlagen: {att_err}")
 
+        # Wenn es eine Rechnung/Ausgabe fuer die GbR ist -> automatisch Lieferantenrechnung in Odoo Finanzen anlegen!
+        if info.get("document_type") in ["Rechnung", "Kassenbeleg"] and info.get("amount", 0) > 0 and info.get("entity") == "FraWo_GbR":
+            create_odoo_vendor_bill(models, uid, info, doc_id, doc_title, pdf_bytes)
+
         return task_id
     except Exception as e:
         print(f"Fehler beim Anlegen der Odoo-Aufgabe: {e}")
+        return None
+
+
+def create_odoo_vendor_bill(models, uid, info, doc_id, doc_title, pdf_bytes):
+    try:
+        vendor_name = info.get("vendor") or "Unbekannter Lieferant"
+        amount = float(info.get("amount") or 0.0)
+        if amount <= 0:
+            return None
+        
+        # 1. Partner suchen oder anlegen
+        partners = models.execute_kw(ODOO_DB, uid, ODOO_PASS, 'res.partner', 'search_read',
+                                     [[['name', 'ilike', vendor_name]]], {'fields': ['id', 'name'], 'limit': 1})
+        if partners:
+            partner_id = partners[0]['id']
+        else:
+            partner_id = models.execute_kw(ODOO_DB, uid, ODOO_PASS, 'res.partner', 'create',
+                                           [{'name': vendor_name, 'supplier_rank': 1}])
+
+        # 2. Aufwandskonto suchen
+        expense_accs = models.execute_kw(ODOO_DB, uid, ODOO_PASS, 'account.account', 'search_read',
+                                         [[['account_type', '=', 'expense']]], {'fields': ['id'], 'limit': 1})
+        account_id = expense_accs[0]['id'] if expense_accs else False
+
+        inv_date = info.get("document_date") or datetime.now().strftime("%Y-%m-%d")
+        due_date = info.get("due_date") or (datetime.now() + timedelta(days=14)).strftime("%Y-%m-%d")
+
+        bill_vals = {
+            'move_type': 'in_invoice',
+            'partner_id': partner_id,
+            'invoice_date': inv_date,
+            'invoice_date_due': due_date,
+            'ref': f"Paperless #{doc_id}: {doc_title[:40]}",
+            'invoice_line_ids': [
+                (0, 0, {
+                    'name': info.get("summary") or doc_title,
+                    'price_unit': amount,
+                    'quantity': 1,
+                    'account_id': account_id
+                })
+            ]
+        }
+        bill_id = models.execute_kw(ODOO_DB, uid, ODOO_PASS, 'account.move', 'create', [bill_vals])
+        print(f"Odoo Lieferantenrechnung #{bill_id} für {vendor_name} ({amount:.2f} €) angelegt.")
+
+        if pdf_bytes:
+            import base64
+            att_vals = {
+                'name': f"Beleg_{safe_filename(doc_title, 'beleg')}.pdf",
+                'datas': base64.b64encode(pdf_bytes).decode('ascii'),
+                'res_model': 'account.move',
+                'res_id': bill_id,
+                'mimetype': 'application/pdf',
+            }
+            models.execute_kw(ODOO_DB, uid, ODOO_PASS, 'ir.attachment', 'create', [att_vals])
+        return bill_id
+    except Exception as e:
+        print(f"Warnung: Automatische Lieferantenrechnung fehlgeschlagen: {e}")
         return None
 
 
