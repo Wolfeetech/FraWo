@@ -102,13 +102,17 @@ Bei derselben Untersuchung gefunden: CT100 ist **keine Karteileiche**, sondern e
 |---|---|---|
 | `caddy` | 80, 443 | Reverse Proxy |
 | `adguard` | 53, 3000 | 🟡 **doppelt** — AdGuard läuft auch in CT101 (`10.1.0.27`, aktiv, ist der Nameserver von CT100) |
-| `jellyfin` | 8096 | Medienserver — Musikbibliothek aktuell leer (s.o.) |
 | `uptime-kuma` | 3001 | 🟡 **doppelt** — läuft auch in CT130 (dort dokumentiert, Odoo #888) |
-| `open-webui` | 3000 (lokal) | AI-Oberfläche |
+| ~~`jellyfin`~~ | ~~8096~~ | 🗑️ **entfernt 23.08.2026** auf Wolfs Ansage — wurde nicht mehr gebraucht, Musikbibliothek war ohnehin seit Wochen nicht eingebunden |
+| ~~`open-webui`~~ | ~~3000~~ | 🗑️ **entfernt 23.08.2026** — KI-Chat-Oberfläche aus dem eingestellten Ollama-Versuch. Datenbank enthielt **0 Chats, 0 Benutzer, 0 Dokumente** → nie benutzt. Die 1,1 GB waren reiner Zwischenspeicher |
 
 Ausserdem läuft dort ein `openclaw.service` — **widerspricht** der Aussage weiter unten, CT150 sei „das einzige OpenClaw-Gateway". Noch nicht geklärt, ob Gateway oder Node.
 
-⚠️ **Nicht angetastet** — das benutzt offensichtlich jemand. Aber: CT100 belegt 3 GB RAM und ~16 GB im knappen Anker-Thin-Pool, dupliziert zwei dokumentierte Dienste, und beherbergte den 10 Monate verwaisten `frawo-tech.de`-Tunnel. **Wolf muss entscheiden, was davon bleibt.** Odoo-Aufgabe #1068.
+Die Stapel liegen unter `/opt/homeserver2027/stacks/` — beide Compose-Dateien nannten als Adresse `10.1.0.20`, CT100 hat aber `.209` (weitere Altlast).
+
+✅ **Aufgeräumt 23.08.2026:** Jellyfin und open-webui auf Wolfs Ansage entfernt (Autostart-Einheit `homeserver-compose-toolbox-media.service` deaktiviert, Stapel heruntergefahren, Volume gelöscht). Konfigurationen **verschoben statt gelöscht** nach `/root/quarantaene-20260823/` in CT100. Ergebnis: **0,7 GB RAM frei**, Thin-Pool 79,07 → **78,37 %**.
+
+⚠️ **Offen:** CT100 dupliziert weiterhin **AdGuard** (auch in CT101) und **uptime-kuma** (auch in CT130), und beherbergte den 10 Monate verwaisten `frawo-tech.de`-Tunnel. Der `openclaw.service` dort ist noch ungeklärt. Odoo-Aufgabe #1068.
 
 ---
 
