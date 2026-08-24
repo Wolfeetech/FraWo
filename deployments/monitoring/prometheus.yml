@@ -69,7 +69,6 @@ scrape_configs:
           - http://10.1.0.100:8000              # Paperless (CT110)
           - http://10.1.0.100:5678              # n8n
           - http://10.1.0.94:4533               # Navidrome (Musik-Streaming, CT120 ProDesk)
-          - http://10.1.0.149:81                # Nginx Proxy Manager
           - https://cloud.frawo.tech/status.php # Nextcloud
           # Nachgetragen 29.07.2026: beide liefen ungeprueft. Ein Ausfall des
           # Passwortsafes oder der Firmenseite waere niemandem aufgefallen.
