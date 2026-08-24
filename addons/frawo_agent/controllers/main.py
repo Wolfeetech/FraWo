@@ -723,6 +723,166 @@ class RadioController(http.Controller):
             return request.make_response(json.dumps({"status": "error", "message": str(e)}), status=500, headers=[('Content-Type', 'application/json')])
 
     # ─────────────────────────────────────────────────────────────
+    # HA Touchscreen-Kiosk: Server-Status (Task #1039 Etappe 3)
+    # ─────────────────────────────────────────────────────────────
+
+    PROMETHEUS_URL = 'http://10.1.0.35:9090/api/v1/query'
+    NODE_LABELS = {
+        'stockenweiler-pve': '🖥️ ProDesk',
+        'anker-pve': '🖥️ Anker',
+        'monitoring-stack': '📊 Monitoring (CT150)',
+    }
+
+    def _prom_query(self, q):
+        try:
+            r = requests.get(self.PROMETHEUS_URL, params={'query': q}, timeout=5)
+            return r.json().get('data', {}).get('result', [])
+        except Exception as e:
+            _logger.warning("Prometheus query failed (%s): %s", q, e)
+            return []
+
+    @http.route('/kiosk/server', type='http', auth='public', methods=['GET'], csrf=False)
+    def kiosk_server_status(self, **kwargs):
+        """Server-Status fuers Touchscreen-Kiosk: live aus Prometheus, rein lesend.
+        Kein Login, kein Tippen noetig -- nur zum Antippen gedacht."""
+        if not self._check_summary_auth():
+            return request.make_response("unauthorized", status=401)
+        try:
+            loads = {m['metric']['instance']: float(m['value'][1]) for m in self._prom_query('node_load1')}
+            mem_avail = {m['metric']['instance']: float(m['value'][1]) for m in self._prom_query('node_memory_MemAvailable_bytes')}
+            mem_total = {m['metric']['instance']: float(m['value'][1]) for m in self._prom_query('node_memory_MemTotal_bytes')}
+            disk_avail = {m['metric']['instance']: float(m['value'][1]) for m in self._prom_query('node_filesystem_avail_bytes{mountpoint="/"}')}
+            disk_total = {m['metric']['instance']: float(m['value'][1]) for m in self._prom_query('node_filesystem_size_bytes{mountpoint="/"}')}
+
+            nodes = []
+            for instance, label in self.NODE_LABELS.items():
+                load = loads.get(instance)
+                ram_pct = None
+                if mem_total.get(instance):
+                    ram_pct = round((1 - mem_avail.get(instance, 0) / mem_total[instance]) * 100, 1)
+                disk_pct = None
+                if disk_total.get(instance):
+                    disk_pct = round((1 - disk_avail.get(instance, 0) / disk_total[instance]) * 100, 1)
+                nodes.append({'name': label, 'load': load, 'ram_pct': ram_pct, 'disk_pct': disk_pct})
+
+            guest_info = self._prom_query('pve_guest_info')
+            guest_up = {}
+            for m in self._prom_query('pve_up{id=~"(qemu|lxc)/.*"}'):
+                key = m['metric'].get('id', '') + '|' + m['metric'].get('pve_node', '')
+                guest_up[key] = m['value'][1] == '1'
+
+            guests = []
+            for m in guest_info:
+                gm = m['metric']
+                if gm.get('template') == '1':
+                    continue
+                key = gm.get('id', '') + '|' + gm.get('pve_node', '')
+                guests.append({
+                    'name': gm.get('name', gm.get('id', '?')),
+                    'node': gm.get('pve_node', ''),
+                    'up': guest_up.get(key),
+                })
+            guests.sort(key=lambda g: (g['node'], g['name']))
+            guests_down = [g for g in guests if g['up'] is False]
+
+            tuev = self._prom_query('frawo_backup_tuev')
+            tuev_total = len(tuev)
+            tuev_ok = sum(1 for m in tuev if m['value'][1] == '1')
+
+            def pct_color(p):
+                if p is None:
+                    return '#7986cb'
+                if p >= 90:
+                    return '#ff1744'
+                if p >= 75:
+                    return '#ffa726'
+                return '#00c853'
+
+            node_cards = ''
+            for n in nodes:
+                load_str = f"{n['load']:.1f}" if n['load'] is not None else '–'
+                ram_str = f"{n['ram_pct']:.0f}%" if n['ram_pct'] is not None else '–'
+                disk_str = f"{n['disk_pct']:.0f}%" if n['disk_pct'] is not None else '–'
+                node_cards += f"""
+                <div class="card">
+                    <div class="card-title">{n['name']}</div>
+                    <div class="metric-row">
+                        <span class="metric-label">Last</span>
+                        <span class="metric-val">{load_str}</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">RAM</span>
+                        <span class="metric-val" style="color:{pct_color(n['ram_pct'])}">{ram_str}</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Platte</span>
+                        <span class="metric-val" style="color:{pct_color(n['disk_pct'])}">{disk_str}</span>
+                    </div>
+                </div>"""
+
+            guest_rows = ''
+            for g in guests:
+                dot = '#00c853' if g['up'] else ('#ff1744' if g['up'] is False else '#7986cb')
+                guest_rows += f"""
+                <div class="guest-row">
+                    <span class="dot" style="background:{dot}"></span>
+                    <span class="guest-name">{g['name']}</span>
+                    <span class="guest-node">{g['node']}</span>
+                </div>"""
+
+            tuev_color = '#00c853' if tuev_ok == tuev_total else '#ff1744'
+            down_note = ''
+            if guests_down:
+                names = ', '.join(g['name'] for g in guests_down)
+                down_note = f'<div class="warn">⚠️ Nicht aktiv: {names}</div>'
+
+            html = f"""<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Server-Status</title>
+<style>
+  * {{ box-sizing: border-box; margin: 0; padding: 0; }}
+  html, body {{ background: #0d0f14; color: #e8eaf6; font-family: 'Inter', 'Segoe UI', sans-serif; }}
+  body {{ padding: 20px; }}
+  h1 {{ font-size: 20px; margin-bottom: 16px; }}
+  .grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 20px; }}
+  .card {{ background: #1e2330; border: 1px solid #2a3044; border-radius: 12px; padding: 16px; }}
+  .card-title {{ font-weight: 700; margin-bottom: 10px; font-size: 15px; }}
+  .metric-row {{ display: flex; justify-content: space-between; padding: 4px 0; font-size: 14px; }}
+  .metric-label {{ color: #7986cb; }}
+  .metric-val {{ font-weight: 700; }}
+  .section-title {{ font-size: 15px; font-weight: 700; margin: 20px 0 10px; color: #7986cb; text-transform: uppercase; letter-spacing: 0.05em; }}
+  .guest-row {{ display: flex; align-items: center; gap: 10px; background: #1e2330; border: 1px solid #2a3044; border-radius: 10px; padding: 10px 14px; margin-bottom: 6px; font-size: 14px; }}
+  .dot {{ width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }}
+  .guest-name {{ flex: 1; font-weight: 600; }}
+  .guest-node {{ color: #7986cb; font-size: 12px; }}
+  .tuev {{ background: #1e2330; border: 2px solid {tuev_color}; border-radius: 12px; padding: 16px; text-align: center; margin-bottom: 20px; }}
+  .tuev-num {{ font-size: 28px; font-weight: 800; color: {tuev_color}; }}
+  .warn {{ background: #2a1a1a; border: 1px solid #ff1744; border-radius: 10px; padding: 12px 14px; margin-bottom: 16px; font-size: 14px; }}
+  .grafana-link {{ display: block; text-align: center; margin-top: 20px; padding: 14px; background: #1e2330; border: 1px solid #2a3044; border-radius: 12px; color: #00e5ff; text-decoration: none; font-weight: 700; }}
+</style>
+</head>
+<body>
+<h1>🖥️ Server-Status</h1>
+{down_note}
+<div class="grid">{node_cards}</div>
+<div class="tuev">
+  <div class="tuev-num">{tuev_ok}/{tuev_total}</div>
+  <div>Backup-TÜV bestanden</div>
+</div>
+<div class="section-title">Container &amp; VMs</div>
+{guest_rows}
+<a class="grafana-link" href="http://100.100.115.80:3000/d/frawo-ueberblick" target="_top">📊 Volles Grafana-Dashboard öffnen →</a>
+</body>
+</html>"""
+            return request.make_response(html, headers=[('Content-Type', 'text/html; charset=utf-8')])
+        except Exception as e:
+            _logger.error("kiosk_server_status error: %s", str(e))
+            return request.make_response(f"<p style='color:#fff'>Fehler: {str(e)}</p>", status=500, headers=[('Content-Type', 'text/html')])
+
+    # ─────────────────────────────────────────────────────────────
     # HA Touchscreen-Kiosk: Aufgaben-Widget (Task #1039 Etappe 2)
     # ─────────────────────────────────────────────────────────────
 
