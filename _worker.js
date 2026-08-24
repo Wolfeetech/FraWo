@@ -11,6 +11,20 @@ async function handleRequest(request) {
 
   // Create new response with modified headers
   const newHeaders = new Headers(response.headers)
+  const url = new URL(request.url)
+
+  // Scoped exception: allow the HA touchscreen dashboard (internal LAN only)
+  // to embed this one read-only widget endpoint. Everything else on the
+  // site keeps the full frame-ancestors 'self' lockdown from #621.
+  if (url.pathname === '/api/agent/tasks_widget') {
+    newHeaders.set('Content-Security-Policy', "frame-ancestors 'self' http://10.1.0.40:8123")
+    newHeaders.delete('X-Frame-Options')
+    return new Response(response.body, {
+      status: response.status,
+      statusText: response.statusText,
+      headers: newHeaders,
+    })
+  }
 
   // Critical Security Headers
   newHeaders.set('X-Frame-Options', 'SAMEORIGIN')
