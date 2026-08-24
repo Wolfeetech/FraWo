@@ -723,6 +723,79 @@ class RadioController(http.Controller):
             return request.make_response(json.dumps({"status": "error", "message": str(e)}), status=500, headers=[('Content-Type', 'application/json')])
 
     # ─────────────────────────────────────────────────────────────
+    # HA Touchscreen-Kiosk: Aufgaben-Widget (Task #1039 Etappe 2)
+    # ─────────────────────────────────────────────────────────────
+
+    @http.route('/api/agent/tasks_widget', type='http', auth='public', methods=['GET'], csrf=False)
+    def agent_tasks_widget(self, **kwargs):
+        """Kompaktes, antippbares HTML-Widget mit den naechsten wichtigen
+        Aufgaben, gedacht zum Einbetten per iframe-Card im HA-Touchscreen-
+        Dashboard (kiosk-frawo). Ein blosser Zaehler ('142 offene Aufgaben')
+        bringt am Bildschirm nichts, wenn man nie direkt zur Aufgabe kommt --
+        deshalb hier eine echte, antippbare Liste statt einer Zahl.
+        """
+        import json
+        if not self._check_summary_auth():
+            return request.make_response(
+                json.dumps({'error': 'unauthorized'}),
+                headers=[('Content-Type', 'application/json')],
+                status=401,
+            )
+        try:
+            tasks = request.env['project.task'].sudo().search(
+                [
+                    ('active', '=', True),
+                    ('stage_id', 'in', [1, 2, 3, 143, 144, 159]),
+                ],
+                order='priority desc, date_deadline asc nulls last',
+                limit=5,
+            )
+
+            rows = []
+            for t in tasks:
+                deadline = t.date_deadline.strftime('%d.%m.') if t.date_deadline else ''
+                prio_dot = {'0': '', '1': '🔸', '2': '🔴'}.get(t.priority or '0', '')
+                rows.append(f"""
+                <a class="row" href="https://frawo.tech/my/tasks/{t.id}" target="_top">
+                    <span class="prio">{prio_dot}</span>
+                    <span class="name">{t.name}</span>
+                    <span class="deadline">{deadline}</span>
+                </a>""")
+
+            rows_html = "".join(rows) if rows else '<div class="empty">🎉 Nichts Dringendes offen</div>'
+
+            html = f"""<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  * {{ box-sizing: border-box; margin: 0; padding: 0; }}
+  html, body {{ background: transparent; font-family: 'Inter', 'Segoe UI', sans-serif; }}
+  .list {{ display: flex; flex-direction: column; gap: 6px; padding: 2px; }}
+  .row {{
+    display: flex; align-items: center; gap: 10px;
+    background: #1e2330; border: 1px solid #2a3044; border-radius: 12px;
+    padding: 12px 14px; text-decoration: none; color: #e8eaf6;
+    font-size: 15px; font-weight: 600;
+  }}
+  .row:active {{ background: #262c3d; }}
+  .prio {{ font-size: 14px; width: 18px; text-align: center; flex-shrink: 0; }}
+  .name {{ flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }}
+  .deadline {{ font-size: 13px; color: #7986cb; flex-shrink: 0; }}
+  .empty {{ color: #7986cb; font-size: 14px; padding: 12px; text-align: center; }}
+</style>
+</head>
+<body>
+<div class="list">{rows_html}</div>
+</body>
+</html>"""
+            return request.make_response(html, headers=[('Content-Type', 'text/html; charset=utf-8')])
+        except Exception as e:
+            _logger.error("agent_tasks_widget error: %s", str(e))
+            return request.make_response(f"<p style='color:#fff'>Fehler: {str(e)}</p>", status=500, headers=[('Content-Type', 'text/html')])
+
+    # ─────────────────────────────────────────────────────────────
     # Surface Go Kiosk Terminal Landing Page (Task #826)
     # ─────────────────────────────────────────────────────────────
 
