@@ -445,7 +445,9 @@ class RadioController(http.Controller):
             .no-print {{ display: none !important; }}
             body {{ margin: 0; padding: 0; }}
             .person-card {{ border: 1px solid #ccc; }}
+            .kiosk-back {{ display: none !important; }}
         }}
+        {self.KIOSK_BACK_CSS}
     </style>
 </head>
 <body>
@@ -514,7 +516,7 @@ class RadioController(http.Controller):
 <div style="margin-top:40px; font-size:12px; color:#888; text-align:center;">
     FraWo GbR | Anker Tracker Odoo System | Automatisch generiert am {fields.Datetime.now().strftime('%d.%m.%Y %H:%M:%S')}
 </div>
-
+{self.KIOSK_BACK_HTML}
 </body>
 </html>"""
             return request.make_response(html_content, headers=[('Content-Type', 'text/html; charset=utf-8')])
@@ -1034,16 +1036,19 @@ class RadioController(http.Controller):
                 limit=5,
             )
 
+            # Kein Link auf die einzelne Aufgabe: /my/tasks/{id} verlangt einen
+            # Odoo-Login, den es am Touchscreen-Kiosk nie geben wird (Befund
+            # 25.08.2026) -- also nur anzeigen, nicht antippbar auf Detailebene.
             rows = []
             for t in tasks:
                 deadline = t.date_deadline.strftime('%d.%m.') if t.date_deadline else ''
                 prio_dot = {'0': '', '1': '🔸', '2': '🔴'}.get(t.priority or '0', '')
                 rows.append(f"""
-                <a class="row" href="https://frawo.tech/my/tasks/{t.id}" target="_top">
+                <div class="row">
                     <span class="prio">{prio_dot}</span>
                     <span class="name">{t.name}</span>
                     <span class="deadline">{deadline}</span>
-                </a>""")
+                </div>""")
 
             rows_html = "".join(rows) if rows else '<div class="empty">🎉 Nichts Dringendes offen</div>'
 
@@ -1052,25 +1057,30 @@ class RadioController(http.Controller):
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aufgaben</title>
 <style>
   * {{ box-sizing: border-box; margin: 0; padding: 0; }}
-  html, body {{ background: transparent; font-family: 'Inter', 'Segoe UI', sans-serif; }}
+  html, body {{ background: #0d0f14; color: #e8eaf6; font-family: 'Inter', 'Segoe UI', sans-serif; }}
+  body {{ padding: 20px; max-width: 480px; margin: 0 auto; }}
+  h1 {{ font-size: 20px; margin-bottom: 16px; }}
   .list {{ display: flex; flex-direction: column; gap: 6px; padding: 2px; }}
   .row {{
     display: flex; align-items: center; gap: 10px;
     background: #1e2330; border: 1px solid #2a3044; border-radius: 12px;
-    padding: 12px 14px; text-decoration: none; color: #e8eaf6;
+    padding: 12px 14px; color: #e8eaf6;
     font-size: 15px; font-weight: 600;
   }}
-  .row:active {{ background: #262c3d; }}
   .prio {{ font-size: 14px; width: 18px; text-align: center; flex-shrink: 0; }}
   .name {{ flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }}
   .deadline {{ font-size: 13px; color: #7986cb; flex-shrink: 0; }}
   .empty {{ color: #7986cb; font-size: 14px; padding: 12px; text-align: center; }}
+  {self.KIOSK_BACK_CSS}
 </style>
 </head>
 <body>
+<h1>🗒️ Nächste Aufgaben</h1>
 <div class="list">{rows_html}</div>
+{self.KIOSK_BACK_HTML}
 </body>
 </html>"""
             return request.make_response(html, headers=[('Content-Type', 'text/html; charset=utf-8')])
