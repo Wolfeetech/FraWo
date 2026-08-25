@@ -66,14 +66,16 @@ scrape_configs:
           - http://10.1.0.112:8069/web/health   # Odoo (ERP)
           - http://10.1.0.40:8123               # Home Assistant
           - https://funk.frawo.tech             # Radio
+          - http://10.1.0.94:4533               # Navidrome (Musik-Streaming, CT120)
           - http://10.1.0.100:8000              # Paperless (CT110)
           - http://10.1.0.100:5678              # n8n
-          - http://10.1.0.94:4533               # Navidrome (Musik-Streaming, CT120 ProDesk)
           - https://cloud.frawo.tech/status.php # Nextcloud
           # Nachgetragen 29.07.2026: beide liefen ungeprueft. Ein Ausfall des
           # Passwortsafes oder der Firmenseite waere niemandem aufgefallen.
           - https://vault.frawo.tech            # Vaultwarden (Passwortsafe)
           - https://frawo.tech                  # Firmen-Webseite
+          - http://10.1.0.248:8123               # Home Assistant Eltern (Stockenweiler)
+          - http://10.1.0.112:8069/anker_tracker/health # Getraenke-Tracker (Anker-Kiosk)
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target
@@ -168,3 +170,21 @@ scrape_configs:
         labels:
           instance: studiopc
           env: frawo
+
+  # DNS-Erreichbarkeit AdGuard (Konsolidierung Uptime-Kuma, 25.08.2026):
+  # echte Abfrage statt nur Ping. Deckt beide AdGuard-Instanzen ab.
+  - job_name: blackbox_dns
+    metrics_path: /probe
+    params:
+      module: [dns_check]
+    static_configs:
+      - targets:
+          - 10.1.0.52:53   # AdGuard primaer (ProDesk, CT101)
+          - 10.1.0.27:53   # AdGuard sekundaer (Anker, CT101)
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: localhost:9115
