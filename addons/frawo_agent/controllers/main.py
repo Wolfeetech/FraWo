@@ -733,6 +733,21 @@ class RadioController(http.Controller):
         'monitoring-stack': '📊 Monitoring (CT150)',
     }
 
+    # Fester Rueckweg-Knopf fuer alle Seiten, die vom Touchscreen-Kiosk aus
+    # angetippt werden. Der Kiosk-Browser laeuft im echten --kiosk-Modus ohne
+    # jede Browser-Chrome (kein Tab, kein Zurueck-Pfeil) -- ohne diesen Knopf
+    # bleibt jeder externe Tap eine Einbahnstrasse (Befund 25.08.2026, Wolf).
+    KIOSK_BACK_CSS = """
+        .kiosk-back { position: fixed; left: 16px; bottom: 16px; z-index: 9999;
+            background: #a050f0; color: #fff; text-decoration: none; font-weight: 700;
+            font-family: Inter, -apple-system, sans-serif; padding: 14px 22px;
+            border-radius: 30px; box-shadow: 0 4px 16px rgba(0,0,0,0.4); font-size: 15px; }
+    """
+    KIOSK_BACK_HTML = (
+        '<a class="kiosk-back" href="http://10.1.0.40:8123/kiosk-frawo/start" '
+        'target="_top">← Zurück zum Kiosk</a>'
+    )
+
     def _prom_query(self, q):
         try:
             r = requests.get(self.PROMETHEUS_URL, params={'query': q}, timeout=5)
@@ -862,6 +877,7 @@ class RadioController(http.Controller):
   .tuev-num {{ font-size: 28px; font-weight: 800; color: {tuev_color}; }}
   .warn {{ background: #2a1a1a; border: 1px solid #ff1744; border-radius: 10px; padding: 12px 14px; margin-bottom: 16px; font-size: 14px; }}
   .grafana-link {{ display: block; text-align: center; margin-top: 20px; padding: 14px; background: #1e2330; border: 1px solid #2a3044; border-radius: 12px; color: #00e5ff; text-decoration: none; font-weight: 700; }}
+  {self.KIOSK_BACK_CSS}
 </style>
 </head>
 <body>
@@ -875,6 +891,7 @@ class RadioController(http.Controller):
 <div class="section-title">Container &amp; VMs</div>
 {guest_rows}
 <a class="grafana-link" href="http://100.100.115.80:3000/d/frawo-ueberblick" target="_top">📊 Volles Grafana-Dashboard öffnen →</a>
+{self.KIOSK_BACK_HTML}
 </body>
 </html>"""
             return request.make_response(html, headers=[('Content-Type', 'text/html; charset=utf-8')])
@@ -904,12 +921,13 @@ class RadioController(http.Controller):
             d = None
 
         if d is None:
-            html = """<!DOCTYPE html><html lang="de"><head><meta charset="UTF-8">
+            html = f"""<!DOCTYPE html><html lang="de"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="refresh" content="30">
 <title>Musikbibliothek</title>
 <style>body{background:#0d0f14;color:#e8eaf6;font-family:'Inter','Segoe UI',sans-serif;padding:20px;}</style>
-</head><body><p>⚠️ Status-Server auf CT120 gerade nicht erreichbar. Lädt in 30s neu.</p></body></html>"""
+<style>{self.KIOSK_BACK_CSS}</style>
+</head><body><p>⚠️ Status-Server auf CT120 gerade nicht erreichbar. Lädt in 30s neu.</p>{self.KIOSK_BACK_HTML}</body></html>"""
             return request.make_response(html, headers=[('Content-Type', 'text/html; charset=utf-8')])
 
         gl = d.get('genre_lauf', {})
@@ -951,6 +969,7 @@ class RadioController(http.Controller):
   .metric-label {{ color: #7986cb; }}
   .metric-val {{ font-weight: 700; }}
   .done-badge {{ display: inline-block; background: #00c85322; color: #00c853; border: 1px solid #00c853; border-radius: 20px; padding: 4px 12px; font-size: 12px; font-weight: 700; margin-top: 8px; }}
+  {self.KIOSK_BACK_CSS}
 </style>
 </head>
 <body>
@@ -981,6 +1000,7 @@ class RadioController(http.Controller):
   <div class="card-title">Beatport-Chart-Batch (Artist/Title)</div>
   <div class="metric-row"><span class="metric-label">In echten Dateien korrigiert</span><span class="metric-val">{bb.get('erledigt', 0)} / {bb.get('gesamt', 0)}</span></div>
 </div>
+{self.KIOSK_BACK_HTML}
 </body>
 </html>"""
         return request.make_response(html, headers=[('Content-Type', 'text/html; charset=utf-8')])
