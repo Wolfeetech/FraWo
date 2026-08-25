@@ -883,6 +883,109 @@ class RadioController(http.Controller):
             return request.make_response(f"<p style='color:#fff'>Fehler: {str(e)}</p>", status=500, headers=[('Content-Type', 'text/html')])
 
     # ─────────────────────────────────────────────────────────────
+    # Musikbibliothek-Sanierung: Live-Fortschritt (25.08.2026)
+    # ─────────────────────────────────────────────────────────────
+
+    @http.route('/kiosk/musik_status', type='http', auth='public', methods=['GET'], csrf=False)
+    def musik_sanierung_status(self, **kwargs):
+        """Fortschrittsanzeige fuer die Bereinigung der Musikbibliothek (beets
+        auf CT120), Paperless-Style: Wolf soll den Stand selbst mitverfolgen
+        koennen, statt auf Zwischenmeldungen im Chat zu warten. Liest eine
+        kleine Status-JSON, die auf CT120 selbst geschrieben wird -- kein
+        Fake-Fortschritt, nur echte Zahlen aus dem laufenden Log."""
+        if not self._check_summary_auth():
+            return request.make_response("unauthorized", status=401)
+        try:
+            r = requests.get('http://10.1.0.94:8338/status.json', timeout=5)
+            r.raise_for_status()
+            d = r.json()
+        except Exception as e:
+            _logger.warning("musik_sanierung_status: Status-Server nicht erreichbar: %s", str(e))
+            d = None
+
+        if d is None:
+            html = """<!DOCTYPE html><html lang="de"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="refresh" content="30">
+<title>Musikbibliothek</title>
+<style>body{background:#0d0f14;color:#e8eaf6;font-family:'Inter','Segoe UI',sans-serif;padding:20px;}</style>
+</head><body><p>⚠️ Status-Server auf CT120 gerade nicht erreichbar. Lädt in 30s neu.</p></body></html>"""
+            return request.make_response(html, headers=[('Content-Type', 'text/html; charset=utf-8')])
+
+        gl = d.get('genre_lauf', {})
+        qa = d.get('quarantaene_aufgeraeumt', {})
+        bb = d.get('beatport_batch_repariert', {})
+
+        geprueft = gl.get('alben_geprueft', 0)
+        gesamt = gl.get('alben_gesamt', 1) or 1
+        pct = round(min(geprueft / gesamt, 1.0) * 100, 1)
+        fertig = geprueft >= gesamt
+
+        stand_roh = d.get('stand', '')
+        try:
+            stand_txt = fields.Datetime.from_string(stand_roh.replace('T', ' ').split('.')[0]).strftime('%d.%m. %H:%M') if stand_roh else '–'
+        except Exception:
+            stand_txt = stand_roh
+
+        html = f"""<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="refresh" content="30">
+<title>Musikbibliothek-Sanierung</title>
+<style>
+  * {{ box-sizing: border-box; margin: 0; padding: 0; }}
+  html, body {{ background: #0d0f14; color: #e8eaf6; font-family: 'Inter', 'Segoe UI', sans-serif; }}
+  body {{ padding: 20px; max-width: 480px; margin: 0 auto; }}
+  h1 {{ font-size: 20px; margin-bottom: 4px; }}
+  .stand {{ color: #7986cb; font-size: 12px; margin-bottom: 20px; }}
+  .card {{ background: #1e2330; border: 1px solid #2a3044; border-radius: 12px; padding: 18px; margin-bottom: 14px; }}
+  .card-title {{ font-weight: 700; margin-bottom: 12px; font-size: 15px; }}
+  .bignum {{ font-size: 32px; font-weight: 800; }}
+  .sub {{ color: #7986cb; font-size: 13px; margin-top: 4px; }}
+  .bar-bg {{ background: #2a3044; border-radius: 8px; height: 14px; margin-top: 12px; overflow: hidden; }}
+  .bar-fill {{ background: {"#00c853" if fertig else "#00e5ff"}; height: 100%; width: {pct}%; transition: width 0.5s; }}
+  .metric-row {{ display: flex; justify-content: space-between; padding: 6px 0; font-size: 14px; border-bottom: 1px solid #2a3044; }}
+  .metric-row:last-child {{ border-bottom: none; }}
+  .metric-label {{ color: #7986cb; }}
+  .metric-val {{ font-weight: 700; }}
+  .done-badge {{ display: inline-block; background: #00c85322; color: #00c853; border: 1px solid #00c853; border-radius: 20px; padding: 4px 12px; font-size: 12px; font-weight: 700; margin-top: 8px; }}
+</style>
+</head>
+<body>
+<h1>🎵 Musikbibliothek-Sanierung</h1>
+<div class="stand">Stand: {stand_txt} · lädt alle 30s neu</div>
+
+<div class="card">
+  <div class="card-title">Genre-Bereinigung (Last.fm)</div>
+  <div class="bignum">{geprueft} <span style="font-size:18px;color:#7986cb;">/ {gesamt} Alben</span></div>
+  <div class="bar-bg"><div class="bar-fill"></div></div>
+  {'<div class="done-badge">✓ fertig</div>' if fertig else f'<div class="sub">{pct}% durch</div>'}
+</div>
+
+<div class="card">
+  <div class="card-title">Veraltete Pfade gefunden</div>
+  <div class="metric-row"><span class="metric-label">Betroffene Stellen bisher</span><span class="metric-val" style="color:#ffa726">{gl.get('pfad_fehler_gefunden', 0)}</span></div>
+  <div class="sub">Datei liegt woanders als beets denkt — Tag-Korrektur erreicht die echte Datei nicht, bis der Pfad neu zugeordnet ist. Eigene Aufgabe, noch offen.</div>
+</div>
+
+<div class="card">
+  <div class="card-title">Quarantäne aufgeräumt</div>
+  <div class="metric-row"><span class="metric-label">Duplikate gelöscht</span><span class="metric-val">{qa.get('geloescht', 0)}</span></div>
+  <div class="metric-row"><span class="metric-label">Ohne Alternative gerettet</span><span class="metric-val">{qa.get('gerettet', 0)}</span></div>
+  <div class="metric-row"><span class="metric-label">Einzigartige Titel geprüft</span><span class="metric-val">{qa.get('geprueft', 0)}</span></div>
+</div>
+
+<div class="card">
+  <div class="card-title">Beatport-Chart-Batch (Artist/Title)</div>
+  <div class="metric-row"><span class="metric-label">In echten Dateien korrigiert</span><span class="metric-val">{bb.get('erledigt', 0)} / {bb.get('gesamt', 0)}</span></div>
+</div>
+</body>
+</html>"""
+        return request.make_response(html, headers=[('Content-Type', 'text/html; charset=utf-8')])
+
+    # ─────────────────────────────────────────────────────────────
     # HA Touchscreen-Kiosk: Aufgaben-Widget (Task #1039 Etappe 2)
     # ─────────────────────────────────────────────────────────────
 
