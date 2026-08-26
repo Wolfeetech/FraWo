@@ -935,6 +935,7 @@ class RadioController(http.Controller):
         gl = d.get('genre_lauf', {})
         qa = d.get('quarantaene_aufgeraeumt', {})
         bb = d.get('beatport_batch_repariert', {})
+        pr = d.get('pfad_reparatur', {})
 
         geprueft = gl.get('alben_geprueft', 0)
         gesamt = gl.get('alben_gesamt', 1) or 1
@@ -986,9 +987,11 @@ class RadioController(http.Controller):
 </div>
 
 <div class="card">
-  <div class="card-title">Veraltete Pfade gefunden</div>
-  <div class="metric-row"><span class="metric-label">Betroffene Stellen bisher</span><span class="metric-val" style="color:#ffa726">{gl.get('pfad_fehler_gefunden', 0)}</span></div>
-  <div class="sub">Datei liegt woanders als beets denkt — Tag-Korrektur erreicht die echte Datei nicht, bis der Pfad neu zugeordnet ist. Eigene Aufgabe, noch offen.</div>
+  <div class="card-title">Pfad-Reparatur</div>
+  <div class="metric-row"><span class="metric-label">Veraltete Stellen gefunden</span><span class="metric-val" style="color:#ffa726">{gl.get('pfad_fehler_gefunden', 0)}</span></div>
+  <div class="metric-row"><span class="metric-label">Tracks neu mit echtem Pfad erfasst</span><span class="metric-val" style="color:#00e5ff">{pr.get('tracks_neu_erfasst', 0)}</span></div>
+  <div class="metric-row"><span class="metric-label">Alben neu erfasst</span><span class="metric-val">{pr.get('alben_neu_erfasst', 0)}</span></div>
+  <div class="sub">{'Läuft noch — Datei liegt woanders als beets dachte, wird gerade nachgezogen.' if pr.get('laeuft') else 'Läuft aktuell nicht.'}</div>
 </div>
 
 <div class="card">
