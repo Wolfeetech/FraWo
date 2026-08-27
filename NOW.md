@@ -113,6 +113,22 @@ Alle Dashboards und Regeln liegen in `deployments/monitoring/` und werden von do
 
 ---
 
+## 🖥️ StudioPC-Smart-Screen (neu 27.08.2026)
+
+Touchscreen-Kiosk (#1039) und künftig Surface Go zeigen einen **unabhängigen virtuellen zweiten Monitor** des StudioPC — der Fernseher (Monitor 1) bleibt unberührt. Odoo #1097 (Projekt 105) hat den vollen Aufbau; Kurzfassung:
+
+- **UltraVNC** auf StudioPC, virtuelles Display (DDEngine), Passwort gesetzt — Achtung: `createpassword -secure` erzeugt ein Format, das noVNC **nicht** versteht (Fehler „authentication rejected"). Immer **ohne** `-secure`.
+- **websockify-Bridge** auf stock-pve (`novnc-studiopc-bridge.service`, Port 6080 → StudioPC LAN-IP `10.1.0.211:5900`), liefert `/opt/novnc` gleich mit aus.
+- Host-Firewall stock-pve: 6080 nur für CT140 offen (gleiches Muster wie Paperless-Webhook).
+- **Cloudflare:** `studiopc.frawo.tech` → Tunnel „FraWo-RK" → `10.1.0.128:6080`. CSP-Ausnahme (`frame-ancestors`) nur für `home.frawo.tech`/`.de`, damit der Reiter im HA-Kiosk eingebettet werden darf.
+- **Cloudflare Access davor** (E-Mail-Einmalcode, nur `w.prinz1101@gmail.com`, 24h-Sitzung) — ohne das wäre die Seite nur durchs VNC-Passwort geschützt gewesen.
+- HA-Dashboard `kiosk_dashboard.yaml` (VM210 haos, `10.1.0.40`): neuer Reiter „StudioPC" + Umschalt-Knöpfe (kiosk-mode blendet die normale View-Leiste aus).
+- Cloudflare-API-Token `frawo_agent.cloudflare_dns_token` (Odoo `ir.config_parameter`) hat inzwischen auch **Access**-Schreibrechte (Wolf hat das selbst erweitert über die im Token freigegebene „API Tokens Write"-Berechtigung).
+
+**Offen:** UltraVNC-Rules-Auffangregel (`* → Refuse`) fehlt noch · Windows-Firewall-Regel „nur Tailscale" lässt trotzdem LAN durch, Ursache ungeklärt · Surface Go noch nicht eingerichtet, unklares Tailscale-Gerät (`surface-go-frontend` zeigt Linux + 2 Monate inaktiv) · lokal/remote Smart-Routing (Split-Horizon-DNS) von Wolf gewünscht, noch nicht gebaut.
+
+---
+
 ## 📻 Radio
 
 🔴→✅ **Sendeplan seit dem 29.07.2026 komplett umgebaut, beim Audit

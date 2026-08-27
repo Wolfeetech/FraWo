@@ -2,6 +2,8 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
+> **Status 27.08.2026: Kernziel erreicht, Architektur weicht vom Plan ab.** Statt reiner Tailscale-Bindung (`Interface=`, existiert in UltraVNC 1.8.2.4 nicht) läuft es über `AuthHosts` (LAN+VPN) plus **öffentliche Route über Cloudflare Tunnel (`studiopc.frawo.tech`) mit Cloudflare-Access-Login davor** — Wolf wollte explizit auch Fernzugriff von der Arbeit, nicht nur Tailscale. Odoo-Aufgabe #1097 (Projekt 105, Stage Erledigt) fasst den echten Endzustand zusammen, dort auch die Details zu Task 3/4/5-Abweichungen. Task 4 (Surface Go) ist **nicht** erledigt — TigerVNC + Geräte-Identifikation offen.
+
 **Goal:** Touchscreen (stock-pve, Aufgabe #1039) und Wolfs Surface Go zeigen zusätzlich zum Dashboard einen unabhängigen virtuellen zweiten Monitor des StudioPC an, den beide gleichzeitig ansehen/bedienen können — ohne den Fernseher (Monitor 1) zu beeinflussen.
 
 **Architecture:** UltraVNC (aktiv gepflegt, hat eingebaute Unterstützung für virtuelle Displays über die eigene DDEngine/Mirror-Driver-Komponente — keine zusätzliche Dritt-Treiber nötig) läuft als Windows-Dienst auf dem StudioPC, teilt ausschließlich den virtuellen Monitor, lauscht nur auf der Tailscale-IP. Touchscreen bekommt einen zusätzlichen noVNC-Reiter im bestehenden Chromium-Kiosk. Surface Go nutzt den TigerVNC-Viewer (Client-seitig aktiv gepflegt, im Unterschied zum unmaintainten winvnc-Server).
