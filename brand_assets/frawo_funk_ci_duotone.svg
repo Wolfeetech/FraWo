@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 150" width="100%" height="100%">
+  <defs>
+    <linearGradient id="violetCyanGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00F0FF" />
+      <stop offset="100%" stop-color="#8B5CF6" />
+    </linearGradient>
+  </defs>
+  <rect width="780" height="150" fill="#05070D" rx="16"/>
+  <g transform="translate(45, 102)">
+    <!-- FRAWO FUNK (Pure Cased Block) -->
+    <text x="0" y="0" font-family="'Outfit', 'Inter', -apple-system, sans-serif" font-weight="900" font-size="76" fill="#FFFFFF" letter-spacing="-2">FRAWO</text>
+    <text x="310" y="0" font-family="'Outfit', 'Inter', -apple-system, sans-serif" font-weight="900" font-size="76" fill="url(#violetCyanGrad)" letter-spacing="-2">FUNK</text>
+  </g>
+</svg>

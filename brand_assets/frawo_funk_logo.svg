@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 120" width="100%" height="100%">
+  <defs>
+    <linearGradient id="frawoCIGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00F0FF" />
+      <stop offset="55%" stop-color="#7000FF" />
+      <stop offset="100%" stop-color="#FF007A" />
+    </linearGradient>
+  </defs>
+  <g transform="translate(10, 10)">
+    <!-- Corporate Hexagon Audio Emblem -->
+    <g transform="translate(0, 5)">
+      <polygon points="50,5 90,28 90,72 50,95 10,72 10,28" fill="none" stroke="url(#frawoCIGrad)" stroke-width="4.5" />
+      <path d="M 32,50 L 50,32 L 68,50 L 50,68 Z" fill="url(#frawoCIGrad)" opacity="0.8" />
+      <circle cx="50" cy="50" r="7" fill="#FFFFFF" />
+    </g>
+
+    <!-- Wordmark -->
+    <g transform="translate(115, 18)">
+      <text x="0" y="56" font-family="'Inter', 'Outfit', -apple-system, sans-serif" font-weight="900" font-size="62" fill="#FFFFFF" letter-spacing="-1.5">FraWo</text>
+      <text x="215" y="56" font-family="'Inter', 'Outfit', -apple-system, sans-serif" font-weight="900" font-size="62" fill="url(#frawoCIGrad)" letter-spacing="-1.5">Funk</text>
+    </g>
+  </g>
+</svg>

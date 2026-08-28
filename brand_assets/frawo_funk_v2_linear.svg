@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 140" width="100%" height="100%">
+  <rect width="920" height="140" fill="#040605"/>
+  <g transform="translate(45, 96)">
+    <!-- FRAWO (Pure Titanium White) -->
+    <text x="0" y="0" font-family="-apple-system, BlinkMacSystemFont, 'Inter', sans-serif" font-weight="900" font-size="74" fill="#FFFFFF" letter-spacing="-1">FRAWO</text>
+    
+    <!-- Precision Audio Studio Separator -->
+    <rect x="355" y="-62" width="3" height="68" fill="rgba(255, 255, 255, 0.18)"/>
+    <circle cx="356.5" cy="-28" r="4.5" fill="#00E599"/>
+    
+    <!-- FUNK (FraWo Emerald) -->
+    <text x="385" y="0" font-family="-apple-system, BlinkMacSystemFont, 'Inter', sans-serif" font-weight="900" font-size="74" fill="#00E599" letter-spacing="-1">FUNK</text>
+  </g>
+</svg>

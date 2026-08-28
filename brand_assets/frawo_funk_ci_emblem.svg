@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 160" width="100%" height="100%">
+  <defs>
+    <linearGradient id="emblemGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00F0FF" />
+      <stop offset="60%" stop-color="#7000FF" />
+      <stop offset="100%" stop-color="#FF007A" />
+    </linearGradient>
+  </defs>
+  <rect width="820" height="160" fill="#0A0E1A" rx="16"/>
+  <g transform="translate(45, 30)">
+    <!-- Corporate Hexagon Emblem -->
+    <g transform="translate(0, 5)">
+      <polygon points="50,5 90,28 90,72 50,95 10,72 10,28" fill="none" stroke="url(#emblemGrad)" stroke-width="4.5" />
+      <path d="M 32,50 L 50,32 L 68,50 L 50,68 Z" fill="url(#emblemGrad)" opacity="0.8" />
+      <circle cx="50" cy="50" r="7" fill="#FFFFFF" />
+    </g>
+
+    <!-- Wordmark -->
+    <g transform="translate(125, 20)">
+      <text x="0" y="58" font-family="'Inter', 'Outfit', -apple-system, sans-serif" font-weight="900" font-size="64" fill="#FFFFFF" letter-spacing="-1.5">FraWo</text>
+      <text x="225" y="58" font-family="'Inter', 'Outfit', -apple-system, sans-serif" font-weight="900" font-size="64" fill="url(#emblemGrad)" letter-spacing="-1.5">Funk</text>
+    </g>
+  </g>
+</svg>

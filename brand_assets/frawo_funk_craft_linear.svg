@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 240" width="100%" height="100%">
+  <defs>
+    <style>
+      .bg { fill: #060807; }
+      .letter-white { fill: #F5F7F6; }
+      .letter-accent { fill: #00E599; }
+      .grid-line { stroke: rgba(255,255,255,0.04); stroke-width: 1; }
+    </style>
+  </defs>
+  <rect width="800" height="240" class="bg"/>
+  
+  <!-- Subtle Architectural Baseline Grid -->
+  <line x1="50" y1="130" x2="750" y2="130" class="grid-line"/>
+  <line x1="50" y1="195" x2="750" y2="195" class="grid-line"/>
+
+  <!-- MASTER WORDMARK: PURE VECTOR GLYPHS (Custom Bezier Geometry) -->
+  <g transform="translate(50, 45)">
+    <!-- 'F' -->
+    <path d="M 0,0 L 52,0 L 52,16 L 18,16 L 18,34 L 46,34 L 46,50 L 18,50 L 18,85 L 0,85 Z" class="letter-white"/>
+    
+    <!-- 'R' -->
+    <path d="M 64,0 L 112,0 C 124,0 132,8 132,24 C 132,38 124,46 112,47 L 134,85 L 114,85 L 94,49 L 82,49 L 82,85 L 64,85 Z M 82,16 L 82,34 L 110,34 C 114,34 116,31 116,25 C 116,19 114,16 110,16 Z" class="letter-white"/>
+    
+    <!-- 'A' -->
+    <path d="M 162,0 L 182,0 L 218,85 L 198,85 L 190,65 L 154,65 L 146,85 L 126,85 Z M 160,50 L 184,50 L 172,19 Z" class="letter-white"/>
+    
+    <!-- 'W' -->
+    <path d="M 226,0 L 244,0 L 257,55 L 273,0 L 291,0 L 307,55 L 320,0 L 338,0 L 318,85 L 299,85 L 282,28 L 265,85 L 246,85 Z" class="letter-white"/>
+    
+    <!-- 'O' -->
+    <path d="M 382,0 C 408,0 424,18 424,42.5 C 424,67 408,85 382,85 C 356,85 340,67 340,42.5 C 340,18 356,0 382,0 Z M 382,16 C 367,16 358,27 358,42.5 C 358,58 367,69 382,69 C 397,69 406,58 406,42.5 C 406,27 397,16 382,16 Z" class="letter-white"/>
+    
+    <!-- SEPARATOR BAR (Minimal Precision Stencil) -->
+    <rect x="444" y="8" width="4" height="70" fill="rgba(255,255,255,0.15)"/>
+
+    <!-- 'F' -->
+    <path d="M 468,0 L 520,0 L 520,16 L 486,16 L 486,34 L 514,34 L 514,50 L 486,50 L 486,85 L 468,85 Z" class="letter-accent"/>
+    
+    <!-- 'U' -->
+    <path d="M 532,0 L 550,0 L 550,56 C 550,65 556,70 565,70 C 574,70 580,65 580,56 L 580,0 L 598,0 L 598,56 C 598,75 585,85 565,85 C 545,85 532,75 532,56 Z" class="letter-accent"/>
+    
+    <!-- 'N' -->
+    <path d="M 610,0 L 628,0 L 664,56 L 664,0 L 682,0 L 682,85 L 664,85 L 628,29 L 628,85 L 610,85 Z" class="letter-accent"/>
+    
+    <!-- 'K' -->
+    <path d="M 694,0 L 712,0 L 712,38 L 744,0 L 767,0 L 730,42 L 768,85 L 745,85 L 712,48 L 712,85 L 694,85 Z" class="letter-accent"/>
+  </g>
+</svg>

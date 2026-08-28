@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%">
+  <defs>
+    <linearGradient id="emeraldAccent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00e599" />
+      <stop offset="100%" stop-color="#10b981" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background Matte Badge -->
+  <rect width="500" height="500" rx="36" fill="#050706"/>
+  <rect x="12" y="12" width="476" height="476" rx="28" fill="none" stroke="#10b981" stroke-width="2" stroke-opacity="0.3"/>
+
+  <!-- Outer Vinyl Record Grooves -->
+  <g transform="translate(250, 195)">
+    <!-- Concentric Grooves -->
+    <circle r="135" fill="none" stroke="#ffffff" stroke-width="1" stroke-opacity="0.06"/>
+    <circle r="120" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-opacity="0.08"/>
+    <circle r="105" fill="none" stroke="#ffffff" stroke-width="1" stroke-opacity="0.06"/>
+    <circle r="90" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-opacity="0.08"/>
+    
+    <!-- Reel-to-Reel Tape Spool Hub (Classic 3-Hole Precision Cut) -->
+    <circle r="72" fill="#0a0e0c" stroke="url(#emeraldAccent)" stroke-width="3"/>
+    
+    <!-- 3 Triangular Cutouts -->
+    <path d="M 0,-55 L 18,-20 L -18,-20 Z" fill="#050706" stroke="#10b981" stroke-width="1.5"/>
+    <path d="M 47.6,27.5 L 8.3,25.6 L 26.3,-5.6 Z" fill="#050706" stroke="#10b981" stroke-width="1.5"/>
+    <path d="M -47.6,27.5 L -26.3,-5.6 L -8.3,25.6 Z" fill="#050706" stroke="#10b981" stroke-width="1.5"/>
+    
+    <!-- Center Spindle & Cap -->
+    <circle r="22" fill="#141a17" stroke="#ffffff" stroke-width="2"/>
+    <circle r="8" fill="#10b981"/>
+    
+    <!-- Analog Broadcast Radio Arcs (Top) -->
+    <path d="M -105,-85 A 135 135 0 0 1 105,-85" fill="none" stroke="url(#emeraldAccent)" stroke-width="4" stroke-linecap="round"/>
+    <path d="M -80,-105 A 155 155 0 0 1 80,-105" fill="none" stroke="url(#emeraldAccent)" stroke-width="3" stroke-linecap="round" stroke-opacity="0.6"/>
+    <path d="M -55,-125 A 175 175 0 0 1 55,-125" fill="none" stroke="url(#emeraldAccent)" stroke-width="2" stroke-linecap="round" stroke-opacity="0.3"/>
+  </g>
+
+  <!-- Typography: Solid Analog Craft Branding -->
+  <text x="250" y="385" text-anchor="middle" font-family="'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif" font-weight="900" font-size="46" fill="#ffffff" letter-spacing="6">FRAWO</text>
+  <text x="250" y="426" text-anchor="middle" font-family="'JetBrains Mono', Consolas, monospace" font-weight="800" font-size="22" fill="#10b981" letter-spacing="12">FUNK</text>
+  <text x="250" y="458" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-weight="600" font-size="10" fill="#64748b" letter-spacing="3">24/7 ANALOG &amp; STUDIO BROADCAST</text>
+</svg>

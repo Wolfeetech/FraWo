@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 280" width="100%" height="100%">
+  <rect width="600" height="280" fill="#050706"/>
+  <g transform="translate(40, 115)">
+    <!-- FRAWO (Ultra Heavy Condensed Block) -->
+    <text x="0" y="0" font-family="'Impact', 'Arial Black', 'Plus Jakarta Sans', sans-serif" font-weight="900" font-size="115" fill="#FFFFFF" letter-spacing="-3">FRAWO</text>
+  </g>
+  <g transform="translate(40, 235)">
+    <!-- FUNK (Locked in Emerald Green) -->
+    <text x="0" y="0" font-family="'Impact', 'Arial Black', 'Plus Jakarta Sans', sans-serif" font-weight="900" font-size="115" fill="#00E599" letter-spacing="-1">FUNK</text>
+  </g>
+</svg>
