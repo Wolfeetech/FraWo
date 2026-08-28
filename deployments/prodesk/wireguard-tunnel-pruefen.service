@@ -1,0 +1,8 @@
+[Unit]
+Description=WireGuard-Tunnel pruefen (Handshake-Alter als Metrik)
+Documentation=file:///usr/local/bin/wireguard-tunnel-pruefen.sh
+After=pve-guests.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/wireguard-tunnel-pruefen.sh

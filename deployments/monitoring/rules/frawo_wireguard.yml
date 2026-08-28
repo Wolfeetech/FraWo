@@ -1,0 +1,80 @@
+# WireGuard-Tunnel nach Stockenweiler — angelegt 26.08.2026
+#
+# Der Tunnel wg1 (CT106 -> Eltern-Fritzbox) war schon einmal wochenlang tot,
+# ohne dass es jemand merkte. Aufgefallen ist es erst indirekt: 23 von 27
+# Home-Assistant-Geräten standen auf "unavailable". Niemand hat auf den
+# Tunnel geschaut, weil nichts auf ihn hingewiesen hat.
+#
+# Warum das leise passiert: WireGuard löst den Hostnamen der Gegenstelle
+# (MyFRITZ-Adresse) NUR BEIM START auf. Bekommt die Fritzbox nach einer
+# Zwangstrennung eine neue IP, sendet wg stur weiter an die alte. Dienst
+# bleibt "active", Schnittstelle bleibt "up", Log bleibt still.
+#
+# Deshalb wird hier nicht der Dienst geprüft, sondern das Ergebnis: Ist der
+# letzte Handshake noch frisch? Geliefert von
+# /usr/local/bin/wireguard-tunnel-pruefen.sh (Timer alle 2 Minuten).
+#
+# Bewusst NUR wg1: wg0 ist Wolfs Fernzugang vom StudioPC und die meiste Zeit
+# legitim aus. Ein Alarm darauf wäre Dauerlärm — und Dauerlärm bringt einem
+# bei, Alarme wegzuklicken.
+
+groups:
+  - name: frawo_wireguard
+    rules:
+      # Der eigentliche Fall: Tunnel steht auf dem Papier, überträgt aber nichts.
+      # Keepalive läuft alle 25 Sekunden, ein gesunder Handshake ist nie älter
+      # als rund 2 Minuten. 5 Minuten Schwelle plus 10 Minuten Haltezeit heisst:
+      # kein Alarm wegen eines kurzen Aussetzers, aber spätestens nach einer
+      # Viertelstunde weiss es jemand — statt nach Wochen.
+      - alert: TunnelStockenweilerTot
+        expr: frawo_wireguard_handshake_alter_sekunden{interface="wg1"} > 300
+        for: 10m
+        labels:
+          severity: critical
+        annotations:
+          dashboard: "http://100.100.115.80:3000/d/frawo-ueberblick"
+          summary: "Tunnel nach Stockenweiler überträgt nicht mehr"
+          description: >-
+            Der letzte Handshake mit {{ $labels.gegenstelle }} ist
+            {{ $value | humanizeDuration }} her. Damit sind Home Assistant
+            (Eltern), die Scan-Ablage des Druckers und Alois' Paperless-Zugang
+            abgeschnitten. Häufigste Ursache: Die Fritzbox hat nach einer
+            Zwangstrennung eine neue IP und wg sendet noch an die alte.
+            Behebung auf CT106 mit dem mitgelieferten
+            `reresolve-dns.sh` — ein blosser Neustart des Dienstes hilft nur,
+            bis die nächste Zwangstrennung kommt.
+
+      # Ohne diese Regel wäre die erste blind: Verschwindet die Metrik ganz
+      # (CT106 aus, Skript kaputt, Schnittstelle gelöscht), wird auch nichts
+      # mehr über die Schwelle steigen. Stille sähe dann aus wie "alles gut".
+      - alert: TunnelStockenweilerUnbekannt
+        expr: absent(frawo_wireguard_handshake_alter_sekunden{interface="wg1"})
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          dashboard: "http://100.100.115.80:3000/d/frawo-ueberblick"
+          summary: "Über den Tunnel nach Stockenweiler kommt gar keine Auskunft mehr"
+          description: >-
+            Zu wg1 liefert die Prüfung seit 15 Minuten überhaupt keinen Wert.
+            Das ist etwas anderes als ein toter Tunnel — hier ist die Messung
+            selbst weg. Prüfen auf dem ProDesk:
+            `systemctl status wireguard-tunnel-pruefen.timer` und
+            `pct exec 106 -- wg show wg1`.
+
+      # Und die Gegenrichtung: Läuft der Timer überhaupt noch? Ein Zeitgeber,
+      # der stillschweigend nicht mehr startet, ist genauso wertlos wie keiner.
+      # Genau so sind hier schon einmal 14 Tage Sicherungen ausgefallen.
+      - alert: WireguardPruefungLaeuftNicht
+        expr: time() - frawo_wireguard_letzter_lauf_timestamp_seconds > 900
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          dashboard: "http://100.100.115.80:3000/d/frawo-ueberblick"
+          summary: "Die Tunnel-Prüfung läuft nicht mehr"
+          description: >-
+            Der letzte Lauf ist {{ $value | humanizeDuration }} her, erwartet
+            wird alle 2 Minuten. Solange das so ist, ist der Tunnel nach
+            Stockenweiler wieder unbeobachtet. Prüfen auf dem ProDesk:
+            `systemctl status wireguard-tunnel-pruefen.timer`.

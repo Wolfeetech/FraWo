@@ -1,0 +1,14 @@
+[Unit]
+Description=WireGuard-Tunnel alle 2 Minuten pruefen
+
+[Timer]
+# Zwei Minuten sind bewusst enger als die Alarmschwelle von fuenf. Sonst
+# haengt das Alter der Metrik am Takt des Zeitgebers statt am Zustand des
+# Tunnels, und man wuesste bei einem Alarm nicht, welches von beidem klemmt.
+OnBootSec=3min
+OnUnitActiveSec=2min
+AccuracySec=15s
+Persistent=true
+
+[Install]
+WantedBy=timers.target
