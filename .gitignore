@@ -109,3 +109,6 @@ config/network/airbeam5max_p2p_blueprint.json
 
 deployments/musikverwaltung/rekordbox_sync/.env
 ansible/.vault_pass
+
+# Local SQLite databases
+*.db
