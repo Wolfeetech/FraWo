@@ -445,7 +445,9 @@ class RadioController(http.Controller):
             .no-print {{ display: none !important; }}
             body {{ margin: 0; padding: 0; }}
             .person-card {{ border: 1px solid #ccc; }}
+            .kiosk-back {{ display: none !important; }}
         }}
+        {self.KIOSK_BACK_CSS}
     </style>
 </head>
 <body>
@@ -514,7 +516,7 @@ class RadioController(http.Controller):
 <div style="margin-top:40px; font-size:12px; color:#888; text-align:center;">
     FraWo GbR | Anker Tracker Odoo System | Automatisch generiert am {fields.Datetime.now().strftime('%d.%m.%Y %H:%M:%S')}
 </div>
-
+{self.KIOSK_BACK_HTML}
 </body>
 </html>"""
             return request.make_response(html_content, headers=[('Content-Type', 'text/html; charset=utf-8')])
@@ -613,6 +615,481 @@ class RadioController(http.Controller):
             return request.make_response(json.dumps(data, indent=2), headers=[('Content-Type', 'application/json')])
         except Exception as e:
             return request.make_response(json.dumps({"status": "error", "message": str(e)}), status=500, headers=[('Content-Type', 'application/json')])
+
+    @http.route('/api/agent/create_booking', type='json', auth='public', methods=['POST'], csrf=False)
+    def agent_create_booking(self, datum, ort, fest_typ=None, kunde_name=None, kunde_kontakt=None, notizen=None, **kwargs):
+        """Booking → Kalendertermin + Auftrags-Aufgabe + (falls vorhanden) Kundenkontakt.
+
+        Minimaler Input (Datum, Ort, optional Fest-Typ/Kunde) erzeugt automatisch
+        alles Weitere, statt dass Termin/Aufgabe/Packliste einzeln von Hand
+        angelegt werden. Kunde wird gesucht oder neu angelegt (per Name),
+        damit Aufträge künftig wirklich mit einem Kontakt verknüpft sind
+        (aktuell hat keine der 53 Auftrags-Aufgaben einen partner_id gesetzt).
+        """
+        import json
+        if not self._check_summary_auth():
+            return {'error': 'unauthorized'}
+
+        try:
+            env = request.env
+            titel = f"{fest_typ or 'Auftrag'} — {kunde_name or ort}"
+
+            partner = False
+            if kunde_name:
+                partner = env['res.partner'].sudo().search([('name', '=ilike', kunde_name)], limit=1)
+                if not partner:
+                    vals = {'name': kunde_name}
+                    if kunde_kontakt:
+                        if '@' in kunde_kontakt:
+                            vals['email'] = kunde_kontakt
+                        else:
+                            vals['phone'] = kunde_kontakt
+                    partner = env['res.partner'].sudo().create(vals)
+
+            start_dt = fields.Datetime.to_datetime(datum) or fields.Datetime.now()
+            from datetime import timedelta
+            # user_id=6 (wolf@frawo.tech) + dessen partner_id=7 als Teilnehmer:
+            # nur dieser Account hat aktive Google-Kalender-Synchronisierung,
+            # ohne das landet der Termin im Nirwana des Public-User-Kontexts
+            # und taucht nie in Google/HA (calendar.wolf_termine) auf.
+            event_vals = {
+                'name': titel,
+                'start': start_dt,
+                'stop': start_dt + timedelta(hours=8),
+                'location': ort,
+                'description': notizen or '',
+                'user_id': 6,
+                'partner_ids': [(4, 7), (4, 16)],
+            }
+            if partner:
+                event_vals['partner_ids'].append((4, partner.id))
+            event = env['calendar.event'].sudo().create(event_vals)
+
+            task_desc = (
+                f"<p><b>Ort:</b> {ort}<br/>"
+                f"<b>Fest-Typ:</b> {fest_typ or '–'}<br/>"
+                f"<b>Kalendertermin:</b> "
+                f"<a href='/odoo/calendar/{event.id}'>Termin öffnen</a></p>"
+                f"<p>{notizen or ''}</p>"
+                f"<p>📦 <b>Packliste:</b> noch keine Fest-Typ-Vorlagen hinterlegt — "
+                f"Unteraufgabe 'Packliste zusammenstellen' angelegt, bis die "
+                f"Standard-Listen pro Fest-Typ existieren.</p>"
+            )
+            task_vals = {
+                'name': titel,
+                'project_id': 104,  # FraWo GbR: Aufträge & Events
+                'date_deadline': start_dt,
+                'description': task_desc,
+            }
+            if partner:
+                task_vals['partner_id'] = partner.id
+            task = env['project.task'].sudo().create(task_vals)
+
+            env['project.task'].sudo().create({
+                'name': '📦 Packliste zusammenstellen',
+                'project_id': 104,
+                'parent_id': task.id,
+                'date_deadline': start_dt,
+            })
+
+            return {
+                'status': 'ok',
+                'task_id': task.id,
+                'task_url': f'/odoo/project.task/{task.id}',
+                'event_id': event.id,
+                'partner_id': partner.id if partner else False,
+            }
+        except Exception as e:
+            _logger.error("create_booking failed: %s", e)
+            return {'status': 'error', 'message': str(e)}
+
+    @http.route('/api/agent/bottles_detail', type='http', auth='public', methods=['GET'], csrf=False)
+    def agent_bottles_detail_api(self, **kwargs):
+        """JSON detail endpoint for unbilled Anker-Tracker consumption (Task #1052).
+
+        Reuses anker.tracker.consumption.generate_purchase_summary() (read-only,
+        does NOT bill anything) so the kiosk/dashboard can show itemised bottles
+        per product instead of just a total count.
+        """
+        import json
+        if not self._check_summary_auth():
+            return request.make_response(
+                json.dumps({'error': 'unauthorized'}),
+                headers=[('Content-Type', 'application/json')],
+                status=401,
+            )
+        try:
+            summary = request.env['anker.tracker.consumption'].sudo().generate_purchase_summary()
+            return request.make_response(json.dumps(summary, indent=2), headers=[('Content-Type', 'application/json')])
+        except Exception as e:
+            return request.make_response(json.dumps({"status": "error", "message": str(e)}), status=500, headers=[('Content-Type', 'application/json')])
+
+    # ─────────────────────────────────────────────────────────────
+    # HA Touchscreen-Kiosk: Server-Status (Task #1039 Etappe 3)
+    # ─────────────────────────────────────────────────────────────
+
+    PROMETHEUS_URL = 'http://10.1.0.35:9090/api/v1/query'
+    NODE_LABELS = {
+        'stockenweiler-pve': '🖥️ ProDesk',
+        'anker-pve': '🖥️ Anker',
+        'monitoring-stack': '📊 Monitoring (CT150)',
+    }
+
+    # Fester Rueckweg-Knopf fuer alle Seiten, die vom Touchscreen-Kiosk aus
+    # angetippt werden. Der Kiosk-Browser laeuft im echten --kiosk-Modus ohne
+    # jede Browser-Chrome (kein Tab, kein Zurueck-Pfeil) -- ohne diesen Knopf
+    # bleibt jeder externe Tap eine Einbahnstrasse (Befund 25.08.2026, Wolf).
+    KIOSK_BACK_CSS = """
+        .kiosk-back { position: fixed; left: 16px; bottom: 16px; z-index: 9999;
+            background: #a050f0; color: #fff; text-decoration: none; font-weight: 700;
+            font-family: Inter, -apple-system, sans-serif; padding: 14px 22px;
+            border-radius: 30px; box-shadow: 0 4px 16px rgba(0,0,0,0.4); font-size: 15px; }
+    """
+    KIOSK_BACK_HTML = (
+        '<a class="kiosk-back" href="http://10.1.0.40:8123/kiosk-frawo/start" '
+        'target="_top">← Zurück zum Kiosk</a>'
+    )
+
+    def _prom_query(self, q):
+        try:
+            r = requests.get(self.PROMETHEUS_URL, params={'query': q}, timeout=5)
+            return r.json().get('data', {}).get('result', [])
+        except Exception as e:
+            _logger.warning("Prometheus query failed (%s): %s", q, e)
+            return []
+
+    @http.route('/kiosk/server', type='http', auth='public', methods=['GET'], csrf=False)
+    def kiosk_server_status(self, **kwargs):
+        """Server-Status fuers Touchscreen-Kiosk: live aus Prometheus, rein lesend.
+        Kein Login, kein Tippen noetig -- nur zum Antippen gedacht."""
+        if not self._check_summary_auth():
+            return request.make_response("unauthorized", status=401)
+        try:
+            loads = {m['metric']['instance']: float(m['value'][1]) for m in self._prom_query('node_load1')}
+            mem_avail = {m['metric']['instance']: float(m['value'][1]) for m in self._prom_query('node_memory_MemAvailable_bytes')}
+            mem_total = {m['metric']['instance']: float(m['value'][1]) for m in self._prom_query('node_memory_MemTotal_bytes')}
+            disk_avail = {m['metric']['instance']: float(m['value'][1]) for m in self._prom_query('node_filesystem_avail_bytes{mountpoint="/"}')}
+            disk_total = {m['metric']['instance']: float(m['value'][1]) for m in self._prom_query('node_filesystem_size_bytes{mountpoint="/"}')}
+
+            nodes = []
+            for instance, label in self.NODE_LABELS.items():
+                load = loads.get(instance)
+                ram_pct = None
+                if mem_total.get(instance):
+                    ram_pct = round((1 - mem_avail.get(instance, 0) / mem_total[instance]) * 100, 1)
+                disk_pct = None
+                if disk_total.get(instance):
+                    disk_pct = round((1 - disk_avail.get(instance, 0) / disk_total[instance]) * 100, 1)
+                nodes.append({'name': label, 'load': load, 'ram_pct': ram_pct, 'disk_pct': disk_pct})
+
+            guest_info = self._prom_query('pve_guest_info')
+            guest_up = {}
+            for m in self._prom_query('pve_up{id=~"(qemu|lxc)/.*"}'):
+                key = m['metric'].get('id', '') + '|' + m['metric'].get('pve_node', '')
+                guest_up[key] = m['value'][1] == '1'
+
+            guests = []
+            for m in guest_info:
+                gm = m['metric']
+                if gm.get('template') == '1':
+                    continue
+                key = gm.get('id', '') + '|' + gm.get('pve_node', '')
+                guests.append({
+                    'name': gm.get('name', gm.get('id', '?')),
+                    'node': gm.get('pve_node', ''),
+                    'up': guest_up.get(key),
+                })
+            guests.sort(key=lambda g: (g['node'], g['name']))
+            guests_down = [g for g in guests if g['up'] is False]
+
+            tuev = self._prom_query('frawo_backup_tuev')
+            tuev_total = len(tuev)
+            tuev_ok = sum(1 for m in tuev if m['value'][1] == '1')
+
+            def pct_color(p):
+                if p is None:
+                    return '#7986cb'
+                if p >= 90:
+                    return '#ff1744'
+                if p >= 75:
+                    return '#ffa726'
+                return '#00c853'
+
+            node_cards = ''
+            for n in nodes:
+                load_str = f"{n['load']:.1f}" if n['load'] is not None else '–'
+                ram_str = f"{n['ram_pct']:.0f}%" if n['ram_pct'] is not None else '–'
+                disk_str = f"{n['disk_pct']:.0f}%" if n['disk_pct'] is not None else '–'
+                node_cards += f"""
+                <div class="card">
+                    <div class="card-title">{n['name']}</div>
+                    <div class="metric-row">
+                        <span class="metric-label">Last</span>
+                        <span class="metric-val">{load_str}</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">RAM</span>
+                        <span class="metric-val" style="color:{pct_color(n['ram_pct'])}">{ram_str}</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Platte</span>
+                        <span class="metric-val" style="color:{pct_color(n['disk_pct'])}">{disk_str}</span>
+                    </div>
+                </div>"""
+
+            guest_rows = ''
+            for g in guests:
+                dot = '#00c853' if g['up'] else ('#ff1744' if g['up'] is False else '#7986cb')
+                guest_rows += f"""
+                <div class="guest-row">
+                    <span class="dot" style="background:{dot}"></span>
+                    <span class="guest-name">{g['name']}</span>
+                    <span class="guest-node">{g['node']}</span>
+                </div>"""
+
+            tuev_color = '#00c853' if tuev_ok == tuev_total else '#ff1744'
+            down_note = ''
+            if guests_down:
+                names = ', '.join(g['name'] for g in guests_down)
+                down_note = f'<div class="warn">⚠️ Nicht aktiv: {names}</div>'
+
+            html = f"""<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Server-Status</title>
+<style>
+  * {{ box-sizing: border-box; margin: 0; padding: 0; }}
+  html, body {{ background: #0d0f14; color: #e8eaf6; font-family: 'Inter', 'Segoe UI', sans-serif; }}
+  body {{ padding: 20px; }}
+  h1 {{ font-size: 20px; margin-bottom: 16px; }}
+  .grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 20px; }}
+  .card {{ background: #1e2330; border: 1px solid #2a3044; border-radius: 12px; padding: 16px; }}
+  .card-title {{ font-weight: 700; margin-bottom: 10px; font-size: 15px; }}
+  .metric-row {{ display: flex; justify-content: space-between; padding: 4px 0; font-size: 14px; }}
+  .metric-label {{ color: #7986cb; }}
+  .metric-val {{ font-weight: 700; }}
+  .section-title {{ font-size: 15px; font-weight: 700; margin: 20px 0 10px; color: #7986cb; text-transform: uppercase; letter-spacing: 0.05em; }}
+  .guest-row {{ display: flex; align-items: center; gap: 10px; background: #1e2330; border: 1px solid #2a3044; border-radius: 10px; padding: 10px 14px; margin-bottom: 6px; font-size: 14px; }}
+  .dot {{ width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }}
+  .guest-name {{ flex: 1; font-weight: 600; }}
+  .guest-node {{ color: #7986cb; font-size: 12px; }}
+  .tuev {{ background: #1e2330; border: 2px solid {tuev_color}; border-radius: 12px; padding: 16px; text-align: center; margin-bottom: 20px; }}
+  .tuev-num {{ font-size: 28px; font-weight: 800; color: {tuev_color}; }}
+  .warn {{ background: #2a1a1a; border: 1px solid #ff1744; border-radius: 10px; padding: 12px 14px; margin-bottom: 16px; font-size: 14px; }}
+  .grafana-link {{ display: block; text-align: center; margin-top: 20px; padding: 14px; background: #1e2330; border: 1px solid #2a3044; border-radius: 12px; color: #00e5ff; text-decoration: none; font-weight: 700; }}
+  {self.KIOSK_BACK_CSS}
+</style>
+</head>
+<body>
+<h1>🖥️ Server-Status</h1>
+{down_note}
+<div class="grid">{node_cards}</div>
+<div class="tuev">
+  <div class="tuev-num">{tuev_ok}/{tuev_total}</div>
+  <div>Backup-TÜV bestanden</div>
+</div>
+<div class="section-title">Container &amp; VMs</div>
+{guest_rows}
+<a class="grafana-link" href="http://100.100.115.80:3000/d/frawo-ueberblick" target="_top">📊 Volles Grafana-Dashboard öffnen →</a>
+{self.KIOSK_BACK_HTML}
+</body>
+</html>"""
+            return request.make_response(html, headers=[('Content-Type', 'text/html; charset=utf-8')])
+        except Exception as e:
+            _logger.error("kiosk_server_status error: %s", str(e))
+            return request.make_response(f"<p style='color:#fff'>Fehler: {str(e)}</p>", status=500, headers=[('Content-Type', 'text/html')])
+
+    # ─────────────────────────────────────────────────────────────
+    # Musikbibliothek-Sanierung: Live-Fortschritt (25.08.2026)
+    # ─────────────────────────────────────────────────────────────
+
+    @http.route('/kiosk/musik_status', type='http', auth='public', methods=['GET'], csrf=False)
+    def musik_sanierung_status(self, **kwargs):
+        """Fortschrittsanzeige fuer die Bereinigung der Musikbibliothek (beets
+        auf CT120), Paperless-Style: Wolf soll den Stand selbst mitverfolgen
+        koennen, statt auf Zwischenmeldungen im Chat zu warten. Liest eine
+        kleine Status-JSON, die auf CT120 selbst geschrieben wird -- kein
+        Fake-Fortschritt, nur echte Zahlen aus dem laufenden Log."""
+        if not self._check_summary_auth():
+            return request.make_response("unauthorized", status=401)
+        try:
+            r = requests.get('http://10.1.0.94:8338/status.json', timeout=5)
+            r.raise_for_status()
+            d = r.json()
+        except Exception as e:
+            _logger.warning("musik_sanierung_status: Status-Server nicht erreichbar: %s", str(e))
+            d = None
+
+        if d is None:
+            html = f"""<!DOCTYPE html><html lang="de"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="refresh" content="30">
+<title>Musikbibliothek</title>
+<style>body{background:#0d0f14;color:#e8eaf6;font-family:'Inter','Segoe UI',sans-serif;padding:20px;}</style>
+<style>{self.KIOSK_BACK_CSS}</style>
+</head><body><p>⚠️ Status-Server auf CT120 gerade nicht erreichbar. Lädt in 30s neu.</p>{self.KIOSK_BACK_HTML}</body></html>"""
+            return request.make_response(html, headers=[('Content-Type', 'text/html; charset=utf-8')])
+
+        gl = d.get('genre_lauf', {})
+        qa = d.get('quarantaene_aufgeraeumt', {})
+        bb = d.get('beatport_batch_repariert', {})
+        pr = d.get('pfad_reparatur', {})
+
+        geprueft = gl.get('alben_geprueft', 0)
+        gesamt = gl.get('alben_gesamt', 1) or 1
+        pct = round(min(geprueft / gesamt, 1.0) * 100, 1)
+        fertig = geprueft >= gesamt
+
+        stand_roh = d.get('stand', '')
+        try:
+            stand_txt = fields.Datetime.from_string(stand_roh.replace('T', ' ').split('.')[0]).strftime('%d.%m. %H:%M') if stand_roh else '–'
+        except Exception:
+            stand_txt = stand_roh
+
+        html = f"""<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="refresh" content="30">
+<title>Musikbibliothek-Sanierung</title>
+<style>
+  * {{ box-sizing: border-box; margin: 0; padding: 0; }}
+  html, body {{ background: #0d0f14; color: #e8eaf6; font-family: 'Inter', 'Segoe UI', sans-serif; }}
+  body {{ padding: 20px; max-width: 480px; margin: 0 auto; }}
+  h1 {{ font-size: 20px; margin-bottom: 4px; }}
+  .stand {{ color: #7986cb; font-size: 12px; margin-bottom: 20px; }}
+  .card {{ background: #1e2330; border: 1px solid #2a3044; border-radius: 12px; padding: 18px; margin-bottom: 14px; }}
+  .card-title {{ font-weight: 700; margin-bottom: 12px; font-size: 15px; }}
+  .bignum {{ font-size: 32px; font-weight: 800; }}
+  .sub {{ color: #7986cb; font-size: 13px; margin-top: 4px; }}
+  .bar-bg {{ background: #2a3044; border-radius: 8px; height: 14px; margin-top: 12px; overflow: hidden; }}
+  .bar-fill {{ background: {"#00c853" if fertig else "#00e5ff"}; height: 100%; width: {pct}%; transition: width 0.5s; }}
+  .metric-row {{ display: flex; justify-content: space-between; padding: 6px 0; font-size: 14px; border-bottom: 1px solid #2a3044; }}
+  .metric-row:last-child {{ border-bottom: none; }}
+  .metric-label {{ color: #7986cb; }}
+  .metric-val {{ font-weight: 700; }}
+  .done-badge {{ display: inline-block; background: #00c85322; color: #00c853; border: 1px solid #00c853; border-radius: 20px; padding: 4px 12px; font-size: 12px; font-weight: 700; margin-top: 8px; }}
+  {self.KIOSK_BACK_CSS}
+</style>
+</head>
+<body>
+<h1>🎵 Musikbibliothek-Sanierung</h1>
+<div class="stand">Stand: {stand_txt} · lädt alle 30s neu</div>
+
+<div class="card">
+  <div class="card-title">Genre-Bereinigung (Last.fm)</div>
+  <div class="bignum">{geprueft} <span style="font-size:18px;color:#7986cb;">/ {gesamt} Alben</span></div>
+  <div class="bar-bg"><div class="bar-fill"></div></div>
+  {'<div class="done-badge">✓ fertig</div>' if fertig else f'<div class="sub">{pct}% durch</div>'}
+</div>
+
+<div class="card">
+  <div class="card-title">Pfad-Reparatur</div>
+  <div class="metric-row"><span class="metric-label">Veraltete Stellen gefunden</span><span class="metric-val" style="color:#ffa726">{gl.get('pfad_fehler_gefunden', 0)}</span></div>
+  <div class="metric-row"><span class="metric-label">Tracks neu mit echtem Pfad erfasst</span><span class="metric-val" style="color:#00e5ff">{pr.get('tracks_neu_erfasst', 0)}</span></div>
+  <div class="metric-row"><span class="metric-label">Alben neu erfasst</span><span class="metric-val">{pr.get('alben_neu_erfasst', 0)}</span></div>
+  <div class="sub">{'Läuft noch — Datei liegt woanders als beets dachte, wird gerade nachgezogen.' if pr.get('laeuft') else 'Läuft aktuell nicht.'}</div>
+</div>
+
+<div class="card">
+  <div class="card-title">Quarantäne aufgeräumt</div>
+  <div class="metric-row"><span class="metric-label">Duplikate gelöscht</span><span class="metric-val">{qa.get('geloescht', 0)}</span></div>
+  <div class="metric-row"><span class="metric-label">Ohne Alternative gerettet</span><span class="metric-val">{qa.get('gerettet', 0)}</span></div>
+  <div class="metric-row"><span class="metric-label">Einzigartige Titel geprüft</span><span class="metric-val">{qa.get('geprueft', 0)}</span></div>
+</div>
+
+<div class="card">
+  <div class="card-title">Beatport-Chart-Batch (Artist/Title)</div>
+  <div class="metric-row"><span class="metric-label">In echten Dateien korrigiert</span><span class="metric-val">{bb.get('erledigt', 0)} / {bb.get('gesamt', 0)}</span></div>
+</div>
+{self.KIOSK_BACK_HTML}
+</body>
+</html>"""
+        return request.make_response(html, headers=[('Content-Type', 'text/html; charset=utf-8')])
+
+    # ─────────────────────────────────────────────────────────────
+    # HA Touchscreen-Kiosk: Aufgaben-Widget (Task #1039 Etappe 2)
+    # ─────────────────────────────────────────────────────────────
+
+    @http.route('/api/agent/tasks_widget', type='http', auth='public', methods=['GET'], csrf=False)
+    def agent_tasks_widget(self, **kwargs):
+        """Kompaktes, antippbares HTML-Widget mit den naechsten wichtigen
+        Aufgaben, gedacht zum Einbetten per iframe-Card im HA-Touchscreen-
+        Dashboard (kiosk-frawo). Ein blosser Zaehler ('142 offene Aufgaben')
+        bringt am Bildschirm nichts, wenn man nie direkt zur Aufgabe kommt --
+        deshalb hier eine echte, antippbare Liste statt einer Zahl.
+        """
+        import json
+        if not self._check_summary_auth():
+            return request.make_response(
+                json.dumps({'error': 'unauthorized'}),
+                headers=[('Content-Type', 'application/json')],
+                status=401,
+            )
+        try:
+            tasks = request.env['project.task'].sudo().search(
+                [
+                    ('active', '=', True),
+                    ('stage_id', 'in', [1, 2, 3, 143, 144, 159]),
+                ],
+                order='priority desc, date_deadline asc nulls last',
+                limit=5,
+            )
+
+            # Kein Link auf die einzelne Aufgabe: /my/tasks/{id} verlangt einen
+            # Odoo-Login, den es am Touchscreen-Kiosk nie geben wird (Befund
+            # 25.08.2026) -- also nur anzeigen, nicht antippbar auf Detailebene.
+            rows = []
+            for t in tasks:
+                deadline = t.date_deadline.strftime('%d.%m.') if t.date_deadline else ''
+                prio_dot = {'0': '', '1': '🔸', '2': '🔴'}.get(t.priority or '0', '')
+                rows.append(f"""
+                <div class="row">
+                    <span class="prio">{prio_dot}</span>
+                    <span class="name">{t.name}</span>
+                    <span class="deadline">{deadline}</span>
+                </div>""")
+
+            rows_html = "".join(rows) if rows else '<div class="empty">🎉 Nichts Dringendes offen</div>'
+
+            html = f"""<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aufgaben</title>
+<style>
+  * {{ box-sizing: border-box; margin: 0; padding: 0; }}
+  html, body {{ background: #0d0f14; color: #e8eaf6; font-family: 'Inter', 'Segoe UI', sans-serif; }}
+  body {{ padding: 20px; max-width: 480px; margin: 0 auto; }}
+  h1 {{ font-size: 20px; margin-bottom: 16px; }}
+  .list {{ display: flex; flex-direction: column; gap: 6px; padding: 2px; }}
+  .row {{
+    display: flex; align-items: center; gap: 10px;
+    background: #1e2330; border: 1px solid #2a3044; border-radius: 12px;
+    padding: 12px 14px; color: #e8eaf6;
+    font-size: 15px; font-weight: 600;
+  }}
+  .prio {{ font-size: 14px; width: 18px; text-align: center; flex-shrink: 0; }}
+  .name {{ flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }}
+  .deadline {{ font-size: 13px; color: #7986cb; flex-shrink: 0; }}
+  .empty {{ color: #7986cb; font-size: 14px; padding: 12px; text-align: center; }}
+  {self.KIOSK_BACK_CSS}
+</style>
+</head>
+<body>
+<h1>🗒️ Nächste Aufgaben</h1>
+<div class="list">{rows_html}</div>
+{self.KIOSK_BACK_HTML}
+</body>
+</html>"""
+            return request.make_response(html, headers=[('Content-Type', 'text/html; charset=utf-8')])
+        except Exception as e:
+            _logger.error("agent_tasks_widget error: %s", str(e))
+            return request.make_response(f"<p style='color:#fff'>Fehler: {str(e)}</p>", status=500, headers=[('Content-Type', 'text/html')])
 
     # ─────────────────────────────────────────────────────────────
     # Surface Go Kiosk Terminal Landing Page (Task #826)

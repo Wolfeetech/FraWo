@@ -75,3 +75,14 @@ modules:
       fail_if_header_not_matches:
         - header: Content-Type
           regexp: "audio/.*"
+
+  # DNS-Pruefung fuer AdGuard (Konsolidierung der Uptime-Kuma-Checks, 25.08.2026).
+  # Uptime-Kuma prüfte bisher nur per Ping, ob der Host antwortet — das sagt
+  # nichts darüber, ob der DNS-Dienst selbst noch Anfragen beantwortet.
+  dns_check:
+    prober: dns
+    dns:
+      query_name: "frawo.tech"
+      query_type: "A"
+      valid_rcodes:
+        - NOERROR

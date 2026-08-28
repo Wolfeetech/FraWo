@@ -228,6 +228,52 @@ else
     fi
 fi
 
+# --- Anker-Gäste: Sicherung nach Google Drive -------------------------------
+# Die Anker-Gäste laufen NICHT über PBS, sondern seit 09.07.2026 per Auftrag
+# "daily-all-pbs" nach Google Drive (keep-last=3). Wer sie in PBS sucht,
+# findet nichts und hält sie fälschlich für ungesichert — genau dieser
+# Fehlalarm passierte am 23.08.2026.
+#
+# Ohne diese Prüfung könnte ihre Sicherung monatelang ausfallen, ohne dass
+# der TÜV es merkt: die 8 PBS-Prüfungen decken nur die ProDesk-Container ab.
+# Betroffen wären u. a. CT130 (Radio-Backend + Datenbank) und CT150
+# (das einzige OpenClaw-Gateway).
+ANKER_GAESTE="101 130 150 210 300"
+ANKER_LISTE=$(ssh -o BatchMode=yes -o ConnectTimeout=20 "root@$ANKER" \
+    "pvesm list google-drive 2>/dev/null" 2>/dev/null)
+
+if [ -z "$ANKER_LISTE" ]; then
+    pruefe "anker_gaeste_cloud" 0 "Liste der Cloud-Sicherungen nicht abrufbar (Anker erreichbar?)"
+else
+    AG_HEUTE=$(date +%Y_%m_%d)
+    AG_GESTERN=$(date -d yesterday +%Y_%m_%d)
+    AG_FEHLEND=""
+    AG_OK=0
+    for AG_ID in $ANKER_GAESTE; do
+        AG_ZEILE=$(printf '%s\n' "$ANKER_LISTE" \
+            | grep -E "vzdump-(lxc|qemu)-${AG_ID}-(${AG_HEUTE}|${AG_GESTERN})" | tail -1)
+        if [ -z "$AG_ZEILE" ]; then
+            AG_FEHLEND="$AG_FEHLEND ${AG_ID}(keine)"
+            continue
+        fi
+        # Spalten: Volid Format Type Size VMID  -> Size ist das vorletzte Feld
+        AG_GROESSE=$(printf '%s' "$AG_ZEILE" | awk '{print $(NF-1)}')
+        case "$AG_GROESSE" in
+            ''|*[!0-9]*) AG_FEHLEND="$AG_FEHLEND ${AG_ID}(Groesse unlesbar)" ;;
+            *) if [ "$AG_GROESSE" -lt 52428800 ]; then
+                   AG_FEHLEND="$AG_FEHLEND ${AG_ID}(nur ${AG_GROESSE}B)"
+               else
+                   AG_OK=$((AG_OK + 1))
+               fi ;;
+        esac
+    done
+    if [ -n "$AG_FEHLEND" ]; then
+        pruefe "anker_gaeste_cloud" 0 "ohne frische Cloud-Sicherung:$AG_FEHLEND"
+    else
+        pruefe "anker_gaeste_cloud" 1 "$AG_OK von 5 Anker-Gästen frisch in der Cloud (101,130,150,210,300)"
+    fi
+fi
+
 # --- Ergebnis ---------------------------------------------------------------
 melde ""
 melde "ERGEBNIS: $((GEPRUEFT - DURCHGEFALLEN)) von $GEPRUEFT Prüfungen bestanden"
