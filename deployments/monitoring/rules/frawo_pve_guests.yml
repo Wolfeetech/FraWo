@@ -6,8 +6,28 @@ groups:
       # enthält den Dateizwischenspeicher des Gastes. VM 360 meldete 95 %,
       # nutzte real aber nur 1,4 GB von 6 GB.
 
+      # 26.08.2026 — qemu/211 auf dem Anker ausgenommen.
+      #
+      # Das ist die ALTE AzuraCast-VM. Bei der Migration am 21.08.2026 ist das
+      # Radio auf VM 210 am ProDesk umgezogen (nachgeprüft: der Stream liefert
+      # Daten, VM 210 läuft). Die alte VM steht seither absichtlich still und
+      # hat onboot=0 — sie ist der Rückweg, falls an der Migration doch noch
+      # etwas auffällt. "Verschieben statt löschen".
+      #
+      # Ohne diese Ausnahme meldet GuestDown sie als kritischen Ausfall. Der
+      # Alarm stand dadurch seit dem 25.08.2026 18:17 ohne Unterbrechung auf
+      # Rot — über zwanzig Stunden. Das ist schlimmer als kein Alarm: Eine
+      # Ampel, die immer Rot zeigt, bringt einem bei, nicht mehr hinzusehen,
+      # und dann geht der nächste echte Ausfall darin unter.
+      #
+      # Die Ausnahme ist absichtlich eng auf genau diesen einen Gast auf genau
+      # diesem einen Knoten gefasst. Sobald über die alte VM entschieden ist
+      # (Odoo-Aufgabe "Alte AzuraCast-VM 211 am Anker: behalten oder abräumen"),
+      # gehört sie hier wieder raus.
       - alert: GuestDown
-        expr: pve_up{id=~"(qemu|lxc)/.*"} == 0
+        expr: >-
+          (pve_up{id=~"(qemu|lxc)/.*"} == 0)
+          unless (pve_up{pve_node="proxmox-anker", id="qemu/211"})
         for: 5m
         labels:
           severity: critical
