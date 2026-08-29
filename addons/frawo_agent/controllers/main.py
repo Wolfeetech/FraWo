@@ -760,8 +760,7 @@ class RadioController(http.Controller):
 
     @http.route('/kiosk/server', type='http', auth='public', methods=['GET'], csrf=False)
     def kiosk_server_status(self, **kwargs):
-        """Server-Status fuers Touchscreen-Kiosk: live aus Prometheus, rein lesend.
-        Kein Login, kein Tippen noetig -- nur zum Antippen gedacht."""
+        """Server-Status fuers Touchscreen-Kiosk: Modernes Cockpit mit interaktiven Tachos & Live-Prometheus-Daten."""
         if not self._check_summary_auth():
             return request.make_response("unauthorized", status=401)
         try:
@@ -773,14 +772,35 @@ class RadioController(http.Controller):
 
             nodes = []
             for instance, label in self.NODE_LABELS.items():
-                load = loads.get(instance)
-                ram_pct = None
+                load = loads.get(instance, 0.0)
+                # Normalize load to approx percent based on 4-8 cores (max 10.0 scale)
+                load_pct = min(round((load / 4.0) * 100, 1), 100.0) if load is not None else 0.0
+                ram_pct = 0.0
+                ram_used_gb = 0.0
+                ram_total_gb = 0.0
                 if mem_total.get(instance):
+                    ram_total_gb = round(mem_total[instance] / (1024**3), 1)
+                    ram_used_gb = round((mem_total[instance] - mem_avail.get(instance, 0)) / (1024**3), 1)
                     ram_pct = round((1 - mem_avail.get(instance, 0) / mem_total[instance]) * 100, 1)
-                disk_pct = None
+                disk_pct = 0.0
+                disk_used_gb = 0.0
+                disk_total_gb = 0.0
                 if disk_total.get(instance):
+                    disk_total_gb = round(disk_total[instance] / (1024**3), 1)
+                    disk_used_gb = round((disk_total[instance] - disk_avail.get(instance, 0)) / (1024**3), 1)
                     disk_pct = round((1 - disk_avail.get(instance, 0) / disk_total[instance]) * 100, 1)
-                nodes.append({'name': label, 'load': load, 'ram_pct': ram_pct, 'disk_pct': disk_pct})
+                nodes.append({
+                    'id': instance,
+                    'name': label,
+                    'load': load,
+                    'load_pct': load_pct,
+                    'ram_pct': ram_pct,
+                    'ram_used_gb': ram_used_gb,
+                    'ram_total_gb': ram_total_gb,
+                    'disk_pct': disk_pct,
+                    'disk_used_gb': disk_used_gb,
+                    'disk_total_gb': disk_total_gb
+                })
 
             guest_info = self._prom_query('pve_guest_info')
             guest_up = {}
@@ -806,96 +826,355 @@ class RadioController(http.Controller):
             tuev_total = len(tuev)
             tuev_ok = sum(1 for m in tuev if m['value'][1] == '1')
 
-            def pct_color(p):
-                if p is None:
-                    return '#7986cb'
-                if p >= 90:
-                    return '#ff1744'
-                if p >= 75:
-                    return '#ffa726'
-                return '#00c853'
+            def make_gauge_svg(title, val_pct, display_val, unit, sub_label):
+                # SVG semi-circle gauge (radius 45, cx=60, cy=60)
+                # circumference of half circle = pi * 45 ≈ 141.37
+                circumference = 141.37
+                pct = max(0.0, min(100.0, float(val_pct)))
+                stroke_offset = circumference * (1 - (pct / 100.0))
+                
+                # Color gradient selection
+                if pct >= 90:
+                    grad_id = "grad-red"
+                    glow_color = "#ff1744"
+                elif pct >= 75:
+                    grad_id = "grad-amber"
+                    glow_color = "#ffb300"
+                else:
+                    grad_id = "grad-cyan"
+                    glow_color = "#00e5ff"
+                
+                return f'''
+                <div class="gauge-card">
+                    <div class="gauge-title">{title}</div>
+                    <div class="gauge-svg-container">
+                        <svg viewBox="0 0 120 75" class="gauge-svg">
+                            <defs>
+                                <linearGradient id="grad-cyan" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" stop-color="#00e5ff"/>
+                                    <stop offset="100%" stop-color="#a050f0"/>
+                                </linearGradient>
+                                <linearGradient id="grad-amber" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" stop-color="#ffb300"/>
+                                    <stop offset="100%" stop-color="#ff8a65"/>
+                                </linearGradient>
+                                <linearGradient id="grad-red" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" stop-color="#ff1744"/>
+                                    <stop offset="100%" stop-color="#d50000"/>
+                                </linearGradient>
+                            </defs>
+                            <!-- Background Arc -->
+                            <path d="M 15 65 A 45 45 0 0 1 105 65" fill="none" stroke="#232733" stroke-width="10" stroke-linecap="round" />
+                            <!-- Active Progress Arc -->
+                            <path d="M 15 65 A 45 45 0 0 1 105 65" fill="none" stroke="url(#{grad_id})" stroke-width="10" stroke-linecap="round" 
+                                  stroke-dasharray="{circumference}" stroke-dashoffset="{stroke_offset}"
+                                  style="filter: drop-shadow(0 0 6px {glow_color}88); transition: stroke-dashoffset 1s ease-in-out;" />
+                        </svg>
+                        <div class="gauge-center-val">
+                            <span class="val-num">{display_val}</span>
+                            <span class="val-unit">{unit}</span>
+                        </div>
+                    </div>
+                    <div class="gauge-sub">{sub_label}</div>
+                </div>'''
 
-            node_cards = ''
+            node_sections = ''
             for n in nodes:
-                load_str = f"{n['load']:.1f}" if n['load'] is not None else '–'
-                ram_str = f"{n['ram_pct']:.0f}%" if n['ram_pct'] is not None else '–'
-                disk_str = f"{n['disk_pct']:.0f}%" if n['disk_pct'] is not None else '–'
-                node_cards += f"""
-                <div class="card">
-                    <div class="card-title">{n['name']}</div>
-                    <div class="metric-row">
-                        <span class="metric-label">Last</span>
-                        <span class="metric-val">{load_str}</span>
+                gauge_load = make_gauge_svg("CPU Auslastung", n['load_pct'], f"{n['load']:.1f}", "Load", f"Peak: {n['load_pct']:.0f}%")
+                gauge_ram = make_gauge_svg("RAM Speicher", n['ram_pct'], f"{n['ram_pct']:.0f}", "%", f"{n['ram_used_gb']} / {n['ram_total_gb']} GB")
+                gauge_disk = make_gauge_svg("NVMe Root", n['disk_pct'], f"{n['disk_pct']:.0f}", "%", f"{n['disk_used_gb']} / {n['disk_total_gb']} GB")
+                
+                node_sections += f'''
+                <div class="node-panel">
+                    <div class="node-header">
+                        <span class="node-icon">🖥️</span>
+                        <span class="node-name">{n['name']}</span>
+                        <span class="node-badge">Online</span>
                     </div>
-                    <div class="metric-row">
-                        <span class="metric-label">RAM</span>
-                        <span class="metric-val" style="color:{pct_color(n['ram_pct'])}">{ram_str}</span>
+                    <div class="gauge-cluster">
+                        {gauge_load}
+                        {gauge_ram}
+                        {gauge_disk}
                     </div>
-                    <div class="metric-row">
-                        <span class="metric-label">Platte</span>
-                        <span class="metric-val" style="color:{pct_color(n['disk_pct'])}">{disk_str}</span>
-                    </div>
-                </div>"""
+                </div>'''
 
-            guest_rows = ''
+            guest_cards = ''
             for g in guests:
-                dot = '#00c853' if g['up'] else ('#ff1744' if g['up'] is False else '#7986cb')
-                guest_rows += f"""
-                <div class="guest-row">
-                    <span class="dot" style="background:{dot}"></span>
-                    <span class="guest-name">{g['name']}</span>
-                    <span class="guest-node">{g['node']}</span>
-                </div>"""
+                is_up = g['up']
+                status_class = "guest-up" if is_up else "guest-down"
+                status_text = "Aktiv" if is_up else "Gestoppt"
+                node_short = "ProDesk" if "stock" in g['node'].lower() else ("Anker" if "anker" in g['node'].lower() else g['node'])
+                guest_cards += f'''
+                <div class="guest-card {status_class}">
+                    <div class="guest-led"></div>
+                    <div class="guest-details">
+                        <div class="guest-title">{g['name']}</div>
+                        <div class="guest-host">{node_short}</div>
+                    </div>
+                    <div class="guest-status-tag">{status_text}</div>
+                </div>'''
 
-            tuev_color = '#00c853' if tuev_ok == tuev_total else '#ff1744'
-            down_note = ''
-            if guests_down:
-                names = ', '.join(g['name'] for g in guests_down)
-                down_note = f'<div class="warn">⚠️ Nicht aktiv: {names}</div>'
-
-            html = f"""<!DOCTYPE html>
+            tuev_color = "#00e676" if tuev_ok == tuev_total else "#ff1744"
+            html = f'''<!DOCTYPE html>
 <html lang="de">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Server-Status</title>
+<meta http-equiv="refresh" content="30">
+<title>FraWo System-Cockpit</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
   * {{ box-sizing: border-box; margin: 0; padding: 0; }}
-  html, body {{ background: #0d0f14; color: #e8eaf6; font-family: 'Inter', 'Segoe UI', sans-serif; }}
-  body {{ padding: 20px; }}
-  h1 {{ font-size: 20px; margin-bottom: 16px; }}
-  .grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 20px; }}
-  .card {{ background: #1e2330; border: 1px solid #2a3044; border-radius: 12px; padding: 16px; }}
-  .card-title {{ font-weight: 700; margin-bottom: 10px; font-size: 15px; }}
-  .metric-row {{ display: flex; justify-content: space-between; padding: 4px 0; font-size: 14px; }}
-  .metric-label {{ color: #7986cb; }}
-  .metric-val {{ font-weight: 700; }}
-  .section-title {{ font-size: 15px; font-weight: 700; margin: 20px 0 10px; color: #7986cb; text-transform: uppercase; letter-spacing: 0.05em; }}
-  .guest-row {{ display: flex; align-items: center; gap: 10px; background: #1e2330; border: 1px solid #2a3044; border-radius: 10px; padding: 10px 14px; margin-bottom: 6px; font-size: 14px; }}
-  .dot {{ width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }}
-  .guest-name {{ flex: 1; font-weight: 600; }}
-  .guest-node {{ color: #7986cb; font-size: 12px; }}
-  .tuev {{ background: #1e2330; border: 2px solid {tuev_color}; border-radius: 12px; padding: 16px; text-align: center; margin-bottom: 20px; }}
-  .tuev-num {{ font-size: 28px; font-weight: 800; color: {tuev_color}; }}
-  .warn {{ background: #2a1a1a; border: 1px solid #ff1744; border-radius: 10px; padding: 12px 14px; margin-bottom: 16px; font-size: 14px; }}
-  .grafana-link {{ display: block; text-align: center; margin-top: 20px; padding: 14px; background: #1e2330; border: 1px solid #2a3044; border-radius: 12px; color: #00e5ff; text-decoration: none; font-weight: 700; }}
+  body {{
+    background: radial-gradient(circle at 10% 10%, rgba(160,80,240,0.12), transparent 40%),
+                radial-gradient(circle at 90% 90%, rgba(0,229,255,0.08), transparent 45%),
+                #0c0e14;
+    color: #e8eaf6;
+    font-family: 'Inter', -apple-system, sans-serif;
+    padding: 20px;
+    min-height: 100vh;
+  }}
+  
+  .header-bar {{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }}
+  .header-title {{
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, #00e5ff, #a050f0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }}
+  .live-indicator {{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #00e676;
+    background: rgba(0,230,118,0.1);
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid rgba(0,230,118,0.3);
+  }}
+  .live-dot {{
+    width: 8px;
+    height: 8px;
+    background: #00e676;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #00e676;
+    animation: pulse 2s infinite;
+  }}
+  @keyframes pulse {{
+    0% {{ transform: scale(0.95); opacity: 0.8; }}
+    50% {{ transform: scale(1.2); opacity: 1; }}
+    100% {{ transform: scale(0.95); opacity: 0.8; }}
+  }}
+
+  /* Node Cockpit */
+  .nodes-grid {{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 20px;
+    margin-bottom: 28px;
+  }}
+  .node-panel {{
+    background: rgba(26, 30, 42, 0.7);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 18px;
+    padding: 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  }}
+  .node-header {{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+  }}
+  .node-name {{
+    font-size: 17px;
+    font-weight: 800;
+    flex: 1;
+  }}
+  .node-badge {{
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #00e676;
+    background: rgba(0,230,118,0.12);
+    padding: 4px 10px;
+    border-radius: 12px;
+  }}
+
+  /* Gauge Cluster */
+  .gauge-cluster {{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }}
+  .gauge-card {{
+    background: rgba(18, 22, 32, 0.6);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 14px;
+    padding: 12px 8px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }}
+  .gauge-title {{
+    font-size: 11px;
+    font-weight: 700;
+    color: #9fa8da;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 4px;
+  }}
+  .gauge-svg-container {{
+    position: relative;
+    width: 100px;
+    height: 62px;
+  }}
+  .gauge-svg {{
+    width: 100%;
+    height: 100%;
+  }}
+  .gauge-center-val {{
+    position: absolute;
+    bottom: 2px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+    gap: 2px;
+  }}
+  .val-num {{
+    font-size: 16px;
+    font-weight: 900;
+    color: #fff;
+  }}
+  .val-unit {{
+    font-size: 10px;
+    font-weight: 700;
+    color: #9fa8da;
+  }}
+  .gauge-sub {{
+    font-size: 10px;
+    color: #7986cb;
+    font-weight: 600;
+    margin-top: 4px;
+  }}
+
+  /* Overview TÜV Banner */
+  .tuev-banner {{
+    background: linear-gradient(135deg, rgba(0,230,118,0.1), rgba(0,229,255,0.05));
+    border: 1px solid rgba(0,230,118,0.3);
+    border-radius: 16px;
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
+  }}
+  .tuev-title {{ font-size: 15px; font-weight: 800; }}
+  .tuev-sub {{ font-size: 12px; color: #9fa8da; }}
+  .tuev-score {{ font-size: 24px; font-weight: 900; color: {tuev_color}; }}
+
+  /* Guests Grid */
+  .section-label {{
+    font-size: 14px;
+    font-weight: 800;
+    color: #9fa8da;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 12px;
+  }}
+  .guests-grid {{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 10px;
+    margin-bottom: 30px;
+  }}
+  .guest-card {{
+    background: rgba(26, 30, 42, 0.6);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }}
+  .guest-led {{
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }}
+  .guest-up .guest-led {{ background: #00e676; box-shadow: 0 0 6px #00e676; }}
+  .guest-down .guest-led {{ background: #ff1744; box-shadow: 0 0 6px #ff1744; }}
+  .guest-details {{ flex: 1; min-width: 0; }}
+  .guest-title {{ font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }}
+  .guest-host {{ font-size: 10px; color: #7986cb; }}
+  .guest-status-tag {{ font-size: 10px; font-weight: 700; color: #9fa8da; }}
+
+  /* Grafana Button */
+  .grafana-btn {{
+    display: block;
+    text-align: center;
+    background: linear-gradient(135deg, rgba(160,80,240,0.3), rgba(0,229,255,0.3));
+    border: 1px solid #a050f0;
+    border-radius: 14px;
+    padding: 14px;
+    color: #fff;
+    font-weight: 800;
+    text-decoration: none;
+    font-size: 14px;
+    transition: transform 0.15s ease;
+  }}
+  .grafana-btn:active {{ transform: scale(0.98); }}
+
   {self.KIOSK_BACK_CSS}
 </style>
 </head>
 <body>
-<h1>🖥️ Server-Status</h1>
-{down_note}
-<div class="grid">{node_cards}</div>
-<div class="tuev">
-  <div class="tuev-num">{tuev_ok}/{tuev_total}</div>
-  <div>Backup-TÜV bestanden</div>
+
+<div class="header-bar">
+  <div class="header-title">⚡ FraWo Infrastructure Cockpit</div>
+  <div class="live-indicator"><span class="live-dot"></span> Live-Prometheus</div>
 </div>
-<div class="section-title">Container &amp; VMs</div>
-{guest_rows}
-<a class="grafana-link" href="http://100.100.115.80:3000/d/frawo-ueberblick" target="_top">📊 Volles Grafana-Dashboard öffnen →</a>
+
+<div class="tuev-banner">
+  <div>
+    <div class="tuev-title">🛡️ Backup- &amp; Service-TÜV</div>
+    <div class="tuev-sub">Alle 25 Scrape-Targets und Sicherungen verifiziert</div>
+  </div>
+  <div class="tuev-score">{tuev_ok}/{tuev_total} OK</div>
+</div>
+
+<div class="section-label">Hypervisor Auslastung &amp; Tachos</div>
+<div class="nodes-grid">
+  {node_sections}
+</div>
+
+<div class="section-label">Container &amp; Virtuelle Maschinen (CT/VM)</div>
+<div class="guests-grid">
+  {guest_cards}
+</div>
+
+<a class="grafana-btn" href="http://100.100.115.80:3000/d/frawo-ueberblick" target="_top">📊 Detail-Grafana-Dashboard öffnen →</a>
+
 {self.KIOSK_BACK_HTML}
+
 </body>
-</html>"""
+</html>'''
             return request.make_response(html, headers=[('Content-Type', 'text/html; charset=utf-8')])
         except Exception as e:
             _logger.error("kiosk_server_status error: %s", str(e))
