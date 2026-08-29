@@ -1616,3 +1616,262 @@ class RadioController(http.Controller):
 
 
 
+
+
+    # ─────────────────────────────────────────────────────────────
+    # FraWo Procurement & 1-Click Shop Order Cockpit
+    # ─────────────────────────────────────────────────────────────
+
+    @http.route('/kiosk/procurement', type='http', auth='public', methods=['GET'], csrf=False)
+    def kiosk_procurement_dashboard(self, **kwargs):
+        """Zentrales Beschaffungs-Cockpit mit 1-Click Shop-Warenkörben & Prioritäten."""
+        if not self._check_summary_auth():
+            return request.make_response("unauthorized", status=401)
+        try:
+            # Fetch tasks with tag '🛒 Beschaffung'
+            tag = request.env['project.tags'].sudo().search([('name', '=', '🛒 Beschaffung')], limit=1)
+            tag_id = tag.id if tag else 0
+
+            domain = [('active', '=', True)]
+            if tag_id:
+                domain.append(('tag_ids', 'in', [tag_id]))
+            else:
+                domain.append(('name', 'ilike', 'bestell'))
+
+            tasks = request.env['project.task'].sudo().search(domain, order='priority desc, id asc')
+
+            # Predefined procurement metadata for structured items
+            catalog = {
+                380: {
+                    'item': 'DIGITUS DA-70156 (USB-zu-RS232 FTDI-Adapter)',
+                    'shop': 'Amazon',
+                    'price': 12.90,
+                    'prio_badge': 'Prio 1 — Sofort',
+                    'prio_class': 'prio-high',
+                    'cart_url': 'https://www.amazon.de/gp/aws/cart/add.html?ASIN.1=B0030IT780&Quantity.1=1',
+                    'purpose': 'Omnitronic DXO-206 DSP Steuerung vom StudioPC'
+                },
+                1085: {
+                    'item': 'Ubiquiti UK-Ultra + PoE Injektoren + Shelly Pro 3EM',
+                    'shop': 'Galaxus',
+                    'price': 210.50,
+                    'prio_badge': 'Prio 1 — Sofort',
+                    'prio_class': 'prio-high',
+                    'cart_url': 'https://www.galaxus.de/de/search?q=Ubiquiti+Swiss-Knife+Ultra',
+                    'purpose': 'Richtfunk Stockenweiler (Weiterberechnung Angebot S00034)'
+                },
+                1157: {
+                    'item': 'Shelly Plus 1PM & Noctua NF-A12x25 PWM 120mm Lüfter',
+                    'shop': 'Amazon / Reichelt',
+                    'price': 52.80,
+                    'prio_badge': 'Prio 2 — Geplant',
+                    'prio_class': 'prio-mid',
+                    'cart_url': 'https://www.amazon.de/s?k=Noctua+NF-A12x25+PWM',
+                    'purpose': 'Temperaturgeregelte Server-Rack-Lüftung'
+                },
+                478: {
+                    'item': 'Canton CT 2000 Hochtöner-Schwingspulen-Reparatur',
+                    'shop': 'Peiter Akustik',
+                    'price': 40.00,
+                    'prio_badge': 'Prio 2 — Geplant',
+                    'prio_class': 'prio-mid',
+                    'cart_url': 'https://www.peiter-akustik.de',
+                    'purpose': 'Instandsetzung Ersatz-Hochtöner'
+                },
+                1103: {
+                    'item': 'DEGSON DG308 Schraubklemmen & PCB-Platinen',
+                    'shop': 'Reichelt / JLCPCB',
+                    'price': 25.00,
+                    'prio_badge': 'Prio 2 — Geplant',
+                    'prio_class': 'prio-mid',
+                    'cart_url': 'https://www.reichelt.de/index.html?ACTION=446&SEARCH=DEGSON+DG308',
+                    'purpose': 'Studio-Controller Patchboard'
+                },
+                381: {
+                    'item': '2x Beyma 12SW1200 / 12G40 12" Chassis',
+                    'shop': 'Thomann',
+                    'price': 360.00,
+                    'prio_badge': 'Prio 3 — Später',
+                    'prio_class': 'prio-low',
+                    'cart_url': 'https://www.thomann.de/de/search_dir.html?sw=Beyma+12SW1200',
+                    'purpose': 'Chassis-Upgrade Jobst JM-Sub212'
+                },
+                1182: {
+                    'item': 'Nayax VPOS Touch + Jugendschutz-Modul',
+                    'shop': 'Nayax Europe',
+                    'price': 650.00,
+                    'prio_badge': 'Prio 3 — Feb 2027',
+                    'prio_class': 'prio-low',
+                    'cart_url': 'https://www.nayax.com/de/vpos-touch/',
+                    'purpose': 'Verkaufsautomat Telemetrie & Kartenzahlung'
+                }
+            }
+
+            items_html = ''
+            total_sum = 0.0
+
+            for t in tasks:
+                meta = catalog.get(t.id, {
+                    'item': t.name,
+                    'shop': 'Shop / Direkt',
+                    'price': 0.0,
+                    'prio_badge': f'Prio {t.priority}',
+                    'prio_class': 'prio-mid',
+                    'cart_url': f'/odoo/project.task/{t.id}',
+                    'purpose': t.project_id.name if t.project_id else 'FraWo'
+                })
+                total_sum += meta['price']
+                price_str = f"{meta['price']:.2f} €" if meta['price'] > 0 else '–'
+
+                items_html += f'''
+                <div class="order-card">
+                    <div class="card-top">
+                        <span class="prio-tag {meta['prio_class']}">{meta['prio_badge']}</span>
+                        <span class="shop-badge">🏪 {meta['shop']}</span>
+                        <span class="price-tag">{price_str}</span>
+                    </div>
+                    <div class="item-title">{meta['item']}</div>
+                    <div class="item-purpose">🎯 {meta['purpose']}</div>
+                    <div class="btn-group">
+                        <a href="{meta['cart_url']}" target="_blank" class="btn btn-shop">🛒 Direkt im Shop öffnen →</a>
+                        <a href="/odoo/project.task/{t.id}" target="_blank" class="btn btn-odoo">📄 Task #{t.id}</a>
+                    </div>
+                </div>'''
+
+            html = f'''<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FraWo 1-Click Beschaffung</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  * {{ box-sizing: border-box; margin: 0; padding: 0; }}
+  body {{
+    background: radial-gradient(circle at 10% 10%, rgba(160,80,240,0.12), transparent 40%),
+                radial-gradient(circle at 90% 90%, rgba(0,229,255,0.08), transparent 45%),
+                #0c0e14;
+    color: #e8eaf6;
+    font-family: 'Inter', -apple-system, sans-serif;
+    padding: 20px;
+    min-height: 100vh;
+  }}
+  .header-bar {{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }}
+  .header-title {{
+    font-size: 22px;
+    font-weight: 900;
+    background: linear-gradient(135deg, #ffb300, #ff8a65);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }}
+  .summary-banner {{
+    background: rgba(26, 30, 42, 0.7);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+  }}
+  .summary-total {{ font-size: 24px; font-weight: 900; color: #00e5ff; }}
+  
+  .cards-grid {{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 16px;
+    margin-bottom: 30px;
+  }}
+  .order-card {{
+    background: rgba(26, 30, 42, 0.6);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 16px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+  }}
+  .card-top {{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }}
+  .prio-tag {{
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 12px;
+  }}
+  .prio-high {{ background: rgba(255, 23, 68, 0.15); color: #ff1744; border: 1px solid rgba(255, 23, 68, 0.3); }}
+  .prio-mid {{ background: rgba(255, 179, 0, 0.15); color: #ffb300; border: 1px solid rgba(255, 179, 0, 0.3); }}
+  .prio-low {{ background: rgba(0, 229, 255, 0.15); color: #00e5ff; border: 1px solid rgba(0, 229, 255, 0.3); }}
+  
+  .shop-badge {{ font-size: 12px; font-weight: 700; color: #9fa8da; }}
+  .price-tag {{ font-size: 16px; font-weight: 900; color: #fff; }}
+  
+  .item-title {{ font-size: 15px; font-weight: 800; margin-bottom: 8px; line-height: 1.4; color: #fff; }}
+  .item-purpose {{ font-size: 12px; color: #7986cb; margin-bottom: 16px; }}
+  
+  .btn-group {{ display: flex; gap: 8px; }}
+  .btn {{
+    padding: 10px 14px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 700;
+    text-align: center;
+    transition: transform 0.15s ease;
+  }}
+  .btn:active {{ transform: scale(0.97); }}
+  .btn-shop {{
+    flex: 2;
+    background: linear-gradient(135deg, #a050f0, #00e5ff);
+    color: #fff;
+  }}
+  .btn-odoo {{
+    flex: 1;
+    background: rgba(255,255,255,0.08);
+    color: #9fa8da;
+    border: 1px solid rgba(255,255,255,0.1);
+  }}
+
+  {self.KIOSK_BACK_CSS}
+</style>
+</head>
+<body>
+
+<div class="header-bar">
+  <div class="header-title">🛒 FraWo 1-Click Beschaffungs-Cockpit</div>
+</div>
+
+<div class="summary-banner">
+  <div>
+    <div style="font-size:15px; font-weight:800;">Gesamt-Einkaufsliste ({len(tasks)} Positionen)</div>
+    <div style="font-size:12px; color:#9fa8da;">Direkte Warenkorb-Weiterleitung für Galaxus, Amazon, Thomann &amp; Reichelt</div>
+  </div>
+  <div class="summary-total">{total_sum:.2f} €</div>
+</div>
+
+<div class="cards-grid">
+  {items_html}
+</div>
+
+{self.KIOSK_BACK_HTML}
+
+</body>
+</html>'''
+            return request.make_response(html, headers=[('Content-Type', 'text/html; charset=utf-8')])
+        except Exception as e:
+            _logger.error("kiosk_procurement_dashboard error: %s", str(e))
+            return request.make_response(f"<p style='color:#fff'>Fehler: {str(e)}</p>", status=500, headers=[('Content-Type', 'text/html')])
