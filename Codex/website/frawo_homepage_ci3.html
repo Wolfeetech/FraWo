@@ -1,0 +1,765 @@
+<t t-name="website.homepage_view">
+<t t-call="website.layout">
+<div id="wrap" class="oe_structure oe_empty">
+  <style>
+    :root {
+      --fw-bg: #0a0a0a;
+      --fw-surface: #141816;
+      --fw-card: #141816;
+      --fw-card-border: #2a2e2c;
+      --fw-primary: #004030;
+      --fw-accent: #a050f0;
+      --fw-accent-hover: #9d4edd;
+      --fw-text-pure: #ffffff;
+      --fw-text-bright: #e8e8e8;
+      --fw-text-mid: #98a29e;
+      --fw-text-muted: #6b7571;
+      --fw-border: #2a2e2c;
+      --fw-whatsapp: #25d366;
+      --fw-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body, #wrapwrap, #wrap, main {
+      background-color: var(--fw-bg) !important;
+      color: var(--fw-text-bright) !important;
+      font-family: var(--fw-font-sans) !important;
+    }
+
+    .fw-hp-wrap {
+      background-color: var(--fw-bg);
+      color: var(--fw-text-bright);
+      font-family: var(--fw-font-sans);
+    }
+
+    /* Hero Section */
+    .fw-hero-sec {
+      padding: 90px 20px 60px;
+      background: var(--fw-bg);
+      border-bottom: 1px solid var(--fw-border);
+      position: relative;
+    }
+
+    .fw-hero-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .fw-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--fw-primary);
+      border: 1px solid var(--fw-border);
+      color: #ffffff;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      padding: 6px 14px;
+      border-radius: 0px;
+      margin-bottom: 24px;
+    }
+
+    .fw-hero-h1 {
+      font-size: clamp(2.4rem, 5.5vw, 4.2rem);
+      font-weight: 800;
+      color: var(--fw-text-bright);
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .fw-hero-h1 span {
+      color: var(--fw-accent);
+    }
+
+    .fw-hero-lead {
+      font-size: 1.15rem;
+      color: var(--fw-text-mid);
+      max-width: 750px;
+      line-height: 1.65;
+      font-weight: 400;
+      margin-bottom: 32px;
+    }
+
+    .fw-hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-bottom: 36px;
+    }
+
+    .fw-btn-p {
+      background: var(--fw-accent);
+      color: #ffffff;
+      border: 1px solid var(--fw-accent);
+      font-size: 0.92rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 14px 28px;
+      border-radius: 0px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .fw-btn-p:hover {
+      background: var(--fw-accent-hover);
+      border-color: var(--fw-accent-hover);
+      color: #ffffff;
+    }
+
+    .fw-btn-s {
+      background: var(--fw-surface);
+      color: var(--fw-text-bright);
+      border: 1px solid var(--fw-border);
+      font-size: 0.92rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 14px 24px;
+      border-radius: 0px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .fw-btn-s:hover {
+      border-color: var(--fw-accent);
+      background: #1e2421;
+      color: #ffffff;
+    }
+
+    .fw-btn-wa-hero {
+      background: transparent;
+      color: var(--fw-whatsapp);
+      border: 1px solid var(--fw-whatsapp);
+      font-size: 0.92rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 14px 24px;
+      border-radius: 0px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .fw-btn-wa-hero:hover {
+      background: var(--fw-whatsapp);
+      color: #000000;
+    }
+
+    .fw-hero-trust {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      border-top: 1px solid var(--fw-border);
+      padding-top: 20px;
+      color: var(--fw-text-mid);
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .fw-hero-trust span {
+      color: var(--fw-accent);
+      margin-right: 4px;
+    }
+
+    /* Core Services Section */
+    .fw-sec {
+      padding: 80px 20px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .fw-sec-header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    .fw-sec-tag {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--fw-accent);
+      margin-bottom: 8px;
+    }
+
+    .fw-sec-title {
+      font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+      font-weight: 800;
+      color: var(--fw-text-bright);
+      text-transform: uppercase;
+      letter-spacing: -0.01em;
+      margin-bottom: 12px;
+    }
+
+    .fw-sec-sub {
+      font-size: 1rem;
+      color: var(--fw-text-mid);
+      max-width: 680px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* 3 Pillars Grid */
+    .fw-pillars-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    @media (max-width: 900px) {
+      .fw-pillars-grid { grid-template-columns: 1fr; }
+    }
+
+    .fw-pillar-card {
+      background: var(--fw-surface);
+      border: 1px solid var(--fw-border);
+      border-radius: 0px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+      transition: border-color 0.2s ease;
+    }
+
+    .fw-pillar-card:hover {
+      border-color: var(--fw-accent);
+    }
+
+    .fw-pillar-img {
+      height: 210px;
+      background: #000000;
+      overflow: hidden;
+    }
+
+    .fw-pillar-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.3s ease;
+    }
+
+    .fw-pillar-card:hover .fw-pillar-img img {
+      transform: scale(1.04);
+    }
+
+    .fw-pillar-body {
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      flex-grow: 1;
+      gap: 20px;
+    }
+
+    .fw-pillar-h3 {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--fw-text-bright);
+      text-transform: uppercase;
+      line-height: 1.25;
+      margin-bottom: 10px;
+    }
+
+    .fw-pillar-desc {
+      font-size: 0.92rem;
+      color: var(--fw-text-mid);
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+
+    .fw-pillar-list {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 16px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .fw-pillar-list li {
+      font-size: 0.85rem;
+      color: var(--fw-text-bright);
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .fw-pillar-list li span {
+      color: var(--fw-accent);
+      font-weight: 700;
+    }
+
+    .fw-pillar-btn {
+      background: transparent;
+      color: var(--fw-text-bright);
+      border: 1px solid var(--fw-border);
+      padding: 10px 16px;
+      border-radius: 0px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.2s ease;
+      width: 100%;
+    }
+
+    .fw-pillar-btn:hover {
+      background: var(--fw-accent);
+      border-color: var(--fw-accent);
+      color: #ffffff;
+    }
+
+    /* Trust / Partners Strip */
+    .fw-trust-strip {
+      background: var(--fw-surface);
+      border-top: 1px solid var(--fw-border);
+      border-bottom: 1px solid var(--fw-border);
+      padding: 50px 20px;
+    }
+
+    .fw-trust-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .fw-partners-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-top: 28px;
+    }
+
+    .fw-partner-item {
+      background: var(--fw-bg);
+      border: 1px solid var(--fw-border);
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .fw-p-name {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--fw-text-bright);
+      text-transform: uppercase;
+    }
+
+    .fw-p-role {
+      font-size: 0.78rem;
+      color: var(--fw-text-mid);
+    }
+
+    /* Team Section */
+    .fw-team-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin-top: 36px;
+    }
+
+    @media (max-width: 768px) {
+      .fw-team-grid { grid-template-columns: 1fr; }
+    }
+
+    .fw-team-card {
+      background: var(--fw-surface);
+      border: 1px solid var(--fw-border);
+      border-radius: 0px;
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .fw-team-role {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--fw-accent);
+    }
+
+    .fw-team-name {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--fw-text-bright);
+      text-transform: uppercase;
+    }
+
+    .fw-team-desc {
+      font-size: 0.92rem;
+      color: var(--fw-text-mid);
+      line-height: 1.65;
+    }
+
+    /* FAQ Section */
+    .fw-faq-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 36px;
+    }
+
+    @media (max-width: 768px) {
+      .fw-faq-grid { grid-template-columns: 1fr; }
+    }
+
+    .fw-faq-card {
+      background: var(--fw-surface);
+      border: 1px solid var(--fw-border);
+      padding: 24px 28px;
+    }
+
+    .fw-faq-q {
+      font-size: 1.02rem;
+      font-weight: 700;
+      color: var(--fw-text-bright);
+      margin-bottom: 8px;
+    }
+
+    .fw-faq-a {
+      font-size: 0.9rem;
+      color: var(--fw-text-mid);
+      line-height: 1.6;
+    }
+
+    /* Footer */
+    .fw-footer {
+      background: var(--fw-surface);
+      border-top: 1px solid var(--fw-border);
+      padding: 60px 20px 30px;
+    }
+
+    .fw-footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr 1.2fr;
+      gap: 36px;
+    }
+
+    @media (max-width: 800px) {
+      .fw-footer-inner { grid-template-columns: 1fr 1fr; gap: 28px; }
+    }
+    @media (max-width: 500px) {
+      .fw-footer-inner { grid-template-columns: 1fr; }
+    }
+
+    .fw-f-col-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--fw-accent);
+      margin-bottom: 14px;
+    }
+
+    .fw-f-links {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .fw-f-links a {
+      font-size: 0.85rem;
+      color: var(--fw-text-mid);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .fw-f-links a:hover {
+      color: var(--fw-text-bright);
+    }
+  </style>
+
+  <div class="fw-hp-wrap">
+
+    <!-- HERO SECTION -->
+    <section class="fw-hero-sec">
+      <div class="fw-hero-inner">
+        <div class="fw-pill">⚡ FraWo GbR · Region Bodensee &amp; Allgäu</div>
+        <h1 class="fw-hero-h1">
+          Veranstaltungstechnik &amp;<br/><span>Präziser Sonderbau</span>
+        </h1>
+        <p class="fw-hero-lead">
+          Professionelle Ton-, Licht- und Regietechnik für Konzerte, Clubs und Festivals — kombiniert mit fundiertem Handwerk für Bühnen, Traversen und Akustik-Sonderbauten.
+        </p>
+
+        <div class="fw-hero-actions">
+          <a href="/contactus" class="fw-btn-p">Projekt Anfragen &#8594;</a>
+          <a href="/verleih" class="fw-btn-s">Mietpark &amp; Pakete Ansehen</a>
+          <a href="https://wa.me/4915155243164?text=Hallo%20FraWo,%20ich%20habe%20eine%20Anfrage%20f%C3%BCr%20ein%20Event." target="_blank" class="fw-btn-wa-hero">
+            💬 WhatsApp Direkt
+          </a>
+        </div>
+
+        <div class="fw-hero-trust">
+          <div><span>✓</span> IHK-Fachkraft für Veranstaltungstechnik</div>
+          <div><span>✓</span> Zimmermannsgeselle Handwerk</div>
+          <div><span>✓</span> DSP-abgesicherter Mietpark</div>
+          <div><span>✓</span> Direkte Erreichbarkeit in Lindau</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CORE 3 PILLARS SECTION (KEINE GESTRICHENEN LEISTUNGEN) -->
+    <section class="fw-sec" id="services">
+      <div class="fw-sec-header">
+        <div class="fw-sec-tag">Leistungsspektrum</div>
+        <h2 class="fw-sec-title">Drei Säulen. Ein verlässlicher Partner.</h2>
+        <p class="fw-sec-sub">
+          Keine aufgeblähten Agentur-Floskeln. Wir konzentrieren uns auf das, was wir nachweislich beherrschen: Signalwege, sauberen Sound, verlässliches Licht und solides Handwerk.
+        </p>
+      </div>
+
+      <div class="fw-pillars-grid">
+
+        <!-- Säule 1: Event-Technik & Live-Regie -->
+        <div class="fw-pillar-card">
+          <div class="fw-pillar-img">
+            <img src="/web/image/2189/reference-event.jpg" alt="FOH Tonregie und Live-Konzertbetreuung" loading="lazy"/>
+          </div>
+          <div class="fw-pillar-body">
+            <div>
+              <div class="fw-sec-tag">SÄULE 01 · LIVE-BETRIEB</div>
+              <h3 class="fw-pillar-h3">Veranstaltungstechnik &amp; FOH-Regie</h3>
+              <p class="fw-pillar-desc">
+                Technische Betreuung und Live-Mischung für Konzerte, Clubshows, Hallen und Festivals. Sichere Signalwege, druckvoller Monitorsound und dynamische Lichtregie.
+              </p>
+              <ul class="fw-pillar-list">
+                <li><span>✓</span> FOH-Tonmischung (Midas M32 / Digitalpulte)</li>
+                <li><span>✓</span> DMX-Lichtsteuerung (Moving Heads, Standalone Wolfmix W1)</li>
+                <li><span>✓</span> Live-Stage Crew &amp; technischer Vor-Ort-Support</li>
+              </ul>
+            </div>
+            <a href="/contactus?interest=event" class="fw-pillar-btn">
+              Event anfragen <span>&#8594;</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Säule 2: Equipment-Verleih & Mietpark -->
+        <div class="fw-pillar-card">
+          <div class="fw-pillar-img">
+            <img src="/web/image/2193/fussballdart.jpg" alt="Equipment-Verleih und 5m Fußballdart" loading="lazy"/>
+          </div>
+          <div class="fw-pillar-body">
+            <div>
+              <div class="fw-sec-tag">SÄULE 02 · MIETPARK</div>
+              <h3 class="fw-pillar-h3">Equipment-Verleih &amp; Mietsets</h3>
+              <p class="fw-pillar-desc">
+                Vorkonfektionierte Sets und Einzelgeräte abholbereit ab Lager Lindau (Rothkreuz 22a). Transparente Mietpreise, DSP-Schutz gegen Überlastung und 24h-Bereitstellung.
+              </p>
+              <ul class="fw-pillar-list">
+                <li><span>✓</span> PA-Soundsysteme (von Party-PA bis Club-System)</li>
+                <li><span>✓</span> DMX-Lichtsets, Moving Heads &amp; Dunst-Hazer</li>
+                <li><span>✓</span> 5m Inflatable Fußballdart &amp; 750kg PKW-Anhänger</li>
+              </ul>
+            </div>
+            <a href="/verleih" class="fw-pillar-btn">
+              Mietkatalog öffnen <span>&#8594;</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Säule 3: Holzbau & Akustik-Sonderbauten -->
+        <div class="fw-pillar-card">
+          <div class="fw-pillar-img">
+            <img src="/web/image/2659/holzbau-forster-handwerk.jpg" alt="Holzbau und Akustik-Sonderbau Franz Bienert" loading="lazy"/>
+          </div>
+          <div class="fw-pillar-body">
+            <div>
+              <div class="fw-sec-tag">SÄULE 03 · HANDWERK</div>
+              <h3 class="fw-pillar-h3">Holzbau &amp; Akustik-Sonderbauten</h3>
+              <p class="fw-pillar-desc">
+                Fundierte Zimmermannskunst kombiniert mit technischem Verständnis. Maßgefertigte Lautsprechergehäuse, DJ-Regiemöbel, Bühnenpodeste und Traversenbau.
+              </p>
+              <ul class="fw-pillar-list">
+                <li><span>✓</span> Traversen &amp; Ground-Support nach DGUV Vorschrift 17</li>
+                <li><span>✓</span> Maßgefertigter Akustik- &amp; Gehäusebau</li>
+                <li><span>✓</span> Kooperation mit Zimmereien &amp; Holzbau Forster</li>
+              </ul>
+            </div>
+            <a href="/referenzen" class="fw-pillar-btn">
+              Referenzen ansehen <span>&#8594;</span>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- TRUST / PARTNER STRIP -->
+    <section class="fw-trust-strip">
+      <div class="fw-trust-inner">
+        <div class="fw-sec-tag">Erprobte Zusammenarbeit</div>
+        <h2 style="font-size: 1.5rem; font-weight: 800; text-transform: uppercase; color: var(--fw-text-bright);">
+          Partner &amp; Referenzen in der Region
+        </h2>
+        <div class="fw-partners-grid">
+          <div class="fw-partner-item">
+            <div class="fw-p-name">Club Vaudeville e.V.</div>
+            <div class="fw-p-role">Live-Club &amp; Kulturzentrum Lindau</div>
+          </div>
+          <div class="fw-partner-item">
+            <div class="fw-p-name">L.H. Veranstaltungstechnik</div>
+            <div class="fw-p-role">Fester Kooperationspartner &amp; Rental-Pool</div>
+          </div>
+          <div class="fw-partner-item">
+            <div class="fw-p-name">Holzbau Forster</div>
+            <div class="fw-p-role">Zimmerei &amp; Handwerks-Kooperation</div>
+          </div>
+          <div class="fw-partner-item">
+            <div class="fw-p-name">Inselhalle Lindau (LTK)</div>
+            <div class="fw-p-role">Tagungs- &amp; Event-Location</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TEAM & QUALIFIKATION -->
+    <section class="fw-sec" id="about">
+      <div class="fw-sec-header">
+        <div class="fw-sec-tag">Das Team</div>
+        <h2 class="fw-sec-title">Zwei Gewerke. Direkte Absprachen.</h2>
+        <p class="fw-sec-sub">
+          Keine Zwischenhändler oder Callcenter. Du sprichst direkt mit den Leuten, die deine Technik einmessen, aufbauen und am Pult stehen.
+        </p>
+      </div>
+
+      <div class="fw-team-grid">
+        <div class="fw-team-card">
+          <div class="fw-team-role">IHK-Fachkraft für Veranstaltungstechnik</div>
+          <div class="fw-team-name">Wolfgang Prinz „Wolf“</div>
+          <p class="fw-team-desc">
+            Verantwortlich für Audio-Signalwege, FOH-Mischpulte, DMX-Lichtkonzepte und die technische Einsatzbereitschaft des Mietparks. Jahrelange Praxiserfahrung am FOH-Pult und bei Live-Produktionen in der Bodenseeregion.
+          </p>
+        </div>
+
+        <div class="fw-team-card">
+          <div class="fw-team-role">Zimmermannsgeselle (HWK)</div>
+          <div class="fw-team-name">Franz Bienert „Franz“</div>
+          <p class="fw-team-desc">
+            Verantwortlich für konstruktiven Holzbau, Traversen- &amp; Ground-Support-Konstruktionen sowie maßgefertigte Akustiklösungen und Sonderbauten. Bringt solide Handwerkskunst in jedes technische Projekt.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ SECTION -->
+    <section class="fw-sec" style="border-top: 1px solid var(--fw-border);">
+      <div class="fw-sec-header">
+        <div class="fw-sec-tag">Transparenz</div>
+        <h2 class="fw-sec-title">Häufige Fragen &amp; Ablauf</h2>
+      </div>
+
+      <div class="fw-faq-grid">
+        <div class="fw-faq-card">
+          <div class="fw-faq-q">Wie läuft eine Miet- oder Event-Anfrage ab?</div>
+          <div class="fw-faq-a">
+            Schreib uns kurz über das Formular oder direkt per WhatsApp mit Datum, Ort und gewünschtem Setup. Wir prüfen sofort die Materialverfügbarkeit und melden uns mit einer klaren, transparenten Rückmeldung.
+          </div>
+        </div>
+
+        <div class="fw-faq-card">
+          <div class="fw-faq-q">Können wir das Equipment selbst abholen?</div>
+          <div class="fw-faq-a">
+            Ja. Kompakte PA- und Licht-Sets holst du bequem in unserem Lager in Lindau (Rothkreuz 22a) ab. Du erhältst eine kurze technische Einweisung und beschriftete Kabel. Bei größeren Produktionen liefern und betreuen wir vor Ort.
+          </div>
+        </div>
+
+        <div class="fw-faq-card">
+          <div class="fw-faq-q">Sind eure PA-Systeme gegen Überlastung geschützt?</div>
+          <div class="fw-faq-a">
+            Ja. Alle Systeme werden mit internen DSP-Begrenzern (Peak- &amp; RMS-Limiter) betrieben. Selbst bei Fehlbedienung oder Übersteuerung regelt das System sauber ab, ohne Schaden zu nehmen.
+          </div>
+        </div>
+
+        <div class="fw-faq-card">
+          <div class="fw-faq-q">Bietet ihr auch Personal für bestehende Anlagen?</div>
+          <div class="fw-faq-a">
+            Ja. Wir unterstützen Venues, Clubs und andere Verleiher als erfahrene Tontechniker (FOH / Monitor), Lichttechniker oder Stage Crew auf Tagesbasis.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="fw-footer">
+      <div class="fw-footer-inner">
+        <div>
+          <div style="font-size: 1rem; font-weight: 800; text-transform: uppercase; color: var(--fw-text-bright); margin-bottom: 12px;">
+            FraWo GbR
+          </div>
+          <p style="font-size: 0.85rem; color: var(--fw-text-mid); line-height: 1.6;">
+            Veranstaltungstechnik &amp; Holz-Sonderbau.<br/>
+            Unternehmenssitz: Rothkreuz 14, 88138 Weißensberg<br/>
+            Lager / Abholung: Rothkreuz 22a, 88138 Weißensberg<br/>
+            E-Mail: <a href="mailto:info@frawo.tech" style="color: var(--fw-accent); text-decoration: none;">info@frawo.tech</a>
+          </p>
+        </div>
+
+        <div>
+          <div class="fw-f-col-title">Navigation</div>
+          <ul class="fw-f-links">
+            <li><a href="/#services">Leistungen</a></li>
+            <li><a href="/verleih">Mietpark &amp; Pakete</a></li>
+            <li><a href="/referenzen">Partner &amp; Referenzen</a></li>
+            <li><a href="/contactus">Kontakt &amp; Anfrage</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="fw-f-col-title">Rechtliches</div>
+          <ul class="fw-f-links">
+            <li><a href="/impressum">Impressum</a></li>
+            <li><a href="/datenschutz">Datenschutz</a></li>
+            <li><a href="/agb">AGB &amp; Mietbedingungen</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="fw-f-col-title">Qualifikation</div>
+          <p style="font-size: 0.82rem; color: var(--fw-text-mid); line-height: 1.6;">
+            ✓ IHK-Fachkraft Veranstaltungstechnik<br/>
+            ✓ Zimmermannsgeselle Handwerk<br/>
+            ✓ DGUV V17 &amp; VDE konform<br/>
+            ✓ Zuverlässiger Vor-Ort-Support
+          </p>
+        </div>
+      </div>
+
+      <div style="max-width: 1100px; margin: 40px auto 0; padding-top: 20px; border-top: 1px solid var(--fw-border); text-align: center; font-size: 0.78rem; color: var(--fw-text-muted);">
+        © 2026 FraWo GbR (Wolfgang Prinz &amp; Franz Bienert). Alle Rechte vorbehalten.
+      </div>
+    </footer>
+
+  </div>
+</div>
+</t>
+</t>
