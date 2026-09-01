@@ -239,10 +239,13 @@
 
     .fw-img-box {
       width: 100%;
-      height: 250px;
-      background: #000000;
+      aspect-ratio: 4 / 3;
+      min-height: 260px;
+      max-height: 320px;
+      background: #090c0a;
       overflow: hidden;
       position: relative;
+      border-bottom: 1px solid var(--fw-border);
     }
 
     .fw-img-box img {
@@ -254,23 +257,19 @@
     }
 
     .fw-focus-foh {
-      object-position: center 35% !important;
+      object-position: center 40% !important;
     }
 
     .fw-focus-ton {
-      object-position: center 30% !important;
-    }
-
-    .fw-focus-dart {
-      object-position: center 18% !important;
+      object-position: center 35% !important;
     }
 
     .fw-focus-franz {
-      object-position: center 18% !important;
+      object-position: center 15% !important;
     }
 
     .fw-focus-wolf {
-      object-position: center 25% !important;
+      object-position: center 20% !important;
     }
 
     .fw-service-card:hover .fw-img-box img {
