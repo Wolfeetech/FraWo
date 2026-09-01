@@ -1047,17 +1047,7 @@
             </p>
 
             
-            <!-- Customer Portal Onboarding Callout -->
-            <div style="background: var(--fw-bg); border: 1px solid var(--fw-border); padding: 18px 24px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
-              <div>
-                <strong style="color: #ffffff; font-size: 0.9rem; text-transform: uppercase; display: block;">🔑 Schneller mieten mit Kundenkonto?</strong>
-                <span style="font-size: 0.82rem; color: var(--fw-text-mid);">Registriere dich vorab im FraWo Kundenportal, um Angebote direkt digital zu bestätigen und Rechnungen einzusehen.</span>
-              </div>
-              <div style="display: flex; gap: 10px;">
-                <a href="/web/signup" class="fw-btn-book" style="width: auto; padding: 8px 16px; font-size: 0.78rem;">Konto anlegen</a>
-                <a href="/web/login?redirect=/my" class="fw-btn-wa" style="width: auto; padding: 8px 16px; font-size: 0.78rem;">Portal-Login</a>
-              </div>
-            </div>
+            
 
             <form id="fwRentalForm" action="/website/form/crm.lead" method="post" enctype="multipart/form-data" class="o_mark_required" data-mark="*" data-model_name="crm.lead">
               <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
