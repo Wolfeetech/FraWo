@@ -1,14 +1,20 @@
 """
 Automated Inbound Quote & Rental Ingestion Engine for FraWo
-Converts incoming web leads into draft sale.order records in Odoo automatically.
+Converts incoming web leads into draft sale.order records in Odoo automatically
+and notifies Wolf instantly via Telegram.
 """
 import sys
+import os
+import urllib.request
+import urllib.parse
+import json
 from pathlib import Path
 
+# Add shared business path
 sys.path.insert(0, r"C:\Users\StudioPC\FraWo\scripts\business")
 import mcp_odoo_pro_server as s
 
-# Package mapping to product IDs and standard prices
+# Package mapping to standard prices and deposit
 PACKAGE_CATALOG = {
     'paket_01': {'name': 'Paket 01: Pro-Licht-Paket (Wolfmix + Moving Heads)', 'price': 140.0, 'deposit': 100.0},
     'paket_02': {'name': 'Paket 02: Club & Open-Air Sound-System (Martin Audio)', 'price': 220.0, 'deposit': 150.0},
@@ -17,9 +23,32 @@ PACKAGE_CATALOG = {
     'paket_05': {'name': 'Paket 05: Ambient & Dance Licht-Set', 'price': 80.0, 'deposit': 50.0},
 }
 
+def send_telegram_alert(text):
+    """Sends notification to Wolf via Telegram Bot API."""
+    token = os.environ.get('TELEGRAM_BOT_TOKEN')
+    chat_id = "5924907152" # Wolf Prinz Telegram ID
+    
+    if not token:
+        print("[Telegram Alert Skipped]: TELEGRAM_BOT_TOKEN not in environment.")
+        return
+        
+    url = f"https://api.telegram.org/bot{token}/sendMessage"
+    payload = {
+        'chat_id': chat_id,
+        'text': text,
+        'parse_mode': 'HTML'
+    }
+    try:
+        data = json.dumps(payload).encode('utf-8')
+        req = urllib.request.Request(url, data=data, headers={'Content-Type': 'application/json'})
+        with urllib.request.urlopen(req, timeout=5) as res:
+            if res.getcode() == 200:
+                print(f"[Telegram Alert Sent]: to {chat_id}")
+    except Exception as e:
+        print(f"[Telegram Alert Error]: {e}")
+
 def process_new_leads():
     """Scans for unprocessed CRM leads and converts them to draft sale.order."""
-    # Find leads created in last 7 days without a sale order
     leads = s.odoo_search_read('crm.lead', [
         ('type', '=', 'opportunity'),
         ('active', '=', True),
@@ -88,6 +117,17 @@ def process_new_leads():
             'body': f"🤖 [Antigravity] Automatisch Angebot #{order_id} ({pkg_info['name']}, {pkg_info['price']} €) vorbereitet.",
             'message_type': 'comment'
         })
+
+        # Send Telegram notification
+        msg = (
+            f"📩 <b>NEUE MIETANFRAGE — ANGEBOT VORBEREITET!</b>\n\n"
+            f"• <b>Kunde:</b> {name} ({email or phone or 'Keine Kontaktdaten'})\n"
+            f"• <b>Paket:</b> {pkg_info['name']}\n"
+            f"• <b>Mietpreis:</b> <b>{pkg_info['price']:.2f} €</b> (+ {pkg_info['deposit']:.2f} € Kaution)\n"
+            f"• <b>Beleg:</b> Entwurf <b>Angebot #{order_id}</b> in Odoo angelegt.\n\n"
+            f"<i>Antworte einfach 'Senden #{order_id}' zum Bestätigen oder prüfe es in Odoo.</i>"
+        )
+        send_telegram_alert(msg)
 
 if __name__ == '__main__':
     process_new_leads()

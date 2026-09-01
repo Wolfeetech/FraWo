@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>FraWo GbR — Lager Kisten-Etiketten & Packlisten (A, B, C)</title>
+  <style>
+    @page { size: A4 portrait; margin: 10mm 12mm; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 9pt; line-height: 1.3; color: #0f172a; background: #fff; }
+    
+    .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #004030; padding-bottom: 6px; margin-bottom: 10px; }
+    .brand { font-size: 14pt; font-weight: 800; color: #004030; letter-spacing: -0.5px; }
+    .brand span { color: #a050f0; }
+    .subline { font-size: 8pt; color: #64748b; }
+    
+    .grid-container { display: flex; flex-direction: column; gap: 12px; }
+    
+    .box-card { border: 2px solid #004030; padding: 8px 12px; background: #fff; page-break-inside: avoid; }
+    .box-header { display: flex; justify-content: space-between; align-items: center; background: #004030; color: #fff; padding: 4px 8px; margin: -8px -12px 8px -12px; }
+    .box-title { font-size: 11pt; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; }
+    .box-tag { font-size: 8pt; font-weight: 700; background: #a050f0; color: #fff; padding: 2px 6px; }
+    
+    .box-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 12px; }
+    
+    table { width: 100%; border-collapse: collapse; font-size: 8pt; }
+    th, td { border: 1px solid #cbd5e1; padding: 3px 6px; text-align: left; }
+    th { background: #f1f5f9; font-weight: 700; color: #004030; }
+    
+    .notes-box { border: 1px dashed #94a3b8; background: #f8fafc; padding: 6px; font-size: 7.5pt; color: #334155; }
+    .notes-box b { color: #004030; }
+    
+    .check-circle { width: 10px; height: 10px; border: 1.5px solid #004030; display: inline-block; vertical-align: middle; margin-right: 4px; }
+    
+    @media print {
+      body { -webkit-print-color-adjust: exact; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div>
+      <div class="brand">FraWo<span>.</span> GbR — Lager Rothkreuz 14</div>
+      <div class="subline">Standardisierte Kisten-Etiketten &amp; Packlisten für den Verleih</div>
+    </div>
+    <div style="text-align: right; font-size: 8pt; color: #64748b;">
+      Stand: 01.09.2026 · Lager-Ordnung Weißensberg
+    </div>
+  </div>
+
+  <div class="grid-container">
+
+    <!-- KISTE A -->
+    <div class="box-card">
+      <div class="box-header">
+        <div class="box-title">💡 KISTE A — LICHT, DMX &amp; CONTROL</div>
+        <div class="box-tag">EUROBOX 400×300×220</div>
+      </div>
+      <div class="box-grid">
+        <table>
+          <thead>
+            <tr><th style="width: 25px;">Soll</th><th>Inhalt / Komponente</th><th>Zustand / Test</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><b>1x</b></td><td>Wolfmix W1 DMX-Controller + USB-C Netzteil</td><td><span class="check-circle"></span> Display &amp; Knöpfe i.O.</td></tr>
+            <tr><td><b>4x</b></td><td>DMX-Kabel 5m (XLR 3-Pol, Sommer Cable)</td><td><span class="check-circle"></span> Gewickelt &amp; Klett</td></tr>
+            <tr><td><b>2x</b></td><td>DMX-Kabel 10m (XLR 3-Pol, Sommer Cable)</td><td><span class="check-circle"></span> Gewickelt &amp; Klett</td></tr>
+            <tr><td><b>4x</b></td><td>PowerCON True1 Durchschleifkabel 3m</td><td><span class="check-circle"></span> Verriegelung i.O.</td></tr>
+            <tr><td><b>2x</b></td><td>Schuko 3er-Verteiler (Brennenstuhl IP44)</td><td><span class="check-circle"></span> Sichtprüfung VDE</td></tr>
+          </tbody>
+        </table>
+        <div class="notes-box">
+          <b>⚡ Wichtige Hinweise für Ausgabe / Rücknahme:</b><br>
+          • Wolfmix USB-Netzteil immer im Schutzfach lagern.<br>
+          • DMX-Kabel nicht knicken — nur in Achter-Schlaufen wickeln.<br>
+          • DMX-Abschlusswiderstand (120 Ohm) im Deckelfach prüfen.
+        </div>
+      </div>
+    </div>
+
+    <!-- KISTE B -->
+    <div class="box-card">
+      <div class="box-header">
+        <div class="box-title">🔊 KISTE B — TON, SIGNAL &amp; ADAPTER</div>
+        <div class="box-tag">EUROBOX 400×300×220</div>
+      </div>
+      <div class="box-grid">
+        <table>
+          <thead>
+            <tr><th style="width: 25px;">Soll</th><th>Inhalt / Komponente</th><th>Zustand / Test</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><b>4x</b></td><td>Mikrofonkabel XLR 10m (Sommer Stage 22)</td><td><span class="check-circle"></span> Neutrik Pins i.O.</td></tr>
+            <tr><td><b>4x</b></td><td>Mikrofonkabel XLR 5m (Sommer Stage 22)</td><td><span class="check-circle"></span> Neutrik Pins i.O.</td></tr>
+            <tr><td><b>2x</b></td><td>Speakon-Kabel 4-Pol 10m (2.5mm² PA-Leitung)</td><td><span class="check-circle"></span> Kontakte sauber</td></tr>
+            <tr><td><b>2x</b></td><td>Speakon-Kabel 4-Pol 5m (2.5mm² PA-Leitung)</td><td><span class="check-circle"></span> Kontakte sauber</td></tr>
+            <tr><td><b>2x</b></td><td>Passive Stereo DI-Box (Palmer / Radial)</td><td><span class="check-circle"></span> Ground-Lift Schalter</td></tr>
+            <tr><td><b>1x</b></td><td>Bluetooth 5.0 Empfänger-Set + Miniklinke-Adapter</td><td><span class="check-circle"></span> Akku geladen</td></tr>
+          </tbody>
+        </table>
+        <div class="notes-box">
+          <b>🔊 Wichtige Hinweise für Ausgabe / Rücknahme:</b><br>
+          • Speakon-Kabel nur für Sub/Top-Verbindungen nutzen.<br>
+          • DI-Boxen vor Ausgabe kurz auf Signal durchschalten.<br>
+          • Adapter-Set (Cinch/Klinke) vollständig in Kleinteile-Box.
+        </div>
+      </div>
+    </div>
+
+    <!-- KISTE C -->
+    <div class="box-card">
+      <div class="box-header">
+        <div class="box-title">🎯 KISTE C — EVENT &amp; 5M FUSSBALLDART</div>
+        <div class="box-tag">EUROBOX 600×400×320</div>
+      </div>
+      <div class="box-grid">
+        <table>
+          <thead>
+            <tr><th style="width: 25px;">Soll</th><th>Inhalt / Komponente</th><th>Zustand / Test</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><b>1x</b></td><td>1500W Dauergebläse IP44 (mit Schuko-Zuleitung)</td><td><span class="check-circle"></span> Lüftergitter frei</td></tr>
+            <tr><td><b>6x</b></td><td>Klett-Fußbälle (Größe 5, kletthaftend)</td><td><span class="check-circle"></span> Luftdruck geprüft</td></tr>
+            <tr><td><b>1x</b></td><td>4m Teleskop-Klettstange zum Ballabnehmen</td><td><span class="check-circle"></span> Auszug &amp; Arretierung</td></tr>
+            <tr><td><b>4x</b></td><td>Schwere Spanngurte &amp; 4x Erdanker/Heringe</td><td><span class="check-circle"></span> Ratsche gängig</td></tr>
+            <tr><td><b>1x</b></td><td>Hand-Ballpumpe mit Manometer &amp; Ventilnadel</td><td><span class="check-circle"></span> Dichtung i.O.</td></tr>
+            <tr><td><b>1x</b></td><td>Robuste PVC-Bodenplane (6×6m)</td><td><span class="check-circle"></span> Trocken &amp; sauber</td></tr>
+          </tbody>
+        </table>
+        <div class="notes-box">
+          <b>🎯 Wichtige Hinweise für Ausgabe / Rücknahme:</b><br>
+          • Klett-Bälle nur trocken einpacken (kein Schimmel!).<br>
+          • Bodenplane immer unterlegen zum Schutz der Scheibe.<br>
+          • Bei Rücknahme Bälle auf Vollständigkeit (6 Stück!) zählen.
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>
