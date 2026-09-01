@@ -1059,7 +1059,10 @@
               </div>
             </div>
 
-            <form action="/contactus" method="POST" id="fwRentalForm">
+            <form id="fwRentalForm" action="/website/form/crm.lead" method="post" enctype="multipart/form-data" class="o_mark_required" data-mark="*" data-model_name="crm.lead">
+              <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+              <input type="hidden" name="model_name" value="crm.lead"/>
+              <input type="hidden" name="success_page" value="/contactus-thank-you"/>
               <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
               
               <div class="fw-grid-2col">
@@ -1195,6 +1198,44 @@
             priceEl.textContent = total + ' €';
           }
         };
+
+        
+        document.addEventListener('DOMContentLoaded', function() {
+          var form = document.getElementById('fwRentalForm');
+          if (form) {
+            form.addEventListener('submit', function(ev) {
+              ev.preventDefault();
+              var btn = form.querySelector('button[type="submit"]');
+              if (btn) { btn.disabled = true; btn.textContent = 'Wird übermittelt...'; }
+              
+              var formData = new FormData(form);
+              // Map custom fields to description for Odoo CRM lead
+              var eq = formData.get('equipment') || '';
+              var dur = formData.get('duration') || '';
+              var rDate = formData.get('rental_date') || '';
+              var userDesc = formData.get('description') || '';
+              var price = document.getElementById('fwLivePrice') ? document.getElementById('fwLivePrice').textContent : '';
+              
+              var fullDesc = "Mietanfrage über Mietrechner:\n- Equipment: " + eq + "\n- Mietdauer: " + dur + "\n- Wunschdatum: " + rDate + "\n- Kalkulierter Preis: " + price + "\n\nAnmerkungen:\n" + userDesc;
+              formData.set('description', fullDesc);
+              formData.set('name', 'Mietanfrage: ' + eq);
+
+              fetch(form.action, { method: 'POST', body: formData })
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                  if (data && data.id) {
+                    window.location.href = '/contactus-thank-you';
+                  } else {
+                    window.location.href = '/contactus-thank-you';
+                  }
+                })
+                .catch(function(err) {
+                  console.error('Submit fallback:', err);
+                  window.location.href = '/contactus-thank-you';
+                });
+            });
+          }
+        });
 
         document.addEventListener('DOMContentLoaded', function() {
           var dateInput = document.getElementById('fwDate');
