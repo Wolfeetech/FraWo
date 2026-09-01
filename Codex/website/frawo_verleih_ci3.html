@@ -1134,13 +1134,14 @@
 
       </div>
 
-      <script>
-        function filterCategory(cat) {
-          // Update active filter button
+                  <script type="text/javascript">
+        window.filterCategory = function(cat, el) {
           var buttons = document.querySelectorAll('.fw-filter-btn');
-          buttons.forEach(function(btn) { btn.classList.remove('active'); });
-          if (event &amp;&amp; event.target) {
-            event.target.classList.add('active');
+          buttons.forEach(function(b) { b.classList.remove('active'); });
+          if (el) {
+            el.classList.add('active');
+          } else if (window.event && window.event.target) {
+            window.event.target.classList.add('active');
           }
 
           var cards = document.querySelectorAll('.fw-stack-card');
@@ -1156,25 +1157,31 @@
               }
             }
           });
-        }
+        };
 
-        function selectStackItem(name, basePrice) {
+        window.selectStackItem = function(name, basePrice) {
           var eqSelect = document.getElementById('fwEqSelect');
-          for (var i = 0; i &lt; eqSelect.options.length; i++) {
-            if (eqSelect.options[i].value === name || eqSelect.options[i].text.indexOf(name) !== -1) {
-              eqSelect.selectedIndex = i;
-              break;
+          if (eqSelect) {
+            for (var i = 0; i !== eqSelect.options.length; i++) {
+              var optVal = eqSelect.options[i].value;
+              var optTxt = eqSelect.options[i].text;
+              if (optVal === name || optTxt.indexOf(name) !== -1) {
+                eqSelect.selectedIndex = i;
+                break;
+              }
             }
           }
-          calcTotal();
+          if (window.calcTotal) {
+            window.calcTotal();
+          }
           var box = document.getElementById('bookingBox');
           if (box) {
             box.scrollIntoView({ behavior: 'smooth' });
             box.style.borderColor = '#a050f0';
           }
-        }
+        };
 
-        function calcTotal() {
+        window.calcTotal = function() {
           var eqSelect = document.getElementById('fwEqSelect');
           var durSelect = document.getElementById('fwDurationSelect');
           if (!eqSelect || !durSelect) return;
@@ -1187,16 +1194,17 @@
           if (priceEl) {
             priceEl.textContent = total + ' €';
           }
-        }
+        };
 
-        // Initialize today date
         document.addEventListener('DOMContentLoaded', function() {
           var dateInput = document.getElementById('fwDate');
           if (dateInput) {
             var today = new Date().toISOString().split('T')[0];
             dateInput.min = today;
           }
-          calcTotal();
+          if (window.calcTotal) {
+            window.calcTotal();
+          }
         });
       </script>
     </div>
