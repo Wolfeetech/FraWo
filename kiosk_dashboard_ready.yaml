@@ -1,0 +1,36 @@
+  - title: StudioPC
+    path: studiopc
+    icon: mdi:monitor
+    theme: frawo_kiosk
+    panel: true
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: custom:mushroom-template-card
+            primary: "Zurueck zum Dashboard"
+            icon: mdi:arrow-left-circle
+            icon_color: purple
+            tap_action:
+              action: navigate
+              navigation_path: /kiosk-frawo/start
+            card_mod:
+              style: |
+                ha-card {
+                  border-radius: 12px;
+                  border-left: 3px solid #a050f0;
+                  margin: 6px;
+                  background: rgba(30,30,40,0.9);
+                }
+          - type: iframe
+            # Hinweis: noVNC-Passwort wird im Browser/Kiosk-Session gespeichert und nicht im Dashboard-Code fest codiert
+            url: http://10.1.0.128:6080/vnc.html?host=10.1.0.128&port=6080&path=websockify&autoconnect=true&resize=scale
+            aspect_ratio: '56%'
+            card_mod:
+              style: |
+                ha-card {
+                  height: calc(100vh - 120px) !important;
+                }
+                iframe {
+                  height: 100% !important;
+                  width: 100% !important;
+                }

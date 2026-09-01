@@ -17,6 +17,14 @@ import xmlrpc.client
 import traceback
 from pathlib import Path
 
+# Ensure UTF-8 I/O for MCP communication
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+if hasattr(sys.stdin, "reconfigure"):
+    sys.stdin.reconfigure(encoding="utf-8", errors="replace")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+
 # ── Load .env if present ──────────────────────────────────────────────────────
 _env_file = Path("C:/Users/StudioPC/.ai-tools-shared/.env")
 if _env_file.exists():
@@ -24,15 +32,23 @@ if _env_file.exists():
         line = line.strip()
         if line and not line.startswith("#") and "=" in line:
             k, _, v = line.partition("=")
-            os.environ.setdefault(k.strip(), v.strip())
+            k = k.strip()
+            v = v.strip()
+            if k not in os.environ or os.environ[k].startswith("${"):
+                os.environ[k] = v
 
-ODOO_URL  = os.environ.get("ODOO_RPC_URL")  or os.environ.get("ODOO_URL",  "http://10.1.0.112:8069")
+def _clean_val(val):
+    if not val or (isinstance(val, str) and val.startswith("${") and val.endswith("}")):
+        return None
+    return val
+
+ODOO_URL  = _clean_val(os.environ.get("ODOO_RPC_URL")) or _clean_val(os.environ.get("ODOO_URL")) or "http://10.1.0.112:8069"
 if not ODOO_URL.startswith("http://") and not ODOO_URL.startswith("https://"):
     ODOO_URL = f"http://{ODOO_URL}"
-ODOO_DB   = os.environ.get("ODOO_RPC_DB")   or os.environ.get("ODOO_DB_GBR", "FraWo_GbR")
-ODOO_USER = os.environ.get("ODOO_RPC_USER") or os.environ.get("ODOO_USER", "wolf@frawo.tech")
-ODOO_PASS = (os.environ.get("ODOO_RPC_PASSWORD")
-             or os.environ.get("ODOO_PASSWORD", ""))
+ODOO_DB   = _clean_val(os.environ.get("ODOO_RPC_DB")) or _clean_val(os.environ.get("ODOO_DB_GBR")) or "FraWo_GbR"
+ODOO_USER = _clean_val(os.environ.get("ODOO_RPC_USER")) or _clean_val(os.environ.get("ODOO_USER")) or "wolf@frawo.tech"
+ODOO_PASS = (_clean_val(os.environ.get("ODOO_RPC_PASSWORD"))
+             or _clean_val(os.environ.get("ODOO_PASSWORD")) or "")
 
 # ── Odoo XML-RPC helpers ──────────────────────────────────────────────────────
 def _connect():
@@ -298,8 +314,11 @@ def main():
                 })
             except Exception as e:
                 err_response(req_id, -32000, f"{e}\n{traceback.format_exc()}")
-        elif method == "notifications/initialized":
-            pass  # ignore
+        elif method == "ping":
+            if req_id is not None:
+                send({"jsonrpc": "2.0", "id": req_id, "result": {}})
+        elif method == "notifications/initialized" or method.startswith("notifications/"):
+            pass  # ignore notifications
         else:
             # Unknown method — ignore silently or send error
             if req_id is not None:
