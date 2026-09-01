@@ -1039,89 +1039,31 @@
         </div>
 
         <!-- Smart Inquiry Form & Live Calculator -->
+                <!-- Odoo Native Customer Portal & Inquiry Hub -->
         <div class="fw-form-wrap" id="bookingBox">
-          <div class="fw-form-box">
-            <h2 class="fw-form-h2">Mietpreis-Rechner &amp; Schnellanfrage</h2>
-            <p class="fw-form-sub">
-              Wähle dein Equipment, kalkuliere den Mietpreis in Echtzeit und sende uns deine Reservierungsanfrage.
+          <div class="fw-form-box" style="text-align: center; padding: 48px 36px;">
+            <div style="display: inline-flex; align-items: center; gap: 8px; background: var(--fw-primary); border: 1px solid var(--fw-border); color: #2ecc71; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; padding: 6px 16px; margin-bottom: 20px;">
+              ✓ ODOO KUNDENPORTAL
+            </div>
+            <h2 class="fw-form-h2" style="margin-bottom: 14px;">Anfrage &amp; Mietbuchung im Kundenportal</h2>
+            <p class="fw-form-sub" style="max-width: 650px; margin: 0 auto 32px;">
+              Keine zeitraubenden Papierangebote mehr. Erstelle dein persönliches Kundenprofil in 30 Sekunden, um Angebote digital freizugeben, den Auftragsstatus einzusehen und Belege herunterzuladen.
             </p>
 
-            
-            
+            <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-bottom: 36px;">
+              <a href="/web/signup?redirect=/my" class="fw-btn-book" style="width: auto; padding: 16px 36px; font-size: 0.95rem;">
+                ⚡ Jetzt im Kundenportal registrieren &amp; anfragen &#8594;
+              </a>
+              <a href="/web/login?redirect=/my" class="fw-btn-wa" style="width: auto; padding: 16px 28px; font-size: 0.95rem; color: #ffffff !important; border-color: var(--fw-border) !important;">
+                🔑 Bereits registriert? Zum Login
+              </a>
+            </div>
 
-            <form id="fwRentalForm" action="/website/form/crm.lead" method="post" enctype="multipart/form-data" class="o_mark_required" data-mark="*" data-model_name="crm.lead">
-              <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-              <input type="hidden" name="model_name" value="crm.lead"/>
-              <input type="hidden" name="success_page" value="/contactus-thank-you"/>
-              <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-              
-              <div class="fw-grid-2col">
-                <div class="fw-fg">
-                  <label class="fw-flabel">Ausgewähltes Equipment / Paket</label>
-                  <select class="fw-fctrl" id="fwEqSelect" name="equipment" onchange="calcTotal()">
-                    <option value="Pro-Licht-Paket: Moving Heads + PARs + Hazer + Wolfmix W1" data-price="140">Pro-Licht-Paket (Moving Heads, PARs, Hazer, Wolfmix) — 140 €/Tag</option>
-                    <option value="Club &amp; Open-Air Sound-System (100–300 Personen)" data-price="220">Club &amp; Open-Air Sound-System (3.600W DSP) — 220 €/Tag</option>
-                    <option value="5m Riesen-Fußballdart Inflatable" data-price="250">5m Riesen-Fußballdart Inflatable — 250 €/Tag</option>
-                    <option value="Compact Party PA-Set (12 Zoll Fullrange)" data-price="90">Compact Party PA-Set (12" Tops, Bluetooth) — 90 €/Tag</option>
-                    <option value="Ambient &amp; Dance Licht-Set (4x Outdoor PAR + Hazer)" data-price="80">Ambient &amp; Dance Licht-Set (4x PAR + Hazer) — 80 €/Tag</option>
-                    <option value="DJ &amp; Audio-Regie-Set" data-price="50">DJ &amp; Audio-Regie-Set (PreSonus + Pioneer) — 50 €/Tag</option>
-                    <option value="JBL EON 615 (Aktiv-Monitor 15 Zoll)" data-price="20">JBL EON 615 Aktiv-Monitor (15") — 20 €/Tag</option>
-                    <option value="Wolfmix W1 — DMX-Lichtsteuerung" data-price="25">Wolfmix W1 DMX Standalone Controller — 25 €/Tag</option>
-                    <option value="Moving Head (Spot / BeamZ Panther 35)" data-price="15">Moving Head Spot (BeamZ Panther / Showtec) — 15 €/Tag</option>
-                    <option value="PKW-Anhänger 750kg (ungebremst)" data-price="15">PKW-Anhänger 750kg mit Plane — 15 €/Tag</option>
-                  </select>
-                </div>
-                <div class="fw-fg">
-                  <label class="fw-flabel">Mietdauer</label>
-                  <select class="fw-fctrl" id="fwDurationSelect" name="duration" onchange="calcTotal()">
-                    <option value="1 Tag (24h)" data-factor="1.0">1 Tag / 24 Stunden (Faktor 1,0×)</option>
-                    <option value="Wochenende (Fr–Mo)" data-factor="1.5" selected="selected">Wochenend-Tarif Fr–Mo (3 Tage nutzen, nur 1,5 Tage zahlen)</option>
-                    <option value="2 Tage" data-factor="2.0">2 Werktage (Faktor 2,0×)</option>
-                    <option value="1 Woche" data-factor="3.0">1 Woche / 7 Tage (Faktor 3,0×)</option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="fw-grid-2col">
-                <div class="fw-fg">
-                  <label class="fw-flabel">Dein Name *</label>
-                  <input type="text" class="fw-fctrl" name="name" required="required" placeholder="z. B. Max Mustermann"/>
-                </div>
-                <div class="fw-fg">
-                  <label class="fw-flabel">E-Mail-Adresse *</label>
-                  <input type="email" class="fw-fctrl" name="email_from" required="required" placeholder="max@example.de"/>
-                </div>
-              </div>
-
-              <div class="fw-grid-2col">
-                <div class="fw-fg">
-                  <label class="fw-flabel">Telefon / WhatsApp *</label>
-                  <input type="tel" class="fw-fctrl" name="phone" id="fwPhone" required="required" placeholder="0170 1234567"/>
-                </div>
-                <div class="fw-fg">
-                  <label class="fw-flabel">Wunsch-Datum der Abholung *</label>
-                  <input type="date" class="fw-fctrl" name="rental_date" id="fwDate" required="required"/>
-                </div>
-              </div>
-
-              <div class="fw-fg" style="margin-bottom: 24px;">
-                <label class="fw-flabel">Optionale Nachricht / Anmerkungen</label>
-                <textarea class="fw-fctrl" name="description" rows="3" placeholder="Zusätzliche Wünsche, Kabel, Zubehör oder Anlieferungsoptionen..."></textarea>
-              </div>
-
-              <!-- Live Total Price Bar -->
-              <div class="fw-live-bar">
-                <div>
-                  <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--fw-text-mid); display: block;">Kalkulierter Mietpreis (Netto/Brutto):</span>
-                  <span style="font-size: 0.85rem; color: var(--fw-text-muted);">Inklusive Standardverkabelung · Kaution wird bei Abholung hinterlegt</span>
-                </div>
-                <div class="fw-live-total" id="fwLivePrice">210 €</div>
-              </div>
-
-              <button type="submit" class="fw-btn-send">
-                Mietanfrage jetzt absenden &#8594;
-              </button>
-            </form>
+            <div style="padding-top: 24px; border-top: 1px solid var(--fw-border); display: flex; justify-content: center; gap: 32px; flex-wrap: wrap; font-size: 0.85rem; color: var(--fw-text-mid);">
+              <div><span>✓</span> 1-Klick digitale Angebotsannahme</div>
+              <div><span>✓</span> Rechnungen &amp; PDF-Downloads</div>
+              <div><span>✓</span> 100% DSGVO &amp; sicher in Odoo</div>
+            </div>
           </div>
         </div>
 
