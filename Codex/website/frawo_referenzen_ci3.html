@@ -31,7 +31,7 @@
     }
 
     .fw-ref-hero {
-      padding: 80px 20px 50px;
+      padding: 90px 20px 60px;
       text-align: center;
       background: var(--fw-bg);
       border-bottom: 1px solid var(--fw-border);
@@ -76,232 +76,225 @@
       font-weight: 400;
     }
 
-    /* Reference Showcase List */
-    .fw-showcase-wrap {
-      max-width: 1100px;
+    /* 2x2 Showcase Grid */
+    .fw-showcase-container {
+      max-width: 1150px;
       margin: 60px auto 0;
       padding: 0 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 40px;
     }
 
-    .fw-ref-feature-card {
+    .fw-ref-grid-2x2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 32px;
+    }
+
+    @media (max-width: 860px) {
+      .fw-ref-grid-2x2 { grid-template-columns: 1fr; gap: 24px; }
+    }
+
+    .fw-ref-card {
       background: var(--fw-surface);
       border: 1px solid var(--fw-border);
       border-radius: 0px;
       overflow: hidden;
-      display: grid;
-      grid-template-columns: 1.1fr 1fr;
-      gap: 0;
-      transition: border-color 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: border-color 0.25s ease, transform 0.25s ease;
     }
 
-    .fw-ref-feature-card:hover {
+    .fw-ref-card:hover {
       border-color: var(--fw-accent);
+      transform: translateY(-4px);
     }
 
-    @media (max-width: 860px) {
-      .fw-ref-feature-card {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .fw-ref-img-box {
+    .fw-ref-img-header {
+      width: 100%;
+      height: 220px;
       background: #000000;
       position: relative;
-      min-height: 320px;
       overflow: hidden;
+      border-bottom: 1px solid var(--fw-border);
     }
 
-    .fw-ref-img-box img {
+    .fw-ref-img-header img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       display: block;
-      transition: transform 0.3s ease;
+      transition: transform 0.4s ease;
     }
 
-    .fw-ref-feature-card:hover .fw-ref-img-box img {
-      transform: scale(1.03);
+    .fw-ref-card:hover .fw-ref-img-header img {
+      transform: scale(1.04);
     }
 
-    .fw-ref-img-overlay {
+    .fw-ref-badge-top {
       position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: linear-gradient(0deg, rgba(10,10,10,0.85) 0%, transparent 100%);
-      padding: 16px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
+      top: 12px;
+      left: 12px;
+      background: rgba(10,10,10,0.85);
+      border: 1px solid var(--fw-border);
+      color: #ffffff;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 4px 10px;
+      z-index: 2;
     }
 
-    .fw-ref-content {
-      padding: 36px 40px;
+    .fw-ref-loc {
+      position: absolute;
+      bottom: 12px;
+      right: 12px;
+      background: rgba(10,10,10,0.85);
+      border: 1px solid var(--fw-border);
+      color: var(--fw-accent);
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 4px 10px;
+      z-index: 2;
+    }
+
+    .fw-ref-body {
+      padding: 28px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      flex-grow: 1;
       gap: 20px;
     }
 
-    @media (max-width: 600px) {
-      .fw-ref-content { padding: 24px; }
-    }
-
-    .fw-ref-tag {
-      font-size: 0.72rem;
+    .fw-ref-tag-sub {
+      font-size: 0.75rem;
       font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
       color: var(--fw-accent);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
       margin-bottom: 6px;
-      display: block;
     }
 
     .fw-ref-h3 {
-      font-size: clamp(1.4rem, 2.5vw, 1.85rem);
+      font-size: 1.35rem;
       font-weight: 800;
       color: var(--fw-text-bright);
-      line-height: 1.2;
       text-transform: uppercase;
-      letter-spacing: -0.01em;
+      line-height: 1.25;
       margin-bottom: 12px;
     }
 
     .fw-ref-desc {
-      font-size: 0.95rem;
+      font-size: 0.92rem;
       color: var(--fw-text-mid);
-      line-height: 1.65;
-      margin-bottom: 16px;
+      line-height: 1.6;
+      margin-bottom: 18px;
     }
 
-    .fw-ref-specs {
+    .fw-ref-specs-wrap {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin-top: auto;
     }
 
-    .fw-ref-spec-tag {
+    .fw-ref-spec-pill {
       background: var(--fw-bg);
       border: 1px solid var(--fw-border);
-      border-radius: 0px;
-      padding: 4px 10px;
-      font-size: 0.75rem;
+      color: #cbd5e1;
+      font-size: 0.78rem;
       font-weight: 600;
-      color: var(--fw-text-bright);
-      letter-spacing: 0.03em;
+      padding: 6px 12px;
+      border-radius: 0px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
     }
 
-    /* Partner Network Grid */
-    .fw-network-section {
-      max-width: 1100px;
-      margin: 80px auto 0;
-      padding: 0 20px;
+    /* Partner Network Strip */
+    .fw-network-sec {
+      background: var(--fw-surface);
+      border-top: 1px solid var(--fw-border);
+      border-bottom: 1px solid var(--fw-border);
+      padding: 70px 20px;
+      margin-top: 80px;
     }
 
-    .fw-network-h2 {
-      font-size: 1.6rem;
-      font-weight: 800;
-      color: var(--fw-text-bright);
-      text-transform: uppercase;
-      letter-spacing: -0.01em;
+    .fw-network-inner {
+      max-width: 1150px;
+      margin: 0 auto;
       text-align: center;
-      margin-bottom: 12px;
-    }
-
-    .fw-network-sub {
-      font-size: 0.95rem;
-      color: var(--fw-text-mid);
-      text-align: center;
-      max-width: 600px;
-      margin: 0 auto 36px;
     }
 
     .fw-network-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 16px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+      margin-top: 36px;
     }
 
-    .fw-partner-box {
-      background: var(--fw-surface);
+    @media (max-width: 860px) {
+      .fw-network-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 500px) {
+      .fw-network-grid { grid-template-columns: 1fr; }
+    }
+
+    .fw-partner-card-min {
+      background: var(--fw-bg);
       border: 1px solid var(--fw-border);
-      border-radius: 0px;
-      padding: 24px;
-      text-align: center;
+      padding: 24px 16px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      transition: border-color 0.2s ease;
+      gap: 6px;
     }
 
-    .fw-partner-box:hover {
-      border-color: var(--fw-accent);
-    }
-
-    .fw-partner-name {
-      font-size: 1rem;
+    .fw-partner-card-min strong {
+      font-size: 0.95rem;
       font-weight: 700;
       color: var(--fw-text-bright);
       text-transform: uppercase;
     }
 
-    .fw-partner-role {
+    .fw-partner-card-min span {
       font-size: 0.8rem;
       color: var(--fw-text-mid);
     }
 
     /* CTA Box */
-    .fw-ref-cta {
-      max-width: 900px;
+    .fw-ref-cta-box {
+      max-width: 1150px;
       margin: 80px auto 0;
       padding: 50px 30px;
       background: var(--fw-surface);
       border: 1px solid var(--fw-border);
-      border-radius: 0px;
       text-align: center;
     }
 
-    .fw-ref-cta h2 {
-      font-size: 1.8rem;
-      font-weight: 800;
-      color: var(--fw-text-bright);
-      text-transform: uppercase;
-      margin-bottom: 12px;
+    .fw-btn-primary {
+      background: var(--fw-accent) !important;
+      color: #ffffff !important;
+      border: 1px solid var(--fw-accent) !important;
+      font-size: 0.92rem !important;
+      font-weight: 700 !important;
+      text-transform: uppercase !important;
+      letter-spacing: 0.06em !important;
+      padding: 14px 28px !important;
+      border-radius: 0px !important;
+      text-decoration: none !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 8px !important;
+      transition: background-color 0.2s ease !important;
     }
 
-    .fw-ref-cta p {
-      font-size: 1rem;
-      color: var(--fw-text-mid);
-      max-width: 580px;
-      margin: 0 auto 28px;
-      line-height: 1.6;
-    }
-
-    .fw-btn-cta {
-      background: var(--fw-accent);
-      color: #ffffff;
-      border: 1px solid var(--fw-accent);
-      padding: 14px 32px;
-      font-size: 0.92rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      text-decoration: none;
-      border-radius: 0px;
-      display: inline-block;
-      transition: background-color 0.2s ease, border-color 0.2s ease;
-    }
-
-    .fw-btn-cta:hover {
-      background: var(--fw-accent-hover);
-      border-color: var(--fw-accent-hover);
-      color: #ffffff;
+    .fw-btn-primary:hover {
+      background: var(--fw-accent-hover) !important;
+      border-color: var(--fw-accent-hover) !important;
     }
   </style>
 
@@ -313,154 +306,156 @@
         <div class="fw-eyebrow">Praxis &amp; Kooperationen</div>
         <h1 class="fw-ref-title">Partner &amp; <span>Referenzen</span></h1>
         <p class="fw-ref-lead">
-          Echte Partnerschaften, erprobte Festival- und Club-Infrastruktur und handfeste Handwerks-Kooperationen in der Bodenseeregion. Qualität und Zuverlässigkeit statt oberflächlicher Massenauflistung.
+          Echte Partnerschaften, erprobte Festival- und Club-Infrastruktur und fundiertes Handwerk in der Bodenseeregion. Qualität und Zuverlässigkeit statt oberflächlicher Massenauflistung.
         </p>
       </div>
     </section>
 
-    <!-- Curated Spotlight References -->
-    <div class="fw-showcase-wrap">
+    <!-- Curated 2x2 Showcase Grid -->
+    <div class="fw-showcase-container">
+      <div class="fw-ref-grid-2x2">
 
-      <!-- Case 1: Club Vaudeville Lindau -->
-      <div class="fw-ref-feature-card">
-        <div class="fw-ref-img-box">
-          <img src="/web/image/2189/reference-event.jpg" alt="Club Vaudeville Lindau e.V. Live Konzert Betreuung" loading="lazy"/>
-          <div class="fw-ref-img-overlay">
-            <span style="font-size: 0.75rem; color: #ffffff; font-weight: 600; text-transform: uppercase;">Live-Konzertbetrieb</span>
-            <span style="font-size: 0.75rem; color: var(--fw-accent); font-weight: 700;">Lindau (Bodensee)</span>
+        <!-- Case 1: Club Vaudeville Lindau -->
+        <div class="fw-ref-card">
+          <div class="fw-ref-img-header">
+            <img src="/web/image/2189/club_vaudeville_lindau.webp" alt="Club Vaudeville Lindau Live Konzert FOH Betreuung" loading="lazy"/>
+            <div class="fw-ref-badge-top">🎪 LIVE-BETRIEB</div>
+            <div class="fw-ref-loc">Lindau (Bodensee)</div>
+          </div>
+          <div class="fw-ref-body">
+            <div>
+              <div class="fw-ref-tag-sub">Live-Club &amp; Kulturzentrum</div>
+              <h3 class="fw-ref-h3">Club Vaudeville Lindau e.V.</h3>
+              <p class="fw-ref-desc">
+                Technische Unterstützung, FOH-Mischung und Betreuung der Audio- &amp; Lichtinfrastruktur bei Live-Konzerten und Clubshows im soziokulturellen Zentrum Club Vaudeville. Zuverlässiger Bühnen- und Monitorsound für Tour-Bands und lokale Acts.
+              </p>
+            </div>
+            <div class="fw-ref-specs-wrap">
+              <div class="fw-ref-spec-pill">🎛️ FOH-Mischung (Midas M32)</div>
+              <div class="fw-ref-spec-pill">🔊 Monitor-Sound</div>
+              <div class="fw-ref-spec-pill">💡 DMX-Lichtregie</div>
+              <div class="fw-ref-spec-pill">🎸 Live-Stage Crew</div>
+            </div>
           </div>
         </div>
-        <div class="fw-ref-content">
-          <div>
-            <span class="fw-ref-tag">Konzert- &amp; Kulturzentrum</span>
-            <h3 class="fw-ref-h3">Club Vaudeville Lindau e.V.</h3>
-            <p class="fw-ref-desc">
-              Technische Unterstützung, FOH-Mischung und Betreuung der Audio- &amp; Lichtinfrastruktur bei Live-Konzerten und Clubshows im soziokulturellen Zentrum Club Vaudeville. Zuverlässiger Bühnen- und Monitorsound für Tour-Bands und lokale Acts.
-            </p>
+
+        <!-- Case 2: L.H. Veranstaltungstechnik -->
+        <div class="fw-ref-card">
+          <div class="fw-ref-img-header">
+            <img src="/web/image/2182/lh_veranstaltungstechnik_flightcases.jpg" alt="L.H. Veranstaltungstechnik Kooperation Traversenbau" loading="lazy"/>
+            <div class="fw-ref-badge-top">🏗️ KOOPERATION</div>
+            <div class="fw-ref-loc">Bodensee &amp; Allgäu</div>
           </div>
-          <div class="fw-ref-specs">
-            <span class="fw-ref-spec-tag">🎛️ FOH &amp; Tonregie</span>
-            <span class="fw-ref-spec-tag">🔊 Monitor-Mix</span>
-            <span class="fw-ref-spec-tag">💡 DMX-Lichtsupport</span>
-            <span class="fw-ref-spec-tag">🎸 Live-Stage Crew</span>
+          <div class="fw-ref-body">
+            <div>
+              <div class="fw-ref-tag-sub">Fester Kooperationspartner</div>
+              <h3 class="fw-ref-h3">L.H. Veranstaltungstechnik</h3>
+              <p class="fw-ref-desc">
+                Operative Zusammenarbeit bei Großevents, Festivalbühnen und Open-Airs. Gegenseitige Ergänzung des Materialpools, Aufbau von Ground-Support-Traversen und Bereitstellung erfahrener Stage-Crews vor Ort.
+              </p>
+            </div>
+            <div class="fw-ref-specs-wrap">
+              <div class="fw-ref-spec-pill">🏗️ Ground-Support Traversen</div>
+              <div class="fw-ref-spec-pill">📦 Geteilter Rental-Pool</div>
+              <div class="fw-ref-spec-pill">🤝 B2B Sub-Support</div>
+              <div class="fw-ref-spec-pill">⚡ Großbeschallung</div>
+            </div>
           </div>
         </div>
+
+        <!-- Case 3: Holzbau Forster -->
+        <div class="fw-ref-card">
+          <div class="fw-ref-img-header">
+            <img src="/web/image/2664/team_franz_portrait.jpg" alt="Holzbau Forster Zimmerei und Sonderbau Kooperation" loading="lazy"/>
+            <div class="fw-ref-badge-top">🪵 HANDWERK</div>
+            <div class="fw-ref-loc">Weißensberg / Lindau</div>
+          </div>
+          <div class="fw-ref-body">
+            <div>
+              <div class="fw-ref-tag-sub">Zimmerei &amp; Handwerk</div>
+              <h3 class="fw-ref-h3">Holzbau Forster</h3>
+              <p class="fw-ref-desc">
+                Zusammenarbeit im konstruktiven Holzbau, bei statisch anspruchsvollen Bühnenaufbauten sowie Sonderanfertigungen für akustische Raumelemente und maßgeschneiderte Gehäusekonstruktionen.
+              </p>
+            </div>
+            <div class="fw-ref-specs-wrap">
+              <div class="fw-ref-spec-pill">🪵 Zimmermannskunst (HWK)</div>
+              <div class="fw-ref-spec-pill">🏗️ Bühnenbau DGUV V17</div>
+              <div class="fw-ref-spec-pill">📐 Akustik-Sonderbauten</div>
+              <div class="fw-ref-spec-pill">🛠️ Individuelle Regiemöbel</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Case 4: Inselhalle Lindau -->
+        <div class="fw-ref-card">
+          <div class="fw-ref-img-header">
+            <img src="/web/image/2188/inselhalle_lindau_buehne.jpg" alt="Inselhalle Lindau Tagungstechnik und Medienregie" loading="lazy"/>
+            <div class="fw-ref-badge-top">🎙️ KONGRESS &amp; TAGUNG</div>
+            <div class="fw-ref-loc">Inselhalle Lindau</div>
+          </div>
+          <div class="fw-ref-body">
+            <div>
+              <div class="fw-ref-tag-sub">Tagungs- &amp; Kongress-Support</div>
+              <h3 class="fw-ref-h3">Inselhalle Lindau (LTK)</h3>
+              <p class="fw-ref-desc">
+                Technische Unterstützung bei Tagungen, Konferenzen und Kulturveranstaltungen. Betreuung digitaler Mischpulte, Mediensteuerungen und präzise Audio-Einmessung für glasklare Sprachverständlichkeit.
+              </p>
+            </div>
+            <div class="fw-ref-specs-wrap">
+              <div class="fw-ref-spec-pill">🎙️ Sprachbeschallung</div>
+              <div class="fw-ref-spec-pill">📊 System-EQ &amp; DSP</div>
+              <div class="fw-ref-spec-pill">💻 Medien-Infrastruktur</div>
+              <div class="fw-ref-spec-pill">🎛️ Digitalregie</div>
+            </div>
+          </div>
+        </div>
+
       </div>
-
-      <!-- Case 2: L.H. Veranstaltungstechnik -->
-      <div class="fw-ref-feature-card">
-        <div class="fw-ref-img-box">
-          <img src="/web/image/2182/buehne-traverse.jpg" alt="L.H. Veranstaltungstechnik Kooperation Traversenbau" loading="lazy"/>
-          <div class="fw-ref-img-overlay">
-            <span style="font-size: 0.75rem; color: #ffffff; font-weight: 600; text-transform: uppercase;">Kooperationspartner</span>
-            <span style="font-size: 0.75rem; color: var(--fw-accent); font-weight: 700;">Bodensee &amp; Allgäu</span>
-          </div>
-        </div>
-        <div class="fw-ref-content">
-          <div>
-            <span class="fw-ref-tag">Fester Kooperationspartner</span>
-            <h3 class="fw-ref-h3">L.H. Veranstaltungstechnik</h3>
-            <p class="fw-ref-desc">
-              Enge operative Zusammenarbeit bei größeren Events, Open-Airs und Festivalbühnen. Gegenseitige Ergänzung von Material- und Mietpools, Aufbau von Ground-Support-Traversen und Bereitstellung erfahrener Stage-Crews vor Ort.
-            </p>
-          </div>
-          <div class="fw-ref-specs">
-            <span class="fw-ref-spec-tag">🏗️ Traversen &amp; Ground Support</span>
-            <span class="fw-ref-spec-tag">📦 Geteilter Rental-Pool</span>
-            <span class="fw-ref-spec-tag">🤝 B2B Sub-Support</span>
-            <span class="fw-ref-spec-tag">⚡ Großbeschallung</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Case 3: Holzbau Forster -->
-      <div class="fw-ref-feature-card">
-        <div class="fw-ref-img-box">
-          <img src="/web/image/2659/holzbau-forster-handwerk.jpg" alt="Holzbau Forster Handwerks-Kooperation" loading="lazy"/>
-          <div class="fw-ref-img-overlay">
-            <span style="font-size: 0.75rem; color: #ffffff; font-weight: 600; text-transform: uppercase;">Handwerks-Kooperation</span>
-            <span style="font-size: 0.75rem; color: var(--fw-accent); font-weight: 700;">Bodensee &amp; Allgäu</span>
-          </div>
-        </div>
-        <div class="fw-ref-content">
-          <div>
-            <span class="fw-ref-tag">Zimmerei &amp; Holzbau</span>
-            <h3 class="fw-ref-h3">Holzbau Forster</h3>
-            <p class="fw-ref-desc">
-              Handwerkliche Kooperation bei anspruchsvollen Holzkonstruktionen, Ständerwerk-Ertüchtigungen, maßgefertigten Lautsprechergehäusen und Akustik-Sonderbauten. Solide Zimmermannskunst von Zimmermannsgeselle Franz Bienert vereint mit professioneller Medientechnik.
-            </p>
-          </div>
-          <div class="fw-ref-specs">
-            <span class="fw-ref-spec-tag">🪵 Konstruktiver Holzbau</span>
-            <span class="fw-ref-spec-tag">📐 Akustik-Sonderbau</span>
-            <span class="fw-ref-spec-tag">🏗️ Ständerwerk &amp; Bühnenelemente</span>
-            <span class="fw-ref-spec-tag">🔨 Zimmermann-Handwerk</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Case 4: Inselhalle Lindau -->
-      <div class="fw-ref-feature-card">
-        <div class="fw-ref-img-box">
-          <img src="/web/image/2188/about-console.jpg" alt="Inselhalle Lindau Tagungstechnik & Event Support" loading="lazy"/>
-          <div class="fw-ref-img-overlay">
-            <span style="font-size: 0.75rem; color: #ffffff; font-weight: 600; text-transform: uppercase;">Tagungs- &amp; Kongress-Support</span>
-            <span style="font-size: 0.75rem; color: var(--fw-accent); font-weight: 700;">Inselhalle Lindau</span>
-          </div>
-        </div>
-        <div class="fw-ref-content">
-          <div>
-            <span class="fw-ref-tag">Kongress &amp; Tagungen</span>
-            <h3 class="fw-ref-h3">Inselhalle Lindau (LTK)</h3>
-            <p class="fw-ref-desc">
-              Technische Unterstützung bei Tagungen, Konferenzen und Kulturveranstaltungen in der Inselhalle Lindau. Einmessung, Mediensteuerung und Betreuung digitaler Mischpulte für reibungslose Sprachverständlichkeit und Konferenztechnik.
-            </p>
-          </div>
-          <div class="fw-ref-specs">
-            <span class="fw-ref-spec-tag">🎙️ Sprachbeschallung</span>
-            <span class="fw-ref-spec-tag">📊 REW / System-EQ</span>
-            <span class="fw-ref-spec-tag">💻 Medien-Infrastruktur</span>
-          </div>
-        </div>
-      </div>
-
     </div>
 
     <!-- Partner & Vertrauensnetzwerk -->
-    <section class="fw-network-section">
-      <h2 class="fw-network-h2">Netzwerk &amp; Kooperationen</h2>
-      <p class="fw-network-sub">
-        Wir schätzen den partnerschaftlichen Austausch mit Veranstaltern, Clubs und befreundeten Gewerken.
-      </p>
+    <section class="fw-network-sec">
+      <div class="fw-network-inner">
+        <div class="fw-eyebrow">Netzwerk</div>
+        <h2 style="font-size: 1.8rem; font-weight: 800; text-transform: uppercase; color: var(--fw-text-bright); margin-bottom: 8px;">
+          Vertrauenspartner in der Region
+        </h2>
+        <p style="font-size: 0.95rem; color: var(--fw-text-mid); max-width: 600px; margin: 0 auto 36px;">
+          Wir schätzen den partnerschaftlichen Austausch mit Veranstaltern, Venues und befreundeten Handwerksbetrieben.
+        </p>
 
-      <div class="fw-network-grid">
-        <div class="fw-partner-box">
-          <div class="fw-partner-name">Club Vaudeville e.V.</div>
-          <div class="fw-partner-role">Live-Club &amp; Kulturzentrum (Lindau)</div>
-        </div>
-        <div class="fw-partner-box">
-          <div class="fw-partner-name">L.H. Veranstaltungstechnik</div>
-          <div class="fw-partner-role">Kooperationspartner &amp; Rental-Pool</div>
-        </div>
-        <div class="fw-partner-box">
-          <div class="fw-partner-name">Holzbau Forster</div>
-          <div class="fw-partner-role">Zimmerei, Holzbau &amp; Handwerk</div>
-        </div>
-        <div class="fw-partner-box">
-          <div class="fw-partner-name">Inselhalle Lindau (LTK)</div>
-          <div class="fw-partner-role">Tagungs- &amp; Event-Location</div>
+        <div class="fw-network-grid">
+          <div class="fw-partner-card-min">
+            <strong>Club Vaudeville e.V.</strong>
+            <span>Live-Club &amp; Kulturzentrum</span>
+          </div>
+          <div class="fw-partner-card-min">
+            <strong>L.H. Veranstaltungstechnik</strong>
+            <span>Kooperationspartner &amp; Rental-Pool</span>
+          </div>
+          <div class="fw-partner-card-min">
+            <strong>Holzbau Forster</strong>
+            <span>Zimmerei &amp; Sonderbauten</span>
+          </div>
+          <div class="fw-partner-card-min">
+            <strong>Inselhalle Lindau (LTK)</strong>
+            <span>Tagungs- &amp; Event-Location</span>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- Call to Action -->
     <div class="container">
-      <div class="fw-ref-cta">
-        <h2>Planst du ein Event oder suchst du einen Partner?</h2>
-        <p>
-          Ob Club-Show, Festival-Stage, Ground-Support, Material-Miete oder Akustik-Sonderbau — wir unterstützen dich mit verlässlicher Technik und handfester Praxiserfahrung.
+      <div class="fw-ref-cta-box">
+        <h2 style="font-size: 1.8rem; font-weight: 800; text-transform: uppercase; color: var(--fw-text-bright); margin-bottom: 12px;">
+          Planst du ein Event oder suchst du einen Partner?
+        </h2>
+        <p style="font-size: 0.95rem; color: var(--fw-text-mid); max-width: 650px; margin: 0 auto 28px;">
+          Ob Club-Show, Festival-Stage, Ground-Support oder Material-Miete — wir unterstützen dich mit verlässlicher Technik und handfester Praxiserfahrung.
         </p>
-        <a href="/contactus" class="fw-btn-cta">Jetzt Projekt anfragen &#8594;</a>
+        <a href="/contactus" class="fw-btn-primary">Jetzt Projekt anfragen &#8594;</a>
       </div>
     </div>
 
