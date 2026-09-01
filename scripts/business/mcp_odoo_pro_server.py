@@ -138,6 +138,19 @@ TOOLS = [
         "inputSchema": {"type": "object", "properties": {}}
     },
     {
+        "name": "odoo_post_task_note",
+        "description": "Post a clean internal note or message to an Odoo task chatter. Formats text/HTML cleanly so no raw tags appear.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "task_id": {"type": "integer", "description": "The Odoo Task ID"},
+                "body": {"type": "string", "description": "The note content (plain text, markdown, or clean HTML)"},
+                "is_note": {"type": "boolean", "description": "If true (default), posts as internal note. If false, posts as public comment."}
+            },
+            "required": ["task_id", "body"]
+        }
+    },
+    {
         "name": "odoo_execute_python",
         "description": "Execute arbitrary Python code in Odoo context (env available). Returns printed output.",
         "inputSchema": {
@@ -261,12 +274,57 @@ def handle_odoo_execute_python(args):
     except Exception as e:
         return f"Error: {e}\n{traceback.format_exc()}"
 
+def handle_odoo_post_task_note(args):
+    """Post clean chatter note to a task (formats HTML/Markdown so no raw tags show)."""
+    import re, html
+    task_id = int(args["task_id"])
+    body = args["body"].strip()
+    is_note = args.get("is_note", True)
+
+    # If it's already structured HTML, ensure it is unescaped
+    if body.startswith("<p>") or body.startswith("<div>") or body.startswith("<ul>"):
+        clean_body = body
+    else:
+        # Markdown to clean HTML conversion
+        text = html.escape(body)
+        text = re.sub(r'\*\*(.+?)\*\*', r'<b>\1</b>', text)
+        text = re.sub(r'`(.+?)`', r'<code>\1</code>', text)
+        lines = text.split('\n')
+        in_list = False
+        out_lines = []
+        for line in lines:
+            trimmed = line.strip()
+            if trimmed.startswith('- ') or trimmed.startswith('• '):
+                if not in_list:
+                    out_lines.append('<ul>')
+                    in_list = True
+                out_lines.append(f'<li>{trimmed[2:]}</li>')
+            else:
+                if in_list:
+                    out_lines.append('</ul>')
+                    in_list = False
+                if trimmed:
+                    out_lines.append(f'<p>{trimmed}</p>')
+        if in_list:
+            out_lines.append('</ul>')
+        clean_body = ''.join(out_lines) if out_lines else f'<p>{text}</p>'
+
+    msg_id = odoo_execute("mail.message", "create", [{
+        "model": "project.task",
+        "res_id": task_id,
+        "body": clean_body,
+        "message_type": "comment",
+        "subtype_id": 2 if is_note else 1,
+    }])
+    return f"Chatter note #{msg_id} successfully posted to Task #{task_id}"
+
 HANDLERS = {
     "odoo_get_open_tasks":    handle_odoo_get_open_tasks,
     "odoo_get_project_tasks": handle_odoo_get_project_tasks,
     "odoo_update_task":       handle_odoo_update_task,
     "odoo_create_task":       handle_odoo_create_task,
     "odoo_get_projects":      handle_odoo_get_projects,
+    "odoo_post_task_note":    handle_odoo_post_task_note,
     "odoo_execute_python":    handle_odoo_execute_python,
 }
 

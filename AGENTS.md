@@ -49,6 +49,7 @@ This document defines the strict, binding operational rules, roles, and collabor
 - **No Stale Documents:** Do not create or update separate roadmap or planning markdown files. Keep all details inside Odoo tasks or `NOW.md`.
 - **No Hardcoded Passwords:** Never write passwords, API keys, or tokens in plaintext to files. Reference Vaultwarden (e.g. `[Vault: UCG API Key]`).
 - **Never Claim "Done" Without Live Proof:** Always verify live before reporting completion (curl endpoint, read file, query database).
+- **Clean Chatter Formatting:** Chatter-Notizen in Odoo müssen immer sauber gerendert sein (fettgedruckt, Listenpunkte, Code-Blöcke). Niemals rohe oder doppelt-escapte HTML-Tags (`&lt;p&gt;`, `&lt;b&gt;`) im Klartext posten. Verwende das MCP-Tool `odoo_post_task_note` oder sauberes unescapetes HTML direkt in `mail.message`.
 - **Repo Sync:** Always commit and push changes to `main` at the end of a session so all teammates have the latest state.
 
 ---
