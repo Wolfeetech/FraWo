@@ -239,7 +239,7 @@
 
     .fw-img-box {
       width: 100%;
-      height: 230px;
+      height: 250px;
       background: #000000;
       overflow: hidden;
       position: relative;
@@ -251,6 +251,22 @@
       object-fit: cover;
       display: block;
       transition: transform 0.4s ease;
+    }
+
+    .fw-focus-foh {
+      object-position: center 35% !important;
+    }
+
+    .fw-focus-dart {
+      object-position: center 18% !important;
+    }
+
+    .fw-focus-franz {
+      object-position: center 18% !important;
+    }
+
+    .fw-focus-wolf {
+      object-position: center 25% !important;
     }
 
     .fw-service-card:hover .fw-img-box img {
@@ -614,7 +630,7 @@
         <!-- Säule 1: Event-Technik &amp; Live-Regie -->
         <div class="fw-service-card">
           <div class="fw-img-box">
-            <img src="/web/image/2189/reference-event.jpg" alt="FOH Tonregie und Live-Konzertbetreuung" loading="lazy"/>
+            <img src="/web/image/2189/club_vaudeville_lindau.webp" class="fw-focus-foh" alt="FOH Tonregie und Live-Konzertbetreuung" loading="lazy"/>
             <div class="fw-img-tag">🎪 LIVE-BETRIEB</div>
           </div>
           <div class="fw-card-body">
@@ -639,7 +655,7 @@
         <!-- Säule 2: Equipment-Verleih &amp; Mietpark -->
         <div class="fw-service-card">
           <div class="fw-img-box">
-            <img src="/web/image/2193/fussballdart.jpg" alt="Equipment-Verleih und 5m Fußballdart" loading="lazy"/>
+            <img src="/web/image/2193/fussballdart.jpg" class="fw-focus-dart" alt="Equipment-Verleih und 5m Fußballdart" loading="lazy"/>
             <div class="fw-img-tag">📦 MIETPARK</div>
           </div>
           <div class="fw-card-body">
@@ -664,7 +680,7 @@
         <!-- Säule 3: Holzbau &amp; Akustik-Sonderbauten -->
         <div class="fw-service-card">
           <div class="fw-img-box">
-            <img src="/web/image/2659/holzbau-forster-handwerk.jpg" alt="Holzbau und Akustik-Sonderbau Franz Bienert" loading="lazy"/>
+            <img src="/web/image/2659/holzbau-forster-handwerk.jpg" class="fw-focus-franz" alt="Holzbau und Akustik-Sonderbau Franz Bienert" loading="lazy"/>
             <div class="fw-img-tag">🪵 HANDWERK</div>
           </div>
           <div class="fw-card-body">
@@ -730,7 +746,7 @@
       <div class="fw-team-grid">
         <div class="fw-team-card">
           <div class="fw-team-img">
-            <img src="/web/image/2185/service-stage.jpg" alt="Wolfgang Prinz IHK Fachkraft Veranstaltungstechnik" loading="lazy"/>
+            <img src="/web/image/2185/service-stage.jpg" class="fw-focus-wolf" alt="Wolfgang Prinz IHK Fachkraft Veranstaltungstechnik" loading="lazy"/>
           </div>
           <div class="fw-team-body">
             <div class="fw-team-tag">IHK-Fachkraft für Veranstaltungstechnik</div>
@@ -743,7 +759,7 @@
 
         <div class="fw-team-card">
           <div class="fw-team-img">
-            <img src="/web/image/2659/holzbau-forster-handwerk.jpg" alt="Franz Bienert Zimmermannsgeselle Handwerk" loading="lazy"/>
+            <img src="/web/image/2659/holzbau-forster-handwerk.jpg" class="fw-focus-franz" alt="Franz Bienert Zimmermannsgeselle Handwerk" loading="lazy"/>
           </div>
           <div class="fw-team-body">
             <div class="fw-team-tag">Zimmermannsgeselle (HWK)</div>
