@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>FraWo GbR — Equipment Mietvertrag & Übergabeprotokoll</title>
+  <style>
+    @page { size: A4 portrait; margin: 12mm 15mm; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 10pt; line-height: 1.35; color: #0f172a; background: #fff; }
+    .header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #004030; padding-bottom: 8px; margin-bottom: 12px; }
+    .brand { font-size: 16pt; font-weight: 800; color: #004030; letter-spacing: -0.5px; }
+    .brand span { color: #a050f0; }
+    .subline { font-size: 8pt; color: #64748b; margin-top: 2px; }
+    .legal-header { text-align: right; font-size: 8pt; color: #475569; }
+    h1 { font-size: 12pt; font-weight: 700; color: #004030; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; background: #f1f5f9; padding: 4px 8px; border-left: 4px solid #a050f0; }
+    
+    .section-title { font-size: 9pt; font-weight: 700; color: #004030; text-transform: uppercase; margin-top: 8px; margin-bottom: 4px; border-bottom: 1px solid #cbd5e1; padding-bottom: 2px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 8px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+    
+    .field { border: 1px solid #cbd5e1; padding: 4px 6px; min-height: 24px; font-size: 8.5pt; }
+    .field-label { font-size: 7.5pt; font-weight: 600; color: #64748b; text-transform: uppercase; margin-bottom: 2px; }
+    
+    table { width: 100%; border-collapse: collapse; margin-bottom: 8px; font-size: 8.5pt; }
+    th, td { border: 1px solid #cbd5e1; padding: 4px 6px; text-align: left; }
+    th { background: #f8fafc; font-weight: 600; color: #004030; }
+    
+    .checkbox-item { display: flex; align-items: center; gap: 6px; font-size: 8.5pt; margin-bottom: 3px; }
+    .box { width: 12px; height: 12px; border: 1.5px solid #004030; display: inline-block; }
+    
+    .agb-notice { font-size: 7pt; color: #64748b; line-height: 1.2; background: #f8fafc; border: 1px solid #e2e8f0; padding: 6px; margin-top: 6px; margin-bottom: 8px; }
+    
+    .signature-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 10px; }
+    .sig-box { border-top: 1px solid #0f172a; padding-top: 4px; font-size: 8pt; text-align: center; }
+    
+    @media print {
+      body { -webkit-print-color-adjust: exact; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div>
+      <div class="brand">FraWo<span>.</span> GbR</div>
+      <div class="subline">Veranstaltungstechnik · Verleih · Handwerk · Sound & Light</div>
+    </div>
+    <div class="legal-header">
+      <b>FraWo GbR</b> · Rothkreuz 22a · 88138 Weißensberg<br>
+      St.-Nr.: 134/159/50008 · E-Mail: info@frawo.tech · Web: frawo.tech/verleih
+    </div>
+  </div>
+
+  <h1>Mietvertrag & Übergabeprotokoll Equipment (1-Seiter)</h1>
+
+  <div class="section-title">1. Mieter / Auftraggeber</div>
+  <div class="grid-2">
+    <div class="field"><div class="field-label">Name / Firma:</div></div>
+    <div class="field"><div class="field-label">Ansprechpartner / Ausweis-Nr.:</div></div>
+  </div>
+  <div class="grid-2">
+    <div class="field"><div class="field-label">Straße & Hausnummer, PLZ Ort:</div></div>
+    <div class="field"><div class="field-label">Telefon / Mobil & E-Mail:</div></div>
+  </div>
+
+  <div class="section-title">2. Mietgegenstand, Mietzeitraum & Konditionen</div>
+  <div class="grid-3">
+    <div>
+      <div class="checkbox-item"><span class="box"></span> <b>Kiste A:</b> Licht-Set (Wolfmix, DMX)</div>
+      <div class="checkbox-item"><span class="box"></span> <b>Kiste B:</b> Ton-Set (XLR, Speakon, DI)</div>
+      <div class="checkbox-item"><span class="box"></span> <b>Kiste C:</b> Event / Dart (Gebläse, Bälle)</div>
+    </div>
+    <div>
+      <div class="checkbox-item"><span class="box"></span> PA-Set Klein (Privat)</div>
+      <div class="checkbox-item"><span class="box"></span> PA-Set Full bis 500 PAX</div>
+      <div class="checkbox-item"><span class="box"></span> Sonstiges Equipment: ____________</div>
+    </div>
+    <div>
+      <div class="field"><div class="field-label">Mietbeginn (Datum / Uhrzeit):</div></div>
+      <div class="field" style="margin-top:4px;"><div class="field-label">Rückgabe (Datum / Uhrzeit):</div></div>
+    </div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 25%;">Mietgebühr Gesamt</th>
+        <th style="width: 25%;">Kaution (vereinbart)</th>
+        <th style="width: 25%;">Zahlungsart Miete</th>
+        <th style="width: 25%;">Zahlungsart Kaution</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="font-weight: bold; font-size: 10pt;">______ , ___ €</td>
+        <td style="font-weight: bold; font-size: 10pt;">______ , ___ €</td>
+        <td>[ ] Bar  [ ] Überweisung</td>
+        <td>[ ] Bar erhalten</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="section-title">3. Zustand bei Übergabe & Rücknahme (Protokoll)</div>
+  <div class="grid-2">
+    <div>
+      <div style="font-weight: 600; font-size: 8pt; margin-bottom: 2px;">ÜBERGABE AN MIETER:</div>
+      <div class="checkbox-item"><span class="box"></span> Vollständig gemäß Kistenpackliste / Zubehör</div>
+      <div class="checkbox-item"><span class="box"></span> Optisch & technisch einwandfrei / Funktionstest i.O.</div>
+      <div class="field" style="min-height: 28px; margin-top: 4px;"><div class="field-label">Vorschäden / Bemerkungen Übergabe:</div></div>
+    </div>
+    <div>
+      <div style="font-weight: 600; font-size: 8pt; margin-bottom: 2px;">RÜCKGABE AN FRAWO GBR:</div>
+      <div class="checkbox-item"><span class="box"></span> Vollständig zurückerhalten</div>
+      <div class="checkbox-item"><span class="box"></span> Unbeschädigt & sauber (keine Schäden/Fehlteile)</div>
+      <div class="field" style="min-height: 28px; margin-top: 4px;"><div class="field-label">Kaution vollständig zurückgezahlt am / von:</div></div>
+    </div>
+  </div>
+
+  <div class="agb-notice">
+    <b>Rechtliche Hinweise:</b> Es gelten die AGB der FraWo GbR. Gemäß § 19 UStG wird keine Umsatzsteuer berechnet. Der Mieter haftet für Schäden, unsachgemäße Bedienung und Verlust in voller Höhe des Wiederbeschaffungswerts. Die Rückgabe hat im sauberen, ordnungsgemäßen Zustand zu erfolgen.
+  </div>
+
+  <div class="signature-grid">
+    <div class="sig-box">
+      Ort, Datum / <b>Unterschrift Mieter</b> (Anerkennung Vertrag & Zustand)
+    </div>
+    <div class="sig-box">
+      Ort, Datum / <b>Unterschrift FraWo GbR</b> (Übergabe & Protokoll)
+    </div>
+  </div>
+
+</body>
+</html>

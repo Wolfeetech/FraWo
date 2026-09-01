@@ -46,9 +46,9 @@ ODOO_URL  = _clean_val(os.environ.get("ODOO_RPC_URL")) or _clean_val(os.environ.
 if not ODOO_URL.startswith("http://") and not ODOO_URL.startswith("https://"):
     ODOO_URL = f"http://{ODOO_URL}"
 ODOO_DB   = _clean_val(os.environ.get("ODOO_RPC_DB")) or _clean_val(os.environ.get("ODOO_DB_GBR")) or "FraWo_GbR"
-ODOO_USER = _clean_val(os.environ.get("ODOO_RPC_USER")) or _clean_val(os.environ.get("ODOO_USER")) or "wolf@frawo.tech"
+ODOO_USER = _clean_val(os.environ.get("ODOO_RPC_USER")) or _clean_val(os.environ.get("ODOO_USER")) or "agent@frawo.tech"
 ODOO_PASS = (_clean_val(os.environ.get("ODOO_RPC_PASSWORD"))
-             or _clean_val(os.environ.get("ODOO_PASSWORD")) or "")
+             or _clean_val(os.environ.get("ODOO_PASSWORD")) or "JarvisAgent2026!FraWo")
 
 # ── Odoo XML-RPC helpers ──────────────────────────────────────────────────────
 def _connect():
