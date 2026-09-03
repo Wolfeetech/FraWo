@@ -21,6 +21,7 @@
 - beets-Query-Syntax: `feld:a,b,c` ist **kein** Oder (liefert 0 Treffer) — richtig ist `"feld:a" ... , "feld:b" ...` (vollständiger Ausdruck je Alternative, durch `,` getrennt).
 - Recherchierte, aber bewusst nicht passende Titel bekommen `vibe=EXCLUDED` (mit Begründung in `research_source`) statt leer zu bleiben — sonst tauchen sie in jeder neuen Recherche-Sitzung wieder als "offen" auf. Zeigt sich beim Sync in Task 4, dass eine Alternative besser passt (z. B. "eher Night" vermerkt): beim Aufbau der jeweils späteren Show zuerst dort nachschauen.
 - **Bibliotheks-Altlast (gefunden + repariert 03.09.2026):** ~4.651 von 11.764 beets-Einträgen zeigten auf den nicht mehr existierenden Ordner `/mnt/music/yourparty_Libary/…` (alte Struktur vor einer Umsortierung nach `Master_Library`). Per Dateiname-Abgleich gegen den echten Bestand repariert: 926 eindeutig gefunden und korrigiert, 2.088 wirklich nicht mehr auffindbar (unangetastet gelassen), 1.637 mehrdeutig (mehrere Kandidaten, unangetastet gelassen — Details in `/tmp/beets_path_fix_ambiguous.csv` auf CT120). Bei zukünftigen Shows: taucht wieder ein toter `yourparty_Libary`-Pfad auf, zählt er zu den 2.088/1.637 Restfällen — nicht automatisch reparieren, echten Fund prüfen.
+- Die 2.088 wirklich fehlenden Titel bleiben trotzdem normal recherchier- und taggbar (die beets-Zeile existiert ja, nur die Datei nicht) — sie tauchen in der Recherche wie jeder andere Titel auf. Task 4 Schritt 6 prüft vor dem Symlink-Setzen automatisch, ob die Datei real existiert, und überspringt sie sonst (mit Log-Ausgabe) statt einen kaputten Symlink anzulegen.
 
 ---
 
@@ -202,7 +203,7 @@ ssh stock-pve "pct exec 120 -- beet list -f '\$path' 'genre:Deep House' bpm:1..1
 ```
 Danach je Zeile aus `/tmp/sunrise_paths.txt` (voller Original-Pfad) einen Symlink mit demselben Basisnamen im neuen Ordner anlegen:
 ```
-ssh stock-pve 'while IFS= read -r p; do b=$(basename "$p"); pct exec 120 -- ln -sf "$p" "/mnt/music/Curated_Playlists/Sunrise/$b"; done < /tmp/sunrise_paths.txt'
+ssh stock-pve 'skipped=0; while IFS= read -r p; do b=$(basename "$p"); if pct exec 120 -- test -f "$p"; then pct exec 120 -- ln -sf "$p" "/mnt/music/Curated_Playlists/Sunrise/$b"; else skipped=$((skipped+1)); echo "FEHLT: $p"; fi; done < /tmp/sunrise_paths.txt; echo "uebersprungen (Datei fehlt trotz Vibe-Tag): $skipped"'
 ```
 
 - [ ] **Schritt 7: Ordner in AzuraCast als `station_playlist_folders`-Zeile eintragen**
