@@ -102,9 +102,9 @@ Finale Query + Titelzahl als Kommentar in Odoo-Task #1261 posten (`mcp__odoo__po
 - [ ] **Schritt 1: Nächste unbearbeiteten Titel aus dem Pool holen**
 
 ```
-ssh stock-pve 'pct exec 120 -- beet list -f "\$id | \$artist | \$title" "genre:Deep House,Electronica,Ambient" bpm:1..122 vibe:: 2>&1 | head -10'
+ssh stock-pve "pct exec 120 -- beet list -f '\$id | \$artist | \$title' 'genre:Deep House' bpm:1..122 'vibe::^\$' , 'genre:Electronica' bpm:1..122 'vibe::^\$' , 'genre:Ambient' bpm:1..122 'vibe::^\$' 2>&1 | head -10"
 ```
-(`vibe::` ohne Wert = Feld ist leer/nicht gesetzt — beets-Query-Syntax für "Feld fehlt". Wenn die Query stattdessen alle Titel zeigt statt nur unbearbeitete: liegt daran, dass beets bei komplett fehlenden Flexible Attributes den Query-Operator anders behandelt — dann stattdessen `vibe:^$` probieren.)
+(Zwei Stolperfallen der beets-Query-Syntax, live gefunden: (1) `feld:wert` ist ein einfacher **Substring**-Vergleich, für echte Regex-Prüfung — z. B. "Feld ist leer" — braucht es den **doppelten** Doppelpunkt: `vibe::^$` für leer, `vibe::.` für nicht-leer. Mit einfachem Doppelpunkt (`vibe:^$`) sucht beets nach dem wörtlichen Substring `^$` und findet nichts. (2) Bei `,`-verknüpften Oder-Zweigen gilt ein zusätzlicher Filter nur für den Zweig, an den er direkt angehängt ist — er muss in **jedem** Zweig wiederholt werden, sonst liefern die anderen Zweige ungefiltert alles zurück.)
 
 - [ ] **Schritt 2: Pro Titel — echte Suche**
 
@@ -120,7 +120,7 @@ ssh stock-pve "pct exec 120 -- beet modify -y 'vibe=<schlagwort>' 'research_sour
 - [ ] **Schritt 4: Stichprobe verifizieren**
 
 ```
-ssh stock-pve 'pct exec 120 -- beet list -f "\$title | \$vibe | \$research_source" "genre:Deep House,Electronica,Ambient" bpm:1..122 vibe:.+ 2>&1 | tail -10'
+ssh stock-pve "pct exec 120 -- beet list -f '\$title | \$vibe | \$research_source' 'genre:Deep House' bpm:1..122 'vibe::.' , 'genre:Electronica' bpm:1..122 'vibe::.' , 'genre:Ambient' bpm:1..122 'vibe::.' 2>&1 | tail -10"
 ```
 Erwartung: die eben bearbeiteten Titel erscheinen mit Vibe + Quelle.
 
@@ -135,7 +135,7 @@ Ziel laut Spec: 150–300 recherchierte Titel für Sunrise. Schritte 1–4 wiede
 **Files:** keine Repo-Dateien — Änderungen an der AzuraCast-MariaDB (VM210).
 
 **Interfaces:**
-- Consumes: recherchierte Titel aus Task 3 (`vibe:.+` innerhalb der Sunrise-Pool-Query).
+- Consumes: recherchierte Titel aus Task 3 (`vibe::.` innerhalb der Sunrise-Pool-Query, siehe beets-Query-Stolperfallen oben).
 - Produces: neue Zeile in `station_playlists` (Name "Sunrise"), zugehörige `station_schedules`-Zeile (06:00–09:00, Mo–Fr), befüllt über einen neuen `station_playlist_folders`-Eintrag (`Curated_Playlists/Sunrise/`, Symlinks auf recherchierte Titel — derselbe Mechanismus wie bei den 4 Basis-Kanälen). Kanal 1 ("Channel 1 — Acoustik & Ambient") wird für Mo–Fr auf 09:00–11:00 verkleinert, behält am Wochenende sein volles 06:00–11:00-Fenster (neue eigene Schedule-Zeile).
 
 **Wichtig — vorher geprüft (nicht raten):** `station_playlists.type='default'`, `source='songs'`, `playback_order='shuffle'`, `weight=3`, `avoid_duplicates=1`, `include_in_requests=1` sind die produktiven Standardwerte (aus dem AzuraCast-Quellcode `backend/src/Entity/StationPlaylist.php` verifiziert, nicht geraten). `station_schedules.start_time`/`end_time` sind `HHMM` als Ganzzahl (z. B. `600` = 06:00, `900` = 09:00), `days` ist eine kommagetrennte Liste `1`(Montag)–`7`(Sonntag), `NULL` = jeden Tag (Quelle: `backend/src/Entity/StationSchedule.php`, live durch die bestehenden 4 Kanäle in `station_schedules` bestätigt).
@@ -198,7 +198,7 @@ VALUES (<SUNRISE_ID>, 600, 900, \\\"1,2,3,4,5\\\", 0);
 Ordner anlegen und Symlinks setzen (ein Aufruf pro Titel, `ln -s` verändert keine Originaldatei):
 ```
 ssh stock-pve "pct exec 120 -- mkdir -p /mnt/music/Curated_Playlists/Sunrise"
-ssh stock-pve "pct exec 120 -- beet list -f '\$path' 'genre:Deep House' bpm:1..122 , 'genre:Electronica' bpm:1..122 , 'genre:Ambient' bpm:1..122 vibe:.+ -vibe:EXCLUDED 2>&1" > /tmp/sunrise_paths.txt
+ssh stock-pve "pct exec 120 -- beet list -f '\$path' 'genre:Deep House' bpm:1..122 'vibe::.' -vibe:EXCLUDED , 'genre:Electronica' bpm:1..122 'vibe::.' -vibe:EXCLUDED , 'genre:Ambient' bpm:1..122 'vibe::.' -vibe:EXCLUDED 2>&1" > /tmp/sunrise_paths.txt
 ```
 Danach je Zeile aus `/tmp/sunrise_paths.txt` (voller Original-Pfad) einen Symlink mit demselben Basisnamen im neuen Ordner anlegen:
 ```
