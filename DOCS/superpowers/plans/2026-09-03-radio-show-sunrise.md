@@ -18,7 +18,7 @@
 - `beets`-Kommandos laufen auf CT120 (`ssh stock-pve` → `pct exec 120 -- ...`), niemals `copy`/`move` aktivieren (siehe `~/.config/beets/config.yaml` auf CT120 — Dateien bleiben, wo sie sind).
 - AzuraCast-DB-Zugriff: `ssh stock-pve` → `qm guest exec 210 -- docker exec azuracast sh -c 'mariadb -u$MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "..."'`.
 - `station_media.path` = beets-Pfad **ohne** das Präfix `/mnt/music/`, und nur Zeilen mit `storage_location_id = 7` zählen (Station 1 nutzt ausschließlich Speicherort 7 — bekannte Falle, siehe NOW.md).
-- beets-Query-Syntax: `feld:a,b,c` ist **kein** Oder (liefert 0 Treffer) — richtig ist `"feld:a" ... , "feld:b" ...` (vollständiger Ausdruck je Alternative, durch `,` getrennt).
+- beets-Query-Syntax: `feld:a,b,c` ist **kein** Oder (liefert 0 Treffer) — richtig ist `"feld:a" ... , "feld:b" ...` (vollständiger Ausdruck je Alternative, durch `,` getrennt). Negation ist `^feld:wert` (Präfix `^`), **nicht** `-feld:wert` — Letzteres kollidiert mit der Options-Erkennung von `beet list` (Fehler "no such option: -v").
 - Recherchierte, aber bewusst nicht passende Titel bekommen `vibe=EXCLUDED` (mit Begründung in `research_source`) statt leer zu bleiben — sonst tauchen sie in jeder neuen Recherche-Sitzung wieder als "offen" auf. Zeigt sich beim Sync in Task 4, dass eine Alternative besser passt (z. B. "eher Night" vermerkt): beim Aufbau der jeweils späteren Show zuerst dort nachschauen.
 - **Bibliotheks-Altlast (gefunden + repariert 03.09.2026):** ~4.651 von 11.764 beets-Einträgen zeigten auf den nicht mehr existierenden Ordner `/mnt/music/yourparty_Libary/…` (alte Struktur vor einer Umsortierung nach `Master_Library`). Per Dateiname-Abgleich gegen den echten Bestand repariert: 926 eindeutig gefunden und korrigiert, 2.088 wirklich nicht mehr auffindbar (unangetastet gelassen), 1.637 mehrdeutig (mehrere Kandidaten, unangetastet gelassen — Details in `/tmp/beets_path_fix_ambiguous.csv` auf CT120). Bei zukünftigen Shows: taucht wieder ein toter `yourparty_Libary`-Pfad auf, zählt er zu den 2.088/1.637 Restfällen — nicht automatisch reparieren, echten Fund prüfen.
 - Die 2.088 wirklich fehlenden Titel bleiben trotzdem normal recherchier- und taggbar (die beets-Zeile existiert ja, nur die Datei nicht) — sie tauchen in der Recherche wie jeder andere Titel auf. Task 4 Schritt 6 prüft vor dem Symlink-Setzen automatisch, ob die Datei real existiert, und überspringt sie sonst (mit Log-Ausgabe) statt einen kaputten Symlink anzulegen.
@@ -199,7 +199,7 @@ VALUES (<SUNRISE_ID>, 600, 900, \\\"1,2,3,4,5\\\", 0);
 Ordner anlegen und Symlinks setzen (ein Aufruf pro Titel, `ln -s` verändert keine Originaldatei):
 ```
 ssh stock-pve "pct exec 120 -- mkdir -p /mnt/music/Curated_Playlists/Sunrise"
-ssh stock-pve "pct exec 120 -- beet list -f '\$path' 'genre:Deep House' bpm:1..122 'vibe::.' -vibe:EXCLUDED , 'genre:Electronica' bpm:1..122 'vibe::.' -vibe:EXCLUDED , 'genre:Ambient' bpm:1..122 'vibe::.' -vibe:EXCLUDED 2>&1" > /tmp/sunrise_paths.txt
+ssh stock-pve "pct exec 120 -- beet list -f '\$path' 'genre:Deep House' bpm:1..122 'vibe::.' '^vibe:EXCLUDED' , 'genre:Electronica' bpm:1..122 'vibe::.' '^vibe:EXCLUDED' , 'genre:Ambient' bpm:1..122 'vibe::.' '^vibe:EXCLUDED' 2>&1" > /tmp/sunrise_paths.txt
 ```
 Danach je Zeile aus `/tmp/sunrise_paths.txt` (voller Original-Pfad) einen Symlink mit demselben Basisnamen im neuen Ordner anlegen:
 ```
