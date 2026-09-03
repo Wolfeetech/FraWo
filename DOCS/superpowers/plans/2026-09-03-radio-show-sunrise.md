@@ -18,6 +18,9 @@
 - `beets`-Kommandos laufen auf CT120 (`ssh stock-pve` → `pct exec 120 -- ...`), niemals `copy`/`move` aktivieren (siehe `~/.config/beets/config.yaml` auf CT120 — Dateien bleiben, wo sie sind).
 - AzuraCast-DB-Zugriff: `ssh stock-pve` → `qm guest exec 210 -- docker exec azuracast sh -c 'mariadb -u$MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "..."'`.
 - `station_media.path` = beets-Pfad **ohne** das Präfix `/mnt/music/`, und nur Zeilen mit `storage_location_id = 7` zählen (Station 1 nutzt ausschließlich Speicherort 7 — bekannte Falle, siehe NOW.md).
+- beets-Query-Syntax: `feld:a,b,c` ist **kein** Oder (liefert 0 Treffer) — richtig ist `"feld:a" ... , "feld:b" ...` (vollständiger Ausdruck je Alternative, durch `,` getrennt).
+- Recherchierte, aber bewusst nicht passende Titel bekommen `vibe=EXCLUDED` (mit Begründung in `research_source`) statt leer zu bleiben — sonst tauchen sie in jeder neuen Recherche-Sitzung wieder als "offen" auf. Zeigt sich beim Sync in Task 4, dass eine Alternative besser passt (z. B. "eher Night" vermerkt): beim Aufbau der jeweils späteren Show zuerst dort nachschauen.
+- **Bibliotheks-Altlast (gefunden + repariert 03.09.2026):** ~4.651 von 11.764 beets-Einträgen zeigten auf den nicht mehr existierenden Ordner `/mnt/music/yourparty_Libary/…` (alte Struktur vor einer Umsortierung nach `Master_Library`). Per Dateiname-Abgleich gegen den echten Bestand repariert: 926 eindeutig gefunden und korrigiert, 2.088 wirklich nicht mehr auffindbar (unangetastet gelassen), 1.637 mehrdeutig (mehrere Kandidaten, unangetastet gelassen — Details in `/tmp/beets_path_fix_ambiguous.csv` auf CT120). Bei zukünftigen Shows: taucht wieder ein toter `yourparty_Libary`-Pfad auf, zählt er zu den 2.088/1.637 Restfällen — nicht automatisch reparieren, echten Fund prüfen.
 
 ---
 
@@ -133,7 +136,7 @@ Ziel laut Spec: 150–300 recherchierte Titel für Sunrise. Schritte 1–4 wiede
 
 **Interfaces:**
 - Consumes: recherchierte Titel aus Task 3 (`vibe:.+` innerhalb der Sunrise-Pool-Query).
-- Produces: neue Zeile in `station_playlists` (Name "Sunrise"), zugehörige `station_schedules`-Zeile (06:00–09:00, Mo–Fr), befüllt über `station_playlist_media`. Kanal 1 ("Channel 1 — Acoustik & Ambient") wird für Mo–Fr auf 09:00–11:00 verkleinert, behält am Wochenende sein volles 06:00–11:00-Fenster (neue eigene Schedule-Zeile).
+- Produces: neue Zeile in `station_playlists` (Name "Sunrise"), zugehörige `station_schedules`-Zeile (06:00–09:00, Mo–Fr), befüllt über einen neuen `station_playlist_folders`-Eintrag (`Curated_Playlists/Sunrise/`, Symlinks auf recherchierte Titel — derselbe Mechanismus wie bei den 4 Basis-Kanälen). Kanal 1 ("Channel 1 — Acoustik & Ambient") wird für Mo–Fr auf 09:00–11:00 verkleinert, behält am Wochenende sein volles 06:00–11:00-Fenster (neue eigene Schedule-Zeile).
 
 **Wichtig — vorher geprüft (nicht raten):** `station_playlists.type='default'`, `source='songs'`, `playback_order='shuffle'`, `weight=3`, `avoid_duplicates=1`, `include_in_requests=1` sind die produktiven Standardwerte (aus dem AzuraCast-Quellcode `backend/src/Entity/StationPlaylist.php` verifiziert, nicht geraten). `station_schedules.start_time`/`end_time` sind `HHMM` als Ganzzahl (z. B. `600` = 06:00, `900` = 09:00), `days` ist eine kommagetrennte Liste `1`(Montag)–`7`(Sonntag), `NULL` = jeden Tag (Quelle: `backend/src/Entity/StationSchedule.php`, live durch die bestehenden 4 Kanäle in `station_schedules` bestätigt).
 
@@ -188,31 +191,38 @@ VALUES (<SUNRISE_ID>, 600, 900, \\\"1,2,3,4,5\\\", 0);
 \"' "
 ```
 
-- [ ] **Schritt 6: Recherchierte Titel zuordnen (Pfad-Join, Speicherort 7)**
+- [ ] **Schritt 6: Recherchierte Titel per Ordner zuordnen (bewährter Mechanismus, wie bei den 4 Basis-Kanälen)**
 
+**Korrektur (03.09.2026, während der Umsetzung gefunden):** AzuraCast füllt die 4 bestehenden Kanäle nicht per manueller `station_playlist_media`-Zuordnung, sondern über `station_playlist_folders` — jeder Kanal hat einen eigenen Ordner unter `/mnt/music/Curated_Playlists/<Name>/` voller **Symlinks** (nicht Kopien) auf die echten Dateien in `Master_Library`; AzuraCast scannt den Ordner und ordnet die enthaltenen Titel automatisch der verknüpften Playlist zu. Sunrise nutzt denselben, bereits produktiv bewährten Weg statt einer manuellen SQL-Zuordnung.
+
+Ordner anlegen und Symlinks setzen (ein Aufruf pro Titel, `ln -s` verändert keine Originaldatei):
 ```
-ssh stock-pve "pct exec 120 -- beet list -f '\$path' 'genre:Deep House,Electronica,Ambient' bpm:1..122 vibe:.+ 2>&1" > /tmp/sunrise_paths.txt
+ssh stock-pve "pct exec 120 -- mkdir -p /mnt/music/Curated_Playlists/Sunrise"
+ssh stock-pve "pct exec 120 -- beet list -f '\$path' 'genre:Deep House' bpm:1..122 , 'genre:Electronica' bpm:1..122 , 'genre:Ambient' bpm:1..122 vibe:.+ -vibe:EXCLUDED 2>&1" > /tmp/sunrise_paths.txt
 ```
-Danach je Pfad (Präfix `/mnt/music/` entfernen) den passenden `media_id` suchen und verknüpfen — als eine SQL-Anweisung mit `SUBSTRING`-Vergleich, damit kein Zwischen-Skript nötig ist:
+Danach je Zeile aus `/tmp/sunrise_paths.txt` (voller Original-Pfad) einen Symlink mit demselben Basisnamen im neuen Ordner anlegen:
+```
+ssh stock-pve 'while IFS= read -r p; do b=$(basename "$p"); pct exec 120 -- ln -sf "$p" "/mnt/music/Curated_Playlists/Sunrise/$b"; done < /tmp/sunrise_paths.txt'
+```
+
+- [ ] **Schritt 7: Ordner in AzuraCast als `station_playlist_folders`-Zeile eintragen**
+
 ```
 ssh stock-pve "qm guest exec 210 -- docker exec azuracast sh -c 'mariadb -u\$MYSQL_USER -p\$MYSQL_PASSWORD \$MYSQL_DATABASE -e \"
-INSERT INTO station_playlist_media (playlist_id, media_id, weight, is_queued, last_played)
-SELECT <SUNRISE_ID>, sm.id, 0, 1, 0
-FROM station_media sm
-WHERE sm.storage_location_id = 7
-  AND sm.path IN (<kommagetrennte, in Anfuehrungszeichen gesetzte Pfade aus /tmp/sunrise_paths.txt, jeweils OHNE /mnt/music/-Praefix>);
+INSERT INTO station_playlist_folders (station_id, playlist_id, path)
+VALUES (1, <SUNRISE_ID>, \\\"Curated_Playlists/Sunrise\\\");
 \"' "
 ```
-(Die Pfadliste wird aus `/tmp/sunrise_paths.txt` erzeugt — jede Zeile `/mnt/music/`-Präfix entfernen, in `"..."` setzen, mit Komma verbinden. Bei mehr als ein paar hundert Pfaden die `IN`-Liste in Blöcken von 200 aufteilen, um die MariaDB-Zeilenlänge nicht zu sprengen.)
 
-- [ ] **Schritt 7: Verifizieren**
+- [ ] **Schritt 8: Medien-Scan anstoßen und verifizieren**
 
 ```
+ssh stock-pve "qm guest exec 210 -- docker exec azuracast azuracast_cli azuracast:media:reprocess 1"
 ssh stock-pve "qm guest exec 210 -- docker exec azuracast sh -c 'mariadb -u\$MYSQL_USER -p\$MYSQL_PASSWORD \$MYSQL_DATABASE -e \"SELECT COUNT(*) FROM station_playlist_media WHERE playlist_id=<SUNRISE_ID>;\"' "
 ```
-Erwartung: Zahl entspricht der Anzahl recherchierter Titel aus Schritt 6 (± wenige, falls ein Pfad nicht exakt matcht — dann Einzelfälle mit `LIKE` statt exaktem Vergleich nachprüfen).
+Erwartung: Zahl entspricht (± wenige) der Anzahl Symlinks im Sunrise-Ordner. Fehlt sie: Ordnerrechte prüfen (muss für den AzuraCast-Container lesbar sein, wie bei den 4 bestehenden Kanälen).
 
-- [ ] **Schritt 8: AzuraCast neu laden**
+- [ ] **Schritt 9: AzuraCast neu laden**
 
 ```
 ssh stock-pve "qm guest exec 210 -- docker exec azuracast azuracast_cli azuracast:radio:restart 1"
