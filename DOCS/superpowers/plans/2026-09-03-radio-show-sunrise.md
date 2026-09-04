@@ -73,45 +73,46 @@ ssh stock-pve "pct exec 120 -- beet modify -y 'vibe=' 'research_source=' id:<VER
 - Consumes: `vibe`/`research_source`-Felder aus Task 1.
 - Produces: eine feste beets-Query `SUNRISE_POOL_QUERY`, die den Grundpool für Sunrise abgrenzt. Task 3 nutzt exakt diese Query, um zu sehen, was noch offen ist.
 
-Sunrise soll laut Spec ruhig starten: Ambient/Deep House, niedriges Tempo. Erste Fassung (03.09.2026) nutzte nur 3 Genre-Zweige (480 Titel) — auf Nachfrage ("warum nur 480?") am 04.09.2026 erweitert: bei ~45% echter Trefferquote unter den recherchierten Titeln reicht ein 480er-Pool kaum für die Zielgröße 150–300, und drei weitere, thematisch passende Genres waren ungenutzt liegen geblieben. Finale Query, 6 Genre-Zweige, BPM-Obergrenze weiterhin 122:
+**Zweite Korrektur (04.09.2026, größer als die erste):** Wolf wies zurecht darauf hin, dass der Pool eher an der Größenordnung der ganzen Bibliothek (~11.000) liegen sollte statt an einer schmalen Genre-Auswahl. Architektur-Wechsel: `vibe`/`research_source` sind **kein Sunrise-eigener Pool mehr, sondern eine bibliotheksweite Recherche-Warteschlange**, aus der alle 10 Shows schöpfen (ein Titel wird genau einmal recherchiert, das Vibe-Schlagwort entscheidet später, zu welcher Show er passt — inklusive der Fälle, die "eher Night" o.ä. vermerkt sind, siehe bisherige Ausschlüsse). Statt einer Genre-Positivliste jetzt eine **Negativliste** offensichtlich falscher Energie-Level (kein Raten nötig — Hard Techno o.ä. ist nie ein Sunrise-Kandidat, das ist Fakt aus der Genre-Einordnung selbst, keine Vermutung):
 
 ```
-SUNRISE_POOL_QUERY (je Zweig eigene bpm-Bedingung, siehe Stolperfalle oben):
-"genre:Deep House" bpm:1..122 , "genre:Electronica" bpm:1..122 , "genre:Ambient" bpm:1..122 ,
-"genre:Nu Disco" bpm:1..122 , "genre:Melodic House" bpm:1..122 , "genre:Organic House" bpm:1..122
+GLOBAL_POOL_QUERY:
+'^genre:Hard Techno' '^genre:Psy-Trance' '^genre:Drum & Bass' '^genre:Drum And Bass'
+'^genre:Trap' '^genre:Mainstage' '^genre:Bass House' '^genre:Hard Trance'
+'^genre:Hardstyle' '^genre:Hardcore'
 ```
 
 - [ ] **Schritt 1: Poolgröße prüfen**
 
 ```
-ssh stock-pve "pct exec 120 -- beet list 'genre:Deep House' bpm:1..122 , 'genre:Electronica' bpm:1..122 , 'genre:Ambient' bpm:1..122 , 'genre:Nu Disco' bpm:1..122 , 'genre:Melodic House' bpm:1..122 , 'genre:Organic House' bpm:1..122 2>&1 | wc -l"
+ssh stock-pve "pct exec 120 -- beet list '^genre:Hard Techno' '^genre:Psy-Trance' '^genre:Drum & Bass' '^genre:Drum And Bass' '^genre:Trap' '^genre:Mainstage' '^genre:Bass House' '^genre:Hard Trance' '^genre:Hardstyle' '^genre:Hardcore' 2>&1 | wc -l"
 ```
-Erwartung (Stand 04.09.2026, verifiziert): 900 Titel, keine Überschneidung zwischen den 6 Zweigen (jeder Titel trägt in dieser Bibliothek nur eines der sechs Genres). Reicht das bei künftigen Shows nicht: weitere thematisch passende Zweige aus der Genre-Verteilung ergänzen (`beet list -f '$genre' | sort | uniq -c | sort -rn`, siehe Odoo #1261 für die volle Liste) statt die BPM-Grenze zu senken — mehr Genre-Vielfalt schlägt engeres Tempo-Fenster.
+Erwartung (Stand 04.09.2026, verifiziert): 11.194 von 11.764 Titeln — passt zu Wolfs "ca. 11k". Diese Query läuft **ohne BPM-Grenze** und **ohne Show-Bezug** — sie ist die gemeinsame Basis für alle 10 Shows, nicht nur Sunrise. Sunrise selbst wird später (Task 4) aus dieser Warteschlange über den `vibe`-Wert gefiltert (calm/gentle-Schlagworte), nicht mehr über eine eigene Pool-Query.
 
 - [ ] **Schritt 2: Ergebnis dokumentieren**
 
-Finale Query + Titelzahl als Kommentar in Odoo-Task #1261 posten (`mcp__odoo__post_message`, `record_id=1261`), Format: "Sunrise-Pool: `<Query>`, `<N>` Titel gefunden."
+Ergebnis als Kommentar in Odoo-Task #1261 posten (`mcp__odoo__post_message`, `record_id=1261`).
 
 ---
 
-### Task 3: Recherche-Runbook Sunrise (erste 10 Titel als Vorlage)
+### Task 3: Recherche-Runbook (bibliotheksweite Warteschlange, Sunrise als erster Abnehmer)
 
 **Files:** keine Repo-Dateien.
 
 **Interfaces:**
-- Consumes: `SUNRISE_POOL_QUERY` aus Task 2.
-- Produces: für jeden bearbeiteten Titel ein gesetztes `vibe`+`research_source`-Paar (Task 1's Felder). Fortschritt ist jederzeit ablesbar über die Query in Schritt 1 — **kein separates Tracking-Artefakt nötig**, das leere/gefüllte `vibe`-Feld selbst ist der Fortschrittsstatus.
+- Consumes: `GLOBAL_POOL_QUERY` aus Task 2 (nicht mehr Sunrise-spezifisch).
+- Produces: für jeden bearbeiteten Titel ein gesetztes `vibe`+`research_source`-Paar (Task 1's Felder), nutzbar von **jeder** der 10 Shows. Fortschritt ist jederzeit ablesbar über die Query in Schritt 1 — **kein separates Tracking-Artefakt nötig**, das leere/gefüllte `vibe`-Feld selbst ist der Fortschrittsstatus.
 
-- [ ] **Schritt 1: Nächste unbearbeiteten Titel aus dem Pool holen**
+- [ ] **Schritt 1: Nächste unbearbeiteten Titel aus der Warteschlange holen**
 
 ```
-ssh stock-pve "pct exec 120 -- beet list -f '\$id | \$artist | \$title' 'genre:Deep House' bpm:1..122 'vibe::^\$' , 'genre:Electronica' bpm:1..122 'vibe::^\$' , 'genre:Ambient' bpm:1..122 'vibe::^\$' , 'genre:Nu Disco' bpm:1..122 'vibe::^\$' , 'genre:Melodic House' bpm:1..122 'vibe::^\$' , 'genre:Organic House' bpm:1..122 'vibe::^\$' 2>&1 | head -10"
+ssh stock-pve "pct exec 120 -- beet list -f '\$id | \$artist | \$title' '^genre:Hard Techno' '^genre:Psy-Trance' '^genre:Drum & Bass' '^genre:Drum And Bass' '^genre:Trap' '^genre:Mainstage' '^genre:Bass House' '^genre:Hard Trance' '^genre:Hardstyle' '^genre:Hardcore' 'vibe::^\$' 2>&1 | head -10"
 ```
-(Zwei Stolperfallen der beets-Query-Syntax, live gefunden: (1) `feld:wert` ist ein einfacher **Substring**-Vergleich, für echte Regex-Prüfung — z. B. "Feld ist leer" — braucht es den **doppelten** Doppelpunkt: `vibe::^$` für leer, `vibe::.` für nicht-leer. Mit einfachem Doppelpunkt (`vibe:^$`) sucht beets nach dem wörtlichen Substring `^$` und findet nichts. (2) Bei `,`-verknüpften Oder-Zweigen gilt ein zusätzlicher Filter nur für den Zweig, an den er direkt angehängt ist — er muss in **jedem** Zweig wiederholt werden, sonst liefern die anderen Zweige ungefiltert alles zurück.)
+(Zwei Stolperfallen der beets-Query-Syntax, live gefunden: (1) `feld:wert` ist ein einfacher **Substring**-Vergleich, für echte Regex-Prüfung — z. B. "Feld ist leer" — braucht es den **doppelten** Doppelpunkt: `vibe::^$` für leer, `vibe::.` für nicht-leer. Mit einfachem Doppelpunkt (`vibe:^$`) sucht beets nach dem wörtlichen Substring `^$` und findet nichts. (2) Bei `,`-verknüpften Oder-Zweigen gilt ein zusätzlicher Filter nur für den Zweig, an den er direkt angehängt ist — er muss in **jedem** Zweig wiederholt werden, sonst liefern die anderen Zweige ungefiltert alles zurück. Hier nicht relevant, da keine `,`-Zweige mehr verwendet werden — die Negativliste sind alles UND-Bedingungen auf derselben Ebene.)
 
 - [ ] **Schritt 2: Pro Titel — echte Suche**
 
-Für jeden der 10 Titel: Websuche nach `"<Interpret>" "<Titel>"` (z. B. auf Discogs, Beatport, 1001Tracklists, Resident Advisor gezielt schauen). Gesucht wird: bestätigtes Genre/Stil, ein kurzes Vibe-Schlagwort (freie, aber knappe Wortwahl — z. B. `sunny-chill`, `hypnotic-deep`, `warm-analog`), und die Quelle (URL). Findet sich **nichts Verlässliches**: Titel überspringen, nicht raten — bleibt für später/zweite Recherche-Runde offen (Feld bleibt leer, taucht in Schritt 1 der nächsten Sitzung wieder auf).
+Für jeden der 10 Titel: Websuche nach `"<Interpret>" "<Titel>"` (z. B. auf Discogs, Beatport, 1001Tracklists, Resident Advisor gezielt schauen). Gesucht wird: bestätigtes Genre/Stil, ein kurzes Vibe-Schlagwort (freie, aber knappe Wortwahl — z. B. `sunny-chill`, `hypnotic-deep`, `warm-analog`), und die Quelle (URL). Passt ein Titel klar zu einer ANDEREN Show als Sunrise (z. B. "hypnotisch, eher Night"): trotzdem taggen und das im `research_source` vermerken — spart der jeweils späteren Show die Doppelarbeit. Findet sich **nichts Verlässliches**: Titel überspringen, nicht raten — bleibt offen (Feld bleibt leer, taucht in Schritt 1 der nächsten Sitzung wieder auf).
 
 - [ ] **Schritt 3: Ergebnis schreiben**
 
@@ -123,7 +124,7 @@ ssh stock-pve "pct exec 120 -- beet modify -y 'vibe=<schlagwort>' 'research_sour
 - [ ] **Schritt 4: Stichprobe verifizieren**
 
 ```
-ssh stock-pve "pct exec 120 -- beet list -f '\$title | \$vibe | \$research_source' 'genre:Deep House' bpm:1..122 'vibe::.' , 'genre:Electronica' bpm:1..122 'vibe::.' , 'genre:Ambient' bpm:1..122 'vibe::.' , 'genre:Nu Disco' bpm:1..122 'vibe::.' , 'genre:Melodic House' bpm:1..122 'vibe::.' , 'genre:Organic House' bpm:1..122 'vibe::.' 2>&1 | tail -10"
+ssh stock-pve "pct exec 120 -- beet list -f '\$title | \$vibe | \$research_source' '^genre:Hard Techno' '^genre:Psy-Trance' '^genre:Drum & Bass' '^genre:Drum And Bass' '^genre:Trap' '^genre:Mainstage' '^genre:Bass House' '^genre:Hard Trance' '^genre:Hardstyle' '^genre:Hardcore' 'vibe::.' 2>&1 | tail -10"
 ```
 Erwartung: die eben bearbeiteten Titel erscheinen mit Vibe + Quelle.
 
@@ -138,7 +139,7 @@ Ziel laut Spec: 150–300 recherchierte Titel für Sunrise. Schritte 1–4 wiede
 **Files:** keine Repo-Dateien — Änderungen an der AzuraCast-MariaDB (VM210).
 
 **Interfaces:**
-- Consumes: recherchierte Titel aus Task 3 (`vibe::.` innerhalb der Sunrise-Pool-Query, siehe beets-Query-Stolperfallen oben).
+- Consumes: recherchierte Titel aus Task 3 — gefiltert auf die Teilmenge der `vibe`-Werte, die zu Sunrise passt (siehe Korrektur bei Schritt 6, nicht mehr "irgendein Vibe" wie in der ursprünglichen Fassung).
 - Produces: neue Zeile in `station_playlists` (Name "Sunrise"), zugehörige `station_schedules`-Zeile (06:00–09:00, Mo–Fr), befüllt über einen neuen `station_playlist_folders`-Eintrag (`Curated_Playlists/Sunrise/`, Symlinks auf recherchierte Titel — derselbe Mechanismus wie bei den 4 Basis-Kanälen). Kanal 1 ("Channel 1 — Acoustik & Ambient") wird für Mo–Fr auf 09:00–11:00 verkleinert, behält am Wochenende sein volles 06:00–11:00-Fenster (neue eigene Schedule-Zeile).
 
 **Wichtig — vorher geprüft (nicht raten):** `station_playlists.type='default'`, `source='songs'`, `playback_order='shuffle'`, `weight=3`, `avoid_duplicates=1`, `include_in_requests=1` sind die produktiven Standardwerte (aus dem AzuraCast-Quellcode `backend/src/Entity/StationPlaylist.php` verifiziert, nicht geraten). `station_schedules.start_time`/`end_time` sind `HHMM` als Ganzzahl (z. B. `600` = 06:00, `900` = 09:00), `days` ist eine kommagetrennte Liste `1`(Montag)–`7`(Sonntag), `NULL` = jeden Tag (Quelle: `backend/src/Entity/StationSchedule.php`, live durch die bestehenden 4 Kanäle in `station_schedules` bestätigt).
@@ -198,10 +199,12 @@ VALUES (<SUNRISE_ID>, 600, 900, \\\"1,2,3,4,5\\\", 0);
 
 **Korrektur (03.09.2026, während der Umsetzung gefunden):** AzuraCast füllt die 4 bestehenden Kanäle nicht per manueller `station_playlist_media`-Zuordnung, sondern über `station_playlist_folders` — jeder Kanal hat einen eigenen Ordner unter `/mnt/music/Curated_Playlists/<Name>/` voller **Symlinks** (nicht Kopien) auf die echten Dateien in `Master_Library`; AzuraCast scannt den Ordner und ordnet die enthaltenen Titel automatisch der verknüpften Playlist zu. Sunrise nutzt denselben, bereits produktiv bewährten Weg statt einer manuellen SQL-Zuordnung.
 
-Ordner anlegen und Symlinks setzen (ein Aufruf pro Titel, `ln -s` verändert keine Originaldatei):
+**Korrektur (04.09.2026, wegen Pool-Umstellung auf global):** Da `vibe` jetzt bibliotheksweit befüllt wird, reicht "irgendein Vibe gesetzt" nicht mehr als Sunrise-Auswahlkriterium — ein `vibe=hypnotic-tribal`-Titel ist absichtlich recherchiert, gehört aber zu Night, nicht zu Sunrise. Vor diesem Schritt: alle bisher vergebenen Vibe-Werte durchsehen (`beet list -f '$vibe' 'vibe::.' | sort -u`) und die Teilmenge auswählen, die wirklich zu einem ruhigen Morgen passt (Stand 04.09.2026 z. B. `soulful-warm`, `jazzy-smooth`, `melancholic-atmospheric`, `downtempo-dreamy`, `slowcore-glacial`, `sunny-mediterranean`, `hazy-emotive`, `neoclassical-gentle`, `gentle-happy`, `chill-lounge`, `introspective-deep`, `organic-melodic`, `melodic-awakening`, `cosmic-warm`, `organic-warm`, `emotive-melodic`, `chillout-ambient`, `hopeful-atmospheric`, `dreamy-fragile`, `soulful-laidback` — Liste wächst mit jeder Recherche-Sitzung, vor der Umsetzung aktuellen Stand aus Odoo #1261 holen).
+
+Ordner anlegen und Symlinks setzen (ein Aufruf pro Titel, `ln -s` verändert keine Originaldatei; `vibe:a|b|c` unten als Platzhalter für die tatsächliche, damals aktuelle Liste):
 ```
 ssh stock-pve "pct exec 120 -- mkdir -p /mnt/music/Curated_Playlists/Sunrise"
-ssh stock-pve "pct exec 120 -- beet list -f '\$path' 'genre:Deep House' bpm:1..122 'vibe::.' '^vibe:EXCLUDED' , 'genre:Electronica' bpm:1..122 'vibe::.' '^vibe:EXCLUDED' , 'genre:Ambient' bpm:1..122 'vibe::.' '^vibe:EXCLUDED' , 'genre:Nu Disco' bpm:1..122 'vibe::.' '^vibe:EXCLUDED' , 'genre:Melodic House' bpm:1..122 'vibe::.' '^vibe:EXCLUDED' , 'genre:Organic House' bpm:1..122 'vibe::.' '^vibe:EXCLUDED' 2>&1" > /tmp/sunrise_paths.txt
+ssh stock-pve "pct exec 120 -- beet list -f '\$path' 'vibe::^(soulful-warm|jazzy-smooth|melancholic-atmospheric|downtempo-dreamy|slowcore-glacial|sunny-mediterranean|hazy-emotive|neoclassical-gentle|gentle-happy|chill-lounge|introspective-deep|organic-melodic|melodic-awakening|cosmic-warm|organic-warm|emotive-melodic|chillout-ambient|hopeful-atmospheric|dreamy-fragile|soulful-laidback)\$' 2>&1" > /tmp/sunrise_paths.txt
 ```
 Danach je Zeile aus `/tmp/sunrise_paths.txt` (voller Original-Pfad) einen Symlink mit demselben Basisnamen im neuen Ordner anlegen:
 ```
