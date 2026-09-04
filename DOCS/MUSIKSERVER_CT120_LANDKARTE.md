@@ -1,12 +1,178 @@
 # Musikserver CT120 — Landkarte
 
-**Stand 04.09.2026.** Reine Bestandsaufnahme, alles nur gelesen — **nichts
-verschoben, umbenannt oder gelöscht.** Wolf wollte zuerst den Überblick,
-Entscheidungen später. Aufräumen ist bewusst **nicht** Teil dieses Dokuments.
+**Teil 1 (04.09.2026, mittags): Bestandsaufnahme** — alles nur gelesen.
+**Teil 2 (04.09.2026, nachmittags): erster Aufräumschritt ausgeführt** —
+siehe [Umsetzung](#-umsetzung-04092026--m-ist-jetzt-reine-musik) weiter
+unten. Die Bestandszahlen darunter sind der Stand **vor** dem Aufräumen und
+bleiben als Vergleichsbasis stehen.
 
 Gehört zu Odoo-Aufgabe **#1263** („[EPIC] Musikserver (CT120) aufräumen").
 Zahlen stammen aus `pct exec 120` direkt auf dem Container, nicht aus der
 Windows-Freigabe.
+
+---
+
+## ✅ Umsetzung 04.09.2026 — `M:` ist jetzt reine Musik
+
+Wolfs Entscheidung: *„R ist eigentlich überflüssig wenn M genug Platz hat …
+nur M sollte nur für Musik sein … hätte gern andere Shares für Dokumente."*
+
+### Was gemacht wurde
+
+| Vorher (Wurzel von `M:`) | Nachher |
+|---|---|
+| `Dokumente_Inbox` | → `[documents]` |
+| `Scans` | → `[documents]/Scans` |
+| `_BACKUPS_ODOO` (1,7 GB) | → `[documents]/_BACKUPS_ODOO` |
+| `_NACHKAUFLISTE_20260728.txt` | → `[documents]` |
+| `_ERSATZ_GEFUNDEN_20260728.txt` | → `[documents]` |
+| `_STAGING_RAW/yourparty_Libary/UNSORTED` (27 GB) | → `[documents]/Private_Fotos_ungeprueft` |
+
+**`M:` zeigt jetzt nur noch:** `Master_Library`, `Curated_Playlists`,
+`Inbox`, `Quarantine`, `MusicBrainz_Input`, `_GERETTET_aus_Quarantaene`,
+`_STAGING_RAW`, `_playlisten`, `frawo_test_track.mp3`. Nachgeprüft **aus
+Client-Sicht** über `smbclient`, nicht nur im Dateisystem.
+
+Alles waren **Umbenennungen innerhalb derselben Platte** (`mv`), keine
+Kopien — geprüft über `stat -c %d` (gleiche Geräte-ID), kein
+Speicherplatz doppelt belegt, kein Zeitfenster mit halbem Bestand.
+Integrität der 27 GB gegengerechnet: **8.648 Dateien /
+28.152.020.497 Bytes vorher wie nachher identisch.**
+
+⚠️ **In `UNSORTED` war keine einzige Musikdatei** (8.272 JPG, 233 PNG,
+143 MP4, 0 Audio). Die im Bericht erwähnten 38 Audiodateien liegen in den
+**Geschwisterordnern** (`HOUSE`, `INDIE DANCE`, `Franz Import`,
+`radio_nas`) und sind **nicht** angefasst worden.
+
+### Die neue Dokumentenablage
+
+```
+Freigabe [documents]  →  \\10.1.0.94\documents  →  /mnt/music/_Dokumente
+```
+
+Schreibtest über die Freigabe durchgeführt (anlegen, auflisten, löschen) —
+funktioniert. `[scans]` zeigt auf den mitgezogenen Unterordner.
+
+**Warum liegt sie trotzdem unter `/mnt/music`?** Weil es gar nicht anders
+geht: der Container bekommt mit `mp0: /mnt/music_hdd,mp=/mnt/music` die
+**komplette Plattenwurzel** von `sdb2`. Ein „Nachbarordner neben der
+Musikfreigabe" existiert auf dieser Platte nicht. Deshalb blendet `[music]`
+die Ablage jetzt aus:
+
+```ini
+[music]
+    veto files = /_Dokumente/
+    delete veto files = no
+```
+
+Aus Client-Sicht ist der Ordner damit **weder sichtbar noch erreichbar** —
+`cd _Dokumente` auf `M:` antwortet `NT_STATUS_OBJECT_NAME_NOT_FOUND`. Das
+gilt auch für AzuraCast, das `[music]` einbindet: die 8.648 Fotos fallen
+damit aus dem Medien-Scan heraus.
+
+Für beets ändert sich **nichts** — beets arbeitet direkt auf dem
+Dateisystem, nicht über Samba. `veto files` ist reine Samba-Mechanik.
+
+**Sauberer wäre eine eigene Platte:** `/mnt/data_family` (`sdd1`, 932 GB,
+367 GB frei) enthält bereits `Dokumente/`, `Scans/`, `odoo-sql-dumps/` —
+das ist der natürliche Endplatz. Dafür braucht CT120 einen zweiten
+Mountpoint und damit einen **Neustart**. Der ist heute unterblieben, weil
+die beets-Datenbank während der Arbeit **laufend beschrieben wurde**
+(`musik.db`, Zeitstempel 60 Sekunden alt) — ein Neustart hätte die
+laufende Kuratierung abgeschossen. → Empfehlung, kein erledigter Punkt.
+
+### 🔴 `R:` wurde NICHT abgeschaltet — Begründung
+
+Das war der Hauptauftrag, und er ist **bewusst nicht ausgeführt** worden.
+Der Grund kam erst bei der Vorprüfung ans Licht:
+
+**AzuraCast hängt an der Freigabe.** VM210 bindet sie per `/etc/fstab`
+dauerhaft ein, und Docker reicht sie in **zwei Stationen** hinein:
+
+```
+//10.1.0.94/radio  →  /mnt/radio_rw   (fstab auf VM210)
+/mnt/radio_rw  →  /var/azuracast/stations/yourparty/media/network_library
+/mnt/radio_rw  →  /var/azuracast/stations/frawo_funk/media/network_library
+```
+
+Im Container sind darüber **662 Dateien** sichtbar. Hätte ich die Freigabe
+entfernt, wäre der Ordner in beiden Stationen schlagartig leer gewesen.
+
+**Die Entwarnung dazu, ebenfalls gemessen:** **keine einzige Playlist und
+keine `liquidsoap.liq` verweist auf `network_library`** (0 Treffer). Es
+droht also **kein Sendeausfall** — aber AzuraCast würde die Titel als
+„fehlend" führen, und das ausgerechnet, während der Rückstand aus dem
+`media:reprocess`-Unfall (25.819 Titel auf `mtime = 0`) noch offen ist.
+
+➡️ Wolf hat seine Freigabe gegeben, **ohne das zu wissen** — der
+Bestandsbericht hatte diese Abhängigkeit nicht gefunden und im Gegenteil
+noch gefragt, *ob* `R:` überhaupt noch benutzt wird. Deshalb hier gestoppt.
+
+**Datenverlust droht dabei nicht.** Die Redundanz ist jetzt deutlich
+schärfer belegt als im Bestandsbericht (dort: 80 Ordner, 3 Prüfsummen):
+
+| Prüfung | Ergebnis |
+|---|---|
+| Dateien rekursiv, beide Seiten | **413 = 413** |
+| Nur auf `R:` vorhanden | **0** |
+| Grössenabweichungen | **0 von 413** |
+| `md5sum`-Stichprobe | **10 von 10 bitgleich** |
+
+Einziger Unterschied: die **leeren** Ordner `05_JINGLES_VOICEOVERS` und
+`06_REKORDBOX_EXPORT` fehlen in der Kopie. Kein Inhalt.
+
+### Vorgeschlagene Reihenfolge für die R:-Abschaltung (nicht ausgeführt)
+
+1. **Wolf entscheidet:** Wird `network_library` in `yourparty` /
+   `frawo_funk` noch gebraucht? (Keine Playlist nutzt es.)
+2. Auf VM210 die beiden Docker-Bindings entfernen und die `fstab`-Zeile
+   für `/mnt/radio_rw` auskommentieren, dann `umount`.
+3. Erst danach die `[radio]`-Freigabe aus `/etc/samba/smb.conf` auf CT120
+   nehmen und `systemctl reload smbd`.
+4. **Zuletzt** die 6,6 GB unter `/mnt/stick/yourparty.radio` von der
+   Proxmox-Systemplatte löschen — das ist ein Eingriff auf dem **Wirt**,
+   nicht im Container, und braucht eine eigene Bestätigung.
+5. `Inbox/yourparty_Libary_R` (6,9 GB) ist dann die verbleibende Kopie —
+   erst **danach** wäre sie streichbar, nicht vorher.
+
+🔴 Schritt 4 und 5 sind **bewusst nicht ausgeführt**. Solange `R:` lebt,
+ist die Kopie die einzige zweite Ausfertigung.
+
+### Nebenwirkung, die dabei aufflog und sofort repariert wurde
+
+Der Scan-Ingest auf dem **Wirt** (`/usr/local/bin/frawo-scan-ingest.sh`,
+Timer alle 2 Minuten) hatte den Scan-Pfad **fest verdrahtet** —
+`SCAN_BASE="/mnt/music_hdd/Scans"`. Durch den Umzug lief er ins Leere, und
+zwar **lautlos mit Exit-Status 0**, weil fehlende Personenordner mit
+`continue` übersprungen werden: kein Log-Eintrag, kein Alarm. Nachgezogen
+auf `/mnt/music_hdd/_Dokumente/Scans`, Sicherung unter
+`frawo-scan-ingest.sh.backup-20260904`. Danach geprüft: alle vier
+Personenordner werden wieder gefunden, Dienstlauf endet mit 0, und ein
+Schreibtest über die `[scans]`-Freigabe (so wie der Drucker schreibt)
+kommt korrekt an.
+
+### Was unangetastet blieb
+
+- `Inbox/yourparty_Libary` — die laufende Show-Kuratierung. **9.381
+  Playlist-Symlinks, davon 0 kaputt** (9.379 → `Master_Library`, 2 →
+  `Inbox/yourparty_Libary`).
+- Die beets-Datenbank (`musik.db`, unverändert) — kein `beet`-Aufruf.
+- AzuraCast, VM210, deren Datenbank und Container.
+- `Master_Library`s Ordnerstruktur (Option **H**) — nicht angerührt.
+- Die Systemplatte des Wirts: **29 GB belegt / 37 GB frei, unverändert.**
+
+### Offene Altlast, die dieser Schritt nicht anfasst
+
+`Quarantine` (439 GB) und `_STAGING_RAW` liegen weiter auf `M:`. Beide sind
+musiknah und gehören dorthin, bis Wolf die offenen Fragen unten beantwortet.
+Die Platte hat nach dem Umzug **946 GB frei** — kein Zeitdruck.
+
+⚠️ **Nebenbefund:** Station `radio.yourparty` hat in ihrem Medienordner
+27 Symlinks in die Musikplatte, von denen **23 schon vor diesem Umzug tot
+waren** (sie zeigen auf die alten Wurzelnamen, die längst in `_STAGING_RAW`
+liegen). Durch den Umzug kommen `_BACKUPS_ODOO` und `Scans` als 24. und 25.
+toter Verweis dazu. Musik ist davon nicht betroffen; das Aufräumen dieser
+Symlinks gehört zu AzuraCast und wurde absichtlich nicht angefasst.
 
 ---
 
@@ -61,6 +227,9 @@ Dateien sind weg, der **Präfix** hat sich geändert.
 
 `[documents]` zeigt auf `/mnt/music/Dokumente` — **den Ordner gibt es nicht.**
 Es existiert nur `Dokumente_Inbox`. Die Freigabe läuft ins Leere.
+
+> ✅ **Erledigt 04.09.2026** — zeigt jetzt auf `/mnt/music/_Dokumente` und
+> funktioniert (Schreibtest bestanden). Siehe oben.
 
 ---
 
@@ -268,14 +437,14 @@ Betroffen sind ausschliesslich Bildvorschauen, **keine Musik**.
 | `Inbox/yourparty_Libary_R` | 🔁 Nachweisbare Volldopplung von `R:` (6,9 GB, md5-bestätigt). |
 | `Inbox` (Rest) | ⚠️ Sammelsurium: HEIC-Fotos, Lexware-Export, `.lnk`, `paperless_sync.py`. Nichts davon gehört in eine Musikbibliothek. |
 | `Quarantine` | 🔴 439 GB, wächst wieder, wird gerade beschrieben. Grösster Hebel — **und die grösste offene Frage.** |
-| `_STAGING_RAW/yourparty_Libary/UNSORTED` | 🔴 27 GB **private Fotos/Videos**. Kein Musikproblem, aber ein Datenproblem. |
+| `_STAGING_RAW/yourparty_Libary/UNSORTED` | ✅ **Am 04.09.2026 verschoben** nach `_Dokumente/Private_Fotos_ungeprueft`. Enthielt **0 Audiodateien**. |
 | `_STAGING_RAW` (Rest) | ⚠️ Alter Plattenwurzelinhalt. Etliche Ordner leer, drei Symlinks tot. |
 | `radio_library` | ⚠️ Echter Inhalt (~2.100 Dateien) **plus** 26 defekte Bilddateien. |
 | `Ranger_07.26`, `Library` | ⚠️ Klein (1,8 G / 2,0 G), Zweck unklar — braucht Wolfs Blick. |
-| `R:` `yourparty.radio` | 🔴 Liegt auf der **Systemplatte des Wirts**. Inhalt egal, Ort falsch. |
+| `R:` `yourparty.radio` | 🔴 Liegt auf der **Systemplatte des Wirts**. Ort falsch — Abschaltung **blockiert durch AzuraCast**, siehe oben. |
 | `01_WARMUP`…`06_…` | 🗑️ Verlassenes Gerüst vom 24.07.2026, 9 Dateien, zwei Ordner leer. |
-| `_BACKUPS_ODOO` | ⚠️ 1,7 GB Odoo-Sicherungen auf der Musikplatte. Falscher Ort. |
-| `[documents]`-Freigabe | 🔴 Zeigt auf `/mnt/music/Dokumente` — existiert nicht. |
+| `_BACKUPS_ODOO` | ✅ **Am 04.09.2026 in die Dokumentenablage verschoben.** Nicht die einzige Kopie: `/mnt/data_family/odoo-sql-dumps` läuft **stündlich** weiter (geprüft, aktuell). |
+| `[documents]`-Freigabe | ✅ **Repariert 04.09.2026** → `/mnt/music/_Dokumente`, Schreibtest bestanden. |
 
 ---
 
@@ -287,32 +456,41 @@ Betroffen sind ausschliesslich Bildvorschauen, **keine Musik**.
 2. **`Unidentified_Research` (6,2 GB, 123 Dateien):** Im August bewusst
    stehengelassen („braucht echte Durchsicht"). War damals 324 GB, ist jetzt
    6,2 GB. Erledigt oder unfertig?
-3. **Die 27 GB private Fotos/Videos:** Sollen die gesichert und von der
-   Musikplatte herunter — und wohin?
+3. ~~**Die 27 GB private Fotos/Videos:** Sollen die gesichert und von der
+   Musikplatte herunter — und wohin?~~ **Teilweise beantwortet:** aus der
+   Musikfreigabe raus (erledigt 04.09.). **Noch offen:** Endziel und ob
+   gesichert werden soll — sie liegen weiter auf derselben Platte.
 4. **`Ranger_07.26` und `Library`:** Sagen dir die Namen noch etwas?
-5. **`R:` als Arbeitslaufwerk:** Wird die Radio-Freigabe überhaupt noch
-   benutzt, oder läuft alles über `M:` und die Radio-Bridge?
+5. **`R:` als Arbeitslaufwerk:** ⚠️ **Frage neu gestellt.** Wolf sagte
+   „überflüssig" — aber gemessen: **AzuraCast bindet `R:` in zwei Stationen
+   als `network_library` ein**, 662 Dateien. Keine Playlist nutzt sie.
+   Frage also präziser: *Darf `network_library` in `yourparty` und
+   `frawo_funk` weg?* Erst dann kann `R:` fallen.
 
 ## Mögliche nächste Schritte — als Optionen, nicht als Plan
 
 Bewusst **keine** Reihenfolge, keine Empfehlung. Erst Wolfs Antworten oben.
 
-- **A — `R:` von der Systemplatte holen.** Der einzige Punkt mit
-  Ausfallrisiko für den ganzen Proxmox-Knoten. Entweder Freigabe auf die
-  Musikplatte umziehen oder einen echten Datenträger nach `/mnt/musicstick`
-  mounten. (Die `sda` mit „982 GB" ist der gefälschte Stick vom 01.08.2026 —
-  **nicht** wieder einhängen.)
-- **B — Herausfinden, was `Quarantine` füllt.** Messen, nicht löschen.
-- **C — `Inbox/yourparty_Libary_R` streichen.** 6,9 GB, als bitgleiche Kopie
-  belegt. Ginge erst nach Option A, sonst ist es die einzige zweite Kopie.
+- **A — `R:` von der Systemplatte holen.** 🔴 **Am 04.09.2026 begonnen und
+  bewusst gestoppt** — AzuraCast bindet die Freigabe in zwei Stationen ein.
+  Reihenfolge und Begründung stehen oben. (Die `sda` mit „982 GB" ist der
+  gefälschte Stick vom 01.08.2026 — **nicht** wieder einhängen.)
+- **B — Herausfinden, was `Quarantine` füllt.** Messen, nicht löschen. Offen.
+- **C — `Inbox/yourparty_Libary_R` streichen.** 6,9 GB, Volldopplung jetzt
+  hart belegt (413/413 Dateien, 0 Grössenabweichungen, 10/10 md5). Weiter
+  **erst nach A** — solange `R:` lebt, ist das die einzige zweite Kopie.
 - **D — Die 19.364 `.ntfs-3g-*`-Geisterdateien entfernen.** Bringt **0 Byte**
-  Platz, macht aber jede künftige Zählung ehrlich.
-- **E — `chkdsk` unter Windows** gegen die 26 defekten Dateien.
-- **F — Private Fotos/Videos aussortieren** (27 GB).
-- **G — `[documents]`-Freigabe reparieren oder entfernen.**
+  Platz, macht aber jede künftige Zählung ehrlich. Offen.
+- **E — `chkdsk` unter Windows** gegen die 26 defekten Dateien. Offen.
+- **F — Private Fotos/Videos aussortieren** (27 GB). ✅ **Erledigt 04.09.2026**
+  — liegen als `Private_Fotos_ungeprueft` in der Dokumentenablage.
+  ⚠️ Der Name ist **Absicht**: das ist ein Zwischenlager, kein Endziel.
+  Wolf muss noch sagen, wohin damit (und ob gesichert werden soll).
+- **G — `[documents]`-Freigabe reparieren oder entfernen.** ✅ **Erledigt
+  04.09.2026** — repariert, zeigt auf `/mnt/music/_Dokumente`.
 - **H — Ordnernamen in `Master_Library` normalisieren** (426 → handhabbar).
-  🔴 Grösster Eingriff: **alle 9.360 Playlist-Symlinks zeigen dorthin** und
-  müssten mitgezogen werden. Nur mit Plan und Sicherung.
+  🔴 Grösster Eingriff: **alle 9.381 Playlist-Symlinks zeigen dorthin** und
+  müssten mitgezogen werden. Nur mit Plan und Sicherung. **Nicht angefasst.**
 
 ---
 
@@ -333,4 +511,23 @@ ssh stock-pve "pct exec 120 -- find /mnt/music -name '*.ntfs-3g-*' -type f | wc 
 
 # Zeigen die Playlisten wirklich alle nach Master_Library?
 ssh stock-pve "pct exec 120 -- find /mnt/music/Curated_Playlists -maxdepth 2 -type l -printf '%l\n' | grep -c Master_Library"
+```
+
+### Nach dem Aufräumen vom 04.09.2026
+
+```bash
+# Zeigt M: wirklich nur noch Musik? (Client-Sicht, nicht Dateisystem)
+ssh stock-pve "pct exec 120 -- smbclient //localhost/music -A <cred> -c ls"
+
+# Ist die Dokumentenablage von M: aus wirklich gesperrt?  -> NT_STATUS_OBJECT_NAME_NOT_FOUND
+ssh stock-pve "pct exec 120 -- smbclient //localhost/music -A <cred> -c 'cd _Dokumente'"
+
+# Laufende Kuratierung unversehrt?  -> 0 kaputte Symlinks
+ssh stock-pve "pct exec 120 -- find /mnt/music/Curated_Playlists -xtype l | wc -l"
+
+# Haengt AzuraCast noch an R:?  -> zwei network_library-Bindings = ja
+ssh stock-pve "ssh 10.1.0.38 'docker inspect azuracast --format \"{{range .Mounts}}{{.Source}} -> {{.Destination}}{{println}}{{end}}\" | grep radio_rw'"
+
+# Findet der Scan-Ingest seine Ordner wieder?
+ssh stock-pve "grep SCAN_BASE /usr/local/bin/frawo-scan-ingest.sh && systemctl start frawo-scan-ingest.service && echo OK"
 ```

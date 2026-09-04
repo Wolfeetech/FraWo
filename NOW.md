@@ -130,11 +130,13 @@ Route `192.168.178.0/24` → nächster Sprung `10.1.0.239` liegt als statische R
 
 Alles andere zwischen den Netzen: **DROP** (Catch-all am Ende der `wg1`-Regeln).
 
-**Scan-Ablage** (CT120 Fileserver, Samba-Freigabe `[scans]`, Pfad `/mnt/music/Scans`, existierte als leere Hülle schon vorher): Unterordner `Alois/`, `Heidi/`, `Franz/`, `Wolfgang/` angelegt. Eigener Samba-Nutzer `scanner` (nur Schreibrecht auf `[scans]`, sonst nirgends) — **Passwort liegt NICHT hier im Repo**, muss noch nach Vaultwarden (siehe Offen-Tabelle, analog #815-Konvention).
+**Scan-Ablage** (CT120 Fileserver, Samba-Freigabe `[scans]`, Pfad **`/mnt/music/_Dokumente/Scans`** — seit 04.09.2026, vorher `/mnt/music/Scans`): Unterordner `Alois/`, `Heidi/`, `Franz/`, `Wolfgang/` angelegt. Eigener Samba-Nutzer `scanner` (nur Schreibrecht auf `[scans]`, sonst nirgends) — **Passwort liegt NICHT hier im Repo**, muss noch nach Vaultwarden (siehe Offen-Tabelle, analog #815-Konvention).
 
 **Gefundene Geräte im Alopri-Netz (Stand 04.08.2026, per Scan über den Tunnel):** 1 Drucker (`.153`), 15× Shelly-Schalter/Steckdosen (`.61 .62 .64 .65 .72 .73 .78 .152 .171 .178 .189 .191 .193 .195 .198`), 3× Cast-fähige Geräte (`.161 .167 .170`), 1× HPE-Instant-On-Switch/AP (`.184`). Rest (`.119 .182 .185 .192 .173 .199 .214`) unklassifiziert (vermutlich Telefone/Tablets ohne eigenen Dienst).
 
 ✅ **Scan → Paperless** (überarbeitet 21.08.2026, erweitert 22.08.2026, siehe `OPERATIONS/PAPERLESS_OPERATIONS.md`): läuft jetzt über CT110 (`10.1.0.100:8000` / `paperless.frawo.tech`). Die Alopri-Scan-Ablage (Samba `[scans]` auf CT120) ist seit 22.08.2026 per systemd-Timer (`frawo-scan-ingest.timer` auf `stock-pve`) direkt an die Paperless-Consume-Pipeline angebunden — Scans in den Ordnern `Alois/`, `Heidi/`, `Franz/`, `Wolfgang/` werden alle 2 Min. abgeholt, mit Personen-Präfix versehen und vollautomatisch per Gemini OCR klassifiziert (Odoo-Aufgabe #1012 erledigt).
+
+⚠️ **Das Ingest-Skript hat den Pfad fest verdrahtet** (`SCAN_BASE` in `/usr/local/bin/frawo-scan-ingest.sh` auf `stock-pve`, **Wirtspfad**, nicht Containerpfad). Beim Umzug der Scan-Ablage am 04.09.2026 lief der Timer dadurch **eine knappe Stunde lang ins Leere — mit Exit-Status 0**, weil das Skript fehlende Personenordner mit `continue` überspringt. Kein Fehler im Log, kein Alarm. Nachgezogen auf `/mnt/music_hdd/_Dokumente/Scans` (Sicherung: `frawo-scan-ingest.sh.backup-20260904`). **Wer die Scan-Ablage verschiebt, muss dieses Skript mitziehen.**
 
 ---
 
@@ -220,6 +222,24 @@ Gefahrlos: `length > 0` trifft nur Titel, deren Metadaten schon ausgelesen sind;
 ## 🎵 Musikverwaltung (beets, CT120)
 
 Läuft dort, weil die Platte **direkt eingehängt** ist (`/mnt/music`) — nicht über den CIFS-Umweg, an dem der AzuraCast-Scan früher hängenblieb.
+
+### Samba-Freigaben auf CT120 (Stand 04.09.2026)
+
+| Freigabe | Pfad (Container) | Zweck |
+|---|---|---|
+| `[music]` = `M:` | `/mnt/music` | **Nur Musik.** Blendet die Dokumentenablage per `veto files = /_Dokumente/` aus |
+| `[documents]` | `/mnt/music/_Dokumente` | **Neu 04.09.2026** — Belege, Scans, Odoo-Sicherungen, private Ablage |
+| `[scans]` | `/mnt/music/_Dokumente/Scans` | Drucker-Ablage Alopri (Pfad am 04.09. mitgezogen) |
+| `[playlists]` | `/mnt/music/_playlisten` | Rekordbox ↔ Sender |
+| `[radio]` = `R:` | `/mnt/stick/yourparty.radio` | 🔴 liegt auf der **Systemplatte des Wirts**. Abschaltung vorbereitet, aber **blockiert** — siehe unten |
+
+⚠️ **`M:` ist die ganze Plattenwurzel.** Der Container bekommt `sdb2` als
+`mp0: /mnt/music_hdd,mp=/mnt/music` — es gibt auf dieser Platte also **kein
+„neben der Musikfreigabe"**. Deshalb liegt die Dokumentenablage physisch
+*innerhalb* `/mnt/music` und wird für `M:` nur **ausgeblendet**. Das ist
+Absicht, kein Versehen. Sauber trennen liesse sie sich nur mit einem
+zweiten Mountpoint (`/mnt/data_family`) — der braucht einen **Neustart von
+CT120** und muss warten, bis die beets-Kuratierung ruht.
 
 | | |
 |---|---|
@@ -375,6 +395,7 @@ Notfall ohne Netz: an der Konsole `pve-firewall stop`.
 | Scanner-SMB-Passwort (CT120) und Paperless-Zugangsdaten (API-Token, Gemini-Key, Webhook-Geheimnis) nach Vaultwarden übertragen | Wolf | #1010 |
 | Paperless: E-Mail-Postfächer (info@/wolf@frawo.tech) per IMAP anbinden — wartet auf Server/Zugangsdaten von Wolf | Wolf | #1008 |
 | ~~Alopri-Scan-Ablage (Samba `[scans]` auf CT120) noch nicht an die neue Google-Drive-Paperless-Pipeline angeschlossen~~ — **erledigt 22.08.2026** via `frawo-scan-ingest.timer` | — | #1012 |
+| 🔴 **`R:` abschalten — blockiert, braucht Wolfs Entscheidung.** Wolf hat die Abschaltung am 04.09.2026 freigegeben, aber **AzuraCast hängt daran**: VM210 bindet `//10.1.0.94/radio` per `fstab` nach `/mnt/radio_rw` ein, und Docker reicht das als `network_library` in **zwei** Stationen (`yourparty`, `frawo_funk`) hinein. Freigabe entfernen ohne Vorarbeit = 662 Dateien verschwinden aus AzuraCast. Reihenfolge steht in `DOCS/MUSIKSERVER_CT120_LANDKARTE.md` | Wolf | #1263 |
 | **Flos Server ("frawo-docker-1") ist endgültig weg** (Wolf bestätigt 05.08.2026). Nextcloud, lokale AzuraCast, n8n-Alt, ollama, qdrant liefen dort ebenfalls — Bedarf für Neuaufsetzen jeweils einzeln klären | Wolf | — |
 
 ---
