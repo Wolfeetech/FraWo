@@ -30,8 +30,10 @@ Wer eine davon nicht kennt, sucht stundenlang am falschen Ende.
 | **Crontab zeigt auf verschobenen/gelöschten Skriptpfad** | läuft täglich/stündlich lautlos ins Leere — „Kommando nicht gefunden" geht nirgends hin, kein lokales Mail-System. So blieben 14 Tage (02.–16.08.2026) Odoo-Cloud-, Radio- und PBS-Konfig-Sicherung unbemerkt aus | Nach jeder Skript-Umbenennung/-Verschiebung sofort `crontab -l` gegen die tatsächlichen Dateien in `/usr/local/bin/` abgleichen |
 | **`fstrim -av` auf dem Wirt „räumt auf"** | erreicht die **Container**-Dateisysteme **nicht**. In LXC gelöschte Dateien bleiben dauerhaft im LVM-Thin-Pool belegt, weil die Container ohne `discard` laufen. So hielt CT110 auf dem Anker 90 GB Altlast fest, der Pool stand bei 82,8 % | Für Container `pct fstrim <id>` — läuft jetzt wöchentlich per `/usr/local/bin/frawo-ct-fstrim.sh` (So 04:30, beide Knoten) |
 | **`systemctl stop <dienst>` und der Prozess lebt weiter** | derselbe Dienst kann zusätzlich **in einem Container** laufen. Beim Abschalten des `cloudflared` auf dem Anker-Wirt blieb eine zweite Instanz in CT100 aktiv — sichtbar nur, weil `pgrep` danach nochmal geprüft wurde | Nach jedem Stoppen `pgrep -a <name>` gegenprüfen; bei Treffern `cat /proc/<pid>/cgroup` zeigt den Container |
+| **`azuracast_cli azuracast:media:reprocess 1`** | setzt bei **allen** Titeln `mtime = 0` (hier 26.000). `CheckMediaTask` hält die dann für „geändert" und stellt sie **alle 5 Minuten neu** in die Warteschlange — und **leert diese zu Beginn jedes Laufs wieder** (`clearQueue()` als erste Zeile in `run()`). Neue Dateien reiht `processNewFiles()` **ganz zuletzt** ein, hinter ~26.000 Altaufträgen. Der **eine** Worker schafft ~20 Nachrichten/Minute, das Fenster ist 5 Minuten → die letzten ~25.900 werden nie erreicht. **Neue Titel tauchen dadurch ~20 Stunden lang überhaupt nicht auf**, ohne jede Fehlermeldung | Auf dieser Bibliothek **nie** aufrufen. Aufräumen (setzt genau den Wert, den AzuraCast nach erfolgreicher Verarbeitung selbst schreibt, `time()+5`): `UPDATE station_media SET mtime = UNIX_TIMESTAMP()+5 WHERE mtime = 0 AND length > 0;` |
+| **Neuer Ordner erscheint nicht im Radio, „Scan hängt"** | fast immer **nicht** der CIFS-Mount, sondern die Warteschlange oben. Gegenprobe 04.09.2026: Massenlesen über die Freigabe schafft **1,7 GB/s**, der komplette Baumdurchlauf (32.879 Dateien) läuft in **113 s** sauber durch. Der Prozess steht nur deshalb minutenlang in `D` (I/O-Wartezustand), weil zusätzlich `UpdateStorageLocationSizesTask` denselben Baum abläuft | Nicht am Mount schrauben. Erst messen: `valkey-cli XLEN messages:media` und `XINFO GROUPS messages:media` (`entries-read` gegen `lag`). Einzelnen Ordner sofort einspielen: seine Einträge im Stream suchen und die Gruppe gezielt davorsetzen — `valkey-cli XGROUP SETID messages:media symfony <ID direkt davor>` (löscht nichts, überspringt nur die Altaufträge) |
 
-⚠️ **Nach direkten Datenbank-Änderungen an AzuraCast immer** `azuracast_cli azuracast:radio:restart 1` — sonst merkt liquidsoap nichts.
+⚠️ **Nach direkten Datenbank-Änderungen an AzuraCast immer** `azuracast_cli azuracast:radio:restart 1` — sonst merkt liquidsoap nichts. Gilt auch für **neue Playlisten**: Titel und `.m3u` entstehen automatisch, aber liquidsoap kennt die Playlist erst nach dem Neustart (`grep -c -i <name> …/config/liquidsoap.liq` muss > 0 sein).
 
 ---
 
@@ -180,12 +182,15 @@ hat, ist noch nicht geklärt). **Kein Zeitplan mehr aktiv**
 (`GET /api/station/1/schedule` liefert eine leere Liste) — stattdessen
 vier gleichgewichtete Kanäle, die rund um die Uhr gemischt laufen:
 
-| Playlist | Titel | Gewichtung |
-|---|---|---|
-| Channel 1 — Acoustik & Ambient | 1.299 | 3 |
-| Channel 2 — Soft Groove | 3.376 | 3 |
-| Channel 3 — Harder Styles | 1.963 | 3 |
-| Channel 4 — Roadtrip & Classics | 1.513 | 3 |
+| Playlist | ID | Titel (gemessen 04.09.2026) | Gewichtung |
+|---|---|---|---|
+| Channel 1 — Acoustik & Ambient | 846 | 1.225 | 3 |
+| Channel 2 — Soft Groove | 847 | 3.498 | 3 |
+| Channel 3 — Harder Styles | 848 | 2.622 | 3 |
+| Channel 4 — Roadtrip & Classics | 849 | 1.514 | 3 |
+| **Sunrise** (neu 04.09.2026) | 851 | 21 | 3 |
+
+**Wie eine Playlist bestückt wird:** Ordner unter `/mnt/music/Curated_Playlists/<Name>/` mit **Symlinks** (keine Kopien) auf die echten Dateien, dazu eine Zeile in `station_playlist_folders`. Die Symlinks löst **Samba serverseitig** auf — der CIFS-Client in VM210 sieht ganz normale Dateien (`find -type l` dort liefert 0). Danach übernimmt `CheckFolderPlaylistsTask` (alle 5 Min) die Zuordnung automatisch.
 
 Alle vier gleich gewichtet, kein Tageszeit- oder Wochentag-Bezug mehr,
 keine separaten DJ-Show-Slots. **Wolf wusste davon nichts** (Stand
@@ -201,6 +206,14 @@ klärt das direkt mit der anderen Sitzung.
 ⚠️ Der API-Schlüssel aus `reference_frawo_azuracast` ist **tot**. Verwaltung über die Datenbank:
 `ssh stock-pve` → `qm guest exec 210 -- docker exec azuracast sh -c 'mariadb -u$MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE …'`
 Grössere Abfragen als Datei einspielen (`docker cp`), sonst schluckt der Rückweg die Ausgabe. Tabellen heissen `station_playlists` (Plural).
+
+🟡 **Offen seit 04.09.2026 — ein Befehl, den nur Wolf ausführen kann.** Der versehentliche `azuracast:media:reprocess 1` hat **25.819** Titel auf `mtime = 0` stehen lassen (siehe Fallen-Tabelle). Solange das so ist, blockiert die Altlast weiterhin jeden **neuen** Ordner für ~20 Stunden. Sunrise ist bereits von Hand vorgezogen und läuft, der Rückstand baut sich sonst erst von selbst ab. Aufräumbefehl (danach ist der Scan sofort wieder normal schnell):
+
+```
+ssh stock-pve "qm guest exec 210 -- docker exec azuracast sh -c 'mariadb -u\$MYSQL_USER -p\$MYSQL_PASSWORD \$MYSQL_DATABASE -e \"UPDATE station_media SET mtime = UNIX_TIMESTAMP()+5 WHERE mtime = 0 AND length > 0;\"'"
+```
+
+Gefahrlos: `length > 0` trifft nur Titel, deren Metadaten schon ausgelesen sind; die 18 wirklich unverarbeiteten bleiben in der Warteschlange.
 
 ---
 
