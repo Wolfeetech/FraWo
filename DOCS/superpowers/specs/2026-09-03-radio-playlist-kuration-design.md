@@ -81,9 +81,20 @@ noch verschieben, wenn ein Pool zu klein/groß ausfällt.
 
 ## Track-Recherche & Vibe-Tagging
 
-Kern der Qualitätsverbesserung. Pro Show wird **nicht die ganze
-Bibliothek**, sondern ein gezielter Pool von ca. 150–300 Titeln
-recherchiert (insgesamt ~1.500–3.000 Titel für alle 10 Shows).
+Kern der Qualitätsverbesserung. **Korrigiert 04.09.2026** (ursprünglich
+war hier ein Pool von ~150–300 Titeln pro Show geplant — auf Wolfs
+Nachfrage, warum nicht die ganze Bibliothek von ~11.000 Titeln genutzt
+wird, umgestellt): `vibe`/`research_source` sind eine **bibliotheksweite
+Recherche-Warteschlange**, aus der alle 10 Shows schöpfen, statt 10
+getrennter Show-Pools. Jeder Titel wird genau einmal recherchiert; das
+Vibe-Schlagwort entscheidet danach, zu welcher Show er passt — auch
+Funde, die zu einer anderen als der gerade bearbeiteten Show gehören,
+werden mitgetaggt (Doppelarbeit für später vermeiden). Ausgeschlossen
+sind nur Titel mit von vornherein falschem Energie-Level (Hard Techno,
+Psy-Trance, Drum & Bass, Trap, Hardcore u. ä. — ca. 570 von 11.764
+Titeln, keine Vermutung nötig, das ist bereits über die vorhandene
+Genre-Einordnung eindeutig). Details/aktuelle Zahlen: Odoo #1261 und
+`DOCS/superpowers/plans/2026-09-03-radio-show-sunrise.md`.
 
 **Ablauf pro Titel:**
 1. Echte Suche nach Titel + Interpret (Discogs, Beatport, 1001
