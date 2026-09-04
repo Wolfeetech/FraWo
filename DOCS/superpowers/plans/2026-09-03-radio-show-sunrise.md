@@ -73,18 +73,20 @@ ssh stock-pve "pct exec 120 -- beet modify -y 'vibe=' 'research_source=' id:<VER
 - Consumes: `vibe`/`research_source`-Felder aus Task 1.
 - Produces: eine feste beets-Query `SUNRISE_POOL_QUERY`, die den Grundpool für Sunrise abgrenzt. Task 3 nutzt exakt diese Query, um zu sehen, was noch offen ist.
 
-Sunrise soll laut Spec ruhig starten: Ambient/Deep House, niedriges Tempo. Konkrete Query (BPM-Obergrenze 122, die drei ruhigsten/relevantesten Genre-Cluster):
+Sunrise soll laut Spec ruhig starten: Ambient/Deep House, niedriges Tempo. Erste Fassung (03.09.2026) nutzte nur 3 Genre-Zweige (480 Titel) — auf Nachfrage ("warum nur 480?") am 04.09.2026 erweitert: bei ~45% echter Trefferquote unter den recherchierten Titeln reicht ein 480er-Pool kaum für die Zielgröße 150–300, und drei weitere, thematisch passende Genres waren ungenutzt liegen geblieben. Finale Query, 6 Genre-Zweige, BPM-Obergrenze weiterhin 122:
 
 ```
-SUNRISE_POOL_QUERY = genre:"Deep House","Electronica","Ambient" bpm:1..122
+SUNRISE_POOL_QUERY (je Zweig eigene bpm-Bedingung, siehe Stolperfalle oben):
+"genre:Deep House" bpm:1..122 , "genre:Electronica" bpm:1..122 , "genre:Ambient" bpm:1..122 ,
+"genre:Nu Disco" bpm:1..122 , "genre:Melodic House" bpm:1..122 , "genre:Organic House" bpm:1..122
 ```
 
 - [ ] **Schritt 1: Poolgröße prüfen**
 
 ```
-ssh stock-pve 'pct exec 120 -- beet list "genre:Deep House,Electronica,Ambient" bpm:1..122 2>&1 | wc -l'
+ssh stock-pve "pct exec 120 -- beet list 'genre:Deep House' bpm:1..122 , 'genre:Electronica' bpm:1..122 , 'genre:Ambient' bpm:1..122 , 'genre:Nu Disco' bpm:1..122 , 'genre:Melodic House' bpm:1..122 , 'genre:Organic House' bpm:1..122 2>&1 | wc -l"
 ```
-Erwartung: eine Zahl zwischen ca. 100 und 500. Ist sie **kleiner als 100**: Genre-Liste erweitern (z. B. zusätzlich `"Nu Disco / Disco"` aufnehmen) und Schritt wiederholen. Ist sie **größer als 500**: BPM-Obergrenze auf 118 senken und wiederholen. Das Ergebnis (finale Query + Titelzahl) wird in Schritt 2 festgehalten.
+Erwartung (Stand 04.09.2026, verifiziert): 900 Titel, keine Überschneidung zwischen den 6 Zweigen (jeder Titel trägt in dieser Bibliothek nur eines der sechs Genres). Reicht das bei künftigen Shows nicht: weitere thematisch passende Zweige aus der Genre-Verteilung ergänzen (`beet list -f '$genre' | sort | uniq -c | sort -rn`, siehe Odoo #1261 für die volle Liste) statt die BPM-Grenze zu senken — mehr Genre-Vielfalt schlägt engeres Tempo-Fenster.
 
 - [ ] **Schritt 2: Ergebnis dokumentieren**
 
@@ -103,7 +105,7 @@ Finale Query + Titelzahl als Kommentar in Odoo-Task #1261 posten (`mcp__odoo__po
 - [ ] **Schritt 1: Nächste unbearbeiteten Titel aus dem Pool holen**
 
 ```
-ssh stock-pve "pct exec 120 -- beet list -f '\$id | \$artist | \$title' 'genre:Deep House' bpm:1..122 'vibe::^\$' , 'genre:Electronica' bpm:1..122 'vibe::^\$' , 'genre:Ambient' bpm:1..122 'vibe::^\$' 2>&1 | head -10"
+ssh stock-pve "pct exec 120 -- beet list -f '\$id | \$artist | \$title' 'genre:Deep House' bpm:1..122 'vibe::^\$' , 'genre:Electronica' bpm:1..122 'vibe::^\$' , 'genre:Ambient' bpm:1..122 'vibe::^\$' , 'genre:Nu Disco' bpm:1..122 'vibe::^\$' , 'genre:Melodic House' bpm:1..122 'vibe::^\$' , 'genre:Organic House' bpm:1..122 'vibe::^\$' 2>&1 | head -10"
 ```
 (Zwei Stolperfallen der beets-Query-Syntax, live gefunden: (1) `feld:wert` ist ein einfacher **Substring**-Vergleich, für echte Regex-Prüfung — z. B. "Feld ist leer" — braucht es den **doppelten** Doppelpunkt: `vibe::^$` für leer, `vibe::.` für nicht-leer. Mit einfachem Doppelpunkt (`vibe:^$`) sucht beets nach dem wörtlichen Substring `^$` und findet nichts. (2) Bei `,`-verknüpften Oder-Zweigen gilt ein zusätzlicher Filter nur für den Zweig, an den er direkt angehängt ist — er muss in **jedem** Zweig wiederholt werden, sonst liefern die anderen Zweige ungefiltert alles zurück.)
 
@@ -121,7 +123,7 @@ ssh stock-pve "pct exec 120 -- beet modify -y 'vibe=<schlagwort>' 'research_sour
 - [ ] **Schritt 4: Stichprobe verifizieren**
 
 ```
-ssh stock-pve "pct exec 120 -- beet list -f '\$title | \$vibe | \$research_source' 'genre:Deep House' bpm:1..122 'vibe::.' , 'genre:Electronica' bpm:1..122 'vibe::.' , 'genre:Ambient' bpm:1..122 'vibe::.' 2>&1 | tail -10"
+ssh stock-pve "pct exec 120 -- beet list -f '\$title | \$vibe | \$research_source' 'genre:Deep House' bpm:1..122 'vibe::.' , 'genre:Electronica' bpm:1..122 'vibe::.' , 'genre:Ambient' bpm:1..122 'vibe::.' , 'genre:Nu Disco' bpm:1..122 'vibe::.' , 'genre:Melodic House' bpm:1..122 'vibe::.' , 'genre:Organic House' bpm:1..122 'vibe::.' 2>&1 | tail -10"
 ```
 Erwartung: die eben bearbeiteten Titel erscheinen mit Vibe + Quelle.
 
@@ -199,7 +201,7 @@ VALUES (<SUNRISE_ID>, 600, 900, \\\"1,2,3,4,5\\\", 0);
 Ordner anlegen und Symlinks setzen (ein Aufruf pro Titel, `ln -s` verändert keine Originaldatei):
 ```
 ssh stock-pve "pct exec 120 -- mkdir -p /mnt/music/Curated_Playlists/Sunrise"
-ssh stock-pve "pct exec 120 -- beet list -f '\$path' 'genre:Deep House' bpm:1..122 'vibe::.' '^vibe:EXCLUDED' , 'genre:Electronica' bpm:1..122 'vibe::.' '^vibe:EXCLUDED' , 'genre:Ambient' bpm:1..122 'vibe::.' '^vibe:EXCLUDED' 2>&1" > /tmp/sunrise_paths.txt
+ssh stock-pve "pct exec 120 -- beet list -f '\$path' 'genre:Deep House' bpm:1..122 'vibe::.' '^vibe:EXCLUDED' , 'genre:Electronica' bpm:1..122 'vibe::.' '^vibe:EXCLUDED' , 'genre:Ambient' bpm:1..122 'vibe::.' '^vibe:EXCLUDED' , 'genre:Nu Disco' bpm:1..122 'vibe::.' '^vibe:EXCLUDED' , 'genre:Melodic House' bpm:1..122 'vibe::.' '^vibe:EXCLUDED' , 'genre:Organic House' bpm:1..122 'vibe::.' '^vibe:EXCLUDED' 2>&1" > /tmp/sunrise_paths.txt
 ```
 Danach je Zeile aus `/tmp/sunrise_paths.txt` (voller Original-Pfad) einen Symlink mit demselben Basisnamen im neuen Ordner anlegen:
 ```
