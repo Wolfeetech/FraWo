@@ -44,5 +44,18 @@
       <field name="key">frawo_agent.telegram_chat_id</field>
       <field name="value">SETZE_TELEGRAM_CHAT_ID</field>
     </record>
+    <!-- Kanal-Demokratie (Radio): Schalter bewusst aus, bis der Trockenlauf bestanden ist. -->
+    <record id="param_radio_democracy_enabled" model="ir.config_parameter">
+      <field name="key">frawo_agent.radio_democracy_enabled</field>
+      <field name="value">false</field>
+    </record>
+    <record id="param_radio_chill_playlists" model="ir.config_parameter">
+      <field name="key">frawo_agent.radio_chill_playlist_ids</field>
+      <field name="value">846,847</field>
+    </record>
+    <record id="param_radio_energy_playlists" model="ir.config_parameter">
+      <field name="key">frawo_agent.radio_energy_playlist_ids</field>
+      <field name="value">848,849</field>
+    </record>
   </data>
 </odoo>
