@@ -1363,8 +1363,9 @@ body {
     }
 
     voteBannerTimeout = setTimeout(function() {
+      voteBannerTimeout = null;
       if (elNextCard) elNextCard.classList.remove('active-vote');
-      if (lastNowPlaying) renderNextTrack(lastNowPlaying);
+      if (typeof loadNowPlaying === 'function') loadNowPlaying();
     }, 6500);
   };
 
