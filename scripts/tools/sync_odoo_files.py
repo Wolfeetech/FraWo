@@ -4,6 +4,7 @@ import os
 
 FILES_TO_SYNC = [
     "addons/frawo_agent/models/it_equipment.py",
+    "addons/frawo_agent/models/mail_message.py",
     "addons/frawo_agent/models/__init__.py",
     "addons/frawo_agent/views/it_equipment_views.xml",
     "addons/frawo_agent/__manifest__.py",
