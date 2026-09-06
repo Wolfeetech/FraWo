@@ -490,3 +490,25 @@ bleibt als stornierter Datensatz ohne Wert stehen, gleiches Muster wie
 bereits vorhandener Test-Auftrag S00031). Beide Wege verifiziert: Termin
 entsteht korrekt (Kunde/Positionen/Dauer/Erinnerung), Termin wird beim
 Stornieren korrekt archiviert.
+
+## Nachtrag 06.09.2026 — Inselhalle-Dienstplan + Kundenname im Titel
+
+**Lehre aus einem eigenen Fehler:** Beim ersten Versuch, Wolfs
+Inselhalle-Dienstplan (05.–12.09.) in den Kalender zu übertragen, wurden
+blind 8 neue Termine angelegt, ohne vorher zu prüfen, ob diese Woche
+schon im Kalender stand — sie stand bereits drin (von Wolf selbst am
+05.09. eingetragen). Wolf hat das zu Recht bemängelt. Fix: alle 8
+Duplikate archiviert, ab da vor JEDER neuen Kalender-Dateneingabe erst
+`search_records` auf `calendar.event` im Ziel-Zeitraum. Zwei weitere
+Wochen (14.–19.09. und 22.–28.09.) waren tatsächlich noch leer und
+wurden nach Vorprüfung sicher ergänzt (7 + 12 neue Termine).
+
+**Kundenname im Fokuszeit-Titel:** Wolf will am Kalendereintrag direkt
+sehen, für welchen Kunden eine Aufgabe ist. `project.task.partner_id`
+(Feld "Customer") existiert bereits, ist aber nur bei 9 von ca. 1280
+Aufgaben gepflegt. Action 880 erweitert: Titel wird `"<Kunde> ·
+<Aufgabenname>"` wenn `partner_id` gesetzt ist, sonst wie bisher nur der
+Aufgabenname. Kundennamen sind normalerweise kurz genug fürs Handy
+(anders als die vollen Projektnamen, siehe erster Handy-Optimierungs-
+Nachtrag oben). Getestet gegen Testaufgabe mit Kunde "Bauhof Wangen" —
+Titel korrekt "Bauhof Wangen · [Testname]".

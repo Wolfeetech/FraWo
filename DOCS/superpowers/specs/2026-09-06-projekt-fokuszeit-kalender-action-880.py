@@ -49,10 +49,18 @@ def strip_html(value):
     return result.strip()
 
 
+def build_title(record):
+    if record.partner_id:
+        return '%s · %s' % (record.partner_id.name, record.name)
+    return record.name
+
+
 def build_description(record):
     parts = []
     if record.project_id:
         parts.append('Projekt: %s' % record.project_id.name)
+    if record.partner_id:
+        parts.append('Kunde: %s' % record.partner_id.name)
     if record.date_deadline:
         parts.append('Frist: %s' % record.date_deadline.strftime('%d.%m.%Y %H:%M'))
     task_text = strip_html(record.description)[:500]
@@ -70,6 +78,7 @@ def sync_now(env, user):
 
 
 if record.date_deadline and record.user_ids:
+    title = build_title(record)
     description = build_description(record)
     reminder_id = env.ref('calendar.alarm_notif_1', raise_if_not_found=False)
     for user in record.user_ids:
@@ -83,7 +92,7 @@ if record.date_deadline and record.user_ids:
 
         if slot_start and slot_end:
             vals = {
-                'name': record.name,
+                'name': title,
                 'description': description,
                 'start': slot_start,
                 'stop': slot_end,
@@ -99,7 +108,7 @@ if record.date_deadline and record.user_ids:
                 vals['alarm_ids'] = [(6, 0, [reminder_id.id])]
         else:
             vals = {
-                'name': '⏰ Frist: ' + record.name,
+                'name': '⏰ Frist: ' + title,
                 'description': description,
                 'start': record.date_deadline,
                 'stop': record.date_deadline,
