@@ -1,5 +1,7 @@
+from datetime import timedelta
 from unittest.mock import patch
 
+from odoo import fields
 from odoo.tests.common import TransactionCase, tagged
 
 
@@ -92,3 +94,73 @@ class TestWeightMath(TransactionCase):
         current = {846: 6, 847: 6, 848: 1, 849: 1}
         out = self._compute(current, energy=0, chill=9)
         self.assertEqual(out, {})
+
+
+@tagged("post_install", "-at_install", "frawo_agent")
+class TestDemocracyCron(TransactionCase):
+
+    def setUp(self):
+        super().setUp()
+        ICP = self.env["ir.config_parameter"].sudo()
+        ICP.set_param("frawo_agent.radio_democracy_enabled", "true")
+        ICP.set_param("frawo_agent.radio_chill_playlist_ids", "846,847")
+        ICP.set_param("frawo_agent.radio_energy_playlist_ids", "848,849")
+        self.env["frawo.radio.vote"].search([]).unlink()
+
+    def _vote(self, vote_type, minutes_ago=0):
+        rec = self.env["frawo.radio.vote"].create({
+            "track_id": "T", "vote_type": vote_type, "voter_ip": "1.2.3.4",
+        })
+        if minutes_ago:
+            self.env.cr.execute(
+                "UPDATE frawo_radio_vote SET create_date = %s WHERE id = %s",
+                (fields.Datetime.now() - timedelta(minutes=minutes_ago), rec.id),
+            )
+            rec.invalidate_recordset()
+        return rec
+
+    def test_disabled_switch_writes_nothing(self):
+        self.env["ir.config_parameter"].sudo().set_param(
+            "frawo_agent.radio_democracy_enabled", "false")
+        self._vote("energy")
+        self._vote("energy")
+        self._vote("energy")
+        with patch("odoo.addons.frawo_agent.models.radio_azuracast."
+                   "FrawoRadioAzuracast.set_weight") as m:
+            self.env["frawo.radio.vote"]._cron_apply_vote_weights()
+        self.assertFalse(m.called)
+
+    def test_energy_majority_writes_new_weights(self):
+        for _ in range(4):
+            self._vote("energy")
+        with patch("odoo.addons.frawo_agent.models.radio_azuracast."
+                   "FrawoRadioAzuracast.get_weights",
+                   return_value={846: 3, 847: 3, 848: 3, 849: 3}), \
+             patch("odoo.addons.frawo_agent.models.radio_azuracast."
+                   "FrawoRadioAzuracast.set_weight", return_value=True) as m:
+            self.env["frawo.radio.vote"]._cron_apply_vote_weights()
+        written = {c.args[0]: c.args[1] for c in m.call_args_list}
+        self.assertEqual(written, {846: 2, 847: 2, 848: 4, 849: 4})
+
+    def test_votes_outside_window_are_ignored(self):
+        for _ in range(4):
+            self._vote("energy", minutes_ago=30)
+        with patch("odoo.addons.frawo_agent.models.radio_azuracast."
+                   "FrawoRadioAzuracast.get_weights",
+                   return_value={846: 3, 847: 3, 848: 3, 849: 3}), \
+             patch("odoo.addons.frawo_agent.models.radio_azuracast."
+                   "FrawoRadioAzuracast.set_weight", return_value=True) as m:
+            self.env["frawo.radio.vote"]._cron_apply_vote_weights()
+        self.assertFalse(m.called)
+
+    def test_writes_a_log_entry(self):
+        for _ in range(4):
+            self._vote("chill")
+        before = self.env["frawo.agent.log"].search_count([])
+        with patch("odoo.addons.frawo_agent.models.radio_azuracast."
+                   "FrawoRadioAzuracast.get_weights",
+                   return_value={846: 3, 847: 3, 848: 3, 849: 3}), \
+             patch("odoo.addons.frawo_agent.models.radio_azuracast."
+                   "FrawoRadioAzuracast.set_weight", return_value=True):
+            self.env["frawo.radio.vote"]._cron_apply_vote_weights()
+        self.assertGreater(self.env["frawo.agent.log"].search_count([]), before)

@@ -1,11 +1,17 @@
 # -*- coding: utf-8 -*-
+import logging
+from datetime import timedelta
+
 from odoo import api, fields, models
+
+_logger = logging.getLogger(__name__)
 
 # Kanal-Demokratie: Gewichtsgrenzen fuer die AzuraCast-Rotationsplaylisten.
 BASE_WEIGHT = 3
 MIN_WEIGHT = 1
 MAX_WEIGHT = 6
 VOTE_MARGIN = 2
+VOTE_WINDOW_MINUTES = 15
 
 
 class FrawoRadioVote(models.Model):
@@ -69,3 +75,56 @@ class FrawoRadioVote(models.Model):
             if new != old:
                 targets[pid] = new
         return targets
+
+    @api.model
+    def _cron_apply_vote_weights(self):
+        """Verschiebt die Kanal-Gewichte anhand der Votes der letzten Minuten.
+
+        Fail-closed: ohne Schalter frawo_agent.radio_democracy_enabled == "true"
+        passiert nichts. Schreibt ueber die AzuraCast-REST-API, liest danach
+        zurueck (am Ergebnis pruefen, nicht am Vorgang) und protokolliert jeden
+        Lauf mit Aenderung in frawo.agent.log.
+        """
+        ICP = self.env["ir.config_parameter"].sudo()
+        enabled = (ICP.get_param("frawo_agent.radio_democracy_enabled", "") or "").strip().lower()
+        if enabled != "true":
+            return
+
+        cutoff = fields.Datetime.now() - timedelta(minutes=VOTE_WINDOW_MINUTES)
+        energy = self.search_count([
+            ("create_date", ">=", cutoff), ("vote_type", "=", "energy")])
+        chill = self.search_count([
+            ("create_date", ">=", cutoff), ("vote_type", "=", "chill")])
+
+        chill_ids, energy_ids = self._channel_groups()
+        api_client = self.env["frawo.radio.azuracast"]
+        current = api_client.get_weights(chill_ids + energy_ids)
+        if not current:
+            _logger.warning("Radio-Demokratie: keine Gewichte lesbar, Lauf uebersprungen.")
+            return
+
+        targets = self._compute_targets(current, energy, chill)
+        if not targets:
+            return
+
+        written, failed = {}, []
+        for pid, weight in targets.items():
+            if api_client.set_weight(pid, weight):
+                written[pid] = weight
+            else:
+                failed.append(pid)
+
+        # Am Ergebnis pruefen, nicht am Vorgang: Gewichte zurueckelesen.
+        verify = api_client.get_weights(list(targets.keys()))
+        mismatch = {pid: (targets[pid], verify.get(pid))
+                    for pid in targets if verify.get(pid) != targets[pid]}
+
+        self.env["frawo.agent.log"].sudo().create({
+            "name": "Radio-Demokratie: Gewichte angepasst",
+            "level": "warning" if (failed or mismatch) else "info",
+            "message": (
+                f"Fenster {VOTE_WINDOW_MINUTES} Min: energy={energy}, chill={chill}. "
+                f"Vorher={current}. Ziel={targets}. Geschrieben={written}. "
+                f"Fehlgeschlagen={failed}. Abweichung nach Rueckprobe={mismatch}."
+            ),
+        })
