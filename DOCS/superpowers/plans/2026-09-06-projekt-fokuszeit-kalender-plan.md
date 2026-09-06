@@ -512,3 +512,31 @@ Aufgabenname. Kundennamen sind normalerweise kurz genug fürs Handy
 (anders als die vollen Projektnamen, siehe erster Handy-Optimierungs-
 Nachtrag oben). Getestet gegen Testaufgabe mit Kunde "Bauhof Wangen" —
 Titel korrekt "Bauhof Wangen · [Testname]".
+
+## Nachtrag 06.09.2026 — "Meeting"-Fehlklassifizierung behoben
+
+Wolf: "Termine stehen als 'meeting' drin... das stimmt doch nicht es
+sind 'arbeitszeiten'". Ursache: sowohl Action 880 als auch Action 890
+trugen den Termin-Organisator zusätzlich als `partner_ids`-Teilnehmer
+ein (redundant, da er ja schon `user_id`/Organisator ist) — Odoo (und
+Google Calendar) klassifizieren Termine mit Teilnehmern automatisch als
+"Meeting" statt als normale Arbeitszeit/Block. Fix: `partner_ids` aus
+beiden Actions entfernt, aus allen bestehenden Inselhalle-Testeinträgen
+ebenfalls entfernt (`partner_ids: [[5]]` = Odoo-Syntax zum vollständigen
+Leeren eines x2many-Felds).
+
+Zusätzlich gefunden: die Rückmeldungs-Aktivität nutzte
+`activity_type_id = 3` ("Meeting", ein globaler Odoo-Standardtyp) — das
+zeigte sich ebenfalls als "Meeting"-Label in Odoo selbst. Eigenen Typ
+"🔁 Rückmeldung Fokuszeit" (`mail.activity.type` id 15) angelegt und
+Action 880 darauf umgestellt, ohne den globalen "Meeting"-Typ
+anzufassen (der wird an 56 anderen Stellen bereits genutzt).
+
+**Konflikt-Schutz gegenüber Inselhalle verifiziert (mit echtem
+Wolf-User, nicht nur dem Agent-Test-Muster):** Testaufgabe mit
+`user_ids=[Wolf]` angelegt, künstliche Ganztagsblockade für den
+nächsten Tag gesetzt — Automatik wich korrekt sowohl der künstlichen
+Blockade als auch dem echten Inselhalle-Dienst (07:00-13:00 UTC) aus
+und fand den ersten freien Slot direkt danach (13:00 UTC). Bestätigt:
+FraWo-Fokuszeit wird nie in einen bestehenden Inselhalle-Dienst gelegt,
+sobald die Aufgabe Wolf direkt zugewiesen ist (nicht nur dem Agent).

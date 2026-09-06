@@ -1,6 +1,7 @@
 WORK_START, WORK_END = 8, 18
 PROJECT_TASK_MODEL_ID = 522
 FOKUSZEIT_CATEG_ID = 8
+RUECKMELDUNG_ACTIVITY_TYPE_ID = 15
 
 
 def find_free_slot(env, user, duration_hours, deadline, exclude_event_id=None):
@@ -99,7 +100,6 @@ if record.date_deadline and record.user_ids:
                 'duration': (slot_end - slot_start).total_seconds() / 3600.0,
                 'allday': False,
                 'user_id': user.id,
-                'partner_ids': [(4, user.partner_id.id)],
                 'res_model_id': PROJECT_TASK_MODEL_ID,
                 'res_id': record.id,
                 'categ_ids': [(6, 0, [FOKUSZEIT_CATEG_ID])],
@@ -115,7 +115,6 @@ if record.date_deadline and record.user_ids:
                 'duration': 0,
                 'allday': True,
                 'user_id': user.id,
-                'partner_ids': [(4, user.partner_id.id)],
                 'res_model_id': PROJECT_TASK_MODEL_ID,
                 'res_id': record.id,
                 'categ_ids': [(6, 0, [FOKUSZEIT_CATEG_ID])],
@@ -135,13 +134,13 @@ if record.date_deadline and record.user_ids:
                 ('res_model_id', '=', PROJECT_TASK_MODEL_ID),
                 ('res_id', '=', record.id),
                 ('user_id', '=', user.id),
-                ('activity_type_id', '=', 3),
+                ('activity_type_id', '=', RUECKMELDUNG_ACTIVITY_TYPE_ID),
                 ('active', '=', True),
             ], limit=1)
             activity_vals = {
                 'res_model_id': PROJECT_TASK_MODEL_ID,
                 'res_id': record.id,
-                'activity_type_id': 3,
+                'activity_type_id': RUECKMELDUNG_ACTIVITY_TYPE_ID,
                 'summary': 'Rückmeldung: ' + record.name,
                 'date_deadline': slot_end.date(),
                 'user_id': user.id,

@@ -5,9 +5,8 @@ base.automation id 18). Spiegelt die Aufgaben-Fokuszeit-Automatik
 Kalendertermin (2h Standarddauer, Kunde als Titel, Positionen +
 Auftrags-Link in der Beschreibung, 15-Min-Erinnerung, Sofort-Google-
 Sync). Storno oder geloeschter Liefertermin -> Termin wird archiviert.
-
-Getestet gegen Test-Auftrag S00044 (Kunde OdooBot, danach storniert) -
-beide Wege (anlegen + entfernen) verifiziert.
+Kein partner_ids-Eintrag mehr (siehe Nachtrag: das machte den Termin
+faelschlich als "Meeting" statt normale Arbeitszeit sichtbar).
 """
 
 ORDER_MODEL_ID = 545
@@ -66,7 +65,6 @@ if record.state == 'sale' and record.commitment_date:
         'duration': 2.0,
         'allday': False,
         'user_id': user.id if user else False,
-        'partner_ids': [(4, user.partner_id.id)] if user else [],
         'res_model_id': ORDER_MODEL_ID,
         'res_id': record.id,
         'categ_ids': [(6, 0, [FOKUSZEIT_CATEG_ID])],
