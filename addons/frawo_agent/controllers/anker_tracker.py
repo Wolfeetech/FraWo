@@ -317,6 +317,33 @@ self.addEventListener('fetch', event => {
             _logger.error("Anker Tracker add_consumer error: %s", e)
             return {'status': 'error', 'message': str(e)}
 
+    @http.route('/anker_tracker/update_product', type='jsonrpc', auth='public', methods=['POST'])
+    def update_product(self, product_id, name=None, emoji=None, manufacturer=None, volume=None, is_alcoholic=None, crate_size=None, price_per_bottle=None, pfand_per_bottle=None, pfand_per_crate=None, **kwargs):
+        """Updates an existing beverage product."""
+        self._check_kiosk_auth()
+        try:
+            product = request.env['anker.tracker.product'].sudo().browse(int(product_id))
+            if not product.exists():
+                return {'status': 'error', 'message': 'Produkt nicht gefunden'}
+            
+            vals = {}
+            if name is not None: vals['name'] = str(name).strip()
+            if emoji is not None: vals['emoji'] = str(emoji).strip()
+            if manufacturer is not None: vals['manufacturer'] = str(manufacturer).strip()
+            if volume is not None: vals['volume'] = float(volume)
+            if is_alcoholic is not None: vals['is_alcoholic'] = bool(is_alcoholic)
+            if crate_size is not None: vals['crate_size'] = int(crate_size)
+            if price_per_bottle is not None: vals['price_per_bottle'] = float(price_per_bottle)
+            if pfand_per_bottle is not None: vals['pfand_per_bottle'] = float(pfand_per_bottle)
+            if pfand_per_crate is not None: vals['pfand_per_crate'] = float(pfand_per_crate)
+            
+            product.write(vals)
+            _logger.info("Anker Tracker: Updated Product #%s with %s", product.id, vals)
+            return {'status': 'success', 'id': product.id}
+        except Exception as e:
+            _logger.error("Anker Tracker update_product error: %s", e)
+            return {'status': 'error', 'message': str(e)}
+
     @http.route('/anker_tracker/add_product', type='jsonrpc', auth='public', methods=['POST'])
     def add_product(self, name, emoji, manufacturer, volume, is_alcoholic, crate_size, price_per_bottle=0.0, **kwargs):
         """Adds a new beverage product."""
@@ -349,6 +376,54 @@ self.addEventListener('fetch', event => {
             return {'status': 'success'}
         except Exception as e:
             _logger.error("Anker Tracker delete_item error: %s", e)
+            return {'status': 'error', 'message': str(e)}
+
+    @http.route('/anker_tracker/update_consumption', type='jsonrpc', auth='public', methods=['POST'])
+    def update_consumption(self, consumption_id, consumer_id=None, product_id=None, quantity=None, unit_type=None, **kwargs):
+        """Corrects/updates an existing consumption booking."""
+        self._check_kiosk_auth()
+        try:
+            record = request.env['anker.tracker.consumption'].sudo().browse(int(consumption_id))
+            if not record.exists():
+                return {'status': 'error', 'message': 'Buchung nicht gefunden'}
+            vals = {}
+            if consumer_id is not None: vals['consumer_id'] = int(consumer_id)
+            if product_id is not None: vals['product_id'] = int(product_id)
+            if quantity is not None: vals['quantity'] = int(quantity)
+            if unit_type is not None: vals['unit_type'] = str(unit_type)
+            record.write(vals)
+            _logger.info("Anker Tracker: Corrected Consumption #%s -> %s", record.id, vals)
+            return {'status': 'success', 'id': record.id}
+        except Exception as e:
+            _logger.error("Anker Tracker update_consumption error: %s", e)
+            return {'status': 'error', 'message': str(e)}
+
+    @http.route('/anker_tracker/bill_category', type='jsonrpc', auth='public', methods=['POST'])
+    def bill_category(self, category='all', consumer_id=None, **kwargs):
+        """Selectively bills by category ('non_alcoholic', 'alcoholic', 'all') or consumer."""
+        self._check_kiosk_auth()
+        try:
+            Consumption = request.env['anker.tracker.consumption'].sudo()
+            domain = [('billed', '=', False)]
+            if consumer_id:
+                domain.append(('consumer_id', '=', int(consumer_id)))
+            
+            records = Consumption.search(domain)
+            to_bill = []
+            for r in records:
+                is_alc = r.product_id.is_alcoholic
+                if category == 'non_alcoholic' and not is_alc:
+                    to_bill.append(r.id)
+                elif category == 'alcoholic' and is_alc:
+                    to_bill.append(r.id)
+                elif category == 'all':
+                    to_bill.append(r.id)
+            
+            if to_bill:
+                Consumption.browse(to_bill).write({'billed': True})
+            return {'status': 'success', 'count': len(to_bill)}
+        except Exception as e:
+            _logger.error("Anker Tracker bill_category error: %s", e)
             return {'status': 'error', 'message': str(e)}
 
     @http.route('/anker_tracker/bill_now', type='jsonrpc', auth='public', methods=['POST'])

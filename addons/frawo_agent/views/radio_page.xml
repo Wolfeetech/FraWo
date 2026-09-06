@@ -1,0 +1,593 @@
+<t t-name="website.frawo_radio_new">
+    <t t-call="website.layout">
+      <t t-set="no_header" t-value="True"/>
+      <t t-set="no_footer" t-value="True"/>
+
+      <!-- Google Fonts: Inter (400, 500, 600, 700) -->
+      <link rel="preconnect" href="https://fonts.googleapis.com"/>
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin"/>
+      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+
+      <style>
+        /* ── Strict Bypass of Odoo Admin Top Navbar ── */
+        #oe_main_menu_navbar, header#top, .o_main_navbar, .o_frontend_to_backend_nav, .o_menu_systray, navbar, nav, #o_node_header {
+          display: none !important;
+          height: 0 !important;
+          max-height: 0 !important;
+          visibility: hidden !important;
+          overflow: hidden !important;
+          margin: 0 !important;
+          padding: 0 !important;
+        }
+        html, body, #wrapwrap, #wrap, main {
+          background: #0a0a0a !important;
+          min-height: 100vh;
+          margin: 0 !important;
+          padding: 0 !important;
+        }
+        body {
+          margin: 0;
+          padding: 0;
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+          color: #e8e8e8;
+        }
+        * { box-sizing: border-box; }
+
+        /* ── FraWo CI v3.0 Custom Properties (Canonical) ── */
+        :root {
+          --fw-bg: #0a0a0a;              /* Deep Void */
+          --fw-surface: #141816;         /* Spruce Surface */
+          --fw-primary: #004030;         /* FraWo Forest */
+          --fw-accent: #a050f0;          /* FraWo Violet */
+          --fw-accent-hover: #9d4edd;    /* Active Violet */
+          --fw-text-main: #e8e8e8;       /* Lumen Text */
+          --fw-text-muted: #98a29e;      /* Muted Sage */
+          --fw-border: #2a2e2c;          /* Border */
+          --fw-online: #2ecc71;          /* System Online */
+          --fw-radius: 0px;              /* Strikt 0px Radius (Pragmatisches Neo-Handwerk) */
+        }
+
+        .fr-page {
+          min-height: 100vh;
+          background: var(--fw-bg);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding: 32px 16px 60px;
+        }
+
+        .fr-topbar {
+          width: 100%;
+          max-width: 760px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-bottom: 28px;
+          border-bottom: 1px solid var(--fw-border);
+          padding-bottom: 14px;
+        }
+
+        .fr-back-link {
+          color: var(--fw-text-muted);
+          text-decoration: none;
+          font-size: 13px;
+          font-weight: 500;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+          transition: color 0.2s ease;
+        }
+        .fr-back-link:hover { color: var(--fw-accent); }
+
+        .fr-badge-onair {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          background: transparent;
+          border: 1px solid var(--fw-online);
+          color: var(--fw-online);
+          font-size: 11px;
+          font-weight: 600;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          padding: 4px 12px;
+          border-radius: 0px;
+        }
+
+        .fr-onair-dot {
+          width: 7px;
+          height: 7px;
+          background: var(--fw-online);
+        }
+
+        .fr-brand-header {
+          width: 100%;
+          max-width: 760px;
+          margin-bottom: 24px;
+        }
+        .fr-brand-eyebrow {
+          font-size: 12px;
+          font-weight: 600;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          color: var(--fw-text-muted);
+          margin-bottom: 4px;
+        }
+        .fr-brand-title {
+          font-size: 38px;
+          font-weight: 700;
+          letter-spacing: -0.02em;
+          color: var(--fw-text-main);
+          margin: 0 0 6px 0;
+          line-height: 1.1;
+        }
+        .fr-brand-slogan {
+          font-size: 14px;
+          font-weight: 400;
+          color: var(--fw-text-muted);
+          line-height: 1.5;
+        }
+
+        .fr-card {
+          width: 100%;
+          max-width: 760px;
+          background: var(--fw-surface);
+          border: 1px solid var(--fw-border);
+          border-radius: 0px;
+          padding: 28px;
+          margin-bottom: 24px;
+        }
+
+        .fr-hero-row {
+          display: flex;
+          align-items: center;
+          gap: 24px;
+          margin-bottom: 24px;
+        }
+
+        .fr-art-wrapper {
+          width: 120px;
+          height: 120px;
+          background: var(--fw-bg);
+          border: 1px solid var(--fw-border);
+          border-radius: 0px;
+          flex-shrink: 0;
+          overflow: hidden;
+          position: relative;
+        }
+
+        .fr-art-img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          position: absolute;
+          inset: 0;
+          opacity: 0;
+          transition: opacity 0.3s ease;
+        }
+        .fr-art-img.loaded { opacity: 1; }
+
+        .fr-art-fallback {
+          width: 100%;
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 36px;
+          background: var(--fw-primary);
+          color: var(--fw-text-main);
+        }
+
+        .fr-meta-info {
+          flex: 1;
+          min-width: 0;
+        }
+
+        .fr-station-tag {
+          font-size: 11px;
+          font-weight: 600;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          color: var(--fw-accent);
+          margin-bottom: 6px;
+        }
+
+        .fr-track-title {
+          font-size: 22px;
+          font-weight: 700;
+          color: var(--fw-text-main);
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          margin-bottom: 4px;
+          letter-spacing: -0.01em;
+        }
+
+        .fr-track-artist {
+          font-size: 15px;
+          font-weight: 400;
+          color: var(--fw-text-muted);
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          margin-bottom: 12px;
+        }
+
+        .fr-eq-bars {
+          display: flex;
+          align-items: flex-end;
+          gap: 4px;
+          height: 24px;
+        }
+        .fr-eq-bar {
+          width: 4px;
+          background: var(--fw-border);
+          border-radius: 0px;
+          height: 4px;
+          transition: height 0.15s ease, background-color 0.2s ease;
+        }
+        .fr-eq-bars.playing .fr-eq-bar:nth-child(1) { background: var(--fw-online); animation: eqAnim 0.75s ease-in-out infinite alternate; }
+        .fr-eq-bars.playing .fr-eq-bar:nth-child(2) { background: var(--fw-accent); animation: eqAnim 1.1s ease-in-out infinite alternate 0.2s; }
+        .fr-eq-bars.playing .fr-eq-bar:nth-child(3) { background: var(--fw-online); animation: eqAnim 0.65s ease-in-out infinite alternate 0.4s; }
+        .fr-eq-bars.playing .fr-eq-bar:nth-child(4) { background: var(--fw-accent); animation: eqAnim 0.95s ease-in-out infinite alternate 0.1s; }
+        .fr-eq-bars.playing .fr-eq-bar:nth-child(5) { background: var(--fw-online); animation: eqAnim 1.25s ease-in-out infinite alternate 0.3s; }
+        .fr-eq-bars.playing .fr-eq-bar:nth-child(6) { background: var(--fw-accent); animation: eqAnim 0.85s ease-in-out infinite alternate 0.15s; }
+
+        @keyframes eqAnim {
+          0% { height: 4px; }
+          100% { height: 24px; }
+        }
+
+        .fr-progress-wrap {
+          margin-bottom: 24px;
+        }
+        .fr-progress-bar {
+          height: 4px;
+          background: var(--fw-bg);
+          border: 1px solid var(--fw-border);
+          border-radius: 0px;
+          overflow: hidden;
+        }
+        .fr-progress-fill {
+          height: 100%;
+          width: 0%;
+          background: var(--fw-accent);
+          border-radius: 0px;
+          transition: width 1s linear;
+        }
+        .fr-time-row {
+          display: flex;
+          justify-content: space-between;
+          font-size: 12px;
+          color: var(--fw-text-muted);
+          margin-top: 6px;
+          font-weight: 400;
+        }
+
+        .fr-controls {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+        }
+
+        .fr-play-btn {
+          flex: 1;
+          background: var(--fw-accent);
+          border: 1px solid var(--fw-accent);
+          border-radius: 0px;
+          padding: 14px 28px;
+          color: #ffffff;
+          font-family: 'Inter', sans-serif;
+          font-size: 14px;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+          cursor: pointer;
+          transition: background-color 0.2s ease, border-color 0.2s ease;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+          -webkit-tap-highlight-color: transparent;
+          user-select: none;
+        }
+        .fr-play-btn:hover, .fr-play-btn:focus {
+          background: var(--fw-accent-hover);
+          border-color: var(--fw-accent-hover);
+          outline: none;
+        }
+
+        .fr-vol-wrap {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          background: var(--fw-bg);
+          padding: 10px 14px;
+          border: 1px solid var(--fw-border);
+          border-radius: 0px;
+        }
+        .fr-vol-icon {
+          font-size: 18px;
+          cursor: pointer;
+          color: var(--fw-text-muted);
+          transition: color 0.2s;
+          user-select: none;
+        }
+        .fr-vol-icon:hover { color: var(--fw-text-main); }
+
+        input.fr-vol-slider {
+          -webkit-appearance: none;
+          width: 90px;
+          height: 2px;
+          background: var(--fw-border);
+          outline: none;
+          cursor: pointer;
+        }
+        input.fr-vol-slider::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          width: 12px;
+          height: 12px;
+          border-radius: 0px;
+          background: var(--fw-accent);
+          cursor: pointer;
+        }
+
+        .fr-info-table {
+          width: 100%;
+          max-width: 760px;
+          background: var(--fw-surface);
+          border: 1px solid var(--fw-border);
+          border-radius: 0px;
+          padding: 20px;
+        }
+        .fr-info-title {
+          font-size: 12px;
+          font-weight: 600;
+          letter-spacing: 0.05em;
+          text-transform: uppercase;
+          color: var(--fw-text-muted);
+          margin-bottom: 12px;
+        }
+        .fr-info-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+          gap: 12px;
+        }
+        .fr-info-item {
+          background: var(--fw-bg);
+          border: 1px solid var(--fw-border);
+          padding: 12px;
+          font-size: 13px;
+        }
+        .fr-info-item .lbl { color: var(--fw-text-muted); font-size: 11px; text-transform: uppercase; margin-bottom: 4px; display: block; }
+        .fr-info-item .val { color: var(--fw-text-main); font-weight: 500; }
+
+        @media(max-width: 600px) {
+          .fr-hero-row { flex-direction: column; text-align: center; }
+          .fr-art-wrapper { width: 140px; height: 140px; }
+          .fr-controls { flex-direction: column; }
+          .fr-vol-wrap { width: 100%; justify-content: center; }
+        }
+      </style>
+
+      <!-- Audio Element with explicit src & preload -->
+      <audio id="fraAudio" src="https://funk.frawo-tech.de/listen/frawo_funk/radio.mp3" preload="metadata" playsinline="true" x-webkit-airplay="allow">
+      </audio>
+
+      <div class="fr-page">
+        <!-- Topbar -->
+        <div class="fr-topbar">
+          <a href="/" class="fr-back-link">← FRAWO.TECH</a>
+          <div class="fr-badge-onair">
+            <span class="fr-onair-dot"></span>
+            <span id="listenerBadge">SYSTEM ONLINE</span>
+          </div>
+        </div>
+
+        <!-- Brand Header (Kanonisches CI v3.0 Wording & Typography) -->
+        <div class="fr-brand-header">
+          <div class="fr-brand-eyebrow">FraWo Funk · Web Radio</div>
+          <h1 class="fr-brand-title">FRAWO FUNK</h1>
+          <div class="fr-brand-slogan">„Das Beste aus dem machen, was du hast." · Bodensee Region</div>
+        </div>
+
+        <!-- Main Terminal Player Card -->
+        <div class="fr-card">
+          <div class="fr-hero-row">
+            <div class="fr-art-wrapper">
+              <img id="artImg" class="fr-art-img" src="" alt=""/>
+              <div class="fr-art-fallback" id="artFallback">📻</div>
+            </div>
+            
+            <div class="fr-meta-info">
+              <div class="fr-station-tag" id="stationTag">AUTO-DJ: THE MACHINE</div>
+              <div class="fr-track-title" id="trackTitle">VERBINDEN...</div>
+              <div class="fr-track-artist" id="trackArtist">Lädt Metadaten...</div>
+              
+              <!-- Equalizer -->
+              <div class="fr-eq-bars" id="eqBars">
+                <div class="fr-eq-bar"></div>
+                <div class="fr-eq-bar"></div>
+                <div class="fr-eq-bar"></div>
+                <div class="fr-eq-bar"></div>
+                <div class="fr-eq-bar"></div>
+                <div class="fr-eq-bar"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Progress Bar -->
+          <div class="fr-progress-wrap">
+            <div class="fr-progress-bar">
+              <div class="fr-progress-fill" id="progressFill"></div>
+            </div>
+            <div class="fr-time-row">
+              <span id="timeElapsed">0:00</span>
+              <span id="timeTotal">0:00</span>
+            </div>
+          </div>
+
+          <!-- Controls (Explicit onclick and id for 100% reliable trigger) -->
+          <div class="fr-controls">
+            <button class="fr-play-btn" id="playBtn" onclick="window.frPlay()">
+              ▶ LIVE HÖREN
+            </button>
+            <div class="fr-vol-wrap">
+              <span class="fr-vol-icon" id="volIcon" onclick="window.frMute()">🔊</span>
+              <input type="range" class="fr-vol-slider" id="volSlider" min="0" max="100" value="80"/>
+            </div>
+          </div>
+        </div>
+
+        <!-- System Telemetry Table -->
+        <div class="fr-info-table">
+          <div class="fr-info-title">System Telemetrie &amp; Audio Parameter</div>
+          <div class="fr-info-grid">
+            <div class="fr-info-item">
+              <span class="lbl">Stream Codec</span>
+              <span class="val">MP3 320 kbps (Audiophil)</span>
+            </div>
+            <div class="fr-info-item">
+              <span class="lbl">Hörer Online</span>
+              <span class="val" id="listenerVal">--</span>
+            </div>
+            <div class="fr-info-item">
+              <span class="lbl">Signal-Kanal</span>
+              <span class="val">Bodensee Relay 01</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Bulletproof JS Playback Controller -->
+      <script>
+      (function() {
+        var STREAM_URL = 'https://funk.frawo-tech.de/listen/frawo_funk/radio.mp3';
+
+        window.frPlay = function() {
+          var audio = document.getElementById('fraAudio');
+          var playBtn = document.getElementById('playBtn');
+          var eqBars = document.getElementById('eqBars');
+          if (!audio) return;
+
+          if (audio.paused) {
+            if (!audio.src || audio.src === '' || audio.src === window.location.href) {
+              audio.src = STREAM_URL;
+            }
+            try { audio.load(); } catch(e){}
+            
+            var promise = audio.play();
+            if (promise &amp;&amp; promise.then) {
+              promise.then(function() {
+                if (playBtn) playBtn.innerHTML = '⏸ PAUSIEREN';
+                if (eqBars) eqBars.classList.add('playing');
+              }).catch(function(err) {
+                console.log('Play err:', err);
+                // Fallback attempt
+                audio.play();
+                if (playBtn) playBtn.innerHTML = '⏸ PAUSIEREN';
+                if (eqBars) eqBars.classList.add('playing');
+              });
+            } else {
+              if (playBtn) playBtn.innerHTML = '⏸ PAUSIEREN';
+              if (eqBars) eqBars.classList.add('playing');
+            }
+          } else {
+            audio.pause();
+            if (playBtn) playBtn.innerHTML = '▶ LIVE HÖREN';
+            if (eqBars) eqBars.classList.remove('playing');
+          }
+        };
+
+        window.frMute = function() {
+          var audio = document.getElementById('fraAudio');
+          var volIcon = document.getElementById('volIcon');
+          if (!audio) return;
+          audio.muted = !audio.muted;
+          if (volIcon) volIcon.innerText = audio.muted ? '🔇' : '🔊';
+        };
+
+        function initEventListeners() {
+          var playBtn = document.getElementById('playBtn');
+          var volSlider = document.getElementById('volSlider');
+
+          if (playBtn) {
+            playBtn.addEventListener('click', window.frPlay);
+          }
+          if (volSlider) {
+            volSlider.addEventListener('input', function(e) {
+              var audio = document.getElementById('fraAudio');
+              var volIcon = document.getElementById('volIcon');
+              var val = e.target.value;
+              if (audio) audio.volume = val / 100;
+              if (volIcon) {
+                if (val == 0) volIcon.innerText = '🔇';
+                else if (val &lt; 50) volIcon.innerText = '🔉';
+                else volIcon.innerText = '🔊';
+              }
+            });
+          }
+        }
+
+        async function fetchNowPlaying() {
+          try {
+            const res = await fetch('https://funk.frawo-tech.de/api/nowplaying/1');
+            if (!res.ok) return;
+            const data = await res.json();
+            
+            const song = data.now_playing?.song || {};
+            const listeners = data.listeners?.total || 0;
+            const streamer = data.live?.streamer_name || 'The Machine Auto-DJ';
+            
+            const titleEl = document.getElementById('trackTitle');
+            const artistEl = document.getElementById('trackArtist');
+            const badgeEl = document.getElementById('listenerBadge');
+            const listenerValEl = document.getElementById('listenerVal');
+            const stationTagEl = document.getElementById('stationTag');
+            
+            if (titleEl) titleEl.innerText = (song.title || 'FraWo Funk Live').toUpperCase();
+            if (artistEl) artistEl.innerText = song.artist || 'Underground Electronic';
+            if (badgeEl) badgeEl.innerText = `ON AIR • ${listeners} HÖRER`;
+            if (listenerValEl) listenerValEl.innerText = `${listeners} Hörer`;
+            if (stationTagEl) stationTagEl.innerText = `DJ: ${streamer.toUpperCase()}`;
+            
+            if (song.art) {
+              const artImg = document.getElementById('artImg');
+              if (artImg) {
+                artImg.src = song.art;
+                artImg.classList.add('loaded');
+              }
+            }
+
+            const elapsed = data.now_playing?.elapsed || 0;
+            const duration = data.now_playing?.duration || 0;
+            if (duration &gt; 0) {
+              const pct = (elapsed / duration) * 100;
+              const fillEl = document.getElementById('progressFill');
+              const elEl = document.getElementById('timeElapsed');
+              const totEl = document.getElementById('timeTotal');
+              if (fillEl) fillEl.style.width = pct + '%';
+              if (elEl) elEl.innerText = formatTime(elapsed);
+              if (totEl) totEl.innerText = formatTime(duration);
+            }
+          } catch(e) {}
+        }
+
+        function formatTime(sec) {
+          const m = Math.floor(sec / 60);
+          const s = Math.floor(sec % 60);
+          return `${m}:${s &lt; 10 ? '0' : ''}${s}`;
+        }
+
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', initEventListeners);
+        } else {
+          initEventListeners();
+        }
+
+        fetchNowPlaying();
+        setInterval(fetchNowPlaying, 5000);
+      })();
+      </script>
+    </t>
+</t>
