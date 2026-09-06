@@ -18,6 +18,11 @@ FILES_TO_SYNC = [
     "addons/frawo_agent/controllers/main.py",
     "addons/frawo_agent/controllers/anker_tracker.py",
     "addons/frawo_agent/controllers/radio_votes.py",
+    "addons/frawo_agent/models/radio_azuracast.py",
+    "addons/frawo_agent/tests/__init__.py",
+    "addons/frawo_agent/tests/test_radio_democracy.py",
+    "addons/frawo_agent/data/ir_cron.xml",
+    "addons/frawo_agent/data/config_params.xml",
 ]
 
 for rel_path in FILES_TO_SYNC:
