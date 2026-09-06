@@ -13,6 +13,7 @@
         "views/anker_tracker_views.xml",
         "views/anker_tracker_templates.xml",
         "views/it_equipment_views.xml",
+        "views/radio_vote_views.xml",
         "views/website_homepage_ci3.xml",
     ],
     # Asset-Bündel sind seit Odoo 15 Manifest-Einträge und keine vererbbaren

@@ -4,4 +4,5 @@ access_agent_log_system,frawo.agent.log.system,model_frawo_agent_log,base.group_
 access_anker_tracker_consumer,anker.tracker.consumer,model_anker_tracker_consumer,base.group_user,1,1,1,1
 access_anker_tracker_product,anker.tracker.product,model_anker_tracker_product,base.group_user,1,1,1,1
 access_anker_tracker_consumption,anker.tracker.consumption,model_anker_tracker_consumption,base.group_user,1,1,1,1
+access_radio_vote_user,frawo.radio.vote.user,model_frawo_radio_vote,base.group_user,1,0,0,1
 

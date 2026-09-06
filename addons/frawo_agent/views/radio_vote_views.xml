@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ============================================================
+         RADIO MOOD-VOTING – Auswertung fuer frawo.tech/radio
+         ============================================================ -->
+
+    <record id="view_radio_vote_list" model="ir.ui.view">
+        <field name="name">frawo.radio.vote.list</field>
+        <field name="model">frawo.radio.vote</field>
+        <field name="arch" type="xml">
+            <list string="Radio-Stimmen" default_order="create_date desc" create="false" edit="false">
+                <field name="create_date" string="Zeitpunkt"/>
+                <field name="track_id" string="Track"/>
+                <field name="vote_type" string="Stimme"/>
+                <field name="voter_ip" string="Absender"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_radio_vote_search" model="ir.ui.view">
+        <field name="name">frawo.radio.vote.search</field>
+        <field name="model">frawo.radio.vote</field>
+        <field name="arch" type="xml">
+            <search string="Radio-Stimmen">
+                <field name="track_id"/>
+                <separator/>
+                <filter name="today" string="Heute" domain="[('create_date', '>=', datetime.datetime.combine(context_today(), datetime.time(0,0,0)))]"/>
+                <separator/>
+                <filter name="by_track" string="Nach Track" context="{'group_by': 'track_id'}"/>
+                <filter name="by_vote" string="Nach Stimme" context="{'group_by': 'vote_type'}"/>
+                <filter name="by_day" string="Nach Tag" context="{'group_by': 'create_date:day'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_radio_votes" model="ir.actions.act_window">
+        <field name="name">🎧 Radio-Stimmen</field>
+        <field name="res_model">frawo.radio.vote</field>
+        <field name="view_mode">list</field>
+        <field name="context">{"search_default_today": 1, "search_default_by_track": 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Noch keine Stimmen</p>
+            <p>Hier landen die Mood-Votes (⚡ Energy / 🌙 Chill / 🔥 Banger) von frawo.tech/radio.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_radio_votes" name="🎧 Radio-Stimmen"
+              parent="menu_frawo_agent_root"
+              action="action_radio_votes"
+              sequence="6"/>
+</odoo>

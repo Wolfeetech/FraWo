@@ -65,7 +65,20 @@ class RadioController(http.Controller):
             }
             # Create the log entry as sudo
             request.env["frawo.agent.log"].sudo().create(log_vals)
-            
+
+            # Zusaetzlich strukturiert speichern (frawo.radio.vote), damit die
+            # Stimmen auswertbar sind (Odoo-Menue "Radio-Stimmen") statt nur
+            # als Text im Agent-Log zu verschwinden. Darf das eigentliche Voting
+            # nie zum Absturz bringen -- daher eigenes try/except.
+            try:
+                request.env["frawo.radio.vote"].sudo().create({
+                    "track_id": song_id,
+                    "vote_type": vote_type,
+                    "voter_ip": request.httprequest.remote_addr or "unknown",
+                })
+            except Exception as e:
+                _logger.warning("Radio-Vote-Auswertung (frawo.radio.vote) fehlgeschlagen: %s", e)
+
             # If vote is 'hate' (Skip), call AzuraCast API to skip the current track
             if vote_type == 'hate':
                 if not self._check_rate_limit('radio_skip', cooldown=30):
