@@ -160,14 +160,21 @@ Die fünf Shellys hängen im **IoT-VLAN 104** (`10.4.0.0/24`, WLAN `FraWo__ioT`,
 | IP | Gerät | Modell | HA-Integration |
 |---|---|---|---|
 | 10.4.0.10 | Plug S Gen3 | S3PL-00112EU | „FreeShelly I" |
-| 10.4.0.11 | Outdoor Plug S Gen3 | S3PL-20112EU | „Outdoor Garage" — ⚠️ **nie schalten** |
+| 10.4.0.11 | Outdoor Plug S Gen3 | S3PL-20112EU | **„IT/Netzwerk-Strom KRITISCH (nicht schalten)"** — Schalter **technisch gesperrt**, siehe unten |
 | 10.4.0.12 | BLU Gateway G3 | S3GW-1DBT001 | `shellyblugwg3-…` |
 | 10.4.0.13 | **PowerStrip Gen4 (GrowBox)** | S4PL-00416EU | `shellypstripg4-…`, 4 Ausgänge einzeln schaltbar + Leistung/Energie je Ausgang |
 | 10.4.0.74 | Plug MG3 | S3PL-30110EU | `shellyplugmg3-…` |
 
 Alle fünf Integrationen `state=loaded`, 67 Entities, 61 mit Messwert. Kein Gerät hat ein eigenes Passwort (`auth_en=false`) — geschützt allein durch die VLAN-Trennung.
 
-⚠️ **Namenskonflikt bei 10.4.0.11 ungeklärt:** UCG nennt es „IT/Netzwerk-Strom (KRITISCH)", das Gerät selbst „Outdoor Garage / Werkstatt". Bis das geklärt ist, gilt: **diesen Schalter nicht schalten** (Rote Linie).
+🔴 **10.4.0.11 versorgt die IT-/Netzwerktechnik** (Wolf bestätigt 06.09.2026 — der Gerätename „Outdoor Garage/Werkstatt" war irreführend, die UCG-Bezeichnung stimmt). Die Rote Linie ist jetzt **technisch durchgesetzt**, nicht nur vereinbart:
+
+- Gerät heißt in HA „IT/Netzwerk-Strom KRITISCH (nicht schalten)"
+- `switch.outdoor_garage_werkstatt` und `button.outdoor_garage_neu_starten` → `disabled_by=user`, damit **aus dem Zustandsspeicher entfernt**: ein `switch.turn_off` läuft ins Leere (Ergebnis `[]`), weder Mensch noch Automation noch Agent kann schalten
+- Messwerte bleiben aktiv (Leistung, Energie, Überlast/Überhitzung/Überspannung/Überstrom) — Ausfall bleibt also sichtbar
+- Belegt am 06.09.: Schaltversuch wirkungslos, Gerät meldete durchgehend `output=true`, 155,4 W / 232,5 V
+- Rückgängig nur bewusst: Einstellungen → Geräte → Entität wieder aktivieren
+- ⚠️ **Firmware-Updates an diesem Gerät nur im geplanten Wartungsfenster** — die Installation startet das Gerät neu (`update`-Entity absichtlich nicht gesperrt, weil sie nie von allein installiert)
 
 **Automatische Erkennung funktioniert VLAN-übergreifend prinzipiell nicht** (mDNS/CoAP-Multicast wird nicht geroutet) — neue Shellys immer **manuell per IP** in HA hinzufügen. Push-Updates zurück an HA deckt die bestehende Regel `[20006] IoT → HA:8123` ab.
 
