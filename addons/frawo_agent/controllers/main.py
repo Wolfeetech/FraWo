@@ -1663,6 +1663,11 @@ class RadioController(http.Controller):
             message = (message or '').strip()
             subject = (subject or '').strip()
 
+            # Honeypot spam trap: bots fill hidden fields
+            if kwargs.get('b_url') or kwargs.get('website_hp') or kwargs.get('company_hp'):
+                _logger.info("Spam bot detected via honeypot from %s. Silently discarding.", request.httprequest.remote_addr)
+                return {"status": "success", "lead_id": 0, "message": "Vielen Dank für Ihre Anfrage!"}
+
             if not name or not (email or phone):
                 return {"status": "error", "message": "Name und E-Mail oder Telefon sind erforderlich."}
             if email and not self._EMAIL_RE.match(email):
@@ -1688,10 +1693,142 @@ class RadioController(http.Controller):
             _logger.error("Failed to create website lead: %s", str(e))
             return {"status": "error", "message": "Anfrage konnte nicht gespeichert werden."}
 
+    @http.route('/api/rental/inquiry', type='json', auth='public', cors='*', methods=['POST'], csrf=False)
+    def api_rental_inquiry(self, name=None, email=None, phone=None, date_start=None, date_end=None,
+                           package_code=None, delivery=False, setup=False, message=None, **kwargs):
+        """Public API endpoint for Mietpark / Rental inquiry -> creates Odoo Sale Order draft (Angebot)."""
+        try:
+            # 1. Honeypot check
+            if kwargs.get('b_url') or kwargs.get('website_hp'):
+                _logger.info("Rental inquiry spam bot detected via honeypot. Discarding.")
+                return {"status": "success", "order_name": "S00000", "message": "Vielen Dank für deine Mietanfrage!"}
 
+            # 2. Rate limit
+            if not self._check_rate_limit('rental_inquiry', cooldown=20):
+                return {"status": "error", "message": "Bitte warte kurz, bevor du eine weitere Anfrage sendest."}
 
+            # 3. Input validation
+            name = (name or '').strip()
+            email = (email or '').strip()
+            phone = (phone or '').strip()
+            message = (message or '').strip()
+            package_code = (package_code or '').strip()
 
+            if not name or not email:
+                return {"status": "error", "message": "Name und E-Mail-Adresse sind erforderlich."}
+            if not self._EMAIL_RE.match(email):
+                return {"status": "error", "message": "Bitte eine gültige E-Mail-Adresse angeben."}
 
+            # 4. Dates & Duration calculation
+            days = 1
+            date_info_str = "Mietzeitraum flexibel / nach Absprache"
+            if date_start and date_end:
+                try:
+                    from datetime import datetime
+                    d1 = datetime.strptime(date_start, "%Y-%m-%d")
+                    d2 = datetime.strptime(date_end, "%Y-%m-%d")
+                    delta = (d2 - d1).days + 1
+                    if delta > 0:
+                        days = delta
+                        date_info_str = f"{date_start} bis {date_end} ({days} Tag(e))"
+                except Exception:
+                    pass
+
+            # 5. Partner lookup / creation
+            Partner = request.env['res.partner'].sudo()
+            partner = Partner.search([('email', '=ilike', email)], limit=1)
+            if not partner:
+                partner = Partner.create({
+                    'name': name,
+                    'email': email,
+                    'phone': phone,
+                    'customer_rank': 1,
+                    'comment': f"Automatisch angelegt über Website-Mietanfrage ({date_info_str})"
+                })
+            else:
+                if phone and not partner.phone:
+                    partner.write({'phone': phone})
+
+            # 6. Find Product
+            Product = request.env['product.product'].sudo()
+            product = None
+            if package_code:
+                product = Product.search([('default_code', '=', package_code)], limit=1)
+            if not product:
+                product = Product.search([('default_code', '=', 'RENT-PA-COMPACT')], limit=1)
+
+            # 7. Build order lines
+            order_lines = []
+            if product:
+                order_lines.append((0, 0, {
+                    'product_id': product.id,
+                    'product_uom_qty': float(days),
+                    'price_unit': product.list_price,
+                    'name': f"{product.name} (Miete: {date_info_str})",
+                }))
+
+            if delivery:
+                p_del = Product.search([('default_code', '=', 'SRV-ANFAHRT')], limit=1)
+                if p_del:
+                    order_lines.append((0, 0, {
+                        'product_id': p_del.id,
+                        'product_uom_qty': 1.0,
+                        'price_unit': p_del.list_price,
+                    }))
+
+            if setup:
+                p_set = Product.search([('default_code', '=', 'FW-022')], limit=1)
+                if p_set:
+                    order_lines.append((0, 0, {
+                        'product_id': p_set.id,
+                        'product_uom_qty': 2.0,  # 2 Stunden Aufbau/Abbau Standard
+                        'price_unit': p_set.list_price,
+                    }))
+
+            # 8. Create Sale Order (Quotation / Angebot)
+            so_vals = {
+                'partner_id': partner.id,
+                'origin': f"Website-Mietanfrage: {product.name if product else package_code}",
+                'note': f"📅 Zeitraum: {date_info_str}\n📞 Telefon: {phone}\n📝 Kunden-Notiz: {message}",
+                'order_line': order_lines,
+                'user_id': 7,  # Assigned to Agent
+            }
+            sale_order = request.env['sale.order'].sudo().create(so_vals)
+            _logger.info("Rental Sale Order created: ID %s (%s) for %s", sale_order.id, sale_order.name, name)
+
+            # 9. Trigger Jarvis Webhook (Telegram notification to Wolf)
+            try:
+                get_param = request.env['ir.config_parameter'].sudo().get_param
+                secret = get_param("frawo_agent.servassi_webhook_secret", "")
+                webhook_url = get_param("frawo_agent.servassi_webhook_url", "http://10.1.0.31:19001/odoo-task")
+                headers = {"Content-Type": "application/json"}
+                if secret:
+                    headers["X-Webhook-Secret"] = secret
+                payload = {
+                    "event": "rental_inquiry",
+                    "order_id": sale_order.id,
+                    "order_name": sale_order.name,
+                    "customer": name,
+                    "email": email,
+                    "phone": phone,
+                    "package": product.name if product else package_code,
+                    "dates": date_info_str,
+                    "amount_total": sale_order.amount_total,
+                    "note": message,
+                }
+                requests.post(webhook_url, json=payload, headers=headers, timeout=2)
+            except Exception as e_hook:
+                _logger.warning("Failed to notify Jarvis of rental inquiry: %s", e_hook)
+
+            return {
+                "status": "success",
+                "order_name": sale_order.name,
+                "amount_total": sale_order.amount_total,
+                "message": f"Vielen Dank, {name}! Deine Mietanfrage wurde als Angebot {sale_order.name} aufgenommen. Wir melden uns in Kürze!"
+            }
+        except Exception as e:
+            _logger.error("Failed to create rental inquiry sale order: %s", str(e))
+            return {"status": "error", "message": "Mietanfrage konnte nicht gespeichert werden. Bitte kontaktiere uns per Telefon oder WhatsApp."}
 
     # ─────────────────────────────────────────────────────────────
     # FraWo Procurement & 1-Click Shop Order Cockpit
@@ -1717,14 +1854,14 @@ class RadioController(http.Controller):
 
             # Predefined procurement metadata for structured items
             catalog = {
-                380: {
+                1248: {
                     'item': 'DIGITUS DA-70156 (USB-zu-RS232 FTDI-Adapter)',
-                    'shop': 'Amazon',
-                    'price': 12.90,
+                    'shop': 'Galaxus',
+                    'price': 14.48,
                     'prio_badge': 'Prio 1 — Sofort',
                     'prio_class': 'prio-high',
-                    'cart_url': 'https://www.amazon.de/gp/aws/cart/add.html?ASIN.1=B0030IT780&Quantity.1=1',
-                    'purpose': 'Omnitronic DXO-206 DSP Steuerung vom StudioPC'
+                    'cart_url': 'https://www.galaxus.de/de/s1/product/digitus-usb-20-zu-seriell-konverter-usb-kabel-5895712',
+                    'purpose': 'Omnitronic DXO-206 DSP Steuerung vom StudioPC (PO P00021)'
                 },
                 1085: {
                     'item': 'Ubiquiti UK-Ultra + PoE Injektoren + Shelly Pro 3EM',
