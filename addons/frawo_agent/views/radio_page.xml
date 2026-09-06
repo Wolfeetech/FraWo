@@ -994,6 +994,21 @@ body {
         </button>
       </div>
 
+      <div class="ff-mood-grid" id="ff-show-reactions" style="display:none;">
+        <button class="ff-mood-btn" type="button" onclick="if(window.ffShowReaction) window.ffShowReaction('👏')">
+          <div class="ff-mood-btn-title"><span>👏</span> Applaus</div>
+          <div class="ff-mood-btn-sub">Für den DJ</div>
+        </button>
+        <button class="ff-mood-btn" type="button" onclick="if(window.ffShowReaction) window.ffShowReaction('🔥')">
+          <div class="ff-mood-btn-title"><span>🔥</span> Feuer</div>
+          <div class="ff-mood-btn-sub">Geht ab</div>
+        </button>
+        <button class="ff-mood-btn" type="button" onclick="if(window.ffShowReaction) window.ffShowReaction('❤️')">
+          <div class="ff-mood-btn-title"><span>❤️</span> Liebe</div>
+          <div class="ff-mood-btn-sub">Für den Mix</div>
+        </button>
+      </div>
+
       <div class="ff-mood-tally" id="ff-mood-tally">Stimmen werden geladen…</div>
     </div>
 
@@ -1028,6 +1043,25 @@ body {
           var btn = document.getElementById(id);
           if (btn) btn.addEventListener('click', function () { setTimeout(loadTally, 1500); });
         });
+
+        window.ffShowReaction = function (emoji) {
+          if (window.spawnReaction) window.spawnReaction(emoji);
+        };
+
+        window.ffSetLiveMode = function (isLive) {
+          var voteGrid = document.querySelector('.ff-mood-grid');
+          var showGrid = document.getElementById('ff-show-reactions');
+          if (!voteGrid) return;
+          if (!showGrid) return;
+          if (isLive) {
+            voteGrid.style.display = 'none';
+            showGrid.style.display = '';
+            if (tallyEl) tallyEl.textContent = 'Live-Show läuft — der DJ übernimmt';
+            return;
+          }
+          voteGrid.style.display = '';
+          showGrid.style.display = 'none';
+        };
       })();
     </script>
 
@@ -1264,6 +1298,7 @@ body {
     reactCanvas.appendChild(el);
     setTimeout(function() { el.remove(); }, 1600);
   }
+  window.spawnReaction = spawnReaction;
 
   function fmtTime(sec) {
     sec = Math.max(0, Math.floor(sec || 0));
@@ -1526,6 +1561,7 @@ body {
       .then(function(data) {
         var np = data.now_playing;
         var live = data.live || {};
+        if (window.ffSetLiveMode) window.ffSetLiveMode(!!live.is_live);
 
         if (live.is_live) {
           if (badgeContainer) {
