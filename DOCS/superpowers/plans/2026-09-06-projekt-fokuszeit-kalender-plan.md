@@ -429,3 +429,36 @@ Automatik aus irgendeinem Grund nicht zuerst feuert.
 Alle 6 Testfälle aus dem Spec-Testplan wurden gegen echte Testaufgaben
 (IDs 1276–1278, alle nach Abnahme wieder gelöscht) erfolgreich
 durchgespielt.
+
+## Nachtrag 06.09.2026 — Handy-Benachrichtigung optimiert
+
+Auf Wolfs Wunsch ("Kalender soll die direkte Schnittstelle zum Pixel 9
+werden") direkt im installierten `google_calendar`-Odoo-Modul
+nachgelesen (Quellcode auf CT140, nicht nur Dokumentation), zwei
+Probleme gefunden und behoben:
+
+1. **Google-Sync lief nur alle 12 Stunden** (`ir.cron
+   ir_cron_sync_all_cals`, Standard-Intervall). Action 880 stößt jetzt
+   nach jedem Anlegen/Ändern selbst `res.users._sync_all_google_calendar()`
+   für den betroffenen Nutzer an (in `try/except`, damit ein
+   Google-API-Fehler nie die eigentliche Termin-Automatik blockiert) —
+   Termin landet sofort auf dem Handy statt erst Stunden später.
+2. **Titel wäre auf dem Handy abgeschnitten worden** (voller
+   Projektname + Aufgabenname oft > 60 Zeichen, Android zeigt nur
+   ca. 40-50 in der Benachrichtigung). Titel ist jetzt nur noch der
+   Aufgabenname, Projekt steht in der Beschreibung.
+
+Zusätzlich: Beschreibung ist jetzt reiner Klartext (kein eigenes HTML
+mehr, eigener `strip_html()`-Helfer ohne Abhängigkeit von
+Odoo-internen Tools, da deren Verfügbarkeit im Server-Action-Kontext
+nicht sicher war), mit expliziter Frist-Zeile, plus automatische
+15-Minuten-Erinnerung (`calendar.alarm_notif_1`, syncedt zu Google als
+Push-Benachrichtigung). Bekannte, nicht behebbare Einschränkung: Odoo
+hängt bei jedem Termin mit Organizer/Attendees automatisch einen
+"Organized by"-Signaturblock mit echtem HTML an — kommt bei Google ggf.
+als Rohtext an, betrifft aber nur diesen Anhang, nicht den eigentlichen
+Inhalt.
+
+Live mit echtem Test-Termin (Task 1280) auf Wolfs Pixel 9 geprüft —
+von Wolf bestätigt: "habs geprüft, sieht gut aus". Testaufgabe danach
+gelöscht.

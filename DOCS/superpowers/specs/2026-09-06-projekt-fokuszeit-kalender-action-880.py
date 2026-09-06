@@ -31,18 +31,47 @@ def find_free_slot(env, user, duration_hours, deadline, exclude_event_id=None):
     return None, None
 
 
+def strip_html(value):
+    if not value:
+        return ''
+    text = []
+    in_tag = False
+    for ch in value:
+        if ch == '<':
+            in_tag = True
+        elif ch == '>':
+            in_tag = False
+        elif not in_tag:
+            text.append(ch)
+    result = ''.join(text)
+    for entity, char in (('&amp;', '&'), ('&lt;', '<'), ('&gt;', '>'), ('&quot;', '"'), ("&#39;", "'"), ('&nbsp;', ' ')):
+        result = result.replace(entity, char)
+    return result.strip()
+
+
 def build_description(record):
     parts = []
     if record.project_id:
-        parts.append('<p><b>Projekt:</b> %s</p>' % record.project_id.name)
-    if record.description:
-        parts.append(record.description[:500])
-    parts.append('<p><a href="/odoo/project.task/%d">Aufgabe in Odoo oeffnen</a></p>' % record.id)
-    return ''.join(parts)
+        parts.append('Projekt: %s' % record.project_id.name)
+    if record.date_deadline:
+        parts.append('Frist: %s' % record.date_deadline.strftime('%d.%m.%Y %H:%M'))
+    task_text = strip_html(record.description)[:500]
+    if task_text:
+        parts.append(task_text)
+    parts.append('Aufgabe in Odoo: /odoo/project.task/%d' % record.id)
+    return '\n\n'.join(parts)
+
+
+def sync_now(env, user):
+    try:
+        env['res.users'].sudo().browse(user.id)._sync_all_google_calendar()
+    except Exception:
+        pass
 
 
 if record.date_deadline and record.user_ids:
     description = build_description(record)
+    reminder_id = env.ref('calendar.alarm_notif_1', raise_if_not_found=False)
     for user in record.user_ids:
         existing = env['calendar.event'].search([
             ('res_model_id', '=', PROJECT_TASK_MODEL_ID),
@@ -54,7 +83,7 @@ if record.date_deadline and record.user_ids:
 
         if slot_start and slot_end:
             vals = {
-                'name': (record.project_id.name + ' · ' + record.name) if record.project_id else record.name,
+                'name': record.name,
                 'description': description,
                 'start': slot_start,
                 'stop': slot_end,
@@ -66,6 +95,8 @@ if record.date_deadline and record.user_ids:
                 'res_id': record.id,
                 'categ_ids': [(6, 0, [FOKUSZEIT_CATEG_ID])],
             }
+            if reminder_id:
+                vals['alarm_ids'] = [(6, 0, [reminder_id.id])]
         else:
             vals = {
                 'name': '⏰ Frist: ' + record.name,
@@ -80,6 +111,8 @@ if record.date_deadline and record.user_ids:
                 'res_id': record.id,
                 'categ_ids': [(6, 0, [FOKUSZEIT_CATEG_ID])],
             }
+            if reminder_id:
+                vals['alarm_ids'] = [(6, 0, [reminder_id.id])]
             record.message_post(body='⚠️ Keine freie Fokuszeit vor der Frist gefunden — bitte manuell einplanen oder Frist pruefen.')
 
         if existing:
@@ -109,6 +142,8 @@ if record.date_deadline and record.user_ids:
                 activity.write(activity_vals)
             else:
                 env['mail.activity'].create(activity_vals)
+
+        sync_now(env, user)
 elif not record.date_deadline:
     events = env['calendar.event'].search([
         ('res_model_id', '=', PROJECT_TASK_MODEL_ID),
