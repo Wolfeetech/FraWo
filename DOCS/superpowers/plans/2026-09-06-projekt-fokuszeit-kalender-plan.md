@@ -462,3 +462,31 @@ Inhalt.
 Live mit echtem Test-Termin (Task 1280) auf Wolfs Pixel 9 geprüft —
 von Wolf bestätigt: "habs geprüft, sieht gut aus". Testaufgabe danach
 gelöscht.
+
+## Nachtrag 06.09.2026 — Auftrag: Liefertermin → Kalendertermin
+
+Wolfs Frage "wie tragt ihr Verleih-Termine heute ein" direkt an einem
+echten Beispiel geprüft statt gefragt: Auftrag S00015 (Bauhof Wangen,
+Fußballdart-Verleih) hat das native Odoo-Feld `commitment_date`
+("Liefertermin") gesetzt, andere Aufträge (z.B. S00036) lassen es leer
+— kein Custom-Feld, nur unregelmäßig genutzt.
+
+Neue, eigenständige Automatik gebaut (spiegelt Action 880, kein
+gemeinsamer Code, da andere Datenquelle): `base.automation` id 18 +
+`ir.actions.server` id 890, Code siehe
+`2026-09-06-projekt-fokuszeit-kalender-action-890-auftrag.py`. Auslöser:
+`commitment_date` oder `state` ändert sich auf einem `sale.order`. Bei
+bestätigtem Auftrag (`state='sale'`) mit gesetztem Liefertermin: Termin
+mit Kunde als Titel (kurz, telefontauglich), 2 Stunden Standarddauer,
+Positionen + Auftrags-Link in der Beschreibung, 15-Min-Erinnerung,
+Sofort-Google-Sync. Bei Storno oder gelöschtem Liefertermin: Termin wird
+archiviert. Bewusst OHNE Konflikt-/Frei-Zeit-Suche (anders als bei
+Aufgaben) — der Liefertermin ist ein von Wolf bewusst gewählter fester
+Zeitpunkt, keine zu optimierende Fokuszeit.
+
+Getestet gegen Test-Auftrag S00044 (Kunde OdooBot, nach dem Test
+storniert — Löschen von `sale.order` ist per MCP nicht erlaubt, Auftrag
+bleibt als stornierter Datensatz ohne Wert stehen, gleiches Muster wie
+bereits vorhandener Test-Auftrag S00031). Beide Wege verifiziert: Termin
+entsteht korrekt (Kunde/Positionen/Dauer/Erinnerung), Termin wird beim
+Stornieren korrekt archiviert.
