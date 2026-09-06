@@ -1,16 +1,13 @@
 """Auftrag: Liefertermin -> Kalendertermin (ir.actions.server id 890,
 base.automation id 18). Spiegelt die Aufgaben-Fokuszeit-Automatik
-(Action 880) fuer sale.order: sobald ein bestaetigter Auftrag
-(state='sale') einen Liefertermin (commitment_date) hat, entsteht ein
-Kalendertermin (2h Standarddauer, Kunde als Titel, Positionen +
-Auftrags-Link in der Beschreibung, 15-Min-Erinnerung, Sofort-Google-
-Sync). Storno oder geloeschter Liefertermin -> Termin wird archiviert.
-Kein partner_ids-Eintrag mehr (siehe Nachtrag: das machte den Termin
-faelschlich als "Meeting" statt normale Arbeitszeit sichtbar).
+(Action 880) fuer sale.order. Kein partner_ids-Eintrag (siehe Nachtrag:
+das machte den Termin faelschlich als "Meeting" sichtbar). Eigene
+Kategorie "Verleih" (id 10) + Emoji-Praefix im Titel, da Farbe/Kategorie
+selbst nicht zu Google synct, ein Emoji im Titel aber schon.
 """
 
 ORDER_MODEL_ID = 545
-FOKUSZEIT_CATEG_ID = 8
+VERLEIH_CATEG_ID = 10
 
 
 def strip_html(value):
@@ -58,7 +55,7 @@ if record.state == 'sale' and record.commitment_date:
     user = record.user_id
     reminder_id = env.ref('calendar.alarm_notif_1', raise_if_not_found=False)
     vals = {
-        'name': record.partner_id.name if record.partner_id else record.name,
+        'name': '📦 ' + (record.partner_id.name if record.partner_id else record.name),
         'description': build_description(record),
         'start': record.commitment_date,
         'stop': record.commitment_date + datetime.timedelta(hours=2),
@@ -67,7 +64,7 @@ if record.state == 'sale' and record.commitment_date:
         'user_id': user.id if user else False,
         'res_model_id': ORDER_MODEL_ID,
         'res_id': record.id,
-        'categ_ids': [(6, 0, [FOKUSZEIT_CATEG_ID])],
+        'categ_ids': [(6, 0, [VERLEIH_CATEG_ID])],
     }
     if reminder_id:
         vals['alarm_ids'] = [(6, 0, [reminder_id.id])]

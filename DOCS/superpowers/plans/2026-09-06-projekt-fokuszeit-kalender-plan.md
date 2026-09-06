@@ -540,3 +540,33 @@ Blockade als auch dem echten Inselhalle-Dienst (07:00-13:00 UTC) aus
 und fand den ersten freien Slot direkt danach (13:00 UTC). Bestätigt:
 FraWo-Fokuszeit wird nie in einen bestehenden Inselhalle-Dienst gelegt,
 sobald die Aufgabe Wolf direkt zugewiesen ist (nicht nur dem Agent).
+
+## Nachtrag 06.09.2026 — Farbe/Kategorie, Privat, Puffer-Zeit
+
+Wolf wollte alle drei zusaetzlichen Verbesserungen ("alle 3"):
+
+1. **Unterscheidung nach Herkunft:** `calendar.event.type`-Kategorien
+   angelegt: "📦 Verleih" (id 10, Farbe 3) und "🏛️ Inselhalle" (id 11,
+   Farbe 5), zusaetzlich zur bestehenden "⏱️ Fokuszeit" (id 8). WICHTIG
+   erkannt: `categ_ids`/Farbe steht NICHT in Odoos
+   `_get_google_synced_fields`-Liste — synct also nicht zu Google/Handy,
+   nur innerhalb von Odoo sichtbar. Fuer Handy-Unterscheidung stattdessen
+   Emoji-Praefix im Titel ergaenzt: Verleih-Termine jetzt "📦 <Kunde>"
+   (Action 890). Fokuszeit-Aufgaben und Inselhalle behalten ihre
+   bestehende, bereits unterscheidbare Titel-Form.
+2. **Inselhalle privat:** alle 14 aktiven Inselhalle-Kalendertermine auf
+   `privacy: 'private'` gesetzt (Feld synct zu Googles `visibility`,
+   bestaetigt im Odoo-Quellcode). Sofort sichtbarer Nebeneffekt beim
+   Nachpruefen: fuer jeden Nicht-Besitzer (auch den Agent/MCP-Zugriff)
+   zeigt Odoo `name`/`categ_ids` jetzt nur noch als "Busy" bzw. leer —
+   korrektes, erwuenschtes Verhalten von "privat", macht aber die
+   Nachpruefung durch den Agent selbst unmoeglich (gewollt).
+3. **Pufferzeit:** `find_free_slot` in Action 880 um `BUFFER = 60 Min`
+   erweitert — die Konflikt-Pruefung meidet jetzt nicht nur exakte
+   Ueberschneidungen, sondern auch die Stunde direkt vor/nach einem
+   bestehenden Termin (z.B. nach einem Inselhalle-Nachtdienst). Getestet:
+   Blockade endet 10:00 Uhr, gefundener Slot beginnt korrekt erst um
+   11:00 Uhr statt direkt um 10:00 Uhr.
+
+Alle drei Punkte einzeln mit echten Test-Terminen verifiziert, Test-
+Daten danach entfernt.

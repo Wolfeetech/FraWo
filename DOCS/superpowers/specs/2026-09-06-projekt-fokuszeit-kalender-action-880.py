@@ -2,6 +2,7 @@ WORK_START, WORK_END = 8, 18
 PROJECT_TASK_MODEL_ID = 522
 FOKUSZEIT_CATEG_ID = 8
 RUECKMELDUNG_ACTIVITY_TYPE_ID = 15
+BUFFER = datetime.timedelta(minutes=60)
 
 
 def find_free_slot(env, user, duration_hours, deadline, exclude_event_id=None):
@@ -19,8 +20,8 @@ def find_free_slot(env, user, duration_hours, deadline, exclude_event_id=None):
                 domain = [
                     ('user_id', '=', user.id),
                     ('active', '=', True),
-                    ('start', '<', candidate + duration),
-                    ('stop', '>', candidate),
+                    ('start', '<', candidate + duration + BUFFER),
+                    ('stop', '>', candidate - BUFFER),
                 ]
                 if exclude_event_id:
                     domain.append(('id', '!=', exclude_event_id))
