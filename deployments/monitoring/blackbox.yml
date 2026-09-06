@@ -71,7 +71,7 @@ modules:
       preferred_ip_protocol: "ip4"
       valid_status_codes: [200, 206]
       headers:
-        Range: "bytes=0-131071"
+        Range: "bytes=0-1023"
       fail_if_header_not_matches:
         - header: Content-Type
           regexp: "audio/.*"
