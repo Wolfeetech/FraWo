@@ -1,60 +1,81 @@
-# FraWo Multi-Agent System Rules (AI-TEAM PROTOCOL)
+# FraWo Agenten-Protokoll (AGENTS.md)
 
-This document defines the strict, binding operational rules, roles, and collaboration constraints for all AI agents working in this repository and infrastructure.
-
----
-
-## 1. Team Roles & Specialization
-
-| Agent | Technology & Environment | Primary Role & Responsibilities |
-|---|---|---|
-| **`🤖 [Antigravity]`** | Gemini 3.7 Pro / Flash (IDE) | **Lead Architect & PC/Server-Doc / Codebase Engineer**<br>• Server & Infrastructure maintenance (SSH, Proxmox PVE, PBS, Docker)<br>• Deep system audits, hardware health checks, database repairs<br>• Large-scale code refactorings, repository architecture, planning |
-| **`🤖 [Claude]`** | Claude 3.7 Sonnet (Claude Code CLI / Desktop) | **Senior Backend & Business Logic Specialist**<br>• Python backend modules & Odoo controller logic<br>• XML views, QWeb reports, CSS/Frontend design<br>• In-depth code reviews & algorithmic optimizations |
-| **`🤖 [ServAssi]`** | OpenClaw (CT150 / Telegram `@Frawo_bot`) | **24/7 Operations Guard & Mobile Bot**<br>• 24/7 server monitoring, watchdog cron checks, daily morning reports<br>• Fast mobile assistant for Wolf on Telegram<br>• Home Assistant smart home control & quick infrastructure triage |
+**Version 1.2 — 2026-09-06 | Gilt für ALLE Agenten: Jarvis (OpenClaw), Claude Code, Antigravity**
+Master-Kopie: OpenClaw-Workspace `/root/.openclaw/workspace/AGENTS-PROTOCOL.md` · Kopie auf StudioPC: `C:\Users\StudioPC\AGENTS.md`
 
 ---
 
-## 2. Single Source of Truth (SSOT)
-- **Odoo (`http://10.1.0.112:8069`)** is the absolute and sole SSOT for all roadmaps, tasks, timelines, project boards, and task statuses.
-- **`NOW.md`** is the sole SSOT for physical network inventory, virtual machine/container list, IP addresses, and VLANs.
-- All other markdown documentation files relating to roadmaps, network plans, or status summaries are obsolete and must not be used or created.
+## Rollen
+
+| Agent | Läuft wo | Interface | Zuständigkeit |
+|---|---|---|---|
+| **Jarvis** (OpenClaw) | CT150 Anker (10.1.0.31) | Telegram ↔ Wolf (Pixel 9) | Koordinator, Monitoring/Alarme, Odoo-Chatter (@Jarvis/Klausi), Infra-Ops via SSH, 24/7 persistent |
+| **Claude Code** | StudioPC, Terminal | Wolf startet Session | Code, Skripte, größere Implementierungen — zustandslos: liest dieses File + Odoo-Task VOR der Arbeit |
+| **Antigravity** | StudioPC, IDE | Wolf startet Session | IDE-Arbeiten, UCG/UniFi-API, Windows-lokale Aufgaben |
+
+## Single Source of Truth
+
+1. **Aufgaben:** Odoo (10.1.0.112:8069, DB FraWo_GbR). Ein Task = ein Auftrag. **Zuweisung = Lock** — kein Agent arbeitet an fremd-zugewiesenen Tasks.
+2. **Infrastruktur-Doku:** `INFRA.md` im OpenClaw-Workspace = Master für IPs/Hosts/Services/Credentials-Fundorte. Änderung an Infra → INFRA.md updaten oder Jarvis via Odoo-Chatter informieren.
+3. **Secrets:** Nur Vaultwarden (vault.frawo-tech.de). Nie in Files, Commits oder Chats.
+
+## Arbeits-Workflow (für jeden Task)
+
+1. **VORHER:** Odoo-Task lesen, im Chatter ankündigen was du tust (mit Agent-Name!)
+2. **MACHEN:** Arbeit ausführen, bei Blockern → Task auf 🛑 Blockiert + Blocker dokumentieren
+3. **NACHHER:** Ergebnis im Chatter loggen (was, wo, wie verifiziert), erst DANN Stage ändern
+4. **ZEITERFASSUNG:** Bei spürbarem Aufwand (>15 Min) eine Timesheet-Zeile auf dem Task eintragen (`account.analytic.line`, Feld `unit_amount` in Stunden, `name` mit Agent-Präfix, z.B. „🤖 [Claude] Bugfix + Deploy"). Zusätzlich `employee_id` explizit setzen — eigener `hr.employee`-Datensatz je Agent (alle drei teilen sich `user_id` 7, daher reicht das Login nicht zur Zuordnung): Antigravity = 9, Claude Code = 11, Jarvis = 12. Agenten arbeiten wie Teammitglieder im Team — ehrlich geschätzt, nicht aufgerundet, gleiche Sorgfalt wie beim Erledigt-Setzen.
+
+**NIEMALS einen Task auf Erledigt setzen ohne echte, verifizierte Arbeit.** (Historie: odoo-agent-poll-Desaster mit Fake-Erledigungen.)
+
+## Kommunikationswege (die EINZIGEN erlaubten)
+
+- **Wolf ↔ Jarvis:** Telegram (oder Odoo-Chatter @Jarvis)
+- **Wolf ↔ Claude/Antigravity:** direkt am StudioPC
+- **Agent → Agent:** Odoo-Chatter-Mention am betreffenden Task (Jarvis wird via Webhook getriggert; Claude/Antigravity lesen beim nächsten Start)
+- **Alarme:** Prometheus/Alertmanager (CT150 ProDesk, 10.1.0.35) → genau ZWEI Receiver: `telegram-wolf` (Info an Wolf) + `servassi-hook` (Bearbeitung durch Jarvis via 10.1.0.31:19001). **Keine weiteren Alert-Kanäle bauen.**
+
+## Verbote (Rote Linien)
+
+1. ❌ **Keine eigenen Cron-/Polling-Jobs**, die Odoo-Tasks automatisch bearbeiten oder Agent-Sessions triggern (odoo-agent-poll-Verbot).
+2. ❌ **Keine neuen Webhooks/Bridges/Bots**, die Agenten triggern — ohne: sofortiges 200-ACK, Dedupe, Absprache mit Jarvis, Doku in INFRA.md. (Historie: Alarm-Spam 2026-09-06, 5× derselbe Alarm durch blockierenden Handler.)
+3. ❌ **Shelly 10.4.0.11 (MAC e4:b0:63:d5:66:1c) NIEMALS schalten.**
+4. ❌ Keine destruktiven Aktionen (Löschen, Formatieren, Reboots von Kernservern: Proxmox, Odoo CT140, OpenClaw CT150) ohne Wolfs explizite Freigabe.
+5. ❌ Keine Secrets in Klartext ablegen; keine Config-Files clobbern — immer erst lesen, dann mergen, Backup mit Datum (`*.bak-YYYYMMDD`).
+
+## Konventionen
+
+- **Sprache:** Deutsch (Doku + Kommunikation mit Wolf)
+- **Backups vor Änderung:** `cp file file.bak-YYYYMMDD`
+- **Identität:** Jede Odoo-Änderung / jedes Deployment mit Agent-Namen kennzeichnen
+- **Services deployen:** systemd-Unit + Doku (Zweck, Port, Owner-Agent) in INFRA.md
+- **Wolf nie mit IT-Handarbeit beauftragen** — Agenten erledigen, Wolf entscheidet nur
+
+## Peer-Review (Vier-Augen-Prinzip) — PFLICHT
+
+**Agenten reviewen die Arbeit des jeweils anderen.** Kein Agent nimmt seine eigene Arbeit ab.
+
+**Review-pflichtig:**
+- Code/Skripte, die produktiv laufen (Services, Webhooks, Handler, Automationen)
+- Config-Änderungen an Kernservern (Proxmox, Odoo, OpenClaw, Alertmanager, Netzwerk/UCG)
+- Änderungen an diesem Protokoll
+
+**Ablauf:**
+1. Ausführender Agent: Arbeit fertig → Odoo-Task-Chatter: was geändert, wo (Pfad/Host), wie selbst verifiziert, Backup-Pfad → **@Mention an Review-Agent**, Stage bleibt "In Arbeit"
+2. Review-Agent: prüft mit **echten Belegen** (Datei lesen, Endpoint aufrufen, Logs ansehen — nicht raten): Funktion, Sicherheit (Secrets? Auth? Blast-Radius?), Rote-Linien-Konformität, Doku vorhanden
+3. Ergebnis im Chatter: ✅ Review OK (mit Beleg) oder ❌ Befunde (konkret, mit Fundstelle)
+4. Erst nach ✅ Review → Stage Erledigt
+
+**Review-Zuordnung (Standard):** Jarvis-Arbeit → Claude reviewt · Claude-Arbeit → Jarvis reviewt · Antigravity-Arbeit → Jarvis oder Claude. Reviewer nicht erreichbar >48h → Wolf entscheidet.
+
+**Kleinkram** (Doku-Tippfehler, Log-Rotation, read-only-Analysen) braucht kein Review — im Zweifel: Review.
+
+## Eskalation
+
+- Blocker, den ein anderer Agent lösen kann → Odoo-Chatter-Mention am Task
+- Blocker, den nur Wolf lösen kann (Freigabe, Passwort, Hardware) → kurz + konkret an Wolf, EINE Frage, mit Empfehlung
+- Konflikt zwischen Agenten (gleicher Task/gleiche Ressource) → Jarvis koordiniert (persistenter Agent = Schiedsstelle)
 
 ---
 
-## 3. Agent Identity & Multi-Worker Coordination
-- **Shared Odoo User:** All AI agents operate under the single Odoo identity `agent@frawo.tech` (UID 7, "🤖 Agent").
-- **Worker Self-Identification:** In EVERY Odoo task chatter note, log message, or git commit, the acting worker MUST explicitly identify itself at the start:
-  - `🤖 [Antigravity] ...`
-  - `🤖 [Claude] ...`
-  - `🤖 [ServAssi] ...`
-- **Task Claiming (Collision Prevention):** Before beginning work on any Odoo task:
-  1. Check if the task is already claimed by another active agent (`stage_id = 3` / *In Arbeit* with an active claim).
-  2. If free, set stage to `In Arbeit` (Stage ID 3).
-  3. Post claim comment: `🤖 [WorkerName] übernimmt — <Timestamp>`.
-- **Handoffs & Delegation between Agents:**
-  When passing a task to a teammate:
-  1. Post a chatter note: `🤖 [CurrentAgent] 👉 Übergabe an @[TargetAgent]: <Konkrete Aufgabenstellung>`.
-  2. Set stage to `In Planung` (Stage ID 2) or `Backlog` (Stage ID 1).
-- **Task Completion:**
-  1. Live verify changes on real endpoints/files.
-  2. Set stage to `✅ Erledigt` (Stage ID 6).
-  3. Post completion summary with proof in chatter.
-- **Blockers:**
-  1. If blocked, set stage to `🛑 Blockiert` (Stage ID 5).
-  2. Detail the exact blocker in the chatter and ping the required person/agent.
-
----
-
-## 4. Behavior Constraints & Best Practices
-- **No Stale Documents:** Do not create or update separate roadmap or planning markdown files. Keep all details inside Odoo tasks or `NOW.md`.
-- **No Hardcoded Passwords:** Never write passwords, API keys, or tokens in plaintext to files. Reference Vaultwarden (e.g. `[Vault: UCG API Key]`).
-- **Never Claim "Done" Without Live Proof:** Always verify live before reporting completion (curl endpoint, read file, query database).
-- **Clean Chatter Formatting:** Chatter-Notizen in Odoo müssen immer sauber gerendert sein (fettgedruckt, Listenpunkte, Code-Blöcke). Niemals rohe oder doppelt-escapte HTML-Tags (`&lt;p&gt;`, `&lt;b&gt;`) im Klartext posten. Verwende das MCP-Tool `odoo_post_task_note` oder sauberes unescapetes HTML direkt in `mail.message`.
-- **Repo Sync:** Always commit and push changes to `main` at the end of a session so all teammates have the latest state.
-
----
-
-## 5. Corporate Identity (VERBINDLICH)
-- **CI v3.0 is the absolute and sole branding of FraWo GbR** (SSOT: [`SSOT/FRAWO_CI_GUIDELINES.md`](SSOT/FRAWO_CI_GUIDELINES.md), mirrored in Odoo **Task 97**).
-- Non-negotiable: colors **Forest `#004030` + Violet `#a050f0`**; strictly flat, 0px radius, NO shadows / gradients / glassmorphism; font **Inter** only; address reader as **Du**; KCanG §6 wording for herbs/smart grow systems.
-
+*Änderungen an diesem Protokoll: nur mit Wolfs Zustimmung. Jarvis synchronisiert Master → StudioPC-Kopie.*
