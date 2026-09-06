@@ -178,6 +178,22 @@ Alle fünf Integrationen `state=loaded`, 67 Entities, 61 mit Messwert. Kein Ger�
 
 **Automatische Erkennung funktioniert VLAN-übergreifend prinzipiell nicht** (mDNS/CoAP-Multicast wird nicht geroutet) — neue Shellys immer **manuell per IP** in HA hinzufügen. Push-Updates zurück an HA deckt die bestehende Regel `[20006] IoT → HA:8123` ab.
 
+## 🌱 GrowBox-Klimasteuerung (neu 06.09.2026, Odoo #1157)
+
+Der Abluftventilator läuft seit 06.09. **bedarfsgesteuert statt im starren Takt**.
+
+| Was | Wo |
+|---|---|
+| Messung | `sensor.wolf_temp_sensor_temperatur` / `_luftfeuchtigkeit` („Growbox 120*60", batteriebetrieben) |
+| Schaltung | Shelly PowerStrip Gen4 `10.4.0.13`, in HA „GrowBox Steckdosenleiste" |
+| **Ausgang 2 = Abluft** | HA-Entity `switch.…output_2`, benannt „GrowBox Abluft" |
+| Ausgang 1 / 3 | Pflanzenlichter, Zeitpläne liegen **im Shelly** (`@sunrise-1h00m` … `@sunset+1h00m`) — von HA unangetastet |
+| Automation | `automation.growbox_abluft_nach_temperatur_und_luftfeuchte` |
+
+**Regel:** EIN ab 26 °C **oder** 65 % rF · AUS erst wenn **beide** Werte gut sind (unter 23 °C **und** unter 55 % rF) und der Lüfter mindestens 15 Min lief · zusätzlich alle 5 Min Selbstprüfung.
+
+⚠️ **Aufgabenteilung Gerät ↔ HA:** Am Lüfter-Ausgang wurde `auto_off` (900 s) **abgeschaltet**, `auto_on` (300 s) bewusst **behalten**. HA entscheidet über das Ausschalten; fällt HA oder das Netz aus, holt das Gerät den Lüfter nach 5 Min selbst zurück und lässt ihn dann laufen — Ausfallverhalten „Lüfter läuft" statt „bleibt aus". Rückweg: `auto_off` wieder auf `true`, dann gilt wieder der alte 15-an/5-aus-Takt. Backup der Gerätekonfiguration: `shelly_growbox_config.bak-20260906.json`.
+
 ## 📊 Überwachung
 
 **Grafana: `http://100.100.115.80:3000`** — über Tailscale, funktioniert zu Hause **und** unterwegs. Dieselbe Adresse steht im Telegram-Alarm und in den Verknüpfungen auf dem StudioPC (`Desktop\Web-Apps`).
