@@ -378,14 +378,21 @@ class RadioController(http.Controller):
                 if not unbilled:
                     continue
 
-                items_dict = {}
-                person_total = 0.0
+                # Alk. und alkoholfrei getrennt (Wolf, 06.09.2026): Pfand für
+                # alkoholfreie Getraenke wird NICHT auf der Alkoholfrei-Liste
+                # ausgewiesen, sondern zusammen mit dem Alkohol abgerechnet.
+                items_alc = {}
+                items_free = {}
+                alc_total = 0.0
+                free_total = 0.0
+                pfand_from_free = 0.0
 
                 for rec in unbilled:
                     prod = rec.product_id
+                    bucket = items_alc if prod.is_alcoholic else items_free
                     key = prod.id
-                    if key not in items_dict:
-                        items_dict[key] = {
+                    if key not in bucket:
+                        bucket[key] = {
                             'name': prod.name,
                             'emoji': prod.emoji,
                             'price': prod.price_per_bottle,
@@ -397,24 +404,37 @@ class RadioController(http.Controller):
                         }
 
                     if rec.unit_type == 'crate':
-                        items_dict[key]['crates'] += 1
-                        items_dict[key]['bottles'] += rec.quantity
-                        cost = (rec.quantity * prod.price_per_bottle) + (rec.quantity * prod.pfand_per_bottle) + prod.pfand_per_crate
-                    else:
-                        items_dict[key]['bottles'] += rec.quantity
-                        cost = (rec.quantity * prod.price_per_bottle) + (rec.quantity * prod.pfand_per_bottle)
-
-                    items_dict[key]['subtotal'] += cost
-                    person_total += cost
-                    grand_total += cost
-
-                    if rec.unit_type == 'crate':
+                        bucket[key]['crates'] += 1
+                        bucket[key]['bottles'] += rec.quantity
+                        pfand = (rec.quantity * prod.pfand_per_bottle) + prod.pfand_per_crate
                         grand_crates += 1
+                    else:
+                        bucket[key]['bottles'] += rec.quantity
+                        pfand = rec.quantity * prod.pfand_per_bottle
+
+                    drink_cost = rec.quantity * prod.price_per_bottle
+                    if prod.is_alcoholic:
+                        cost = drink_cost + pfand
+                        bucket[key]['subtotal'] += cost
+                        alc_total += cost
+                    else:
+                        bucket[key]['subtotal'] += drink_cost
+                        free_total += drink_cost
+                        pfand_from_free += pfand
+
                     grand_bottles += rec.quantity
+
+                alc_total += pfand_from_free
+                person_total = alc_total + free_total
+                grand_total += person_total
 
                 consumer_reports.append({
                     'consumer': c,
-                    'items': list(items_dict.values()),
+                    'items_alc': list(items_alc.values()),
+                    'items_free': list(items_free.values()),
+                    'alc_total': alc_total,
+                    'free_total': free_total,
+                    'pfand_from_free': pfand_from_free,
                     'total': person_total
                 })
 
@@ -431,6 +451,7 @@ class RadioController(http.Controller):
         .header p {{ margin: 4px 0 0 0; font-size: 13px; color: #666; }}
         .person-card {{ border: 1px solid #e0e0e0; border-radius: 8px; margin-bottom: 20px; padding: 16px; page-break-inside: avoid; }}
         .person-title {{ font-size: 18px; font-weight: bold; color: #0d47a1; margin-bottom: 12px; border-bottom: 1px solid #eeeeee; padding-bottom: 6px; }}
+        .section-sub {{ font-size: 14px; font-weight: 700; color: #333; margin: 14px 0 4px 0; }}
         table {{ width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 14px; }}
         th {{ background: #f5f5f5; text-align: left; padding: 8px; font-weight: 600; border-bottom: 2px solid #ddd; }}
         td {{ padding: 8px; border-bottom: 1px solid #eee; }}
@@ -474,6 +495,8 @@ class RadioController(http.Controller):
 {"".join([f'''
 <div class="person-card">
     <div class="person-title">👤 {rep["consumer"].name}</div>
+    {"" if not rep["items_alc"] else f"""
+    <div class="section-sub">🍺 Alkoholisch</div>
     <table>
         <thead>
             <tr>
@@ -486,7 +509,7 @@ class RadioController(http.Controller):
             </tr>
         </thead>
         <tbody>
-            {"".join([f"""
+            {"".join([f'''
             <tr>
                 <td>{item["emoji"]} {item["name"]}</td>
                 <td>{item["bottles"]} Fl.</td>
@@ -495,13 +518,52 @@ class RadioController(http.Controller):
                 <td>{(item["bottles"] * item["pfand_bottle"] + item["crates"] * item["pfand_crate"]):.2f} €</td>
                 <td style="text-align:right;">{item["subtotal"]:.2f} €</td>
             </tr>
-            """ for item in rep["items"]])}
+            ''' for item in rep["items_alc"]])}
+            {"" if rep["pfand_from_free"] <= 0 else f'''
+            <tr>
+                <td colspan="4" style="font-style:italic; color:#666;">zzgl. Pfand für alkoholfreie Getränke (siehe unten)</td>
+                <td style="text-align:right;">{rep["pfand_from_free"]:.2f} €</td>
+            </tr>
+            '''}
             <tr class="total-row">
-                <td colspan="5">Zwischensumme {rep["consumer"].name}</td>
-                <td style="text-align:right; color:#1a237e;">{rep["total"]:.2f} €</td>
+                <td colspan="5">Zwischensumme Alkoholisch</td>
+                <td style="text-align:right; color:#1a237e;">{rep["alc_total"]:.2f} €</td>
             </tr>
         </tbody>
     </table>
+    """}
+    {"" if not rep["items_free"] else f"""
+    <div class="section-sub">💧 Alkoholfrei <span style="font-weight:normal; color:#888;">(Pfand wird zusammen mit dem Alkohol abgerechnet)</span></div>
+    <table>
+        <thead>
+            <tr>
+                <th>Getränk</th>
+                <th>Anzahl Flaschen</th>
+                <th>Kisten</th>
+                <th>Einzelpreis (€)</th>
+                <th style="text-align:right;">Gesamt (€)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {"".join([f'''
+            <tr>
+                <td>{item["emoji"]} {item["name"]}</td>
+                <td>{item["bottles"]} Fl.</td>
+                <td>{item["crates"]} Kiste(n)</td>
+                <td>{item["price"]:.2f} €</td>
+                <td style="text-align:right;">{item["subtotal"]:.2f} €</td>
+            </tr>
+            ''' for item in rep["items_free"]])}
+            <tr class="total-row">
+                <td colspan="4">Zwischensumme Alkoholfrei</td>
+                <td style="text-align:right; color:#1a237e;">{rep["free_total"]:.2f} €</td>
+            </tr>
+        </tbody>
+    </table>
+    """}
+    <div style="text-align:right; font-weight:900; font-size:16px; margin-top:8px; color:#1a237e;">
+        Gesamt {rep["consumer"].name}: {rep["total"]:.2f} €
+    </div>
 </div>
 ''' for rep in consumer_reports]) if consumer_reports else '<p style="font-size:16px; color:#666;">Keine offenen Entnahmen vorhanden. Alle Getränke sind abgerechnet! 🎉</p>'}
 

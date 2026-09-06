@@ -554,13 +554,31 @@ Wolf wollte alle drei zusaetzlichen Verbesserungen ("alle 3"):
    Emoji-Praefix im Titel ergaenzt: Verleih-Termine jetzt "📦 <Kunde>"
    (Action 890). Fokuszeit-Aufgaben und Inselhalle behalten ihre
    bestehende, bereits unterscheidbare Titel-Form.
-2. **Inselhalle privat:** alle 14 aktiven Inselhalle-Kalendertermine auf
-   `privacy: 'private'` gesetzt (Feld synct zu Googles `visibility`,
-   bestaetigt im Odoo-Quellcode). Sofort sichtbarer Nebeneffekt beim
-   Nachpruefen: fuer jeden Nicht-Besitzer (auch den Agent/MCP-Zugriff)
-   zeigt Odoo `name`/`categ_ids` jetzt nur noch als "Busy" bzw. leer —
-   korrektes, erwuenschtes Verhalten von "privat", macht aber die
-   Nachpruefung durch den Agent selbst unmoeglich (gewollt).
+2. **Inselhalle privat (KORRIGIERT — siehe Nachtrag unten):** alle 20
+   aktiven Inselhalle-Kalendertermine auf `privacy: 'private'` gesetzt.
+   Ursprünglich als "korrektes, gewuenschtes Verhalten" eingestuft, weil
+   nur die eigene Agent/MCP-Ansicht "Busy" zeigte — diese Annahme war
+   falsch, siehe Nachtrag "Privacy-Bug behoben" unten.
+
+## Nachtrag 06.09.2026 — Privacy-Bug behoben (Google-Sync zeigte "Busy")
+
+Wolf: "wo sind meine arbeitszeiten im odoo kalender? ich sehe nichts
+mehr". Ursache: die oben unter Punkt 2 gesetzte `privacy: 'private'`
+liess nicht nur die eigene Agent/MCP-Lese-Ansicht "Busy" anzeigen,
+sondern offenbar auch den Google-Sync selbst — auf Wolfs Handy kamen
+alle 20 Inselhalle-Termine nur noch als nichtssagendes "Busy" an, ohne
+jede Unterscheidung. Die urspruengliche Einschaetzung "betrifft nur den
+Agent, ist gewollt" wurde NICHT gegen den echten Google-Kalender/das
+Handy verifiziert — Fehler eingesehen, Lehre als
+[[feedback_frawo_calendar_privacy_busy_sync]] persistiert.
+
+Fix: `privacy` auf allen 20 betroffenen Terminen zurueck auf `False`
+gesetzt (per `sudo()`-Skript in `odoo shell`, da die Modelle teils
+nicht MCP-freigegeben sind), sofortiger `_sync_all_google_calendar()`-
+Sync fuer Wolf ausgeloest. Sample-Read via `sudo()` bestaetigte: die
+echten `name`/`description`/`categ_ids`-Werte waren die ganze Zeit
+unbeschaedigt in der DB — nur die Sync-Ausgabe war betroffen, kein
+Datenverlust.
 3. **Pufferzeit:** `find_free_slot` in Action 880 um `BUFFER = 60 Min`
    erweitert — die Konflikt-Pruefung meidet jetzt nicht nur exakte
    Ueberschneidungen, sondern auch die Stunde direkt vor/nach einem
