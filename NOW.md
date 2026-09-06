@@ -42,6 +42,7 @@ Wer eine davon nicht kennt, sucht stundenlang am falschen Ende.
 | **Paperless: `paperless_mail.tasks.process_mail_accounts` hängt fest → würgt die ganze Dokumenten-Pipeline ab** | Stratos IMAP-Server schloss die Verbindung vorzeitig (`* BYE Autologout; idle for too long`), weil MailAccount #1 auf Port 993 mit `imap_security = 1` (NONE / unverschlüsselt) lief — Port 993 erfordert zwingend SSL/TLS. Task hing bis zum Celery-Hard-Limit (1800 s) und blockierte `consume_file`. Behoben am 06.09.2026: `imap_security = 2` (SSL) gesetzt. SSL-Handshake läuft in 1,0s durch, Celery blockiert nicht mehr. Echter Postfach-Abruf wartet auf Strato-Postfach/Passwort-Bestätigung (Odoo #1285). |
 | **`scripts/tools/sync_odoo_files.py` deployt nur Dateien aus einer festen Liste (`FILES_TO_SYNC`)** | `models/__init__.py` importierte `mail_message.py` bereits, die Datei selbst stand aber nicht in der Liste — ein routinemäßiger Sync von `controllers/main.py` schickte `__init__.py` mit dem aktiven Import, aber nie die zugehörige Datei nach CT140. Legte kurzzeitig das komplette `frawo_agent`-Modul (Radio, Anker-Tracker, Agent-API, Kalender-Teile) lahm. Die Datei war zusätzlich im Repo durch einen Bearbeitungsfehler syntaktisch kaputt (HTML-Entities `&lt;`/`&gt;` statt echter Zeichen, fehlende String-Quotes) — fiel erst beim nächsten Deploy auf, nicht beim Schreiben. Behoben 06.09.2026 (Odoo #1287), `mail_message.py` zur Liste ergänzt | Bei jeder neuen Datei, die `models/__init__.py` importiert: sofort in `FILES_TO_SYNC` aufnehmen — nie den Import committen, ohne die Datei im selben Zug in die Sync-Liste einzutragen. Vor jedem Sync einer `.py`-Datei mit neuem Import lokal `python -m py_compile` gegenprüfen |
 | **`openclaw config set …` auf CT150 löst IMMER einen vollständigen Gateway-Reload aus** | Der Reload liest **alle** Schlüssel neu — auch `agents.defaults.model`. Wer nur Telegram/exec härtet, aktiviert damit ein evtl. gerade eingetragenes, kaputtes Modellprofil mit. So am 06.09.2026 Jarvis 5 Minuten stumm geschaltet (Anthropic-Profil: zwei Modellnamen existieren nicht, der Key ist bis 01.10.2026 gesperrt) | Vor jedem `config set` zuerst `openclaw config get agents.defaults.model` prüfen. Funktionierend: `github-copilot/claude-sonnet-5`. Modellnamen nie aus dem Gedächtnis eintragen — Test: `docker exec openclaw openclaw agent --session-id check --message "Antworte nur mit OK"` (ohne `--deliver`) |
+| **UCG-Firewall: Accept-Regel für den Hinweg reicht nicht** | Ohne eine Regel mit `state_established`+`state_related` verwirft die breite Gegenrichtungs-Regel (`[20010] Block IoT to Server`, drop, protocol=all) auch die **Antwortpakete**. Ergebnis: 100 % Paketverlust zu **allen** Geräten des IoT-VLAN — Shellys, Roborock, Tapo-Kamera — obwohl die UCG sie sekundenaktuell als verbunden führt und `[20030] Allow Server to IoT` korrekt aktiv ist. Kostete am 06.09.2026 die komplette Shelly-Einbindung in Home Assistant | Erst prüfen, ob überhaupt eine established/related-Regel existiert (`rest/firewallrule` nach `state_established: true` filtern — 0 Treffer = das ist die Ursache). Abgrenzung ohne Änderung: Gateway-Interface des Zielnetzes (10.4.0.1) antwortet, alles dahinter nicht, `traceroute` endet nach Hop 1, **alle** Gerätefamilien betroffen → Netz, nie das Gerät. Behoben durch LAN_IN-Regel Index 20001 (accept, established+related); Trennung bleibt: IoT kann weiterhin keine neuen Verbindungen ins Server-Netz aufbauen. Odoo #1351 |
 | **Odoo-Parameter `frawo_agent.azuracast_api_key` war monatelang tot (403)** | Alles, was in Odoo über diesen Key zu AzuraCast spricht, scheiterte still — u. a. der Skip-Vote (`hate`) der Radio-Seite. Aufgefallen erst beim Bau der Kanal-Demokratie (06.09.2026), weil der neue Client 0 Playlisten bekam | Der funktionierende Key liegt in `deployments/musikverwaltung/rekordbox_sync/.env` (nicht eingecheckt) und jetzt auch wieder im Odoo-Parameter. Bei „AzuraCast antwortet nicht": erst `curl -sk -o /dev/null -w '%{http_code}' -H "X-API-Key: …" https://10.1.0.38/api/station/1/playlists` — 403 heißt Key, nicht Netz |
 
 
@@ -151,6 +152,24 @@ Alles andere zwischen den Netzen: **DROP** (Catch-all am Ende der `wg1`-Regeln).
 ⚠️ **Das Ingest-Skript hat den Pfad fest verdrahtet** (`SCAN_BASE` in `/usr/local/bin/frawo-scan-ingest.sh` auf `stock-pve`, **Wirtspfad**, nicht Containerpfad). Beim Umzug der Scan-Ablage am 04.09.2026 lief der Timer dadurch **eine knappe Stunde lang ins Leere — mit Exit-Status 0**, weil das Skript fehlende Personenordner mit `continue` überspringt. Kein Fehler im Log, kein Alarm. Nachgezogen auf `/mnt/music_hdd/_Dokumente/Scans` (Sicherung: `frawo-scan-ingest.sh.backup-20260904`). **Wer die Scan-Ablage verschiebt, muss dieses Skript mitziehen.**
 
 ---
+
+## 🔌 IoT-VLAN & Shellys in Home Assistant (neu 06.09.2026)
+
+Die fünf Shellys hängen im **IoT-VLAN 104** (`10.4.0.0/24`, WLAN `FraWo__ioT`, ein AP) und bleiben dort — eingebunden wird über Routing/Firewall, nie durch Verschieben.
+
+| IP | Gerät | Modell | HA-Integration |
+|---|---|---|---|
+| 10.4.0.10 | Plug S Gen3 | S3PL-00112EU | „FreeShelly I" |
+| 10.4.0.11 | Outdoor Plug S Gen3 | S3PL-20112EU | „Outdoor Garage" — ⚠️ **nie schalten** |
+| 10.4.0.12 | BLU Gateway G3 | S3GW-1DBT001 | `shellyblugwg3-…` |
+| 10.4.0.13 | **PowerStrip Gen4 (GrowBox)** | S4PL-00416EU | `shellypstripg4-…`, 4 Ausgänge einzeln schaltbar + Leistung/Energie je Ausgang |
+| 10.4.0.74 | Plug MG3 | S3PL-30110EU | `shellyplugmg3-…` |
+
+Alle fünf Integrationen `state=loaded`, 67 Entities, 61 mit Messwert. Kein Gerät hat ein eigenes Passwort (`auth_en=false`) — geschützt allein durch die VLAN-Trennung.
+
+⚠️ **Namenskonflikt bei 10.4.0.11 ungeklärt:** UCG nennt es „IT/Netzwerk-Strom (KRITISCH)", das Gerät selbst „Outdoor Garage / Werkstatt". Bis das geklärt ist, gilt: **diesen Schalter nicht schalten** (Rote Linie).
+
+**Automatische Erkennung funktioniert VLAN-übergreifend prinzipiell nicht** (mDNS/CoAP-Multicast wird nicht geroutet) — neue Shellys immer **manuell per IP** in HA hinzufügen. Push-Updates zurück an HA deckt die bestehende Regel `[20006] IoT → HA:8123` ab.
 
 ## 📊 Überwachung
 
