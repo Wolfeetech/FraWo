@@ -394,3 +394,38 @@
 **Platzhalter-Scan:** Keine TBD/TODO-Stellen; einzige "Variable" ist `<FOKUSZEIT_CATEG_ID>` in Task 2, die dort explizit als "aus Task 1 einsetzen" markiert ist (kein offener Platzhalter, sondern eine dokumentierte Abhängigkeit zwischen Tasks).
 
 **Typkonsistenz:** `find_free_slot` gibt `(start, stop)` oder `(None, None)` zurück — in allen Aufrufstellen (Task 2, Task 3) konsistent per `if slot_start and slot_end:` geprüft. `event`-Variable wird in Task 3 in beiden Zweigen (`existing`/`create`) konsistent gesetzt, bevor sie für `calendar_event_id` verwendet wird.
+
+## Erkenntnisse aus der echten Ausführung (06.09.2026)
+
+Drei Dinge liefen beim ersten Deploy anders als im Plan angenommen —
+alle direkt live gefunden und korrigiert, finaler Code oben und in den
+`.py`-Dokudateien bereits berichtigt:
+
+1. **`datetime`/`timedelta` sind in Odoos Server-Action-Kontext keine
+   direkt importierten Namen, sondern nur das Modul `datetime` selbst
+   steht bereit.** Bare `timedelta(...)` → `NameError`. Musste überall
+   zu `datetime.timedelta(...)` bzw. `datetime.datetime.now()`
+   korrigiert werden (bestätigt durch Gegenprobe an einer bereits
+   bestehenden FraWo-Automatik, die `datetime.date.today()` nutzt).
+2. **`calendar.event.duration` wird nicht automatisch aus `start`/`stop`
+   berechnet** — ist ein eigenes, stored Float-Feld. Ohne expliziten
+   `duration`-Wert im `create()`/`write()` blieb es bei 0 bzw. einem
+   veralteten Wert, obwohl `start`/`stop` korrekt gesetzt waren. Jetzt
+   explizit mitgeschrieben.
+3. **Konflikt-Suche schloss den eigenen, gerade aktualisierten Termin
+   nicht aus** — bei einer Fristverschiebung wich die Suche dem eigenen
+   alten Slot aus, statt ihn bei Bedarf wiederzuverwenden. `find_free_slot`
+   bekam einen `exclude_event_id`-Parameter.
+
+**Beobachtung, kein Fehler:** Beim Testen von Task 4 hatte eine bereits
+bestehende, unabhängige FraWo-Automatik ("Stage->State Sync") die
+Rückmeldungs-Aktivität bereits mit einer eigenen, ebenfalls passenden
+Nachricht ("Auto: Aufgabe abgeschlossen") geschlossen, bevor Action 886
+selbst zum Zug kam. Ergebnis ist in jedem Fall korrekt (Termin
+archiviert, Aktivität geschlossen, Nachricht im Chatter) — Action 886
+bleibt als Absicherung bestehen, greift nur dann, wenn diese andere
+Automatik aus irgendeinem Grund nicht zuerst feuert.
+
+Alle 6 Testfälle aus dem Spec-Testplan wurden gegen echte Testaufgaben
+(IDs 1276–1278, alle nach Abnahme wieder gelöscht) erfolgreich
+durchgespielt.
