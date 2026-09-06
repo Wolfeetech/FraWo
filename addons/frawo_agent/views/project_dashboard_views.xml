@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Action to open Project Spreadsheet Dashboard (ID 7) directly -->
+    <record id="action_project_spreadsheet_dashboard" model="ir.actions.client">
+        <field name="name">Projekt-Dashboard</field>
+        <field name="tag">action_spreadsheet_dashboard</field>
+        <field name="params" eval="{'dashboard_id': 7}"/>
+    </record>
+
+    <!-- Top-Level Menu in Project App: directly beside Projects and Tasks -->
+    <menuitem
+        id="menu_project_dashboard_top"
+        name="📊 Dashboard"
+        parent="project.menu_main_pm"
+        action="action_project_spreadsheet_dashboard"
+        sequence="3"/>
+
+    <!-- Menu under Project -> Reporting -->
+    <menuitem
+        id="menu_project_dashboard_reporting"
+        name="📊 Projekt-Dashboard"
+        parent="project.menu_project_report"
+        action="action_project_spreadsheet_dashboard"
+        sequence="1"/>
+</odoo>

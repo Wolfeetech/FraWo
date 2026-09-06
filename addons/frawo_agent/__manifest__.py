@@ -4,7 +4,7 @@
     "summary": "Autonomer Task-Agent: formatiert neue Tasks nach CI via lokalem Ollama",
     "author": "FraWo GbR",
     "license": "LGPL-3",
-    "depends": ["project", "mail", "maintenance", "website"],
+    "depends": ["project", "mail", "maintenance", "website", "spreadsheet_dashboard"],
     "data": [
         "security/ir.model.access.csv",
         "data/config_params.xml",
@@ -15,6 +15,7 @@
         "views/it_equipment_views.xml",
         "views/radio_vote_views.xml",
         "views/project_task_search_views.xml",
+        "views/project_dashboard_views.xml",
         "views/website_homepage_ci3.xml",
     ],
     # Asset-Bündel sind seit Odoo 15 Manifest-Einträge und keine vererbbaren
