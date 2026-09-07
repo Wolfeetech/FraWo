@@ -2159,6 +2159,77 @@ class RadioController(http.Controller):
             in_prog_count = sum(1 for t in live_tasks if 'in arbeit' in (t.stage_id.name or '').lower())
             recent_done_count = sum(1 for t in live_tasks if any(w in (t.stage_id.name or '').lower() for w in ['erledigt', 'done']))
 
+            # 3b. Active Agents & Dynamic Task Lock Lookup
+            ag_task = env['project.task'].sudo().search([
+                ('active', '=', True),
+                ('stage_id.name', 'ilike', 'In Arbeit'),
+                '|', ('name', 'ilike', 'Antigravity'), ('id', '=', 1356)
+            ], order='write_date desc', limit=1)
+
+            claude_task = env['project.task'].sudo().search([
+                ('active', '=', True),
+                ('stage_id.name', 'ilike', 'In Arbeit'),
+                '|', ('name', 'ilike', 'Claude'), ('id', 'in', [1355, 1300])
+            ], order='write_date desc', limit=1)
+
+            ag_id = ag_task.id if ag_task else None
+            claude_id = claude_task.id if claude_task else None
+
+            ag_task_title = f"#{ag_task.id} · {ag_task.name}" if ag_task else "Kein Task zugewiesen"
+            ag_task_url = f"/frawo/touch/login?redirect=/odoo/project.task/{ag_task.id}" if ag_task else "#"
+
+            claude_task_title = f"#{claude_task.id} · {claude_task.name}" if claude_task else "Bereit für Aufgaben"
+            claude_task_url = f"/frawo/touch/login?redirect=/odoo/project.task/{claude_task.id}" if claude_task else "#"
+
+            agents_html = f'''
+            <div class="agent-card agent-active-ag">
+                <div class="agent-header">
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <span class="agent-pulse-dot" style="background:#00e5ff; box-shadow:0 0 10px #00e5ff;"></span>
+                        <span class="agent-name">🤖 Antigravity</span>
+                        <span class="agent-loc">StudioPC · IDE</span>
+                    </div>
+                    <span class="agent-badge badge-working">🔥 Live aktiv (Arbeitet gerade)</span>
+                </div>
+                <div class="agent-task-row">
+                    <span class="agent-label">AKTUELLE AUFGABE:</span>
+                    <a href="{ag_task_url}" target="_blank" class="agent-task-link">{ag_task_title}</a>
+                </div>
+                <div class="agent-focus-txt"><b>Fokus:</b> Touchscreen Live-Operations: Wer arbeitet gerade woran &amp; Projekt-Dashboard</div>
+            </div>
+
+            <div class="agent-card agent-active-claude">
+                <div class="agent-header">
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <span class="agent-pulse-dot" style="background:#ffb300; box-shadow:0 0 10px #ffb300;"></span>
+                        <span class="agent-name">🤖 Claude Code</span>
+                        <span class="agent-loc">StudioPC · Terminal</span>
+                    </div>
+                    <span class="agent-badge badge-standby">🟡 In Arbeit</span>
+                </div>
+                <div class="agent-task-row">
+                    <span class="agent-label">ZUGEORDNET:</span>
+                    <a href="{claude_task_url}" target="_blank" class="agent-task-link">{claude_task_title}</a>
+                </div>
+                <div class="agent-focus-txt"><b>Fokus:</b> Skripte &amp; Code-Implementierungen, OpenClaw 2026.9.2</div>
+            </div>
+
+            <div class="agent-card agent-active-jarvis">
+                <div class="agent-header">
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <span class="agent-pulse-dot" style="background:#a050f0; box-shadow:0 0 10px #a050f0;"></span>
+                        <span class="agent-name">🦞 Jarvis (OpenClaw)</span>
+                        <span class="agent-loc">CT150 Anker · 24/7</span>
+                    </div>
+                    <span class="agent-badge badge-persistent">🟢 24/7 Persistent</span>
+                </div>
+                <div class="agent-task-row">
+                    <span class="agent-label">KERN-ROLLE:</span>
+                    <span style="color:#fff; font-size:13px; font-weight:700;">Koordination, Monitoring &amp; Telegram ↔ Wolf</span>
+                </div>
+                <div class="agent-focus-txt"><b>Letzte Aktion:</b> Peer-Review Task #1354 (AdGuard-Sync &amp; Server-Updates)</div>
+            </div>'''
+
             # 4. Define Live Operational Project Streams
             streams = {
                 'infra': {
@@ -2174,7 +2245,7 @@ class RadioController(http.Controller):
                 'growbox': {
                     'title': '🌱 Smart Home & GrowBox',
                     'icon': '🌱',
-                    'desc': 'Live-Klima (21,5 °C / 67 %), Lüfter-Hysterese, Touch-Dashboard',
+                    'desc': 'Live-Klima (21,7 °C / 67 %), Lüfter-Hysterese, Touch-Dashboard',
                     'tasks': [],
                     'in_prog': 0,
                     'done_recent': 0,
@@ -2300,6 +2371,18 @@ class RadioController(http.Controller):
                 if not streams[stk]['latest_act'] and last_note_text:
                     streams[stk]['latest_act'] = f"#{t.id} {t.name[:35]}"
 
+                # Check active agent lock
+                lock_banner = ''
+                card_lock_class = ''
+                if ag_id and t.id == ag_id:
+                    lock_banner = '<div class="agent-lock-banner lock-ag">⚡ AKTIV IN BEARBEITUNG DURCH ANTIGRAVITY</div>'
+                    card_lock_class = ' card-locked-ag'
+                    active_agent = '🤖 Antigravity'
+                elif claude_id and t.id == claude_id:
+                    lock_banner = '<div class="agent-lock-banner lock-claude">⚡ IN BEARBEITUNG DURCH CLAUDE CODE</div>'
+                    card_lock_class = ' card-locked-claude'
+                    active_agent = '🤖 Claude Code'
+
                 # Visual status styling
                 if is_in_prog:
                     status_badge = '<span class="status-pill status-in-prog"><span class="mini-pulse"></span>🚀 In Arbeit</span>'
@@ -2322,7 +2405,8 @@ class RadioController(http.Controller):
                 proj_name = t.project_id.name if t.project_id else streams[stk]['title']
 
                 card = f'''
-                <div class="task-card stream-{stk} {filter_status_class}">
+                <div class="task-card stream-{stk} {filter_status_class}{card_lock_class}">
+                    {lock_banner}
                     <div class="card-header">
                         <div style="display:flex; align-items:center; gap:8px;">
                             <span class="proj-badge" style="background:{proj_color}22; color:{proj_color}; border:1px solid {proj_color}55;">{proj_name}</span>
@@ -2406,7 +2490,7 @@ class RadioController(http.Controller):
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="refresh" content="30">
-<title>FraWo Live Operations & Projekt-Cockpit</title>
+<title>FraWo Live Operations &amp; Projekt-Cockpit</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
   * {{ box-sizing: border-box; margin: 0; padding: 0; }}
@@ -2487,9 +2571,71 @@ class RadioController(http.Controller):
   .kpi-lbl {{ font-size: 11px; color: #9fa8da; font-weight: 600; text-transform: uppercase; }}
 
   .section-title {{
-    font-size: 16px; font-weight: 900; color: #fff; margin-bottom: 12px;
+    font-size: 15px; font-weight: 900; color: #fff; margin-bottom: 12px;
     display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.5px;
   }}
+
+  .grid-agents {{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 14px;
+    margin-bottom: 24px;
+  }}
+  .agent-card {{
+    background: rgba(18, 22, 34, 0.85);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 16px 18px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 10px;
+  }}
+  .agent-card.agent-active-ag {{
+    border-color: rgba(0, 229, 255, 0.6);
+    background: rgba(0, 229, 255, 0.05);
+    box-shadow: 0 0 24px rgba(0, 229, 255, 0.18);
+  }}
+  .agent-card.agent-active-claude {{
+    border-color: rgba(255, 179, 0, 0.6);
+    background: rgba(255, 179, 0, 0.05);
+    box-shadow: 0 0 24px rgba(255, 179, 0, 0.18);
+  }}
+  .agent-card.agent-active-jarvis {{
+    border-color: rgba(160, 80, 240, 0.6);
+    background: rgba(160, 80, 240, 0.05);
+    box-shadow: 0 0 24px rgba(160, 80, 240, 0.18);
+  }}
+  .agent-header {{ display: flex; justify-content: space-between; align-items: center; }}
+  .agent-pulse-dot {{ width: 10px; height: 10px; border-radius: 50%; animation: pulse 1.8s infinite; }}
+  .agent-name {{ font-size: 15px; font-weight: 900; color: #fff; }}
+  .agent-loc {{ font-size: 11px; color: #9fa8da; font-weight: 600; }}
+  .agent-badge {{ font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 8px; }}
+  .badge-working {{ background: rgba(0, 229, 255, 0.2); color: #00e5ff; border: 1px solid rgba(0, 229, 255, 0.4); }}
+  .badge-standby {{ background: rgba(255, 179, 0, 0.2); color: #ffb300; border: 1px solid rgba(255, 179, 0, 0.4); }}
+  .badge-persistent {{ background: rgba(160, 80, 240, 0.2); color: #a050f0; border: 1px solid rgba(160, 80, 240, 0.4); }}
+  .agent-task-row {{ display: flex; flex-direction: column; gap: 3px; }}
+  .agent-label {{ color: #7986cb; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }}
+  .agent-task-link {{ color: #fff; font-size: 13px; font-weight: 700; text-decoration: none; line-height: 1.4; }}
+  .agent-task-link:hover {{ text-decoration: underline; color: #00e5ff; }}
+  .agent-focus-txt {{ font-size: 12px; color: #c5cae9; line-height: 1.4; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 8px; }}
+
+  .agent-lock-banner {{
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 900;
+    margin-bottom: 10px;
+    text-align: center;
+    letter-spacing: 0.5px;
+  }}
+  .lock-ag {{ background: linear-gradient(135deg, rgba(0,229,255,0.25), rgba(160,80,240,0.25)); color: #00e5ff; border: 1px solid #00e5ff; }}
+  .lock-claude {{ background: linear-gradient(135deg, rgba(255,179,0,0.25), rgba(255,87,34,0.25)); color: #ffb300; border: 1px solid #ffb300; }}
+  .card-locked-ag {{ border-color: #00e5ff !important; box-shadow: 0 0 24px rgba(0,229,255,0.3) !important; }}
+  .card-locked-claude {{ border-color: #ffb300 !important; box-shadow: 0 0 24px rgba(255,179,0,0.3) !important; }}
 
   .grid-streams {{
     display: grid;
@@ -2689,6 +2835,11 @@ class RadioController(http.Controller):
       <div class="kpi-lbl">Heute gebucht</div>
     </div>
   </div>
+</div>
+
+<div class="section-title">🤖 Live-Agenten: Wer arbeitet gerade woran?</div>
+<div class="grid-agents">
+  {agents_html}
 </div>
 
 <div class="section-title">🎯 Aktive Projekte &amp; Themenstränge (Live-Fokus)</div>
