@@ -48,11 +48,30 @@ Wer eine davon nicht kennt, sucht stundenlang am falschen Ende.
 | **Odoo-Parameter `frawo_agent.azuracast_api_key` war monatelang tot (403)** | Alles, was in Odoo über diesen Key zu AzuraCast spricht, scheiterte still — u. a. der Skip-Vote (`hate`) der Radio-Seite. Aufgefallen erst beim Bau der Kanal-Demokratie (06.09.2026), weil der neue Client 0 Playlisten bekam | Der funktionierende Key liegt in `deployments/musikverwaltung/rekordbox_sync/.env` (nicht eingecheckt) und jetzt auch wieder im Odoo-Parameter. Bei „AzuraCast antwortet nicht": erst `curl -sk -o /dev/null -w '%{http_code}' -H "X-API-Key: …" https://10.1.0.38/api/station/1/playlists` — 403 heißt Key, nicht Netz |
 
 
+| **Die Überwachung des lebenden Knotens lief über den toten** | Prometheus scrapte den `node_exporter` des **Ankers** unter `10.1.0.128:19100` — ein socat-Relay auf dem **ProDesk**. Dasselbe beim StudioPC (`10.1.0.128:19182`). Als der ProDesk am 07.09.2026 starb, war damit nicht nur er selbst unsichtbar, sondern auch der einzige noch lebende Knoten und der Arbeitsplatz. Der Relay war nur gebaut worden, weil beide Exporter ausschließlich auf ihrer Tailscale-Adresse lauschen | Am 07.09.2026 direkt verdrahtet: `100.69.179.87:9100` (Anker) und `100.98.31.60:9182` (StudioPC), CT155 hat selbst Tailscale. **Regel:** kein Überwachungsziel darf über einen dritten Rechner laufen — vor dem Eintragen `curl` aus dem Monitoring-Container heraus testen, nicht vom Arbeitsplatz |
+| **`pct restore 150 …` auf dem Anker überschreibt Jarvis** | Die CTIDs der beiden Knoten überschneiden sich: ProDesk CT150 = `monitoring-stack`, **Anker CT150 = `openclaw`/Jarvis**. Auch CT101 (AdGuard Master ↔ Replica) und VM210 (AzuraCast ↔ haos) sind doppelt vergeben. Ein Restore „auf die gleiche Nummer" löscht im Zweifel den laufenden Dienst | Restore vom ProDesk auf den Anker **immer mit neuer ID** (Monitoring liegt seit 07.09.2026 als **CT155**). Vorher `pct list` **und** `qm list` lesen. Die IP bleibt trotzdem gleich, weil die DHCP-Reservierung auf der MAC hängt |
+
 ⚠️ **Nach direkten Datenbank-Änderungen an AzuraCast immer** `azuracast_cli azuracast:radio:restart 1` — sonst merkt liquidsoap nichts. Gilt auch für **neue Playlisten**: Titel und `.m3u` entstehen automatisch, aber liquidsoap kennt die Playlist erst nach dem Neustart (`grep -c -i <name> …/config/liquidsoap.liq` muss > 0 sein).
 
 ---
 
 ## 🖥️ Was wo läuft
+
+> 🔴 **STAND 07.09.2026: Der ProDesk ist hardwareseitig tot.** Kein Strom-, kein Plattenproblem — der Rechner reagiert weder auf den Einschaltknopf noch auf Wake-on-LAN, während eine Shelly-Steckdose die ganze Nacht stabil 185–197 W gemessen hat. Netzteil oder Mainboard; ein Ersatznetzteil (13 €) ist bestellt, ein **Dell OptiPlex 7050** steht als Ersatzknoten bereit. Die Tabellen unten beschreiben weiterhin die **Soll-Aufteilung**; was davon gerade **wo** läuft, steht hier:
+>
+> | Dienst | Soll | Ist am 07.09.2026 |
+> |---|---|---|
+> | Odoo/Website CT140, Vaultwarden CT108, n8n+Paperless CT110 | ProDesk | ✅ **auf dem Anker** wiederhergestellt (PBS-Stand 07.09. 02:0x, ~2 h vor dem Tod) |
+> | Monitoring CT150 | ProDesk | ✅ **auf dem Anker als CT155**, IP unverändert `10.1.0.35` (Restore 07.09. 16:1x) |
+> | AdGuard Master CT101 | ProDesk | ❌ tot — die **Replica auf dem Anker (`10.1.0.27`) trägt den DNS allein**, kein Handlungsdruck |
+> | Radio VM210 AzuraCast | ProDesk | ❌ tot, `funk.frawo.tech` liefert 502 |
+> | Fileserver CT120 | ProDesk | ❌ tot (Musikplatte hängt physisch am toten Gerät) |
+> | WireGuard CT106 | ProDesk | ❌ tot → VPN nach Stockenweiler/Eltern unterbrochen |
+> | HA-Eltern VM360 | ProDesk | ❌ tot |
+>
+> **Die Radio-VM ist NICHT verloren** — anders als zwischenzeitlich angenommen. In Google Drive unter `FraWo-ProDesk-VMs/` liegen `vzdump-qemu-210-2026_09_06-05_42_11.vma.zst` (31,7 GB, AzuraCast) und `vzdump-qemu-360-2026_09_06-06_44_39.vma.zst` (13 GB, HA-Eltern), beide vom **06.09.** Wertlos war nur die lokale Rückfall-VM211 — die wurde am 24.08.2026 gelöscht (`qmdestroy:211` im PVE-Tasklog), lange bevor sie gebraucht wurde. Wiederherstellung gehört auf den OptiPlex, **nicht** auf den Anker: dort sind nur ~6 GB RAM frei, und genau die RAM-Überbuchung hat die Radio-Migration im August gerade beseitigt.
+>
+> Kapazität Anker am 07.09.: 15,8 GB RAM (9,8 belegt), Thin-Pool 64 % von 157 GB, ZFS `anker-backup` 1,7 TB frei. Laufende Aufgabe: Odoo **#1357**.
 
 ### Knoten
 
