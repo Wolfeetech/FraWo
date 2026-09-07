@@ -2087,3 +2087,684 @@ class RadioController(http.Controller):
         except Exception as e:
             _logger.error("kiosk_procurement_dashboard error: %s", str(e))
             return request.make_response(f"<p style='color:#fff'>Fehler: {str(e)}</p>", status=500, headers=[('Content-Type', 'text/html')])
+
+    # ─────────────────────────────────────────────────────────────
+    # Touchscreen One-Click Auto-Login
+    # ─────────────────────────────────────────────────────────────
+
+    @http.route('/frawo/touch/login', type='http', auth='none', csrf=False, sitemap=False)
+    def touch_auto_login(self, **kwargs):
+        """Auto-authenticates Wolf Prinz on the local Touchscreen/LAN and redirects to /odoo or target."""
+        try:
+            db = 'FraWo_GbR'
+            env = request.env(user=1)
+            user = env['res.users'].sudo().browse(6)
+            if not user.exists() or user.login != 'wolf@frawo.tech':
+                user = env['res.users'].sudo().search([('login', '=', 'wolf@frawo.tech')], limit=1)
+
+            if user:
+                request.session.db = db
+                request.session.uid = user.id
+                request.session.login = user.login
+                request.session.context = dict(user.context_get())
+                request.session.should_rotate = True
+                _logger.info("Touch auto-login successfully authenticated Wolf Prinz (uid=%s)", user.id)
+                redirect_url = kwargs.get('redirect', '/odoo')
+                return request.redirect(redirect_url)
+            else:
+                _logger.error("Touch auto-login: user wolf@frawo.tech not found")
+                return request.redirect('/web/login')
+        except Exception as e:
+            _logger.exception("Touch auto-login error: %s", str(e))
+            return request.redirect('/web/login?login=wolf@frawo.tech')
+
+    # ─────────────────────────────────────────────────────────────
+    # Touchscreen Live Operations Cockpit (Projekte & Agent Tracker)
+    # ─────────────────────────────────────────────────────────────
+
+    @http.route(['/frawo/touch/cockpit', '/frawo/touch/tasks'], type='http', auth='none', csrf=False, sitemap=False)
+    def touch_operations_cockpit(self, **kwargs):
+        """Touchscreen-optimiertes Live-Cockpit: Zeigt aktiv bearbeitete Projekte,
+        laufende Arbeiten (In Arbeit & kürzlich erledigt) nach echter Aktualität,
+        aktive Agenten mit letztem Chatter-Bericht und 1-Click-Odoo-Zugriff."""
+        try:
+            import datetime, re, html as pyhtml
+            db = 'FraWo_GbR'
+            env = request.env(user=1)
+
+            now = datetime.datetime.now()
+            today_str = datetime.date.today().isoformat()
+            cutoff_48h = (now - datetime.timedelta(hours=48)).strftime('%Y-%m-%d %H:%M:%S')
+
+            # 1. Fetch live tasks: either in progress OR touched within the last 48 hours
+            # Sorted strictly by write_date desc so freshest work is on top!
+            live_tasks = env['project.task'].sudo().search([
+                ('active', '=', True),
+                '|',
+                ('stage_id.name', 'ilike', 'In Arbeit'),
+                ('write_date', '>=', cutoff_48h)
+            ], order='write_date desc', limit=35)
+
+            # 2. Today's timesheet lines
+            timesheets = env['account.analytic.line'].sudo().search([
+                ('date', '=', today_str)
+            ], order='create_date desc', limit=15)
+            today_hours = sum(timesheets.mapped('unit_amount'))
+
+            # 3. Overall task counts
+            open_count = env['project.task'].sudo().search_count([
+                ('active', '=', True),
+                ('stage_id.name', 'not in', ['✅ Erledigt', '🗑️ Abgebrochen', 'Done', 'Cancelled'])
+            ])
+            in_prog_count = sum(1 for t in live_tasks if 'in arbeit' in (t.stage_id.name or '').lower())
+            recent_done_count = sum(1 for t in live_tasks if any(w in (t.stage_id.name or '').lower() for w in ['erledigt', 'done']))
+
+            # 4. Define Live Operational Project Streams
+            streams = {
+                'infra': {
+                    'title': '🛠️ Systeme, IT & Server',
+                    'icon': '🛠️',
+                    'desc': 'Proxmox, PBS-Backups, AdGuard DNS, Odoo 4GB RAM & Kiosk',
+                    'tasks': [],
+                    'in_prog': 0,
+                    'done_recent': 0,
+                    'latest_act': '',
+                    'color': '#ff5722'
+                },
+                'growbox': {
+                    'title': '🌱 Smart Home & GrowBox',
+                    'icon': '🌱',
+                    'desc': 'Live-Klima (21,5 °C / 67 %), Lüfter-Hysterese, Touch-Dashboard',
+                    'tasks': [],
+                    'in_prog': 0,
+                    'done_recent': 0,
+                    'latest_act': '',
+                    'color': '#4caf50'
+                },
+                'agents': {
+                    'title': '🦞 KI-Agenten & Jarvis',
+                    'icon': '🦞',
+                    'desc': 'OpenClaw 2026.9.2, Sonnet 5 Modell-Fix, Odoo-Chatter Sync',
+                    'tasks': [],
+                    'in_prog': 0,
+                    'done_recent': 0,
+                    'latest_act': '',
+                    'color': '#a050f0'
+                },
+                'radio': {
+                    'title': '📻 Radio & AzuraCast',
+                    'icon': '📻',
+                    'desc': 'Kanal-Demokratie Hörer-Voting, CT120 Beets (3.414 Tracks)',
+                    'tasks': [],
+                    'in_prog': 0,
+                    'done_recent': 0,
+                    'latest_act': '',
+                    'color': '#00e5ff'
+                },
+                'auftraege': {
+                    'title': '💼 Aufträge & Events',
+                    'icon': '💼',
+                    'desc': 'Anker Indoor Messung, Zubehörkisten, Bar-Abrechnung',
+                    'tasks': [],
+                    'in_prog': 0,
+                    'done_recent': 0,
+                    'latest_act': '',
+                    'color': '#ffb300'
+                },
+                'wolf': {
+                    'title': '🔒 Wolf: Privat & Beruf',
+                    'icon': '🔒',
+                    'desc': 'Inselhalle, Familie & persönliche Vorhaben',
+                    'tasks': [],
+                    'in_prog': 0,
+                    'done_recent': 0,
+                    'latest_act': '',
+                    'color': '#e91e63'
+                }
+            }
+
+            # 5. Process and categorize each live task
+            cards_html = []
+            for t in live_tasks:
+                name_l = (t.name or '').lower()
+                pid = t.project_id.id if t.project_id else 0
+                pname = (t.project_id.name or '').lower() if t.project_id else ''
+
+                # Determine Stream
+                if any(w in name_l for w in ['growbox', 'lüfter', 'hygrometer', 'pflanz', 'klima', 'abluft']):
+                    stk = 'growbox'
+                elif any(w in name_l for w in ['radio', 'azuracast', 'stream', 'beets', 'sendung', 'musik', 'track']):
+                    stk = 'radio'
+                elif any(w in name_l for w in ['openclaw', 'jarvis', 'modell', 'agent', 'sonnet', 'claude', 'antigravity']):
+                    stk = 'agents'
+                elif pid == 104 or '10' in pname:
+                    stk = 'auftraege'
+                elif pid in [106, 107] or '40' in pname or '30' in pname or 'wolf' in pname:
+                    stk = 'wolf'
+                else:
+                    stk = 'infra'
+
+                stage_name = t.stage_id.name if t.stage_id else 'Offen'
+                is_in_prog = 'in arbeit' in stage_name.lower()
+                is_done = any(w in stage_name.lower() for w in ['erledigt', 'done'])
+                is_blocked = 'blockiert' in stage_name.lower()
+
+                streams[stk]['tasks'].append(t)
+                if is_in_prog: streams[stk]['in_prog'] += 1
+                if is_done: streams[stk]['done_recent'] += 1
+
+                # Fetch last meaningful note (non-empty body)
+                last_msg = env['mail.message'].sudo().search([
+                    ('model', '=', 'project.task'),
+                    ('res_id', '=', t.id),
+                    ('body', '!=', False),
+                    ('body', '!=', '')
+                ], order='date desc', limit=1)
+
+                active_agent = '🤖 Agent'
+                last_note_text = 'Status / Metadaten aktualisiert'
+                last_note_time = ''
+
+                if last_msg:
+                    raw_body = pyhtml.unescape(re.sub(r'<[^>]+>', ' ', last_msg.body or '')).strip()
+                    if raw_body:
+                        # Detect agent from chatter content
+                        if '[Antigravity]' in raw_body or 'Antigravity' in raw_body:
+                            active_agent = '🤖 Antigravity'
+                        elif '[Claude]' in raw_body or 'Claude' in raw_body:
+                            active_agent = '🤖 Claude Code'
+                        elif '[Jarvis]' in raw_body or 'Jarvis' in raw_body or 'OpenClaw' in raw_body:
+                            active_agent = '🦞 Jarvis'
+                        elif last_msg.author_id and 'Wolf' in last_msg.author_id.name:
+                            active_agent = '👤 Wolf Prinz'
+                        elif last_msg.author_id:
+                            active_agent = last_msg.author_id.name
+
+                        last_note_text = (raw_body[:180] + '...') if len(raw_body) > 180 else raw_body
+                    
+                    if last_msg.date:
+                        m_date = last_msg.date
+                        if m_date.date() == now.date():
+                            last_note_time = f"Heute {m_date.strftime('%H:%M')} Uhr"
+                        elif (now.date() - m_date.date()).days == 1:
+                            last_note_time = f"Gestern {m_date.strftime('%H:%M')} Uhr"
+                        else:
+                            last_note_time = m_date.strftime('%d.%m. %H:%M')
+                elif t.write_date:
+                    w_date = t.write_date
+                    if w_date.date() == now.date():
+                        last_note_time = f"Heute {w_date.strftime('%H:%M')} Uhr"
+                    else:
+                        last_note_time = w_date.strftime('%d.%m. %H:%M')
+
+                if not streams[stk]['latest_act'] and last_note_text:
+                    streams[stk]['latest_act'] = f"#{t.id} {t.name[:35]}"
+
+                # Visual status styling
+                if is_in_prog:
+                    status_badge = '<span class="status-pill status-in-prog"><span class="mini-pulse"></span>🚀 In Arbeit</span>'
+                    filter_status_class = 'filter-in-prog'
+                elif is_done:
+                    status_badge = '<span class="status-pill status-done">✅ Verifiziert</span>'
+                    filter_status_class = 'filter-done'
+                elif is_blocked:
+                    status_badge = '<span class="status-pill status-blocked">🛑 Blockiert</span>'
+                    filter_status_class = 'filter-blocked'
+                else:
+                    status_badge = f'<span class="status-pill status-other">{stage_name}</span>'
+                    filter_status_class = 'filter-other'
+
+                prio_val = t.priority or '0'
+                prio_badge = {'3': '🔴 Prio 3', '2': '🟠 Prio 2', '1': '🔵 Prio 1', '0': ''}.get(prio_val, '')
+                prio_html = f'<span class="prio-tag">{prio_badge}</span>' if prio_badge else ''
+
+                proj_color = streams[stk]['color']
+                proj_name = t.project_id.name if t.project_id else streams[stk]['title']
+
+                card = f'''
+                <div class="task-card stream-{stk} {filter_status_class}">
+                    <div class="card-header">
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <span class="proj-badge" style="background:{proj_color}22; color:{proj_color}; border:1px solid {proj_color}55;">{proj_name}</span>
+                            {prio_html}
+                        </div>
+                        {status_badge}
+                    </div>
+                    <div class="task-title">#{t.id} · {t.name}</div>
+                    
+                    <div class="task-meta">
+                        <span class="meta-item"><span style="color:#00e5ff;">Aktiv:</span> <b>{active_agent}</b></span>
+                        <span class="meta-item"><span style="color:#9fa8da;">Stand:</span> {last_note_time}</span>
+                    </div>
+
+                    <div class="last-update-box">
+                        <div class="update-header">
+                            <span>💬 Letzter Bericht ({active_agent})</span>
+                            <span style="color:#7986cb;">{last_note_time}</span>
+                        </div>
+                        <div class="update-body">{last_note_text}</div>
+                    </div>
+
+                    <div class="card-actions">
+                        <a href="/frawo/touch/login?redirect=/odoo/project.task/{t.id}" target="_blank" class="btn-action btn-open">
+                            ⚡ In Odoo öffnen →
+                        </a>
+                    </div>
+                </div>'''
+                cards_html.append(card)
+
+            cards_rendered = "".join(cards_html) if cards_html else '<div class="empty-state">🎉 Keine aktuellen Aufgaben gefunden.</div>'
+
+            # 6. Render Live Project Stream Cards
+            stream_cards_html = []
+            for sk, s in streams.items():
+                tot_live = len(s['tasks'])
+                if s['in_prog'] > 0:
+                    status_lbl = f'<span style="color:#00e5ff; font-weight:800;">🟢 {s["in_prog"]} in Arbeit</span>'
+                    dot_cls = 'dot-active'
+                elif s['done_recent'] > 0:
+                    status_lbl = f'<span style="color:#00e676; font-weight:800;">✅ {s["done_recent"]} heute fertig</span>'
+                    dot_cls = 'dot-done'
+                else:
+                    status_lbl = '<span style="color:#9fa8da; font-weight:600;">⚪ Geplant</span>'
+                    dot_cls = 'dot-idle'
+
+                scard = f'''
+                <div class="stream-card" onclick="filterByStream('{sk}', this)" id="scard-{sk}">
+                    <div class="stream-header">
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <span class="stream-dot {dot_cls}"></span>
+                            <span class="stream-title">{s['title']}</span>
+                        </div>
+                        <span class="stream-status">{status_lbl}</span>
+                    </div>
+                    <div class="stream-desc">{s['desc']}</div>
+                    <div class="stream-footer">
+                        <span>{tot_live} Live-Aufgaben</span>
+                        <span style="color:{s['color']}; font-weight:700;">Filter anzeigen →</span>
+                    </div>
+                </div>'''
+                stream_cards_html.append(scard)
+
+            stream_cards_rendered = "".join(stream_cards_html)
+
+            # 7. Render Today Timesheets
+            ts_rows = []
+            for ts in timesheets:
+                emp_name = ts.employee_id.name if ts.employee_id else (ts.user_id.name if ts.user_id else 'Agent')
+                ts_rows.append(f'''
+                <div class="ts-row">
+                    <span class="ts-time">{ts.unit_amount:.2f} h</span>
+                    <span class="ts-emp">{emp_name}</span>
+                    <span class="ts-desc">{ts.name}</span>
+                </div>''')
+            ts_rendered = "".join(ts_rows) if ts_rows else '<div style="color:#7986cb; padding:8px;">Heute noch keine Zeiten erfasst.</div>'
+
+            html = f'''<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="refresh" content="30">
+<title>FraWo Live Operations & Projekt-Cockpit</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  * {{ box-sizing: border-box; margin: 0; padding: 0; }}
+  body {{
+    background: radial-gradient(circle at 15% 15%, rgba(160,80,240,0.14), transparent 45%),
+                radial-gradient(circle at 85% 85%, rgba(0,229,255,0.08), transparent 50%),
+                #090b10;
+    color: #e8eaf6;
+    font-family: 'Inter', -apple-system, sans-serif;
+    padding: 16px 20px 40px 20px;
+    min-height: 100vh;
+  }}
+
+  .top-nav {{
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }}
+  .nav-btn {{
+    background: rgba(26, 30, 42, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #c5cae9;
+    padding: 10px 18px;
+    border-radius: 24px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    transition: all 0.2s ease;
+  }}
+  .nav-btn:active {{ transform: scale(0.96); }}
+  .nav-btn.active {{
+    background: linear-gradient(135deg, #a050f0, #00e5ff);
+    color: #fff;
+    border-color: transparent;
+  }}
+
+  .header-box {{
+    background: rgba(18, 22, 32, 0.7);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 18px;
+    padding: 16px 22px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 14px;
+  }}
+  .header-left {{ display: flex; align-items: center; gap: 14px; }}
+  .pulse-dot {{
+    width: 12px; height: 12px; border-radius: 50%; background: #00e676;
+    box-shadow: 0 0 12px #00e676; animation: pulse 2s infinite;
+  }}
+  @keyframes pulse {{
+    0% {{ transform: scale(0.95); opacity: 0.8; }}
+    50% {{ transform: scale(1.2); opacity: 1; }}
+    100% {{ transform: scale(0.95); opacity: 0.8; }}
+  }}
+  .title-main {{ font-size: 22px; font-weight: 900; color: #fff; letter-spacing: -0.5px; }}
+  .subtitle {{ font-size: 12px; color: #9fa8da; margin-top: 2px; }}
+
+  .kpi-group {{ display: flex; gap: 10px; }}
+  .kpi-pill {{
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 8px 14px;
+    text-align: center;
+  }}
+  .kpi-val {{ font-size: 18px; font-weight: 900; color: #00e5ff; }}
+  .kpi-lbl {{ font-size: 11px; color: #9fa8da; font-weight: 600; text-transform: uppercase; }}
+
+  .section-title {{
+    font-size: 16px; font-weight: 900; color: #fff; margin-bottom: 12px;
+    display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.5px;
+  }}
+
+  .grid-streams {{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 12px;
+    margin-bottom: 24px;
+  }}
+  .stream-card {{
+    background: rgba(22, 26, 38, 0.7);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 14px 16px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    user-select: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }}
+  .stream-card:hover {{ border-color: rgba(0,229,255,0.4); transform: translateY(-2px); }}
+  .stream-card.active-stream {{
+    border-color: #00e5ff;
+    background: rgba(0, 229, 255, 0.08);
+    box-shadow: 0 4px 20px rgba(0,229,255,0.2);
+  }}
+  .stream-header {{ display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }}
+  .stream-dot {{ width: 8px; height: 8px; border-radius: 50%; }}
+  .dot-active {{ background: #00e5ff; box-shadow: 0 0 8px #00e5ff; }}
+  .dot-done {{ background: #00e676; box-shadow: 0 0 8px #00e676; }}
+  .dot-idle {{ background: #7986cb; }}
+  .stream-title {{ font-size: 14px; font-weight: 800; color: #fff; }}
+  .stream-status {{ font-size: 11px; }}
+  .stream-desc {{ font-size: 12px; color: #9fa8da; line-height: 1.4; margin-bottom: 10px; }}
+  .stream-footer {{ display: flex; justify-content: space-between; font-size: 11px; color: #7986cb; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 8px; }}
+
+  .filter-bar {{
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }}
+  .filter-chip {{
+    background: rgba(26, 30, 42, 0.6);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: #9fa8da;
+    padding: 8px 16px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+  }}
+  .filter-chip.active {{
+    background: #a050f0;
+    color: #fff;
+    border-color: #a050f0;
+    box-shadow: 0 4px 14px rgba(160,80,240,0.4);
+  }}
+
+  .grid-tasks {{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 16px;
+    margin-bottom: 30px;
+  }}
+  .task-card {{
+    background: rgba(22, 26, 38, 0.75);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 18px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    transition: transform 0.15s ease, border-color 0.15s ease;
+  }}
+  .task-card:hover {{ border-color: rgba(160,80,240,0.4); transform: translateY(-2px); }}
+  
+  .card-header {{ display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }}
+  .proj-badge {{ font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 8px; text-transform: uppercase; }}
+  .prio-tag {{ font-size: 11px; font-weight: 700; }}
+
+  .status-pill {{
+    font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 8px; display: inline-flex; align-items: center; gap: 5px;
+  }}
+  .status-in-prog {{
+    background: rgba(0, 229, 255, 0.15); color: #00e5ff; border: 1px solid rgba(0, 229, 255, 0.3);
+  }}
+  .status-done {{
+    background: rgba(0, 230, 118, 0.15); color: #00e676; border: 1px solid rgba(0, 230, 118, 0.3);
+  }}
+  .status-blocked {{
+    background: rgba(255, 23, 68, 0.15); color: #ff1744; border: 1px solid rgba(255, 23, 68, 0.3);
+  }}
+  .status-other {{
+    background: rgba(255, 255, 255, 0.08); color: #9fa8da; border: 1px solid rgba(255, 255, 255, 0.1);
+  }}
+  .mini-pulse {{
+    width: 6px; height: 6px; border-radius: 50%; background: #00e5ff; animation: pulse 1.5s infinite;
+  }}
+
+  .task-title {{ font-size: 16px; font-weight: 800; color: #fff; line-height: 1.4; margin-bottom: 12px; }}
+  
+  .task-meta {{ display: flex; gap: 14px; font-size: 12px; color: #9fa8da; margin-bottom: 14px; flex-wrap: wrap; }}
+  .meta-item {{ display: inline-flex; align-items: center; gap: 4px; }}
+
+  .last-update-box {{
+    background: rgba(12, 14, 22, 0.6);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-bottom: 16px;
+  }}
+  .update-header {{ display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; color: #a050f0; margin-bottom: 6px; }}
+  .update-body {{ font-size: 13px; color: #c5cae9; line-height: 1.45; word-break: break-word; }}
+
+  .card-actions {{ display: flex; gap: 8px; }}
+  .btn-action {{
+    flex: 1;
+    padding: 12px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 800;
+    text-align: center;
+    transition: transform 0.1s ease;
+    display: inline-block;
+  }}
+  .btn-action:active {{ transform: scale(0.97); }}
+  .btn-open {{
+    background: linear-gradient(135deg, #a050f0, #00e5ff);
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(160,80,240,0.3);
+  }}
+
+  .ts-box {{
+    background: rgba(18, 22, 32, 0.6);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 16px 20px;
+    margin-bottom: 30px;
+  }}
+  .ts-row {{
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-size: 13px;
+  }}
+  .ts-row:last-child {{ border-bottom: none; }}
+  .ts-time {{ font-weight: 900; color: #00e676; min-width: 50px; }}
+  .ts-emp {{ font-weight: 700; color: #ffb300; min-width: 140px; }}
+  .ts-desc {{ color: #c5cae9; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }}
+
+  .empty-state {{ padding: 40px; text-align: center; color: #9fa8da; font-size: 16px; grid-column: 1 / -1; }}
+  
+  {self.KIOSK_BACK_CSS}
+</style>
+</head>
+<body>
+
+<div class="top-nav">
+  <a href="http://10.1.0.40:8123/jarvis-touch/home" class="nav-btn">🏠 Home</a>
+  <a href="http://10.1.0.40:8123/jarvis-touch/growbox" class="nav-btn">🌱 GrowBox</a>
+  <a href="http://10.1.0.40:8123/jarvis-touch/licht" class="nav-btn">💡 Licht</a>
+  <a href="http://10.1.0.40:8123/jarvis-touch/radio" class="nav-btn">🎛️ Radio</a>
+  <a href="/frawo/touch/cockpit" class="nav-btn active">⚡ Live Ops</a>
+  <a href="http://10.1.0.40:8123/jarvis-touch/studiopc" class="nav-btn">🖥️ StudioPC</a>
+  <a href="http://10.1.0.40:8123/lovelace/0" class="nav-btn">📋 HA Menü</a>
+</div>
+
+<div class="header-box">
+  <div class="header-left">
+    <div class="pulse-dot"></div>
+    <div>
+      <div class="title-main">⚡ Live Operations &amp; Projekt-Cockpit</div>
+      <div class="subtitle">Echtzeit-Übersicht: Aktive Projekte, laufende Arbeiten &amp; Agenten-Aktivitäten</div>
+    </div>
+  </div>
+  <div class="kpi-group">
+    <div class="kpi-pill">
+      <div class="kpi-val">{in_prog_count}</div>
+      <div class="kpi-lbl">In Arbeit</div>
+    </div>
+    <div class="kpi-pill">
+      <div class="kpi-val">{recent_done_count}</div>
+      <div class="kpi-lbl">Heute erledigt</div>
+    </div>
+    <div class="kpi-pill">
+      <div class="kpi-val" style="color:#00e676;">{today_hours:.2f} h</div>
+      <div class="kpi-lbl">Heute gebucht</div>
+    </div>
+  </div>
+</div>
+
+<div class="section-title">🎯 Aktive Projekte &amp; Themenstränge (Live-Fokus)</div>
+<div class="grid-streams">
+  {stream_cards_rendered}
+</div>
+
+<div class="section-title">⚡ Laufende Arbeiten &amp; Frische Aktivität ({len(live_tasks)} Aufgaben)</div>
+<div class="filter-bar">
+  <div class="filter-chip active" onclick="filterTasks('all', this)">🔥 Alle Live ({len(live_tasks)})</div>
+  <div class="filter-chip" onclick="filterTasks('filter-in-prog', this)">🚀 Nur In Arbeit ({in_prog_count})</div>
+  <div class="filter-chip" onclick="filterTasks('filter-done', this)">✅ Kürzlich verifiziert ({recent_done_count})</div>
+  <div class="filter-chip" onclick="filterTasks('stream-infra', this)">🛠️ Systeme &amp; IT</div>
+  <div class="filter-chip" onclick="filterTasks('stream-growbox', this)">🌱 GrowBox / IoT</div>
+  <div class="filter-chip" onclick="filterTasks('stream-agents', this)">🦞 KI-Agenten</div>
+  <div class="filter-chip" onclick="filterTasks('stream-radio', this)">📻 Radio</div>
+  <div class="filter-chip" onclick="filterTasks('stream-auftraege', this)">💼 Aufträge</div>
+  <div class="filter-chip" onclick="filterTasks('stream-wolf', this)">🔒 Wolf</div>
+</div>
+
+<div class="grid-tasks" id="tasksGrid">
+  {cards_rendered}
+</div>
+
+<div class="section-title">⏱️ Heute gebuchte Zeiterfassung ({today_hours:.2f} Stunden)</div>
+<div class="ts-box">
+  {ts_rendered}
+</div>
+
+{self.KIOSK_BACK_HTML}
+
+<script>
+let currentStreamFilter = 'all';
+
+function filterTasks(cls, btn) {{
+  document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.stream-card').forEach(c => c.classList.remove('active-stream'));
+  if (btn) btn.classList.add('active');
+  
+  const cards = document.querySelectorAll('.task-card');
+  cards.forEach(card => {{
+    if (cls === 'all' || card.classList.contains(cls)) {{
+      card.style.display = 'flex';
+    }} else {{
+      card.style.display = 'none';
+    }}
+  }});
+}}
+
+function filterByStream(streamKey, cardElem) {{
+  const targetClass = 'stream-' + streamKey;
+  const isAlreadyActive = cardElem.classList.contains('active-stream');
+
+  document.querySelectorAll('.stream-card').forEach(c => c.classList.remove('active-stream'));
+  document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
+
+  if (isAlreadyActive) {{
+    // Reset to all
+    filterTasks('all', document.querySelector('.filter-chip'));
+  }} else {{
+    cardElem.classList.add('active-stream');
+    const cards = document.querySelectorAll('.task-card');
+    cards.forEach(card => {{
+      if (card.classList.contains(targetClass)) {{
+        card.style.display = 'flex';
+      }} else {{
+        card.style.display = 'none';
+      }}
+    }});
+  }}
+}}
+</script>
+
+</body>
+</html>'''
+            return request.make_response(html, headers=[('Content-Type', 'text/html; charset=utf-8')])
+        except Exception as e:
+            _logger.error("touch_operations_cockpit error: %s", str(e))
+            return request.make_response(f"<p style='color:#fff'>Fehler: {str(e)}</p>", status=500, headers=[('Content-Type', 'text/html')])
