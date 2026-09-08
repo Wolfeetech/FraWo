@@ -1,0 +1,14 @@
+[Unit]
+Description=Taeglicher Lauf der verschluesselten Odoo-Cloud-Kopie
+
+[Timer]
+# 04:30 — CT140 schreibt seinen Datenbankabzug um 03:30. Eine Stunde Abstand
+# reicht mit Reserve, auch wenn der Abzug einmal laenger braucht.
+OnCalendar=*-*-* 04:30:00
+# Nach einem Neustart nachholen statt einen Tag auslassen. Genau das hat beim
+# Crontab-Vorfall am 20.08.2026 gefehlt.
+Persistent=true
+RandomizedDelaySec=300
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,18 @@
+[Unit]
+# Verschlüsselte Odoo-Kopie in die Cloud. Ersetzt seit 08.09.2026 den mit dem
+# ProDesk gestorbenen Weg (odoo-sql-backup.sh). Owner-Agent: Claude Code.
+# Doku: DOCS/VERSCHLUESSELUNG.md, Odoo-Aufgabe #1357.
+Description=FraWo verschluesselte Odoo-Kopie nach gcrypt:Odoo
+After=network-online.target rclone-gdrive.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/frawo-odoo-cloud-verschluesselt.sh
+# Kein Restart=: schlaegt der Lauf fehl, meldet das die Metrik und der
+# Alarm OdooBackupVeraltet. Ein blinder Wiederholungslauf wuerde die
+# Datenbank nur zusaetzlich belasten.
+TimeoutStartSec=3600
+
+[Install]
+WantedBy=multi-user.target
