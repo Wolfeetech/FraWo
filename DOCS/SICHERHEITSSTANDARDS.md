@@ -79,8 +79,23 @@ der Anlage, kein neuer Dienst). Perspektivisch: Überwachung auf den dritten Kno
   dasselbe, ohne zweite Wahrheit.
 - Kein automatischer Eingriff in Netz, Strom oder Neustarts. Diagnose ja,
   Selbstheilung nein.
-- Bestehende Automatiken werden **jährlich durchgesehen**. Aktuell: 15 aktive
-  Regeln in Odoo, davon mindestens eine schädlich.
+- Bestehende Automatiken werden **jährlich durchgesehen**.
+
+**Durchsicht vom 08.09.2026 (13 aktive Odoo-Regeln):**
+
+| | Regel | Befund |
+|---|---|---|
+| 🔴 | #16 Anschaffungs-Tag → Projekt 109 | vervielfältigte Aufgaben, Duplikat-Schutz prüfte den selbst veränderten Namen → **abgeschaltet** |
+| 🔴 | #11 „FraWo TEMP: MCP-Freigabe" | vergab dem Agenten bei jedem Schreibvorgang auf **einem** Auftrag die Gruppe *Sales/Administrator*. Gerüst aus einem Umweg, seit Wochen scharf → **abgeschaltet** (die Gruppe selbst bleibt, ändert betrieblich nichts) |
+| 🟡 | #1 Klausi-Bot → Webhook | Webhook-Geheimnis steht **im Klartext im Code** in der Datenbank; keine Sperre gegen die eigene Antwort → gehört nach Vaultwarden bzw. `ir.config_parameter` |
+| 🟢 | #10 Aufgabe → Kalendertermin | **richtig gebaut** — sucht vorhandene Termine über `res_model_id` + `res_id`, also über die ID des Ursprungsdatensatzes. Genau das hat #16 gefehlt. (Nebenkosten: synchrone Google-Synchronisation je Schreibvorgang) |
+| 🟢 | #18 Auftrag → Liefertermin | dasselbe korrekte Muster |
+| 🟢 | #14 erledigte Aufgabe → Termin aufräumen | setzt `active = False`, löscht nicht → entspricht Regel 4 |
+| 🟢 | #2 #4 #5 #6 #7 #9 #13 #15 | unauffällig, keine Vervielfältigung |
+
+Die Lehre daraus steht in einem Satz: **Ein Duplikat-Schutz muss auf ein Merkmal
+prüfen, das die Automatik selbst nicht verändert.** Der Anzeigename ist nie so
+ein Merkmal.
 
 ---
 
@@ -191,13 +206,13 @@ und das ist dann das eigentliche Produkt.
 
 | Regel | Stand |
 |---|---|
-| 1 · Nichts scheitert leise | 🟡 Kennzahlen für Odoo-Sicherung stehen, Backup-TÜV fehlt |
+| 1 · Nichts scheitert leise | 🟡 Kennzahlen für Odoo-Sicherung stehen, **Backup-TÜV fehlt** |
 | 2 · Wächter außerhalb | 🔴 offen — Cloudflare-Benachrichtigung braucht Wolfs Login |
-| 3 · Automatik mit Bremse | 🟡 zwei schädliche abgeschaltet, 15 weitere ungeprüft |
+| 3 · Automatik mit Bremse | ✅ alle 13 durchgesehen, zwei abgeschaltet, ein Punkt zum Nachziehen (#1) |
 | 4 · Umkehrbar | ✅ gelebt, hier erstmals aufgeschrieben |
 | 5 · Eine Sache, ein Ort | 🟡 Struktur steht, Strecke Paperless → Odoo defekt |
-| 6 · Fristen im System | 🟡 Schlagwort und Fristen da, Auswertung fehlt |
-| 7 · Täglicher Lagebericht | 🔴 offen — das ist der größte Hebel |
+| 6 · Fristen im System | 🟡 Schlagwort und Fristen da, Ansichten gebaut — Versand fehlt (→ Regel 7) |
+| 7 · Täglicher Lagebericht | 🔴 offen — **größter Hebel**. Die neun Abfragen liegen als gespeicherte Filter fertig vor |
 | 8 · Vier Augen | ✅ im Protokoll, wird gelebt |
 
 *Geschrieben von Claude Code am 08.09.2026. Änderungen nur mit Wolfs Zustimmung —
