@@ -74,6 +74,13 @@ Wer eine davon nicht kennt, sucht stundenlang am falschen Ende.
 > **Die Radio-VM ist NICHT verloren** — anders als zwischenzeitlich angenommen. In Google Drive unter `FraWo-ProDesk-VMs/` liegen `vzdump-qemu-210-2026_09_06-05_42_11.vma.zst` (31,7 GB, AzuraCast) und `vzdump-qemu-360-2026_09_06-06_44_39.vma.zst` (13 GB, HA-Eltern), beide vom **06.09.** Wertlos war nur die lokale Rückfall-VM211 — die wurde am 24.08.2026 gelöscht (`qmdestroy:211` im PVE-Tasklog), lange bevor sie gebraucht wurde. Wiederherstellung gehört auf den OptiPlex, **nicht** auf den Anker: dort sind nur ~6 GB RAM frei, und genau die RAM-Überbuchung hat die Radio-Migration im August gerade beseitigt.
 >
 > Kapazität Anker am 07.09.: 15,8 GB RAM (9,8 belegt), Thin-Pool 64 % von 157 GB, ZFS `anker-backup` 1,7 TB frei. Laufende Aufgabe: Odoo **#1357**.
+>
+> **Stand 08.09.2026 abends — was seit dem Ausfall wieder trägt:**
+> - ✅ **Netz repariert.** Alle 11 Gäste hingen 12 h ohne Verbindung, weil `net-resilience.sh` nach einem 3-Sekunden-Wackler `systemctl restart networking` ausführte. Cron-Job abgeschaltet, Skript liegt als `/root/net-resilience.cron.deaktiviert-20260908`.
+> - ✅ **rclone-Zwischenspeicher auf ZFS** (`/anker-backup/rclone-cache`, Obergrenze 120G). Systemplatte von 82 % auf **27 %**. Vorher hätte der Nachtlauf mit ~54 GB die 68-GB-Systemplatte gefüllt.
+> - ✅ **Verschlüsselte Odoo-Cloud-Kopie zurück**: `gcrypt:`-Ziel auf dem Anker neu angelegt (Schlüssel lag dort bereits), neuer Timer `frawo-odoo-cloud.timer` täglich 04:30. Vorher ging die Datenbank seit 07.09. **unverschlüsselt** im Container-Abzug zu Google, und die alten verschlüsselten Sicherungen waren für **keine** Maschine erreichbar.
+> - ✅ `node_exporter` auf dem Anker hat jetzt einen **textfile collector** — vorher konnte der Knoten Sicherungs-Kennzahlen gar nicht ausliefern.
+> - 🔴 **Offen:** Der **Backup-TÜV** lief auf dem ProDesk und ist mit ihm gestorben — niemand prüft derzeit die Sicherungen als Ganzes. Ebenfalls tot: der **Scan-Einzug der Eltern** (`frawo-scan-ingest.timer`), der **AdGuard-Abgleich** (Master weg) und die **noVNC-Brücke** (`studiopc.frawo.tech`).
 
 ### Knoten
 
