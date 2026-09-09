@@ -3,6 +3,14 @@
 > **Zuerst lesen.** Diese Datei beschreibt, **was läuft** — nicht, was passiert ist.
 > Historie steht in der Git-Historie, Entscheidungen und Aufgaben in **Odoo (CT140, `10.1.0.112:8069`) = einzige Quelle der Wahrheit**.
 >
+> **Stand 09.09.2026 — was seit dem ProDesk-Tod neu läuft:**
+> Tagesbericht per Mail (Odoo-Cron 44, tgl. 12:04) · Wache über die Überwachung
+> wieder scharf inkl. `absent()`-Regel · verschlüsselte Cloud-Kopie 06:15 (war
+> 3 h zu früh und kopierte täglich den Vortag) · Kanban vereinheitlicht,
+> WIP-Grenze 6, Kartenalterung aktiv · Ortsschlagwörter `@rk22 @villa
+> @stockenweiler @inselhalle @unterwegs @remote` · 24 gespeicherte Ansichten
+> inkl. persönlicher Listen für Wolf und Franz.
+>
 > **Wie wir arbeiten, damit Chaos nicht teuer wird:** `DOCS/SICHERHEITSSTANDARDS.md` — acht Regeln, jede aus einem echten Vorfall. Kurzfassung: *Chaos ist erlaubt, Stille nicht.*
 >
 > Stand: **29.07.2026** als Grundgerüst, seither laufend punktuell
