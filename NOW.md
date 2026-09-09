@@ -9,7 +9,10 @@
 > 3 h zu früh und kopierte täglich den Vortag) · Kanban vereinheitlicht,
 > WIP-Grenze 6, Kartenalterung aktiv · Ortsschlagwörter `@rk22 @villa
 > @stockenweiler @inselhalle @unterwegs @remote` · 24 gespeicherte Ansichten
-> inkl. persönlicher Listen für Wolf und Franz.
+> inkl. persönlicher Listen für Wolf und Franz · **Meilensteinkette scharfgestellt
+> (7 Kernziele von 30.09.2026 bis 30.06.2027 als Prioritätsrückgrat)** ·
+> Studio 159 aufgeteilt in akute OG-Übernahme (30.09.) & Studio (2027) ·
+> Radio-Tasks ehrlich auf `🛑 Blockiert` (wartet auf OptiPlex) · Epics aus WIP ins Backlog.
 >
 > **Wie wir arbeiten, damit Chaos nicht teuer wird:** `DOCS/SICHERHEITSSTANDARDS.md` — acht Regeln, jede aus einem echten Vorfall. Kurzfassung: *Chaos ist erlaubt, Stille nicht.*
 >
@@ -65,6 +68,10 @@ Wer eine davon nicht kennt, sucht stundenlang am falschen Ende.
 | 🔴 **Eine Odoo-Automatik, die Datensätze KOPIERT, füllt sich selbst nach** | `base.automation` #16 („🛒 Anschaffungs-Tag → Task in Proj 109") legte bei **jedem** Schreibvorgang auf einer Aufgabe mit Schlagwort 147 eine Kopie in Projekt 109 an. Ihr Duplikat-Schutz prüfte nur `name ilike record.name[:30]` **innerhalb von Projekt 109** — die Kopie bekam aber `💡 ` vorangestellt, also traf der Vergleich beim nächsten Lauf nicht mehr. Ergebnis: **drei Generationen**. Das Verschieben der 26 vermeintlichen Originale aus 109 heraus (08.09.2026, 21:08:28) löste die Regel erneut aus und erzeugte in derselben Sekunde 17 neue Kopien mit doppeltem `💡 💡`. Die Kopien standen alle auf **„In Arbeit"** und haben die Zahl der laufenden Aufgaben monatelang verfälscht | Regel deaktiviert (`active: false`, **nicht** gelöscht — umkehrbar). Ersetzt durch **gespeicherte Filter** auf das Schlagwort (`scripts/odoo_arbeitsansichten.py`) — ein Filter zeigt dasselbe ohne zweite Wahrheit. **Regel:** Eine Automatik darf Daten verändern oder melden, aber **nie vervielfältigen**. Aufräumen: `scripts/odoo_dubletten_generationen.py` (archiviert statt löscht). Vollständige Standards: `DOCS/SICHERHEITSSTANDARDS.md` |
 | **Ein Duplikat-Schutz, der den eigenen Präfix nicht kennt** | Jede Prüfung der Form „gibt es schon etwas mit diesem Namen?" versagt, sobald die erzeugende Stelle den Namen **verändert** (Präfix, Emoji, Nummer). Der Schutz sieht beim nächsten Lauf einen anderen Namen und legt fröhlich nach | Gegen ein **stabiles Merkmal** prüfen, das die Kopie nicht verändert — die ID des Ursprungsdatensatzes in einem eigenen Feld, nicht der Anzeigename |
 | **Ein wiederhergestellter Gast ist nicht automatisch gesichert** | Der Sicherungsauftrag des Ankers (`/etc/pve/jobs.cfg`, `daily-all-pbs`, 04:00 → Google Drive) hat eine **fest eingetragene Gästeliste**. Die am 07.09.2026 vom toten ProDesk übernommenen CT140 (Odoo), CT108 (Vaultwarden), CT110 (Paperless), CT106, CT155 standen nicht darin — die Sicherung wäre nachts gelaufen und hätte sie **stumm übersprungen**, während die einzige verbleibende Kopie auf demselben Rechner lag. Kein Fehler, keine Meldung, nur nichts. Gleiches Muster wie 16.08. und 20.08.2026 | Nach **jedem** Restore/Neuanlegen eines Gastes sofort `cat /etc/pve/jobs.cfg` gegen `pct list` + `qm list` prüfen. Erweitern mit `pvesh set /cluster/backup/<job> --vmid <liste>`; Sicherung der alten Datei nicht vergessen. Am 07.09.2026 auf `101,106,108,110,130,140,150,155,210,300` erweitert (VM240 = PBS selbst bleibt bewusst draußen) |
+| 🔴 **`milestone_id` an Gruppe `project.group_project_milestone` gekoppelt** | Ohne diese Benutzergruppe existiert das Feld `milestone_id` für Odoo-Benutzer und Skripte nicht — Zugriffe scheitern mit `KeyError: 'milestone_id'`, und im Web-UI bleibt der Reiter/das Feld unsichtbar, selbst wenn `allow_milestones` auf dem Projekt aktiviert ist | Am 09.09.2026 für Wolf (6, 17), Franz (10) und Agent (7) die Gruppe `project.group_project_milestone` vergeben. Vor Schreibzugriffen auf Meilensteine sicherstellen, dass der Benutzer in der Gruppe ist |
+| 🔴 **Fernes Jahresziel verdeckt akute Wochenfristen (Befund Studio 159)** | Projekt 159 hatte nur einen Meilenstein: „Studio bespielbar" (30.06.2027). Darunter lagen in „Als Nächstes" drei völlig verschiedene Dinge: Wohnungsabnahme Lu (15.09.2026), Serverumzug ins OG als Frostschutz (20.09.2026) und Studioausbau (2027). Wer den Server erst im Oktober umzieht, riskiert Frost/Schimmel im leerstehenden OG — unter einem Ziel im Juni 2027 war diese Dringlichkeit unsichtbar | Zwei Meilensteine: akutes Ziel „OG übernommen" (30.09.2026) mit 10 Aufgaben scharfgestellt, Studioausbau bleibt bei Juni 2027. Dringlichkeit gehört ins nächste Ziel, nicht ins übernächste |
+| 🔴 **Tote Hardware erzeugt Fake-Aktivität im Kanban (Befund Radio 161)** | Neun Radio-Aufgaben standen auf „Als Nächstes". Real ist die Radio-Maschine mit dem ProDesk gestorben: `funk.frawo.tech` meldet 502, keine AzuraCast-VM aktiv, CT120 existiert nicht mehr. Daran kann niemand arbeiten, bis der OptiPlex steht | Ehrlicher Status: Alle 8 betroffenen Aufgaben auf `🛑 Blockiert` gesetzt mit Verweis auf den fehlenden OptiPlex. „Als Nächstes" darf nur sein, was morgen tatsächlich anfassbar ist |
+| 🔴 **Klammern/Epics/Vorhaben in „In Arbeit" verstopfen WIP-Grenzen** | Ein Vorhaben/Epic (#927, #1048, #1090, #1091) ist eine Klammer über Dutzende Teilaufgaben, keine konkrete Handlung. In „In Arbeit" blockieren sie die WIP-Grenze (max 6) und verschleiern, woran real gearbeitet wird | Epics gehören in Stufe `📋 Backlog` und verknüpfen ihren Meilenstein. Nur die konkreten Unteraufgaben wandern nach „Als Nächstes" bzw. „In Arbeit" |
 | **`pct restore 150 …` auf dem Anker überschreibt Jarvis** | Die CTIDs der beiden Knoten überschneiden sich: ProDesk CT150 = `monitoring-stack`, **Anker CT150 = `openclaw`/Jarvis**. Auch CT101 (AdGuard Master ↔ Replica) und VM210 (AzuraCast ↔ haos) sind doppelt vergeben. Ein Restore „auf die gleiche Nummer" löscht im Zweifel den laufenden Dienst | Restore vom ProDesk auf den Anker **immer mit neuer ID** (Monitoring liegt seit 07.09.2026 als **CT155**). Vorher `pct list` **und** `qm list` lesen. Die IP bleibt trotzdem gleich, weil die DHCP-Reservierung auf der MAC hängt |
 
 ⚠️ **Nach direkten Datenbank-Änderungen an AzuraCast immer** `azuracast_cli azuracast:radio:restart 1` — sonst merkt liquidsoap nichts. Gilt auch für **neue Playlisten**: Titel und `.m3u` entstehen automatisch, aber liquidsoap kennt die Playlist erst nach dem Neustart (`grep -c -i <name> …/config/liquidsoap.liq` muss > 0 sein).
@@ -515,6 +522,34 @@ Notfall ohne Netz: an der Konsole `pve-firewall stop`.
 | ~~Alopri-Scan-Ablage (Samba `[scans]` auf CT120) noch nicht an die neue Google-Drive-Paperless-Pipeline angeschlossen~~ — **erledigt 22.08.2026** via `frawo-scan-ingest.timer` | — | #1012 |
 | ~~`R:` abschalten~~ — **erledigt 04.09.2026**, Restordner am 05.09.2026 entfernt. Verwaiste AzuraCast-`storage_location` (id 9, `network_library`, 253 Medien, von keiner Station/Playlist referenziert) entfernt, danach `[radio]`-Freigabe in `smb.conf` auf CT120 auskommentiert (Sicherung `smb.conf.backup-20260904-radio-retired`), `smbd` neu gestartet. `\\10.1.0.94\radio` antwortet nicht mehr. `/mnt/stick/yourparty.radio` auf der Wirt-Systemplatte war beim Nachschauen nur noch ein leeres Ordnergerüst (28 K, keine echten Dateien mehr) — entfernt, `/` bleibt bei 37 GB frei | — | #1263 |
 | **Flos Server ("frawo-docker-1") ist endgültig weg** (Wolf bestätigt 05.08.2026). Nextcloud, lokale AzuraCast, n8n-Alt, ollama, qdrant liefen dort ebenfalls — Bedarf für Neuaufsetzen jeweils einzeln klären | Wolf | — |
+
+---
+
+## 🎯 Priorisierung & Meilensteinkette (Stand 09.09.2026)
+
+> **Das Rückgrat für alle Aufgaben.** Wolf: *„ausserdem fehlt ja die priorisierung .. deshalb sind die meilensteine fuer mich grad so wichtig"*.
+> Regel: **Was JETZT machbar ist (Stufe „Als Nächstes" oder „In Arbeit"), zahlt auf das aktuelle Ziel des Projekts ein.**
+> Backlog und Ideen sind Vorrat. Was sich keinem Ziel zuordnen lässt, fällt auf.
+
+### Die Kette der 7 aktiven Meilensteine
+
+Jeder Schritt macht den nächsten erst möglich oder wirtschaftlicher:
+
+| Deadline | Projekt | Meilenstein | Offene Aufgaben | Kernnutzen |
+|---|---|---|---|---|
+| **30.09.2026** | 💶 60 · Business, Recht & Finanzen (#163) | **Buchhaltung schliesst — Kontobewegungen importiert** | 15 | Ohne Zahlen keine unternehmerische Entscheidung. Belege & Bankbewegungen synchronisiert |
+| **30.09.2026** | 🎬 30 · Studio Villa (#159) | **OG uebernommen — Wohnung abgenommen, Server steht oben** | 10 | Akute Frist Lu Maier (15.09.), Serverumzug ins OG (20.09.) = Frostschutz mit 24/7-Abwärme vor Wintereinbruch |
+| **15.10.2026** | 🛠️ 50 · IT & Infrastruktur (#105) | **Fangnetz steht — Sicherungen geprueft, Alarme kommen an** | 34 | Backup-TÜV wieder aufbauen, Prometheus-Wache & absent()-Regeln, Offsite-Restore verifiziert |
+| **31.10.2026** | 🎨 70 · Marke & Website (#110) | **CI steht — Namensschild kann produziert werden** | 1 | Entsperrt Google Business Profil, Namensschild, einheitlichen Außenauftritt (Engpass: braucht Zuarbeit!) |
+| **15.12.2026** | 🔧 20 · Werkstatt & Lautsprecherbau (#160) | **Werkstatt arbeitsfaehig — erste Reparatur selbst gemacht** | 10 | Franz' Verdienstfähigkeit, Reparaturen & Lautsprecherbau autark ohne Fahrzeug |
+| **31.03.2027** | 💼 10 · Aufträge & Events (#104) | **Verleih vorzeigbar — ein Paket komplett, eingemessen, mit Preis** | 19 | Ein Paket komplett vermietbar: eingemessen, Kisten gelabelt, Mietvertrag-1-Seiter bereit |
+| **30.06.2027** | 🎬 30 · Studio Villa (#159) | **Studio bespielbar — erste eigene Aufnahme** | 5 | Akustik, Recording, StudioLive AR12c — baulich erst nach dem Winter sinnvoll |
+
+### Wichtigste Befunde & Korrekturen vom 09.09.2026:
+1. **Studio-Zweiteilung:** Das ferne Ziel Juni 2027 verdeckte den akuten Frostschutz-Serverumzug (20.09.) und die Wohnungsabnahme Lu (15.09.). Behoben durch Meilenstein „OG übernommen" (30.09.2026).
+2. **Radio ehrlich blockiert:** 8 Radio-Tasks in Projekt 161 standen auf „Als Nächstes", obwohl die Hardware tot ist (ProDesk tot, funk.frawo.tech 502, keine VM). Auf `🛑 Blockiert` gesetzt, bis der OptiPlex steht.
+3. **Vorhaben & Epics ins Backlog:** Epics (#927, #1048, #1090, #1091) sind Klammern über viele Aufgaben und blockieren sonst die WIP-Grenze in „In Arbeit" / „Als Nächstes". Sie liegen im Backlog und tragen ihren Meilenstein.
+4. **WIP-Disziplin:** „In Arbeit (max 6)" enthält stand jetzt genau 4 konkrete Arbeitspakete (#1415 Hausordnung, #1371 Kontoimport, #1357 ProDesk-Ausfall, #1389 Sicherheitsstandards).
 
 ---
 
