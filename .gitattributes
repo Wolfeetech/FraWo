@@ -1,24 +1,27 @@
-# Zeilenenden — angelegt 09.09.2026.
+# Zeilenenden: global LF, unabhaengig vom schreibenden System.
 #
-# Anlass: Ein Deployment-Skript wurde unter Windows mit Python bearbeitet
-# (io.open im Textmodus wandelt \n still in \r\n um), per scp auf den Anker
-# gelegt und dort ausgefuehrt. Ergebnis:
-#     line 15: $'\r': command not found
+# Hinweis vom 09.09.2026 — diese Datei war NICHT das Problem und ist
+# absichtlich unveraendert geblieben:
+#
+# Ein Deployment-Skript scheiterte auf dem Anker mit
+#     line 15: $'': command not found
 #     line 16: set: pipefail: invalid option name
-# Bash liest das \r als Teil des Befehls. Der Fehler sieht aus wie ein
-# Syntaxfehler im Skript, ist aber keiner - die Datei ist nur falsch kodiert.
+# Ursache war nicht git, sondern der Weg daran vorbei: die Datei wurde
+# unter Windows mit Python nachbearbeitet (io.open im Textmodus wandelt
+# 
+ still in 
+ um) und per scp direkt aus dem Arbeitsverzeichnis auf
+# den Linux-Wirt gelegt. Git normalisiert beim Einchecken und Auschecken —
+# eine Datei, die man selbst schreibt und nie neu auscheckt, behaelt was
+# drinsteht.
 #
-# Alles, was auf einem Linux-Rechner ausgefuehrt oder gelesen wird, bekommt
-# deshalb hart LF, unabhaengig davon, auf welchem System es geschrieben wurde.
+# Merksatz: Wer unter Windows an Linux-Skripten arbeitet, schreibt mit
+# newline='
+' oder binaer. Eine Syntaxpruefung auf der Windows-Seite
+# faengt das nicht ab —  ist kein Syntaxfehler, sondern ein Zeichen.
 
-*.sh      text eol=lf
-*.py      text eol=lf
-*.yml     text eol=lf
-*.yaml    text eol=lf
-*.service text eol=lf
-*.timer   text eol=lf
-*.conf    text eol=lf
-*.cfg     text eol=lf
-
-# Dokumente duerfen die Zeilenenden des jeweiligen Systems behalten.
-*.md      text
+* text=auto eol=lf
+*.md text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.sh text eol=lf
