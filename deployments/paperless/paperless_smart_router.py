@@ -394,30 +394,29 @@ def create_odoo_task(info, doc_id, doc_title):
             upsert_todo_activity(models, uid, task_id, mapping["user_id"], due_date,
                                   f"{info['vendor']}: {doc_title}")
             print(f"An bestehende Aufgabe #{task_id} angehaengt statt Duplikat (Dokument #{doc_id}).")
-            return task_id
-
-        task_name = f"📄 [{info['entity']}] {info['vendor']} — {doc_title}"
-        description = f"""<p><b>Automatischer Paperless-Import #{doc_id}</b></p>
+        else:
+            task_name = f"📄 [{info['entity']}] {info['vendor']} — {doc_title}"
+            description = f"""<p><b>Automatischer Paperless-Import #{doc_id}</b></p>
 <p>{info['summary']}</p>
 <p><b>Absender:</b> {info['vendor']}<br/>
 <b>Betrag:</b> {info['amount']:.2f} €<br/>
 <b>Frist:</b> {due_date}</p>
 <p>{doc_link}</p>"""
 
-        task_vals = {
-            'name': task_name,
-            'project_id': mapping["project_id"],
-            'user_ids': [(4, mapping["user_id"])],
-            'date_deadline': due_date,
-            'description': description,
-        }
-        if mapping["partner_id"]:
-            task_vals['partner_id'] = mapping["partner_id"]
+            task_vals = {
+                'name': task_name,
+                'project_id': mapping["project_id"],
+                'user_ids': [(4, mapping["user_id"])],
+                'date_deadline': due_date,
+                'description': description,
+            }
+            if mapping["partner_id"]:
+                task_vals['partner_id'] = mapping["partner_id"]
 
-        task_id = models.execute_kw(ODOO_DB, uid, ODOO_PASS, 'project.task', 'create', [task_vals])
-        upsert_todo_activity(models, uid, task_id, mapping["user_id"], due_date,
-                              f"{info['vendor']}: {doc_title}")
-        print(f"Odoo-Aufgabe #{task_id} angelegt für {info['entity']} (Dokument #{doc_id}).")
+            task_id = models.execute_kw(ODOO_DB, uid, ODOO_PASS, 'project.task', 'create', [task_vals])
+            upsert_todo_activity(models, uid, task_id, mapping["user_id"], due_date,
+                                  f"{info['vendor']}: {doc_title}")
+            print(f"Odoo-Aufgabe #{task_id} angelegt für {info['entity']} (Dokument #{doc_id}).")
 
         # PDF direkt als Anhang an die Odoo-Aufgabe haengen fuer In-App Vorschau
         pdf_bytes = None
