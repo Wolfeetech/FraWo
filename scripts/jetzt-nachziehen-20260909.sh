@@ -64,6 +64,24 @@ else
 fi
 
 echo
+echo "--- 2b. Prometheus neu laden, damit die absent()-Regel greift ---"
+# ExecReload ist "kill -HUP"; der Lifecycle-Endpunkt ist hier nicht aktiv.
+pct exec 155 -- systemctl reload prometheus 2>&1 | tail -2
+sleep 4
+# Regel 1: das Ergebnis am Ziel pruefen, nicht dem Reload glauben.
+# Genau hier scheitert ein Prometheus-Reload sonst lautlos - der Dienst
+# bleibt "active", die Aenderung ist trotzdem nicht drin.
+AKTIV=$(pct exec 155 -- curl -s "http://localhost:9090/api/v1/rules" 2>/dev/null         | grep -c WacheMeldetSichGarNichtMehr)
+OK=$(pct exec 155 -- curl -s "http://localhost:9090/api/v1/status/runtimeinfo" 2>/dev/null      | grep -c '"reloadConfigSuccess":true')
+if [ "${AKTIV:-0}" -gt 0 ] && [ "${OK:-0}" -gt 0 ]; then
+    echo "  absent()-Regel aktiv, Konfiguration sauber geladen."
+    merke "2b. Prometheus -> Regel aktiv, reloadConfigSuccess=true"
+else
+    echo "  🔴 Regel NICHT aktiv (Regel=${AKTIV:-0}, Reload-ok=${OK:-0}) - nachsehen."
+    merke "2b. Prometheus -> Regel NICHT aktiv, nachsehen"
+fi
+
+echo
 echo "########################################################################"
 echo "# 3. ARBEITSANSICHTEN + ORTE IN ODOO"
 echo "########################################################################"
@@ -73,7 +91,7 @@ if pct exec 140 -- docker exec frawotech-odoo-1 test -f /tmp/$SKRIPT 2>/dev/null
   echo "--- $SKRIPT ---"
     pct exec 140 -- docker exec -i frawotech-odoo-1 sh -c \
       "odoo shell -d FraWo_GbR --db_host=\$HOST --db_user=\$USER --db_password=\$PASSWORD --no-http < /tmp/$SKRIPT" \
-      2>&1 | grep -vE " INFO | WARNING |^Traceback|^  File |^    " | tail -18
+      2>&1 | grep -vE " INFO | WARNING |^Traceback|^  File |^    " | tail -32
   merke "3. $SKRIPT -> siehe Ausgabe oben"
 else
   echo "  /tmp/$SKRIPT nicht im Container - uebersprungen"

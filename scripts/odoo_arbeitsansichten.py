@@ -132,15 +132,32 @@ for a in ANSICHTEN:
         Filter.create(werte)
         zustand = "angelegt"
 
-    # Sofort gegenpruefen: ein Filter, der nicht auswertbar ist, ist wertlos.
+    # Gegenpruefen - aber das Richtige.
+    #
+    # Die erste Fassung rief safe_eval mit dem Python-Modul datetime auf und
+    # meldete fuer JEDEN Filter "NICHT AUSWERTBAR". Zwei Fehler in einem:
+    # safe_eval nimmt keine rohen Module, UND Domains mit context_today()
+    # wertet ohnehin die Weboberflaeche aus, nicht Python. Die Pruefung hat
+    # also das Falsche getestet und dann auch noch falsch gemeldet - die
+    # Filter selbst waren die ganze Zeit in Ordnung.
+    #
+    # Jetzt: Struktur pruefen (kann echt scheitern) und, wo kein Datum im
+    # Spiel ist, die Treffer wirklich zaehlen.
     try:
-        treffer = env[modell].search_count(safe_eval(
-            a['domain'],
-            {'context_today': context_today, 'datetime': datetime,
-             'relativedelta': relativedelta, 'time': time}))
-        pruefung = "%d Treffer" % treffer
+        geparst = ast.literal_eval(a['domain'])
+        if not isinstance(geparst, list):
+            raise ValueError('kein Domain-Ausdruck')
+        pruefung = "%d Treffer" % env[modell].search_count(geparst)
+    except (ValueError, SyntaxError):
+        # Enthaelt context_today()/datetime - von der Weboberflaeche
+        # ausgewertet. Hier nur die Klammerstruktur pruefen.
+        d = a['domain']
+        if d.count('(') == d.count(')') and d.count('[') == d.count(']')                 and d.strip().startswith('[') and d.strip().endswith(']'):
+            pruefung = "Datumsfilter, Struktur ok"
+        else:
+            pruefung = "!! KLAMMERN STIMMEN NICHT"
     except Exception as e:
-        pruefung = "!! NICHT AUSWERTBAR: %s" % str(e)[:60]
+        pruefung = "!! %s" % str(e)[:52]
 
     print("  %-12s %-50s %s" % (zustand, a['name'][:50], pruefung))
 
