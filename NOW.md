@@ -3,16 +3,16 @@
 > **Zuerst lesen.** Diese Datei beschreibt, **was läuft** — nicht, was passiert ist.
 > Historie steht in der Git-Historie, Entscheidungen und Aufgaben in **Odoo (CT140, `10.1.0.112:8069`) = einzige Quelle der Wahrheit**.
 >
-> **Stand 09.09.2026 — was seit dem ProDesk-Tod neu läuft:**
-> Tagesbericht per Mail (Odoo-Cron 44, tgl. 12:04) · Wache über die Überwachung
-> wieder scharf inkl. `absent()`-Regel · verschlüsselte Cloud-Kopie 06:15 (war
-> 3 h zu früh und kopierte täglich den Vortag) · Kanban vereinheitlicht,
-> WIP-Grenze 6, Kartenalterung aktiv · Ortsschlagwörter `@rk22 @villa
-> @stockenweiler @inselhalle @unterwegs @remote` · 24 gespeicherte Ansichten
-> inkl. persönlicher Listen für Wolf und Franz · **Meilensteinkette scharfgestellt
-> (Prioritätsrückgrat bis Mitte 2027)** ·
-> Studio 159: Lu bleibt vorerst in Wohnung, Vorhaben im Backlog (keine 15.09./30.09.-Hektik) · Studio bespielbar (2027) ·
-> Radio-Tasks ehrlich auf `🛑 Blockiert` (wartet auf OptiPlex) · Epics aus WIP ins Backlog.
+> **Stand 09.09.2026 (abends) — was seit dem ProDesk-Tod neu läuft:**
+> Tagesbericht per Mail (Odoo-Cron 44, Server-Aktion 828 Fassung 5 inkl. Block für Tag 160 `✅ beantwortet`) ·
+> Wache über die Überwachung wieder scharf inkl. `absent()`-Regel · verschlüsselte Cloud-Kopie 06:15 ·
+> Kanban vereinheitlicht, WIP-Grenze 6, Kartenalterung aktiv · Ortsschlagwörter `@rk22 @villa @stockenweiler @inselhalle @unterwegs @remote` ·
+> 24 gespeicherte Ansichten inkl. persönlicher Cockpits für Wolf und Franz (#1416) ·
+> **Meilensteinkette scharfgestellt (Prioritätsrückgrat bis Mitte 2027)** ·
+> **Odoo-Hausordnung (#1415) vollständig umgesetzt:** Vorlagenprojekt #164 (`is_template`), Tasks 1417–1420 als Vorlagen, Titel nach Hausordnung bereinigt (Preise/Sätze raus) ·
+> **Paperless-Smart-Router v3.1 auf CT110 deployt:** Hängt Dokumente auch bei bestehenden Tasks direkt als `ir.attachment` an und erzeugt GbR-Lieferantenrechnungen ·
+> Belege #154 (KOHL) und #152 (Bußgeld) direkt an Aufgaben #996 und #1390 verknüpft ·
+> Studio 159 & GrowBox 162: Entspannt im Backlog (keine 15.09./30.09.-Hektik) · Radio-Tasks ehrlich auf `🛑 Blockiert` (wartet auf OptiPlex).
 >
 > **Wie wir arbeiten, damit Chaos nicht teuer wird:** `DOCS/SICHERHEITSSTANDARDS.md` — acht Regeln, jede aus einem echten Vorfall. Kurzfassung: *Chaos ist erlaubt, Stille nicht.*
 >
