@@ -13,6 +13,9 @@
                 <filter string="🔨 Bauvorhaben" name="frawo_lane_craft" domain="[('tag_ids', 'in', [151])]"/>
                 <filter string="🏢 Intern" name="frawo_lane_internal" domain="[('tag_ids', 'in', [152])]"/>
                 <separator/>
+                <filter string="🙋 Braucht Wolf" name="frawo_braucht_wolf" domain="[('tag_ids', 'in', [153])]"/>
+                <filter string="⚡ Im Fokus (Als Nächstes &amp; WIP)" name="frawo_focus_active" domain="[('stage_id', 'in', (2, 3, 5))]"/>
+                <separator/>
                 <filter string="🔥 Überfällig" name="frawo_overdue" domain="[('date_deadline', '&lt;', context_today().strftime('%Y-%m-%d')), ('is_closed', '=', False)]"/>
                 <filter string="⏰ Frist 7 Tage" name="frawo_deadline_7d" domain="[('date_deadline', '&gt;=', context_today().strftime('%Y-%m-%d')), ('date_deadline', '&lt;=', (context_today() + datetime.timedelta(days=7)).strftime('%Y-%m-%d')), ('is_closed', '=', False)]"/>
                 <separator/>

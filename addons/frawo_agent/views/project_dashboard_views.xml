@@ -1,5 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <!-- Action: ⚡ Was als Nächstes ansteht (FraWo-Cockpit) -->
+    <record id="action_wolf_focus_cockpit" model="ir.actions.act_window">
+        <field name="name">⚡ Was als Nächstes ansteht</field>
+        <field name="res_model">project.task</field>
+        <field name="view_mode">kanban,list,form,activity</field>
+        <field name="domain">[('project_id', 'not in', (106, 107)), ('stage_id', 'not in', (6, 35)), '|', ('tag_ids', 'in', [153]), ('stage_id', 'in', (2, 3, 5))]</field>
+        <field name="context">{
+            'default_user_ids': [(4, uid)],
+            'group_by': ['stage_id'],
+        }</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Hier siehst du auf einen Blick, was als Nächstes ansteht und wo deine Entscheidung gebraucht wird!
+            </p>
+        </field>
+    </record>
+
+    <!-- Top-Level Menu in Project App: directly before Projects and Tasks -->
+    <menuitem
+        id="menu_wolf_focus_cockpit"
+        name="⚡ Was ansteht"
+        parent="project.menu_main_pm"
+        action="action_wolf_focus_cockpit"
+        sequence="0"/>
+
     <!-- Action to open Project Spreadsheet Dashboard (ID 7) directly -->
     <record id="action_project_spreadsheet_dashboard" model="ir.actions.client">
         <field name="name">Projekt-Dashboard</field>

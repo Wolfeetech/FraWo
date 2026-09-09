@@ -44,7 +44,7 @@ with open(dest, 'wb') as f:
 print('Wrote', dest)
 """
     cmd = [
-        "ssh", "-o", "BatchMode=yes", "root@10.1.0.128",
+        "ssh", "-o", "BatchMode=yes", "anker-pve",
         "pct exec 140 -- python3 -"
     ]
     res = subprocess.run(cmd, input=py_code, capture_output=True, text=True, encoding="utf-8")
