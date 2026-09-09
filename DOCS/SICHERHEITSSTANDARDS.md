@@ -159,6 +159,12 @@ waren seit Wochen überfällig und unsichtbar.
 
 ## Regel 7 — Ein Bericht, der zu Wolf kommt
 
+> **Seit 09.09.2026 in Betrieb.** Kein neuer Kanal und kein neuer Dienst:
+> Odoo-Cron 44 lief bereits täglich — er schrieb seinen Bericht nur in den
+> Chatter einer Aufgabe, die niemand öffnet, und zählte abgebrochene Aufgaben
+> als offen. Jetzt geht er per E-Mail über denselben Brevo-Postausgang, den die
+> Überwachung schon benutzt. Quelle: `scripts/odoo_tagesbericht.py`.
+
 **Anlass:** Alle Informationen dieses Tages *waren* im System. Sie mussten nur
 jemand suchen. Bei einer sprunghaften Arbeitsweise ist „man müsste mal nachsehen"
 keine Sicherung.
@@ -206,13 +212,13 @@ und das ist dann das eigentliche Produkt.
 
 | Regel | Stand |
 |---|---|
-| 1 · Nichts scheitert leise | 🟡 Kennzahlen für Odoo-Sicherung stehen, **Backup-TÜV fehlt** |
-| 2 · Wächter außerhalb | 🔴 offen — Cloudflare-Benachrichtigung braucht Wolfs Login |
+| 1 · Nichts scheitert leise | 🟡 `absent()`-Regel für die Wache ergänzt (bereitgestellt), **Backup-TÜV fehlt** |
+| 2 · Wächter außerhalb | 🟡 Wache zieht auf den Anker (bereitgestellt, braucht Telegram-Schlüssel aus Vaultwarden). Cloudflare-Mail weiter offen |
 | 3 · Automatik mit Bremse | ✅ alle 13 durchgesehen, zwei abgeschaltet, ein Punkt zum Nachziehen (#1) |
 | 4 · Umkehrbar | ✅ gelebt, hier erstmals aufgeschrieben |
 | 5 · Eine Sache, ein Ort | 🟡 Struktur steht, Strecke Paperless → Odoo defekt |
-| 6 · Fristen im System | 🟡 Schlagwort und Fristen da, Ansichten gebaut — Versand fehlt (→ Regel 7) |
-| 7 · Täglicher Lagebericht | 🔴 offen — **größter Hebel**. Die neun Abfragen liegen als gespeicherte Filter fertig vor |
+| 6 · Fristen im System | ✅ überfällige Fristen und Meilensteine stehen im Tagesbericht |
+| 7 · Täglicher Lagebericht | ✅ **läuft** — Odoo-Cron 44 sendet täglich per Mail an wolf@frawo.tech |
 | 8 · Vier Augen | ✅ im Protokoll, wird gelebt |
 
 *Geschrieben von Claude Code am 08.09.2026. Änderungen nur mit Wolfs Zustimmung —

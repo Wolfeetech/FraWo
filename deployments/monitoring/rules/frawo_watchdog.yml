@@ -1,7 +1,27 @@
-# Gegenseitige Aufsicht — angelegt 29.07.2026
+# Gegenseitige Aufsicht — angelegt 29.07.2026,
+# 🔴 korrigiert am 09.09.2026 nach einem stillen Totalausfall der Wache.
 #
-# Die Wache /usr/local/bin/monitoring-watchdog.sh läuft alle 10 Minuten auf
-# dem ProDesk-Wirt und meldet per Telegram, wenn Prometheus, Alertmanager
+# WAS PASSIERT IST
+# Die Wache lief auf dem HP ProDesk. Der ist am 07.09.2026 hardwareseitig
+# gestorben — und mit ihm die Wache. Gemerkt hat es niemand, und zwar aus
+# einem Grund, der genau in Regel 1 der Sicherheitsstandards steht:
+#
+#   Die Regel `WacheLaeuftNichtMehr` prueft `time() - metrik > 2100`.
+#   Fehlt die Metrik GANZ, ist der Ausdruck kein grosser Wert, sondern
+#   ein LEERES ERGEBNIS. Eine Regel ohne Ergebnis feuert nicht.
+#
+# Am 09.09.2026 nachgemessen: die Abfrage liefert `result: []`, und
+# `WacheLaeuftNichtMehr` stand in keiner Alarmliste. Zwei Tage lang gab es
+# also gar keine Aufsicht ueber die Ueberwachung — lautlos.
+#
+# Deshalb steht unten jetzt zusaetzlich eine absent()-Regel. Eine Kennzahl,
+# die FEHLT, muss selbst ein Alarm sein. Dasselbe Muster benutzen in diesem
+# Bestand bereits RadioBackupMetrikFehlt und VMCloudBackupMetrikFehlt.
+#
+#
+# Die Wache /usr/local/bin/monitoring-watchdog.sh lief alle 10 Minuten auf
+# dem ProDesk-Wirt (TOT seit 07.09.2026, gehoert auf den Anker-Wirt)
+# und meldet per Telegram, wenn Prometheus, Alertmanager
 # oder Grafana in CT150 ausfallen. Sie schickt direkt, ohne den Alertmanager
 # zu benutzen — der wäre in genau dem Moment ja weg.
 #
@@ -33,6 +53,28 @@ groups:
             dass die Überwachung selbst ausfällt. Prüfen auf dem ProDesk:
             `tail /var/log/monitoring-watchdog.log` und
             `crontab -l | grep watchdog`.
+
+      - alert: WacheMeldetSichGarNichtMehr
+        # Der blinde Fleck der Regel darueber: Die prueft, ob der Zeitstempel
+        # ZU ALT ist. Ist die Kennzahl komplett verschwunden — weil der Rechner
+        # weg ist, der sie geliefert hat — hat sie nichts zu vergleichen und
+        # schweigt. Genau das ist am 07.09.2026 passiert.
+        #
+        # absent() dreht das um: Es feuert, WEIL nichts da ist.
+        expr: absent(frawo_monitoring_watchdog_last_run_timestamp_seconds)
+        for: 30m
+        labels:
+          severity: critical
+        annotations:
+          dashboard: "http://100.100.115.80:3000/d/frawo-ueberblick"
+          summary: "Die Wache liefert gar keine Kennzahl mehr"
+          description: >-
+            Die Kennzahl frawo_monitoring_watchdog_last_run_timestamp_seconds
+            existiert nicht mehr — nicht "zu alt", sondern gar nicht. Entweder
+            laeuft die Wache nicht mehr, oder der Rechner, auf dem sie lag, ist
+            weg. Damit gibt es KEINE Aufsicht mehr ueber die Ueberwachung.
+            Pruefen: laeuft `monitoring-watchdog.sh` auf einem lebenden Wirt?
+            Nach dem Tod des ProDesk am 07.09.2026 muss sie umziehen.
 
       # Falls die Wache läuft und einen Ausfall sieht, Prometheus aber noch
       # lebt: dann ist einer der drei Dienste weg, nicht der ganze Container.
