@@ -10,8 +10,8 @@
 > WIP-Grenze 6, Kartenalterung aktiv · Ortsschlagwörter `@rk22 @villa
 > @stockenweiler @inselhalle @unterwegs @remote` · 24 gespeicherte Ansichten
 > inkl. persönlicher Listen für Wolf und Franz · **Meilensteinkette scharfgestellt
-> (7 Kernziele von 30.09.2026 bis 30.06.2027 als Prioritätsrückgrat)** ·
-> Studio 159 aufgeteilt in akute OG-Übernahme (30.09.) & Studio (2027) ·
+> (Prioritätsrückgrat bis Mitte 2027)** ·
+> Studio 159: Lu bleibt vorerst in Wohnung, Vorhaben im Backlog (keine 15.09./30.09.-Hektik) · Studio bespielbar (2027) ·
 > Radio-Tasks ehrlich auf `🛑 Blockiert` (wartet auf OptiPlex) · Epics aus WIP ins Backlog.
 >
 > **Wie wir arbeiten, damit Chaos nicht teuer wird:** `DOCS/SICHERHEITSSTANDARDS.md` — acht Regeln, jede aus einem echten Vorfall. Kurzfassung: *Chaos ist erlaubt, Stille nicht.*
