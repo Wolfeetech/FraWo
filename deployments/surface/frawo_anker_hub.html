@@ -34,11 +34,12 @@
   header {
     background: #0f172a;
     border-bottom: 2px solid var(--card-border);
-    padding: 12px 20px;
+    padding: 10px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-shrink: 0;
+    z-index: 10;
   }
   .brand {
     display: flex;
@@ -49,19 +50,19 @@
     font-size: 28px;
   }
   .brand-title {
-    font-size: 20px;
+    font-size: 19px;
     font-weight: 700;
     color: #fff;
     letter-spacing: 0.5px;
   }
   .brand-subtitle {
-    font-size: 13px;
+    font-size: 12px;
     color: var(--primary);
     font-weight: 600;
   }
   .header-center {
     display: flex;
-    gap: 10px;
+    gap: 8px;
     align-items: center;
   }
   .status-pill {
@@ -77,18 +78,35 @@
   }
   .dot-green { width: 8px; height: 8px; background: #10b981; border-radius: 50%; box-shadow: 0 0 6px #10b981; }
   .dot-yellow { width: 8px; height: 8px; background: #f59e0b; border-radius: 50%; box-shadow: 0 0 6px #f59e0b; }
+  .dot-blue { width: 8px; height: 8px; background: #38bdf8; border-radius: 50%; box-shadow: 0 0 6px #38bdf8; }
   
+  .ambient-btn {
+    background: #334155;
+    border: 1px solid #475569;
+    color: #f1f5f9;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.15s;
+  }
+  .ambient-btn:active { background: #475569; }
+
   .header-right {
     text-align: right;
   }
   .clock {
-    font-size: 26px;
+    font-size: 24px;
     font-weight: 800;
     color: #fff;
     font-variant-numeric: tabular-nums;
   }
   .date-str {
-    font-size: 12px;
+    font-size: 11px;
     color: var(--text-dim);
     font-weight: 500;
   }
@@ -99,15 +117,16 @@
     display: flex;
     border-bottom: 2px solid var(--card-border);
     flex-shrink: 0;
+    z-index: 10;
   }
   .nav-btn {
     flex: 1;
-    padding: 16px 10px;
+    padding: 14px 10px;
     background: transparent;
     border: none;
     border-bottom: 4px solid transparent;
     color: var(--text-dim);
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 700;
     cursor: pointer;
     display: flex;
@@ -129,15 +148,15 @@
   main {
     flex: 1;
     overflow-y: auto;
-    padding: 20px;
+    padding: 18px;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 18px;
   }
   .tab-pane {
     display: none;
     flex-direction: column;
-    gap: 18px;
+    gap: 16px;
     height: 100%;
   }
   .tab-pane.active {
@@ -159,7 +178,7 @@
     background: var(--card-bg);
     border: 1px solid var(--card-border);
     border-radius: 16px;
-    padding: 18px;
+    padding: 16px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     display: flex;
     flex-direction: column;
@@ -169,10 +188,10 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
   }
   .card-title {
-    font-size: 17px;
+    font-size: 16px;
     font-weight: 700;
     color: #fff;
     display: flex;
@@ -192,10 +211,10 @@
   .badge-red { background: rgba(239,68,68,0.2); color: var(--danger); }
 
   .card-body {
-    font-size: 14px;
+    font-size: 13.5px;
     color: var(--text-dim);
     line-height: 1.5;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
     flex: 1;
   }
   .card-body b { color: #fff; }
@@ -206,8 +225,8 @@
     color: #fff;
     border: none;
     border-radius: 12px;
-    padding: 14px 20px;
-    font-size: 16px;
+    padding: 13px 18px;
+    font-size: 15px;
     font-weight: 700;
     cursor: pointer;
     display: flex;
@@ -262,8 +281,8 @@
   .btn-play {
     flex: 2;
     background: #10b981;
-    font-size: 20px;
-    padding: 18px;
+    font-size: 19px;
+    padding: 16px;
     border-radius: 16px;
     font-weight: 800;
   }
@@ -273,12 +292,12 @@
     background: var(--card-bg);
     border: 2px solid var(--card-border);
     border-radius: 18px;
-    padding: 24px 16px;
+    padding: 22px 16px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 12px;
+    gap: 10px;
     cursor: pointer;
     text-decoration: none;
     color: #fff;
@@ -290,7 +309,7 @@
     transform: scale(0.98);
   }
   .app-icon {
-    font-size: 38px;
+    font-size: 36px;
   }
   .app-name {
     font-size: 16px;
@@ -301,9 +320,282 @@
     color: var(--text-dim);
     text-align: center;
   }
+
+  /* ========================================= */
+  /* AMBIENT GLANCEABLE OVERLAY (LEERLAUF)     */
+  /* ========================================= */
+  #ambient-overlay {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle at 50% 30%, #111e38 0%, #060b14 100%);
+    z-index: 9999;
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 26px 36px;
+    user-select: none;
+    cursor: pointer;
+  }
+  #ambient-overlay.active {
+    display: flex;
+    animation: ambientFadeIn 0.5s ease-out;
+  }
+  @keyframes ambientFadeIn {
+    from { opacity: 0; transform: scale(0.99); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .ambient-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .amb-clock-box {
+    display: flex;
+    flex-direction: column;
+  }
+  .amb-clock {
+    font-size: 76px;
+    font-weight: 900;
+    color: #ffffff;
+    line-height: 1;
+    letter-spacing: -1px;
+    font-variant-numeric: tabular-nums;
+    text-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
+  }
+  .amb-date {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--primary);
+    margin-top: 8px;
+  }
+  
+  .amb-weather-card {
+    background: rgba(30, 41, 59, 0.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .amb-w-icon {
+    font-size: 52px;
+  }
+  .amb-w-temp {
+    font-size: 40px;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1;
+  }
+  .amb-w-desc {
+    font-size: 15px;
+    color: var(--text-dim);
+    margin-top: 4px;
+  }
+  .amb-w-extra {
+    font-size: 13px;
+    color: #94a3b8;
+    margin-top: 2px;
+  }
+
+  .ambient-middle {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin: 15px 0;
+  }
+  .amb-card {
+    background: rgba(30, 41, 59, 0.6);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 18px;
+    padding: 18px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .amb-card-title {
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .title-franz { color: #38bdf8; }
+  .title-wolf { color: #10b981; }
+  .amb-task-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .amb-task-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 14.5px;
+  }
+  .amb-task-bullet {
+    color: var(--primary);
+    font-weight: bold;
+  }
+  .amb-task-item b { color: #fff; font-weight: 600; }
+  .amb-task-sub {
+    font-size: 12.5px;
+    color: var(--text-dim);
+    margin-top: 2px;
+  }
+
+  .ambient-banner {
+    background: rgba(15, 23, 42, 0.7);
+    border: 1px solid #334155;
+    border-radius: 14px;
+    padding: 10px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 13.5px;
+  }
+  .amb-event-pill {
+    color: #facc15;
+    font-weight: 700;
+  }
+
+  .ambient-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding-top: 14px;
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+  .amb-telemetry {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+  }
+  .amb-hint {
+    color: var(--primary);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    animation: pulseHint 2s infinite ease-in-out;
+  }
+  @keyframes pulseHint {
+    0%, 100% { opacity: 0.6; transform: translateY(0); }
+    50% { opacity: 1; transform: translateY(-2px); }
+  }
 </style>
 </head>
 <body>
+
+  <!-- AMBIENT GLANCEABLE OVERLAY (LEERLAUF) -->
+  <div id="ambient-overlay" onclick="toggleAmbient(false)">
+    <div class="ambient-top">
+      <div class="amb-clock-box">
+        <div class="amb-clock" id="amb-clock">--:--</div>
+        <div class="amb-date" id="amb-date">Lade Datum...</div>
+      </div>
+      <div class="amb-weather-card">
+        <div class="amb-w-icon" id="amb-w-icon">🌤️</div>
+        <div>
+          <div class="amb-w-temp" id="amb-w-temp">--.- °C</div>
+          <div class="amb-w-desc" id="amb-w-desc">Lindau / Bodensee</div>
+          <div class="amb-w-extra" id="amb-w-extra">Regen: 0 mm · Wind: -- km/h</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ambient-middle">
+      <!-- FRANZ FOCUS -->
+      <div class="amb-card">
+        <div class="amb-card-title title-franz">
+          <span>🔨</span> FRANZ — WERKSTATT & ANSTEHEND
+        </div>
+        <ul class="amb-task-list" id="amb-list-franz">
+          <li class="amb-task-item">
+            <span class="amb-task-bullet">▸</span>
+            <div>
+              <b>🔧 Werkstatt arbeitsfähig machen (#1406)</b>
+              <div class="amb-task-sub">Führungsschiene, Absaugung &amp; Messmikrofon</div>
+            </div>
+          </li>
+          <li class="amb-task-item">
+            <span class="amb-task-bullet">▸</span>
+            <div>
+              <b>🛒 PSA &amp; Arbeitskleidung bestellen (#1421)</b>
+              <div class="amb-task-sub">Größen erfasst: Schuhe 42/43 · Kleidung M/S</div>
+            </div>
+          </li>
+          <li class="amb-task-item">
+            <span class="amb-task-bullet">▸</span>
+            <div>
+              <b>📦 Verleihanlagen &amp; Messung (#1411)</b>
+              <div class="amb-task-sub">Messung vor Kistenpacken (#1051)</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- WOLF FOCUS -->
+      <div class="amb-card">
+        <div class="amb-card-title title-wolf">
+          <span>💼</span> WOLF — BUSINESS & ORGA
+        </div>
+        <ul class="amb-task-list" id="amb-list-wolf">
+          <li class="amb-task-item">
+            <span class="amb-task-bullet">▸</span>
+            <div>
+              <b>🍺 Bar-Abrechnung Christiane (#1359)</b>
+              <div class="amb-task-sub">174,57 € Barübergabe fertig berechnet</div>
+            </div>
+          </li>
+          <li class="amb-task-item">
+            <span class="amb-task-bullet">▸</span>
+            <div>
+              <b>📱 Pixel 9 Pro Displayfehler (#1219)</b>
+              <div class="amb-task-sub">Google/Back Market Garantie vorziehen (0 €)</div>
+            </div>
+          </li>
+          <li class="amb-task-item">
+            <span class="amb-task-bullet">▸</span>
+            <div>
+              <b>🏦 Finom GbR-Konto (#1430)</b>
+              <div class="amb-task-sub">Kontoeröffnung zum Jahreswechsel (N26 in Paperless)</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- EVENT BANNER -->
+    <div class="ambient-banner">
+      <div>
+        <span class="amb-event-pill">📅 Nächste Einsätze:</span>
+        <span style="color:#fff; margin-left:8px;">🎵 Leichte Liebe Open Air (Bregenz) &nbsp;·&nbsp; 🎶 Closing Wasserburg &nbsp;·&nbsp; ⛸️ Eishalle Presets</span>
+      </div>
+      <div style="font-size:12px; color:var(--text-dim);">Aktualisiert live</div>
+    </div>
+
+    <!-- BOTTOM STATUS -->
+    <div class="ambient-bottom">
+      <div class="amb-telemetry">
+        <div>⚡ Anker IT: <b style="color:#fff;" id="amb-pwr-server">-- W</b></div>
+        <div>🖥️ TV-Screen: <b style="color:#fff;" id="amb-pwr-screen">-- W</b></div>
+        <div>🏠 Home Assistant: <b style="color:#10b981;" id="amb-ha-status">Online</b></div>
+        <div>🌐 UCG-Netz: <b style="color:#10b981;">Verbunden</b></div>
+      </div>
+      <div class="amb-hint">
+        <span>👆 Bildschirm berühren, um das Cockpit zu öffnen</span>
+      </div>
+    </div>
+  </div>
 
   <!-- HEADER -->
   <header>
@@ -315,9 +607,10 @@
       </div>
     </div>
     <div class="header-center">
-      <div class="status-pill"><span class="dot-green"></span> Odoo ERP</div>
-      <div class="status-pill"><span class="dot-green"></span> Home Assistant</div>
-      <div class="status-pill"><span class="dot-yellow"></span> Radio (Standby)</div>
+      <div class="status-pill" id="pill-weather"><span class="dot-blue"></span> <span id="hdr-weather">Bodensee: --°C</span></div>
+      <div class="status-pill" id="pill-power"><span class="dot-green"></span> <span id="hdr-power">⚡ IT: -- W</span></div>
+      <div class="status-pill" id="pill-ha"><span class="dot-green"></span> HA Online</div>
+      <button class="ambient-btn" onclick="toggleAmbient(true)" title="Leerlauf-Modus aktivieren">🌙 Ambient</button>
     </div>
     <div class="header-right">
       <div class="clock" id="live-clock">--:--:--</div>
@@ -328,145 +621,154 @@
   <!-- TABS -->
   <nav>
     <button class="nav-btn active" onclick="switchTab('tab-cockpit')">📋 <span>Cockpit & Aufgaben</span></button>
-    <button class="nav-btn" onclick="switchTab('tab-smarthome')">🏠 <span>Wohnzimmer & Smart Home</span></button>
-    <button class="nav-btn" onclick="switchTab('tab-radio')">📻 <span>Audio & Radio</span></button>
-    <button class="nav-btn" onclick="switchTab('tab-apps')">⚡ <span>FraWo Apps & Tools</span></button>
+    <button class="nav-btn" onclick="switchTab('tab-wohnzimmer')">🏠 <span>Wohnzimmer & TV</span></button>
+    <button class="nav-btn" onclick="switchTab('tab-radio')">📻 <span>Audio & Funk</span></button>
+    <button class="nav-btn" onclick="switchTab('tab-apps')">⚡ <span>FraWo Apps</span></button>
   </nav>
 
-  <!-- CONTENT -->
+  <!-- MAIN VIEWPORT -->
   <main>
 
     <!-- TAB 1: COCKPIT -->
     <div class="tab-pane active" id="tab-cockpit">
-      <div class="card" style="background: linear-gradient(135deg, #1e293b, #0f172a); border-color: #38bdf8;">
-        <div class="card-header">
-          <div class="card-title">🔥 Was gerade läuft (WIP-Limit 6)</div>
-          <a href="https://frawo.tech/frawo/touch/cockpit" class="badge badge-blue" style="text-decoration:none; padding:6px 12px; font-size:13px;">Vollbild Cockpit ↗</a>
-        </div>
-        <div class="card-body">
-          Der zentrale Überblick über das operative Tagesgeschäft der FraWo GbR. Alle Aufgaben sind im Odoo SSOT synchronisiert.
-        </div>
-      </div>
+      <div class="grid-2">
 
-      <div class="grid-3">
-        <!-- Task 1181 -->
+        <!-- CARD 1 -->
         <div class="card">
-          <div class="card-header">
-            <div class="card-title">🍺 Getränkeautomat</div>
-            <span class="badge badge-yellow">In Arbeit</span>
+          <div>
+            <div class="card-header">
+              <div class="card-title">🔨 Franz — Werkstatt</div>
+              <span class="badge badge-blue">Als Nächstes</span>
+            </div>
+            <div class="card-body">
+              <b>#1406: Werkstatt arbeitsfähig machen</b><br>
+              Festool Führungsschiene &amp; Absaugung beschaffen. PreSonus Messmikrofon &amp; REW vorhanden (0 €).
+            </div>
           </div>
-          <div class="card-body">
-            <b>Coca-Cola 5-Schacht besichtigen</b><br>
-            FI fliegt beim Einstecken (Lüfter/Filter). Abholung So/Mo mit Alois.<br>
-            Preislimit: 50–100 €. 24h Ruhezeit vor Anstecken!
-          </div>
-          <a href="https://frawo.tech/frawo/touch/login?redirect=/odoo/project.task/1181" class="btn-touch btn-green">In Odoo öffnen</a>
+          <a href="https://frawo.tech/odoo/project/160/tasks/1406" class="btn-touch">Aufgabe in Odoo öffnen</a>
         </div>
 
-        <!-- Task 1371 -->
+        <!-- CARD 2 -->
         <div class="card">
-          <div class="card-header">
-            <div class="card-title">🏦 Bankimport</div>
-            <span class="badge badge-yellow">In Arbeit</span>
+          <div>
+            <div class="card-header">
+              <div class="card-title">🛒 PSA &amp; Arbeitskleidung</div>
+              <span class="badge badge-green">Größen erfasst</span>
+            </div>
+            <div class="card-body">
+              <b>#1421: Grundausstattung Wolf &amp; Franz</b><br>
+              Schuhgröße <b>42 / 43</b>, Kleidergröße <b>M / S</b> (Hosen 46/48). Warenkorb für Engelbert Strauss vorbereitet.
+            </div>
           </div>
-          <div class="card-body">
-            <b>Universal-CSV-Importer aktiv</b><br>
-            Deduplizierung fertig, ACL-Gruppe gefixt. Wartet auf Qonto/N26 Export.
-          </div>
-          <a href="https://frawo.tech/frawo/touch/login?redirect=/odoo/project.task/1371" class="btn-touch btn-green">In Odoo öffnen</a>
+          <a href="https://frawo.tech/odoo/project/160/tasks/1421" class="btn-touch">Warenkorb ansehen</a>
         </div>
 
-        <!-- Task 1260 -->
+        <!-- CARD 3 -->
         <div class="card">
-          <div class="card-header">
-            <div class="card-title">📑 Paperless DMS</div>
-            <span class="badge badge-yellow">In Arbeit</span>
+          <div>
+            <div class="card-header">
+              <div class="card-title">🍺 Bar-Abrechnung Christiane</div>
+              <span class="badge badge-green">Berechnet</span>
+            </div>
+            <div class="card-body">
+              <b>#1359: Bar-Abrechnung Alkoholisch</b><br>
+              Offener Gesamtbetrag: <b>174,57 €</b> (Wolf 151,02 €, Franz 23,55 €). Geht bar an Christiane.
+            </div>
           </div>
-          <div class="card-body">
-            <b>Router v3.1 auf CT110 deployt</b><br>
-            PDFs werden direkt an Aufgaben gehängt und Lieferantenrechnungen gebucht.
-          </div>
-          <a href="https://frawo.tech/frawo/touch/login?redirect=/odoo/project.task/1260" class="btn-touch btn-green">In Odoo öffnen</a>
+          <a href="https://frawo.tech/odoo/project/104/tasks/1359" class="btn-touch btn-green">Abrechnungsbeleg ansehen</a>
         </div>
 
-        <!-- Task 454 -->
+        <!-- CARD 4 -->
         <div class="card">
-          <div class="card-header">
-            <div class="card-title">🖥️ Touchboard</div>
-            <span class="badge badge-green">Live</span>
+          <div>
+            <div class="card-header">
+              <div class="card-title">📱 Pixel 9 Pro Display</div>
+              <span class="badge badge-yellow">Garantie</span>
+            </div>
+            <div class="card-body">
+              <b>#1219: Display-Reparatur</b><br>
+              Grüner/Lila Streifen (OLED-Panelfehler). 5 Monate alt &rarr; Google/Back Market Herstellergarantie (0 €).
+            </div>
           </div>
-          <div class="card-body">
-            <b>Surface Go Wohnzimmer-Hub</b><br>
-            Natives 1800×1200 Wayland-Display, Touch-Optimierung 1.6× Skalierung, Swipe-Keyboard.
-          </div>
-          <a href="https://frawo.tech/frawo/touch/login?redirect=/odoo/project.task/454" class="btn-touch btn-green">In Odoo öffnen</a>
+          <a href="https://frawo.tech/odoo/project/107/tasks/1219" class="btn-touch">Status prüfen</a>
         </div>
 
-        <!-- Task 1389 -->
+        <!-- CARD 5 -->
         <div class="card">
-          <div class="card-header">
-            <div class="card-title">🛡️ Sicherheitsstandards</div>
-            <span class="badge badge-blue">Fangnetze</span>
+          <div>
+            <div class="card-header">
+              <div class="card-title">⚡ Stromanteil Serveranlage</div>
+              <span class="badge badge-blue">Messwerte Live</span>
+            </div>
+            <div class="card-body">
+              <b>#1365: Shelly-Zuordnung verifiziert</b><br>
+              Shelly 10.4.0.11 (IT &amp; Werkstatt): <span id="card-pwr-server">131 W</span> (&gt;511 kWh). Shelly 10.4.0.10 (Bildschirm): <span id="card-pwr-screen">88 W</span>.
+            </div>
           </div>
-          <div class="card-body">
-            <b>8 Betriebsregeln aktiv</b><br>
-            Keine Cron-Hacks, Odoo-Chatter Peer-Review, Vaultwarden als Secret-SSOT.
-          </div>
-          <a href="https://frawo.tech/frawo/touch/login?redirect=/odoo/project.task/1389" class="btn-touch btn-green">In Odoo öffnen</a>
+          <a href="https://frawo.tech/odoo/project/163/tasks/1365" class="btn-touch">Aufgabe ansehen</a>
         </div>
 
-        <!-- Task 1357 -->
+        <!-- CARD 6 -->
         <div class="card">
-          <div class="card-header">
-            <div class="card-title">🔴 ProDesk & Infra</div>
-            <span class="badge badge-yellow">In Arbeit</span>
+          <div>
+            <div class="card-header">
+              <div class="card-title">🐕 Hundesteuer Hergensweiler</div>
+              <span class="badge badge-green">✅ Erledigt</span>
+            </div>
+            <div class="card-body">
+              <b>#1210: Vollständig bezahlt</b><br>
+              85,50 € wurden am 30.04.2026 an die VG Sigmarszell überwiesen (Beleg im N26-Kontoauszug #203).
+            </div>
           </div>
-          <div class="card-body">
-            <b>Netzteil-Test / Restdienste</b><br>
-            Tailnet Subnet-Route gefixt. Vorbereitung Zielarchitektur 2026.
-          </div>
-          <a href="https://frawo.tech/frawo/touch/login?redirect=/odoo/project.task/1357" class="btn-touch btn-green">In Odoo öffnen</a>
+          <a href="https://frawo.tech/odoo/project/107/tasks/1210" class="btn-touch btn-dark">Archivierte Aufgabe</a>
         </div>
+
       </div>
     </div>
 
-    <!-- TAB 2: SMARTHOME -->
-    <div class="tab-pane" id="tab-smarthome">
+    <!-- TAB 2: WOHNZIMMER -->
+    <div class="tab-pane" id="tab-wohnzimmer">
       <div class="grid-2">
         <div class="card">
-          <div class="card-header">
-            <div class="card-title">📺 Smart-TV (Thomson)</div>
-            <span class="badge badge-blue">Task #1425</span>
+          <div>
+            <div class="card-header">
+              <div class="card-title">📺 TV &amp; Studio-Bildschirm</div>
+              <span class="badge badge-green" id="screen-badge">Shelly 10.4.0.10</span>
+            </div>
+            <div class="card-body">
+              Schaltet den Stromkreis des großen Displays im Studio/Wohnzimmer.<br>
+              Aktueller Verbrauch: <b id="screen-power-val">88 W</b>.
+            </div>
           </div>
-          <div class="card-body">
-            Touchboard-Steuerung für den Wohnzimmer-Fernseher in Vorbereitung.<br><br>
-            <b>Schnittstellen:</b> HDMI-CEC / Android-TV Fernbedienung / Home Assistant Integration.
-          </div>
-          <button class="btn-touch btn-dark" onclick="alert('Smart-TV Integration in Vorbereitung (Task #1425)')">📺 TV Steuerung öffnen</button>
+          <button class="btn-touch btn-danger" id="screen-toggle-btn" onclick="toggleScreenShelly()">📺 Bildschirm Schalten</button>
         </div>
 
         <div class="card">
-          <div class="card-header">
-            <div class="card-title">💡 Wohnzimmer Screen (Shelly)</div>
-            <span class="badge badge-green">10.4.0.10</span>
+          <div>
+            <div class="card-header">
+              <div class="card-title">📺 Smart-TV (Thomson)</div>
+              <span class="badge badge-yellow">Vorbereitung</span>
+            </div>
+            <div class="card-body">
+              <b>#1425: Steuerung vom Touchboard</b><br>
+              Senderwahl, Lautstärke &amp; HDMI-Eingänge direkt von diesem Tablet steuern.
+            </div>
           </div>
-          <div class="card-body">
-            Stromkreis für Display / Screen.<br><br>
-            <b>Status:</b> Verbunden im IoT-VLAN (Ping 2.9ms).
-          </div>
-          <button class="btn-touch btn-green" onclick="toggleShelly()">⚡ Screen Strom schalten</button>
+          <a href="https://frawo.tech/odoo/project/105/tasks/1425" class="btn-touch">TV-Aufgabe öffnen</a>
         </div>
-      </div>
 
-      <div class="card" style="margin-top:10px;">
-        <div class="card-header">
-          <div class="card-title">🏠 Home Assistant — Wohnzimmer Dashboard</div>
-          <span class="badge badge-blue">VM 210</span>
+        <div class="card">
+          <div>
+            <div class="card-header">
+              <div class="card-title">🏠 Home Assistant Steuerung</div>
+              <span class="badge badge-green">Lokal Aktiv</span>
+            </div>
+            <div class="card-body">
+              Vollständiges Haus-Dashboard für Beleuchtung, Heizung und Sensoren auf <code>10.1.0.40:8123</code>.
+            </div>
+          </div>
+          <a href="http://10.1.0.40:8123" class="btn-touch btn-green">Home Assistant öffnen</a>
         </div>
-        <div class="card-body">
-          Öffnet das für Touch optimierte Home Assistant Dashboard (Lovelace <code>jarvis-touch</code>).
-        </div>
-        <a href="http://10.1.0.40:8123/jarvis-touch/home" class="btn-touch" style="font-size:18px;">Home Assistant Touch-Konsole öffnen ↗</a>
       </div>
     </div>
 
@@ -536,9 +838,18 @@
     // Live Clock & Date
     function updateTime() {
       const now = new Date();
-      document.getElementById('live-clock').textContent = now.toLocaleTimeString('de-DE');
+      const timeStr = now.toLocaleTimeString('de-DE');
       const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-      document.getElementById('live-date').textContent = now.toLocaleDateString('de-DE', options);
+      const dateStr = now.toLocaleDateString('de-DE', options);
+
+      document.getElementById('live-clock').textContent = timeStr;
+      document.getElementById('live-date').textContent = dateStr;
+
+      // Ambient Clock
+      const ambClock = document.getElementById('amb-clock');
+      if (ambClock) ambClock.textContent = now.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+      const ambDate = document.getElementById('amb-date');
+      if (ambDate) ambDate.textContent = dateStr;
     }
     setInterval(updateTime, 1000);
     updateTime();
@@ -551,7 +862,7 @@
       const target = document.getElementById(tabId);
       if (target) target.classList.add('active');
 
-      const btn = Array.from(document.querySelectorAll('.nav-btn')).find(b => b.getAttribute('onclick').includes(tabId));
+      const btn = Array.from(document.querySelectorAll('.nav-btn')).find(b => b.getAttribute('onclick') && b.getAttribute('onclick').includes(tabId));
       if (btn) btn.classList.add('active');
     }
 
@@ -576,11 +887,121 @@
       }
     }
 
-    function toggleShelly() {
-      fetch('http://10.4.0.10/relay/0?turn=toggle', { method: 'POST', mode: 'no-cors' })
-        .then(() => alert('Shelly 10.4.0.10 geschaltet'))
-        .catch(err => alert('Fehler beim Schalten: ' + err));
+    // Native Shelly Screen Toggle via local proxy API
+    function toggleScreenShelly() {
+      fetch('/api/screen_toggle')
+        .then(r => r.json())
+        .then(data => {
+          fetchTelemetry(); // Instant refresh
+        })
+        .catch(err => {
+          console.warn('Direct toggle fallback:', err);
+        });
     }
+
+    // ==========================================
+    // LIVE TELEMETRY & AUTO-REFRESH
+    // ==========================================
+    function fetchTelemetry() {
+      fetch('/api/telemetry')
+        .then(r => r.json())
+        .then(data => {
+          // 1. Weather
+          if (data.weather) {
+            const w = data.weather;
+            const wText = `${w.icon} ${w.temp}°C`;
+            document.getElementById('hdr-weather').textContent = wText;
+            
+            // Ambient weather
+            const ambIcon = document.getElementById('amb-w-icon');
+            if (ambIcon) ambIcon.textContent = w.icon;
+            const ambTemp = document.getElementById('amb-w-temp');
+            if (ambTemp) ambTemp.textContent = `${w.temp} °C`;
+            const ambDesc = document.getElementById('amb-w-desc');
+            if (ambDesc) ambDesc.textContent = `${w.code_text} · Lindau / Bodensee`;
+            const ambExtra = document.getElementById('amb-w-extra');
+            if (ambExtra) ambExtra.textContent = `Gefühlt ${w.apparent_temp}°C · Regen: ${w.precipitation} mm · Wind: ${w.wind_speed} km/h`;
+          }
+
+          // 2. Power
+          if (data.power) {
+            const p = data.power;
+            document.getElementById('hdr-power').textContent = `⚡ IT: ${p.server_watts} W`;
+            
+            const cServer = document.getElementById('card-pwr-server');
+            if (cServer) cServer.textContent = `${p.server_watts} W`;
+            const cScreen = document.getElementById('card-pwr-screen');
+            if (cScreen) cScreen.textContent = `${p.screen_watts} W`;
+            
+            const ambPwrServer = document.getElementById('amb-pwr-server');
+            if (ambPwrServer) ambPwrServer.textContent = `${p.server_watts} W`;
+            const ambPwrScreen = document.getElementById('amb-pwr-screen');
+            if (ambPwrScreen) ambPwrScreen.textContent = `${p.screen_watts} W`;
+            
+            const screenVal = document.getElementById('screen-power-val');
+            if (screenVal) screenVal.textContent = `${p.screen_watts} W`;
+          }
+
+          // 3. System
+          if (data.system) {
+            const s = data.system;
+            const haPill = document.getElementById('pill-ha');
+            if (haPill) {
+              haPill.innerHTML = s.ha_online 
+                ? '<span class="dot-green"></span> HA Online' 
+                : '<span class="dot-yellow"></span> HA Standby';
+            }
+            const ambHa = document.getElementById('amb-ha-status');
+            if (ambHa) {
+              ambHa.textContent = s.ha_online ? 'Online' : 'Standby';
+              ambHa.style.color = s.ha_online ? '#10b981' : '#f59e0b';
+            }
+          }
+        })
+        .catch(err => {
+          console.log('Telemetry poll info:', err);
+        });
+    }
+
+    // Run telemetry every 20 seconds
+    fetchTelemetry();
+    setInterval(fetchTelemetry, 20000);
+
+    // ==========================================
+    // IDLE DETECTION & AMBIENT MODE (45s)
+    // ==========================================
+    let idleTimer = 0;
+    const IDLE_LIMIT = 45; // seconds until ambient mode
+    const ambientOverlay = document.getElementById('ambient-overlay');
+
+    function toggleAmbient(show) {
+      if (show) {
+        ambientOverlay.classList.add('active');
+      } else {
+        ambientOverlay.classList.remove('active');
+        idleTimer = 0;
+      }
+    }
+
+    function resetIdleTimer() {
+      idleTimer = 0;
+      if (ambientOverlay.classList.contains('active')) {
+        toggleAmbient(false);
+      }
+    }
+
+    // User activity listeners
+    ['touchstart', 'pointerdown', 'mousedown', 'mousemove', 'keydown', 'scroll'].forEach(evt => {
+      window.addEventListener(evt, resetIdleTimer, { passive: true });
+    });
+
+    setInterval(() => {
+      idleTimer++;
+      if (idleTimer >= IDLE_LIMIT && !ambientOverlay.classList.contains('active')) {
+        toggleAmbient(true);
+      }
+    }, 1000);
+
   </script>
 </body>
 </html>
