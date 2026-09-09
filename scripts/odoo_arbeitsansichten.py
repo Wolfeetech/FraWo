@@ -116,7 +116,10 @@ for a in ANSICHTEN:
         'model_id': modell,
         'domain': a['domain'],
         'context': a['context'],
-        'user_id': False,       # geteilt, nicht privat
+        # Odoo 19: aus user_id (many2one) wurde user_ids (many2many).
+        # Leere Liste = fuer alle sichtbar. 'sort' ist Pflichtfeld.
+        'user_ids': [(6, 0, [])],
+        'sort': '[]',
         'action_id': False,     # in jeder Aufgaben-Ansicht verfuegbar
         'is_default': False,
     }

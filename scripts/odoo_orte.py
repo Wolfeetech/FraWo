@@ -45,9 +45,12 @@ modell = 'project.task'
 
 
 def ansicht(name, domain, context):
+    # Odoo 19: aus ir.filters.user_id (many2one) wurde user_ids (many2many).
+    # Leere Liste bedeutet: fuer alle sichtbar. 'sort' ist Pflichtfeld und
+    # nimmt eine Liste als Text - leer heisst Standardsortierung.
     werte = {'name': name, 'model_id': modell, 'domain': domain,
-             'context': context, 'user_id': False, 'action_id': False,
-             'is_default': False}
+             'context': context, 'user_ids': [(6, 0, [])], 'sort': '[]',
+             'action_id': False, 'is_default': False}
     vorhanden = Filter.search([('name', '=', name), ('model_id', '=', modell)], limit=1)
     if vorhanden:
         vorhanden.write(werte)
