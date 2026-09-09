@@ -5,7 +5,35 @@
 > („eine Sache, ein Ort"). Bis zum 09.09. lag der Brieftext doppelt vor, in HTML
 > und in Markdown, und die beiden liefen prompt auseinander.
 
-**Az. 6 OWi 7409-001490-21/2 · Frist rund 17.09.2026 · Fassung 4 (gekürzt)**
+**Az. 6 OWi 7409-001490-21/2 · Frist rund 17.09.2026 · Fassung 5**
+
+## 🔴 Fassung 5 — ein sachlicher Fehler, den Wolf gefunden hat
+
+Die Fassungen 1–4 führten in der Tabelle der Verpflichtungen **zwei** Positionen:
+„Finanzamt Lindau 75 €/Monat" und „Zentrale Bußgeldstelle 100 €/Monat".
+
+**Das ist dieselbe Schuld.** Beleg: Paperless-Dok 150 — Finanzamt Lindau,
+**Vollstreckungsstelle**, Az. 9134/008/04154-VO15-1527/26 F, Pfändungsverfügung
+vom 11.08.2026, Forderung **1.926,23 €**. Das Finanzamt ist hier nur die
+Vollstreckungsbehörde für die Bußgeldforderung der Polizei. Wolfs 75-€-Angebot
+ging an das Finanzamt, die 100-€-Erleichterung kam vom Polizeiverwaltungsamt —
+beide für **denselben** Betrag.
+
+Der Brief hätte dem Gericht damit eine um 75 €/Monat zu hohe Belastung
+vorgerechnet. Wolf am 09.09.: *„das Finanzamt bekommt doch kein Geld von mir …
+die haben ja nur im Auftrag der Polizei mein Konto gepfändet."* Korrekt.
+
+**Ebenfalls geändert: das Ratenangebot.** Statt pauschal 200 € für alle drei
+Verfahren jetzt **50 €/Monat für dieses Verfahren, zusätzlich zu den laufenden
+100 €** — Gesamtbelastung 150 €/Monat. Das entspricht Wolfs tatsächlicher Lage
+(*„die 1.900 € von der Polizei zahle ich in 19 Raten à 100 €, und für den
+3. Fall packe ich 50 obendrauf"*) statt einer Zahl, die gut klingt.
+
+**Tonfall entschärft.** Raus: „Meine Zahlungsbereitschaft ist belegt" und
+„Das ist das Doppelte der bisher vereinbarten Rate". Wolf: *„das klingt richtig
+schmierig."* Stimmt — beides charakterisiert die eigene Haltung, statt einen
+Vorgang zu nennen. Jetzt: „Am 30.08.2026 habe ich bereits 100,00 EUR gezahlt."
+
 
 ## Worauf geantwortet wird
 
