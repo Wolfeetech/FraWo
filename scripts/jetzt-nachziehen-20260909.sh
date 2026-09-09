@@ -65,18 +65,21 @@ fi
 
 echo
 echo "########################################################################"
-echo "# 3. ARBEITSANSICHTEN IN ODOO"
+echo "# 3. ARBEITSANSICHTEN + ORTE IN ODOO"
 echo "########################################################################"
 # ir.filters ist fuer die MCP-Schnittstelle gesperrt, deshalb ueber die Shell.
-if pct exec 140 -- docker exec frawotech-odoo-1 test -f /tmp/ansichten.py 2>/dev/null; then
+for SKRIPT in ansichten.py orte.py; do
+if pct exec 140 -- docker exec frawotech-odoo-1 test -f /tmp/$SKRIPT 2>/dev/null; then
+  echo "--- $SKRIPT ---"
     pct exec 140 -- docker exec -i frawotech-odoo-1 sh -c \
-      'odoo shell -d FraWo_GbR --db_host=$HOST --db_user=$USER --db_password=$PASSWORD --no-http < /tmp/ansichten.py' \
+      "odoo shell -d FraWo_GbR --db_host=\$HOST --db_user=\$USER --db_password=\$PASSWORD --no-http < /tmp/$SKRIPT" \
       2>&1 | grep -vE " INFO | WARNING |^Traceback|^  File |^    " | tail -18
-    merke "3. Ansichten -> siehe Ausgabe oben"
+  merke "3. $SKRIPT -> siehe Ausgabe oben"
 else
-    echo "  /tmp/ansichten.py nicht im Container - uebersprungen"
-    merke "3. Ansichten -> Skript fehlt"
+  echo "  /tmp/$SKRIPT nicht im Container - uebersprungen"
+  merke "3. $SKRIPT -> fehlt"
 fi
+done
 
 echo
 echo "########################################################################"
