@@ -1,4 +1,4 @@
-> **Fassung 2, Stand 09.09.2026.** Ersetzt den Entwurf vom 08.09.
+> **Fassung 3, Stand 09.09.2026.** Ersetzt den Entwurf vom 08.09.
 > Grund: Das Schreiben des Gerichts **vom 03.09.2026** (Nachfrist) lag mir beim
 > ersten Entwurf noch nicht vor, und die Gehaltsabrechnung August ist inzwischen da.
 > **Vor dem Absenden nur noch das Datum eintragen und unterschreiben.**
@@ -64,15 +64,19 @@ Ich unterhalte ein einzelnes Girokonto bei der N26 Bank Berlin,
 IBAN DE42 1001 1001 2252 6669 18. Es handelt sich **weder um ein
 Pfändungsschutzkonto noch um ein Gemeinschaftskonto**. Weitere Konten bestehen nicht.
 
-Die Kontoauszüge für den Zeitraum 01.08.2026 bis heute liegen als **Anlage 2**
-lückenlos bei.
+Die Kontoauszüge für den Zeitraum **01.08.2026 bis 09.09.2026** liegen als
+**Anlage 2** lückenlos bei und decken damit mehr als die angeforderten 31 Tage ab.
+
+Der **aktuelle Kontostand beträgt zum 09.09.2026 686,83 EUR** (Girokonto);
+einschließlich der auf demselben Auszug ausgewiesenen Unterkonten 853,13 EUR.
 
 **2. Begründung der Zahlungsunfähigkeit**
 
 *Warum eine Einmalzahlung nicht möglich ist*
 
-Der Kontoauszug weist zum 31.08.2026 einen Stand von 1.990,53 EUR aus. Dieser Stand
-ist der Zeitpunkt **unmittelbar nach Eingang des Gehalts**. Der Verlauf über den
+Die Auszüge belegen den Verlauf unmittelbar: **1.990,53 EUR am 31.08.2026**
+(unmittelbar nach Gehaltseingang) gegenüber **686,83 EUR am 09.09.2026** — in neun
+Tagen **1.303,70 EUR** verbraucht. Der Verlauf über den
 Monat zeigt, dass der Betrag durch Miete, laufende Lebenshaltung und die bereits
 bestehenden Ratenverpflichtungen aufgebraucht wird. Ich lege diesen Punkt von mir
 aus dar, weil er sich aus den beigefügten Auszügen ohnehin ergibt und ich keinen
@@ -184,9 +188,10 @@ von einem um rund 240 EUR höheren Einkommen ausgegangen wäre.
 Es kommt also keine Erinnerung mehr. Verstreicht die Frist, ist der Antrag ohne
 weiteren Brief erledigt.
 
-## Was du noch besorgen musst
+## ~~Was du noch besorgen musst~~ — erledigt
 
-**Den September-Kontoauszug.** Das Gericht will die letzten 31 Tage. Gerechnet ab
+**Der September-Kontoauszug ist da** (09.09., 09:41 hochgeladen).
+Ursprünglich hier notiert: Das Gericht will die letzten 31 Tage. Gerechnet ab
 dem Briefdatum 03.09. reicht das bis zum 03.08. zurück. Der August-Auszug liegt vor
 — exportiere zusätzlich September bis heute, dann ist der Zeitraum lückenlos und
 schließt an.
