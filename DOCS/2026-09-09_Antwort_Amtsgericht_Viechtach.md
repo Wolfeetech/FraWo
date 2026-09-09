@@ -70,6 +70,13 @@ Die Kontoauszüge für den Zeitraum **01.08.2026 bis 09.09.2026** liegen als
 Der **aktuelle Kontostand beträgt zum 09.09.2026 686,83 EUR** (Girokonto);
 einschließlich der auf demselben Auszug ausgewiesenen Unterkonten 853,13 EUR.
 
+Die Kontoauszüge umfassen im Original 94 Seiten. Um den Umfang in vertretbaren
+Grenzen zu halten, habe ich sie **verkleinert zu je vier Seiten auf einem Blatt**
+beigefügt. Die fortlaufende Seitenzählung der Bank („5 / 67", „6 / 67" und so fort)
+ist auf jeder Teilseite erhalten geblieben, sodass die Vollständigkeit ohne Weiteres
+nachprüfbar ist. **Sollten Sie die Auszüge in Originalgröße oder in elektronischer
+Form benötigen, reiche ich sie selbstverständlich unverzüglich nach.**
+
 **2. Begründung der Zahlungsunfähigkeit**
 
 *Warum eine Einmalzahlung nicht möglich ist*
