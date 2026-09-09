@@ -74,13 +74,20 @@ einschließlich der auf demselben Auszug ausgewiesenen Unterkonten 853,13 EUR.
 
 *Warum eine Einmalzahlung nicht möglich ist*
 
-Die Auszüge belegen den Verlauf unmittelbar: **1.990,53 EUR am 31.08.2026**
-(unmittelbar nach Gehaltseingang) gegenüber **686,83 EUR am 09.09.2026** — in neun
-Tagen **1.303,70 EUR** verbraucht. Der Verlauf über den
-Monat zeigt, dass der Betrag durch Miete, laufende Lebenshaltung und die bereits
-bestehenden Ratenverpflichtungen aufgebraucht wird. Ich lege diesen Punkt von mir
-aus dar, weil er sich aus den beigefügten Auszügen ohnehin ergibt und ich keinen
-Anschein erwecken möchte, es stünden frei verfügbare Mittel zur Verfügung.
+Die beigefügten Auszüge belegen den Verlauf unmittelbar:
+
+| | |
+|---|---|
+| Kontostand am 31.08.2026, unmittelbar nach Eingang des Gehalts | 1.990,53 EUR |
+| Kontostand am 09.09.2026, neun Tage später | 686,83 EUR |
+| **verbraucht in neun Tagen** | **1.303,70 EUR** |
+
+Der Betrag, der am Monatsanfang auf dem Konto steht, ist demnach binnen weniger Tage
+durch Miete, laufende Lebenshaltung und die bereits bestehenden Ratenverpflichtungen
+gebunden. Eine Einmalzahlung des offenen Betrages ist mir deshalb nicht möglich. Ich
+lege dies von mir aus dar, weil es sich aus den beigefügten Auszügen ohnehin ergibt
+und ich keinen Anschein erwecken möchte, es stünden frei verfügbare Mittel zur
+Verfügung.
 
 *Bereits gebundene monatliche Verpflichtungen*
 
@@ -150,7 +157,7 @@ Wolfgang Ferdinand Prinz
 
 **Anlagen**
 1. Abrechnung der Brutto/Netto-Bezüge für August 2026 (Lindau Tourismus und Kongress GmbH)
-2. Kontoauszüge N26, 01.08.2026 bis laufend
+2. Kontoauszüge N26, 01.08.2026 bis 09.09.2026 (lückenlos)
 3. Zahlungsbeleg 100,00 EUR vom 30.08.2026 (Az. 7409-001490-21/2)
 4. Zahlungsbeleg 32,99 EUR vom 03.09.2026 (Finanzamt Lindau)
 
