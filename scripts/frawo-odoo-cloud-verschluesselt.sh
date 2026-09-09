@@ -36,7 +36,12 @@ METRIK="${METRIK_DIR}/odoo_backup.prom"
 LOG="/var/log/frawo-odoo-cloud.log"
 BEHALTEN=7
 MINDESTGROESSE=20000000     # 20 MB — darunter ist der Abzug kaputt
-MAXALTER_STUNDEN=26
+# Bewusst eng: der Abzug in CT140 laeuft taeglich 03:30 UTC (05:30 Ortszeit),
+# der Timer 06:15 Ortszeit. Ein frischer Abzug ist damit unter einer Stunde alt.
+# Vorher standen hier 26 Stunden - weit genug, dass die Datei vom VORTAG
+# anstandslos durchging und als Erfolg gemeldet wurde. Genau das ist am
+# 08./09.09.2026 passiert. Wer hier lockert, macht den Test wieder blind.
+MAXALTER_STUNDEN=8
 
 ERFOLG=0
 GROESSE=0
