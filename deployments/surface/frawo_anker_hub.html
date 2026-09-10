@@ -491,6 +491,153 @@
     0%, 100% { opacity: 0.6; transform: translateY(0); }
     50% { opacity: 1; transform: translateY(-2px); }
   }
+
+  /* LOCK PILL & ADMIN STYLES */
+  .lock-pill {
+    cursor: pointer;
+    border: 1px solid #475569;
+    background: #1e293b;
+    color: #f1f5f9;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+  }
+  .lock-pill:active { transform: scale(0.96); }
+  .lock-pill.admin-active {
+    background: rgba(56, 189, 248, 0.18);
+    border-color: #38bdf8;
+    color: #38bdf8;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+  }
+  
+  /* PIN MODAL */
+  .pin-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(11, 17, 32, 0.88);
+    backdrop-filter: blur(10px);
+    z-index: 999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+  .pin-modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .pin-dialog {
+    background: #0f172a;
+    border: 2px solid #334155;
+    border-radius: 20px;
+    padding: 26px 30px;
+    width: 340px;
+    max-width: 90vw;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+    text-align: center;
+  }
+  .pin-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #f8fafc;
+    margin-bottom: 4px;
+  }
+  .pin-sub {
+    font-size: 13px;
+    color: #94a3b8;
+    margin-bottom: 20px;
+  }
+  .pin-dots {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    margin-bottom: 22px;
+  }
+  .pin-dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid #475569;
+    background: transparent;
+    transition: all 0.15s ease;
+  }
+  .pin-dot.filled {
+    background: #38bdf8;
+    border-color: #38bdf8;
+    box-shadow: 0 0 10px #38bdf8;
+  }
+  .pin-pad {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .pin-btn {
+    background: #1e293b;
+    border: 1px solid #334155;
+    color: #f8fafc;
+    border-radius: 14px;
+    height: 60px;
+    font-size: 24px;
+    font-weight: 700;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background 0.1s, transform 0.05s;
+    user-select: none;
+  }
+  .pin-btn:active {
+    background: #334155;
+    transform: scale(0.94);
+  }
+  .pin-btn.action-btn {
+    font-size: 16px;
+    color: #94a3b8;
+  }
+  .pin-error {
+    color: #ef4444;
+    font-size: 13px;
+    font-weight: 600;
+    min-height: 18px;
+    margin-top: 6px;
+  }
+  
+  /* ADMIN SECTION IN APPS */
+  .admin-banner {
+    background: linear-gradient(90deg, rgba(56, 189, 248, 0.12), rgba(16, 185, 129, 0.12));
+    border: 1px solid #38bdf8;
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .admin-banner-text {
+    font-size: 13px;
+    font-weight: 600;
+    color: #38bdf8;
+  }
+  .admin-lock-now-btn {
+    background: #ef4444;
+    border: none;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .admin-lock-now-btn:active { background: #dc2626; }
+
 </style>
 </head>
 <body>
@@ -578,7 +725,7 @@
     <div class="ambient-banner">
       <div>
         <span class="amb-event-pill">📅 Nächste Einsätze:</span>
-        <span style="color:#fff; margin-left:8px;">🎵 Leichte Liebe Open Air (Bregenz) &nbsp;·&nbsp; 🎶 Closing Wasserburg &nbsp;·&nbsp; ⛸️ Eishalle Presets</span>
+        <span style="color:#fff; margin-left:8px;" id="amb-event-banner-text">🎵 Leichte Liebe Open Air (Bregenz) &nbsp;·&nbsp; 🎶 Closing Wasserburg &nbsp;·&nbsp; ⛸️ Eishalle Presets</span>
       </div>
       <div style="font-size:12px; color:var(--text-dim);">Aktualisiert live</div>
     </div>
@@ -610,6 +757,11 @@
       <div class="status-pill" id="pill-weather"><span class="dot-blue"></span> <span id="hdr-weather">Bodensee: --°C</span></div>
       <div class="status-pill" id="pill-power"><span class="dot-green"></span> <span id="hdr-power">⚡ IT: -- W</span></div>
       <div class="status-pill" id="pill-ha"><span class="dot-green"></span> HA Online</div>
+      <button id="lockPill" class="lock-pill" onclick="handleLockClick()" title="Admin-Modus entsperren/sperren">
+        <span id="lockDot" class="dot-yellow"></span>
+        <span id="lockIcon">🔒</span>
+        <span id="lockText">Wohnzimmer</span>
+      </button>
       <button class="ambient-btn" onclick="toggleAmbient(true)" title="Leerlauf-Modus aktivieren">🌙 Ambient</button>
     </div>
     <div class="header-right">
@@ -631,7 +783,7 @@
 
     <!-- TAB 1: COCKPIT -->
     <div class="tab-pane active" id="tab-cockpit">
-      <div class="grid-2">
+      <div class="grid-2" id="cockpit-cards-grid">
 
         <!-- CARD 1 -->
         <div class="card">
@@ -793,6 +945,33 @@
 
     <!-- TAB 4: APPS -->
     <div class="tab-pane" id="tab-apps">
+      <!-- ADMIN UNLOCKED BANNER & TOOLS -->
+      <div id="adminPanel" style="display:none; margin-bottom: 20px;">
+        <div class="admin-banner">
+          <div class="admin-banner-text">
+            🔓 <b>FraWo Admin-Modus aktiv</b> — Vollzugriff auf Kern-Infrastruktur & Server-Management
+          </div>
+          <button class="admin-lock-now-btn" onclick="lockAdmin()">🔒 Sofort sperren</button>
+        </div>
+        <div class="grid-3" style="margin-bottom: 20px;">
+          <a href="https://10.1.0.1" target="_blank" class="app-tile" style="border-color: #38bdf8;">
+            <div class="app-icon">🌐</div>
+            <div class="app-name">UniFi UCG Gateway</div>
+            <div class="app-desc">Router, Firewall & VLAN-Setup</div>
+          </a>
+          <a href="https://10.1.0.92:8006" target="_blank" class="app-tile" style="border-color: #38bdf8;">
+            <div class="app-icon">🖥️</div>
+            <div class="app-name">Proxmox PVE (Anker)</div>
+            <div class="app-desc">Container & VM Management</div>
+          </a>
+          <a href="https://frawo.tech/odoo" target="_blank" class="app-tile" style="border-color: #38bdf8;">
+            <div class="app-icon">⚙️</div>
+            <div class="app-name">Odoo 19 Backend</div>
+            <div class="app-desc">ERP, Einstellungen & Buchhaltung</div>
+          </a>
+        </div>
+      </div>
+
       <div class="grid-3">
         <a href="https://frawo.tech/odoo" class="app-tile">
           <div class="app-icon">📋</div>
@@ -957,10 +1136,87 @@
               ambHa.style.color = s.ha_online ? '#10b981' : '#f59e0b';
             }
           }
+
+          // 4. Franz Tasks (Ambient & Cockpit)
+          if (data.focus_franz && data.focus_franz.length) {
+            const listFranz = document.getElementById('amb-list-franz');
+            if (listFranz) {
+              listFranz.innerHTML = data.focus_franz.map(t => `
+                <li class="amb-task-item">
+                  <span class="amb-task-bullet">▸</span>
+                  <div>
+                    <b>${escapeHtml(t.title)} (#${t.id})</b>
+                    <div class="amb-task-sub">${escapeHtml(t.sub || t.stage)}</div>
+                  </div>
+                </li>
+              `).join('');
+            }
+          }
+
+          // 5. Wolf Tasks (Ambient & Cockpit)
+          if (data.focus_wolf && data.focus_wolf.length) {
+            const listWolf = document.getElementById('amb-list-wolf');
+            if (listWolf) {
+              listWolf.innerHTML = data.focus_wolf.map(t => `
+                <li class="amb-task-item">
+                  <span class="amb-task-bullet">▸</span>
+                  <div>
+                    <b>${escapeHtml(t.title)} (#${t.id})</b>
+                    <div class="amb-task-sub">${escapeHtml(t.sub || t.stage)}</div>
+                  </div>
+                </li>
+              `).join('');
+            }
+          }
+
+          // 6. Upcoming Events (Ambient Banner)
+          if (data.upcoming_events && data.upcoming_events.length) {
+            const evBanner = document.getElementById('amb-event-banner-text');
+            if (evBanner) {
+              evBanner.innerHTML = data.upcoming_events.map(ev => 
+                `<b>${escapeHtml(ev.title)}</b>${ev.date ? ' (' + escapeHtml(ev.date) + ')' : ''}`
+              ).join(' &nbsp;·&nbsp; ');
+            }
+          }
+
+          // 7. Dynamic Cockpit Cards in Main Tab
+          if (data.focus_franz && data.focus_wolf) {
+            const cockpitGrid = document.getElementById('cockpit-cards-grid');
+            if (cockpitGrid) {
+              const allTasks = [
+                ...data.focus_franz.map(t => ({...t, owner: 'Franz', badge: 'badge-blue'})),
+                ...data.focus_wolf.map(t => ({...t, owner: 'Wolf', badge: 'badge-purple'}))
+              ];
+              cockpitGrid.innerHTML = allTasks.map(t => `
+                <div class="card">
+                  <div>
+                    <div class="card-header">
+                      <div class="card-title">${t.owner === 'Franz' ? '🔨 Franz' : '💼 Wolf'} — ${escapeHtml(t.title)}</div>
+                      <span class="badge ${t.badge}">${escapeHtml(t.stage || 'In Arbeit')}</span>
+                    </div>
+                    <div class="card-body">
+                      <b>#${t.id}: ${escapeHtml(t.title)}</b><br>
+                      ${escapeHtml(t.sub || 'Keine Notizen hinterlegt')}
+                    </div>
+                  </div>
+                  <a href="https://frawo.tech/frawo/touch/login?redirect=/odoo/project.task/${t.id}" class="btn-touch">Aufgabe in Odoo öffnen</a>
+                </div>
+              `).join('');
+            }
+          }
         })
         .catch(err => {
           console.log('Telemetry poll info:', err);
         });
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
     }
 
     // Run telemetry every 20 seconds
@@ -1002,6 +1258,168 @@
       }
     }, 1000);
 
-  </script>
+  
+    // ==========================================
+    // PIN & ADMIN MODE LOGIC (PIN: 0815)
+    // ==========================================
+    const ADMIN_PIN = "0815";
+    let isAdmin = false;
+    let pinInput = "";
+    let adminTimer = null;
+    let adminRemainingSeconds = 600; // 10 minutes
+
+    function updateLockPillUI() {
+      const lockPill = document.getElementById('lockPill');
+      const lockDot = document.getElementById('lockDot');
+      const lockIcon = document.getElementById('lockIcon');
+      const lockText = document.getElementById('lockText');
+      const adminPanel = document.getElementById('adminPanel');
+
+      if (!lockPill) return;
+
+      if (isAdmin) {
+        lockPill.classList.add('admin-active');
+        lockDot.className = 'dot-green';
+        lockIcon.textContent = '🔓';
+        const mins = Math.floor(adminRemainingSeconds / 60);
+        const secs = String(adminRemainingSeconds % 60).padStart(2, '0');
+        lockText.textContent = `FraWo Admin (${mins}:${secs})`;
+        if (adminPanel) adminPanel.style.display = 'block';
+      } else {
+        lockPill.classList.remove('admin-active');
+        lockDot.className = 'dot-yellow';
+        lockIcon.textContent = '🔒';
+        lockText.textContent = 'Wohnzimmer';
+        if (adminPanel) adminPanel.style.display = 'none';
+      }
+    }
+
+    function handleLockClick() {
+      if (isAdmin) {
+        // Already admin -> clicking locks immediately
+        lockAdmin();
+      } else {
+        openPinModal();
+      }
+    }
+
+    function openPinModal() {
+      pinInput = "";
+      updatePinDots();
+      document.getElementById('pinError').textContent = "";
+      document.getElementById('pinModal').classList.add('active');
+    }
+
+    function closePinModal() {
+      document.getElementById('pinModal').classList.remove('active');
+      pinInput = "";
+    }
+
+    function handleModalBackdrop(e) {
+      closePinModal();
+    }
+
+    function pinPress(digit) {
+      if (pinInput.length < 4) {
+        pinInput += digit;
+        updatePinDots();
+        document.getElementById('pinError').textContent = "";
+
+        if (pinInput.length === 4) {
+          setTimeout(verifyPin, 100);
+        }
+      }
+    }
+
+    function pinClear() {
+      pinInput = "";
+      updatePinDots();
+      document.getElementById('pinError').textContent = "";
+    }
+
+    function updatePinDots() {
+      for (let i = 0; i < 4; i++) {
+        const dot = document.getElementById(`dot-${i}`);
+        if (dot) {
+          if (i < pinInput.length) {
+            dot.classList.add('filled');
+          } else {
+            dot.classList.remove('filled');
+          }
+        }
+      }
+    }
+
+    function verifyPin() {
+      if (pinInput === ADMIN_PIN) {
+        unlockAdmin();
+        closePinModal();
+      } else {
+        document.getElementById('pinError').textContent = "❌ Falsche PIN";
+        pinInput = "";
+        updatePinDots();
+      }
+    }
+
+    function unlockAdmin() {
+      isAdmin = true;
+      adminRemainingSeconds = 600; // 10 minutes
+      updateLockPillUI();
+
+      if (adminTimer) clearInterval(adminTimer);
+      adminTimer = setInterval(() => {
+        adminRemainingSeconds--;
+        if (adminRemainingSeconds <= 0) {
+          lockAdmin();
+        } else {
+          updateLockPillUI();
+        }
+      }, 1000);
+    }
+
+    function lockAdmin() {
+      isAdmin = false;
+      if (adminTimer) clearInterval(adminTimer);
+      adminTimer = null;
+      updateLockPillUI();
+    }
+
+    // Initialize Lock UI on load
+    updateLockPillUI();
+
+</script>
+
+  <!-- PIN MODAL FOR ADMIN UNLOCK -->
+  <div id="pinModal" class="pin-modal-overlay" onclick="handleModalBackdrop(event)">
+    <div class="pin-dialog" onclick="event.stopPropagation()">
+      <div class="pin-title">🔒 FraWo Admin-Freigabe</div>
+      <div class="pin-sub">Bitte 4-stellige PIN für Administrator-Zugriff eingeben:</div>
+      
+      <div class="pin-dots">
+        <div class="pin-dot" id="dot-0"></div>
+        <div class="pin-dot" id="dot-1"></div>
+        <div class="pin-dot" id="dot-2"></div>
+        <div class="pin-dot" id="dot-3"></div>
+      </div>
+
+      <div class="pin-pad">
+        <button class="pin-btn" onclick="pinPress('1')">1</button>
+        <button class="pin-btn" onclick="pinPress('2')">2</button>
+        <button class="pin-btn" onclick="pinPress('3')">3</button>
+        <button class="pin-btn" onclick="pinPress('4')">4</button>
+        <button class="pin-btn" onclick="pinPress('5')">5</button>
+        <button class="pin-btn" onclick="pinPress('6')">6</button>
+        <button class="pin-btn" onclick="pinPress('7')">7</button>
+        <button class="pin-btn" onclick="pinPress('8')">8</button>
+        <button class="pin-btn" onclick="pinPress('9')">9</button>
+        <button class="pin-btn action-btn" onclick="pinClear()">C</button>
+        <button class="pin-btn" onclick="pinPress('0')">0</button>
+        <button class="pin-btn action-btn" onclick="closePinModal()">✖</button>
+      </div>
+
+      <div class="pin-error" id="pinError"></div>
+    </div>
+  </div>
+
 </body>
 </html>

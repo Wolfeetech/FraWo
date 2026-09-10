@@ -122,6 +122,9 @@ def telemetry_poller():
             gw_ok = check_tcp_port("10.4.0.1", 53, timeout=1.0) or check_tcp_port("10.1.0.1", 443, timeout=1.0)
             anker_ok = check_tcp_port("10.1.0.92", 22, timeout=1.0)
             inet_ok = check_tcp_port("1.1.1.1", 53, timeout=1.5)
+
+            # 5. Odoo Live Telemetry (Focus Franz, Focus Wolf, Upcoming Events, Hours)
+            odoo_data = fetch_json("https://frawo.tech/frawo/touch/api/summary", timeout=4.0)
             
             with telemetry_lock:
                 telemetry_data["timestamp"] = int(time.time())
@@ -154,6 +157,16 @@ def telemetry_poller():
                 telemetry_data["system"]["gateway_online"] = gw_ok
                 telemetry_data["system"]["anker_online"] = anker_ok
                 telemetry_data["system"]["internet_online"] = inet_ok
+
+                if odoo_data and odoo_data.get("success"):
+                    if "focus_franz" in odoo_data and odoo_data["focus_franz"]:
+                        telemetry_data["focus_franz"] = odoo_data["focus_franz"]
+                    if "focus_wolf" in odoo_data and odoo_data["focus_wolf"]:
+                        telemetry_data["focus_wolf"] = odoo_data["focus_wolf"]
+                    if "upcoming_events" in odoo_data and odoo_data["upcoming_events"]:
+                        telemetry_data["upcoming_events"] = odoo_data["upcoming_events"]
+                    if "today_hours" in odoo_data:
+                        telemetry_data["today_hours"] = odoo_data["today_hours"]
                 
         except Exception as e:
             pass
