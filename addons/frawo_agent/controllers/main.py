@@ -2919,3 +2919,92 @@ function filterByStream(streamKey, cardElem) {{
         except Exception as e:
             _logger.error("touch_operations_cockpit error: %s", str(e))
             return request.make_response(f"<p style='color:#fff'>Fehler: {str(e)}</p>", status=500, headers=[('Content-Type', 'text/html')])
+
+    @http.route('/frawo/touch/api/summary', type='http', auth='none', methods=['GET'], cors='*', csrf=False, sitemap=False)
+    def touch_api_summary(self, **kwargs):
+        """JSON summary for Surface Go Touchboard & Ambient Glanceable Display."""
+        import json, datetime
+        try:
+            env = request.env(user=1)
+
+            # Franz tasks: Project 20 (Werkstatt) or assigned to Franz (user 10)
+            franz_records = env['project.task'].sudo().search([
+                ('active', '=', True),
+                '|', ('user_ids', 'in', [10]), ('project_id.name', 'ilike', 'Werkstatt'),
+                ('stage_id.name', 'in', ['📥 Als Nächstes', '🚀 In Arbeit (max 6)', 'In Arbeit', 'Als Nächstes'])
+            ], order='stage_id desc, write_date desc', limit=4)
+
+            focus_franz = []
+            for t in franz_records:
+                desc_plain = (t.description or '').replace('<p>', '').replace('</p>', ' ').replace('<br>', ' ').replace('<br/>', ' ')[:90].strip()
+                focus_franz.append({
+                    "id": t.id,
+                    "title": t.name,
+                    "sub": desc_plain or (t.stage_id.name or ''),
+                    "stage": t.stage_id.name or ''
+                })
+
+            # Wolf tasks: Project 60 / 50 / 70 or assigned to Wolf (user 6 / 7)
+            wolf_records = env['project.task'].sudo().search([
+                ('active', '=', True),
+                ('user_ids', 'in', [6, 7]),
+                ('project_id.name', 'not ilike', 'Familie'),
+                ('stage_id.name', 'in', ['📥 Als Nächstes', '🚀 In Arbeit (max 6)', 'In Arbeit', 'Als Nächstes'])
+            ], order='stage_id desc, write_date desc', limit=4)
+
+            focus_wolf = []
+            for t in wolf_records:
+                desc_plain = (t.description or '').replace('<p>', '').replace('</p>', ' ').replace('<br>', ' ').replace('<br/>', ' ')[:90].strip()
+                focus_wolf.append({
+                    "id": t.id,
+                    "title": t.name,
+                    "sub": desc_plain or (t.stage_id.name or ''),
+                    "stage": t.stage_id.name or ''
+                })
+
+            # Upcoming events: Project 10 (Aufträge & Events)
+            event_records = env['project.task'].sudo().search([
+                ('active', '=', True),
+                ('project_id.name', 'ilike', 'Aufträge'),
+                ('stage_id.name', 'not in', ['✅ Erledigt', '🗑️ Abgebrochen'])
+            ], order='date_deadline asc nulls last, id asc', limit=4)
+
+            upcoming_events = []
+            for ev in event_records:
+                dt_str = ev.date_deadline.strftime('%d.%m.') if ev.date_deadline else ''
+                upcoming_events.append({
+                    "id": ev.id,
+                    "title": ev.name,
+                    "date": dt_str,
+                    "stage": ev.stage_id.name or ''
+                })
+
+            # Today stats
+            today_str = datetime.date.today().isoformat()
+            ts = env['account.analytic.line'].sudo().search([('date', '=', today_str)])
+            today_hours = round(sum(ts.mapped('unit_amount')), 2)
+
+            data = {
+                "success": True,
+                "timestamp": int(datetime.datetime.now().timestamp()),
+                "today_hours": today_hours,
+                "focus_franz": focus_franz,
+                "focus_wolf": focus_wolf,
+                "upcoming_events": upcoming_events
+            }
+            return request.make_response(
+                json.dumps(data, ensure_ascii=False),
+                headers=[
+                    ('Content-Type', 'application/json; charset=utf-8'),
+                    ('Access-Control-Allow-Origin', '*'),
+                    ('Cache-Control', 'no-cache, no-store, must-revalidate')
+                ]
+            )
+        except Exception as e:
+            _logger.error("touch_api_summary error: %s", str(e))
+            return request.make_response(
+                json.dumps({"success": False, "error": str(e)}),
+                headers=[('Content-Type', 'application/json; charset=utf-8')],
+                status=500
+            )
+
