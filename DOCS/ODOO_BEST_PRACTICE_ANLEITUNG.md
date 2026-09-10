@@ -89,6 +89,12 @@ Die drei getrennten FraWo-Sparten sind jetzt fest in Odoo verankert:
 - Wolf filtert im CRM mit einem Klick auf sein Team und sieht nur seine Baustellen.
 - Franz öffnet Odoo und sieht im Werkstatt-Team sofort, welche Reparaturen oder Holzarbeiten anstehen.
 
+### Gespeicherte CRM-Ansichten (Realität vs. Zukunft)
+
+Damit Zukunftspläne nicht den Blick auf das Tagesgeschäft verstellen, gibt es zwei saubere Filter:
+- **`🔥 Was jetzt ansteht (Herbst 2026)`** *(Standardansicht beim Öffnen)*: Zeigt ausschließlich akute Vorgänge (z. B. Lukis Herbst/Winter-Aufträge, Eishalle, Closing).
+- **`🌱 Zukunftspläne (Saison 2027)`** *(Favoriten-Filter)*: Zeigt den kuratierten Pool für die kommende Saison (Winzer-Netzwerk, Fußballdart Stadtfest Wangen). Keine Hektik, keine erfundenen Angebote — sauber datiert auf Frühjahr 2027.
+
 ---
 
 ## 4. CRM-Stufen: Eingebaute Checklisten (Requirements)
