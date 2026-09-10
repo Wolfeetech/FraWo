@@ -2936,11 +2936,12 @@ function filterByStream(streamKey, cardElem) {{
 
             focus_franz = []
             for t in franz_records:
-                desc_plain = (t.description or '').replace('<p>', '').replace('</p>', ' ').replace('<br>', ' ').replace('<br/>', ' ')[:90].strip()
+                clean_desc = re.sub(r'<[^>]+>', ' ', t.description or '').strip()
+                clean_desc = re.sub(r'\s+', ' ', clean_desc)[:110]
                 focus_franz.append({
                     "id": t.id,
                     "title": t.name,
-                    "sub": desc_plain or (t.stage_id.name or ''),
+                    "sub": clean_desc or (t.stage_id.name or ''),
                     "stage": t.stage_id.name or ''
                 })
 
@@ -2954,11 +2955,12 @@ function filterByStream(streamKey, cardElem) {{
 
             focus_wolf = []
             for t in wolf_records:
-                desc_plain = (t.description or '').replace('<p>', '').replace('</p>', ' ').replace('<br>', ' ').replace('<br/>', ' ')[:90].strip()
+                clean_desc = re.sub(r'<[^>]+>', ' ', t.description or '').strip()
+                clean_desc = re.sub(r'\s+', ' ', clean_desc)[:110]
                 focus_wolf.append({
                     "id": t.id,
                     "title": t.name,
-                    "sub": desc_plain or (t.stage_id.name or ''),
+                    "sub": clean_desc or (t.stage_id.name or ''),
                     "stage": t.stage_id.name or ''
                 })
 
