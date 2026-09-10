@@ -60,15 +60,9 @@ rclone dorthin reinegemountet)
             zuständige Person, mit Frist + Link zum Paperless-Dokument
 ```
 
-**Beteiligte Dauer-Dienste (stock-pve):**
-- `frawo-gdrive-webhook.service` — nimmt die Push-Benachrichtigung entgegen
-- `frawo-gdrive-watch-renew.timer` — erneuert den Google-Kanal alle 6 Tage
-- `frawo-gdrive-inbox-pull.timer` — Sicherheitsnetz alle 4 Std. (Google
-  garantiert Zustellung nicht zu 100 %)
-- `frawo-scan-ingest.timer` — holt alle 2 Min. Scans aus der Samba-Ablage
-  `/mnt/music_hdd/Scans/[Alois,Heidi,Franz,Wolfgang]` (CT120) ab, versieht sie
-  mit Personen-Präfix und pusht sie direkt nach CT110 in den Paperless-Consume-Ordner
-  (erledigt Odoo-Aufgabe #1012, live seit 22.08.2026).
+**Beteiligte Dauer-Dienste (CT110 n8n/paperless auf Anker):**
+- `frawo-paperless-ingest.timer` (führt `/opt/paperless/frawo-gdrive-inbox-pull.sh` alle 10 Min. aus) — holt neue Dateien via `rclone move` aus `gdrive:00_INBOX/_Dokumente-zur-Pruefung` direkt in `/opt/paperless/consume`. Ersetzt seit 10.09.2026 den anfälligen ProDesk-Webhook und Google-Watch-Erneuerungszyklus (Aufgabe #1363).
+- `frawo-scan-ingest.timer` — (ruht derzeit, bis Samba/CT120 nach ProDesk-Ausfall wieder angebunden ist).
 
 ## Einmaliges Aufräumen (seit 21.08.2026, läuft noch)
 

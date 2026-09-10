@@ -1,0 +1,10 @@
+[Unit]
+Description=FraWo Paperless GDrive Ingest
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/opt/paperless/frawo-gdrive-inbox-pull.sh
+StandardOutput=journal
+StandardError=journal

@@ -1,0 +1,10 @@
+[Unit]
+Description=FraWo Paperless GDrive Ingest Timer (alle 10 Min)
+
+[Timer]
+OnCalendar=*:0/10
+Persistent=true
+RandomizedDelaySec=15
+
+[Install]
+WantedBy=timers.target
