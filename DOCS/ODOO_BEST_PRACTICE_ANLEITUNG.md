@@ -139,6 +139,18 @@ Alle Kern-Vorlagen nutzen dasselbe responsive, aufgeräumte Design mit FraWo-CI-
   4. *🛑 Ausgemustert / Ersatzteilspender*
   5. *📅 Regelmäßige DGUV-Wartung*
 
+### E. Materialwirtschaft, Disposition & Stammdaten-Qualität (SAP-Level ERP)
+- **Warengruppen & Kategorien-Hierarchie (`product.category`):** 100 % aller Warengruppen sind sauber unter dem Wurzelknoten `All` strukturiert. Verwaiste Artikel (Ausgaben, Modbus-Zähler) wurden exakt ihren Fachkategorien zugeordnet (0 unzugeordnete Produkte).
+- **Material-Disposition & Mindestbestände (`stock.warehouse.orderpoint`):**
+  - Werkstatt & Lautsprecherbau: Multiplex-Platten, D3-Leim, Spax-Schrauben, Strukturlack, Dämmstoff, Speakon-Buchsen.
+  - Event-Verbrauchsmaterial (Neu angelegt): Advance AT200 Gaffa-Tape (schwarz), Procell AA Mignon (10er), Procell 9V-Blöcke, Neutrik NC3MXX / NC3FXX XLR-Stecker und -Buchsen mit automatischen Meldebeständen.
+- **Geschäftspartner-Qualität (Debitor/Kreditor - `res.partner`):**
+  - ISO-Ländercodes korrigiert (Thomann, Alternate, Amazon, JLCPCB, Anthropic und Versorger stehen sauber auf `DE`, `CN`, `US`).
+  - Zahlungskonditionen zu 100 % standardisiert (SaaS/Kreditkarte: *Sofort fällig*; Rechnungssteller/Kunden: *14 Tage netto* / *30 Tage netto*).
+  - Test-Leichen archiviert (`FraWo Testkunde`).
+- **Beleg-Hygiene (`sale.order`):** 7 Phantom-Angebote (0 € / 140 € ohne Produkt-Zuordnung) storniert; die Verkaufsübersicht zeigt exakt die 8 echten, aktiven Vorgänge.
+- **Projekt- & Stufenintegrität (`project.task`):** Gemäß AGENTS.md-Prüfregel auditierte Aufgaben auf archivierten Projekten in aktive Standardprojekte überführt (Unsichtbare Tasks = 0).
+
 ---
 
 ## 6. Zusammenfassung & Regeln für den Alltag
