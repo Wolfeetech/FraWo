@@ -34,7 +34,7 @@ So läuft ein Geschäftsvorfall bei FraWo ab — **ohne Tipparbeit, in unter 60 
 Sobald du auf **Neues Angebot** klickst, öffnet sich das Angebotsformular. Kunde und Verkäufer sind bereits eingetragen.
 
 - **Was tun:** Im Feld **Angebotsvorlage** das passende FraWo-Paket auswählen:
-  - `🍷 Winzer-Event & Hoffest (Ton, Licht & Betreuung)`
+  - `🎪 Event-Paket: Ton, Licht & Betreuung (Hoffeste, Feiern, Open-Air)`
   - `⚽ 5m Riesen-Fußballdart (Event-Attraktion & Verleih)`
   - `🔊 PA-/Event-Verleih (Privat & Feiern)`
   - `🔊 PA-/Event-Verleih (Full / Groß-Event bis 500 PAX)`
@@ -81,9 +81,9 @@ Die drei getrennten FraWo-Sparten sind jetzt fest in Odoo verankert:
 
 | Team | Leitung | Mitglieder | Fokus |
 |---|---|---|---|
-| **🎧 Veranstaltungstechnik & Winzer-Events** | Wolf Prinz | Wolf & Franz | Ton, Licht, Betreuung Hoffeste, LAGO-Netzwerk |
-| **⚽ Verleih & Event-Module** | Wolf Prinz | Wolf | Riesen-Fußballdart, Party-PA, Stadtfeste |
-| **🔨 Werkstatt & Audio-Custom** | Franz Bienert | Franz & Wolf | Lautsprecher-Eigenbau, Reparaturen, Holz/Montage |
+| **🎧 Veranstaltungstechnik & Event-Produktion** | Wolf Prinz | Wolf & Franz | Ton, Licht, Betreuung Hoffeste, Festivals, L.H. Subcontracting |
+| **📦 Verleih & Mietpark (Dry Hire & Event-Module)** | Wolf Prinz | Wolf | Fußballdart, PA-Systeme, Licht-Sets, Beamer, Zubehör |
+| **🔧 Werkstatt & Audio-Manufaktur (Lautsprecherbau & Service)** | Franz Bienert | Franz & Wolf | Lautsprecher-Eigenbau, Reparaturen, Holz/Montage |
 
 **Vorteil im Alltag:**
 - Wolf filtert im CRM mit einem Klick auf sein Team und sieht nur seine Baustellen.
