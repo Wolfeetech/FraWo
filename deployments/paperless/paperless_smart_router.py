@@ -448,11 +448,29 @@ def create_odoo_task(info, doc_id, doc_title):
         return None
 
 
-def create_odoo_vendor_bill(models, uid, info, doc_id, doc_title, pdf_bytes):
+def create_odoo_vendor_bill(info, doc_id, doc_title, pdf_bytes=None, models=None, uid=None):
     try:
+        if not models or not uid:
+            common = xmlrpc.client.ServerProxy(f'{ODOO_URL}/xmlrpc/2/common')
+            uid = common.authenticate(ODOO_DB, ODOO_USER, ODOO_PASS, {})
+            if not uid:
+                print("Odoo-Login fehlgeschlagen für Lieferantenrechnung.")
+                return None
+            models = xmlrpc.client.ServerProxy(f'{ODOO_URL}/xmlrpc/2/object')
+
         vendor_name = info.get("vendor") or "Unbekannter Lieferant"
         amount = float(info.get("amount") or 0.0)
         if amount <= 0:
+            return None
+
+        # Duplikatschutz: Pruefen ob Beleg mit gleicher Paperless-ID schon existiert
+        ref_pattern = f"Paperless #{doc_id}:"
+        existing = models.execute_kw(
+            ODOO_DB, uid, ODOO_PASS, 'account.move', 'search_count',
+            [[['ref', 'ilike', ref_pattern]]]
+        )
+        if existing > 0:
+            print(f"Lieferantenrechnung für Paperless #{doc_id} existiert bereits ({existing}x) — überspringe Duplikat.")
             return None
         
         # 1. Partner suchen oder anlegen
@@ -506,7 +524,20 @@ def create_odoo_vendor_bill(models, uid, info, doc_id, doc_title, pdf_bytes):
         return None
 
 
-if classification["requires_action"]:
+# 1. Automatische Lieferantenrechnung in Odoo Finanzen
+if classification.get("document_type") in ["Rechnung", "Kassenbeleg", "Quittung"] and float(classification.get("amount") or 0.0) > 0 and classification.get("entity") in ["FraWo_GbR", "Wolf_Prinz"]:
+    pdf_bytes = None
+    try:
+        pdf_req = urllib.request.Request(f"{PAPERLESS_URL}/documents/{DOC_ID}/download/")
+        pdf_req.add_header("Authorization", paperless_auth_header())
+        with urllib.request.urlopen(pdf_req, timeout=30) as r:
+            pdf_bytes = r.read()
+    except Exception as att_err:
+        print(f"Hinweis: PDF fuer Rechnungsanhang konnte nicht geladen werden: {att_err}")
+    create_odoo_vendor_bill(classification, DOC_ID, title, pdf_bytes)
+
+# 2. Odoo-Aufgabe bei Handlungsbedarf
+if classification.get("requires_action") or classification.get("action_required"):
     create_odoo_task(classification, DOC_ID, title)
 else:
     print("Kein Handlungsbedarf erkannt — keine Odoo-Aufgabe.")
