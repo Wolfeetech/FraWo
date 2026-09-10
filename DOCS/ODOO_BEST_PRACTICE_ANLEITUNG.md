@@ -109,20 +109,41 @@ Kein Rätselraten mehr, wann ein Vorgang wohin geschoben wird. Jede Spalte im CR
 
 ---
 
-## 5. Audit: Open-Source Best Practice vs. Community-Add-Ons (OCA)
+## 5. Audit & Grundeinrichtung: Alle Module im Best-Practice-Zustand
 
-### Ehrliche Analyse des Bestands:
-1. **Was bisher schief lief:**
-   - Eigene Hintergrund-Skripte versuchten künstlich Leads zu generieren oder Deadlines zu polinternalisieren. Das führte zu Geisterdaten und Spam.
-   - **Lösung:** Streng nach `AGENTS.md` keine eigenen Daemon-Skripte mehr. Odoos interne `base.automation` übernimmt die Event-Logik sauber und synchron.
+### A. Rechtssicherheit & Dokumenten-Layout (GbR / § 19 UStG)
+- **Gesellschafter-Angabe:** Im PDF-Report-Footer und in allen Schreiben korrekt als `Gesellschafter: Wolfgang Prinz & Franz Bienert` tituliert (BGB-konform statt „Geschäftsführer“).
+- **Kleinunternehmer-Klausel:** Auf `res.company` als sauberer Klartext ohne HTML-Tags hinterlegt:
+  *„Gemäß § 19 UStG wird keine Umsatzsteuer berechnet (Kleinunternehmerstatus). Zahlbar innerhalb des vereinbarten Zahlungsziels ohne Abzug auf das angegebene Geschäftskonto.“*
+- **Bankverbindung:** N26 Business (`DE 31 1001 ...`, BIC `NTSBDEB1XXX`) fest im Bericht-Footer verankert und im Journal `N26 — FraWo Space (Wolf)` (N26) gemappt.
+- **Produkt-Steuern:** 100 % aller aktiven Verkaufs- und Verleihprodukte (inkl. Distanzstangen, Adapter, PA-Sets) sind auf Steuer ID 15 (`Steuerbefreit §19 UStG`) normiert.
 
-2. **Welche OCA Community-Module lohnen sich wirklich für FraWo?**
-   - **`rental` / `sale_renting` (OCA):**
-     - *Nutzen:* Ermöglicht echte Geräte-Verfügbarkeitsprüfungen (z. B. „Ist das Fußballdart am 15.08. doppelt gebucht?").
-     - *Status bei FraWo:* Aktuell reicht die Terminkalender-Automatik (Automation ID 18), da FraWo 1x Fußballdart und 2 PA-Sets besitzt. Sobald der Gerätepool wächst, ist das OCA-Mietmodul die erste Wahl.
-   - **`account_edi_ubl_cii` / XRechnung & ZUGFeRD:**
-      - *Nutzen:* Gesetzlich vorgeschriebenes elektronisches Rechnungsformat für Behörden und Kommunen (Stadt Wangen, Bauhof).
-      - *Status bei FraWo:* **Bereits installiert und scharf geschaltet!** Auf den Kunden *Große Kreisstadt Wangen* und *Bauhof Wangen* ist das Format `xrechnung` mit EAS-Code `0204` (Leitweg-ID) direkt im Kundenstamm hinterlegt. Bei Rechnungsstellung erzeugt Odoo automatisch das konforme XML.
-   - **Website Lead Scraper / Event-Bots:**
-     - *Warnung:* Es gibt im Odoo App Store diverse "Lead Scraper". Fast alle sind fehleranfällig, erzeugen Dubletten-Müll und verstoßen gegen DSGVO/Wettbewerbsrecht (Cold-Calling-Verbot).
-     - *Best Practice:* Gezielte Recherche von Veranstaltungen am Bodensee (Komm & See, Stadtfeste) und saubere, kuratierte Stammdatenpflege — Qualität vor Quantität.
+### B. E-Mail-Vorlagen (Einheitliches deutsches FraWo-Design)
+Alle Kern-Vorlagen nutzen dasselbe responsive, aufgeräumte Design mit FraWo-CI-Signatur:
+1. **Angebot versenden (Template 13):** Unverbindliches Angebot mit PDF-Anhang und direktem Ansprechpartner.
+2. **Auftragsbestätigung (Template 14):** Verbindliche Bestätigung disponierter Leistungen/Ausrüstung für den Kundentermin.
+3. **Rechnung versenden (Template 7):** Transparente Abrechnung mit Fälligkeitsdatum, Rechnungsnummer und Bankverbindung.
+
+### C. Rechnungsstellung & E-Invoicing (XRechnung / ZUGFeRD)
+- **Status bei FraWo:** Odoo 19 Kernmodul `account_edi_ubl_cii` ist aktiv.
+- **Behörden-Setup:** Für kommunale Auftraggeber (*Große Kreisstadt Wangen* #59, *Bauhof Wangen* #28) ist das Format `xrechnung` mit Leitweg-ID (Peppol EAS `0204`) und 30 Tage Zahlungsziel im Partnerstamm scharfgeschaltet.
+- **Standard-Journale:** Übersichtlich auf Deutsch benannt (*Kundenrechnungen (INV)*, *Lieferantenrechnungen (BILL)*, *Barkasse (CSH1)*, *Sonstige Vorgänge (MISC)*).
+
+### D. Werkstatt, Wartung & Gerätepark (`maintenance`)
+- **Team:** `🔧 Werkstatt & Technik-Service` mit Franz Bienert und Wolf Prinz.
+- **Gerätepark:** Alle 63 Equipment-Positionen sind konsistent auf `company_id = 1` (FraWo GbR) und Team 1 gebucht.
+- **Stufen:** Praxistaugliche deutsche Wartungs-Pipeline:
+  1. *📥 Neu eingegangen (Prüfung/Defekt)*
+  2. *🔧 In Reparatur / Wartung*
+  3. *✅ Repariert & Geprüft (Einsatzbereit)*
+  4. *🛑 Ausgemustert / Ersatzteilspender*
+  5. *📅 Regelmäßige DGUV-Wartung*
+
+---
+
+## 6. Zusammenfassung & Regeln für den Alltag
+
+1. **Keine Daten duplizieren:** Ein Vorgang hat genau einen CRM-Lead und (bei Auftrag) ein verknüpftes Angebot.
+2. **Keine Kaltakquise-Erfindungen:** Nur echte Kontakte und Leads erfassen. Zukunftsoptionen über den Filter `🌱 Zukunftspläne` einsteuern.
+3. **1-Klick-Angebote nutzen:** Angebote immer über die Vorlagen generieren — das spart Zeit, verhindert Tippfehler und sichert die Nachverfolgung.
+4. **Prüfen am Ziel:** Jedes versendete Dokument und jede Änderung am echten Datensatz nachprüfen.
