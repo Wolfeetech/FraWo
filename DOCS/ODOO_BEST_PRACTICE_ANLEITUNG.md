@@ -120,9 +120,9 @@ Kein Rätselraten mehr, wann ein Vorgang wohin geschoben wird. Jede Spalte im CR
    - **`rental` / `sale_renting` (OCA):**
      - *Nutzen:* Ermöglicht echte Geräte-Verfügbarkeitsprüfungen (z. B. „Ist das Fußballdart am 15.08. doppelt gebucht?").
      - *Status bei FraWo:* Aktuell reicht die Terminkalender-Automatik (Automation ID 18), da FraWo 1x Fußballdart und 2 PA-Sets besitzt. Sobald der Gerätepool wächst, ist das OCA-Mietmodul die erste Wahl.
-   - **`account_invoice_ubl` / XRechnung (OCA / Odoo e-invoicing):**
-     - *Nutzen:* Gesetzlich vorgeschriebenes elektronisches Rechnungsformat für Behörden und Kommunen (Stadt Wangen, Bauhof).
-     - *Empfehlung:* Bei der ersten offiziellen Rechnung an die Stadt Wangen zuschalten.
+   - **`account_edi_ubl_cii` / XRechnung & ZUGFeRD:**
+      - *Nutzen:* Gesetzlich vorgeschriebenes elektronisches Rechnungsformat für Behörden und Kommunen (Stadt Wangen, Bauhof).
+      - *Status bei FraWo:* **Bereits installiert und scharf geschaltet!** Auf den Kunden *Große Kreisstadt Wangen* und *Bauhof Wangen* ist das Format `xrechnung` mit EAS-Code `0204` (Leitweg-ID) direkt im Kundenstamm hinterlegt. Bei Rechnungsstellung erzeugt Odoo automatisch das konforme XML.
    - **Website Lead Scraper / Event-Bots:**
      - *Warnung:* Es gibt im Odoo App Store diverse "Lead Scraper". Fast alle sind fehleranfällig, erzeugen Dubletten-Müll und verstoßen gegen DSGVO/Wettbewerbsrecht (Cold-Calling-Verbot).
      - *Best Practice:* Gezielte Recherche von Veranstaltungen am Bodensee (Komm & See, Stadtfeste) und saubere, kuratierte Stammdatenpflege — Qualität vor Quantität.
