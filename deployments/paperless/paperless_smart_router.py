@@ -439,8 +439,17 @@ def create_odoo_task(info, doc_id, doc_title):
             print(f"Warnung: PDF-Anhang an Odoo fehlgeschlagen: {att_err}")
 
         # Wenn es eine Rechnung/Ausgabe fuer die GbR ist -> automatisch Lieferantenrechnung in Odoo Finanzen anlegen!
+        # Sperre gegen doppelte Buchung: derselbe doc_id darf nie zwei account.move erzeugen,
+        # z.B. wenn Paperless dasselbe Dokument nach einem Retry/Reprocessing erneut konsumiert.
         if info.get("document_type") in ["Rechnung", "Kassenbeleg"] and info.get("amount", 0) > 0 and info.get("entity") == "FraWo_GbR":
-            create_odoo_vendor_bill(models, uid, info, doc_id, doc_title, pdf_bytes)
+            already_billed = models.execute_kw(
+                ODOO_DB, uid, ODOO_PASS, 'account.move', 'search_count',
+                [[['ref', 'ilike', f"Paperless #{doc_id}:"]]],
+            )
+            if already_billed:
+                print(f"Lieferantenrechnung fuer Dokument #{doc_id} existiert bereits ({already_billed}x) - ueberspringe, keine doppelte Buchung.")
+            else:
+                create_odoo_vendor_bill(models, uid, info, doc_id, doc_title, pdf_bytes)
 
         return task_id
     except Exception as e:
