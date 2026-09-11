@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <rect width="512" height="512" rx="96" fill="#064e3b"/>
+  <rect x="96" y="420" width="320" height="12" rx="6" fill="#a855f7"/>
+  <!-- Monogram FW -->
+  <path d="M176.0 -226.56V-170.24H87.04V-138.88H151.04V-85.44H87.04V0.0H16.0V-226.56Z" transform="translate(3.00, 370)" fill="#f0fdf4"/>
+  <path d="M511.40000000000003 -226.56 459.56 0.0H371.24L345.0 -128.64000000000001L318.76 0.0H230.44L178.6 -226.56H255.07999999999998L275.56 -83.84L306.28 -226.56H383.72L414.44 -83.84L434.92 -226.56Z" transform="translate(3.00, 370)" fill="#f0fdf4"/>
+</svg>
