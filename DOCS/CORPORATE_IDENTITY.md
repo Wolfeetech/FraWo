@@ -89,12 +89,14 @@ Verzeichnis: `brand_assets/vector_svg/`
   * `visitenkarte_front_light.svg` (Helles, organisches Mint)
 * **Rückseite Wolf Prinz:**
   * `visitenkarte_wolf_prinz_back_dark.svg` / `..._light.svg`
-  * Rollen: Geschäftsführung · Planung, Konzept & Event-IT
-  * Kontaktdaten, Schwerpunkte, Vektor-QR-Code zu vCard/Webseite
+  * Rollen: Geschäftsführung · Technik, Licht, Ton & Event-IT
+  * Schwerpunkte: Veranstaltungstechnik & Verleih · Licht- & Tontechnik · Event-IT & Netzwerke · Beschallung & Akustik
+  * Kontaktdaten, Vektor-QR-Code zu vCard/Webseite
 * **Rückseite Franz Bienert:**
   * `visitenkarte_franz_bienert_back_dark.svg` / `..._light.svg`
-  * Rollen: Geschäftsführung · Werkstatt, Fertigung & Tontechnik
-  * Kontaktdaten, Schwerpunkte, Vektor-QR-Code zu vCard/Webseite
+  * Rollen: Geschäftsführung · Zimmerer · Holz & Sonderbauten
+  * Schwerpunkte: Holz- & Sonderbauten · Maßarbeit & Konstruktion · Eventbauten, Bühnen & Infrastruktur · Werkstatt & Lautsprechergehäuse
+  * Kontaktdaten, Vektor-QR-Code zu vCard/Webseite
 
 ---
 
