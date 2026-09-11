@@ -256,6 +256,60 @@ def cmd_quotes():
         print(f"  {q['name']}: {q['partner_id'][1]} | {q['amount_total']:.2f} EUR | Status: {st}")
     print("="*70 + "\n")
 
+def cmd_journal(task_id, sync=False):
+    """Liest den Chatter einer Aufgabe aus und baut ein chronologisches Tagebuch."""
+    import re
+    import html
+    task = execute_kw('project.task', 'search_read', [[('id', '=', task_id)]], {'fields': ['id', 'name', 'description']})
+    if not task:
+        print(f"FEHLER: Aufgabe #{task_id} nicht gefunden.")
+        return
+    t = task[0]
+    msgs = execute_kw('mail.message', 'search_read', 
+                      [[('model', '=', 'project.task'), ('res_id', '=', task_id)]], 
+                      {'fields': ['id', 'date', 'author_id', 'body', 'subtype_id'], 'order': 'date asc'})
+    
+    entries = []
+    for m in msgs:
+        body = m['body'] or ''
+        # Unescape first in case of doubly-encoded entities, then strip tags, then unescape remaining
+        unescaped = html.unescape(body)
+        clean = re.sub(r'<[^>]+>', ' ', unescaped)
+        clean = html.unescape(clean).strip()
+        clean = re.sub(r'\s+', ' ', clean)
+        if not clean or 'Eine neue Aufgabe wurde' in clean or 'Termin / Fokuszeit' in clean or 'done' == clean:
+            continue
+        author = (m['author_id'][1].split(',')[0] if m['author_id'] else 'System').strip()
+        date_str = m['date'][:10]
+        entries.append({'date': date_str, 'author': author, 'text': clean, 'raw_html': body})
+        
+    print("\n" + "="*80)
+    print(f" 📖 Chatter-Tagebuch fuer #{t['id']}: {t['name']}")
+    print("="*80)
+    if not entries:
+        print("Keine Tagebucheintraege im Chatter gefunden.")
+    else:
+        for e in entries:
+            print(f" [{e['date']}] {e['author']}:")
+            print(f"   {e['text']}")
+            print("-" * 80)
+            
+    if sync:
+        rows_html = "".join([f"<tr><td><b>{e['date']}</b></td><td>{e['author']}</td><td>{e['text']}</td></tr>" for e in reversed(entries)])
+        journal_table = f"""<h3>📖 Automatisiertes Chatter-Tagebuch</h3>
+<table border="1" cellpadding="6" style="border-collapse:collapse; width:100%;">
+  <thead><tr style="background:#f2f2f2;"><th>Datum</th><th>Autor</th><th>Eintrag</th></tr></thead>
+  <tbody>{rows_html}</tbody>
+</table>"""
+        old_desc = t['description'] or ''
+        if '<h3>📖 Automatisiertes Chatter-Tagebuch</h3>' in old_desc:
+            new_desc = old_desc.split('<h3>📖 Automatisiertes Chatter-Tagebuch</h3>')[0] + journal_table
+        else:
+            new_desc = old_desc + "<br>" + journal_table
+        execute_kw('project.task', 'write', [[task_id], {'description': new_desc}])
+        print(f"✅ Tagebuch erfolgreich in Aufgabenbeschreibung von #{task_id} synchronisiert.")
+    print("="*80 + "\n")
+
 def main():
     parser = argparse.ArgumentParser(description="FraWo Odoo Werkzeugkasten CLI")
     subparsers = parser.add_subparsers(dest="command", help="Verfuegbare Befehle")
@@ -266,6 +320,10 @@ def main():
     subparsers.add_parser("tasks", help="Einsatzplan nach Standorten")
     subparsers.add_parser("hygiene", help="ERP Datenhygiene-Audit")
     subparsers.add_parser("quotes", help="Angebote und Vorlagen")
+    
+    p_journal = subparsers.add_parser("journal", help="Chatter-Tagebuch einer Aufgabe anzeigen / synchronisieren")
+    p_journal.add_argument("task_id", type=int, help="ID der Odoo-Aufgabe (z.B. 1220)")
+    p_journal.add_argument("--sync", action="store_true", help="Synchronisiert das Tagebuch direkt in die Aufgabenbeschreibung")
     
     args = parser.parse_args()
     
@@ -283,11 +341,14 @@ def main():
         "quotes": cmd_quotes
     }
     
-    cmd_fn = commands.get(args.command)
-    if cmd_fn:
-        cmd_fn()
+    if args.command == "journal":
+        cmd_journal(args.task_id, sync=args.sync)
     else:
-        parser.print_help()
+        cmd_fn = commands.get(args.command)
+        if cmd_fn:
+            cmd_fn()
+        else:
+            parser.print_help()
 
 if __name__ == "__main__":
     main()
