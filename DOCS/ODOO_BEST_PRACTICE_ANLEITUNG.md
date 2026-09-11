@@ -178,6 +178,15 @@ Alle Kern-Vorlagen nutzen dasselbe responsive, aufgeräumte Design mit FraWo-CI-
   - Fertig konfiguriertes Angebots-Template mit 10-Stunden-Startkontingent (450,00 € gem. § 19 UStG) für die Naper GmbH.
   - Mit der Quick-Quote-Engine (`python quick_quote.py --lead 83 --template 8`) in unter 2 Sekunden als Angebot `S00052` generiert und mit Lead #83 verknüpft.
 
+### H. DevOps, Cron-Health & Tagesbericht-Präzision (Regel 7)
+- **Tagesbericht an Wolf (Cron 44 / Server-Aktion 828):**
+  - Läuft täglich um **12:04 Uhr MESZ** (10:04 UTC) und sendet die Lageübersicht an `wolf@frawo.tech`.
+  - **100 % Standort-Präzision:** Alle 17 zuvor ortlosen Aufgaben in den Stufen *Als Nächstes* und *In Arbeit* wurden mit exakten Orts-Tags (`@rk22`, `@villa`, `@unterwegs`, `@remote`) versehen.
+  - **Ergebnis:** Aufgaben ohne Ort = **0**. Wolf erhält jeden Mittag einen glasklaren, nach Standorten sortierten Einsatzplan ohne Graumeldungen.
+- **Queue-Bereinigung (`TAG_BEANTWORTET` = 160):**
+  - Vollständig eingepflegte Rückmeldungen (#1413 Zielkunden, #1421 PSA-Größen & FraWo-Print, #1365 Stromkosten-Berechnung 270,13 €, #1422 Christiane-Rücklage) wurden von Tag 160 befreit.
+  - Die Abarbeitungs-Warteschlange der Agenten ist nun schlank und enthält nur noch die tatsächlich offenen Punkte.
+
 ---
 
 ## 6. Zusammenfassung & Regeln für den Alltag
