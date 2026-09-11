@@ -90,13 +90,15 @@ Verzeichnis: `brand_assets/vector_svg/`
 * **Rückseite Wolf Prinz:**
   * `visitenkarte_wolf_prinz_back_dark.svg` / `..._light.svg`
   * Rollen: Geschäftsführung · Technik, Licht, Ton & Event-IT
+  * Kontakt: Tel: `+49 176 61922754` · E-Mail: `wolf@frawo.tech` · Web: `www.frawo.tech`
   * Schwerpunkte: Veranstaltungstechnik & Verleih · Licht- & Tontechnik · Event-IT & Netzwerke · Beschallung & Akustik
-  * Kontaktdaten, Vektor-QR-Code zu vCard/Webseite
+  * Vektor-QR-Code zu `https://frawo.tech/team/wolf`
 * **Rückseite Franz Bienert:**
   * `visitenkarte_franz_bienert_back_dark.svg` / `..._light.svg`
   * Rollen: Geschäftsführung · Zimmerer · Holz & Sonderbauten
+  * Kontakt: Tel: `+49 173 8515210` · E-Mail: `franz@frawo.tech` · Web: `www.frawo.tech`
   * Schwerpunkte: Holz- & Sonderbauten · Maßarbeit & Konstruktion · Eventbauten, Bühnen & Infrastruktur · Werkstatt & Lautsprechergehäuse
-  * Kontaktdaten, Vektor-QR-Code zu vCard/Webseite
+  * Vektor-QR-Code zu `https://frawo.tech/team/franz`
 
 ---
 
