@@ -184,8 +184,22 @@ Alle Kern-Vorlagen nutzen dasselbe responsive, aufgeräumte Design mit FraWo-CI-
   - **100 % Standort-Präzision:** Alle 17 zuvor ortlosen Aufgaben in den Stufen *Als Nächstes* und *In Arbeit* wurden mit exakten Orts-Tags (`@rk22`, `@villa`, `@unterwegs`, `@remote`) versehen.
   - **Ergebnis:** Aufgaben ohne Ort = **0**. Wolf erhält jeden Mittag einen glasklaren, nach Standorten sortierten Einsatzplan ohne Graumeldungen.
 - **Queue-Bereinigung (`TAG_BEANTWORTET` = 160):**
-  - Vollständig eingepflegte Rückmeldungen (#1413 Zielkunden, #1421 PSA-Größen & FraWo-Print, #1365 Stromkosten-Berechnung 270,13 €, #1422 Christiane-Rücklage) wurden von Tag 160 befreit.
-  - Die Abarbeitungs-Warteschlange der Agenten ist nun schlank und enthält nur noch die tatsächlich offenen Punkte.
+  - Vollständig eingepflegte Rückmeldungen (#1413 Zielkunden, #1421 PSA-Größen & FraWo-Print, #1365 Stromkosten-Berechnung 270,13 €, #1422 Christiane-Rücklage, #1406 Werkstatt-Einordnung, #385 Elvis-Sub) wurden von Tag 160 befreit.
+  - Task #996 (KOHL Strato 191,76 €) wurde auf Tag 153 (`🙋 braucht Wolf`) gesetzt, da die Überweisungsdaten vollständig vorliegen und nur noch die Bankfreigabe durch Wolf ansteht.
+  - **Ergebnis:** Offene Aufgaben mit Tag 160 = **0**! Die Agenten-Queue ist komplett abgearbeitet.
+
+### I. Strategischer Realismus & Rechtssicherheit (Handwerk & Gewerbe)
+- **Handwerksrechtliche Abgrenzung (Franz als Zimmerergeselle):**
+  - *Eigenbedarf für Verleihpark:* Lautsprechergehäuse, Bassboxen, Racks und Kisten für das eigene Betriebsvermögen dürfen Franz und Wolf zu 100 % legal selbst bauen.
+  - *Kundenaufträge:* Reine IHK-Dienstleistungen (Reparatur von Beschallungsanlagen, Chassis-Tausch, Sickeninstandsetzung, Frequenzweichenbau, REW-Akustikmessung & DSP-Einmessung).
+  - *Außenauftritt:* Nie als „Schreinerei/Tischlerei“ oder „Meisterbetrieb“ werben, sondern als *„Veranstaltungstechnik & Akustikbau“* oder *„Reparatur von Beschallungsanlagen“*.
+- **Investitionsrealismus:**
+  - Keine teuren Kredite für CNC-Fräsen (handgeführte Oberfräse mit Fräszirkel liefert millimetergenaue Chassisausschnitte für Prototypen und Kleinserien).
+  - Werkstatt-Grundausstattung (Absaugung Klasse M, Tauchsäge, Fräszirkel, Werkbank) wird schrittweise aus dem laufenden Cashflow finanziert (~1.250–2.150 €).
+- **Akute Wochenend-Vorbereitung:**
+  - *Samstag, 12.09.:* Leichte Liebe Open Air (Bregenz) – reiner Helfer-/Sub-Job (Task #1057), Wolf kommt nach 14 Uhr aus der Inselhalle, Sonntagfrüh 07:30 Uhr zurück.
+  - *Sonntag/Montag, 13./14.09.:* Besichtigung & Abholung Getränkeautomat mit Alois (Task #1181) – technische FI-Prüfung vor Ort, Verhandlungsziel 50–100 €, 24h Stehzeit vor Inbetriebnahme beachten.
+  - *Dienstag, 15.09.:* Wolfmix W1 Einlassshow-Presets Eishalle (Task #1356).
 
 ---
 
