@@ -140,10 +140,15 @@ Alle Kern-Vorlagen nutzen dasselbe responsive, aufgeräumte Design mit FraWo-CI-
   5. *📅 Regelmäßige DGUV-Wartung*
 
 ### E. Materialwirtschaft, Disposition & Stammdaten-Qualität (SAP-Level ERP)
-- **Warengruppen & Kategorien-Hierarchie (`product.category`):** 100 % aller Warengruppen sind sauber unter dem Wurzelknoten `All` strukturiert. Verwaiste Artikel (Ausgaben, Modbus-Zähler) wurden exakt ihren Fachkategorien zugeordnet (0 unzugeordnete Produkte).
+- **Debitoren- & Kreditoren-Nummernkreise (`res.partner.ref`):**
+  - **Debitoren (`D-10001` bis `D-10019`):** 26 Kundenstämme (L.H., Trommlerzug, Baas TV, Wangen, Winzer-Netzwerk) besitzen eine offizielle Debitorennummer für Rechnungsdruck, DATEV-Vorbereitung und Direkt-Suche im Odoo-Suchschlitz.
+  - **Kreditoren (`K-70001` bis `K-70024`):** 24 Lieferanten (Thomann, Reichelt, Alternate, Amazon, Bauhaus, Galaxus, JLCPCB, Versorger) besitzen feste Kreditorennummern.
+- **Bereinigung des Verkaufskatalogs (`sale_ok`):** 41 interne Werkstatt-Rohstoffe, Spulen, Kondensatoren, Leergehäuse und Dämmmaterialien wurden auf `sale_ok = False` gesetzt (`purchase_ok` und Stücklisten-Verwendung bleiben 100 % erhalten). Der Angebots-Katalog ist dadurch vollkommen frei von Bauteil-Müll und zeigt nur buchbare Pakete, Dienstleistungen und Verbrauchsmaterial.
+- **Warengruppen & Kategorien-Hierarchie (`product.category`):** 100 % aller Warengruppen sind sauber unter dem Wurzelknoten `All` strukturiert. Verwaiste Artikel wurden exakt ihren Fachkategorien zugeordnet (0 unzugeordnete Produkte).
 - **Material-Disposition & Mindestbestände (`stock.warehouse.orderpoint`):**
   - Werkstatt & Lautsprecherbau: Multiplex-Platten, D3-Leim, Spax-Schrauben, Strukturlack, Dämmstoff, Speakon-Buchsen.
   - Event-Verbrauchsmaterial (Neu angelegt): Advance AT200 Gaffa-Tape (schwarz), Procell AA Mignon (10er), Procell 9V-Blöcke, Neutrik NC3MXX / NC3FXX XLR-Stecker und -Buchsen mit automatischen Meldebeständen.
+- **Instandhaltung & DGUV V3 (`maintenance.request`):** Die wiederkehrende Jahresprüfung aller ortsveränderlichen Betriebsmittel (#14, 1 Jahr Intervall, Fälligkeit 01.10.2026) ist zusammen mit den Lautsprecher-Prüfungen in der Stufe *📅 Regelmäßige DGUV-Wartung* fixiert.
 - **Geschäftspartner-Qualität (Debitor/Kreditor - `res.partner`):**
   - ISO-Ländercodes korrigiert (Thomann, Alternate, Amazon, JLCPCB, Anthropic und Versorger stehen sauber auf `DE`, `CN`, `US`).
   - Zahlungskonditionen zu 100 % standardisiert (SaaS/Kreditkarte: *Sofort fällig*; Rechnungssteller/Kunden: *14 Tage netto* / *30 Tage netto*).
