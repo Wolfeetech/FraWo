@@ -110,4 +110,4 @@ Verzeichnis: `brand_assets/vector_svg/`
   * Logo: `frawo_logo_primary_transparent.svg` oder `frawo_logo_duotone_transparent.svg`
   * Claim: `Smart Media & Event`
   * Leistungszeile: `Veranstaltungstechnik · Beschallung · Werkstatt & Lautsprecherbau`
-  * Hausnummer / Adresshinweis: `Villa Rothkreuz 14`
+  * Hausnummer / Adresshinweis: `Rothkreuz 14, 88138 Weißensberg`

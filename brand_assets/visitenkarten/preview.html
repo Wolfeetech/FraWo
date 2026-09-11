@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FraWo GbR — Visitenkarten Vorschau (High-End Redesign)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0d1117;
+      --card-bg: #161b22;
+      --border: #30363d;
+      --text: #f0f6fc;
+      --text-dim: #8b949e;
+      --accent: #a855f7;
+      --green: #10b981;
+    }
+    body {
+      margin: 0;
+      padding: 40px 20px;
+      background: var(--bg);
+      font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+    p.subtitle {
+      margin: 0 0 32px;
+      color: var(--text-dim);
+      font-size: 15px;
+    }
+    .section-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--accent);
+      margin: 40px 0 20px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .section-title::after {
+      content: "";
+      height: 1px;
+      width: 100px;
+      background: var(--border);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+      gap: 32px;
+      max-width: 960px;
+      width: 100%;
+    }
+    .card-box {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    .card-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-dim);
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .card-preview {
+      width: 100%;
+      max-width: 425px;
+      aspect-ratio: 85 / 55;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 16px 36px rgba(0,0,0,0.6);
+      transition: transform 0.2s ease;
+      background: #000;
+    }
+    .card-preview:hover {
+      transform: translateY(-4px);
+    }
+    .card-preview object, .card-preview img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      border: none;
+    }
+    .info-footer {
+      margin-top: 60px;
+      padding: 20px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 12px;
+      font-size: 13px;
+      color: var(--text-dim);
+      text-align: center;
+      max-width: 700px;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>FraWo GbR — Visitenkarten Vorschau</h1>
+  <p class="subtitle">High-End Redesign im Schweizer Rastersystem · Euro-Standard (85 × 55 mm) · 100% Vektor-SVGs</p>
+
+  <div class="section-title">1. Dark Obsidian Edition (Bühnen-, Audio- & Event-Look)</div>
+  <div class="grid">
+    <div class="card-box">
+      <div class="card-label">Corporate Vorderseite</div>
+      <div class="card-preview">
+        <object data="visitenkarte_front_dark.svg" type="image/svg+xml"></object>
+      </div>
+    </div>
+    <div class="card-box">
+      <div class="card-label">Rückseite — Wolf Prinz (Technik & IT)</div>
+      <div class="card-preview">
+        <object data="visitenkarte_wolf_prinz_back_dark.svg" type="image/svg+xml"></object>
+      </div>
+    </div>
+    <div class="card-box">
+      <div class="card-label">Corporate Vorderseite</div>
+      <div class="card-preview">
+        <object data="visitenkarte_front_dark.svg" type="image/svg+xml"></object>
+      </div>
+    </div>
+    <div class="card-box">
+      <div class="card-label">Rückseite — Franz Bienert (Holz & Zimmerer)</div>
+      <div class="card-preview">
+        <object data="visitenkarte_franz_bienert_back_dark.svg" type="image/svg+xml"></object>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">2. Natural Mint / Light Edition (Heller Studio- & Werkstatt-Look)</div>
+  <div class="grid">
+    <div class="card-box">
+      <div class="card-label">Corporate Vorderseite (Light)</div>
+      <div class="card-preview" style="background:#fff;">
+        <object data="visitenkarte_front_light.svg" type="image/svg+xml"></object>
+      </div>
+    </div>
+    <div class="card-box">
+      <div class="card-label">Rückseite — Wolf Prinz (Light)</div>
+      <div class="card-preview" style="background:#fff;">
+        <object data="visitenkarte_wolf_prinz_back_light.svg" type="image/svg+xml"></object>
+      </div>
+    </div>
+    <div class="card-box">
+      <div class="card-label">Corporate Vorderseite (Light)</div>
+      <div class="card-preview" style="background:#fff;">
+        <object data="visitenkarte_front_light.svg" type="image/svg+xml"></object>
+      </div>
+    </div>
+    <div class="card-box">
+      <div class="card-label">Rückseite — Franz Bienert (Light)</div>
+      <div class="card-preview" style="background:#fff;">
+        <object data="visitenkarte_franz_bienert_back_light.svg" type="image/svg+xml"></object>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-footer">
+    <b>Druckspezifikation:</b> Endformat 85 × 55 mm | Vektordateien in <code>brand_assets/visitenkarten/</code>.<br/>
+    Alle Schriften sind in Pfade konvertiert (keine Schriften nötig). QR-Codes führen direkt auf <code>https://frawo.tech/team/wolf</code> bzw. <code>/franz</code>.<br/>
+    Offizielle Adresse: <b>Rothkreuz 14 · 88138 Weißensberg</b>
+  </div>
+
+</body>
+</html>
