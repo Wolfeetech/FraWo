@@ -156,6 +156,20 @@ Alle Kern-Vorlagen nutzen dasselbe responsive, aufgeräumte Design mit FraWo-CI-
 - **Beleg-Hygiene (`sale.order`):** 7 Phantom-Angebote (0 € / 140 € ohne Produkt-Zuordnung) storniert; die Verkaufsübersicht zeigt exakt die 8 echten, aktiven Vorgänge.
 - **Projekt- & Stufenintegrität (`project.task`):** Gemäß AGENTS.md-Prüfregel auditierte Aufgaben auf archivierten Projekten in aktive Standardprojekte überführt (Unsichtbare Tasks = 0).
 
+### F. Reale Event-Anker 2026/2027 & Dienstleistungs-Erweiterungen
+- **Laufende Real-Termine Herbst 2026:**
+  - *12.09.2026 (Bregenz Beach Bar):* Leichte Liebe Open Air (Task #1057) für Luki / L.H. (360 € Tagessatz/Anfahrt, PSA mitbringen, reiner Helfer/Sub-Job).
+  - *15.09.2026 (BPM Arena Lindau):* Wolfmix W1 Einlassshow-Presets (Task #1356) zur Vorbereitung der Heimspielpremiere der EV Lindau Islanders.
+  - *26.09.2026:* Closing Summer 2026 (Task #1059).
+  - *31.10.2026:* Halloweenparty (Task #1061).
+- **Strategische Winzer-Termine Bodensee 2027 (CRM-Cockpit):**
+  - *20.03.2027 (Sa):* **LAGO Weinfestival in der Inselhalle Lindau** (Wolfs Hauptarbeitsplatz / Heimspiel) – zentraler Hebel für den persönlichen Beziehungsaufbau zu Gierer, Haug, Maate, Lanz.
+  - *02.–03.07.2027 (Fr/Sa):* **Komm & See 2027** – Weinfestival der Bodensee-Winzer (Nonnenhorn, Wasserburg, Lindau, Bodolz).
+  - *13.–14.08.2027:* **Winzerfest Nonnenhorn** (Uferpromenade).
+- **Neue abrechnungsfähige Dienstleistungen:**
+  - `[SRV-LOG-VERSAND]` *Versand- & Logistik-Support (Kommissionierung & Fulfillment)* (45,00 €/Std.) – zur sauberen Abrechnung der B2B-Unterstützung für die Naper GmbH (Ken Kurtzweg).
+  - `[SRV-DMX-PROG]` *DMX-Lichtprogrammierung & Wolfmix W1 Show-Setup* (65,00 €/Std.) – für Show-Programmierung und Fixture-Setups vor Ort.
+
 ---
 
 ## 6. Zusammenfassung & Regeln für den Alltag
