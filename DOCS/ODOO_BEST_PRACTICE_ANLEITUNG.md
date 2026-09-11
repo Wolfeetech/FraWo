@@ -170,6 +170,14 @@ Alle Kern-Vorlagen nutzen dasselbe responsive, aufgeräumte Design mit FraWo-CI-
   - `[SRV-LOG-VERSAND]` *Versand- & Logistik-Support (Kommissionierung & Fulfillment)* (45,00 €/Std.) – zur sauberen Abrechnung der B2B-Unterstützung für die Naper GmbH (Ken Kurtzweg).
   - `[SRV-DMX-PROG]` *DMX-Lichtprogrammierung & Wolfmix W1 Show-Setup* (65,00 €/Std.) – für Show-Programmierung und Fixture-Setups vor Ort.
 
+### G. Standard-Einsatzvorlagen (Templates für Events & B2B)
+- **🎪 Event-Einsatz & Betreuung (Task #1449):**
+  - Standardisiertes 5-Phasen-Gerüst: *Event-Steckbrief & Stromversorgung* (Schuko/CEE), *Lager-Packliste* (Ton, Licht, Strom, PSA), *Aufbau & Einmessen* (DIN 15905-5 Lärmschutz, DSP-Limiter), *Live-Betrieb*, *Abbau & Abrechnung*.
+  - Verankert im Vorlagenprojekt (#164) und sofort duplizierbar für jeden anstehenden Auftrag.
+- **📦 B2B Logistik & Fulfillment-Support (Angebotsvorlage #8):**
+  - Fertig konfiguriertes Angebots-Template mit 10-Stunden-Startkontingent (450,00 € gem. § 19 UStG) für die Naper GmbH.
+  - Mit der Quick-Quote-Engine (`python quick_quote.py --lead 83 --template 8`) in unter 2 Sekunden als Angebot `S00052` generiert und mit Lead #83 verknüpft.
+
 ---
 
 ## 6. Zusammenfassung & Regeln für den Alltag
