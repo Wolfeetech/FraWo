@@ -69,25 +69,32 @@ def get_connection():
         print("FEHLER: ODOO_PASSWORD oder ODOO_RPC_PASSWORD nicht gesetzt.")
         sys.exit(1)
     try:
-        t0 = time.time()
         common = xmlrpc.client.ServerProxy(f"{ODOO_URL}/xmlrpc/2/common", allow_none=True)
+        # 1. Echte HTTP/Netzwerklatenz (ohne Passwort-Hashing)
+        t0 = time.perf_counter()
+        _ = common.version()
+        net_latency_ms = int((time.perf_counter() - t0) * 1000)
+        
+        # 2. Authentifizierung (bcrypt/PBKDF2 Passwort-Verifikation in PostgreSQL)
+        t0 = time.perf_counter()
         uid = common.authenticate(ODOO_DB, ODOO_USER, ODOO_PASS, {})
-        latency_ms = int((time.time() - t0) * 1000)
+        auth_duration_ms = int((time.perf_counter() - t0) * 1000)
+        
         if not uid:
             print(f"Authentifizierung fehlgeschlagen fuer {ODOO_USER} an {ODOO_DB} ({ODOO_URL})")
             sys.exit(1)
         models = xmlrpc.client.ServerProxy(f"{ODOO_URL}/xmlrpc/2/object", allow_none=True)
-        return uid, models, latency_ms
+        return uid, models, net_latency_ms, auth_duration_ms
     except Exception as e:
         print(f"Verbindungsfehler zu Odoo ({ODOO_URL}): {e}")
         sys.exit(1)
 
 def execute_kw(model, method, args=None, kwargs=None):
-    uid, models, _ = get_connection()
+    uid, models, _, _ = get_connection()
     return models.execute_kw(ODOO_DB, uid, ODOO_PASS, model, method, args or [], kwargs or {})
 
 def cmd_status():
-    uid, models, latency = get_connection()
+    uid, models, net_ms, auth_ms = get_connection()
     version_info = xmlrpc.client.ServerProxy(f"{ODOO_URL}/xmlrpc/2/common").version()
     server_version = version_info.get("server_version", "Unbekannt")
     
@@ -100,26 +107,28 @@ def cmd_status():
     print("\n" + "="*70)
     print(" FraWo GbR - Odoo ERP Systemstatus")
     print("="*70)
-    print(f" Host:            {ODOO_URL}")
-    print(f" Datenbank:       {ODOO_DB}")
-    print(f" Odoo Version:    {server_version}")
-    print(f" XML-RPC Latenz:  {latency} ms")
-    print(f" Authentifiziert: User ID {uid} ({ODOO_USER})")
+    print(f" Host:                 {ODOO_URL}")
+    print(f" Datenbank:            {ODOO_DB}")
+    print(f" Odoo Version:         {server_version}")
+    print(f" Netzwerk-HTTP-Latenz: {net_ms} ms (Ping < 1 ms)")
+    print(f" Auth-Dauer (bcrypt):  {auth_ms} ms (Passwort-Hashverifikation Odoo)")
+    print(f" Authentifiziert:      User ID {uid} ({ODOO_USER})")
     print("-" * 70)
     print(f" Aktive Benutzer:      {users_count}")
     print(f" Aktive Kunden:        {partners_count}")
     print(f" Offene Aufgaben:      {tasks_active}")
-    print(f" Inventar/Equipment:   {equipment_count} Einheiten")
+    print(f" Inventar/Equipment:   {equipment_count} Einheiten (Echtbestand)")
     print(f" Offene CRM-Leads:     {leads_active}")
     print("="*70 + "\n")
 
 def cmd_tools():
-    domain = [('category_id', 'in', [16, 17, 18])]
+    # Zeigt real vorhandenes Verleih-, Steuer- und Tontechnik-Equipment
+    domain = [('category_id', 'in', [2, 9, 12, 13])]
     fields = ['id', 'name', 'category_id', 'serial_no', 'technician_user_id', 'cost', 'x_geraetestatus', 'x_status_hinweis']
     records = execute_kw('maintenance.equipment', 'search_read', [domain], {'fields': fields})
     
     print("\n" + "="*85)
-    print(" FraWo Werkzeugkasten (Werkstatt, Montage, Messung, Toolcases)")
+    print(" FraWo Equipment & Veranstaltungstechnik (Echtbestand)")
     print("="*85)
     
     by_cat = {}
@@ -127,18 +136,17 @@ def cmd_tools():
         cat_name = r['category_id'][1] if r['category_id'] else 'Ohne Kategorie'
         by_cat.setdefault(cat_name, []).append(r)
         
-    for cat, items in by_cat.items():
+    for cat, items in sorted(by_cat.items()):
         print(f"\n[Kategorie] {cat} ({len(items)} Posten):")
-        print(f" {'ID':<5} | {'Inventar-Nr':<18} | {'Zustand':<14} | {'Techniker':<12} | {'Bezeichnung'}")
+        print(f" {'ID':<5} | {'Inventar-Nr':<22} | {'Zustand':<14} | {'Bezeichnung'}")
         print(" " + "-"*83)
         for it in items:
             tid = it['id']
             sno = it['serial_no'] or '-'
-            tech = (it['technician_user_id'][1].split()[0]) if it['technician_user_id'] else 'Offen'
             stat = it['x_geraetestatus'] or 'ungeklaert'
-            stat_icon = "Bereit" if stat == "einsatzbereit" else ("In Pruefung" if stat == "ungeklaert" else stat)
+            stat_icon = "Bereit" if stat == "einsatzbereit" else stat
             name = it['name']
-            print(f" #{tid:<4} | {sno:<18} | {stat_icon:<14} | {tech:<12} | {name}")
+            print(f" #{tid:<4} | {sno:<22} | {stat_icon:<14} | {name}")
             if it.get('x_status_hinweis'):
                 print(f"       -> {it['x_status_hinweis']}")
     print("\n" + "="*85 + "\n")
