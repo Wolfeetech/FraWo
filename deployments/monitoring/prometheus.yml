@@ -21,8 +21,8 @@ scrape_configs:
     static_configs:
       - targets:
           - localhost:9100
-          - 10.1.0.128:9100
-          - 10.1.0.128:19100
+          # - 10.1.0.128:9100  # ProDesk tot seit 07.09.2026
+          - 100.69.179.87:9100
         labels:
           env: frawo
     relabel_configs:
@@ -31,26 +31,10 @@ scrape_configs:
         replacement: monitoring-stack
         target_label: instance
       - source_labels: [__address__]
-        regex: "10.1.0.128:9100"
-        replacement: stockenweiler-pve
-        target_label: instance
-      - source_labels: [__address__]
-        regex: "10.1.0.128:19100"
+        regex: "100.69.179.87:9100"
         replacement: anker-pve
         target_label: instance
 
-  # Mobile Geraete: Raspberry Pi im VT-Koffer, Surface Go, alles was mitgeht.
-  #
-  # Bewusst ein EIGENER Auftragsname und keine Ergaenzung von node_exporter:
-  # Die NodeDown-Regel greift auf job="node_exporter" und wuerde bei jedem
-  # Geraet, das im Schrank liegt, Dauer-Alarm schlagen. Mobile Geraete sind
-  # die meiste Zeit aus - das ist der Normalfall, kein Fehler.
-  #
-  # Datei-basierte Erkennung: Ein neues Geraet wird aufgenommen, indem eine
-  # Datei in /etc/prometheus/ziele/mobil/ abgelegt wird. Prometheus liest das
-  # Verzeichnis alle 30 Sekunden neu ein - ohne Neustart und ohne dass jemand
-  # diese Datei hier anfassen muss. Das Bereitstellungs-Skript auf dem Pi legt
-  # sie selbst an.
   - job_name: mobil
     file_sd_configs:
       - files:
@@ -65,17 +49,15 @@ scrape_configs:
       - targets:
           - http://10.1.0.112:8069/web/health   # Odoo (ERP)
           - http://10.1.0.40:8123               # Home Assistant
-          - https://funk.frawo.tech             # Radio
-          - http://10.1.0.94:4533               # Navidrome (Musik-Streaming, CT120)
+          # - https://funk.frawo.tech             # Radio (ProDesk tot)
+          # - http://10.1.0.94:4533               # Navidrome (Musik, CT120 tot)
           - http://10.1.0.100:8000              # Paperless (CT110)
           - http://10.1.0.100:5678              # n8n
           - https://cloud.frawo.tech/status.php # Nextcloud
-          # Nachgetragen 29.07.2026: beide liefen ungeprueft. Ein Ausfall des
-          # Passwortsafes oder der Firmenseite waere niemandem aufgefallen.
           - https://vault.frawo.tech            # Vaultwarden (Passwortsafe)
           - https://frawo.tech                  # Firmen-Webseite
-          - http://10.1.0.248:8123               # Home Assistant Eltern (Stockenweiler)
-          - http://10.1.0.112:8069/anker_tracker/health # Getraenke-Tracker (Anker-Kiosk)
+          # - http://10.1.0.248:8123            # HA Eltern (ProDesk tot)
+          - http://10.1.0.112:8069/anker_tracker/health # Getraenke-Tracker
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target
@@ -84,15 +66,14 @@ scrape_configs:
       - target_label: __address__
         replacement: localhost:9115
 
-  # Self-signed-cert services (PBS, AzuraCast direct)
   - job_name: blackbox_https_insecure
     metrics_path: /probe
     params:
       module: [http_2xx_insecure]
     static_configs:
       - targets:
-          - https://10.1.0.7:8007
-          - https://10.1.0.38
+          - https://10.1.0.7:8007               # PBS
+          # - https://10.1.0.38                 # AzuraCast (ProDesk tot)
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target
@@ -101,57 +82,10 @@ scrape_configs:
       - target_label: __address__
         replacement: localhost:9115
 
-  # Prueft, ob der Sender wirklich Ton liefert — nicht nur, ob die
-  # Weboberflaeche antwortet. Angelegt 29.07.2026.
-  #
-  # Zwei Ziele mit Absicht: Faellt nur das erste aus, liegt es am Weg ueber
-  # Cloudflare. Faellt auch das zweite aus, liegt es am Sender selbst.
-  # Das Modul begrenzt die Antwort per Range-Kopf auf 128 KB und prueft, dass
-  # der Inhaltstyp Audio ist — sonst wuerde die Pruefung an einem endlosen
-  # Stream ins Zeitlimit laufen und immer fehlschlagen.
-  - job_name: blackbox_radio_stream
-    metrics_path: /probe
-    params:
-      module: [radio_stream]
-    static_configs:
-      - targets:
-          - https://funk.frawo.tech/listen/frawo_funk/radio.mp3  # oeffentlicher Weg
-          - http://10.1.0.38:8000/radio.mp3                      # direkt am Sender
-    relabel_configs:
-      - source_labels: [__address__]
-        target_label: __param_target
-      - source_labels: [__param_target]
-        target_label: instance
-      - target_label: __address__
-        replacement: localhost:9115
-
-  # openclaw is not reachable from ProDesk's LAN segment; liveness via
-  # openclaw-ssh-proxy.service on the PVE host (socat 19022 -> Tailscale :22)
-  - job_name: blackbox_tcp
-    metrics_path: /probe
-    params:
-      module: [ssh_banner]
-    static_configs:
-      - targets:
-          - 10.1.0.128:19022
-    relabel_configs:
-      - source_labels: [__address__]
-        target_label: __param_target
-      - source_labels: [__param_target]
-        target_label: instance
-      - target_label: __address__
-        replacement: localhost:9115
-
-  # Pro-VM/CT Ressourcen via pve_exporter (127.0.0.1:9221)
-  - job_name: pve_prodesk
-    metrics_path: /pve
-    params:
-      module: [prodesk]
-      target: [10.1.0.128]
-    static_configs:
-      - targets: [127.0.0.1:9221]
-        labels:
-          pve_node: stockenweiler-pve
+  # ProDesk tot — voruebergehend deaktiviert
+  # - job_name: blackbox_radio_stream
+  # - job_name: blackbox_tcp
+  # - job_name: pve_prodesk
 
   - job_name: pve_anker
     metrics_path: /pve
@@ -163,23 +97,20 @@ scrape_configs:
         labels:
           pve_node: proxmox-anker
 
-  # StudioPC (Windows-Arbeitsplatz) via socat-Proxy auf ProDesk-Host (Tailscale-only erreichbar)
   - job_name: windows_studiopc
     static_configs:
-      - targets: [10.1.0.128:19182]
+      - targets: [100.98.31.60:9182]
         labels:
           instance: studiopc
           env: frawo
 
-  # DNS-Erreichbarkeit AdGuard (Konsolidierung Uptime-Kuma, 25.08.2026):
-  # echte Abfrage statt nur Ping. Deckt beide AdGuard-Instanzen ab.
   - job_name: blackbox_dns
     metrics_path: /probe
     params:
       module: [dns_check]
     static_configs:
       - targets:
-          - 10.1.0.52:53   # AdGuard primaer (ProDesk, CT101)
+          # - 10.1.0.52:53   # AdGuard primaer (ProDesk tot)
           - 10.1.0.27:53   # AdGuard sekundaer (Anker, CT101)
     relabel_configs:
       - source_labels: [__address__]

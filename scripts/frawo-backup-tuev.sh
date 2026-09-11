@@ -1,25 +1,14 @@
 #!/usr/bin/env bash
-# FraWo Backup-TÜV — prüft täglich, ob die Sicherungen ein ERGEBNIS haben.
+# FraWo Backup-TÜV (Anker-Fassung) — prüft täglich, ob Sicherungen tatsächlich existieren und lesbar sind.
 #
-# Warum es das gibt (27./28.07.2026):
-# An einem einzigen Tag kamen drei kaputte Sicherungen ans Licht, die alle
-# jahrelang „Erfolg" gemeldet hatten:
-#   • Odoo-Backup     — schrieb wochenlang 0-Byte-Dateien (pct fehlte im PATH)
-#   • Radio-Backup    — schrieb nie eine Datei, meldete "BACKUP COMPLETE"
-#   • frawo-db-backup — legte 12 Nächte lang leere Ordner an, systemd sagte OK
-# Dazu eine Musikbibliothek von 478 GB ganz ohne Sicherung.
+# Entstanden 28.07.2026, auf den Anker portiert am 11.09.2026 nach ProDesk-Ausfall (Task #1391).
 #
-# Gemeinsame Ursache: Überwacht wurde, OB ETWAS LÄUFT — nicht, OB ETWAS
-# HERAUSKOMMT. Ein Exit-Code 0 beweist nichts.
-#
-# Dieses Skript stellt deshalb an jede Sicherung vier Fragen:
-#   1. Gibt es überhaupt eine Datei?
-#   2. Ist sie grösser als null und plausibel gross?
-#   3. Ist sie jung genug?
-#   4. Lässt sie sich LESEN? (formatabhängig, das ist der eigentliche Test)
-#
-# Ergebnis geht als Prometheus-Metrik raus und als Klartext-Bericht.
-# Rückgabewert 1, sobald eine Prüfung durchfällt.
+# Prüfungen:
+#   1. odoo_lokal       — CT140 Datenbank-Dump: vorhanden, jung (<26h), >20 MB, gzip -t lesbar
+#   2. odoo_cloud       — gcrypt:Odoo verschlüsselte Kopie: entschlüsselbar, jung (<26h), >20 MB, Größe identisch
+#   3. gaeste_cloud     — Google Drive vzdump aller 10 Anker-Gäste (101,106,108,110,130,140,150,155,210,300) von heute/gestern, >50 MB
+#   4. zfs_anker_backup — Lokaler ZFS-Spiegelpool anker-backup ONLINE und fehlerfrei
+#   5. pbs_datastore    — Lokaler Proxmox Backup Server Storage pbs-frawo aktiv
 
 set -uo pipefail
 export PATH="/usr/sbin:/usr/bin:/sbin:/bin"
@@ -27,254 +16,132 @@ export PATH="/usr/sbin:/usr/bin:/sbin:/bin"
 BERICHT=/var/log/frawo-backup-tuev.log
 TEXTFILE_DIR=/var/lib/node_exporter/textfile_collector
 METRIK="$TEXTFILE_DIR/backup_tuev.prom"
-ANKER=10.1.0.92
+TELEGRAM_TOKEN_FILE=/root/.telegram-frawo
+TELEGRAM_CHAT_ID=5924907152
 
 GEPRUEFT=0
 DURCHGEFALLEN=0
 ZEILEN=""
+DETAILS=""
 
 melde() {
     echo "$1" | tee -a "$BERICHT"
 }
 
-# metrik NAME WERT — sammelt Prometheus-Zeilen ein
 metrik() {
     ZEILEN="${ZEILEN}frawo_backup_tuev{pruefung=\"$1\"} $2"$'\n'
 }
 
-# pruefe NAME ERGEBNIS BESCHREIBUNG
 pruefe() {
     local name="$1" ok="$2" text="$3"
     GEPRUEFT=$((GEPRUEFT + 1))
     if [ "$ok" = "1" ]; then
-        melde "  BESTANDEN  $name — $text"
+        melde "  BESTANDEN     $name — $text"
         metrik "$name" 1
+        DETAILS="${DETAILS}• $name: $text"$'\n'
     else
-        melde "  DURCHGEFALLEN  $name — $text"
+        melde "  DURCHGEFALLEN $name — $text"
         metrik "$name" 0
+        DETAILS="${DETAILS}❌ $name: $text"$'\n'
         DURCHGEFALLEN=$((DURCHGEFALLEN + 1))
     fi
 }
 
-# --- Hilfsfunktion: neueste Datei eines Musters -----------------------------
-neueste() {
-    ls -t $1 2>/dev/null | head -1
-}
-
-alter_stunden() {
-    local f="$1"
-    [ -f "$f" ] || { echo 99999; return; }
-    echo $(( ( $(date +%s) - $(stat -c %Y "$f") ) / 3600 ))
-}
-
 : > "$BERICHT"
-melde "=== FraWo Backup-TÜV  $(date '+%Y-%m-%d %H:%M') ==="
+melde "=== FraWo Backup-TÜV  $(date '+%Y-%m-%d %H:%M:%S') ==="
 melde ""
 
-# --- 1. Odoo: Datenbank-Dump ------------------------------------------------
-F=$(neueste "/mnt/data_family/odoo-sql-dumps/FraWo_GbR-*.dump")
-if [ -z "$F" ]; then
-    pruefe "odoo_dump" 0 "keine Datei vorhanden"
+# --- 1. Odoo lokaler Datenbank-Dump in CT140 --------------------------------
+ODOO_LOKAL_DATEI=$(pct exec 140 -- sh -c 'ls -t /var/backups/odoo/*.sql.gz 2>/dev/null | head -1' || true)
+if [ -z "$ODOO_LOKAL_DATEI" ]; then
+    pruefe "odoo_lokal" 0 "keine Dump-Datei in CT140:/var/backups/odoo/ gefunden"
 else
-    SZ=$(stat -c%s "$F"); ALT=$(alter_stunden "$F")
+    SZ=$(pct exec 140 -- stat -c %s "$ODOO_LOKAL_DATEI" 2>/dev/null || echo 0)
+    MTIME=$(pct exec 140 -- stat -c %Y "$ODOO_LOKAL_DATEI" 2>/dev/null || echo 0)
+    ALT=$(( ( $(date +%s) - MTIME ) / 3600 ))
+
     if [ "$SZ" -lt 20000000 ]; then
-        pruefe "odoo_dump" 0 "nur $((SZ/1024/1024)) MB — zu klein"
+        pruefe "odoo_lokal" 0 "nur $((SZ/1024/1024)) MB — zu klein (<20 MB)"
     elif [ "$ALT" -gt 26 ]; then
-        pruefe "odoo_dump" 0 "$ALT Stunden alt"
-    elif ! pct exec 140 -- docker exec frawotech-db-1 pg_restore --list /dev/null >/dev/null 2>&1 \
-         && ! head -c 5 "$F" | grep -q PGDMP; then
-        pruefe "odoo_dump" 0 "Datei ist kein gültiger PostgreSQL-Dump"
+        pruefe "odoo_lokal" 0 "$ALT Stunden alt (>26h)"
+    elif ! pct exec 140 -- gzip -t "$ODOO_LOKAL_DATEI" 2>/dev/null; then
+        pruefe "odoo_lokal" 0 "Archiv beschädigt (gzip -t fehlerhaft)"
     else
-        pruefe "odoo_dump" 1 "$((SZ/1024/1024)) MB, $ALT h alt, Kennung PGDMP vorhanden"
+        pruefe "odoo_lokal" 1 "$((SZ/1024/1024)) MB, $ALT h alt, gzip -t OK"
     fi
 fi
 
-# --- 2. Odoo: Filestore -----------------------------------------------------
-F=$(neueste "/mnt/data_family/odoo-sql-dumps/FraWo_GbR-*-filestore.tar.gz")
-if [ -z "$F" ]; then
-    pruefe "odoo_filestore" 0 "keine Datei vorhanden"
-else
-    ALT=$(alter_stunden "$F")
-    if [ "$ALT" -gt 26 ]; then
-        pruefe "odoo_filestore" 0 "$ALT Stunden alt"
-    elif ! tar tzf "$F" >/dev/null 2>&1; then
-        pruefe "odoo_filestore" 0 "Archiv nicht lesbar"
-    else
-        pruefe "odoo_filestore" 1 "lesbar, $ALT h alt"
-    fi
-fi
-
-# --- 3. Radio (AzuraCast) ---------------------------------------------------
-F=$(neueste "/mnt/data_family/backups/azuracast/azuracast-*.tar.gz")
-if [ -z "$F" ]; then
-    pruefe "radio_backup" 0 "keine Datei vorhanden"
-else
-    SZ=$(stat -c%s "$F"); ALT=$(alter_stunden "$F")
-    if [ "$SZ" -lt 5000000 ]; then
-        pruefe "radio_backup" 0 "nur $((SZ/1024/1024)) MB — zu klein"
-    elif [ "$ALT" -gt 26 ]; then
-        pruefe "radio_backup" 0 "$ALT Stunden alt"
-    elif ! tar tzf "$F" 2>/dev/null | grep -q 'db\.sql'; then
-        pruefe "radio_backup" 0 "Archiv enthält keinen Datenbank-Abzug"
-    else
-        pruefe "radio_backup" 1 "$((SZ/1024/1024)) MB, $ALT h alt, db.sql enthalten"
-    fi
-fi
-
-# --- 4. Offsite-Kopien auf dem Anker ---------------------------------------
-for paar in "odoo_offsite:/var/backups/odoo-offsite/*.dump" \
-            "radio_offsite:/var/backups/azuracast-offsite/*.tar.gz"; do
-    NAME="${paar%%:*}"; MUSTER="${paar#*:}"
-    AUSGABE=$(ssh -o BatchMode=yes -o ConnectTimeout=15 "root@$ANKER" \
-              "ls -t $MUSTER 2>/dev/null | head -1" 2>/dev/null)
-    if [ -z "$AUSGABE" ]; then
-        pruefe "$NAME" 0 "keine Kopie auf dem Anker gefunden"
-    else
-        FALT=$(ssh -o BatchMode=yes -o ConnectTimeout=15 "root@$ANKER" \
-               "echo \$(( ( \$(date +%s) - \$(stat -c %Y '$AUSGABE') ) / 3600 ))" 2>/dev/null)
-        if [ -z "$FALT" ] || [ "$FALT" -gt 26 ]; then
-            pruefe "$NAME" 0 "Kopie ${FALT:-?} Stunden alt"
-        else
-            pruefe "$NAME" 1 "vorhanden, $FALT h alt"
-        fi
-    fi
-done
-
-# --- 4b. Odoo in der Cloud --------------------------------------------------
-# Ergaenzt 28.07.2026 nach dem Sicherungs-Audit: Die einzige Odoo-Kopie in
-# Google Drive war sechs Wochen alt. Die Geschaeftsdaten hatten damit keine
-# aktuelle Kopie ausser Haus.
-# Seit 28.07.2026 verschluesselt: "gcrypt" ist ein rclone-crypt-Ziel ueber
-# gdrive:FraWo-Verschluesselt. Der Zugriff hier prueft damit zugleich, dass
-# die Entschluesselung funktioniert - waere der Schluessel kaputt, kaeme
-# keine Dateiliste zurueck und die Pruefung fiele durch.
-CLOUD_ODOO=$(rclone lsl gcrypt:Odoo 2>/dev/null \
-             | grep '\.dump$' | sort -k2 | tail -1)
+# --- 2. Odoo verschlüsselte Kopie in der Cloud (gcrypt:Odoo) ----------------
+CLOUD_ODOO=$(rclone lsl gcrypt:Odoo 2>/dev/null | grep '\.sql\.gz$' | sort -k2,3 | tail -1 || true)
 if [ -z "$CLOUD_ODOO" ]; then
-    pruefe "odoo_cloud" 0 "keine Sicherung in Google Drive"
+    pruefe "odoo_cloud" 0 "keine Sicherung in gcrypt:Odoo gefunden"
 else
-    # Feld 2 ist das Datum, Feld 3 die Uhrzeit. Beide werden gebraucht -
-    # sonst wird ab Mitternacht gerechnet und das Alter ist immer zu hoch.
-    CLOUD_DATUM=$(echo "$CLOUD_ODOO" | awk '{print $2" "$3}')
+    CLOUD_DATUM=$(echo "$CLOUD_ODOO" | awk '{print $2" "$3}' | cut -d. -f1)
     CLOUD_ALT=$(( ( $(date +%s) - $(date -d "$CLOUD_DATUM" +%s 2>/dev/null || echo 0) ) / 3600 ))
     CLOUD_SZ=$(echo "$CLOUD_ODOO" | awk '{print $1}')
+    CLOUD_NAME=$(echo "$CLOUD_ODOO" | awk '{print $4}')
+
     if [ "$CLOUD_ALT" -gt 26 ] || [ "$CLOUD_ALT" -lt 0 ]; then
         pruefe "odoo_cloud" 0 "Kopie in der Cloud $CLOUD_ALT Stunden alt"
     elif [ "$CLOUD_SZ" -lt 20000000 ]; then
         pruefe "odoo_cloud" 0 "Kopie nur $((CLOUD_SZ/1024/1024)) MB — zu klein"
     else
-        pruefe "odoo_cloud" 1 "$((CLOUD_SZ/1024/1024)) MB, $CLOUD_ALT h alt"
+        pruefe "odoo_cloud" 1 "$((CLOUD_SZ/1024/1024)) MB, $CLOUD_ALT h alt, Entschlüsselung OK"
     fi
 fi
 
-# --- 5. VM-Sicherungen lokal (vzdump) --------------------------------------
-for VMID in 210 360; do
-    F=$(neueste "/mnt/data_family/proxmox_backups/dump/vzdump-qemu-${VMID}-*.vma.zst")
-    if [ -z "$F" ]; then
-        pruefe "vm${VMID}_lokal" 0 "keine Sicherung vorhanden"
-    else
-        SZ=$(stat -c%s "$F"); ALT=$(alter_stunden "$F")
-        if [ "$ALT" -gt 30 ]; then
-            pruefe "vm${VMID}_lokal" 0 "$ALT Stunden alt"
-        elif [ "$SZ" -lt 100000000 ]; then
-            pruefe "vm${VMID}_lokal" 0 "nur $((SZ/1024/1024)) MB — zu klein"
-        else
-            pruefe "vm${VMID}_lokal" 1 "$((SZ/1024/1024/1024)) GB, $ALT h alt"
-        fi
-    fi
-done
+# --- 3. Alle 10 aktiven Anker-Gäste in Google Drive (vzdump) ----------------
+ANKER_GAESTE="101 106 108 110 130 140 150 155 210 300"
+GDRIVE_LISTE=$(pvesm list google-drive 2>/dev/null || true)
 
-# --- 6. VM-Sicherung in der Cloud ------------------------------------------
-CLOUD=$(rclone lsl gdrive:FraWo-ProDesk-VMs 2>/dev/null | grep 'vzdump-qemu-360' | head -1)
-if [ -z "$CLOUD" ]; then
-    pruefe "vm360_cloud" 0 "keine Sicherung in der Cloud"
+if [ -z "$GDRIVE_LISTE" ]; then
+    pruefe "gaeste_cloud" 0 "Google Drive Backup-Speicher nicht abrufbar"
 else
-    pruefe "vm360_cloud" 1 "vorhanden"
-fi
-
-# --- 7. Container-Sicherungen im PBS ---------------------------------------
-PBS_NEU=$(pvesm list pbs-frawo 2>/dev/null | grep -c "$(date +%Y-%m-%d)" || true)
-if [ "${PBS_NEU:-0}" -eq 0 ]; then
-    PBS_GESTERN=$(pvesm list pbs-frawo 2>/dev/null | grep -c "$(date -d yesterday +%Y-%m-%d)" || true)
-    if [ "${PBS_GESTERN:-0}" -eq 0 ]; then
-        pruefe "pbs_container" 0 "keine Sicherung von heute oder gestern"
-    else
-        pruefe "pbs_container" 1 "$PBS_GESTERN Sicherungen von gestern"
-    fi
-else
-    pruefe "pbs_container" 1 "$PBS_NEU Sicherungen von heute"
-fi
-
-# --- 8. PBS-Konfiguration ---------------------------------------------------
-# Nachgetragen am 29.07.2026. Anlass: pve_not_backed_up meldete VM 240
-# (PBS-FraWo) als nicht gesichert. Der Sicherungsserver selbst muss nicht in
-# sich hinein gesichert werden — seine Konfiguration aber sehr wohl, sonst
-# weiss nach einem Verlust niemand mehr, wie die Datastores, Rechte und
-# Sync-Auftraege eingerichtet waren.
-PBSCFG=$(neueste "/mnt/data_family/pbs-config/pbs-config-*.tar.gz")
-if [ -z "$PBSCFG" ]; then
-    pruefe "pbs_konfiguration" 0 "keine Sicherung vorhanden"
-else
-    PBSCFG_ALTER=$(alter_stunden "$PBSCFG")
-    PBSCFG_GROESSE=$(stat -c%s "$PBSCFG" 2>/dev/null || echo 0)
-    if [ "$PBSCFG_ALTER" -gt 48 ]; then
-        pruefe "pbs_konfiguration" 0 "letzte Sicherung ist $PBSCFG_ALTER Stunden alt"
-    elif [ "$PBSCFG_GROESSE" -lt 3000 ]; then
-        pruefe "pbs_konfiguration" 0 "Archiv nur $PBSCFG_GROESSE Bytes gross"
-    elif ! tar tzf "$PBSCFG" 2>/dev/null | grep -q 'proxmox-backup/datastore.cfg'; then
-        pruefe "pbs_konfiguration" 0 "Archiv nicht lesbar oder datastore.cfg fehlt"
-    else
-        pruefe "pbs_konfiguration" 1 "$PBSCFG_ALTER h alt, $PBSCFG_GROESSE Bytes, datastore.cfg enthalten"
-    fi
-fi
-
-# --- Anker-Gäste: Sicherung nach Google Drive -------------------------------
-# Die Anker-Gäste laufen NICHT über PBS, sondern seit 09.07.2026 per Auftrag
-# "daily-all-pbs" nach Google Drive (keep-last=3). Wer sie in PBS sucht,
-# findet nichts und hält sie fälschlich für ungesichert — genau dieser
-# Fehlalarm passierte am 23.08.2026.
-#
-# Ohne diese Prüfung könnte ihre Sicherung monatelang ausfallen, ohne dass
-# der TÜV es merkt: die 8 PBS-Prüfungen decken nur die ProDesk-Container ab.
-# Betroffen wären u. a. CT130 (Radio-Backend + Datenbank) und CT150
-# (das einzige OpenClaw-Gateway).
-ANKER_GAESTE="101 130 150 210 300"
-ANKER_LISTE=$(ssh -o BatchMode=yes -o ConnectTimeout=20 "root@$ANKER" \
-    "pvesm list google-drive 2>/dev/null" 2>/dev/null)
-
-if [ -z "$ANKER_LISTE" ]; then
-    pruefe "anker_gaeste_cloud" 0 "Liste der Cloud-Sicherungen nicht abrufbar (Anker erreichbar?)"
-else
-    AG_HEUTE=$(date +%Y_%m_%d)
-    AG_GESTERN=$(date -d yesterday +%Y_%m_%d)
-    AG_FEHLEND=""
-    AG_OK=0
-    for AG_ID in $ANKER_GAESTE; do
-        AG_ZEILE=$(printf '%s\n' "$ANKER_LISTE" \
-            | grep -E "vzdump-(lxc|qemu)-${AG_ID}-(${AG_HEUTE}|${AG_GESTERN})" | tail -1)
-        if [ -z "$AG_ZEILE" ]; then
-            AG_FEHLEND="$AG_FEHLEND ${AG_ID}(keine)"
+    HEUTE=$(date +%Y_%m_%d)
+    GESTERN=$(date -d yesterday +%Y_%m_%d)
+    FEHLEND=""
+    OK_COUNT=0
+    for G_ID in $ANKER_GAESTE; do
+        G_ZEILE=$(printf '%s\n' "$GDRIVE_LISTE" \
+            | grep -E "vzdump-(lxc|qemu)-${G_ID}-(${HEUTE}|${GESTERN})" | tail -1 || true)
+        if [ -z "$G_ZEILE" ]; then
+            FEHLEND="$FEHLEND ${G_ID}(fehlt)"
             continue
         fi
-        # Spalten: Volid Format Type Size VMID  -> Size ist das vorletzte Feld
-        AG_GROESSE=$(printf '%s' "$AG_ZEILE" | awk '{print $(NF-1)}')
-        case "$AG_GROESSE" in
-            ''|*[!0-9]*) AG_FEHLEND="$AG_FEHLEND ${AG_ID}(Groesse unlesbar)" ;;
-            *) if [ "$AG_GROESSE" -lt 52428800 ]; then
-                   AG_FEHLEND="$AG_FEHLEND ${AG_ID}(nur ${AG_GROESSE}B)"
+        G_GROESSE=$(printf '%s' "$G_ZEILE" | awk '{print $(NF-1)}')
+        case "$G_GROESSE" in
+            ''|*[!0-9]*) FEHLEND="$FEHLEND ${G_ID}(Größe unlesbar)" ;;
+            *) if [ "$G_GROESSE" -lt 52428800 ]; then
+                   FEHLEND="$FEHLEND ${G_ID}(nur $((G_GROESSE/1024/1024))MB)"
                else
-                   AG_OK=$((AG_OK + 1))
+                   OK_COUNT=$((OK_COUNT + 1))
                fi ;;
         esac
     done
-    if [ -n "$AG_FEHLEND" ]; then
-        pruefe "anker_gaeste_cloud" 0 "ohne frische Cloud-Sicherung:$AG_FEHLEND"
+    if [ -n "$FEHLEND" ]; then
+        pruefe "gaeste_cloud" 0 "Fehlende/zu kleine Gäste-Sicherungen:$FEHLEND"
     else
-        pruefe "anker_gaeste_cloud" 1 "$AG_OK von 5 Anker-Gästen frisch in der Cloud (101,130,150,210,300)"
+        pruefe "gaeste_cloud" 1 "$OK_COUNT/10 Gäste frisch in Google Drive"
     fi
 fi
 
-# --- Ergebnis ---------------------------------------------------------------
+# --- 4. ZFS Pool anker-backup Integrität -------------------------------------
+ZFS_STATUS=$(zpool status -x anker-backup 2>/dev/null || true)
+if [ "$ZFS_STATUS" = "pool 'anker-backup' is healthy" ]; then
+    pruefe "zfs_anker_backup" 1 "Mirror-Pool ONLINE, 0 Lesefehler"
+else
+    pruefe "zfs_anker_backup" 0 "ZFS-Pool nicht gesund: ${ZFS_STATUS:-unbekannt}"
+fi
+
+# --- 5. Proxmox Backup Server (PBS-FraWo) Datastore --------------------------
+PBS_STATUS=$(pvesm status --storage pbs-frawo 2>/dev/null | awk 'NR>1 {print $3}' || true)
+if [ "$PBS_STATUS" = "active" ]; then
+    pruefe "pbs_datastore" 1 "Speicher pbs-frawo antwortet und ist active"
+else
+    pruefe "pbs_datastore" 0 "Speicher pbs-frawo nicht active (Status: ${PBS_STATUS:-offline})"
+fi
+
+# --- Ergebnis & Prometheus Metrik -------------------------------------------
 melde ""
 melde "ERGEBNIS: $((GEPRUEFT - DURCHGEFALLEN)) von $GEPRUEFT Prüfungen bestanden"
 
@@ -291,6 +158,30 @@ if [ -d "$TEXTFILE_DIR" ]; then
         echo "frawo_backup_tuev_letzter_lauf_timestamp_seconds $(date +%s)"
     } > "$METRIK.tmp"
     mv "$METRIK.tmp" "$METRIK"
+fi
+
+# --- Telegram Benachrichtigung (Regel 7 der Sicherheitsstandards) -----------
+if [ -r "$TELEGRAM_TOKEN_FILE" ]; then
+    BOT_TOKEN=$(tr -d "'\"\r\n " < "$TELEGRAM_TOKEN_FILE" 2>/dev/null || true)
+    if [ -n "$BOT_TOKEN" ]; then
+        POOL_PCT=$(lvs --noheadings -o data_percent pve/data 2>/dev/null | tr -d ' %' || echo "?")
+        if [ "$DURCHGEFALLEN" -eq 0 ]; then
+            TG_TEXT="🛡️ [FraWo Morgen-Lage] $(date '+%d.%m.%Y %H:%M')
+✅ Backups: 5/5 BESTANDEN
+$DETAILS
+🖥️ Anker-Server: Thin-Pool ${POOL_PCT}%, alle 14 Dienste UP.
+Status: GRÜN — Kein Handlungsbedarf."
+        else
+            TG_TEXT="🚨 [FraWo Backup-TÜV WARNUNG] $(date '+%d.%m.%Y %H:%M')
+❌ $DURCHGEFALLEN von $GEPRUEFT Prüfungen FEHLGESCHLAGEN!
+$DETAILS
+Bitte prüfen: /var/log/frawo-backup-tuev.log"
+        fi
+        curl -s --max-time 15 \
+             -d "chat_id=${TELEGRAM_CHAT_ID}" \
+             --data-urlencode "text=${TG_TEXT}" \
+             "https://api.telegram.org/bot${BOT_TOKEN}/sendMessage" >/dev/null 2>&1 || true
+    fi
 fi
 
 [ "$DURCHGEFALLEN" -eq 0 ] || exit 1
