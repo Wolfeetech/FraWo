@@ -358,6 +358,13 @@ def create_odoo_task(info, doc_id, doc_title):
             return None
         models = xmlrpc.client.ServerProxy(f'{ODOO_URL}/xmlrpc/2/object')
 
+        # Loop-Schutz (Task #1008): Eigene FraWo/Odoo-Mails erzeugen nie rekursive Aufgaben
+        vendor_lower = (info.get("vendor") or "").lower()
+        summary_lower = (info.get("summary") or "").lower()
+        if any(x in vendor_lower or x in summary_lower for x in ["info@frawo.tech", "noreply@frawo", "odoo-bot", "tagesbericht", "servassi"]):
+            print(f"Loop-Schutz: Absender/Inhalt '{info.get('vendor')}' ist intern/automatisiert -> keine Odoo-Aufgabe erzeugen.")
+            return None
+
         mapping = ENTITY_MAP[info["entity"]]
         due_date = info.get("due_date") or (datetime.now() + timedelta(days=14)).strftime("%Y-%m-%d")
 
