@@ -3,16 +3,14 @@
 > **Zuerst lesen.** Diese Datei beschreibt, **was läuft** — nicht, was passiert ist.
 > Historie steht in der Git-Historie, Entscheidungen und Aufgaben in **Odoo (CT140, `10.1.0.112:8069`) = einzige Quelle der Wahrheit**.
 >
-> **Stand 09.09.2026 (abends) — was seit dem ProDesk-Tod neu läuft:**
-> Tagesbericht per Mail (Odoo-Cron 44, Server-Aktion 828 Fassung 5 inkl. Block für Tag 160 `✅ beantwortet`) ·
-> Wache über die Überwachung wieder scharf inkl. `absent()`-Regel · verschlüsselte Cloud-Kopie 06:15 ·
-> Kanban vereinheitlicht, WIP-Grenze 6, Kartenalterung aktiv · Ortsschlagwörter `@rk22 @villa @stockenweiler @inselhalle @unterwegs @remote` ·
-> 24 gespeicherte Ansichten inkl. persönlicher Cockpits für Wolf und Franz (#1416) ·
-> **Meilensteinkette scharfgestellt (Prioritätsrückgrat bis Mitte 2027)** ·
-> **Odoo-Hausordnung (#1415) vollständig umgesetzt:** Vorlagenprojekt #164 (`is_template`), Tasks 1417–1420 als Vorlagen, Titel nach Hausordnung bereinigt (Preise/Sätze raus) ·
-> **Paperless-Smart-Router v3.1 auf CT110 deployt:** Hängt Dokumente auch bei bestehenden Tasks direkt als `ir.attachment` an und erzeugt GbR-Lieferantenrechnungen ·
-> Belege #154 (KOHL) und #152 (Bußgeld) direkt an Aufgaben #996 und #1390 verknüpft ·
-> Studio 159 & GrowBox 162: Entspannt im Backlog (keine 15.09./30.09.-Hektik) · Radio-Tasks ehrlich auf `🛑 Blockiert` (wartet auf OptiPlex).
+> **Stand 12.09.2026 (vormittags) — was seit dem ProDesk-Tod neu aufgebaut & verifiziert ist:**
+> - **Backup-TÜV & Odoo-Restore-Test auf Anker aktiv (Task #1391):** TÜV läuft täglich 08:00 CEST (`frawo-backup-tuev.timer`), prüft 5/5 Ziele inkl. `gcrypt:`-Cloud und ZFS-Mirror, sendet Telegram-Briefing. Restore-Test sonntags 09:00 CEST (`frawo-odoo-restore-test.timer`), stellt echten Abzug in Einweg-DB wieder her (800 Tabellen). Prometheus-Alarme inaktiv, Alertmanager 0 Alarme (100% grün).
+> - **00_INBOX Triage vollständig abgeschlossen (Task #1009):** 0 lose Dateien im Drive-Root verblieben. 1066 Dateien aufgeteilt (`_Fotos-Videos` 413, `_Programme-Technik` 608, `_Duplikate` 45). Paperless CT110 führt 192 indexierte Dokumente.
+> - **Webhook-Handler v2 (CT150:19001) gehärtet (Task #1289):** Hardcoded `--model` Flag entfernt, OpenClaw nutzt bei Provider-Limits automatische Fallbacks. Curl-Verifikation: Auth 401, Event 200 in 1 ms, Dedupe greift. Im Repo versioniert (`infra/openclaw/odoo_webhook_handler.py`).
+> - **Sicherheitsstandards (#1389):** Wache über Überwachung alle 10 min auf Anker-Host aktiv. Webhook-Secret in `ir.config_parameter` gesichert, Schleifenschutz (`author_id != 8`). WIP-Grenze (max 6) eingehalten: aktuell 4 FraWo-Tasks in Arbeit.
+> - **Tagesbericht per Mail:** Odoo-Cron 44 / Aktion 828 läuft täglich 12:04 CEST an `wolf@frawo.tech`.
+> - **Inselhalle & Stockenweiler sauber isoliert:** Bauprojekt Vater (#106) und Arbeitgeber (#107) getrennt von FraWo-Arbeit gezählt.
+> - **Dell OptiPlex 7050 Inbetriebnahmeplan vorbereitet (`OPTIPLEX_7050_INBETRIEBNAHME.md`):** Wartet auf 65W Dell Netzteil (~15.09.).
 >
 > **Wie wir arbeiten, damit Chaos nicht teuer wird:** `DOCS/SICHERHEITSSTANDARDS.md` — acht Regeln, jede aus einem echten Vorfall. Kurzfassung: *Chaos ist erlaubt, Stille nicht.*
 >
@@ -101,7 +99,8 @@ Wer eine davon nicht kennt, sucht stundenlang am falschen Ende.
 > - ✅ **rclone-Zwischenspeicher auf ZFS** (`/anker-backup/rclone-cache`, Obergrenze 120G). Systemplatte von 82 % auf **27 %**. Vorher hätte der Nachtlauf mit ~54 GB die 68-GB-Systemplatte gefüllt.
 > - ✅ **Verschlüsselte Odoo-Cloud-Kopie zurück**: `gcrypt:`-Ziel auf dem Anker neu angelegt (Schlüssel lag dort bereits), neuer Timer `frawo-odoo-cloud.timer` täglich 04:30. Vorher ging die Datenbank seit 07.09. **unverschlüsselt** im Container-Abzug zu Google, und die alten verschlüsselten Sicherungen waren für **keine** Maschine erreichbar.
 > - ✅ `node_exporter` auf dem Anker hat jetzt einen **textfile collector** — vorher konnte der Knoten Sicherungs-Kennzahlen gar nicht ausliefern.
-> - 🔴 **Offen:** Der **Backup-TÜV** lief auf dem ProDesk und ist mit ihm gestorben — niemand prüft derzeit die Sicherungen als Ganzes. Ebenfalls tot: der **Scan-Einzug der Eltern** (`frawo-scan-ingest.timer`), der **AdGuard-Abgleich** (Master weg) und die **noVNC-Brücke** (`studiopc.frawo.tech`).
+> - ✅ **Backup-TÜV & Odoo-Restore-Test wiederaufgebaut (12.09.2026, Task #1391):** Auf `proxmox-anker` portiert. TÜV (`frawo-backup-tuev.timer`, täglich 08:00 CEST) prüft 5/5 Ziele inkl. `gcrypt:` und ZFS-Mirror, sendet Telegram-Briefing. Restore-Test (`frawo-odoo-restore-test.timer`, sonntags 09:00 CEST) testet Restore in CT140 Postgres (800 Tabellen). Prometheus-Alarme `BackupTuevLaeuftNicht` und `WiederherstellungstestLaeuftNicht` inaktiv, 0 Alarme feuern.
+> - 🔴 **Offen nach ProDesk-Tod:** Der **Scan-Einzug der Eltern** (`frawo-scan-ingest.timer`, wartet auf OptiPlex/Fileserver), der **AdGuard-Abgleich** (Master weg; Replica auf Anker trägt DNS stabil allein) und die **noVNC-Brücke** (`studiopc.frawo.tech`).
 
 ### Knoten
 
