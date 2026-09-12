@@ -24,7 +24,7 @@ Kopie im Repo: `INFRA.md`
 | **101** | anker-pve | `adguard-slave` | `10.1.0.27` | 53 (DNS), 3000 (Web) | **Aktiver DNS-Server** (trägt LAN-DNS stabil allein nach ProDesk-Ausfall) |
 | **106** | anker-pve | `wireguard` | `10.1.0.239` | 51820 | VPN Gateway (aus ProDesk-PBS wiederhergestellt) |
 | **108** | anker-pve | `vaultwarden` | `10.1.0.95` | 80 / 443 | SSOT für alle Passwörter & Tokens (`vault.frawo.tech`) |
-| **110** | anker-pve | `n8n / paperless` | `10.1.0.96` | 5678 / 8000 | Workflows & Paperless-ngx (`paperless.frawo.tech`), 192 Dokumente |
+| **110** | anker-pve | `n8n / paperless` | `10.1.0.100` | 5678 / 8000 | Workflows & Paperless-ngx (`paperless.frawo.tech`), 192 Dokumente |
 | **130** | anker-pve | `radio-node` | `10.1.0.200` | 3001 | Docker: Uptime-Kuma, PostgreSQL, Redis |
 | **140** | anker-pve | `frawotech-web` | `10.1.0.112` | 8069 (Odoo 19), 80/443 (Nginx) | ERP, CRM, Touch Cockpit, Cloudflare-Tunnel |
 | **150** | anker-pve | `openclaw` | `10.1.0.31` | 19001 (Servassi-Hook), 19000 (Gateway) | **Jarvis** (Persistenter Koordinator & Monitoring-Empfänger) |
