@@ -1,140 +1,146 @@
 #!/usr/bin/env bash
-# Wiederherstellungstest fuer die Odoo-Sicherung.
+# Wiederherstellungstest fuer die Odoo-Sicherung (Anker-Fassung).
 #
 # Warum: Bis zum 28.07.2026 wurde nie geprueft, ob aus einer Sicherung
 # tatsaechlich wieder eine funktionierende Datenbank wird. Wir wussten nur,
-# dass die Datei LESBAR ist (pg_restore --list). Das ist ein Unterschied wie
-# zwischen "das Ersatzrad ist im Kofferraum" und "das Ersatzrad passt".
+# dass die Datei LESBAR ist. Das ist ein Unterschied wie zwischen
+# "das Ersatzrad ist im Kofferraum" und "das Ersatzrad passt".
+#
+# Portiert auf proxmox-anker am 12.09.2026 nach ProDesk-Ausfall (Task #1391).
 #
 # Was passiert:
-#   1. Der juengste Dump wird in eine WEGWERF-Datenbank eingespielt.
-#   2. Die Zeilenzahlen wichtiger Tabellen werden gegen die Produktivdatenbank
-#      verglichen.
-#   3. Die Wegwerf-Datenbank wird wieder geloescht.
+#   1. Der juengste Dump in CT140 (/var/backups/odoo/FraWo_GbR_*.sql.gz) wird ermittelt.
+#   2. Eine WEGWERF-Datenbank (FraWo_Wiederherstellungstest) wird angelegt.
+#   3. Der Dump wird per zcat | psql in die Test-DB eingespielt.
+#   4. Zeilenzahlen wichtiger Tabellen werden gegen die Produktivdatenbank geprueft.
+#   5. Stichprobe auf echten Inhalt (Firmenname ID 1, Tabellenanzahl).
+#   6. Die Wegwerf-Datenbank wird per trap immer restlos entfernt.
+#   7. Prometheus-Metriken werden atomar geschrieben.
 #
 # SICHERHEIT: Der Zielname ist fest verdrahtet und wird vor jedem Schritt
-# gegen den Produktivnamen geprueft. Das Skript bricht ab, bevor es die
-# Produktivdatenbank auch nur anfassen koennte.
+# gegen den Produktivnamen geprueft. Das Skript bricht sofort ab, bevor es
+# die Produktivdatenbank auch nur anfassen koennte.
 
 set -uo pipefail
 export PATH="/usr/sbin:/usr/bin:/sbin:/bin"
 
 CTID=140
-PGC=frawotech-db-1
-PROD=FraWo_GbR
-TEST=FraWo_Wiederherstellungstest
-DUMPDIR=/mnt/data_family/odoo-sql-dumps
+PGC="frawotech-db-1"
+PROD="FraWo_GbR"
+TEST="FraWo_Wiederherstellungstest"
+DUMPDIR="/var/backups/odoo"
+LOGFILE="/var/log/odoo-restore-test.log"
+TEXTFILE_DIR="/var/lib/node_exporter/textfile_collector"
+METRIK="$TEXTFILE_DIR/odoo_restore_test.prom"
 
 # --- Sicherheitssperre ------------------------------------------------------
-if [ "$TEST" = "$PROD" ]; then
-    echo "ABBRUCH: Testdatenbank traegt den Produktivnamen."
+if [ "$TEST" = "$PROD" ] || [ -z "$TEST" ]; then
+    echo "ABBRUCH: Sicherheitspruefung fehlgeschlagen: Testname '$TEST' ungueltig." >&2
     exit 1
 fi
 
 psql_prod() { pct exec "$CTID" -- docker exec "$PGC" psql -U odoo -d "$PROD" -tAc "$1" 2>/dev/null; }
 psql_test() { pct exec "$CTID" -- docker exec "$PGC" psql -U odoo -d "$TEST" -tAc "$1" 2>/dev/null; }
-psql_adm()  { pct exec "$CTID" -- docker exec "$PGC" psql -U odoo -d postgres -tAc "$1" 2>/dev/null; }
+psql_adm()  { pct exec "$CTID" -- docker exec "$PGC" psql -U odoo -d postgres -c "$1" 2>/dev/null; }
 
 aufraeumen() {
     echo ""
     echo "Raeume auf..."
-    psql_adm "DROP DATABASE IF EXISTS \"$TEST\";" >/dev/null 2>&1
-    pct exec "$CTID" -- docker exec "$PGC" rm -f /tmp/restore_test.dump 2>/dev/null
-    pct exec "$CTID" -- rm -f /tmp/restore_test.dump 2>/dev/null
-    rm -f /tmp/restore_test.dump 2>/dev/null
-    echo "  Wegwerf-Datenbank entfernt."
+    psql_adm "DROP DATABASE IF EXISTS \"$TEST\";" >/dev/null 2>&1 || true
+    echo "  Wegwerf-Datenbank $TEST entfernt."
 }
 trap aufraeumen EXIT
 
-echo "=== Wiederherstellungstest Odoo  $(date '+%Y-%m-%d %H:%M') ==="
+echo "=== Wiederherstellungstest Odoo $(date '+%Y-%m-%d %H:%M:%S') ==="
 echo ""
 
-DUMP=$(ls -t "$DUMPDIR"/${PROD}-*.dump 2>/dev/null | head -1)
+# 1. Neuesten Dump in CT140 finden
+DUMP=$(pct exec "$CTID" -- bash -c "ls -t $DUMPDIR/${PROD}_*.sql.gz 2>/dev/null | head -1" || true)
 if [ -z "$DUMP" ]; then
-    echo "ABBRUCH: keine Sicherung gefunden."
+    echo "ABBRUCH: Keine Sicherungsdatei in CT140:$DUMPDIR gefunden!"
     exit 1
 fi
-echo "Getestete Datei: $(basename "$DUMP") ($(du -h "$DUMP" | cut -f1))"
+
+DUMP_GROESSE=$(pct exec "$CTID" -- bash -c "du -h '$DUMP' | cut -f1" || true)
+echo "Getestete Datei: $(basename "$DUMP") ($DUMP_GROESSE)"
 echo ""
 
-# --- 1. Zahlen der Produktivdatenbank merken -------------------------------
-echo "Lese Vergleichswerte aus der Produktivdatenbank..."
+# 2. Zahlen der Produktivdatenbank vorab auslesen
+echo "Lese Vergleichswerte aus der Produktivdatenbank ($PROD)..."
 declare -A VORHER
-for t in res_partner project_task account_move product_template res_users mail_message; do
-    VORHER[$t]=$(psql_prod "SELECT COUNT(*) FROM $t;")
-    printf '  %-18s %s Zeilen\n' "$t" "${VORHER[$t]:-?}"
+TABELLEN_LISTE="res_partner project_task account_move product_template res_users mail_message"
+for t in $TABELLEN_LISTE; do
+    COUNT=$(psql_prod "SELECT COUNT(*) FROM $t;")
+    VORHER[$t]="${COUNT:-0}"
+    printf '  %-18s %s Zeilen\n' "$t" "${VORHER[$t]}"
 done
 echo ""
 
-# --- 2. Dump in den Container bringen --------------------------------------
-echo "Uebertrage die Sicherung in den Datenbank-Container..."
-cp "$DUMP" /tmp/restore_test.dump
-pct push "$CTID" /tmp/restore_test.dump /tmp/restore_test.dump >/dev/null 2>&1
-pct exec "$CTID" -- docker cp /tmp/restore_test.dump "$PGC":/tmp/restore_test.dump >/dev/null 2>&1
-
-# --- 3. Wegwerf-Datenbank anlegen und einspielen ---------------------------
+# 3. Wegwerf-Datenbank vorbereiten
 echo "Lege Wegwerf-Datenbank an: $TEST"
-psql_adm "DROP DATABASE IF EXISTS \"$TEST\";" >/dev/null 2>&1
+psql_adm "DROP DATABASE IF EXISTS \"$TEST\";" >/dev/null 2>&1 || true
 psql_adm "CREATE DATABASE \"$TEST\" OWNER odoo;" >/dev/null 2>&1
 
-if [ "$(psql_adm "SELECT 1 FROM pg_database WHERE datname='$TEST';")" != "1" ]; then
-    echo "ABBRUCH: Wegwerf-Datenbank liess sich nicht anlegen."
+DB_CHECK=$(pct exec "$CTID" -- docker exec "$PGC" psql -U odoo -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname='$TEST';" 2>/dev/null || true)
+if [ "$DB_CHECK" != "1" ]; then
+    echo "ABBRUCH: Wegwerf-Datenbank liess sich nicht anlegen!"
     exit 1
 fi
 
-echo "Spiele die Sicherung ein... (das dauert etwas)"
-pct exec "$CTID" -- docker exec "$PGC" pg_restore -U odoo -d "$TEST" --no-owner --no-privileges /tmp/restore_test.dump > /tmp/restore_out.txt 2>&1
+# 4. Dump einspielen
+echo "Spiele Sicherung per zcat in $TEST ein (Dauer ca. 1 Minute)..."
+pct exec "$CTID" -- bash -c "zcat '$DUMP' | docker exec -i '$PGC' psql -U odoo -d '$TEST' -q"
 RC=$?
-WARNUNGEN=$(grep -ci 'error' /tmp/restore_out.txt 2>/dev/null || echo 0)
-echo "  Rueckgabewert: $RC, Meldungen mit 'error': $WARNUNGEN"
-rm -f /tmp/restore_out.txt
+echo "  Import beendet mit Exit-Code: $RC"
 
-# --- 4. Vergleich -----------------------------------------------------------
+# 5. Tabellen vergleichen
 echo ""
-echo "Vergleiche wiederhergestellte Daten mit der Produktivdatenbank:"
-echo ""
+echo "Vergleiche wiederhergestellte Daten mit Produktivdatenbank:"
 printf '  %-18s %10s %10s   %s\n' "Tabelle" "Produktiv" "Wiederher." "Ergebnis"
 printf '  %-18s %10s %10s   %s\n' "------------------" "----------" "----------" "--------"
 
 ABWEICHUNGEN=0
 GEPRUEFT=0
-for t in res_partner project_task account_move product_template res_users mail_message; do
+for t in $TABELLEN_LISTE; do
     N=$(psql_test "SELECT COUNT(*) FROM $t;")
-    P=${VORHER[$t]:-}
+    P=${VORHER[$t]:-0}
     GEPRUEFT=$((GEPRUEFT + 1))
-    if [ -z "$N" ]; then
-        printf '  %-18s %10s %10s   FEHLT\n' "$t" "$P" "-"
+    
+    # Plausibilitätsprüfung: Tabelle muss existieren, Zeilenzahl > 0 und plausibel nahe am Produktivstand (Dump von heute Nacht)
+    if [ -z "$N" ] || [ "$N" -le 0 ]; then
+        printf '  %-18s %10s %10s   FEHLT/LEER\n' "$t" "$P" "${N:--}"
         ABWEICHUNGEN=$((ABWEICHUNGEN + 1))
-    elif [ "$N" = "$P" ]; then
-        printf '  %-18s %10s %10s   gleich\n' "$t" "$P" "$N"
+    elif [ "$N" -eq "$P" ]; then
+        printf '  %-18s %10s %10s   exakt gleich\n' "$t" "$P" "$N"
+    elif [ "$N" -le "$P" ] && [ "$N" -ge $(( P > 100 ? P - 100 : 1 )) ]; then
+        printf '  %-18s %10s %10s   gleich/plausibel\n' "$t" "$P" "$N"
     else
         printf '  %-18s %10s %10s   ABWEICHUNG\n' "$t" "$P" "$N"
         ABWEICHUNGEN=$((ABWEICHUNGEN + 1))
     fi
 done
 
-# --- 5. Stichprobe auf echten Inhalt ---------------------------------------
+# 6. Stichprobe auf echten Inhalt
 echo ""
 echo "Stichprobe auf tatsaechlichen Inhalt:"
 FIRMA=$(psql_test "SELECT name FROM res_partner WHERE id=1;")
 echo "  Firmenname aus der Wiederherstellung: ${FIRMA:-(leer)}"
 TABELLEN=$(psql_test "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='public';")
-echo "  Tabellen insgesamt: ${TABELLEN:-?}"
+echo "  Tabellen insgesamt in Test-DB: ${TABELLEN:-0}"
 
-# --- Ergebnis ---------------------------------------------------------------
+# 7. Gesamtergebnis
 echo ""
-if [ "$ABWEICHUNGEN" -eq 0 ] && [ -n "$FIRMA" ] && [ "$RC" -eq 0 ]; then
-    echo "ERGEBNIS: BESTANDEN - aus der Sicherung wird wieder eine vollstaendige Datenbank."
+if [ "$ABWEICHUNGEN" -eq 0 ] && [ "$FIRMA" = "FraWo GbR" ] && [ "${TABELLEN:-0}" -ge 700 ] && [ "$RC" -eq 0 ]; then
+    echo "ERGEBNIS: BESTANDEN - aus der Sicherung entsteht eine vollstaendige Datenbank."
     ERG=1
 else
-    echo "ERGEBNIS: DURCHGEFALLEN - $ABWEICHUNGEN von $GEPRUEFT Tabellen weichen ab."
+    echo "ERGEBNIS: DURCHGEFALLEN - Fehler oder Abweichungen festgestellt."
     ERG=0
 fi
 
-# --- Metrik fuers Monitoring ------------------------------------------------
-TEXTFILE_DIR=/var/lib/node_exporter/textfile_collector
+# 8. Prometheus-Metrik
 if [ -d "$TEXTFILE_DIR" ]; then
-    M="$TEXTFILE_DIR/odoo_restore_test.prom"
+    TMP_METRIK="$METRIK.tmp.$$"
     {
         echo "# HELP frawo_odoo_restore_test_ok Wiederherstellungstest bestanden (1) oder nicht (0)."
         echo "# TYPE frawo_odoo_restore_test_ok gauge"
@@ -142,8 +148,11 @@ if [ -d "$TEXTFILE_DIR" ]; then
         echo "# HELP frawo_odoo_restore_test_timestamp_seconds Zeitpunkt des letzten Wiederherstellungstests."
         echo "# TYPE frawo_odoo_restore_test_timestamp_seconds gauge"
         echo "frawo_odoo_restore_test_timestamp_seconds $(date +%s)"
-    } > "$M.tmp"
-    mv "$M.tmp" "$M"
+    } > "$TMP_METRIK"
+    chmod 644 "$TMP_METRIK"
+    mv "$TMP_METRIK" "$METRIK"
+    echo "Metrik aktualisiert: $METRIK"
 fi
 
 [ "$ERG" -eq 1 ] || exit 1
+
