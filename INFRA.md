@@ -9,19 +9,20 @@ Kopie im Repo: `INFRA.md`
 
 | Host | IP | Hardware / Rolle | Storage / Backups |
 |---|---|---|---|
-| **stock-pve** | `10.1.0.128` | HP ProDesk 600 G4 (Stockenweiler) — **🔴 Hardware-Defekt seit 07.09.2026** (Netzteil/Board) | Offline. 65W Dell PSU bestellt (~15.09.), OptiPlex 7050 als Nachfolger vorbereitet. |
+| **stock-pve** | `10.1.0.128` | HP ProDesk 600 G4 Mini (am UCG Port 1) — 🟢 **Wieder online seit 13.09.2026** | PVE 8.2, 15 GiB RAM (4,8G belegt), Thin-Pool `data` (54%), Tailscale `100.91.20.116`. |
 | **anker-pve** | `10.1.0.92` | Lenovo ThinkCentre M720q (Anker-Server) — **Trägt gesamten Kernbetrieb** | Proxmox VE 8, ZFS Mirror `anker-backup` (1,7 TB frei), Thin-Pool `data` (65%), rclone GDrive. |
 | **pbs-frawo** | `10.1.0.7` | Proxmox Backup Server (VM 240 auf anker-pve) | Tägliche PBS-Snapshots & vzdump um 04:00 Uhr nach Google Drive (`daily-all-pbs`). |
 | **StudioPC** | `10.1.0.211` | Windows 11 Workstation | UltraVNC (Port 5900), Tailscale `100.98.31.60`. |
-| **UCG Ultra** | `10.1.0.1` | UniFi Cloud Gateway (Router/Firewall) | VLAN 1 (Server `10.1.0.0/24`), VLAN 4 (IoT `10.4.0.0/24`). |
+| **UCG Ultra** | `10.1.0.1` | UniFi Cloud Gateway (Router/Firewall) | Port 1: stock-pve, Port 2: AC Mesh, Port 3: StudioPC, Port 4: anker-pve, Port 5: WAN1 (FritzBox). |
 
 ---
 
-## 2. Aktive Container & Virtual Machines (alle auf `anker-pve`)
+## 2. Aktive Container & Virtual Machines
 
 | VMID | Host | Name | IP | Port(s) | Zweck & Service |
 |---|---|---|---|---|---|
-| **101** | anker-pve | `adguard-slave` | `10.1.0.27` | 53 (DNS), 3000 (Web) | **Aktiver DNS-Server** (trägt LAN-DNS stabil allein nach ProDesk-Ausfall) |
+| **101** | stock-pve | `adguard` | `10.1.0.52` | 53 (DNS), 3000 (Web) | Primärer DNS-Server (ProDesk) |
+| **101** | anker-pve | `adguard-slave` | `10.1.0.27` | 53 (DNS), 3000 (Web) | Sekundärer DNS-Server (Anker) |
 | **106** | anker-pve | `wireguard` | `10.1.0.239` | 51820 | VPN Gateway (aus ProDesk-PBS wiederhergestellt) |
 | **108** | anker-pve | `vaultwarden` | `10.1.0.95` | 80 / 443 | SSOT für alle Passwörter & Tokens (`vault.frawo.tech`) |
 | **110** | anker-pve | `n8n / paperless` | `10.1.0.100` | 5678 / 8000 | Workflows & Paperless-ngx (`paperless.frawo.tech`), 192 Dokumente |
@@ -29,14 +30,14 @@ Kopie im Repo: `INFRA.md`
 | **140** | anker-pve | `frawotech-web` | `10.1.0.112` | 8069 (Odoo 19), 80/443 (Nginx) | ERP, CRM, Touch Cockpit, Cloudflare-Tunnel |
 | **150** | anker-pve | `openclaw` | `10.1.0.31` | 19001 (Servassi-Hook), 19000 (Gateway) | **Jarvis** (Persistenter Koordinator & Monitoring-Empfänger) |
 | **155** | anker-pve | `monitoring-stack` | `10.1.0.35` | 9090 (Prom), 9093 (Alert), 3000 (Grafana) | Prometheus, Alertmanager, Grafana (ex CT150 auf ProDesk) |
-| **210** | anker-pve | `haos` | `10.1.0.40` | 8123 (Home Assistant) | Hausautomation, Lovelace Touch Dashboard |
+| **210** | anker-pve | `haos` | `10.1.0.40` | 8123 (Home Assistant) | Hausautomation Rothkreuz, Lovelace Touch Dashboard |
 | **240** | anker-pve | `PBS-FraWo` | `10.1.0.7` | 8007 (PBS API/Web) | Proxmox Backup Server |
-| **300** | anker-pve | `openclaw-worker` | `10.1.0.x` | - | Worker-VM |
+| **300** | anker-pve | `nextcloud` | `10.1.0.21` | 80 / 443 | Cloud Storage (`cloud.frawo.tech`) |
+| **360** | stock-pve | `homeassistant-eltern` | `10.1.0.248` | 8123 (Home Assistant) | **Smart Home Alois (Stockenweiler)** — aktiv, WireGuard-VPN nach `192.168.178.0/24` |
 
-### Ruhende Dienste (warten auf Dell OptiPlex 7050 Inbetriebnahme)
-- **VM210 (AzuraCast Radio, `10.1.0.38`):** Backup vom 06.09. (`vzdump-qemu-210-*.vma.zst`, 31,7 GB) liegt in GDrive bereit.
-- **CT120 (Fileserver / Musikplatte, `10.1.0.94`):** Physische Platte hängt am toten ProDesk, wandert in OptiPlex.
-- **VM360 (HA-Eltern, `10.1.0.248`):** Backup vom 06.09. (`vzdump-qemu-360-*.vma.zst`, 13 GB) in GDrive.
+### Ruhende / Vorbereitete Dienste
+- **VM210 (AzuraCast Radio, `10.1.0.38`):** Liegt als Image auf stock-pve (64 GB) bereit; wartet auf Einbindung der externen Musik-HDD.
+- **CT120 (Fileserver / Samba, `10.1.0.94`):** Gestoppt auf stock-pve; wartet auf Bereinigung.
 
 ---
 
