@@ -23,8 +23,8 @@ groups:
           description: >-
             Letzter Erfolg vor
             {{ $value | humanizeDuration }}. Log prüfen:
-            /var/log/odoo-sql-backup.log auf dem ProDesk. Häufige Ursache war
-            ein fehlender PATH im Cron-Umfeld.
+            /var/log/frawo-odoo-cloud.log auf dem Anker. Häufige Ursache war
+            eine Kollision mit den naechtlichen vzdumps oder rclone-Timeout.
 
       # Fehlt die Metrik ganz, laeuft das Skript gar nicht mehr (oder der
       # textfile_collector schreibt nicht). Das ist derselbe blinde Fleck wie zuvor.

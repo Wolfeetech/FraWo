@@ -3,11 +3,16 @@
 > **Zuerst lesen.** Diese Datei beschreibt, **was läuft** — nicht, was passiert ist.
 > Historie steht in der Git-Historie, Entscheidungen und Aufgaben in **Odoo (CT140, `10.1.0.112:8069`) = einzige Quelle der Wahrheit**.
 >
-> **Stand 12.09.2026 (vormittags) — was seit dem ProDesk-Tod neu aufgebaut & verifiziert ist:**
-> - **Backup-TÜV & Odoo-Restore-Test auf Anker aktiv (Task #1391):** TÜV läuft täglich 08:00 CEST (`frawo-backup-tuev.timer`), prüft 5/5 Ziele inkl. `gcrypt:`-Cloud und ZFS-Mirror, sendet Telegram-Briefing. Restore-Test sonntags 09:00 CEST (`frawo-odoo-restore-test.timer`), stellt echten Abzug in Einweg-DB wieder her (800 Tabellen). Prometheus-Alarme inaktiv, Alertmanager 0 Alarme (100% grün).
+> **Stand 13.09.2026 (mittags) — ProDesk wieder online & Odoo-Cloud gehärtet:**
+> - **ProDesk 600 G4 Mini wieder online & Split-Brain gebannt:** Rechner an UCG Port 1 (VLAN 101) verbunden (`10.1.0.128`, TS `100.91.20.116`). CPU 52°C, RAM 4.8/15 GB, LVM-Thin 54%. Dubletten-Container (CT140, 110, 150, 108, 106) sofort gestoppt und `onboot 0` gesetzt — kein Layer-2-MAC-Flapping mit Anker.
+> - **Home Assistant Eltern (VM 360, `10.1.0.248`) verifiziert:** HA OS 18.2 / Core 2026.9.1 läuft stabil auf ProDesk. WireGuard-VPN nach Stockenweiler aktiv (Fritz!Box & Shellys pingbar), alle 6 Add-ons laufen, Live-Sensordaten streamen einwandfrei, HTTP 200.
+> - **Monitoring vollzählig (17/17 Targets UP):** ProDesk `node_exporter` (`10.1.0.128:9100`) und Blackbox-Probe für HA-Eltern (`10.1.0.248:8123`) in `prometheus.yml` reaktiviert. Scrape-Ergebnis: 100% grün.
+> - **Odoo-Cloud-Sicherung entkoppelt:** Kollision zwischen nächtlichem Proxmox-vzdump (04:00–07:25, 60 GB Upstream voll belegt) und Odoo-Cloud-Kopie (06:15) behoben. Timer auf **07:35 CEST** verlegt (nach vzdump, 25 min vor Backup-TÜV), Timeout auf 7200s erhöht, Signal-Trap ergänzt.
+> - **Auftrag Leichte Liebe (#1057) abgeschlossen:** 20% Partner-Rabatt auf Tagessatz (280 €) in `S00048` Pos. 172 hinterlegt, Gesamtauftrag 1.410 €, Task auf `✅ Erledigt`. FraWo-Kern WIP bei 3/6.
+> - **Backup-TÜV & Odoo-Restore-Test auf Anker aktiv (Task #1391):** TÜV läuft täglich 08:00 CEST (`frawo-backup-tuev.timer`), prüft 5/5 Ziele inkl. `gcrypt:`-Cloud und ZFS-Mirror, sendet Telegram-Briefing. Restore-Test sonntags 09:00 CEST (`frawo-odoo-restore-test.timer`), stellt echten Abzug in Einweg-DB wieder her (800 Tabellen).
 > - **00_INBOX Triage vollständig abgeschlossen (Task #1009):** 0 lose Dateien im Drive-Root verblieben. 1066 Dateien aufgeteilt (`_Fotos-Videos` 413, `_Programme-Technik` 608, `_Duplikate` 45). Paperless CT110 führt 192 indexierte Dokumente.
 > - **Webhook-Handler v2 (CT150:19001) gehärtet (Task #1289):** Hardcoded `--model` Flag entfernt, OpenClaw nutzt bei Provider-Limits automatische Fallbacks. Curl-Verifikation: Auth 401, Event 200 in 1 ms, Dedupe greift. Im Repo versioniert (`infra/openclaw/odoo_webhook_handler.py`).
-> - **Sicherheitsstandards (#1389):** Wache über Überwachung alle 10 min auf Anker-Host aktiv. Webhook-Secret in `ir.config_parameter` gesichert, Schleifenschutz (`author_id != 8`). WIP-Grenze (max 6) eingehalten: aktuell 4 FraWo-Tasks in Arbeit.
+> - **Sicherheitsstandards (#1389):** Wache über Überwachung alle 10 min auf Anker-Host aktiv. Webhook-Secret in `ir.config_parameter` gesichert, Schleifenschutz (`author_id != 8`).
 > - **Tagesbericht per Mail:** Odoo-Cron 44 / Aktion 828 läuft täglich 12:04 CEST an `wolf@frawo.tech`.
 > - **Inselhalle & Stockenweiler sauber isoliert:** Bauprojekt Vater (#106) und Arbeitgeber (#107) getrennt von FraWo-Arbeit gezählt.
 > - **Dell OptiPlex 7050 Inbetriebnahmeplan vorbereitet (`OPTIPLEX_7050_INBETRIEBNAHME.md`):** Wartet auf 65W Dell Netzteil (~15.09.).
@@ -78,17 +83,19 @@ Wer eine davon nicht kennt, sucht stundenlang am falschen Ende.
 
 ## 🖥️ Was wo läuft
 
-> 🔴 **STAND 07.09.2026: Der ProDesk ist hardwareseitig tot.** Kein Strom-, kein Plattenproblem — der Rechner reagiert weder auf den Einschaltknopf noch auf Wake-on-LAN, während eine Shelly-Steckdose die ganze Nacht stabil 185–197 W gemessen hat. Netzteil oder Mainboard; ein Ersatznetzteil (13 €) ist bestellt, ein **Dell OptiPlex 7050** steht als Ersatzknoten bereit. Die Tabellen unten beschreiben weiterhin die **Soll-Aufteilung**; was davon gerade **wo** läuft, steht hier:
+> **STAND 13.09.2026: Der ProDesk ist wieder am Start (Port 1 UCG, VLAN 101).**
+> Rechner läuft stabil (CPU 52°C, RAM 4.8/15 GB). Dubletten-Container (CT140, 110, 150, 108, 106) gestoppt (`onboot: 0`), Kern-Dienste verbleiben wie seit 07.09. auf dem Anker.
+> **HA-Eltern (VM 360, `10.1.0.248`) ist wieder aktiv**, WireGuard-VPN nach Stockenweiler steht.
 >
-> | Dienst | Soll | Ist am 07.09.2026 |
+> | Dienst | Soll | Ist am 13.09.2026 |
 > |---|---|---|
-> | Odoo/Website CT140, Vaultwarden CT108, n8n+Paperless CT110 | ProDesk | ✅ **auf dem Anker** wiederhergestellt (PBS-Stand 07.09. 02:0x, ~2 h vor dem Tod) |
-> | Monitoring CT150 | ProDesk | ✅ **auf dem Anker als CT155**, IP unverändert `10.1.0.35` (Restore 07.09. 16:1x) |
-> | AdGuard Master CT101 | ProDesk | ❌ tot — die **Replica auf dem Anker (`10.1.0.27`) trägt den DNS allein**, kein Handlungsdruck |
-> | Radio VM210 AzuraCast | ProDesk | ❌ tot, `funk.frawo.tech` liefert 502 |
-> | Fileserver CT120 | ProDesk | ❌ tot (Musikplatte hängt physisch am toten Gerät) |
-> | WireGuard CT106 | ProDesk | ✅ **auf dem Anker** unter gleicher ID, IP `10.1.0.239`, wg1-Handshake bestätigt. Nutzbar ist davon aber nur Paperless für Alois — Scan-Ablage (CT120) und HA-Eltern (VM360) hängen weiter |
-> | HA-Eltern VM360 | ProDesk | ❌ tot |
+> | Odoo/Website CT140, Vaultwarden CT108, n8n+Paperless CT110 | ProDesk | ✅ **auf dem Anker** (Migration 07.09., stabil) |
+> | Monitoring CT150 | ProDesk | ✅ **auf dem Anker als CT155**, IP unverändert `10.1.0.35` (Restore 07.09.) |
+> | AdGuard Master CT101 | ProDesk | ⚠️ CT101 auf ProDesk gestoppt — **Replica auf dem Anker (`10.1.0.27`) trägt den DNS allein** |
+> | Radio VM210 AzuraCast | ProDesk | ❌ gestoppt (wartet auf Bereinigung / OptiPlex) |
+> | Fileserver CT120 | ProDesk | ❌ gestoppt |
+> | WireGuard CT106 | ProDesk | ✅ **auf dem Anker** unter gleicher ID, IP `10.1.0.239` |
+> | HA-Eltern VM360 | ProDesk | ✅ **auf dem ProDesk aktiv (`10.1.0.248`)**, WireGuard nach Stockenweiler OK |
 >
 > **Die Radio-VM ist NICHT verloren** — anders als zwischenzeitlich angenommen. In Google Drive unter `FraWo-ProDesk-VMs/` liegen `vzdump-qemu-210-2026_09_06-05_42_11.vma.zst` (31,7 GB, AzuraCast) und `vzdump-qemu-360-2026_09_06-06_44_39.vma.zst` (13 GB, HA-Eltern), beide vom **06.09.** Wertlos war nur die lokale Rückfall-VM211 — die wurde am 24.08.2026 gelöscht (`qmdestroy:211` im PVE-Tasklog), lange bevor sie gebraucht wurde. Wiederherstellung gehört auf den OptiPlex, **nicht** auf den Anker: dort sind nur ~6 GB RAM frei, und genau die RAM-Überbuchung hat die Radio-Migration im August gerade beseitigt.
 >

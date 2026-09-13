@@ -85,6 +85,8 @@ abbruch() {
     exit 1
 }
 
+trap 'abbruch "Signal (SIGTERM/SIGINT) empfangen oder Skript abgebrochen"' TERM INT
+
 melde "=== Start ==="
 
 command -v rclone >/dev/null || abbruch "rclone nicht gefunden"
@@ -119,7 +121,12 @@ LOKAL=$(stat -c %s "${ARBEIT}/${NAME}" 2>/dev/null || echo 0)
     || abbruch "Grösse nach dem Herausholen weicht ab ($LOKAL statt $GROESSE)"
 
 # --- 4. Verschlüsselt hochladen --------------------------------------------
-rclone copyto "${ARBEIT}/${NAME}" "${ZIEL}/${NAME}" --drive-chunk-size 64M 2>>"$LOG" \
+rclone copyto "${ARBEIT}/${NAME}" "${ZIEL}/${NAME}" \
+    --drive-chunk-size 64M \
+    --timeout 15m \
+    --contimeout 60s \
+    --retries 5 \
+    --low-level-retries 10 2>>"$LOG" \
     || abbruch "Hochladen nach ${ZIEL} fehlgeschlagen"
 
 # --- 5. Am ZIEL gegenprüfen — das ist der eigentliche Test ------------------

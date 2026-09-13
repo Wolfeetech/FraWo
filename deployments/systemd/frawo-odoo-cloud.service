@@ -12,7 +12,7 @@ ExecStart=/usr/local/bin/frawo-odoo-cloud-verschluesselt.sh
 # Kein Restart=: schlaegt der Lauf fehl, meldet das die Metrik und der
 # Alarm OdooBackupVeraltet. Ein blinder Wiederholungslauf wuerde die
 # Datenbank nur zusaetzlich belasten.
-TimeoutStartSec=3600
+TimeoutStartSec=7200
 
 [Install]
 WantedBy=multi-user.target

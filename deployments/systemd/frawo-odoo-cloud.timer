@@ -2,19 +2,15 @@
 Description=Taeglicher Lauf der verschluesselten Odoo-Cloud-Kopie
 
 [Timer]
-# 04:30 — CT140 schreibt seinen Datenbankabzug um 03:30. Eine Stunde Abstand
-# reicht mit Reserve, auch wenn der Abzug einmal laenger braucht.
-# 06:15 Ortszeit, NICHT frueher.
-# Der Abzug in CT140 laeuft per Cron "30 3 * * *" - der Container steht aber
-# auf UTC, das sind also 05:30 Ortszeit. systemd rechnet dagegen in der
-# Zeitzone des WIRTS (CEST). Die erste Fassung stand auf 04:30 und lief damit
-# drei Stunden VOR dem Abzug: sie hat jeden Tag klaglos die Datei vom Vortag
-# hochgeladen und Erfolg gemeldet. Gefunden am 09.09.2026.
-OnCalendar=*-*-* 06:15:00
-# Nach einem Neustart nachholen statt einen Tag auslassen. Genau das hat beim
-# Crontab-Vorfall am 20.08.2026 gefehlt.
+# 07:35 — CT140 schreibt seinen Datenbankabzug um 03:30 UTC (05:30 CEST).
+# Der taegliche Proxmox-vzdump-Auftrag (daily-all-pbs) laeuft von 04:00 bis ca. 07:25 CEST
+# und lastet den Google-Drive-Upstream voll aus.
+# Lauf um 07:35 CEST gewaehrleistet freie Bandbreite nach Abschluss der vzdumps
+# und liegt 25 Minuten vor dem Backup-TÜV um 08:00 CEST.
+OnCalendar=*-*-* 07:35:00
+# Nach einem Neustart nachholen statt einen Tag auslassen.
 Persistent=true
-RandomizedDelaySec=300
+RandomizedDelaySec=180
 
 [Install]
 WantedBy=timers.target
