@@ -2927,10 +2927,10 @@ function filterByStream(streamKey, cardElem) {{
         try:
             env = request.env(user=1)
 
-            # Franz tasks: Project 20 (Werkstatt) or assigned to Franz (user 10)
+            # Franz tasks: strictly tasks assigned to Franz (user 10)
             franz_records = env['project.task'].sudo().search([
                 ('active', '=', True),
-                '|', ('user_ids', 'in', [10]), ('project_id.name', 'ilike', 'Werkstatt'),
+                ('user_ids', 'in', [10]),
                 ('stage_id.name', 'in', ['📥 Als Nächstes', '🚀 In Arbeit (max 6)', 'In Arbeit', 'Als Nächstes'])
             ], order='stage_id desc, write_date desc', limit=4)
 
