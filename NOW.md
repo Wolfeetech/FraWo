@@ -83,17 +83,17 @@ Wer eine davon nicht kennt, sucht stundenlang am falschen Ende.
 
 ## 🖥️ Was wo läuft
 
-> **STAND 13.09.2026: Der ProDesk ist wieder am Start (Port 1 UCG, VLAN 101).**
-> Rechner läuft stabil (CPU 52°C, RAM 4.8/15 GB). Dubletten-Container (CT140, 110, 150, 108, 106) gestoppt (`onboot: 0`), Kern-Dienste verbleiben wie seit 07.09. auf dem Anker.
+> **STAND 14.09.2026 (nachts, Claude live per SSH geprüft): Der ProDesk ist wieder am Start (Port 1 UCG, VLAN 101).**
+> Rechner läuft stabil (CPU 52°C, RAM 4.8/15 GB), Uptime 14h (Boot ~13.09. mittags). Dubletten-Container (CT140, 110, 150, 108, 106) **verifiziert gestoppt + `onboot: 0`** — kein Split-Brain-Risiko. Kern-Dienste verbleiben wie seit 07.09. auf dem Anker.
 > **HA-Eltern (VM 360, `10.1.0.248`) ist wieder aktiv**, WireGuard-VPN nach Stockenweiler steht.
 >
-> | Dienst | Soll | Ist am 13.09.2026 |
+> | Dienst | Soll | Ist am 14.09.2026 |
 > |---|---|---|
 > | Odoo/Website CT140, Vaultwarden CT108, n8n+Paperless CT110 | ProDesk | ✅ **auf dem Anker** (Migration 07.09., stabil) |
 > | Monitoring CT150 | ProDesk | ✅ **auf dem Anker als CT155**, IP unverändert `10.1.0.35` (Restore 07.09.) |
-> | AdGuard Master CT101 | ProDesk | ⚠️ CT101 auf ProDesk gestoppt — **Replica auf dem Anker (`10.1.0.27`) trägt den DNS allein** |
-> | Radio VM210 AzuraCast | ProDesk | ❌ gestoppt (wartet auf Bereinigung / OptiPlex) |
-> | Fileserver CT120 | ProDesk | ❌ gestoppt |
+> | AdGuard Master CT101 | ProDesk | ✅ **wieder aktiv auf dem ProDesk** (`10.1.0.52`, `onboot:1`, seit Host-Boot 13.09. mittags durchgelaufen) — **Replica auf dem Anker (`10.1.0.27`) unverändert daneben aktiv**. Kein MAC-Konflikt (getrennte Adressen), aber noch nicht geprüft, welcher der beiden DNS aktuell tatsächlich beantwortet — vor Vertrauen auf den Master kurz gegenchecken |
+> | Radio VM210 AzuraCast | ProDesk | ❌ weiterhin gestoppt (wartet auf Bereinigung / OptiPlex) |
+> | Fileserver CT120 | ProDesk | ✅ **wieder aktiv auf dem ProDesk** (`10.1.0.94`, seit 13.09. nachmittags, ~2:45h nach Host-Boot manuell gestartet) |
 > | WireGuard CT106 | ProDesk | ✅ **auf dem Anker** unter gleicher ID, IP `10.1.0.239` |
 > | HA-Eltern VM360 | ProDesk | ✅ **auf dem ProDesk aktiv (`10.1.0.248`)**, WireGuard nach Stockenweiler OK |
 >
