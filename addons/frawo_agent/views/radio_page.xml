@@ -1240,7 +1240,12 @@ body {
 
         var starsEl = document.getElementById('ff-stars');
         var ratingSub = document.getElementById('ff-rating-sub');
-        var loggedIn = Boolean(window.odoo &amp;&amp; window.odoo.session_info &amp;&amp; window.odoo.session_info.uid &amp;&amp; !window.odoo.session_info.is_website_user);
+        var ratingBox = document.getElementById('ff-rating-box');
+
+        function ffIsLoggedIn() {
+          var s = (window.odoo &amp;&amp; (window.odoo.__session_info__ || window.odoo.session_info)) || {};
+          return Boolean(s.uid &amp;&amp; !s.is_public);
+        }
 
         function paintStars(avg, own, count) {
           if (!starsEl) return;
@@ -1253,7 +1258,7 @@ body {
             if (on) { s.classList.add('on'); } else { s.classList.remove('on'); }
           });
           if (!count) {
-            ratingSub.textContent = loggedIn ? 'Sei die erste Bewertung' : '★ 1–5 Sterne für Rekordbox';
+            ratingSub.textContent = ffIsLoggedIn() ? 'Sei die erste Bewertung' : '★ 1–5 Sterne für Rekordbox';
             return;
           }
           var txt = 'Ø ' + avg.toFixed(1) + ' · ' + count + (count === 1 ? ' Stimme' : ' Stimmen');
@@ -1266,15 +1271,18 @@ body {
           if (!key) return;
           fetch('/radio/rating/summary?track_id=' + encodeURIComponent(key), { cache: 'no-store' })
             .then(function (r) { return r.json(); })
-            .then(function (d) { if (d.ok) paintStars(d.average || 0, d.own || 0, d.count || 0); })
+            .then(function (d) {
+              if (d.ok) {
+                if (d.own) {
+                  if (starsEl) starsEl.classList.remove('locked');
+                }
+                paintStars(d.average || 0, d.own || 0, d.count || 0);
+              }
+            })
             .catch(function () {});
         };
 
         window.ffRate = function (stars) {
-          if (!loggedIn) {
-            ratingSub.textContent = 'Zum Bewerten bitte im Portal anmelden';
-            return;
-          }
           var key = window.currentTrackKey || '';
           if (!key) return;
           fetch('/radio/rate', {
@@ -1283,16 +1291,31 @@ body {
             body: JSON.stringify({ jsonrpc: '2.0', method: 'call', params: { song_id: key, stars: stars }, id: 1 })
           }).then(function (r) { return r.json(); })
             .then(function (d) {
+              if (d.error) {
+                if (ratingSub) ratingSub.textContent = 'Zum Bewerten bitte im Portal anmelden';
+                if (starsEl) starsEl.classList.add('locked');
+                return;
+              }
               var res = d.result || {};
               if (res.ok) {
                 var s = res.summary || {};
+                if (starsEl) starsEl.classList.remove('locked');
                 paintStars(s.average || 0, s.own || 0, s.count || 0);
                 if (window.spawnReaction) window.spawnReaction('⭐');
+              } else if (res.reason === 'forbidden') {
+                if (ratingSub) ratingSub.textContent = 'Zum Bewerten bitte im Portal anmelden';
+                if (starsEl) starsEl.classList.add('locked');
               }
             }).catch(function () {});
         };
 
-        if (starsEl) { if (!loggedIn) starsEl.classList.add('locked'); }
+        if (starsEl) {
+          if (!ffIsLoggedIn()) {
+            starsEl.classList.add('locked');
+          } else {
+            starsEl.classList.remove('locked');
+          }
+        }
         window.ffLoadRating();
       })();
     </script>
@@ -2160,11 +2183,6 @@ body {
   var histRatingsCache = {};
 
   window.ffRateHistory = function(key, stars, targetEl) {
-    var loggedIn = Boolean(window.odoo &amp;&amp; window.odoo.session_info &amp;&amp; window.odoo.session_info.uid &amp;&amp; !window.odoo.session_info.is_website_user);
-    if (!loggedIn) {
-      alert('Zum Bewerten bitte im Portal anmelden. Deine Bewertungen fließen direkt in Rekordbox ein!');
-      return;
-    }
     fetch('/radio/rate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -2172,6 +2190,10 @@ body {
     })
     .then(function(r) { return r.json(); })
     .then(function(d) {
+      if (d.error || (d.result &amp;&amp; !d.result.ok)) {
+        alert('Zum Bewerten bitte im Portal anmelden. Deine Bewertungen fließen direkt in Rekordbox ein!');
+        return;
+      }
       var res = d.result || {};
       if (res.ok) {
         var s = res.summary || {};
