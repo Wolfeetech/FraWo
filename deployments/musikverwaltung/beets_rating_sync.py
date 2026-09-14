@@ -47,7 +47,7 @@ def sync_to_beets(rows):
 
         cmd = [
             "ssh", "-o", "BatchMode=yes", f"root@{PRODESK_HOST}",
-            f"pct exec {CT120_ID} -- beet modify -y 'artist:{artist}' 'title:{title}' crowd_rating={stars} votes_count={count}"
+            f"pct exec {CT120_ID} -- beet modify -y -M -W 'artist:{artist}' 'title:{title}' crowd_rating={stars} votes_count={count}"
         ]
         res = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8")
         if res.returncode == 0:
