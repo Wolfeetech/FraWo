@@ -887,6 +887,34 @@ body {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.ff-hist-rating {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 5px;
+  padding-top: 3px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+.ff-hist-stars {
+  display: inline-flex;
+  gap: 2px;
+  cursor: pointer;
+}
+.ff-hstar {
+  font-size: 0.72rem;
+  color: #64748b;
+  transition: transform 0.15s, color 0.15s;
+  user-select: none;
+}
+.ff-hstar:hover {
+  transform: scale(1.25);
+  color: #f59e0b !important;
+}
+.ff-hist-score {
+  font-family: var(--ff-font-mono);
+  font-size: 0.62rem;
+  color: var(--ff-text-dim);
+}
 
 /* Direct Links */
 .ff-links-box {
@@ -2121,6 +2149,47 @@ body {
     }
   }, 1000);
 
+  var histRatingsCache = {};
+
+  window.ffRateHistory = function(key, stars, targetEl) {
+    var loggedIn = Boolean(window.odoo &amp;&amp; window.odoo.session_info &amp;&amp; window.odoo.session_info.uid &amp;&amp; !window.odoo.session_info.is_website_user);
+    if (!loggedIn) {
+      alert('Zum Bewerten bitte im Portal anmelden. Deine Bewertungen fließen direkt in Rekordbox ein!');
+      return;
+    }
+    fetch('/radio/rate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ jsonrpc: '2.0', method: 'call', params: { song_id: key, stars: stars }, id: Date.now() })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      var res = d.result || {};
+      if (res.ok) {
+        var s = res.summary || {};
+        histRatingsCache[key] = s;
+        if (targetEl) updateHistStarsEl(targetEl, s.average || 0, s.own || stars, s.count || 0);
+        if (window.spawnReaction) window.spawnReaction('⭐');
+      }
+    }).catch(function() {});
+  };
+
+  function updateHistStarsEl(wrap, avg, own, count) {
+    if (!wrap) return;
+    var starsSpans = wrap.querySelectorAll('.ff-hstar');
+    var scoreEl = wrap.querySelector('.ff-hist-score');
+    var rounded = Math.round(avg || own || 0);
+    starsSpans.forEach(function(sp, idx) {
+      var v = idx + 1;
+      var active = Boolean(Math.max(v, rounded) === rounded);
+      sp.textContent = active ? '★' : '☆';
+      sp.style.color = active ? '#f59e0b' : '#64748b';
+    });
+    if (scoreEl) {
+      scoreEl.textContent = avg ? ('Ø ' + Number(avg).toFixed(1)) : 'Neu';
+    }
+  }
+
   window.renderHistory = function(list) {
     if (!elHistory) return;
     if (!list) return;
@@ -2130,13 +2199,55 @@ body {
       var div = document.createElement('div');
       div.className = 'ff-hist-item';
       var art = song.art || '/web/image/2195';
+      var title = song.title || 'Unbekannt';
+      var artist = song.artist || 'Studio Stream';
+      var key = artist + '|' + title;
+
+      var safeTitle = title.replace(/"/g, '');
+      var safeArtist = artist.replace(/"/g, '');
+
       div.innerHTML =
-        '&lt;img class="ff-hist-art" src="' + art + '" alt="" loading="lazy"/&gt;' +
-        '&lt;div class="ff-hist-title"&gt;' + (song.title || '') + '&lt;/div&gt;' +
-        '&lt;div class="ff-hist-artist"&gt;' + (song.artist || '') + '&lt;/div&gt;';
+        '<img class="ff-hist-art" src="' + art + '" alt="" loading="lazy"/>' +
+        '<div class="ff-hist-title" title="' + safeTitle + '">' + title + '</div>' +
+        '<div class="ff-hist-artist" title="' + safeArtist + '">' + artist + '</div>' +
+        '<div class="ff-hist-rating">' +
+          '<div class="ff-hist-stars">' +
+            '<span class="ff-hstar" data-v="1" title="1 Stern">☆</span>' +
+            '<span class="ff-hstar" data-v="2" title="2 Sterne">☆</span>' +
+            '<span class="ff-hstar" data-v="3" title="3 Sterne">☆</span>' +
+            '<span class="ff-hstar" data-v="4" title="4 Sterne">☆</span>' +
+            '<span class="ff-hstar" data-v="5" title="5 Sterne">☆</span>' +
+          '</div>' +
+          '<span class="ff-hist-score">...</span>' +
+        '</div>';
+
+      var ratingWrap = div.querySelector('.ff-hist-rating');
+      var starEls = div.querySelectorAll('.ff-hstar');
+      starEls.forEach(function(sEl) {
+        sEl.addEventListener('click', function(e) {
+          e.stopPropagation();
+          var v = parseInt(sEl.getAttribute('data-v'), 10);
+          window.ffRateHistory(key, v, ratingWrap);
+        });
+      });
+
+      if (histRatingsCache[key]) {
+        var cached = histRatingsCache[key];
+        updateHistStarsEl(ratingWrap, cached.average || 0, cached.own || 0, cached.count || 0);
+      } else {
+        fetch('/radio/rating/summary?track_id=' + encodeURIComponent(key), { cache: 'no-store' })
+          .then(function(r) { return r.json(); })
+          .then(function(d) {
+            if (d &amp;&amp; d.ok) {
+              histRatingsCache[key] = d;
+              updateHistStarsEl(ratingWrap, d.average || 0, d.own || 0, d.count || 0);
+            }
+          }).catch(function() {});
+      }
+
       elHistory.appendChild(div);
     });
-  }
+  };
 
   function loadNowPlaying() {
     fetch(AZURA_API + '/nowplaying/1')
