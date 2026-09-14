@@ -1354,12 +1354,12 @@ body {
   <!-- Weekday Tabs -->
   <div class="ff-week-tabs" id="ff-week-tabs">
     <button class="ff-week-tab" data-day="1"><span class="ff-tab-day">MO</span><span class="ff-tab-sub">Deep Focus</span></button>
-    <button class="ff-week-tab" data-day="2"><span class="ff-tab-day">DI</span><span class="ff-tab-sub">Classic</span></button>
+    <button class="ff-week-tab" data-day="2"><span class="ff-tab-day">DI</span><span class="ff-tab-sub">Classic Flow</span></button>
     <button class="ff-week-tab" data-day="3"><span class="ff-tab-day">MI</span><span class="ff-tab-sub">Afro World</span></button>
-    <button class="ff-week-tab" data-day="4"><span class="ff-tab-day">DO</span><span class="ff-tab-sub">Throwback</span></button>
-    <button class="ff-week-tab" data-day="5"><span class="ff-tab-day">FR</span><span class="ff-tab-sub">Club Launch</span></button>
-    <button class="ff-week-tab" data-day="6"><span class="ff-tab-day">SA</span><span class="ff-tab-sub">Club Day</span></button>
-    <button class="ff-week-tab" data-day="0"><span class="ff-tab-day">SO</span><span class="ff-tab-sub">Roadtrip</span></button>
+    <button class="ff-week-tab" data-day="4"><span class="ff-tab-day">DO</span><span class="ff-tab-sub">Cruising</span></button>
+    <button class="ff-week-tab" data-day="5"><span class="ff-tab-day">FR</span><span class="ff-tab-sub">Weekend Launch</span></button>
+    <button class="ff-week-tab" data-day="6"><span class="ff-tab-day">SA</span><span class="ff-tab-sub">Club &amp; Flow</span></button>
+    <button class="ff-week-tab" data-day="0"><span class="ff-tab-day">SO</span><span class="ff-tab-sub">Roadtrip &amp; Soul</span></button>
   </div>
 
   <div id="ff-schedule">
@@ -1367,47 +1367,47 @@ body {
     <div class="ff-day-panel" data-day="1">
       <div class="ff-card" data-show="01 Sunrise">
         <div>
-          <div class="ff-card-time">06:00 – 09:00</div>
+          <div class="ff-card-time">06:00 – 08:30</div>
           <div class="ff-card-name">01 Sunrise</div>
           <div class="ff-card-desc">Ambient, Chillout &amp; Downtempo für den sanften Start.</div>
         </div>
-        <div class="ff-card-tag">249 Tracks · ø 96 BPM</div>
+        <div class="ff-card-tag">206 Tracks · ø 96 BPM</div>
       </div>
       <div class="ff-card" data-show="02 Morning Drive">
         <div>
-          <div class="ff-card-time">09:00 – 12:00</div>
+          <div class="ff-card-time">08:30 – 11:30</div>
           <div class="ff-card-name">02 Morning Drive</div>
-          <div class="ff-card-desc">Nu Disco, Funky House &amp; uplifting Groove.</div>
+          <div class="ff-card-desc">Nu Disco, Funky House &amp; uplifting Groove für den Kickstart.</div>
         </div>
-        <div class="ff-card-tag">676 Tracks · ø 123 BPM</div>
+        <div class="ff-card-tag">654 Tracks · ø 123 BPM</div>
       </div>
       <div class="ff-card" data-show="03 Lunch Groove">
         <div>
-          <div class="ff-card-time">12:00 – 14:00</div>
-          <div class="ff-card-name">03 Lunch Groove</div>
-          <div class="ff-card-desc">Soul, Funk &amp; Rare Grooves für die Mittagspause.</div>
+          <div class="ff-card-time">11:30 – 14:00</div>
+          <div class="ff-card-name">03 Lunch Groove — Motown &amp; Classic Soul</div>
+          <div class="ff-card-desc">70s Soul, Rare Grooves &amp; Philly Sound zur Mittagspause.</div>
         </div>
-        <div class="ff-card-tag">625 Tracks · ø 115 BPM</div>
+        <div class="ff-card-tag">614 Tracks · ø 115 BPM</div>
       </div>
       <div class="ff-card" data-show="04 Afternoon Flow">
         <div>
-          <div class="ff-card-time">14:00 – 18:00</div>
+          <div class="ff-card-time">14:00 – 17:00</div>
           <div class="ff-card-name">04 Afternoon Flow</div>
           <div class="ff-card-desc">Deep House &amp; Melodic Beats für den Werkstatt-Flow.</div>
         </div>
-        <div class="ff-card-tag">360 Tracks · ø 123 BPM</div>
+        <div class="ff-card-tag">346 Tracks · ø 123 BPM</div>
       </div>
       <div class="ff-card" data-show="06 Deep Night">
         <div>
-          <div class="ff-card-time">18:00 – 22:00</div>
+          <div class="ff-card-time">17:00 – 21:00</div>
           <div class="ff-card-name">Deep Focus Session</div>
-          <div class="ff-card-desc">Hypnotic Minimal, Dub Techno &amp; Deep Atmosphären — zum Abtauchen.</div>
+          <div class="ff-card-desc">Hypnotic Minimal, Dub Techno &amp; Deep Atmosphären ab Feierabend.</div>
         </div>
-        <div class="ff-card-tag">348 Tracks · ø 128 BPM</div>
+        <div class="ff-card-tag">341 Tracks · ø 128 BPM</div>
       </div>
       <div class="ff-card" data-show="06 Deep Night">
         <div>
-          <div class="ff-card-time">22:00 – 06:00</div>
+          <div class="ff-card-time">21:00 – 06:00</div>
           <div class="ff-card-name">06 Deep Night</div>
           <div class="ff-card-desc">Hypnotic Minimal &amp; Nachtatmosphäre bis Morgengrauen.</div>
         </div>
@@ -1419,47 +1419,47 @@ body {
     <div class="ff-day-panel" data-day="2">
       <div class="ff-card" data-show="01 Sunrise">
         <div>
-          <div class="ff-card-time">06:00 – 09:00</div>
+          <div class="ff-card-time">06:00 – 08:30</div>
           <div class="ff-card-name">01 Sunrise</div>
           <div class="ff-card-desc">Ambient, Chillout &amp; Downtempo für den sanften Start.</div>
         </div>
-        <div class="ff-card-tag">249 Tracks · ø 96 BPM</div>
+        <div class="ff-card-tag">206 Tracks · ø 96 BPM</div>
       </div>
       <div class="ff-card" data-show="02 Morning Drive">
         <div>
-          <div class="ff-card-time">09:00 – 12:00</div>
+          <div class="ff-card-time">08:30 – 11:30</div>
           <div class="ff-card-name">02 Morning Drive</div>
           <div class="ff-card-desc">Nu Disco, Funky House &amp; uplifting Groove.</div>
         </div>
-        <div class="ff-card-tag">676 Tracks · ø 123 BPM</div>
+        <div class="ff-card-tag">654 Tracks · ø 123 BPM</div>
       </div>
       <div class="ff-card" data-show="03 Lunch Groove">
         <div>
-          <div class="ff-card-time">12:00 – 14:00</div>
-          <div class="ff-card-name">03 Lunch Groove</div>
-          <div class="ff-card-desc">Soul, Funk &amp; Rare Grooves für die Mittagspause.</div>
+          <div class="ff-card-time">11:30 – 14:00</div>
+          <div class="ff-card-name">03 Lunch Groove — French Touch &amp; Nu-Disco</div>
+          <div class="ff-card-desc">Daft Punk, Breakbot, Folamour &amp; moderne Disco-Edits.</div>
         </div>
-        <div class="ff-card-tag">625 Tracks · ø 115 BPM</div>
+        <div class="ff-card-tag">614 Tracks · ø 115 BPM</div>
       </div>
       <div class="ff-card" data-show="04 Afternoon Flow">
         <div>
-          <div class="ff-card-time">14:00 – 18:00</div>
+          <div class="ff-card-time">14:00 – 17:00</div>
           <div class="ff-card-name">04 Afternoon Flow</div>
           <div class="ff-card-desc">Deep House &amp; Melodic Beats für den Werkstatt-Flow.</div>
         </div>
-        <div class="ff-card-tag">360 Tracks · ø 123 BPM</div>
+        <div class="ff-card-tag">346 Tracks · ø 123 BPM</div>
       </div>
       <div class="ff-card" data-show="05 Evening Warmup">
         <div>
-          <div class="ff-card-time">18:00 – 22:00</div>
+          <div class="ff-card-time">17:00 – 21:00</div>
           <div class="ff-card-name">05 Evening Warmup</div>
-          <div class="ff-card-desc">Tech House &amp; Club Warmup — der klassische Dienstag.</div>
+          <div class="ff-card-desc">Tech House, Basslines &amp; Driving Beats zum Dienstagabend.</div>
         </div>
-        <div class="ff-card-tag">420 Tracks · ø 127 BPM</div>
+        <div class="ff-card-tag">406 Tracks · ø 127 BPM</div>
       </div>
       <div class="ff-card" data-show="06 Deep Night">
         <div>
-          <div class="ff-card-time">22:00 – 06:00</div>
+          <div class="ff-card-time">21:00 – 06:00</div>
           <div class="ff-card-name">06 Deep Night</div>
           <div class="ff-card-desc">Hypnotic Minimal &amp; Nachtatmosphäre bis Morgengrauen.</div>
         </div>
@@ -1471,47 +1471,47 @@ body {
     <div class="ff-day-panel" data-day="3">
       <div class="ff-card" data-show="01 Sunrise">
         <div>
-          <div class="ff-card-time">06:00 – 09:00</div>
+          <div class="ff-card-time">06:00 – 08:30</div>
           <div class="ff-card-name">01 Sunrise</div>
           <div class="ff-card-desc">Ambient, Chillout &amp; Downtempo für den sanften Start.</div>
         </div>
-        <div class="ff-card-tag">249 Tracks · ø 96 BPM</div>
+        <div class="ff-card-tag">206 Tracks · ø 96 BPM</div>
       </div>
       <div class="ff-card" data-show="02 Morning Drive">
         <div>
-          <div class="ff-card-time">09:00 – 12:00</div>
+          <div class="ff-card-time">08:30 – 11:30</div>
           <div class="ff-card-name">02 Morning Drive</div>
           <div class="ff-card-desc">Nu Disco, Funky House &amp; uplifting Groove.</div>
         </div>
-        <div class="ff-card-tag">676 Tracks · ø 123 BPM</div>
+        <div class="ff-card-tag">654 Tracks · ø 123 BPM</div>
       </div>
       <div class="ff-card" data-show="03 Lunch Groove">
         <div>
-          <div class="ff-card-time">12:00 – 14:00</div>
-          <div class="ff-card-name">03 Lunch Groove</div>
-          <div class="ff-card-desc">Soul, Funk &amp; Rare Grooves für die Mittagspause.</div>
+          <div class="ff-card-time">11:30 – 14:00</div>
+          <div class="ff-card-name">03 Lunch Groove — Rare Grooves &amp; Vinyl Gems</div>
+          <div class="ff-card-desc">Rare Funk, 70s Afro-Funk, Crate-Digger-Perlen &amp; Instrumentals.</div>
         </div>
-        <div class="ff-card-tag">625 Tracks · ø 115 BPM</div>
+        <div class="ff-card-tag">614 Tracks · ø 115 BPM</div>
       </div>
       <div class="ff-card" data-show="04 Afternoon Flow">
         <div>
-          <div class="ff-card-time">14:00 – 18:00</div>
+          <div class="ff-card-time">14:00 – 17:00</div>
           <div class="ff-card-name">04 Afternoon Flow</div>
           <div class="ff-card-desc">Deep House &amp; Melodic Beats für den Werkstatt-Flow.</div>
         </div>
-        <div class="ff-card-tag">360 Tracks · ø 123 BPM</div>
+        <div class="ff-card-tag">346 Tracks · ø 123 BPM</div>
       </div>
       <div class="ff-card" data-show="09 Afro World">
         <div>
-          <div class="ff-card-time">18:00 – 22:00</div>
+          <div class="ff-card-time">17:00 – 21:00</div>
           <div class="ff-card-name">09 Afro World</div>
-          <div class="ff-card-desc">Afro House, Organic Percussion &amp; Global Electronic Grooves.</div>
+          <div class="ff-card-desc">Afro House, Amapiano, Organic Percussion &amp; Global Beats.</div>
         </div>
-        <div class="ff-card-tag">148 Tracks · ø 121 BPM</div>
+        <div class="ff-card-tag">137 Tracks · ø 121 BPM</div>
       </div>
       <div class="ff-card" data-show="06 Deep Night">
         <div>
-          <div class="ff-card-time">22:00 – 06:00</div>
+          <div class="ff-card-time">21:00 – 06:00</div>
           <div class="ff-card-name">06 Deep Night</div>
           <div class="ff-card-desc">Hypnotic Minimal &amp; Nachtatmosphäre bis Morgengrauen.</div>
         </div>
@@ -1519,51 +1519,51 @@ body {
       </div>
     </div>
 
-    <!-- DONNERSTAG: Throwback & Disco -->
+    <!-- DONNERSTAG: Cruising & Balearic -->
     <div class="ff-day-panel" data-day="4">
       <div class="ff-card" data-show="01 Sunrise">
         <div>
-          <div class="ff-card-time">06:00 – 09:00</div>
+          <div class="ff-card-time">06:00 – 08:30</div>
           <div class="ff-card-name">01 Sunrise</div>
           <div class="ff-card-desc">Ambient, Chillout &amp; Downtempo für den sanften Start.</div>
         </div>
-        <div class="ff-card-tag">249 Tracks · ø 96 BPM</div>
+        <div class="ff-card-tag">206 Tracks · ø 96 BPM</div>
       </div>
       <div class="ff-card" data-show="02 Morning Drive">
         <div>
-          <div class="ff-card-time">09:00 – 12:00</div>
+          <div class="ff-card-time">08:30 – 11:30</div>
           <div class="ff-card-name">02 Morning Drive</div>
           <div class="ff-card-desc">Nu Disco, Funky House &amp; uplifting Groove.</div>
         </div>
-        <div class="ff-card-tag">676 Tracks · ø 123 BPM</div>
+        <div class="ff-card-tag">654 Tracks · ø 123 BPM</div>
       </div>
       <div class="ff-card" data-show="03 Lunch Groove">
         <div>
-          <div class="ff-card-time">12:00 – 14:00</div>
-          <div class="ff-card-name">03 Lunch Groove</div>
-          <div class="ff-card-desc">Soul, Funk &amp; Rare Grooves für die Mittagspause.</div>
+          <div class="ff-card-time">11:30 – 14:00</div>
+          <div class="ff-card-name">03 Lunch Groove — Neo-Soul &amp; Acid Jazz</div>
+          <div class="ff-card-desc">Tom Misch, Jamiroquai, Erykah Badu &amp; Laidback Chords.</div>
         </div>
-        <div class="ff-card-tag">625 Tracks · ø 115 BPM</div>
+        <div class="ff-card-tag">614 Tracks · ø 115 BPM</div>
       </div>
       <div class="ff-card" data-show="04 Afternoon Flow">
         <div>
-          <div class="ff-card-time">14:00 – 18:00</div>
+          <div class="ff-card-time">14:00 – 17:00</div>
           <div class="ff-card-name">04 Afternoon Flow</div>
           <div class="ff-card-desc">Deep House &amp; Melodic Beats für den Werkstatt-Flow.</div>
         </div>
-        <div class="ff-card-tag">360 Tracks · ø 123 BPM</div>
+        <div class="ff-card-tag">346 Tracks · ø 123 BPM</div>
       </div>
-      <div class="ff-card" data-show="02 Morning Drive">
+      <div class="ff-card" data-show="08 Sunday Roadtrip">
         <div>
-          <div class="ff-card-time">18:00 – 22:00</div>
-          <div class="ff-card-name">Throwback Session</div>
-          <div class="ff-card-desc">Nu Disco, 80s Boogie, Vintage Grooves &amp; Classics zum Donnerstagabend.</div>
+          <div class="ff-card-time">17:00 – 21:00</div>
+          <div class="ff-card-name">Sunset Cruising &amp; Balearic</div>
+          <div class="ff-card-desc">Sonniger Indie-Sound, 80s Cruising Classics &amp; Balearic Beats.</div>
         </div>
-        <div class="ff-card-tag">676 Tracks · ø 123 BPM</div>
+        <div class="ff-card-tag">726 Tracks · ø 121 BPM</div>
       </div>
       <div class="ff-card" data-show="06 Deep Night">
         <div>
-          <div class="ff-card-time">22:00 – 06:00</div>
+          <div class="ff-card-time">21:00 – 06:00</div>
           <div class="ff-card-name">06 Deep Night</div>
           <div class="ff-card-desc">Hypnotic Minimal &amp; Nachtatmosphäre bis Morgengrauen.</div>
         </div>
@@ -1575,27 +1575,27 @@ body {
     <div class="ff-day-panel" data-day="5">
       <div class="ff-card" data-show="01 Sunrise">
         <div>
-          <div class="ff-card-time">06:00 – 09:00</div>
+          <div class="ff-card-time">06:00 – 08:30</div>
           <div class="ff-card-name">01 Sunrise</div>
           <div class="ff-card-desc">Ambient, Chillout &amp; Downtempo für den sanften Start.</div>
         </div>
-        <div class="ff-card-tag">249 Tracks · ø 96 BPM</div>
+        <div class="ff-card-tag">206 Tracks · ø 96 BPM</div>
       </div>
       <div class="ff-card" data-show="02 Morning Drive">
         <div>
-          <div class="ff-card-time">09:00 – 12:00</div>
+          <div class="ff-card-time">08:30 – 11:30</div>
           <div class="ff-card-name">02 Morning Drive</div>
           <div class="ff-card-desc">Nu Disco, Funky House &amp; uplifting Groove.</div>
         </div>
-        <div class="ff-card-tag">676 Tracks · ø 123 BPM</div>
+        <div class="ff-card-tag">654 Tracks · ø 123 BPM</div>
       </div>
       <div class="ff-card" data-show="03 Lunch Groove">
         <div>
-          <div class="ff-card-time">12:00 – 14:00</div>
-          <div class="ff-card-name">03 Lunch Groove</div>
-          <div class="ff-card-desc">Soul, Funk &amp; Rare Grooves für die Mittagspause.</div>
+          <div class="ff-card-time">11:30 – 14:00</div>
+          <div class="ff-card-name">03 Lunch Groove — Feelgood Disco &amp; Weekend Starter</div>
+          <div class="ff-card-desc">High-Energy Disco &amp; House-Edits zum Start ins Wochenende.</div>
         </div>
-        <div class="ff-card-tag">625 Tracks · ø 115 BPM</div>
+        <div class="ff-card-tag">614 Tracks · ø 115 BPM</div>
       </div>
       <div class="ff-card" data-show="04 Afternoon Flow">
         <div>
@@ -1603,51 +1603,75 @@ body {
           <div class="ff-card-name">04 Afternoon Flow</div>
           <div class="ff-card-desc">Kurzer Deep-House-Boost vor dem Weekend Launch.</div>
         </div>
-        <div class="ff-card-tag">360 Tracks · ø 123 BPM</div>
+        <div class="ff-card-tag">346 Tracks · ø 123 BPM</div>
       </div>
       <div class="ff-card" data-show="05 Evening Warmup">
         <div>
-          <div class="ff-card-time">16:00 – 22:00</div>
+          <div class="ff-card-time">16:00 – 21:00</div>
           <div class="ff-card-name">Weekend Launch</div>
-          <div class="ff-card-desc">Club Warmup startet 2h früher — das Wochenende beginnt!</div>
+          <div class="ff-card-desc">Club Warmup startet 2h früher — der Freitag Feierabend!</div>
         </div>
-        <div class="ff-card-tag">420 Tracks · ø 127 BPM</div>
+        <div class="ff-card-tag">406 Tracks · ø 127 BPM</div>
       </div>
       <div class="ff-card" data-show="07 Peak Time Club">
         <div>
-          <div class="ff-card-time">22:00 – 02:00</div>
+          <div class="ff-card-time">21:00 – 02:00</div>
           <div class="ff-card-name">07 Peak Time Club</div>
-          <div class="ff-card-desc">Peak-Time Rave, Acid Techno &amp; Festival-Energie.</div>
+          <div class="ff-card-desc">Peak-Time Rave, Driving Techno &amp; Festival-Energie.</div>
         </div>
-        <div class="ff-card-tag">400 Tracks · ø 135 BPM</div>
+        <div class="ff-card-tag">395 Tracks · ø 135 BPM</div>
       </div>
     </div>
 
-    <!-- SAMSTAG: Full Club Day -->
+    <!-- SAMSTAG: Club & Flow -->
     <div class="ff-day-panel" data-day="6">
+      <div class="ff-card" data-show="06 Deep Night">
+        <div>
+          <div class="ff-card-time">02:00 – 06:00</div>
+          <div class="ff-card-name">06 Deep Night — Afterhour</div>
+          <div class="ff-card-desc">Afterhour: Minimal &amp; Dub Techno bis zum Morgen.</div>
+        </div>
+        <div class="ff-card-tag">341 Tracks · ø 128 BPM</div>
+      </div>
       <div class="ff-card" data-show="01 Sunrise">
         <div>
-          <div class="ff-card-time">06:00 – 10:00</div>
+          <div class="ff-card-time">06:00 – 09:30</div>
           <div class="ff-card-name">01 Sunrise</div>
           <div class="ff-card-desc">Verlängerter Samstag-Morgen mit Ambient &amp; Chillout.</div>
         </div>
-        <div class="ff-card-tag">249 Tracks · ø 96 BPM</div>
+        <div class="ff-card-tag">206 Tracks · ø 96 BPM</div>
+      </div>
+      <div class="ff-card" data-show="02 Morning Drive">
+        <div>
+          <div class="ff-card-time">09:30 – 13:00</div>
+          <div class="ff-card-name">Saturday Morning &amp; Coffee</div>
+          <div class="ff-card-desc">Sonniger Nu-Disco, Acoustic Soul &amp; Indie Beats für den Vormittag.</div>
+        </div>
+        <div class="ff-card-tag">654 Tracks · ø 123 BPM</div>
       </div>
       <div class="ff-card" data-show="04 Afternoon Flow">
         <div>
-          <div class="ff-card-time">10:00 – 20:00</div>
-          <div class="ff-card-name">04 Afternoon Flow</div>
-          <div class="ff-card-desc">Der lange Samstag: Deep House &amp; Melodic Beats.</div>
+          <div class="ff-card-time">13:00 – 17:00</div>
+          <div class="ff-card-name">04 Afternoon Flow — Studio &amp; Workshop</div>
+          <div class="ff-card-desc">Vier Stunden Werkstatt- &amp; Schaffensdrang mit Deep House.</div>
         </div>
-        <div class="ff-card-tag">360 Tracks · ø 123 BPM</div>
+        <div class="ff-card-tag">346 Tracks · ø 123 BPM</div>
+      </div>
+      <div class="ff-card" data-show="05 Evening Warmup">
+        <div>
+          <div class="ff-card-time">17:00 – 20:00</div>
+          <div class="ff-card-name">Saturday Pre-Party</div>
+          <div class="ff-card-desc">Driving Tech House &amp; Club Warmup in den Samstagabend.</div>
+        </div>
+        <div class="ff-card-tag">406 Tracks · ø 127 BPM</div>
       </div>
       <div class="ff-card" data-show="10 DJ Sets">
         <div>
           <div class="ff-card-time">20:00 – 22:00</div>
           <div class="ff-card-name">10 DJ Sets</div>
-          <div class="ff-card-desc">Nonstop Mixe &amp; Festival-Aufnahmen (≥ 35 Min).</div>
+          <div class="ff-card-desc">Exklusive DJ-Mixe, Studio-Aufnahmen &amp; Live-Mitschnitte.</div>
         </div>
-        <div class="ff-card-tag">70 Full Sets · Continuous Mix</div>
+        <div class="ff-card-tag">71 Full Sets · Continuous Mix</div>
       </div>
       <div class="ff-card" data-show="07 Peak Time Club">
         <div>
@@ -1655,49 +1679,57 @@ body {
           <div class="ff-card-name">07 Peak Time Club</div>
           <div class="ff-card-desc">Peak-Time Rave &amp; Acid Techno — die Samstagnacht.</div>
         </div>
-        <div class="ff-card-tag">400 Tracks · ø 135 BPM</div>
-      </div>
-      <div class="ff-card" data-show="06 Deep Night">
-        <div>
-          <div class="ff-card-time">02:00 – 06:00</div>
-          <div class="ff-card-name">06 Deep Night</div>
-          <div class="ff-card-desc">Afterhour — Minimal &amp; Dub Techno bis zum Morgen.</div>
-        </div>
-        <div class="ff-card-tag">348 Tracks · ø 128 BPM</div>
+        <div class="ff-card-tag">395 Tracks · ø 135 BPM</div>
       </div>
     </div>
 
-    <!-- SONNTAG: Roadtrip -->
+    <!-- SONNTAG: Roadtrip & Soul -->
     <div class="ff-day-panel" data-day="0">
+      <div class="ff-card" data-show="06 Deep Night">
+        <div>
+          <div class="ff-card-time">02:00 – 06:00</div>
+          <div class="ff-card-name">06 Deep Night — Afterhour</div>
+          <div class="ff-card-desc">Sanfte Afterhour-Klänge bis zum Sonntagssonnenaufgang.</div>
+        </div>
+        <div class="ff-card-tag">341 Tracks · ø 128 BPM</div>
+      </div>
       <div class="ff-card" data-show="01 Sunrise">
         <div>
           <div class="ff-card-time">06:00 – 10:00</div>
           <div class="ff-card-name">01 Sunrise</div>
-          <div class="ff-card-desc">Verlängerter Sonntag-Morgen mit Ambient &amp; Chillout.</div>
+          <div class="ff-card-desc">Langer Sonntagmorgen mit Ambient, Neo-Klassik &amp; Chillout.</div>
         </div>
-        <div class="ff-card-tag">249 Tracks · ø 96 BPM</div>
+        <div class="ff-card-tag">206 Tracks · ø 96 BPM</div>
+      </div>
+      <div class="ff-card" data-show="03 Lunch Groove">
+        <div>
+          <div class="ff-card-time">10:00 – 13:00</div>
+          <div class="ff-card-name">Sunday Brunch &amp; Soul Session</div>
+          <div class="ff-card-desc">Warme Akustik, Vintage Soul &amp; Rare Grooves zum späten Frühstück.</div>
+        </div>
+        <div class="ff-card-tag">614 Tracks · ø 115 BPM</div>
       </div>
       <div class="ff-card" data-show="08 Sunday Roadtrip">
         <div>
-          <div class="ff-card-time">10:00 – 18:00</div>
+          <div class="ff-card-time">13:00 – 18:00</div>
           <div class="ff-card-name">08 Sunday Roadtrip</div>
-          <div class="ff-card-desc">Soul, Funk, Vintage Classics &amp; sonniger Roadtrip-Sound.</div>
+          <div class="ff-card-desc">Unterwegs im Auto: Vintage Classics, Indie-Rock &amp; sonniger Roadtrip.</div>
         </div>
-        <div class="ff-card-tag">733 Tracks · ø 121 BPM</div>
+        <div class="ff-card-tag">726 Tracks · ø 121 BPM</div>
       </div>
       <div class="ff-card" data-show="05 Evening Warmup">
         <div>
-          <div class="ff-card-time">18:00 – 22:00</div>
-          <div class="ff-card-name">05 Evening Warmup</div>
-          <div class="ff-card-desc">Sanfter Übergang in die Nacht mit Tech House &amp; Warmup.</div>
+          <div class="ff-card-time">18:00 – 21:30</div>
+          <div class="ff-card-name">Sunday Wind-Down</div>
+          <div class="ff-card-desc">Sanfter Wochenausklang mit Organic Melodic &amp; Warmup Beats.</div>
         </div>
-        <div class="ff-card-tag">420 Tracks · ø 127 BPM</div>
+        <div class="ff-card-tag">406 Tracks · ø 127 BPM</div>
       </div>
       <div class="ff-card" data-show="06 Deep Night">
         <div>
-          <div class="ff-card-time">22:00 – 06:00</div>
+          <div class="ff-card-time">21:30 – 06:00</div>
           <div class="ff-card-name">06 Deep Night</div>
-          <div class="ff-card-desc">Hypnotic Minimal &amp; Nachtatmosphäre bis Morgengrauen.</div>
+          <div class="ff-card-desc">Sleep Tones, Hypnotic Minimal &amp; Nachtatmosphäre.</div>
         </div>
         <div class="ff-card-tag">Nonstop · ø 128 BPM</div>
       </div>
@@ -2448,57 +2480,46 @@ body {
     var now = new Date();
     var day = now.getDay();
     var hour = now.getHours();
+    var min = now.getMinutes();
 
     var targetShow = currentPlaylist || (lastNowPlaying ? lastNowPlaying.playlist : null);
 
     if (!targetShow) {
       if (day === 0) {
-        if (hour &gt;= 6 &amp;&amp; hour &lt; 10) targetShow = '01 Sunrise';
-        else if (hour &gt;= 10 &amp;&amp; hour &lt; 18) targetShow = '08 Sunday Roadtrip';
-        else if (hour &gt;= 18 &amp;&amp; hour &lt; 22) targetShow = '05 Evening Warmup';
+        if (hour &gt;= 2 &amp;&amp; hour &lt; 6) targetShow = '06 Deep Night';
+        else if (hour &gt;= 6 &amp;&amp; hour &lt; 10) targetShow = '01 Sunrise';
+        else if (hour &gt;= 10 &amp;&amp; hour &lt; 13) targetShow = '03 Lunch Groove';
+        else if (hour &gt;= 13 &amp;&amp; hour &lt; 18) targetShow = '08 Sunday Roadtrip';
+        else if (hour &gt;= 18 &amp;&amp; (hour &lt; 21 || (hour === 21 &amp;&amp; min &lt; 30))) targetShow = '05 Evening Warmup';
         else targetShow = '06 Deep Night';
       } else if (day === 6) {
-        if (hour &gt;= 6 &amp;&amp; hour &lt; 10) targetShow = '01 Sunrise';
-        else if (hour &gt;= 10 &amp;&amp; hour &lt; 20) targetShow = '04 Afternoon Flow';
+        if (hour &gt;= 2 &amp;&amp; hour &lt; 6) targetShow = '06 Deep Night';
+        else if (hour &gt;= 6 &amp;&amp; (hour &lt; 9 || (hour === 9 &amp;&amp; min &lt; 30))) targetShow = '01 Sunrise';
+        else if ((hour === 9 &amp;&amp; min &gt;= 30) || (hour &gt;= 10 &amp;&amp; hour &lt; 13)) targetShow = '02 Morning Drive';
+        else if (hour &gt;= 13 &amp;&amp; hour &lt; 17) targetShow = '04 Afternoon Flow';
+        else if (hour &gt;= 17 &amp;&amp; hour &lt; 20) targetShow = '05 Evening Warmup';
         else if (hour &gt;= 20 &amp;&amp; hour &lt; 22) targetShow = '10 DJ Sets';
         else if (hour &gt;= 22 || hour &lt; 2) targetShow = '07 Peak Time Club';
         else targetShow = '06 Deep Night';
       } else if (day === 5) {
-        if (hour &gt;= 6 &amp;&amp; hour &lt; 9) targetShow = '01 Sunrise';
-        else if (hour &gt;= 9 &amp;&amp; hour &lt; 12) targetShow = '02 Morning Drive';
-        else if (hour &gt;= 12 &amp;&amp; hour &lt; 14) targetShow = '03 Lunch Groove';
+        if (hour &gt;= 6 &amp;&amp; (hour &lt; 8 || (hour === 8 &amp;&amp; min &lt; 30))) targetShow = '01 Sunrise';
+        else if ((hour === 8 &amp;&amp; min &gt;= 30) || (hour &gt;= 9 &amp;&amp; hour &lt; 11) || (hour === 11 &amp;&amp; min &lt; 30)) targetShow = '02 Morning Drive';
+        else if ((hour === 11 &amp;&amp; min &gt;= 30) || (hour &gt;= 12 &amp;&amp; hour &lt; 14)) targetShow = '03 Lunch Groove';
         else if (hour &gt;= 14 &amp;&amp; hour &lt; 16) targetShow = '04 Afternoon Flow';
-        else if (hour &gt;= 16 &amp;&amp; hour &lt; 22) targetShow = '05 Evening Warmup';
-        else if (hour &gt;= 22 || hour &lt; 2) targetShow = '07 Peak Time Club';
-        else targetShow = '06 Deep Night';
-      } else if (day === 4) {
-        if (hour &gt;= 6 &amp;&amp; hour &lt; 9) targetShow = '01 Sunrise';
-        else if (hour &gt;= 9 &amp;&amp; hour &lt; 12) targetShow = '02 Morning Drive';
-        else if (hour &gt;= 12 &amp;&amp; hour &lt; 14) targetShow = '03 Lunch Groove';
-        else if (hour &gt;= 14 &amp;&amp; hour &lt; 18) targetShow = '04 Afternoon Flow';
-        else if (hour &gt;= 18 &amp;&amp; hour &lt; 22) targetShow = '02 Morning Drive';
-        else targetShow = '06 Deep Night';
-      } else if (day === 3) {
-        if (hour &gt;= 6 &amp;&amp; hour &lt; 9) targetShow = '01 Sunrise';
-        else if (hour &gt;= 9 &amp;&amp; hour &lt; 12) targetShow = '02 Morning Drive';
-        else if (hour &gt;= 12 &amp;&amp; hour &lt; 14) targetShow = '03 Lunch Groove';
-        else if (hour &gt;= 14 &amp;&amp; hour &lt; 18) targetShow = '04 Afternoon Flow';
-        else if (hour &gt;= 18 &amp;&amp; hour &lt; 22) targetShow = '09 Afro World';
-        else targetShow = '06 Deep Night';
-      } else if (day === 1) {
-        if (hour &gt;= 6 &amp;&amp; hour &lt; 9) targetShow = '01 Sunrise';
-        else if (hour &gt;= 9 &amp;&amp; hour &lt; 12) targetShow = '02 Morning Drive';
-        else if (hour &gt;= 12 &amp;&amp; hour &lt; 14) targetShow = '03 Lunch Groove';
-        else if (hour &gt;= 14 &amp;&amp; hour &lt; 18) targetShow = '04 Afternoon Flow';
-        else if (hour &gt;= 18 &amp;&amp; hour &lt; 22) targetShow = '06 Deep Night';
+        else if (hour &gt;= 16 &amp;&amp; hour &lt; 21) targetShow = '05 Evening Warmup';
+        else if (hour &gt;= 21 || hour &lt; 2) targetShow = '07 Peak Time Club';
         else targetShow = '06 Deep Night';
       } else {
-        if (hour &gt;= 6 &amp;&amp; hour &lt; 9) targetShow = '01 Sunrise';
-        else if (hour &gt;= 9 &amp;&amp; hour &lt; 12) targetShow = '02 Morning Drive';
-        else if (hour &gt;= 12 &amp;&amp; hour &lt; 14) targetShow = '03 Lunch Groove';
-        else if (hour &gt;= 14 &amp;&amp; hour &lt; 18) targetShow = '04 Afternoon Flow';
-        else if (hour &gt;= 18 &amp;&amp; hour &lt; 22) targetShow = '05 Evening Warmup';
-        else targetShow = '06 Deep Night';
+        if (hour &gt;= 6 &amp;&amp; (hour &lt; 8 || (hour === 8 &amp;&amp; min &lt; 30))) targetShow = '01 Sunrise';
+        else if ((hour === 8 &amp;&amp; min &gt;= 30) || (hour &gt;= 9 &amp;&amp; hour &lt; 11) || (hour === 11 &amp;&amp; min &lt; 30)) targetShow = '02 Morning Drive';
+        else if ((hour === 11 &amp;&amp; min &gt;= 30) || (hour &gt;= 12 &amp;&amp; hour &lt; 14)) targetShow = '03 Lunch Groove';
+        else if (hour &gt;= 14 &amp;&amp; hour &lt; 17) targetShow = '04 Afternoon Flow';
+        else if (hour &gt;= 17 &amp;&amp; hour &lt; 21) {
+          if (day === 1) targetShow = '06 Deep Night';
+          else if (day === 2) targetShow = '05 Evening Warmup';
+          else if (day === 3) targetShow = '09 Afro World';
+          else if (day === 4) targetShow = '08 Sunday Roadtrip';
+        } else targetShow = '06 Deep Night';
       }
     }
 
