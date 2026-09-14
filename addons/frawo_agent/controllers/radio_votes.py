@@ -78,7 +78,11 @@ class FrawoRadioVotes(http.Controller):
                 headers=[("Content-Type", "application/json")],
                 status=401,
             )
-        rows = request.env["frawo.radio.rating"].sudo().export_rows(min_count=2)
+        try:
+            min_count = int(kw.get("min_count", 1))
+        except (ValueError, TypeError):
+            min_count = 1
+        rows = request.env["frawo.radio.rating"].sudo().export_rows(min_count=min_count)
         return request.make_response(
             json.dumps(rows),
             headers=[("Content-Type", "application/json"), ("Cache-Control", "no-store")],
