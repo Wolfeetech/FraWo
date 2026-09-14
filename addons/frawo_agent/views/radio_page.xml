@@ -615,9 +615,12 @@ body {
 /* Dayparts Grid */
 .ff-schedule-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 16px;
   margin-bottom: 40px;
+}
+@media (min-width: 1200px) {
+  .ff-schedule-grid { grid-template-columns: repeat(5, 1fr); }
 }
 @media (max-width: 900px) {
   .ff-schedule-grid { grid-template-columns: 1fr 1fr; }
@@ -905,6 +908,7 @@ body {
         <span class="ff-live-dot"/> <span id="ff-live-badge">ON AIR JETZT</span>
       </div>
       <div class="ff-specs">
+        <span class="ff-spec-tag" id="ff-show-tag" style="color: #00BFFF; border-color: rgba(0, 191, 255, 0.4); background: rgba(0, 191, 255, 0.08);">📻 SHOW: 03 LUNCH GROOVE</span>
         <span class="ff-spec-tag">320 KBPS HD</span>
         <span class="ff-spec-tag">44.1 KHZ</span>
         <span class="ff-spec-tag">WEISSENSBERG STUDIO</span>
@@ -917,7 +921,7 @@ body {
       <div class="ff-track-info">
         <div class="ff-title" id="ff-title">FraWo Funk</div>
         <div class="ff-artist" id="ff-artist">Studio Stream · Live Auswahl</div>
-        <div class="ff-meta-line" id="ff-meta">320kbps Master Audio · Liquidsoap v2 Engine</div>
+        <div class="ff-meta-line" id="ff-meta">📻 03 Lunch Groove · 320kbps Master Audio · Liquidsoap v2 Engine</div>
       </div>
     </div>
 
@@ -1085,7 +1089,7 @@ body {
     </div>
     <div class="ff-jukebox-results" id="ff-req-results">
       <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: #64748b; padding: 6px 0;">
-        Tippe mindestens 2 Zeichen ein, um die 9.088 Tracks zu durchsuchen.
+        Tippe mindestens 2 Zeichen ein, um die 11.766 Tracks zu durchsuchen.
       </div>
     </div>
   </div>
@@ -1097,40 +1101,94 @@ body {
   </div>
 
   <div class="ff-schedule-grid" id="ff-schedule">
-    <div class="ff-card" data-start="6" data-end="11">
+    <div class="ff-card" data-show="01 Sunrise">
       <div>
-        <div class="ff-card-time">06:00 – 11:00 UHR</div>
-        <div class="ff-card-name">Acoustik &amp; Ambient</div>
-        <div class="ff-card-desc">Morning Chill, Akustik, Ambient &amp; Downtempo für einen sanften Start in den Tag.</div>
+        <div class="ff-card-time">MO–FR 06–09 · SA/SO 06–10</div>
+        <div class="ff-card-name">01 Sunrise</div>
+        <div class="ff-card-desc">Ambient, Chillout, Downtempo &amp; Acoustic für den sanften Start in den Tag.</div>
       </div>
-      <div class="ff-card-tag">Channel 1 · 349 Tracks</div>
+      <div class="ff-card-tag">149 Tracks · ø 96 BPM</div>
     </div>
 
-    <div class="ff-card" data-start="11" data-end="17">
+    <div class="ff-card" data-show="02 Morning Drive">
       <div>
-        <div class="ff-card-time">11:00 – 17:00 UHR</div>
-        <div class="ff-card-name">Soft Groove</div>
-        <div class="ff-card-desc">Deep House, Funk, Soul &amp; rhythmische Midday-Beats für den Workflow und die Werkstatt.</div>
+        <div class="ff-card-time">MO–FR 09:00 – 12:00 UHR</div>
+        <div class="ff-card-name">02 Morning Drive</div>
+        <div class="ff-card-desc">Nu Disco, Funky House &amp; uplifting Groove für fokussierten Workflow.</div>
       </div>
-      <div class="ff-card-tag">Channel 2 · 3.376 Tracks</div>
+      <div class="ff-card-tag">676 Tracks · ø 123 BPM</div>
     </div>
 
-    <div class="ff-card" data-start="17" data-end="22">
+    <div class="ff-card" data-show="03 Lunch Groove">
       <div>
-        <div class="ff-card-time">17:00 – 22:00 UHR</div>
-        <div class="ff-card-name">Roadtrip &amp; Classics</div>
-        <div class="ff-card-desc">Melodic House, Indie-Tunes, Hymnen &amp; Klassiker für den entspannten Feierabend.</div>
+        <div class="ff-card-time">MO–FR 12:00 – 14:00 UHR</div>
+        <div class="ff-card-name">03 Lunch Groove</div>
+        <div class="ff-card-desc">Soul, Funk, Neo-Soul &amp; Rare Grooves für die entspannte Mittagspause.</div>
       </div>
-      <div class="ff-card-tag">Channel 4 · 1.513 Tracks</div>
+      <div class="ff-card-tag">71 Tracks · ø 115 BPM</div>
     </div>
 
-    <div class="ff-card" data-start="22" data-end="6">
+    <div class="ff-card" data-show="04 Afternoon Flow">
       <div>
-        <div class="ff-card-time">22:00 – 06:00 UHR</div>
-        <div class="ff-card-name">Harder Styles</div>
-        <div class="ff-card-desc">Peak Time Techno, Dark Disco, Electro &amp; treibende Club-Sounds durch die Nacht.</div>
+        <div class="ff-card-time">MO–FR 14–18 · SA 10–20</div>
+        <div class="ff-card-name">04 Afternoon Flow</div>
+        <div class="ff-card-desc">Deep House, Melodic Beats &amp; treibender Werkstatt- und Studioflow.</div>
       </div>
-      <div class="ff-card-tag">Channel 3 · 2.461 Tracks</div>
+      <div class="ff-card-tag">239 Tracks · ø 123 BPM</div>
+    </div>
+
+    <div class="ff-card" data-show="05 Evening Warmup">
+      <div>
+        <div class="ff-card-time">MO, DI, DO, FR, SO 18–22</div>
+        <div class="ff-card-name">05 Evening Warmup</div>
+        <div class="ff-card-desc">Tech House, Club Warmup &amp; energiegeladener Übergang in die Nacht.</div>
+      </div>
+      <div class="ff-card-tag">420 Tracks · ø 127 BPM</div>
+    </div>
+
+    <div class="ff-card" data-show="06 Deep Night">
+      <div>
+        <div class="ff-card-time">SO–DO 22–06 · SA/SO 02–06</div>
+        <div class="ff-card-name">06 Deep Night</div>
+        <div class="ff-card-desc">Hypnotic Minimal, Deep Dub Techno &amp; Nachtatmosphäre bis ins Morgengrauen.</div>
+      </div>
+      <div class="ff-card-tag">348 Tracks · ø 128 BPM</div>
+    </div>
+
+    <div class="ff-card" data-show="07 Peak Time Club">
+      <div>
+        <div class="ff-card-time">FREITAG &amp; SAMSTAG 22–02</div>
+        <div class="ff-card-name">07 Peak Time Club</div>
+        <div class="ff-card-desc">Peak-Time Rave, Acid Techno &amp; Festival-Energie für das Wochenende.</div>
+      </div>
+      <div class="ff-card-tag">400 Tracks · ø 135 BPM</div>
+    </div>
+
+    <div class="ff-card" data-show="08 Sunday Roadtrip">
+      <div>
+        <div class="ff-card-time">SONNTAG 10:00 – 18:00 UHR</div>
+        <div class="ff-card-name">08 Sunday Roadtrip</div>
+        <div class="ff-card-desc">Soul, Funk, Vintage Classics &amp; sonniger Roadtrip-Sound am See.</div>
+      </div>
+      <div class="ff-card-tag">733 Tracks · ø 121 BPM</div>
+    </div>
+
+    <div class="ff-card" data-show="09 Afro World">
+      <div>
+        <div class="ff-card-time">MITTWOCH 18:00 – 22:00 UHR</div>
+        <div class="ff-card-name">09 Afro World</div>
+        <div class="ff-card-desc">Afro House, Organic Percussion &amp; Global Electronic Grooves.</div>
+      </div>
+      <div class="ff-card-tag">148 Tracks · ø 121 BPM</div>
+    </div>
+
+    <div class="ff-card" data-show="10 DJ Sets">
+      <div>
+        <div class="ff-card-time">SAMSTAG 20:00 – 22:00 UHR</div>
+        <div class="ff-card-name">10 DJ Sets</div>
+        <div class="ff-card-desc">Nonstop Mixe, DJ-Sets &amp; Festival-Aufnahmen (jeweils ≥ 35 Min).</div>
+      </div>
+      <div class="ff-card-tag">70 Full Sets · Continuous Mix</div>
     </div>
   </div>
 
@@ -1453,7 +1511,7 @@ body {
       var q = reqSearch.value.trim();
       if (reqDebounce) clearTimeout(reqDebounce);
       if (q.length &lt; 2) {
-        if (reqResults) reqResults.innerHTML = '&lt;div style="font-family:monospace;font-size:0.72rem;color:#64748b;padding:6px 0;"&gt;Tippe mindestens 2 Zeichen ein, um die 9.088 Tracks zu durchsuchen.&lt;/div&gt;';
+        if (reqResults) reqResults.innerHTML = '&lt;div style="font-family:monospace;font-size:0.72rem;color:#64748b;padding:6px 0;"&gt;Tippe mindestens 2 Zeichen ein, um die 11.766 Tracks zu durchsuchen.&lt;/div&gt;';
         return;
       }
 
@@ -1598,10 +1656,17 @@ body {
               }
 
               if (elArtist) elArtist.textContent = np.song.artist || 'Studio Stream';
+              if (np.playlist) {
+                var showTag = document.getElementById('ff-show-tag');
+                if (showTag) {
+                  showTag.textContent = '📻 SHOW: ' + np.playlist.toUpperCase();
+                }
+              }
               if (elMeta) {
+                var showPrefix = np.playlist ? ('📻 ' + np.playlist + ' · ') : '';
                 var gen = np.song.genre ? ' · Genre: ' + np.song.genre : '';
                 var alb = np.song.album ? ' · ' + np.song.album : '';
-                elMeta.textContent = '320kbps Master Audio' + gen + alb;
+                elMeta.textContent = showPrefix + '320kbps Master Audio' + gen + alb;
               }
 
               var newKey = (np.song.artist || '') + '|' + (np.song.title || '');
@@ -1649,7 +1714,11 @@ body {
                 }
               }
 
-              updateTicker();
+              if (np.playlist) {
+                highlightSchedule(np.playlist);
+              } else {
+                updateTicker();
+              }
             }
           }
         }
@@ -1661,37 +1730,67 @@ body {
 
   function updateTicker() {
     if (!elTicker) return;
-    var activeCard = document.querySelector('#ff-schedule .active-slot .ff-card-name');
-    var showName = activeCard ? activeCard.textContent : 'FraWo Funk';
+    var showName = (lastNowPlaying &amp;&amp; lastNowPlaying.playlist) ? lastNowPlaying.playlist : null;
+    if (!showName) {
+      var activeCard = document.querySelector('#ff-schedule .active-slot .ff-card-name');
+      showName = activeCard ? activeCard.textContent : 'FraWo Funk';
+    }
     var parts = [];
     if (lastNowPlaying) {
       if (lastNowPlaying.song) {
         parts.push('● JETZT LÄUFT: ' + lastNowPlaying.song.artist + ' – ' + lastNowPlaying.song.title);
       }
     }
-    parts.push('● SENDEPLAN: ' + showName);
+    parts.push('● SHOW: ' + showName);
     parts.push('● FRAWO FUNK · 320KBPS HD BROADCAST');
     elTicker.innerHTML = parts.join('&lt;span&gt;//&lt;/span&gt;');
   }
 
-  function highlightSchedule() {
-    var hour = new Date().getHours();
+  function highlightSchedule(currentPlaylist) {
     var grid = document.getElementById('ff-schedule');
     if (!grid) return;
     var cards = Array.prototype.slice.call(grid.querySelectorAll('.ff-card'));
-    cards.forEach(function(c) {
-      var start = parseInt(c.getAttribute('data-start'), 10);
-      var end = parseInt(c.getAttribute('data-end'), 10);
-      var active = false;
-      if (start &lt; end) {
-        if (hour &gt;= start) {
-          if (hour &lt; end) active = true;
-        }
+    var targetShow = currentPlaylist || (lastNowPlaying ? lastNowPlaying.playlist : null);
+
+    if (!targetShow) {
+      var now = new Date();
+      var day = now.getDay();
+      var hour = now.getHours();
+
+      if (day === 0) {
+        if (hour &gt;= 6 &amp;&amp; hour &lt; 10) targetShow = '01 Sunrise';
+        else if (hour &gt;= 10 &amp;&amp; hour &lt; 18) targetShow = '08 Sunday Roadtrip';
+        else if (hour &gt;= 18 &amp;&amp; hour &lt; 22) targetShow = '05 Evening Warmup';
+        else targetShow = '06 Deep Night';
+      } else if (day === 6) {
+        if (hour &gt;= 6 &amp;&amp; hour &lt; 10) targetShow = '01 Sunrise';
+        else if (hour &gt;= 10 &amp;&amp; hour &lt; 20) targetShow = '04 Afternoon Flow';
+        else if (hour &gt;= 20 &amp;&amp; hour &lt; 22) targetShow = '10 DJ Sets';
+        else targetShow = '07 Peak Time Club';
       } else {
-        if (hour &gt;= start) active = true;
-        if (hour &lt; end) active = true;
+        if (hour &gt;= 6 &amp;&amp; hour &lt; 9) targetShow = '01 Sunrise';
+        else if (hour &gt;= 9 &amp;&amp; hour &lt; 12) targetShow = '02 Morning Drive';
+        else if (hour &gt;= 12 &amp;&amp; hour &lt; 14) targetShow = '03 Lunch Groove';
+        else if (hour &gt;= 14 &amp;&amp; hour &lt; 18) targetShow = '04 Afternoon Flow';
+        else if (hour &gt;= 18 &amp;&amp; hour &lt; 22) {
+          targetShow = (day === 3) ? '09 Afro World' : '05 Evening Warmup';
+        } else if (hour &gt;= 22 || hour &lt; 2) {
+          targetShow = (day === 5) ? '07 Peak Time Club' : '06 Deep Night';
+        } else {
+          targetShow = '06 Deep Night';
+        }
       }
-      c.classList.toggle('active-slot', active);
+    }
+
+    cards.forEach(function(c) {
+      var showAttr = c.getAttribute('data-show');
+      var isActive = false;
+      if (targetShow &amp;&amp; showAttr) {
+        var tLow = targetShow.toLowerCase();
+        var sLow = showAttr.toLowerCase();
+        isActive = (tLow === sLow) || (tLow.indexOf(sLow) !== -1) || (sLow.indexOf(tLow) !== -1);
+      }
+      c.classList.toggle('active-slot', isActive);
     });
     updateTicker();
   }
