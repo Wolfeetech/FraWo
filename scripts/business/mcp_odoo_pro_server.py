@@ -265,6 +265,12 @@ def handle_odoo_execute_python(args):
         def id(self): return self._ids[0] if self._ids else None
     class _Env:
         def __getitem__(self, name): return _Model(name)
+        def __contains__(self, name):
+            try:
+                res = odoo_execute("ir.model", "search", [[("model", "=", name)]])
+                return bool(res)
+            except Exception:
+                return False
     buf = io.StringIO()
     local_vars = {"env": _Env(), "odoo_execute": odoo_execute}
     try:

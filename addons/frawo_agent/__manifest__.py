@@ -14,6 +14,7 @@
         "views/anker_tracker_templates.xml",
         "views/it_equipment_views.xml",
         "views/radio_vote_views.xml",
+        "views/radio_rating_views.xml",
         "views/project_task_search_views.xml",
         "views/project_dashboard_views.xml",
         "views/website_homepage_ci3.xml",

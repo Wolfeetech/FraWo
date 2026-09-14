@@ -694,6 +694,14 @@ body {
   transform: translateY(-1px);
 }
 
+/* Star Rating Widget */
+.ff-rating-box { cursor: default; }
+.ff-stars { letter-spacing: 2px; font-size: 1.1rem; user-select: none; }
+.ff-star { cursor: pointer; transition: color 0.15s, transform 0.15s; display: inline-block; }
+.ff-star:hover { transform: scale(1.2); }
+.ff-star.on { color: #f59e0b; }
+.ff-stars.locked .ff-star { cursor: default; opacity: 0.7; }
+
 /* Schedule Day Panel */
 .ff-day-panel {
   display: none;
@@ -1098,7 +1106,7 @@ body {
     <div class="ff-mood-box">
       <div class="ff-mood-header">
         <span>📻 Live-Stimmung &amp; Energie steuern</span>
-        <span>❤️ Speichert Banger für Rekordbox &amp; Radio-Rotation</span>
+        <span>⭐ 1–5 Sterne fließen direkt in Rekordbox &amp; Radio-Rotation</span>
       </div>
 
       <div class="ff-mood-grid">
@@ -1108,14 +1116,15 @@ body {
           <div class="ff-mood-btn-sub">Treibt das Tempo an</div>
         </button>
 
-        <!-- 2. Banger / Favorit (5-Sterne Rekordbox) -->
-        <button class="ff-mood-btn ff-btn-banger" id="ff-mood-banger" type="button" title="Track feiern — speichert 5 Sterne in Rekordbox &amp; erhöht Sendehäufigkeit" onclick="if(window.ffSetMood) window.ffSetMood('banger')">
+        <!-- 2. Sterne-Bewertung (nur angemeldet), Durchschnitt fuer alle -->
+        <div class="ff-mood-btn ff-rating-box" id="ff-rating-box" style="cursor: default;" title="Track mit 1 bis 5 Sternen bewerten — fliesst in Rekordbox">
           <div class="ff-mood-btn-title">
-            <span>❤️</span> Banger
-            <span class="ff-banger-badge" id="ff-banger-cnt">0</span>
+            <span class="ff-stars" id="ff-stars" data-own="0">
+              <span class="ff-star" data-v="1" onclick="if(window.ffRate) window.ffRate(1)">☆</span><span class="ff-star" data-v="2" onclick="if(window.ffRate) window.ffRate(2)">☆</span><span class="ff-star" data-v="3" onclick="if(window.ffRate) window.ffRate(3)">☆</span><span class="ff-star" data-v="4" onclick="if(window.ffRate) window.ffRate(4)">☆</span><span class="ff-star" data-v="5" onclick="if(window.ffRate) window.ffRate(5)">☆</span>
+            </span>
           </div>
-          <div class="ff-mood-btn-sub">★ 5 Sterne für DJ-Sets</div>
-        </button>
+          <div class="ff-mood-btn-sub" id="ff-rating-sub">Noch keine Bewertung</div>
+        </div>
 
         <!-- 3. Chilliger -->
         <button class="ff-mood-btn ff-btn-chill" id="ff-mood-chill" type="button" title="Sanftere, tiefere Tracks für die aktuelle Stunde wählen" onclick="if(window.ffSetMood) window.ffSetMood('chill')">
@@ -1169,7 +1178,7 @@ body {
         loadTally();
         setInterval(loadTally, 20000);
 
-        ['ff-mood-energy', 'ff-mood-banger', 'ff-mood-chill'].forEach(function (id) {
+        ['ff-mood-energy', 'ff-mood-chill'].forEach(function (id) {
           var btn = document.getElementById(id);
           if (btn) btn.addEventListener('click', function () { setTimeout(loadTally, 1500); });
         });
@@ -1192,6 +1201,63 @@ body {
           voteGrid.style.display = '';
           showGrid.style.display = 'none';
         };
+
+        var starsEl = document.getElementById('ff-stars');
+        var ratingSub = document.getElementById('ff-rating-sub');
+        var loggedIn = Boolean(window.odoo &amp;&amp; window.odoo.session_info &amp;&amp; window.odoo.session_info.uid &amp;&amp; !window.odoo.session_info.is_website_user);
+
+        function paintStars(avg, own, count) {
+          if (!starsEl) return;
+          var fill = own ? own : Math.round(avg || 0);
+          var stars = starsEl.querySelectorAll('.ff-star');
+          stars.forEach(function (s) {
+            var v = parseInt(s.getAttribute('data-v'), 10);
+            var on = (fill - v) === Math.abs(fill - v);
+            s.textContent = on ? '★' : '☆';
+            if (on) { s.classList.add('on'); } else { s.classList.remove('on'); }
+          });
+          if (!count) {
+            ratingSub.textContent = loggedIn ? 'Sei die erste Bewertung' : '★ 1–5 Sterne für Rekordbox';
+            return;
+          }
+          var txt = 'Ø ' + avg.toFixed(1) + ' · ' + count + (count === 1 ? ' Stimme' : ' Stimmen');
+          if (own) txt = txt + ' · deine: ' + own;
+          ratingSub.textContent = txt;
+        }
+
+        window.ffLoadRating = function () {
+          var key = window.currentTrackKey || '';
+          if (!key) return;
+          fetch('/radio/rating/summary?track_id=' + encodeURIComponent(key), { cache: 'no-store' })
+            .then(function (r) { return r.json(); })
+            .then(function (d) { if (d.ok) paintStars(d.average || 0, d.own || 0, d.count || 0); })
+            .catch(function () {});
+        };
+
+        window.ffRate = function (stars) {
+          if (!loggedIn) {
+            ratingSub.textContent = 'Zum Bewerten bitte im Portal anmelden';
+            return;
+          }
+          var key = window.currentTrackKey || '';
+          if (!key) return;
+          fetch('/radio/rate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ jsonrpc: '2.0', method: 'call', params: { song_id: key, stars: stars }, id: 1 })
+          }).then(function (r) { return r.json(); })
+            .then(function (d) {
+              var res = d.result || {};
+              if (res.ok) {
+                var s = res.summary || {};
+                paintStars(s.average || 0, s.own || 0, s.count || 0);
+                if (window.spawnReaction) window.spawnReaction('⭐');
+              }
+            }).catch(function () {});
+        };
+
+        if (starsEl) { if (!loggedIn) starsEl.classList.add('locked'); }
+        window.ffLoadRating();
       })();
     </script>
 
@@ -1625,6 +1691,7 @@ body {
   var isPlaying = false;
   var animTimer = null;
   var currentTrackKey = 'FraWo Funk';
+  window.currentTrackKey = currentTrackKey;
 
   var visBox = document.getElementById('ff-vis-box');
   var reactCanvas = document.getElementById('ff-reaction-canvas');
@@ -1810,7 +1877,9 @@ body {
     if (audio) audio.volume = parseFloat(val);
   };
 
-  function loadVotes() {}
+  function loadVotes() {
+    if (window.ffLoadRating) window.ffLoadRating();
+  }
   function renderNextTrack(np) {}
 
   function spawnReaction(emoji) {
@@ -2128,6 +2197,7 @@ body {
               var newKey = (np.song.artist || '') + '|' + (np.song.title || '');
               if (newKey !== currentTrackKey) {
                 currentTrackKey = newKey;
+                window.currentTrackKey = newKey;
                 loadVotes();
               }
 

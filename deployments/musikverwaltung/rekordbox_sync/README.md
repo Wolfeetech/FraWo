@@ -26,3 +26,16 @@ stattdessen Workaround:
 
 Funktioniert zuverlaessig (200 OK, live getestet), nur mit mehr
 Einzelanfragen statt einer Sammel-Abfrage.
+
+## Sterne-Export aus Odoo in Rekordbox (`rating_export.py`)
+
+- **Zweck:** Synchronisiert publikumskurierte Track-Bewertungen (1–5 Sterne) von `frawo.tech/radio` in die lokale Rekordbox-Datenbank (`%APPDATA%\Pioneer\rekordbox\master.db`).
+- **Ablauf:**
+  1. Prozessprüfung: bricht sofort ab, falls `rekordbox.exe` oder `rekordboxAgent.exe` läuft (Schutz vor SQLite-Locks).
+  2. Ruft `/radio/ratings/export` token-geschützt ab (mindestens 2 Bewertungen je Titel, Schnitt kaufmännisch gerundet).
+  3. Matcht Titel & Künstler exakt/case-insensitive gegen Rekordbox-Content.
+  4. Aktualisiert das native Feld `DjmdContent.Rating` (1–5).
+  5. Pflegt die Playlist **`🔥 Publikums-Favoriten`** (alle Titel mit $\ge 4$ Sternen).
+- **Log:** `rating_export.log` im gleichen Verzeichnis.
+- **Automatisierung:** `rating_export.cmd` kann über die Windows-Aufgabenplanung stündlich ausgeführt werden:
+  `schtasks /create /tn "FraWo-Radio-Rekordbox-Sterne-Export" /tr "\"C:\Users\StudioPC\FraWo\deployments\musikverwaltung\rekordbox_sync\rating_export.cmd\"" /sc hourly /f`

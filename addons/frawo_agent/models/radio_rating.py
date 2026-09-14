@@ -1,0 +1,76 @@
+# -*- coding: utf-8 -*-
+from decimal import Decimal, ROUND_HALF_UP
+
+from odoo import api, fields, models
+
+STAR_CHOICES = [(str(n), "★" * n) for n in range(1, 6)]
+
+
+class FrawoRadioRating(models.Model):
+    _name = "frawo.radio.rating"
+    _description = "FraWo Radio Sterne-Bewertung (eine pro Person und Titel)"
+    _order = "write_date desc"
+
+    track_id = fields.Char(string="Track", index=True, required=True)
+    partner_id = fields.Many2one("res.partner", string="Bewertet von", index=True,
+                                 required=True, ondelete="cascade")
+    stars = fields.Selection(STAR_CHOICES, string="Sterne", required=True)
+
+    _rating_unique_track_partner = models.Constraint(
+        "UNIQUE(track_id, partner_id)",
+        "Eine Person kann einen Titel nur einmal bewerten (erneut bewerten ueberschreibt).",
+    )
+
+    @api.model
+    def rate(self, track_id, partner_id, stars):
+        try:
+            stars = int(stars)
+        except (TypeError, ValueError):
+            raise ValueError("stars muss eine Ganzzahl zwischen 1 und 5 sein")
+        if stars < 1 or stars > 5:
+            raise ValueError("stars muss zwischen 1 und 5 liegen")
+        rec = self.search([("track_id", "=", track_id), ("partner_id", "=", partner_id)], limit=1)
+        if rec:
+            rec.write({"stars": str(stars)})
+            return rec
+        return self.create({"track_id": track_id, "partner_id": partner_id, "stars": str(stars)})
+
+    @api.model
+    def summary(self, track_id, partner_id=None):
+        recs = self.search([("track_id", "=", track_id)])
+        if not recs:
+            return {"average": None, "count": 0, "own": None}
+        values = [int(r.stars) for r in recs]
+        own = None
+        if partner_id:
+            mine = recs.filtered(lambda r: r.partner_id.id == partner_id)
+            own = int(mine[0].stars) if mine else None
+        return {
+            "average": round(sum(values) / len(values), 1),
+            "count": len(values),
+            "own": own,
+        }
+
+    @api.model
+    def export_rows(self, min_count=2):
+        groups = self.read_group(
+            [], ["stars"], ["track_id"], lazy=False)
+        rows = []
+        for g in groups:
+            track_id = g["track_id"]
+            recs = self.search([("track_id", "=", track_id)])
+            count = len(recs)
+            if count < min_count:
+                continue
+            avg = sum(int(r.stars) for r in recs) / count
+            artist, sep, title = track_id.partition("|")
+            rows.append({
+                "track_id": track_id,
+                "artist": artist,
+                "title": title if sep else "",
+                "average": round(avg, 1),
+                "count": count,
+                "stars": int(Decimal(str(avg)).quantize(Decimal("1"), rounding=ROUND_HALF_UP)),
+            })
+        rows.sort(key=lambda r: (-r["average"], r["track_id"]))
+        return rows

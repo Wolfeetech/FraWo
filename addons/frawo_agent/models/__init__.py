@@ -8,5 +8,7 @@ from . import it_equipment
 from . import mail_message
 from . import radio_vote
 from . import radio_azuracast
+from . import radio_rating
+
 
 
