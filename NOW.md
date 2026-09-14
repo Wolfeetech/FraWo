@@ -94,7 +94,7 @@ Wer eine davon nicht kennt, sucht stundenlang am falschen Ende.
 > | Odoo/Website CT140, Vaultwarden CT108, n8n+Paperless CT110 | ProDesk | ✅ **auf dem Anker** (Migration 07.09., stabil) |
 > | Monitoring CT150 | ProDesk | ✅ **auf dem Anker als CT155**, IP unverändert `10.1.0.35` (Restore 07.09.) |
 > | AdGuard Master CT101 | ProDesk | ⚠️ Prozess läuft wieder (`10.1.0.52`, `onboot:1`), beantwortet aber **keine** DNS-Anfragen von aussen (Admin-API antwortet nicht). Live-Traffic bestätigt: **Anker-Replica (`10.1.0.27`) trägt den DNS allein** (5.600+ Abfragen/h von Monitoring, OpenClaw, Radio-Node) — genau wie geplant, kein Nachfassen nötig |
-> | Radio VM210 AzuraCast | ProDesk | ❌ weiterhin gestoppt (wartet auf Bereinigung / OptiPlex) |
+> | Radio VM210 AzuraCast | ProDesk | ✅ **wieder online & live verifiziert** (14.09. 03:04, `10.1.0.38`, AutoDJ + Icecast + Cloudflare-Stream aktiv, Cron 51 reaktiviert) |
 > | Fileserver CT120 | ProDesk | ✅ **wieder aktiv auf dem ProDesk** (`10.1.0.94`, seit 13.09. nachmittags, ~2:45h nach Host-Boot manuell gestartet) |
 > | WireGuard CT106 | ProDesk | ✅ **auf dem Anker** unter gleicher ID, IP `10.1.0.239` |
 > | HA-Eltern VM360 | ProDesk | ✅ **auf dem ProDesk aktiv (`10.1.0.248`)**, WireGuard nach Stockenweiler OK |
