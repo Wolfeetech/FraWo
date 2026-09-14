@@ -1211,11 +1211,11 @@ body {
   </div>
   <div class="ff-jukebox-box">
     <div class="ff-jukebox-form">
-      <input type="text" class="ff-jukebox-input" id="ff-req-search" placeholder="Song oder Künstler in der FraWo-Bibliothek suchen…" autocomplete="off"/>
+      <input type="text" class="ff-jukebox-input" id="ff-req-search" placeholder="Titel oder Artist in der aktuellen Show suchen…" autocomplete="off"/>
     </div>
     <div class="ff-jukebox-results" id="ff-req-results">
       <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: #64748b; padding: 6px 0;">
-        Tippe mindestens 2 Zeichen ein, um die 11.766 Tracks zu durchsuchen.
+        Tippe mindestens 2 Zeichen ein, um passende Tracks zur aktuellen Show zu suchen und einzureihen.
       </div>
     </div>
   </div>
@@ -1977,32 +1977,22 @@ body {
       var q = reqSearch.value.trim();
       if (reqDebounce) clearTimeout(reqDebounce);
       if (q.length &lt; 2) {
-        if (reqResults) reqResults.innerHTML = '&lt;div style="font-family:monospace;font-size:0.72rem;color:#64748b;padding:6px 0;"&gt;Tippe mindestens 2 Zeichen ein, um die 11.766 Tracks zu durchsuchen.&lt;/div&gt;';
+        if (reqResults) reqResults.innerHTML = '&lt;div style="font-family:monospace;font-size:0.72rem;color:#64748b;padding:6px 0;"&gt;Tippe mindestens 2 Zeichen ein, um passende Tracks zur aktuellen Show zu suchen und einzureihen.&lt;/div&gt;';
         return;
       }
 
       reqDebounce = setTimeout(function() {
-        fetch(AZURA_API + '/station/1/requests')
+        fetch(AZURA_API + '/station/1/requests?searchPhrase=' + encodeURIComponent(q))
           .then(function(r) { return r.json(); })
           .then(function(list) {
             if (!reqResults) return;
-            var low = q.toLowerCase();
-            var matches = list.filter(function(item) {
-              var s = item.song || {};
-              var matchTitle = false;
-              if (s.title) { matchTitle = (s.title.toLowerCase().indexOf(low) !== -1); }
-              var matchArtist = false;
-              if (s.artist) { matchArtist = (s.artist.toLowerCase().indexOf(low) !== -1); }
-              return matchTitle || matchArtist;
-            }).slice(0, 8);
-
-            if (matches.length === 0) {
-              reqResults.innerHTML = '&lt;div style="font-family:monospace;font-size:0.75rem;color:#94a3b8;padding:8px 0;"&gt;Kein Track gefunden für "' + q + '".&lt;/div&gt;';
+            if (!Array.isArray(list) || list.length === 0) {
+              reqResults.innerHTML = '&lt;div style="font-family:monospace;font-size:0.75rem;color:#94a3b8;padding:8px 0;"&gt;Kein passender Track in der aktuellen Show für "' + q.replace(/&lt;/g, '&amp;lt;') + '".&lt;/div&gt;';
               return;
             }
 
             var html = '';
-            matches.forEach(function(m) {
+            list.slice(0, 8).forEach(function(m) {
               var s = m.song || {};
               html += '&lt;div class="ff-req-item"&gt;' +
                         '&lt;div class="ff-req-meta"&gt;' +
@@ -2017,7 +2007,7 @@ body {
           .catch(function(e) {
             if (reqResults) reqResults.innerHTML = '&lt;div style="font-family:monospace;font-size:0.75rem;color:#94a3b8;padding:8px 0;"&gt;Wunsch-System lädt...&lt;/div&gt;';
           });
-      }, 350);
+      }, 300);
     });
   }
 
