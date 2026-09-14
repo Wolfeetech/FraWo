@@ -15,6 +15,8 @@
 > - **Sicherheitsstandards (#1389):** Wache über Überwachung alle 10 min auf Anker-Host aktiv. Webhook-Secret in `ir.config_parameter` gesichert, Schleifenschutz (`author_id != 8`).
 > - **Tagesbericht per Mail:** Odoo-Cron 44 / Aktion 828 läuft täglich 12:04 CEST an `wolf@frawo.tech`.
 > - **Inselhalle & Stockenweiler sauber isoliert:** Bauprojekt Vater (#106) und Arbeitgeber (#107) getrennt von FraWo-Arbeit gezählt.
+> - **FraWo Funk (AzuraCast VM 210, `10.1.0.38`) wieder online & verifiziert (14.09.):** Nach ProDesk-Wiederbelebung gebootet (`onboot 1`). CIFS-Mount zu CT120 (`//10.1.0.94/music` auf `/mnt/library`, 1.9 TB) aktiv, Liquidsoap + Icecast laufen einwandfrei. Live-Audiostream lokal (`http://10.1.0.38:8000/radio.mp3`) und öffentlich über Cloudflare (`https://funk.frawo.tech/listen/frawo_funk/radio.mp3`) mit 128 KB Testdownload verifiziert. Prometheus 0 Alarme.
+> - **Zugangsdaten nach Vaultwarden migriert (#1010):** Alle 7 Betriebs-Secrets (Paperless Admin, API-Token, Gemini-Key, Secret-Key, Odoo-RPC, Jarvis/Alertmanager Webhooks, Cloudflare Tunnel) automatisiert per Bitwarden-CLI im RAM in Vaultwarden (Org 'FraWo', Collection 'Allgemein') gesichert. Bitwarden-CLI auf StudioPC stabil auf v2024.12.0 verankert. Task auf `✅ Erledigt`.
 > - **Dell OptiPlex 7050 Inbetriebnahmeplan vorbereitet (`OPTIPLEX_7050_INBETRIEBNAHME.md`):** Wartet auf 65W Dell Netzteil (~15.09.).
 >
 > **Wie wir arbeiten, damit Chaos nicht teuer wird:** `DOCS/SICHERHEITSSTANDARDS.md` — acht Regeln, jede aus einem echten Vorfall. Kurzfassung: *Chaos ist erlaubt, Stille nicht.*
