@@ -1,4 +1,12 @@
-<t t-name="website.frawo_radio_new"><t t-call="website.layout"><div id="wrap" class="oe_structure oe_empty">
+<t t-name="website.frawo_radio_new"><t t-call="website.layout"><t t-set="additional_title">FraWo Funk · 24/7 Webradio Bodensee</t><t t-set="head">
+  <meta name="theme-color" content="#050706"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta property="og:title" content="FraWo Funk - 24/7 Webradio Bodensee"/>
+  <meta property="og:description" content="Handkuratierte Musikshows, 320kbps Master Audio, interaktives Hörer-Voting und Rekordbox DJ-Kuration."/>
+  <meta property="og:image" content="https://frawo.tech/web/image/2195"/>
+  <meta property="og:type" content="music.radio_station"/>
+</t><div id="wrap" class="oe_structure oe_empty">
 <!-- FraWo Funk Radio // Live Mood & Rekordbox Curation Edition -->
 <style>
 :root {
