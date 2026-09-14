@@ -30,14 +30,15 @@ Kopie im Repo: `INFRA.md`
 | **140** | anker-pve | `frawotech-web` | `10.1.0.112` | 8069 (Odoo 19), 80/443 (Nginx) | ERP, CRM, Touch Cockpit, Cloudflare-Tunnel |
 | **150** | anker-pve | `openclaw` | `10.1.0.31` | 19001 (Servassi-Hook), 19000 (Gateway) | **Jarvis** (Persistenter Koordinator & Monitoring-Empfänger) |
 | **155** | anker-pve | `monitoring-stack` | `10.1.0.35` | 9090 (Prom), 9093 (Alert), 3000 (Grafana) | Prometheus, Alertmanager, Grafana (ex CT150 auf ProDesk) |
+| **120** | stock-pve | `fileserver` | `10.1.0.94` | 445 (SMB) | Samba Fileserver, Musikarchiv (`//10.1.0.94/music`, 1.9 TB) |
+| **210** | stock-pve | `azuracast-vm` | `10.1.0.38` | 8000 (Icecast), 80 / 443 | Webradio FraWo Funk (`funk.frawo.tech`), AutoDJ, Liquidsoap |
 | **210** | anker-pve | `haos` | `10.1.0.40` | 8123 (Home Assistant) | Hausautomation Rothkreuz, Lovelace Touch Dashboard |
 | **240** | anker-pve | `PBS-FraWo` | `10.1.0.7` | 8007 (PBS API/Web) | Proxmox Backup Server |
 | **300** | anker-pve | `nextcloud` | `10.1.0.21` | 80 / 443 | Cloud Storage (`cloud.frawo.tech`) |
 | **360** | stock-pve | `homeassistant-eltern` | `10.1.0.248` | 8123 (Home Assistant) | **Smart Home Alois (Stockenweiler)** — aktiv, WireGuard-VPN nach `192.168.178.0/24` |
 
 ### Ruhende / Vorbereitete Dienste
-- **VM210 (AzuraCast Radio, `10.1.0.38`):** Liegt als Image auf stock-pve (64 GB) bereit; wartet auf Einbindung der externen Musik-HDD.
-- **CT120 (Fileserver / Samba, `10.1.0.94`):** Gestoppt auf stock-pve; wartet auf Bereinigung.
+- **Dell OptiPlex 7050:** Wartet auf Netzteil-Lieferung (~15.09.), Onboarding-Bootstrap vorbereitet (`scripts/optiplex_7050_bootstrap.sh`).
 
 ---
 
