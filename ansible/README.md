@@ -9,11 +9,15 @@ Umfangs, siehe `DOCS/superpowers/specs/2026-08-19-ansible-baseline-design.md`.
 
 ## Voraussetzungen
 
-1. **`ansible/.vault_pass`** muss lokal existieren (gitignored, liegt
-   NICHT im Repo). Das ist das Ansible-Vault-Master-Passwort — von Wolf
-   erfragen bzw. aus Vaultwarden holen. Vorlage: `.vault_pass.example`
-   im Repo-Root (nach `ansible/.vault_pass` kopieren, echtes Passwort
-   eintragen, `chmod 600`).
+1. **Kein Vault-Passwort nötig.** Diese Grundlinie kommt ohne
+   Geheimnisse aus — keine Rolle und kein Playbook verwendet eine
+   Variable aus einem Vault (Stand 14.09.2026 geprüft: 0 Treffer für
+   `{{ … }}` in `roles/` und `playbooks/`). Die früher hier vorhandene
+   `inventory/group_vars/all/vault.yml` war ein am 20.08.2026 angelegtes
+   Gerüst, das nie benutzt wurde; ihr Passwort ging verloren und sie
+   wurde am 14.09.2026 entfernt (Odoo #1455). Falls später doch
+   Geheimnisse gebraucht werden: neu anlegen, Passwort **sofort** in
+   Vaultwarden hinterlegen, `ansible/.vault_pass` bleibt gitignored.
 2. **Beide Hosts müssen bereits in `known_hosts` des Control-Nodes
    stehen** — `ansible.cfg` hat `host_key_checking = True`, ein Lauf
    gegen einen unbekannten Host-Key bricht sonst ab (das ist Absicht,
@@ -35,7 +39,7 @@ Config-Datei ohne Fehlermeldung, die auf die wahre Ursache hinweist
 nicht gefunden — obwohl `ansible.cfg` alles korrekt konfiguriert).
 
 **Workaround:** vor jedem echten `ansible-playbook`/`ansible-inventory`-Lauf
-`ansible/`, `ansible.cfg` und `ansible/.vault_pass` in einen nativen
+`ansible/` und `ansible.cfg` in einen nativen
 WSL-Pfad kopieren (z. B. `/root/frawo-ansible-run/`) und von dort aus
 laufen lassen:
 
@@ -77,8 +81,8 @@ ansible-playbook ansible/playbooks/baseline.yml --limit <stock-pve|anker-pve>
 ## Struktur
 
 - `inventory/hosts.yml` — 2 Hosts, Gruppe `pve_hosts`
-- `inventory/group_vars/all/` — gemeinsame Variablen (`main.yml`) und
-  verschlüsselte Geheimnisse (`vault.yml`)
+- `inventory/group_vars/all/` — gemeinsame Variablen (`main.yml`);
+  kein Vault mehr, siehe Voraussetzung 1
 - `inventory/host_vars/{stock-pve,anker-pve}.yml` — hostspezifische
   Variablen, u. a. die `guests:`-Liste für `autostart_guests`
 - `playbooks/baseline.yml` — ruft alle Rollen für beide Hosts auf, plus

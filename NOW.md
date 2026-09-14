@@ -4,7 +4,7 @@
 > Historie steht in der Git-Historie, Entscheidungen und Aufgaben in **Odoo (CT140, `10.1.0.112:8069`) = einzige Quelle der Wahrheit**.
 >
 > **Stand 13.09.2026 (mittags) — ProDesk wieder online & Odoo-Cloud gehärtet:**
-> - **ProDesk 600 G4 Mini wieder online & Split-Brain gebannt:** Rechner an UCG Port 1 (VLAN 101) verbunden (`10.1.0.128`, TS `100.91.20.116`). CPU 52°C, RAM 4.8/15 GB, LVM-Thin 54%. Dubletten-Container (CT140, 110, 150, 108, 106) sofort gestoppt und `onboot 0` gesetzt — kein Layer-2-MAC-Flapping mit Anker.
+> - **ProDesk 600 G3 DM wieder online & Split-Brain gebannt:** (⚠️ Modell 14.09.2026 korrigiert — die Maschine meldet per `dmidecode` **600 G3 DM**, nicht G4. Wichtig beim Ersatzteil-/Zubehörkauf.) Rechner an UCG Port 1 (VLAN 101) verbunden (`10.1.0.128`, TS `100.91.20.116`). CPU 52°C, RAM 4.8/15 GB, LVM-Thin 54%. Dubletten-Container (CT140, 110, 150, 108, 106) sofort gestoppt und `onboot 0` gesetzt — kein Layer-2-MAC-Flapping mit Anker.
 > - **Home Assistant Eltern (VM 360, `10.1.0.248`) verifiziert:** HA OS 18.2 / Core 2026.9.1 läuft stabil auf ProDesk. WireGuard-VPN nach Stockenweiler aktiv (Fritz!Box & Shellys pingbar), alle 6 Add-ons laufen, Live-Sensordaten streamen einwandfrei, HTTP 200.
 > - **Monitoring vollzählig (17/17 Targets UP):** ProDesk `node_exporter` (`10.1.0.128:9100`) und Blackbox-Probe für HA-Eltern (`10.1.0.248:8123`) in `prometheus.yml` reaktiviert. Scrape-Ergebnis: 100% grün.
 > - **Odoo-Cloud-Sicherung entkoppelt:** Kollision zwischen nächtlichem Proxmox-vzdump (04:00–07:25, 60 GB Upstream voll belegt) und Odoo-Cloud-Kopie (06:15) behoben. Timer auf **07:35 CEST** verlegt (nach vzdump, 25 min vor Backup-TÜV), Timeout auf 7200s erhöht, Signal-Trap ergänzt.
