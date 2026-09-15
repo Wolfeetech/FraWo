@@ -162,6 +162,99 @@ def resolve_station_media(tracks: List[dict]) -> List[Tuple[dict, int]]:
     return resolved
 
 
+def fetch_show_backfill_tracks(
+    count_needed: int,
+    exclude_media_ids: Optional[set] = None,
+    exclude_keys: Optional[set] = None,
+    show_playlist_ids: Tuple[int, ...] = (859, 860, 861, 862, 863, 864, 865, 866, 867),
+    max_duration_seconds: int = 660,
+    min_duration_seconds: int = 120,
+) -> List[Tuple[dict, int]]:
+    """
+    Selects top curated tracks across shows (859-867) in a round-robin manner
+    to backfill Best-of-the-Week to ensure a full 2+ hour Sunday prime-time show.
+    Excludes DJ Sets (868) to maintain single/track format (<= 660s).
+    """
+    if count_needed <= 0:
+        return []
+
+    if exclude_media_ids is None:
+        exclude_media_ids = set()
+    if exclude_keys is None:
+        exclude_keys = set()
+
+    p_ids_str = ",".join(str(p) for p in show_playlist_ids)
+    sql = f"""
+    SELECT sm.id, sm.artist, sm.title, sm.length, spm.playlist_id, sp.name as show_name
+    FROM station_playlist_media spm
+    JOIN station_media sm ON spm.media_id = sm.id
+    JOIN station_playlists sp ON spm.playlist_id = sp.id
+    WHERE spm.playlist_id IN ({p_ids_str}) 
+      AND spm.is_queued = 1
+      AND sm.length >= {min_duration_seconds}
+      AND sm.length <= {max_duration_seconds}
+    ORDER BY spm.playlist_id ASC, spm.weight ASC, spm.id ASC;
+    """
+    code, out, err = execute_mariadb_query(sql)
+    if code != 0:
+        log.error("Failed to query show tracks for backfill: %s", err)
+        return []
+
+    from collections import defaultdict
+    by_show = defaultdict(list)
+    for line in out.strip().splitlines():
+        parts = line.split("\t")
+        if len(parts) >= 6 and parts[0].isdigit():
+            m_id = int(parts[0])
+            by_show[int(parts[4])].append({
+                "id": m_id,
+                "artist": parts[1].strip(),
+                "title": parts[2].strip(),
+                "length": float(parts[3]) if parts[3] else 0.0,
+                "show_id": int(parts[4]),
+                "show_name": parts[5].strip(),
+            })
+
+    selected = []
+    seen_ids = set(exclude_media_ids)
+    seen_keys = set(exclude_keys)
+    show_ids = sorted(by_show.keys())
+    idx_per_show = {sid: 0 for sid in show_ids}
+
+
+    while len(selected) < count_needed:
+        added_any = False
+        for sid in show_ids:
+            if len(selected) >= count_needed:
+                break
+            tracks = by_show[sid]
+            while idx_per_show[sid] < len(tracks):
+                cand = tracks[idx_per_show[sid]]
+                idx_per_show[sid] += 1
+                key = (cand["artist"].lower(), cand["title"].lower())
+                if cand["id"] not in seen_ids and key not in seen_keys:
+                    seen_ids.add(cand["id"])
+                    seen_keys.add(key)
+                    track_dict = {
+                        "artist": cand["artist"],
+                        "title": cand["title"],
+                        "chart_score": 3.5,
+                        "stars": None,
+                        "count": 0,
+                        "likes": 0,
+                        "hates": 0,
+                        "source": f"Show Highlight ({cand['show_name']})"
+                    }
+                    selected.append((track_dict, cand["id"]))
+                    added_any = True
+                    break
+        if not added_any:
+            break
+
+    return selected
+
+
+
 def build_playlist_sync_sql(playlist_id: int, resolved_tracks: List[Tuple[dict, int]]) -> str:
     """
     Builds atomic SQL transaction to replace playlist media in rank order.
@@ -226,13 +319,26 @@ def main():
     resolved = resolve_station_media(chart_tracks)
     log.info("Successfully resolved %d of %d chart tracks in station_media.", len(resolved), len(chart_tracks))
 
+    TARGET_TRACKS = 24
+    if len(resolved) < TARGET_TRACKS:
+        needed = TARGET_TRACKS - len(resolved)
+        log.info("Chart tracks (%d) < target (%d). Backfilling %d show highlight tracks across shows 859-867...",
+                 len(resolved), TARGET_TRACKS, needed)
+        exclude_ids = {m_id for _, m_id in resolved}
+        exclude_keys = {(t["artist"].strip().lower(), t["title"].strip().lower()) for t, _ in resolved}
+        backfill = fetch_show_backfill_tracks(needed, exclude_media_ids=exclude_ids, exclude_keys=exclude_keys)
+        log.info("Selected %d show highlight tracks for backfill.", len(backfill))
+        resolved.extend(backfill)
+
     if resolved:
         sql = build_playlist_sync_sql(playlist_id, resolved)
         code, _, err = execute_mariadb_query(sql)
         if code == 0:
-            log.info("Successfully updated playlist %d with %d ranked tracks.", playlist_id, len(resolved))
+            log.info("Successfully updated playlist %d with %d total tracks (listeners + show highlights).",
+                     playlist_id, len(resolved))
         else:
             log.error("Failed to update station_playlist_media: %s", err)
+
 
     # Sync Sunday schedule
     sched_sql = build_schedule_sync_sql(playlist_id)

@@ -1,14 +1,18 @@
-"""
-Unit tests for FraWo Funk Best-of-the-Week Charts Engine.
-"""
+import os
+import sys
 import unittest
+from unittest.mock import MagicMock, patch
 
-from deployments.radio.radio_best_of_week import (
+sys.path.insert(0, os.path.dirname(__file__))
+
+from radio_best_of_week import (
     calculate_chart_score,
+    fetch_show_backfill_tracks,
     rank_tracks_for_charts,
     build_playlist_sync_sql,
-    build_schedule_sync_sql
+    build_schedule_sync_sql,
 )
+
 
 
 class TestRadioBestOfWeek(unittest.TestCase):
@@ -65,6 +69,33 @@ class TestRadioBestOfWeek(unittest.TestCase):
         self.assertIn("VALUES (869, 1800, 2000, NULL, NULL, '7', 0);", sql)
         self.assertIn("UPDATE station_schedules \nSET start_time = 2000, end_time = 2130 \nWHERE playlist_id = 863 AND days = '7';", sql)
         self.assertIn("COMMIT;", sql)
+
+    @patch("radio_best_of_week.execute_mariadb_query")
+    def test_fetch_show_backfill_tracks(self, mock_query):
+        # Mock TSV returned by execute_mariadb_query
+        mock_tsv = (
+            "id\tartist\ttitle\tlength\tplaylist_id\tshow_name\n"
+            "201\tArtist A\tTrack A1\t240\t859\t01 Sunrise\n"
+            "202\tArtist B\tTrack B1\t300\t860\t02 Morning Drive\n"
+            "203\tArtist C\tTrack C1\t320\t861\t03 Lunch Groove\n"
+            "204\tArtist A\tTrack A2\t250\t859\t01 Sunrise\n"
+        )
+        mock_query.return_value = (0, mock_tsv, "")
+
+        backfill = fetch_show_backfill_tracks(count_needed=2, exclude_media_ids={201})
+        self.assertEqual(len(backfill), 2)
+        # Media 201 is excluded from Show 859, so next track 204 is chosen, then 202 from Show 860
+        self.assertEqual(backfill[0][1], 204)
+        self.assertEqual(backfill[0][0]["artist"], "Artist A")
+        self.assertEqual(backfill[1][1], 202)
+        self.assertEqual(backfill[1][0]["artist"], "Artist B")
+        self.assertIn("Show Highlight", backfill[0][0]["source"])
+
+
+    def test_fetch_show_backfill_tracks_zero_needed(self):
+        backfill = fetch_show_backfill_tracks(count_needed=0)
+        self.assertEqual(backfill, [])
+
 
 
 if __name__ == "__main__":
