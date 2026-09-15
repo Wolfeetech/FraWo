@@ -3,9 +3,12 @@
 > **Zuerst lesen.** Diese Datei beschreibt, **was läuft** — nicht, was passiert ist.
 > Historie steht in der Git-Historie, Entscheidungen und Aufgaben in **Odoo (CT140, `10.1.0.112:8069`) = einzige Quelle der Wahrheit**.
 >
-> **🔴 Stand 15.09.2026 — zwei Dinge brauchen Wolf, bevor irgendetwas anderes zählt:**
-> - **Shelly `10.4.0.11` schaltet die IT jeden Abend bei Sonnenuntergang kurz ab.** Zeitplan liegt im Gerät, gehört eigentlich in die GrowBox. Wegen `auto_on 0,01 s` nur ein 10-ms-Aussetzer — genug, um den ProDesk abstürzen zu lassen (14.09. um 19:36, exakt Sonnenuntergang). **Job 2 (`@sunset` → aus) löschen**, sonst wiederholt es sich heute Abend. Odoo #1461, Details in der Fallentabelle.
+> **🔴 Stand 15.09.2026 — eine Sache braucht Wolf, bevor irgendetwas anderes zählt:**
 > - **ZFS-Pool `anker-backup` ist SUSPENDED, PBS-Sicherungsserver nicht erreichbar.** Beide Spiegelplatten sind vom USB verschwunden (13.09. 14:47 die eine, 14.09. 18:25 die andere). ZFS sagt selbst: Geräte anschließen, dann `zpool clear`. Zwei Platten am selben Rechner innerhalb von zwei Tagen deutet auf Hub/Port/Strom, nicht auf zwei Plattendefekte — und passt zum Shelly-Befund oben. Odoo #1457.
+>
+> **Am 15.09.2026 repariert:**
+> - **Shelly `10.4.0.11`: `@sunset`-Job gelöscht** (`Schedule.Delete?id=2`, rev 6 → 7). Der Zeitplan schaltete die IT-Schiene jeden Abend bei Sonnenuntergang kurz ab — wegen `auto_on 0,01 s` nur ein 10-ms-Aussetzer, aber genug für die ProDesk-Absturzserie (14.09. um 19:36, exakt Sonnenuntergang). `Schedule.List` zeigt jetzt nur noch Job 1 (`@sunrise` → ein); Relais lief beim Löschen durchgehend (`output: true`, `switch_on` unverändert 10), `auto_on` unangetastet. **Offen:** Bestätigung, dass der ProDesk den heutigen Sonnenuntergang (~19:30) ohne Neustart übersteht. Odoo #1461. ⚠️ Stolperstein: In PowerShell ist `curl` ein Alias für `Invoke-WebRequest` — die erste Löschung erreichte das Gerät nie. Für Windows immer **`curl.exe`**.
+> - **Thin-Pool stock-pve wieder gesund:** 94,7 % → **77,8 %**, `discard=on` auf VM 210 und 360. Peer-Review mit eigener Messung (`lvs`, `qm config`, `pvesm status`) bestanden, Odoo #1458 erledigt.
 >
 > **Am 14.09.2026 repariert (alles am Ziel nachgemessen, nicht nur Rückgabewerte geglaubt):**
 > - **Alarmkette war monatelang taub** — 1.617 von 1.679 Telegram-Zustellungen gescheitert, unsichtbar weil Prometheus den Alertmanager nicht überwachte. Scrape-Job + Regeln ergänzt, Gruppierung und Unterdrückung repariert: dieselbe Lage erzeugt jetzt **3 statt 15** Nachrichten, `warning` geht nicht mehr aufs Handy. Drei falsch als Warnung eingestufte Melder (Wache, Wiederherstellungstest, Tunnelprüfung) auf `critical` hochgestuft. Odoo #1459.
