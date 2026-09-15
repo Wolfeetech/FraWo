@@ -152,9 +152,14 @@ Auswahllisten sind es.
   (Review-Auflage): Home Assistant schreibt diese Dateien verzögert, eine Kopie kann auf halbem
   Stand stehen. Maßgeblich ist eine **HA-eigene Sicherung** (`ha backups new`), die Rohkopien
   dienen nur dem schnellen Zurücklegen einzelner Dateien.
-- **Wiederherstellungsweg festlegen und einmal durchspielen** — wo liegen die Sicherungen, und
-  wie kommt ein Dashboard bzw. das Entitätenregister zurück? Eine Sicherung gilt erst als gut,
-  wenn sie zurückgelesen wurde.
+- **Wiederherstellungsweg festlegen und einmal durchspielen** — eine Sicherung gilt erst als gut,
+  wenn sie zurückgelesen wurde. 🔴 **Aber kein Voll-Rückspielen auf der Produktivinstanz**
+  (Review-Auflage): Der Nachweis läuft als frische Sicherung (`ha backups new`), Ablage auf einem
+  externen Ziel, Entpacken des Archivs in einen getrennten Prüfpfad und Zurücklesen eines
+  Dashboards daraus. Erst danach die Massenänderung.
+- **Ausgangslage dazu (Stand 15.09.2026):** Es existiert genau **eine** HA-eigene Sicherung, und
+  die stammt vom **03.04.2026** (13,36 MB, partiell). Vor jeder Änderung ist also ohnehin ein
+  frischer Sicherungspunkt fällig — unabhängig von diesem Vorhaben.
 - **Ausfall von Home Assistant selbst muss auffallen:** externe Erreichbarkeitsprüfung mit
   Alarmweg (die Blackbox-Prüfung auf CT155 deckt bisher die Eltern-Instanz ab, nicht diese).
 - 🔴 **Einzige Konfigurationsquelle ist `ui-lovelace.yaml`** samt eingebundener YAML-Dateien.
