@@ -94,20 +94,47 @@ Stromausfall, Erreichbarkeit der Anlage. Nicht mehr.
 ## 5. Aufräumen
 
 **Grundregel (aus Schaden gelernt):** Am 07.09.2026 wurden 48 Entitäten gelöscht, die zu
-lebenden Geräten gehörten — ein offline stehendes Gerät ist im Register nicht von einer
-Karteileiche zu unterscheiden. Deshalb:
+lebenden Geräten gehörten. Deshalb galt zunächst: „Gelöscht wird nur, was beweisbar doppelt ist."
 
-> **Gelöscht wird nur, was beweisbar doppelt ist. Alles andere wird ausgeblendet.**
+> ### 🔴 In dieser Umsetzung wird **nichts gelöscht**.
 
-1. **Dubletten löschen.** Muster: `device_tracker.ac_mesh` lebt, `device_tracker.ac_mesh_2` ist
-   dauerhaft tot (Überbleibsel einer früheren Einrichtung; bei der Anwesenheitserkennung 78 von
-   170). Gelöscht wird ein `_2`-Eintrag **nur**, wenn der gleichnamige ohne Endung existiert
-   **und** einen Zustand liefert. Prüfung paarweise und automatisch, Liste vor der Ausführung zur
-   Durchsicht, Sicherung des Registers vorher.
-2. **Toter Rest ausblenden**, nicht löschen (`hidden_by`). Jederzeit umkehrbar.
-3. **Stockenweiler: ausblenden, nicht abschalten.** Ausgeblendete Entitäten verschwinden aus
-   Suche und Auswahllisten, funktionieren aber weiter und lassen sich gezielt auf das
-   Stockenweiler-Dashboard holen. Abschalten (`disabled_by`) würde genau das verhindern.
+**Warum die ursprüngliche Löschregel verworfen wurde.** Das Review (Jarvis, 15.09.) verlangte
+einen Identitätsbeleg je Paar statt bloßer Namensgleichheit. Die Messung gibt ihm recht — die
+Regel wäre gefährlich gewesen:
+
+| Messung über alle `_2`-Einträge mit gleichnamigem Gegenstück | Anzahl |
+|---|---|
+| Paare insgesamt | 195 |
+| davon **gleiches Gerät** | **1** |
+| davon gleiche Integration | 6 |
+
+Stichproben zeigen, was `_2` tatsächlich meist bedeutet:
+
+- `light.wohnzimmer_licht_2` (`gv2mqtt-…`) vs. Original (`govee_govee_…`) — **dieselbe Lampe über
+  zwei verschiedene Integrationen**, beide echt.
+- `sensor.verbindungsgeschwindigkeit_2` (`…bc:24:11:3f:43:0f`) vs. Original
+  (`…bc:24:11:11:89:97`) — **verschiedene Geräte**, nur ähnlich benannt.
+- `device_tracker.pixel_9_pro_2` (UniFi) vs. Original (HA-App) — **zwei Quellen für dasselbe
+  Handy**, beide gewollt.
+
+`_2` ist also überwiegend Home Assistants normale Namensvergabe bei Namensgleichheit und **kein
+Hinweis auf eine Dublette**. Eine Löschung nach diesem Muster hätte den Vorfall vom 07.09.
+wiederholt.
+
+**Was stattdessen passiert — ausschließlich ausblenden (`hidden_by`), vollständig umkehrbar:**
+
+1. **Toter Rest ausblenden.** Was keinen Zustand liefert, verschwindet aus den Standard-Ansichten.
+2. **Stockenweiler ausblenden, nicht abschalten.** `disabled_by` würde die Entität gar nicht erst
+   anlegen; `hidden_by` erhält sie samt Zustand. **Belegt am 15.09.:**
+   `switch.shellypstripg4_206ef102e44c_output_1` ist `hidden_by: integration` und liefert
+   trotzdem den Zustand `on`.
+   *Einschränkung aus dem Review:* „versteckt" ist eine Eigenschaft der Oberfläche und des
+   Registers — es garantiert nicht, dass jeder Karteneditor die Entität ausblendet.
+   **Deshalb Vorabtest mit drei Entitäten**, bevor die Masse angefasst wird: bleibt der Zustand,
+   verschwindet sie aus der Standardsuche, lässt sie sich trotzdem bewusst auf dem
+   Stockenweiler-Dashboard verwenden?
+3. **Löschen bleibt einem späteren, eigenen Vorgang vorbehalten** — mit Identitätsbeleg je Paar
+   (gleiches Gerät bzw. gleiche Herkunft der Kennung), vorgelegter Liste und Wolfs Freigabe.
 4. **Doppelte „Übersicht"** in der Seitenleiste entfernen.
 5. **Zeichensatz reparieren:** `lovelace.jarvis_touch` enthält doppelt kodierte Umlaute und
    Emoji (`Ã°Å¸Å½Âµ` statt 🎵). Datei mit korrekter Kodierung neu schreiben.
@@ -121,6 +148,17 @@ Auswahllisten sind es.
 
 - **Vor jeder Änderung Sicherung** mit Datum (`*.bak-YYYYMMDD`): `configuration.yaml`,
   `ui-lovelace.yaml`, `.storage/core.entity_registry`, betroffene Dashboard-Dateien.
+- 🔴 **Eine Rohkopie von `.storage` im laufenden Betrieb ist keine belastbare Sicherung**
+  (Review-Auflage): Home Assistant schreibt diese Dateien verzögert, eine Kopie kann auf halbem
+  Stand stehen. Maßgeblich ist eine **HA-eigene Sicherung** (`ha backups new`), die Rohkopien
+  dienen nur dem schnellen Zurücklegen einzelner Dateien.
+- **Wiederherstellungsweg festlegen und einmal durchspielen** — wo liegen die Sicherungen, und
+  wie kommt ein Dashboard bzw. das Entitätenregister zurück? Eine Sicherung gilt erst als gut,
+  wenn sie zurückgelesen wurde.
+- **Ausfall von Home Assistant selbst muss auffallen:** externe Erreichbarkeitsprüfung mit
+  Alarmweg (die Blackbox-Prüfung auf CT155 deckt bisher die Eltern-Instanz ab, nicht diese).
+- 🔴 **Einzige Konfigurationsquelle ist `ui-lovelace.yaml`** samt eingebundener YAML-Dateien.
+  Keine parallele Pflege in `.storage` — genau daran ist der Umbau vom 15.09. gescheitert.
 - **Shelly `10.4.0.11` wird nicht geschaltet** (Rote Linie). Er darf angezeigt werden, Schaltflächen
   dazu kommen nicht aufs Dashboard.
 - **Keine VLAN-Verschiebung** von Geräten mit Mikrofon oder Kamera — Datenschutz vor Funktion.
@@ -151,14 +189,21 @@ Seite auch aus, wenn jede Kachel darin fehlschlägt (Vorfall 15.09.).
    Problem (Testfenster geöffnet) erscheint dort nachweislich.
 4. Sichtbare Entitäten unter 400 (Ausgangswert 1409), Stockenweiler-Entitäten nicht mehr in der
    Suche — stichprobenartig mit drei Namen geprüft.
-5. Gelöscht wurden ausschließlich Einträge aus der vorgelegten Dubletten-Liste — Anzahl vorher
-   und nachher dokumentiert.
+5. **Nichts gelöscht.** Register vorher und nachher gleich groß (1850 Einträge) — nur
+   `hidden_by` unterscheidet sich. Soll- und Istwert dokumentiert.
 6. Layout auf 10,5" ohne horizontales Scrollen.
+7. Die doppelte „Übersicht" ist erst **nach** einer Browserprüfung entfernt worden — belegt,
+   dass die verbliebene die richtige ist.
+8. Wiederherstellung einmal durchgespielt: ein Dashboard aus der Sicherung zurückgeholt.
 
 ## 9. Testplan
 
-1. Sicherungen anlegen, Registerstand dokumentieren (Zahlen aus Abschnitt 2 als Ausgangswert).
-2. Dubletten-Liste erzeugen und vorlegen — **erst nach Freigabe** löschen.
+0. **Vorprüfung am Ziel** (Review-Auflage): Register und Zustände frisch messen — stimmen 1850 /
+   1409 / 1065 / 500 noch? Soll gegen Ist dokumentieren, bevor irgendetwas angefasst wird.
+1. HA-eigene Sicherung erstellen, zusätzlich Rohkopien der betroffenen Dateien.
+2. **Vorabtest mit drei Stockenweiler-Entitäten** ausblenden: Zustand bleibt? Aus der Suche
+   verschwunden? Trotzdem bewusst auf einem Dashboard verwendbar? Erst wenn alle drei Fragen mit
+   Ja beantwortet sind, folgt der Massenlauf.
 3. Ausblenden in zwei Schritten: erst Stockenweiler, Zwischenprüfung, dann toter Rest.
 4. Dashboards bauen, nach jedem Abschnitt Bildschirmfoto.
 5. Testfenster öffnen → Statuszeile prüfen → wieder schließen.
