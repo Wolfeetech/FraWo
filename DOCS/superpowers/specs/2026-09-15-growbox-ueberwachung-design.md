@@ -14,12 +14,50 @@ Nicht Ziel: Düngung, Bewässerung, Ertragsprognose.
 
 ## 2. Ist-Zustand (15.09.2026 gemessen, nicht angenommen)
 
-| Bereich | Befund |
-|---|---|
-| Schalten | 4 Ausgänge am Shelly PowerStrip, funktionieren |
-| **Messen** | 🔴 **nichts** — kein Temperatur-, kein Feuchtewert |
-| **Kamera** | vorhanden (`10.4.0.35`), aber **nicht eingebunden** |
-| Dashboard | 4 Schalter, sonst leer |
+| Bereich | Befund (15.09.) | Stand 16.09. |
+|---|---|---|
+| Schalten | 4 Ausgänge am Shelly PowerStrip, funktionieren | unverändert |
+| **Messen** | 🔴 ~~nichts — kein Temperatur-, kein Feuchtewert~~ | ✅ **falsch gewesen**, siehe 2.3 |
+| **Kamera** | vorhanden (`10.4.0.35`), aber **nicht eingebunden** | ✅ eingebunden (ONVIF) |
+| Dashboard | 4 Schalter, sonst leer | ✅ Kamera, Klima, VPD, Verlauf |
+
+### 2.3 🔴 Korrektur vom 16.09.2026: Der Klimafühler war die ganze Zeit da
+
+**Der Befund „kein Messwert" oben war falsch.** Wolf hat widersprochen („growbox hat doch Thermometer inside… inkl. Feuchtigkeit"), und er hatte recht.
+
+Der Fühler heißt in Tuya **`Thermo_1`** und liefert die Entitäten
+`sensor.tuya_plug_2_temperatur` und `sensor.tuya_plug_2_luftfeuchtigkeit` —
+Namen, die nach einer **Steckdose** klingen. Am 15.09. stand die gesamte
+Tuya-Integration auf `setup_error` („Authentication failed"), der Fühler
+meldete also `unavailable`. Ich habe daraus „es gibt keinen Sensor"
+geschlossen, statt „der Sensor meldet gerade nicht".
+
+**Standort belegt über den Temperaturverlauf, nicht über den Namen** (13.09.):
+
+| Zeit | Temperatur | |
+|---|---|---|
+| 22:00–04:00 | 23,1 → 21,3 °C | Nacht, Licht aus |
+| **04:16–04:34** | 23,7 → **25,7 °C** | Sprung — Pflanzenlicht schaltet 04:23 |
+| 09:15 | 28,2 °C | |
+
+Die Luftfeuchte läuft spiegelbildlich (nachts 55 %, tagsüber 40 %). Das ist
+der Fingerabdruck einer beleuchteten Box, kein Wohnraum.
+
+**Lehre:** „Kein Wert" ist nicht „kein Gerät" — dieselbe Falle wie
+„`unavailable` ist nicht `tot`". Vor jedem „gibt es nicht" muss der Zustand
+der liefernden Integration geprüft werden.
+
+**Seit 16.09. gebaut:** `sensor.growbox_vpd` (Dampfdruckdefizit aus Temperatur
+und Feuchte) und `sensor.growbox_klima_bewertung` (Klartext statt Zahlen).
+Aktuell: 28,9 °C, 48 %, **VPD 2,07 kPa → „Luft zu trocken"** (Blüte will
+1,2–1,6 kPa). Damit ist Abschnitt 3.2 „eigener Sensor beschaffen" **erledigt**,
+solange dieser Fühler lebt — und Abschnitt 3.3 (Wächter über den Wächter)
+wird dadurch *wichtiger*, nicht unwichtiger: Genau dieser Fühler war
+tagelang stumm, ohne dass es jemandem auffiel.
+
+⚠️ **Nicht verwechseln:** Dieser Fühler steht in der **GrowBox**. Für die
+Schimmelwarnung in Wolfs **Wohnung** sagt er nichts aus — dort fehlt
+weiterhin jeder Feuchtemesser.
 
 ### 2.1 🔴 Befund 1: Die Steuerung liegt im Gerät, nicht in Home Assistant
 
