@@ -14,6 +14,8 @@ IN ACCEPT -source 10.1.0.0/24 -p tcp -dport 8006 -log nolog   # Proxmox-Weboberf
 IN ACCEPT -source 10.1.0.0/24 -p tcp -dport 8007 -log nolog   # PBS-Backup-API (VM240)
 
 # --- Lokale LANs (nur kritische Ports) ---
+IN ACCEPT -source 10.0.0.0/24 -p tcp -dport 22 -log nolog     # Default-LAN (StudioPC & OptiPlex): SSH
+IN ACCEPT -source 10.0.0.0/24 -p tcp -dport 8006 -log nolog   # Default-LAN: PVE-UI
 IN ACCEPT -source 192.168.2.0/24 -p tcp -dport 22 -log nolog   # Rothkreuz LAN: SSH
 IN ACCEPT -source 192.168.2.0/24 -p tcp -dport 8006 -log nolog # Rothkreuz LAN: PVE-UI
 IN ACCEPT -source 192.168.178.0/24 -p tcp -dport 22 -log nolog   # Heim-LAN: SSH
