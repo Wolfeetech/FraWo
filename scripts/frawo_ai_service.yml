@@ -1,0 +1,59 @@
+# Alarme für den KI-Dienst (Ollama auf OptiPlex) und die Odoo-Agent-Queue.
+# Angelegt 18.09.2026 (Antigravity, Odoo #1467).
+#
+# Routing gemäß Alertmanager-Regel vom 14.09.2026:
+# - critical: geht aufs Handy (Telegram Wolf) UND an Jarvis (servassi-hook)
+# - warning: geht NUR an die Agenten (servassi-hook) gegen Alarmmüdigkeit
+
+groups:
+  - name: frawo_ai_service
+    rules:
+      # 1. Ollama KI-Dienst nicht erreichbar
+      - alert: OllamaDienstAusgefallen
+        expr: probe_success{instance="http://10.0.0.227:11434"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          service: ki
+        annotations:
+          dashboard: "http://100.100.115.80:3000/d/frawo-ueberblick"
+          summary: "Ollama KI-Dienst auf OptiPlex ist DOWN"
+          description: "Blackbox-Probe für http://10.0.0.227:11434 schlägt seit 2+ Minuten fehl."
+
+      # 2. absent()-Regel: Metrik für Ollama ist komplett verschwunden
+      - alert: OllamaMetrikFehlt
+        expr: absent(probe_success{instance="http://10.0.0.227:11434"}) == 1
+        for: 2m
+        labels:
+          severity: critical
+          service: ki
+        annotations:
+          dashboard: "http://100.100.115.80:3000/d/frawo-ueberblick"
+          summary: "Ollama Überwachungs-Metrik fehlt"
+          description: "Die Blackbox-Metrik für den KI-Dienst existiert nicht mehr (Target fehlt oder Blackbox-Exporter tot)."
+
+      # 3. Warteschlangen-Stau in Odoo
+      - alert: OdooAgentQueueStau
+        expr: frawo_odoo_agent_queue_length > 250
+        for: 15m
+        labels:
+          severity: warning
+          service: odoo-agent
+        annotations:
+          dashboard: "http://100.100.115.80:3000/d/frawo-ueberblick"
+          summary: "Odoo Agent-Queue staut sich ({{ $value }} Aufgaben)"
+          description: "Seit über 15 Minuten liegen mehr als 250 Aufgaben in der Warteschlange. Prüfen ob der Cron-Worker hängt."
+
+      # 4. absent()- / Alter-Regel: Queue-Überwachung läuft nicht mehr
+      - alert: OdooAgentQueueUeberwachungSteht
+        expr: >-
+          (time() - frawo_odoo_agent_queue_letzter_lauf_timestamp_seconds > 600)
+          or absent(frawo_odoo_agent_queue_letzter_lauf_timestamp_seconds) == 1
+        for: 5m
+        labels:
+          severity: warning
+          service: odoo-agent
+        annotations:
+          dashboard: "http://100.100.115.80:3000/d/frawo-ueberblick"
+          summary: "Odoo Agent-Queue-Überwachung steht oder liefert keine Daten"
+          description: "Der letzte Queue-Prüflauf ist über 10 Minuten her oder die Metrik fehlt ganz."

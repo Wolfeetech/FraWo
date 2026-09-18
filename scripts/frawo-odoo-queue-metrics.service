@@ -1,0 +1,7 @@
+[Unit]
+Description=Odoo Agent-Queue-Metriken fuer Prometheus erfassen
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/frawo-odoo-queue-metrics.sh
