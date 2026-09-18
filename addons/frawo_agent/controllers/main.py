@@ -2124,11 +2124,14 @@ class RadioController(http.Controller):
 
     @http.route(['/frawo/touch/cockpit', '/frawo/touch/tasks'], type='http', auth='none', csrf=False, sitemap=False)
     def touch_operations_cockpit(self, **kwargs):
-        """Touchscreen-optimiertes Live-Cockpit: Zeigt aktiv bearbeitete Projekte,
-        laufende Arbeiten (In Arbeit & kürzlich erledigt) nach echter Aktualität,
-        aktive Agenten mit letztem Chatter-Bericht und 1-Click-Odoo-Zugriff."""
+        """Touchscreen-optimiertes Live Operations Cockpit 2.0:
+        - Live-Infra & Backup-Ampel (Prometheus 10.1.0.35 & PBS 10.1.0.7)
+        - Entscheidungs-Radar (Prio-Bereich für Tag 153 '🙋 braucht Wolf')
+        - Dynamische Live-Agenten-Erkennung (Antigravity, Claude, Jarvis)
+        - Touch-Tabs & Touch-Detail-Modal ohne Verlassen der Kiosk-Ansicht
+        - Saubere Trennung: FraWo Kern vs. Aufträge vs. Fremdgewerke (#99, #90)"""
         try:
-            import datetime, re, html as pyhtml
+            import datetime, re, json, urllib.request, urllib.error, html as pyhtml
             db = 'FraWo_GbR'
             env = request.env(user=1)
 
@@ -2136,50 +2139,90 @@ class RadioController(http.Controller):
             today_str = datetime.date.today().isoformat()
             cutoff_48h = (now - datetime.timedelta(hours=48)).strftime('%Y-%m-%d %H:%M:%S')
 
-            # 1. Fetch live tasks: either in progress OR touched within the last 48 hours
-            # Sorted strictly by write_date desc so freshest work is on top!
-            live_tasks = env['project.task'].sudo().search([
-                ('active', '=', True),
-                '|',
-                ('stage_id.name', 'ilike', 'In Arbeit'),
-                ('write_date', '>=', cutoff_48h)
-            ], order='write_date desc', limit=35)
+            # ── 1. PROMETHEUS & INFRA VITALS (Safe scrape mit 0.8s Timeout) ──
+            prom_url = 'http://10.1.0.35:9090'
+            services_total = 18
+            services_up = 18
+            active_alerts = []
+            pbs_ok = True
+            ollama_ok = True
 
-            # 2. Today's timesheet lines
+            try:
+                req_t = urllib.request.Request(f'{prom_url}/api/v1/targets', headers={'User-Agent': 'FraWoTouch'})
+                with urllib.request.urlopen(req_t, timeout=0.8) as resp_t:
+                    tdata = json.loads(resp_t.read().decode('utf-8'))
+                    targets = tdata.get('data', {}).get('activeTargets', [])
+                    if targets:
+                        services_total = len(targets)
+                        services_up = sum(1 for t in targets if t.get('health') == 'up')
+                        for t in targets:
+                            s_url = t.get('scrapeUrl', '')
+                            if '10.1.0.7:8007' in s_url:
+                                pbs_ok = (t.get('health') == 'up')
+                            if '11434' in s_url:
+                                ollama_ok = (t.get('health') == 'up')
+            except Exception as pe:
+                pass
+
+            try:
+                req_a = urllib.request.Request(f'{prom_url}/api/v1/alerts', headers={'User-Agent': 'FraWoTouch'})
+                with urllib.request.urlopen(req_a, timeout=0.8) as resp_a:
+                    adata = json.loads(resp_a.read().decode('utf-8'))
+                    for a in adata.get('data', {}).get('alerts', []):
+                        if a.get('state') == 'firing':
+                            lbls = a.get('labels', {})
+                            anns = a.get('annotations', {})
+                            active_alerts.append({
+                                'name': lbls.get('alertname', 'Alarm'),
+                                'severity': lbls.get('severity', 'warning'),
+                                'summary': anns.get('summary') or anns.get('description', '')[:80]
+                            })
+            except Exception as ae:
+                pass
+
+            crit_alerts = sum(1 for a in active_alerts if a['severity'] == 'critical')
+            warn_alerts = sum(1 for a in active_alerts if a['severity'] != 'critical')
+
+            # ── 2. TIMESHEETS HEUTE ──
             timesheets = env['account.analytic.line'].sudo().search([
                 ('date', '=', today_str)
-            ], order='create_date desc', limit=15)
+            ], order='create_date desc', limit=20)
             today_hours = sum(timesheets.mapped('unit_amount'))
 
-            # 3. Overall task counts
-            open_count = env['project.task'].sudo().search_count([
-                ('active', '=', True),
-                ('stage_id.name', 'not in', ['✅ Erledigt', '🗑️ Abgebrochen', 'Done', 'Cancelled'])
-            ])
-            in_prog_count = sum(1 for t in live_tasks if 'in arbeit' in (t.stage_id.name or '').lower())
-            recent_done_count = sum(1 for t in live_tasks if any(w in (t.stage_id.name or '').lower() for w in ['erledigt', 'done']))
+            # ── 3. DYNAMISCHE LIVE-AGENTEN-ERKENNUNG ──
+            # Antigravity: Letzter Task aus Zeiterfassung (employee_id=9) oder In-Arbeit-Task
+            ag_ts = env['account.analytic.line'].sudo().search([
+                ('employee_id', '=', 9)
+            ], order='create_date desc, id desc', limit=1)
+            ag_task = ag_ts.task_id if (ag_ts and ag_ts.task_id) else None
+            if not ag_task:
+                ag_task = env['project.task'].sudo().search([
+                    ('active', '=', True),
+                    ('stage_id.name', 'ilike', 'In Arbeit'),
+                    '|', ('name', 'ilike', 'Antigravity'), ('id', '=', 1501)
+                ], order='write_date desc', limit=1)
 
-            # 3b. Active Agents & Dynamic Task Lock Lookup
-            ag_task = env['project.task'].sudo().search([
-                ('active', '=', True),
-                ('stage_id.name', 'ilike', 'In Arbeit'),
-                '|', ('name', 'ilike', 'Antigravity'), ('id', '=', 1356)
-            ], order='write_date desc', limit=1)
+            ag_id = ag_task.id if ag_task else 1501
+            ag_task_title = f"#{ag_task.id} · {ag_task.name}" if ag_task else "#1501 · Touchscreen Operations Cockpit 2.0"
+            ag_task_url = f"/frawo/touch/login?redirect=/odoo/project.task/{ag_id}"
+            ag_task_focus = ag_ts.name if (ag_ts and ag_ts.name) else "Touchscreen Operations Cockpit 2.0 & Infra-Hygiene"
 
-            claude_task = env['project.task'].sudo().search([
-                ('active', '=', True),
-                ('stage_id.name', 'ilike', 'In Arbeit'),
-                '|', ('name', 'ilike', 'Claude'), ('id', 'in', [1355, 1300])
-            ], order='write_date desc', limit=1)
+            # Claude Code: Letzter Task aus Zeiterfassung (employee_id=11) oder Name
+            claude_ts = env['account.analytic.line'].sudo().search([
+                ('employee_id', '=', 11)
+            ], order='create_date desc, id desc', limit=1)
+            claude_task = claude_ts.task_id if (claude_ts and claude_ts.task_id) else None
+            if not claude_task:
+                claude_task = env['project.task'].sudo().search([
+                    ('active', '=', True),
+                    ('stage_id.name', 'ilike', 'In Arbeit'),
+                    ('name', 'ilike', 'Claude')
+                ], order='write_date desc', limit=1)
 
-            ag_id = ag_task.id if ag_task else None
             claude_id = claude_task.id if claude_task else None
-
-            ag_task_title = f"#{ag_task.id} · {ag_task.name}" if ag_task else "Kein Task zugewiesen"
-            ag_task_url = f"/frawo/touch/login?redirect=/odoo/project.task/{ag_task.id}" if ag_task else "#"
-
-            claude_task_title = f"#{claude_task.id} · {claude_task.name}" if claude_task else "Bereit für Aufgaben"
-            claude_task_url = f"/frawo/touch/login?redirect=/odoo/project.task/{claude_task.id}" if claude_task else "#"
+            claude_task_title = f"#{claude_task.id} · {claude_task.name}" if claude_task else "Bereit für Skripte & Code-Implementierungen"
+            claude_task_url = f"/frawo/touch/login?redirect=/odoo/project.task/{claude_id}" if claude_id else "#"
+            claude_task_focus = claude_ts.name if (claude_ts and claude_ts.name) else "Skripte, Code-Refactoring & CLI"
 
             agents_html = f'''
             <div class="agent-card agent-active-ag">
@@ -2189,13 +2232,13 @@ class RadioController(http.Controller):
                         <span class="agent-name">🤖 Antigravity</span>
                         <span class="agent-loc">StudioPC · IDE</span>
                     </div>
-                    <span class="agent-badge badge-working">🔥 Live aktiv (Arbeitet gerade)</span>
+                    <span class="agent-badge badge-working">🔥 Live aktiv</span>
                 </div>
                 <div class="agent-task-row">
                     <span class="agent-label">AKTUELLE AUFGABE:</span>
                     <a href="{ag_task_url}" target="_blank" class="agent-task-link">{ag_task_title}</a>
                 </div>
-                <div class="agent-focus-txt"><b>Fokus:</b> Touchscreen Live-Operations: Wer arbeitet gerade woran &amp; Projekt-Dashboard</div>
+                <div class="agent-focus-txt"><b>Fokus:</b> {ag_task_focus}</div>
             </div>
 
             <div class="agent-card agent-active-claude">
@@ -2205,13 +2248,13 @@ class RadioController(http.Controller):
                         <span class="agent-name">🤖 Claude Code</span>
                         <span class="agent-loc">StudioPC · Terminal</span>
                     </div>
-                    <span class="agent-badge badge-standby">🟡 In Arbeit</span>
+                    <span class="agent-badge badge-standby">🟡 In Arbeit / Standby</span>
                 </div>
                 <div class="agent-task-row">
-                    <span class="agent-label">ZUGEORDNET:</span>
+                    <span class="agent-label">AKTUELLE AUFGABE:</span>
                     <a href="{claude_task_url}" target="_blank" class="agent-task-link">{claude_task_title}</a>
                 </div>
-                <div class="agent-focus-txt"><b>Fokus:</b> Skripte &amp; Code-Implementierungen, OpenClaw 2026.9.2</div>
+                <div class="agent-focus-txt"><b>Fokus:</b> {claude_task_focus}</div>
             </div>
 
             <div class="agent-card agent-active-jarvis">
@@ -2227,252 +2270,238 @@ class RadioController(http.Controller):
                     <span class="agent-label">KERN-ROLLE:</span>
                     <span style="color:#fff; font-size:13px; font-weight:700;">Koordination, Monitoring &amp; Telegram ↔ Wolf</span>
                 </div>
-                <div class="agent-focus-txt"><b>Letzte Aktion:</b> Peer-Review Task #1354 (AdGuard-Sync &amp; Server-Updates)</div>
+                <div class="agent-focus-txt"><b>Status:</b> Alertmanager CT155 Receiver, Webhooks &amp; Odoo-Chatter Sync aktiv</div>
             </div>'''
 
-            # 4. Define Live Operational Project Streams
-            streams = {
-                'infra': {
-                    'title': '🛠️ Systeme, IT & Server',
-                    'icon': '🛠️',
-                    'desc': 'Proxmox, PBS-Backups, AdGuard DNS, Odoo 4GB RAM & Kiosk',
-                    'tasks': [],
-                    'in_prog': 0,
-                    'done_recent': 0,
-                    'latest_act': '',
-                    'color': '#ff5722'
-                },
-                'growbox': {
-                    'title': '🌱 Smart Home & GrowBox',
-                    'icon': '🌱',
-                    'desc': 'Live-Klima (21,7 °C / 67 %), Lüfter-Hysterese, Touch-Dashboard',
-                    'tasks': [],
-                    'in_prog': 0,
-                    'done_recent': 0,
-                    'latest_act': '',
-                    'color': '#4caf50'
-                },
-                'agents': {
-                    'title': '🦞 KI-Agenten & Jarvis',
-                    'icon': '🦞',
-                    'desc': 'OpenClaw 2026.9.2, Sonnet 5 Modell-Fix, Odoo-Chatter Sync',
-                    'tasks': [],
-                    'in_prog': 0,
-                    'done_recent': 0,
-                    'latest_act': '',
-                    'color': '#a050f0'
-                },
-                'radio': {
-                    'title': '📻 Radio & AzuraCast',
-                    'icon': '📻',
-                    'desc': 'Kanal-Demokratie Hörer-Voting, CT120 Beets (3.414 Tracks)',
-                    'tasks': [],
-                    'in_prog': 0,
-                    'done_recent': 0,
-                    'latest_act': '',
-                    'color': '#00e5ff'
-                },
-                'auftraege': {
-                    'title': '💼 Aufträge & Events',
-                    'icon': '💼',
-                    'desc': 'Anker Indoor Messung, Zubehörkisten, Bar-Abrechnung',
-                    'tasks': [],
-                    'in_prog': 0,
-                    'done_recent': 0,
-                    'latest_act': '',
-                    'color': '#ffb300'
-                },
-                'wolf': {
-                    'title': '🔒 Wolf: Privat & Beruf',
-                    'icon': '🔒',
-                    'desc': 'Inselhalle, Familie & persönliche Vorhaben',
-                    'tasks': [],
-                    'in_prog': 0,
-                    'done_recent': 0,
-                    'latest_act': '',
-                    'color': '#e91e63'
-                }
-            }
+            # ── 4. "🙋 BRAUCHT WOLF" (Tag 153) ENTSCHEIDUNGS-RADAR ──
+            wolf_records = env['project.task'].sudo().search([
+                ('active', '=', True),
+                ('tag_ids', 'in', [153]),
+                ('stage_id.name', 'not in', ['✅ Erledigt', '🗑️ Abgebrochen', 'Done', 'Cancelled'])
+            ], order='priority desc, write_date desc', limit=15)
 
-            # 5. Process and categorize each live task
-            cards_html = []
-            for t in live_tasks:
-                name_l = (t.name or '').lower()
-                pid = t.project_id.id if t.project_id else 0
-                pname = (t.project_id.name or '').lower() if t.project_id else ''
+            wolf_cards_html = []
+            for wt in wolf_records:
+                wp_name = wt.project_id.name if wt.project_id else 'Allgemein'
+                w_prio = wt.priority or '0'
+                prio_tag = {'3': '🔴 Prio 3', '2': '🟠 Prio 2', '1': '🔵 Prio 1'}.get(w_prio, '')
+                prio_html = f'<span class="prio-tag">{prio_tag}</span>' if prio_tag else ''
 
-                # Determine Stream
-                if any(w in name_l for w in ['growbox', 'lüfter', 'hygrometer', 'pflanz', 'klima', 'abluft']):
-                    stk = 'growbox'
-                elif any(w in name_l for w in ['radio', 'azuracast', 'stream', 'beets', 'sendung', 'musik', 'track']):
-                    stk = 'radio'
-                elif any(w in name_l for w in ['openclaw', 'jarvis', 'modell', 'agent', 'sonnet', 'claude', 'antigravity']):
-                    stk = 'agents'
-                elif pid == 104 or '10' in pname:
-                    stk = 'auftraege'
-                elif pid in [106, 107] or '40' in pname or '30' in pname or 'wolf' in pname:
-                    stk = 'wolf'
-                else:
-                    stk = 'infra'
-
-                stage_name = t.stage_id.name if t.stage_id else 'Offen'
-                is_in_prog = 'in arbeit' in stage_name.lower()
-                is_done = any(w in stage_name.lower() for w in ['erledigt', 'done'])
-                is_blocked = 'blockiert' in stage_name.lower()
-
-                streams[stk]['tasks'].append(t)
-                if is_in_prog: streams[stk]['in_prog'] += 1
-                if is_done: streams[stk]['done_recent'] += 1
-
-                # Fetch last meaningful note (non-empty body)
+                # Fetch last note
                 last_msg = env['mail.message'].sudo().search([
                     ('model', '=', 'project.task'),
-                    ('res_id', '=', t.id),
+                    ('res_id', '=', wt.id),
                     ('body', '!=', False),
                     ('body', '!=', '')
                 ], order='date desc', limit=1)
-
-                active_agent = '🤖 Agent'
-                last_note_text = 'Status / Metadaten aktualisiert'
-                last_note_time = ''
-
+                note_snippet = "Entscheidung / Freigabe erforderlich."
                 if last_msg:
-                    raw_body = pyhtml.unescape(re.sub(r'<[^>]+>', ' ', last_msg.body or '')).strip()
-                    if raw_body:
-                        # Detect agent from chatter content
-                        if '[Antigravity]' in raw_body or 'Antigravity' in raw_body:
-                            active_agent = '🤖 Antigravity'
-                        elif '[Claude]' in raw_body or 'Claude' in raw_body:
-                            active_agent = '🤖 Claude Code'
-                        elif '[Jarvis]' in raw_body or 'Jarvis' in raw_body or 'OpenClaw' in raw_body:
-                            active_agent = '🦞 Jarvis'
-                        elif last_msg.author_id and 'Wolf' in last_msg.author_id.name:
-                            active_agent = '👤 Wolf Prinz'
-                        elif last_msg.author_id:
-                            active_agent = last_msg.author_id.name
+                    raw_b = pyhtml.unescape(re.sub(r'<[^>]+>', ' ', last_msg.body or '')).strip()
+                    if raw_b:
+                        note_snippet = (raw_b[:160] + '...') if len(raw_b) > 160 else raw_b
 
-                        last_note_text = (raw_body[:180] + '...') if len(raw_body) > 180 else raw_body
-                    
-                    if last_msg.date:
-                        m_date = last_msg.date
-                        if m_date.date() == now.date():
-                            last_note_time = f"Heute {m_date.strftime('%H:%M')} Uhr"
-                        elif (now.date() - m_date.date()).days == 1:
-                            last_note_time = f"Gestern {m_date.strftime('%H:%M')} Uhr"
-                        else:
-                            last_note_time = m_date.strftime('%d.%m. %H:%M')
-                elif t.write_date:
-                    w_date = t.write_date
-                    if w_date.date() == now.date():
-                        last_note_time = f"Heute {w_date.strftime('%H:%M')} Uhr"
-                    else:
-                        last_note_time = w_date.strftime('%d.%m. %H:%M')
+                # Clean desc for modal
+                clean_desc = pyhtml.unescape(re.sub(r'<[^>]+>', ' ', wt.description or '')).strip()
+                modal_data_json = json.dumps({
+                    'id': wt.id,
+                    'name': wt.name,
+                    'project': wp_name,
+                    'stage': wt.stage_id.name if wt.stage_id else 'Offen',
+                    'prio': prio_tag,
+                    'desc': clean_desc[:500],
+                    'note': note_snippet,
+                    'url': f"/frawo/touch/login?redirect=/odoo/project.task/{wt.id}"
+                })
 
-                if not streams[stk]['latest_act'] and last_note_text:
-                    streams[stk]['latest_act'] = f"#{t.id} {t.name[:35]}"
-
-                # Check active agent lock
-                lock_banner = ''
-                card_lock_class = ''
-                if ag_id and t.id == ag_id:
-                    lock_banner = '<div class="agent-lock-banner lock-ag">⚡ AKTIV IN BEARBEITUNG DURCH ANTIGRAVITY</div>'
-                    card_lock_class = ' card-locked-ag'
-                    active_agent = '🤖 Antigravity'
-                elif claude_id and t.id == claude_id:
-                    lock_banner = '<div class="agent-lock-banner lock-claude">⚡ IN BEARBEITUNG DURCH CLAUDE CODE</div>'
-                    card_lock_class = ' card-locked-claude'
-                    active_agent = '🤖 Claude Code'
-
-                # Visual status styling
-                if is_in_prog:
-                    status_badge = '<span class="status-pill status-in-prog"><span class="mini-pulse"></span>🚀 In Arbeit</span>'
-                    filter_status_class = 'filter-in-prog'
-                elif is_done:
-                    status_badge = '<span class="status-pill status-done">✅ Verifiziert</span>'
-                    filter_status_class = 'filter-done'
-                elif is_blocked:
-                    status_badge = '<span class="status-pill status-blocked">🛑 Blockiert</span>'
-                    filter_status_class = 'filter-blocked'
-                else:
-                    status_badge = f'<span class="status-pill status-other">{stage_name}</span>'
-                    filter_status_class = 'filter-other'
-
-                prio_val = t.priority or '0'
-                prio_badge = {'3': '🔴 Prio 3', '2': '🟠 Prio 2', '1': '🔵 Prio 1', '0': ''}.get(prio_val, '')
-                prio_html = f'<span class="prio-tag">{prio_badge}</span>' if prio_badge else ''
-
-                proj_color = streams[stk]['color']
-                proj_name = t.project_id.name if t.project_id else streams[stk]['title']
-
-                card = f'''
-                <div class="task-card stream-{stk} {filter_status_class}{card_lock_class}">
-                    {lock_banner}
-                    <div class="card-header">
-                        <div style="display:flex; align-items:center; gap:8px;">
-                            <span class="proj-badge" style="background:{proj_color}22; color:{proj_color}; border:1px solid {proj_color}55;">{proj_name}</span>
-                            {prio_html}
-                        </div>
-                        {status_badge}
+                wcard = f'''
+                <div class="task-card card-wolf-decision" onclick='showTaskDetail({modal_data_json})'>
+                    <div class="wolf-badge-header">
+                        <span>🙋 BRAUCHT WOLF</span>
+                        {prio_html}
                     </div>
-                    <div class="task-title">#{t.id} · {t.name}</div>
-                    
-                    <div class="task-meta">
-                        <span class="meta-item"><span style="color:#00e5ff;">Aktiv:</span> <b>{active_agent}</b></span>
-                        <span class="meta-item"><span style="color:#9fa8da;">Stand:</span> {last_note_time}</span>
+                    <div class="card-header" style="margin-top:6px;">
+                        <span class="proj-badge" style="background:rgba(255,179,0,0.15); color:#ffb300; border:1px solid rgba(255,179,0,0.3);">{wp_name}</span>
+                        <span class="status-pill status-blocked">Wartet auf Entscheidung</span>
                     </div>
-
-                    <div class="last-update-box">
-                        <div class="update-header">
-                            <span>💬 Letzter Bericht ({active_agent})</span>
-                            <span style="color:#7986cb;">{last_note_time}</span>
-                        </div>
-                        <div class="update-body">{last_note_text}</div>
+                    <div class="task-title" style="color:#fff;">#{wt.id} · {wt.name}</div>
+                    <div class="last-update-box" style="border-color:rgba(255,179,0,0.2); background:rgba(255,179,0,0.04);">
+                        <div class="update-header" style="color:#ffb300;">💬 Letzte Frage / Status</div>
+                        <div class="update-body">{note_snippet}</div>
                     </div>
-
                     <div class="card-actions">
-                        <a href="/frawo/touch/login?redirect=/odoo/project.task/{t.id}" target="_blank" class="btn-action btn-open">
-                            ⚡ In Odoo öffnen →
-                        </a>
+                        <button type="button" class="btn-action btn-touch-view">⚡ Details &amp; Antworten →</button>
                     </div>
                 </div>'''
-                cards_html.append(card)
+                wolf_cards_html.append(wcard)
 
-            cards_rendered = "".join(cards_html) if cards_html else '<div class="empty-state">🎉 Keine aktuellen Aufgaben gefunden.</div>'
+            wolf_rendered = "".join(wolf_cards_html) if wolf_cards_html else '<div class="empty-state">🎉 Super! Keine offenen Entscheidungen oder Blocker für Wolf.</div>'
 
-            # 6. Render Live Project Stream Cards
-            stream_cards_html = []
-            for sk, s in streams.items():
-                tot_live = len(s['tasks'])
-                if s['in_prog'] > 0:
-                    status_lbl = f'<span style="color:#00e5ff; font-weight:800;">🟢 {s["in_prog"]} in Arbeit</span>'
-                    dot_cls = 'dot-active'
-                elif s['done_recent'] > 0:
-                    status_lbl = f'<span style="color:#00e676; font-weight:800;">✅ {s["done_recent"]} heute fertig</span>'
-                    dot_cls = 'dot-done'
+            # ── 5. AUFGABEN-KATEGORISIERUNG (FraWo Kern vs. Aufträge vs. Fremd) ──
+            all_live = env['project.task'].sudo().search([
+                ('active', '=', True),
+                '|',
+                ('stage_id.name', 'ilike', 'In Arbeit'),
+                ('write_date', '>=', cutoff_48h)
+            ], order='write_date desc', limit=50)
+
+            frawo_core = []
+            auftraege = []
+            fremd = []
+
+            for t in all_live:
+                pid = t.project_id.id if t.project_id else 0
+                pname = (t.project_id.name or '').lower()
+                if pid in [107, 106] or '99' in pname or '90' in pname or 'inselhalle' in pname or 'stockenweiler' in pname:
+                    fremd.append(t)
+                elif pid == 104 or '10 · auftr' in pname or 'auftrag' in pname:
+                    auftraege.append(t)
                 else:
-                    status_lbl = '<span style="color:#9fa8da; font-weight:600;">⚪ Geplant</span>'
-                    dot_cls = 'dot-idle'
+                    frawo_core.append(t)
 
-                scard = f'''
-                <div class="stream-card" onclick="filterByStream('{sk}', this)" id="scard-{sk}">
-                    <div class="stream-header">
-                        <div style="display:flex; align-items:center; gap:8px;">
-                            <span class="stream-dot {dot_cls}"></span>
-                            <span class="stream-title">{s['title']}</span>
+            # Limit FraWo core to top 15 most relevant
+            frawo_core = frawo_core[:15]
+
+            def render_cards(task_list, extra_cls=""):
+                rendered = []
+                for t in task_list:
+                    name_l = (t.name or '').lower()
+                    pid = t.project_id.id if t.project_id else 0
+                    pname = t.project_id.name if t.project_id else 'Allgemein'
+                    stage_name = t.stage_id.name if t.stage_id else 'Offen'
+                    is_in_prog = 'in arbeit' in stage_name.lower()
+                    is_done = any(w in stage_name.lower() for w in ['erledigt', 'done'])
+                    is_blocked = 'blockiert' in stage_name.lower()
+
+                    # Determine project stream tag
+                    if any(w in name_l for w in ['growbox', 'lüfter', 'hygrometer', 'pflanz', 'klima']):
+                        stk = 'growbox'
+                        pcol = '#4caf50'
+                    elif any(w in name_l for w in ['radio', 'azuracast', 'stream', 'beets', 'sendung']):
+                        stk = 'radio'
+                        pcol = '#00e5ff'
+                    elif any(w in name_l for w in ['openclaw', 'jarvis', 'modell', 'agent', 'sonnet', 'claude', 'antigravity']):
+                        stk = 'agents'
+                        pcol = '#a050f0'
+                    elif pid == 104:
+                        stk = 'auftraege'
+                        pcol = '#ffb300'
+                    elif pid in [106, 107]:
+                        stk = 'fremd'
+                        pcol = '#e91e63'
+                    else:
+                        stk = 'infra'
+                        pcol = '#ff5722'
+
+                    # Fetch last message
+                    last_msg = env['mail.message'].sudo().search([
+                        ('model', '=', 'project.task'),
+                        ('res_id', '=', t.id),
+                        ('body', '!=', False),
+                        ('body', '!=', '')
+                    ], order='date desc', limit=1)
+
+                    active_agent = '🤖 Agent'
+                    last_note_text = 'Status / Metadaten aktualisiert'
+                    last_note_time = ''
+                    if last_msg:
+                        raw_body = pyhtml.unescape(re.sub(r'<[^>]+>', ' ', last_msg.body or '')).strip()
+                        if raw_body:
+                            if '[Antigravity]' in raw_body or 'Antigravity' in raw_body:
+                                active_agent = '🤖 Antigravity'
+                            elif '[Claude]' in raw_body or 'Claude' in raw_body:
+                                active_agent = '🤖 Claude Code'
+                            elif '[Jarvis]' in raw_body or 'Jarvis' in raw_body or 'OpenClaw' in raw_body:
+                                active_agent = '🦞 Jarvis'
+                            elif last_msg.author_id and 'Wolf' in last_msg.author_id.name:
+                                active_agent = '👤 Wolf Prinz'
+                            elif last_msg.author_id:
+                                active_agent = last_msg.author_id.name
+
+                            last_note_text = (raw_body[:180] + '...') if len(raw_body) > 180 else raw_body
+
+                        if last_msg.date:
+                            m_date = last_msg.date
+                            if m_date.date() == now.date():
+                                last_note_time = f"Heute {m_date.strftime('%H:%M')} Uhr"
+                            elif (now.date() - m_date.date()).days == 1:
+                                last_note_time = f"Gestern {m_date.strftime('%H:%M')} Uhr"
+                            else:
+                                last_note_time = m_date.strftime('%d.%m. %H:%M')
+
+                    # Lock banner
+                    lock_banner = ''
+                    card_lock_class = ''
+                    if ag_id and t.id == ag_id:
+                        lock_banner = '<div class="agent-lock-banner lock-ag">⚡ AKTIV IN BEARBEITUNG DURCH ANTIGRAVITY</div>'
+                        card_lock_class = ' card-locked-ag'
+                        active_agent = '🤖 Antigravity'
+                    elif claude_id and t.id == claude_id:
+                        lock_banner = '<div class="agent-lock-banner lock-claude">⚡ IN BEARBEITUNG DURCH CLAUDE CODE</div>'
+                        card_lock_class = ' card-locked-claude'
+                        active_agent = '🤖 Claude Code'
+
+                    # Status badge
+                    if is_in_prog:
+                        status_badge = '<span class="status-pill status-in-prog"><span class="mini-pulse"></span>🚀 In Arbeit</span>'
+                    elif is_done:
+                        status_badge = '<span class="status-pill status-done">✅ Verifiziert</span>'
+                    elif is_blocked:
+                        status_badge = '<span class="status-pill status-blocked">🛑 Blockiert</span>'
+                    else:
+                        status_badge = f'<span class="status-pill status-other">{stage_name}</span>'
+
+                    prio_val = t.priority or '0'
+                    prio_badge = {'3': '🔴 Prio 3', '2': '🟠 Prio 2', '1': '🔵 Prio 1'}.get(prio_val, '')
+                    prio_html = f'<span class="prio-tag">{prio_badge}</span>' if prio_badge else ''
+
+                    clean_desc = pyhtml.unescape(re.sub(r'<[^>]+>', ' ', t.description or '')).strip()
+                    modal_data = json.dumps({
+                        'id': t.id,
+                        'name': t.name,
+                        'project': pname,
+                        'stage': stage_name,
+                        'prio': prio_badge,
+                        'desc': clean_desc[:500],
+                        'agent': active_agent,
+                        'note': last_note_text,
+                        'time': last_note_time,
+                        'url': f"/frawo/touch/login?redirect=/odoo/project.task/{t.id}"
+                    })
+
+                    c = f'''
+                    <div class="task-card stream-{stk} {extra_cls}{card_lock_class}" onclick='showTaskDetail({modal_data})'>
+                        {lock_banner}
+                        <div class="card-header">
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                <span class="proj-badge" style="background:{pcol}22; color:{pcol}; border:1px solid {pcol}55;">{pname}</span>
+                                {prio_html}
+                            </div>
+                            {status_badge}
                         </div>
-                        <span class="stream-status">{status_lbl}</span>
-                    </div>
-                    <div class="stream-desc">{s['desc']}</div>
-                    <div class="stream-footer">
-                        <span>{tot_live} Live-Aufgaben</span>
-                        <span style="color:{s['color']}; font-weight:700;">Filter anzeigen →</span>
-                    </div>
-                </div>'''
-                stream_cards_html.append(scard)
+                        <div class="task-title">#{t.id} · {t.name}</div>
+                        <div class="task-meta">
+                            <span class="meta-item"><span style="color:#00e5ff;">Aktiv:</span> <b>{active_agent}</b></span>
+                            <span class="meta-item"><span style="color:#9fa8da;">Stand:</span> {last_note_time}</span>
+                        </div>
+                        <div class="last-update-box">
+                            <div class="update-header">
+                                <span>💬 Letzter Bericht ({active_agent})</span>
+                                <span style="color:#7986cb;">{last_note_time}</span>
+                            </div>
+                            <div class="update-body">{last_note_text}</div>
+                        </div>
+                        <div class="card-actions">
+                            <button type="button" class="btn-action btn-touch-view">⚡ Touch-Details &amp; Aktionen →</button>
+                        </div>
+                    </div>'''
+                    rendered.append(c)
+                return "".join(rendered) if rendered else '<div class="empty-state">🎉 Keine Aufgaben in diesem Bereich.</div>'
 
-            stream_cards_rendered = "".join(stream_cards_html)
+            frawo_rendered = render_cards(frawo_core)
+            auftraege_rendered = render_cards(auftraege)
+            fremd_rendered = render_cards(fremd)
 
-            # 7. Render Today Timesheets
+            # ── 6. ZEITERFASSUNG HEUTE ──
             ts_rows = []
             for ts in timesheets:
                 emp_name = ts.employee_id.name if ts.employee_id else (ts.user_id.name if ts.user_id else 'Agent')
@@ -2484,47 +2513,77 @@ class RadioController(http.Controller):
                 </div>''')
             ts_rendered = "".join(ts_rows) if ts_rows else '<div style="color:#7986cb; padding:8px;">Heute noch keine Zeiten erfasst.</div>'
 
+            # ── 7. SYSTEM VITAL-BAR HTML ──
+            pbs_pill_cls = "v-ok" if pbs_ok else "v-err"
+            pbs_text = "🟢 PBS 10.1.0.7: Online" if pbs_ok else "🔴 PBS 10.1.0.7: FEHLER"
+            
+            srv_pill_cls = "v-ok" if (services_up == services_total and services_total > 0) else "v-warn"
+            srv_text = f"🟢 {services_up}/{services_total} Dienste UP"
+
+            if crit_alerts > 0:
+                alert_pill_cls = "v-err"
+                alert_text = f"🔴 {crit_alerts} Kritische Alarme"
+            elif warn_alerts > 0:
+                alert_pill_cls = "v-warn"
+                alert_text = f"🟡 {warn_alerts} Warnungen"
+            else:
+                alert_pill_cls = "v-ok"
+                alert_text = "🟢 0 Alarme"
+
+            alerts_drawer_html = ""
+            if active_alerts:
+                ad_items = []
+                for aa in active_alerts:
+                    col = "#ff1744" if aa['severity'] == 'critical' else "#ffb300"
+                    ad_items.append(f'''<div style="padding:6px 0; border-bottom:1px solid rgba(255,255,255,0.05);">
+                        <b style="color:{col};">[{aa['severity'].upper()}]</b> <b>{aa['name']}</b>: <span style="color:#c5cae9;">{aa['summary']}</span>
+                    </div>''')
+                alerts_drawer_html = f'''<div id="alertsDrawer" style="display:none; background:rgba(18,22,34,0.95); border:1px solid rgba(255,87,34,0.4); border-radius:12px; padding:14px; margin-bottom:16px;">
+                    <div style="font-size:13px; font-weight:800; color:#ff5722; margin-bottom:8px;">⚠️ AKTIVE PROMETHEUS-ALARME (CT155):</div>
+                    {"".join(ad_items)}
+                </div>'''
+
             html = f'''<!DOCTYPE html>
 <html lang="de">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="refresh" content="30">
-<title>FraWo Live Operations &amp; Projekt-Cockpit</title>
+<meta http-equiv="refresh" content="45">
+<title>FraWo Operations Cockpit 2.0</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
   * {{ box-sizing: border-box; margin: 0; padding: 0; }}
   body {{
-    background: radial-gradient(circle at 15% 15%, rgba(160,80,240,0.14), transparent 45%),
+    background: radial-gradient(circle at 15% 15%, rgba(160,80,240,0.12), transparent 45%),
                 radial-gradient(circle at 85% 85%, rgba(0,229,255,0.08), transparent 50%),
                 #090b10;
     color: #e8eaf6;
     font-family: 'Inter', -apple-system, sans-serif;
-    padding: 16px 20px 40px 20px;
+    padding: 12px 18px 40px 18px;
     min-height: 100vh;
   }}
 
+  /* Top Kiosk Nav */
   .top-nav {{
     display: flex;
     justify-content: center;
     gap: 8px;
-    margin-bottom: 20px;
+    margin-bottom: 14px;
     flex-wrap: wrap;
   }}
   .nav-btn {{
     background: rgba(26, 30, 42, 0.8);
     border: 1px solid rgba(255, 255, 255, 0.1);
     color: #c5cae9;
-    padding: 10px 18px;
-    border-radius: 24px;
+    padding: 8px 16px;
+    border-radius: 20px;
     text-decoration: none;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 700;
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    transition: all 0.2s ease;
+    transition: all 0.15s ease;
   }}
   .nav-btn:active {{ transform: scale(0.96); }}
   .nav-btn.active {{
@@ -2533,383 +2592,507 @@ class RadioController(http.Controller):
     border-color: transparent;
   }}
 
+  /* Vital Bar */
+  .vital-bar {{
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }}
+  .v-pill {{
+    background: rgba(18, 22, 34, 0.85);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 8px 14px;
+    font-size: 12px;
+    font-weight: 800;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    user-select: none;
+  }}
+  .v-ok {{ border-color: rgba(0,230,118,0.3); color: #00e676; }}
+  .v-warn {{ border-color: rgba(255,179,0,0.4); color: #ffb300; background: rgba(255,179,0,0.06); }}
+  .v-err {{ border-color: rgba(255,23,68,0.5); color: #ff1744; background: rgba(255,23,68,0.08); animation: pulse 2s infinite; }}
+
+  /* Header Box */
   .header-box {{
-    background: rgba(18, 22, 32, 0.7);
+    background: rgba(18, 22, 32, 0.75);
     backdrop-filter: blur(12px);
     border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 18px;
-    padding: 16px 22px;
-    margin-bottom: 20px;
+    border-radius: 16px;
+    padding: 14px 20px;
+    margin-bottom: 18px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    gap: 14px;
+    gap: 12px;
   }}
-  .header-left {{ display: flex; align-items: center; gap: 14px; }}
   .pulse-dot {{
-    width: 12px; height: 12px; border-radius: 50%; background: #00e676;
-    box-shadow: 0 0 12px #00e676; animation: pulse 2s infinite;
+    width: 10px; height: 10px; border-radius: 50%; background: #00e676;
+    box-shadow: 0 0 10px #00e676; animation: pulse 2s infinite;
   }}
   @keyframes pulse {{
     0% {{ transform: scale(0.95); opacity: 0.8; }}
     50% {{ transform: scale(1.2); opacity: 1; }}
     100% {{ transform: scale(0.95); opacity: 0.8; }}
   }}
-  .title-main {{ font-size: 22px; font-weight: 900; color: #fff; letter-spacing: -0.5px; }}
-  .subtitle {{ font-size: 12px; color: #9fa8da; margin-top: 2px; }}
-
-  .kpi-group {{ display: flex; gap: 10px; }}
-  .kpi-pill {{
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 12px;
-    padding: 8px 14px;
-    text-align: center;
-  }}
-  .kpi-val {{ font-size: 18px; font-weight: 900; color: #00e5ff; }}
-  .kpi-lbl {{ font-size: 11px; color: #9fa8da; font-weight: 600; text-transform: uppercase; }}
+  .title-main {{ font-size: 20px; font-weight: 900; color: #fff; letter-spacing: -0.5px; }}
+  .subtitle {{ font-size: 11px; color: #9fa8da; margin-top: 2px; }}
 
   .section-title {{
-    font-size: 15px; font-weight: 900; color: #fff; margin-bottom: 12px;
+    font-size: 14px; font-weight: 900; color: #fff; margin-bottom: 10px;
     display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.5px;
   }}
 
+  /* Agent Grid */
   .grid-agents {{
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 14px;
-    margin-bottom: 24px;
+    grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
   }}
   .agent-card {{
     background: rgba(18, 22, 34, 0.85);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 16px;
-    padding: 16px 18px;
+    padding: 14px 16px;
     box-shadow: 0 4px 16px rgba(0,0,0,0.3);
-    transition: all 0.2s ease;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    gap: 10px;
+    gap: 8px;
   }}
   .agent-card.agent-active-ag {{
     border-color: rgba(0, 229, 255, 0.6);
     background: rgba(0, 229, 255, 0.05);
-    box-shadow: 0 0 24px rgba(0, 229, 255, 0.18);
+    box-shadow: 0 0 20px rgba(0, 229, 255, 0.15);
   }}
   .agent-card.agent-active-claude {{
     border-color: rgba(255, 179, 0, 0.6);
     background: rgba(255, 179, 0, 0.05);
-    box-shadow: 0 0 24px rgba(255, 179, 0, 0.18);
+    box-shadow: 0 0 20px rgba(255, 179, 0, 0.15);
   }}
   .agent-card.agent-active-jarvis {{
     border-color: rgba(160, 80, 240, 0.6);
     background: rgba(160, 80, 240, 0.05);
-    box-shadow: 0 0 24px rgba(160, 80, 240, 0.18);
+    box-shadow: 0 0 20px rgba(160, 80, 240, 0.15);
   }}
   .agent-header {{ display: flex; justify-content: space-between; align-items: center; }}
-  .agent-pulse-dot {{ width: 10px; height: 10px; border-radius: 50%; animation: pulse 1.8s infinite; }}
-  .agent-name {{ font-size: 15px; font-weight: 900; color: #fff; }}
+  .agent-pulse-dot {{ width: 8px; height: 8px; border-radius: 50%; animation: pulse 1.8s infinite; }}
+  .agent-name {{ font-size: 14px; font-weight: 900; color: #fff; }}
   .agent-loc {{ font-size: 11px; color: #9fa8da; font-weight: 600; }}
-  .agent-badge {{ font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 8px; }}
+  .agent-badge {{ font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 6px; }}
   .badge-working {{ background: rgba(0, 229, 255, 0.2); color: #00e5ff; border: 1px solid rgba(0, 229, 255, 0.4); }}
   .badge-standby {{ background: rgba(255, 179, 0, 0.2); color: #ffb300; border: 1px solid rgba(255, 179, 0, 0.4); }}
   .badge-persistent {{ background: rgba(160, 80, 240, 0.2); color: #a050f0; border: 1px solid rgba(160, 80, 240, 0.4); }}
-  .agent-task-row {{ display: flex; flex-direction: column; gap: 3px; }}
-  .agent-label {{ color: #7986cb; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }}
-  .agent-task-link {{ color: #fff; font-size: 13px; font-weight: 700; text-decoration: none; line-height: 1.4; }}
-  .agent-task-link:hover {{ text-decoration: underline; color: #00e5ff; }}
-  .agent-focus-txt {{ font-size: 12px; color: #c5cae9; line-height: 1.4; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 8px; }}
+  .agent-task-row {{ display: flex; flex-direction: column; gap: 2px; }}
+  .agent-label {{ color: #7986cb; font-size: 10px; font-weight: 800; text-transform: uppercase; }}
+  .agent-task-link {{ color: #fff; font-size: 13px; font-weight: 700; text-decoration: none; line-height: 1.3; }}
+  .agent-focus-txt {{ font-size: 11px; color: #c5cae9; line-height: 1.3; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 6px; }}
 
-  .agent-lock-banner {{
-    padding: 6px 12px;
-    border-radius: 8px;
-    font-size: 11px;
-    font-weight: 900;
-    margin-bottom: 10px;
-    text-align: center;
-    letter-spacing: 0.5px;
-  }}
-  .lock-ag {{ background: linear-gradient(135deg, rgba(0,229,255,0.25), rgba(160,80,240,0.25)); color: #00e5ff; border: 1px solid #00e5ff; }}
-  .lock-claude {{ background: linear-gradient(135deg, rgba(255,179,0,0.25), rgba(255,87,34,0.25)); color: #ffb300; border: 1px solid #ffb300; }}
-  .card-locked-ag {{ border-color: #00e5ff !important; box-shadow: 0 0 24px rgba(0,229,255,0.3) !important; }}
-  .card-locked-claude {{ border-color: #ffb300 !important; box-shadow: 0 0 24px rgba(255,179,0,0.3) !important; }}
-
-  .grid-streams {{
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-    gap: 12px;
-    margin-bottom: 24px;
-  }}
-  .stream-card {{
-    background: rgba(22, 26, 38, 0.7);
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 16px;
-    padding: 14px 16px;
-    cursor: pointer;
-    transition: all 0.15s ease;
-    user-select: none;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }}
-  .stream-card:hover {{ border-color: rgba(0,229,255,0.4); transform: translateY(-2px); }}
-  .stream-card.active-stream {{
-    border-color: #00e5ff;
-    background: rgba(0, 229, 255, 0.08);
-    box-shadow: 0 4px 20px rgba(0,229,255,0.2);
-  }}
-  .stream-header {{ display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }}
-  .stream-dot {{ width: 8px; height: 8px; border-radius: 50%; }}
-  .dot-active {{ background: #00e5ff; box-shadow: 0 0 8px #00e5ff; }}
-  .dot-done {{ background: #00e676; box-shadow: 0 0 8px #00e676; }}
-  .dot-idle {{ background: #7986cb; }}
-  .stream-title {{ font-size: 14px; font-weight: 800; color: #fff; }}
-  .stream-status {{ font-size: 11px; }}
-  .stream-desc {{ font-size: 12px; color: #9fa8da; line-height: 1.4; margin-bottom: 10px; }}
-  .stream-footer {{ display: flex; justify-content: space-between; font-size: 11px; color: #7986cb; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 8px; }}
-
-  .filter-bar {{
+  /* Touch Tabs Bar */
+  .touch-tabs-bar {{
     display: flex;
     gap: 8px;
-    margin-bottom: 20px;
+    margin-bottom: 18px;
     overflow-x: auto;
     padding-bottom: 4px;
   }}
-  .filter-chip {{
-    background: rgba(26, 30, 42, 0.6);
-    border: 1px solid rgba(255,255,255,0.08);
-    color: #9fa8da;
-    padding: 8px 16px;
-    border-radius: 12px;
-    font-size: 13px;
-    font-weight: 700;
+  .touch-tab {{
+    background: rgba(22, 26, 38, 0.85);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: #c5cae9;
+    padding: 12px 20px;
+    border-radius: 14px;
+    font-size: 14px;
+    font-weight: 800;
     cursor: pointer;
     user-select: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
     transition: all 0.15s ease;
     white-space: nowrap;
   }}
-  .filter-chip.active {{
-    background: #a050f0;
+  .touch-tab:active {{ transform: scale(0.96); }}
+  .touch-tab.active {{
+    background: linear-gradient(135deg, #a050f0, #00e5ff);
     color: #fff;
-    border-color: #a050f0;
-    box-shadow: 0 4px 14px rgba(160,80,240,0.4);
+    border-color: transparent;
+    box-shadow: 0 4px 16px rgba(160,80,240,0.4);
+  }}
+  .tab-badge-glow {{
+    background: #ff1744;
+    color: #fff;
+    padding: 2px 7px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 900;
+    box-shadow: 0 0 10px #ff1744;
   }}
 
+  /* Tasks Grid */
   .grid-tasks {{
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
-    gap: 16px;
-    margin-bottom: 30px;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 14px;
+    margin-bottom: 24px;
   }}
   .task-card {{
     background: rgba(22, 26, 38, 0.75);
     backdrop-filter: blur(8px);
     border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 18px;
-    padding: 18px;
+    border-radius: 16px;
+    padding: 16px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    cursor: pointer;
     transition: transform 0.15s ease, border-color 0.15s ease;
   }}
-  .task-card:hover {{ border-color: rgba(160,80,240,0.4); transform: translateY(-2px); }}
+  .task-card:active {{ transform: scale(0.98); }}
+  .task-card:hover {{ border-color: rgba(160,80,240,0.4); }}
   
-  .card-header {{ display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }}
-  .proj-badge {{ font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 8px; text-transform: uppercase; }}
-  .prio-tag {{ font-size: 11px; font-weight: 700; }}
+  .card-wolf-decision {{
+    border-color: rgba(255,179,0,0.5) !important;
+    background: rgba(255,179,0,0.04) !important;
+    box-shadow: 0 0 20px rgba(255,179,0,0.12) !important;
+  }}
+  .wolf-badge-header {{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, rgba(255,179,0,0.25), rgba(255,87,34,0.25));
+    color: #ffb300;
+    border: 1px solid rgba(255,179,0,0.4);
+    border-radius: 8px;
+    padding: 5px 10px;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+  }}
+
+  .agent-lock-banner {{
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-size: 10px;
+    font-weight: 900;
+    margin-bottom: 8px;
+    text-align: center;
+    letter-spacing: 0.5px;
+  }}
+  .lock-ag {{ background: linear-gradient(135deg, rgba(0,229,255,0.25), rgba(160,80,240,0.25)); color: #00e5ff; border: 1px solid #00e5ff; }}
+  .lock-claude {{ background: linear-gradient(135deg, rgba(255,179,0,0.25), rgba(255,87,34,0.25)); color: #ffb300; border: 1px solid #ffb300; }}
+  .card-locked-ag {{ border-color: #00e5ff !important; box-shadow: 0 0 20px rgba(0,229,255,0.25) !important; }}
+  .card-locked-claude {{ border-color: #ffb300 !important; box-shadow: 0 0 20px rgba(255,179,0,0.25) !important; }}
+
+  .card-header {{ display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }}
+  .proj-badge {{ font-size: 11px; font-weight: 800; padding: 3px 8px; border-radius: 6px; text-transform: uppercase; }}
+  .prio-tag {{ font-size: 10px; font-weight: 700; }}
 
   .status-pill {{
-    font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 8px; display: inline-flex; align-items: center; gap: 5px;
+    font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 6px; display: inline-flex; align-items: center; gap: 4px;
   }}
-  .status-in-prog {{
-    background: rgba(0, 229, 255, 0.15); color: #00e5ff; border: 1px solid rgba(0, 229, 255, 0.3);
-  }}
-  .status-done {{
-    background: rgba(0, 230, 118, 0.15); color: #00e676; border: 1px solid rgba(0, 230, 118, 0.3);
-  }}
-  .status-blocked {{
-    background: rgba(255, 23, 68, 0.15); color: #ff1744; border: 1px solid rgba(255, 23, 68, 0.3);
-  }}
-  .status-other {{
-    background: rgba(255, 255, 255, 0.08); color: #9fa8da; border: 1px solid rgba(255, 255, 255, 0.1);
-  }}
-  .mini-pulse {{
-    width: 6px; height: 6px; border-radius: 50%; background: #00e5ff; animation: pulse 1.5s infinite;
-  }}
+  .status-in-prog {{ background: rgba(0, 229, 255, 0.15); color: #00e5ff; border: 1px solid rgba(0, 229, 255, 0.3); }}
+  .status-done {{ background: rgba(0, 230, 118, 0.15); color: #00e676; border: 1px solid rgba(0, 230, 118, 0.3); }}
+  .status-blocked {{ background: rgba(255, 23, 68, 0.15); color: #ff1744; border: 1px solid rgba(255, 23, 68, 0.3); }}
+  .status-other {{ background: rgba(255, 255, 255, 0.08); color: #9fa8da; border: 1px solid rgba(255, 255, 255, 0.1); }}
+  .mini-pulse {{ width: 6px; height: 6px; border-radius: 50%; background: #00e5ff; animation: pulse 1.5s infinite; }}
 
-  .task-title {{ font-size: 16px; font-weight: 800; color: #fff; line-height: 1.4; margin-bottom: 12px; }}
-  
-  .task-meta {{ display: flex; gap: 14px; font-size: 12px; color: #9fa8da; margin-bottom: 14px; flex-wrap: wrap; }}
+  .task-title {{ font-size: 15px; font-weight: 800; color: #fff; line-height: 1.35; margin-bottom: 10px; }}
+  .task-meta {{ display: flex; gap: 12px; font-size: 11px; color: #9fa8da; margin-bottom: 12px; flex-wrap: wrap; }}
   .meta-item {{ display: inline-flex; align-items: center; gap: 4px; }}
 
   .last-update-box {{
     background: rgba(12, 14, 22, 0.6);
     border: 1px solid rgba(255,255,255,0.06);
-    border-radius: 12px;
-    padding: 12px 14px;
-    margin-bottom: 16px;
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-bottom: 14px;
   }}
-  .update-header {{ display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; color: #a050f0; margin-bottom: 6px; }}
-  .update-body {{ font-size: 13px; color: #c5cae9; line-height: 1.45; word-break: break-word; }}
+  .update-header {{ display: flex; justify-content: space-between; font-size: 10px; font-weight: 700; color: #a050f0; margin-bottom: 4px; }}
+  .update-body {{ font-size: 12px; color: #c5cae9; line-height: 1.4; word-break: break-word; }}
 
   .card-actions {{ display: flex; gap: 8px; }}
   .btn-action {{
     flex: 1;
-    padding: 12px;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    font-size: 12px;
+    font-weight: 800;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.1s ease;
+  }}
+  .btn-touch-view {{
+    background: linear-gradient(135deg, rgba(160,80,240,0.8), rgba(0,229,255,0.8));
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(160,80,240,0.3);
+  }}
+
+  /* Modal Styles */
+  .modal-overlay {{
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(10px);
+    z-index: 10000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }}
+  .modal-box {{
+    background: #121622;
+    border: 1px solid rgba(0,229,255,0.3);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.6), 0 0 30px rgba(0,229,255,0.15);
+    border-radius: 20px;
+    max-width: 680px;
+    width: 100%;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }}
+  .modal-header {{
+    padding: 18px 22px;
+    background: rgba(255,255,255,0.03);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }}
+  .modal-title {{ font-size: 17px; font-weight: 900; color: #fff; }}
+  .modal-body {{
+    padding: 22px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }}
+  .modal-footer {{
+    padding: 16px 22px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    gap: 12px;
+  }}
+  .btn-modal-close {{
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.15);
+    padding: 12px 20px;
     border-radius: 12px;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+  }}
+  .btn-modal-odoo {{
+    flex: 1;
+    background: linear-gradient(135deg, #a050f0, #00e5ff);
+    color: #fff;
     text-decoration: none;
+    padding: 12px 20px;
+    border-radius: 12px;
     font-size: 13px;
     font-weight: 800;
     text-align: center;
-    transition: transform 0.1s ease;
-    display: inline-block;
-  }}
-  .btn-action:active {{ transform: scale(0.97); }}
-  .btn-open {{
-    background: linear-gradient(135deg, #a050f0, #00e5ff);
-    color: #fff;
-    box-shadow: 0 4px 14px rgba(160,80,240,0.3);
   }}
 
+  /* Timesheet Box */
   .ts-box {{
     background: rgba(18, 22, 32, 0.6);
     border: 1px solid rgba(255,255,255,0.08);
     border-radius: 16px;
-    padding: 16px 20px;
-    margin-bottom: 30px;
+    padding: 14px 18px;
+    margin-top: 24px;
+    margin-bottom: 24px;
   }}
   .ts-row {{
     display: flex;
     align-items: center;
-    gap: 14px;
-    padding: 10px 0;
+    gap: 12px;
+    padding: 8px 0;
     border-bottom: 1px solid rgba(255,255,255,0.05);
-    font-size: 13px;
+    font-size: 12px;
   }}
   .ts-row:last-child {{ border-bottom: none; }}
-  .ts-time {{ font-weight: 900; color: #00e676; min-width: 50px; }}
-  .ts-emp {{ font-weight: 700; color: #ffb300; min-width: 140px; }}
+  .ts-time {{ font-weight: 900; color: #00e676; min-width: 48px; }}
+  .ts-emp {{ font-weight: 700; color: #ffb300; min-width: 130px; }}
   .ts-desc {{ color: #c5cae9; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }}
 
-  .empty-state {{ padding: 40px; text-align: center; color: #9fa8da; font-size: 16px; grid-column: 1 / -1; }}
-  
+  .empty-state {{ padding: 30px; text-align: center; color: #9fa8da; font-size: 14px; grid-column: 1 / -1; }}
+
   {self.KIOSK_BACK_CSS}
 </style>
 </head>
 <body>
 
+<!-- Kiosk Top Nav -->
 <div class="top-nav">
   <a href="http://10.1.0.40:8123/jarvis-touch/home" class="nav-btn">🏠 Home</a>
   <a href="http://10.1.0.40:8123/jarvis-touch/growbox" class="nav-btn">🌱 GrowBox</a>
   <a href="http://10.1.0.40:8123/jarvis-touch/licht" class="nav-btn">💡 Licht</a>
   <a href="http://10.1.0.40:8123/jarvis-touch/radio" class="nav-btn">🎛️ Radio</a>
-  <a href="/frawo/touch/cockpit" class="nav-btn active">⚡ Live Ops</a>
+  <a href="/frawo/touch/cockpit" class="nav-btn active">⚡ Operations Cockpit</a>
   <a href="http://10.1.0.40:8123/jarvis-touch/studiopc" class="nav-btn">🖥️ StudioPC</a>
   <a href="http://10.1.0.40:8123/lovelace/0" class="nav-btn">📋 HA Menü</a>
 </div>
 
-<div class="header-box">
-  <div class="header-left">
-    <div class="pulse-dot"></div>
-    <div>
-      <div class="title-main">⚡ Live Operations &amp; Projekt-Cockpit</div>
-      <div class="subtitle">Echtzeit-Übersicht: Aktive Projekte, laufende Arbeiten &amp; Agenten-Aktivitäten</div>
-    </div>
+<!-- System & Backup Vital Bar -->
+<div class="vital-bar">
+  <div class="v-pill {srv_pill_cls}">
+    <span>{srv_text}</span>
   </div>
-  <div class="kpi-group">
-    <div class="kpi-pill">
-      <div class="kpi-val">{in_prog_count}</div>
-      <div class="kpi-lbl">In Arbeit</div>
-    </div>
-    <div class="kpi-pill">
-      <div class="kpi-val">{recent_done_count}</div>
-      <div class="kpi-lbl">Heute erledigt</div>
-    </div>
-    <div class="kpi-pill">
-      <div class="kpi-val" style="color:#00e676;">{today_hours:.2f} h</div>
-      <div class="kpi-lbl">Heute gebucht</div>
-    </div>
+  <div class="v-pill {pbs_pill_cls}">
+    <span>{pbs_text}</span>
+  </div>
+  <div class="v-pill {alert_pill_cls}" onclick="toggleAlertsDrawer()">
+    <span>{alert_text} (Klick für Details)</span>
+  </div>
+  <div class="v-pill v-ok">
+    <span>⏱️ Heute gebucht: {today_hours:.2f} h</span>
   </div>
 </div>
 
+{alerts_drawer_html}
+
+<!-- Header Box -->
+<div class="header-box">
+  <div style="display:flex; align-items:center; gap:12px;">
+    <div class="pulse-dot"></div>
+    <div>
+      <div class="title-main">⚡ FraWo Live Operations Cockpit 2.0</div>
+      <div class="subtitle">Echtzeit-Tracking: Systeme, Backups, Entscheidungen &amp; Live-Agenten</div>
+    </div>
+  </div>
+  <div style="display:flex; gap:8px;">
+    <button onclick="window.location.reload()" class="nav-btn" style="background:rgba(255,255,255,0.06); cursor:pointer;">🔄 Aktualisieren</button>
+  </div>
+</div>
+
+<!-- Live Agents Bar -->
 <div class="section-title">🤖 Live-Agenten: Wer arbeitet gerade woran?</div>
 <div class="grid-agents">
   {agents_html}
 </div>
 
-<div class="section-title">🎯 Aktive Projekte &amp; Themenstränge (Live-Fokus)</div>
-<div class="grid-streams">
-  {stream_cards_rendered}
+<!-- Interactive Touch Tabs -->
+<div class="touch-tabs-bar">
+  <div class="touch-tab active" onclick="switchView('frawo', this)">
+    🔥 FraWo Kernbetrieb ({len(frawo_core)})
+  </div>
+  <div class="touch-tab" onclick="switchView('wolf', this)">
+    🙋 Braucht Wolf <span class="tab-badge-glow">{len(wolf_records)}</span>
+  </div>
+  <div class="touch-tab" onclick="switchView('auftraege', this)">
+    💼 Aufträge &amp; Events ({len(auftraege)})
+  </div>
+  <div class="touch-tab" onclick="switchView('fremd', this)">
+    🔒 Inselhalle &amp; Familie ({len(fremd)})
+  </div>
 </div>
 
-<div class="section-title">⚡ Laufende Arbeiten &amp; Frische Aktivität ({len(live_tasks)} Aufgaben)</div>
-<div class="filter-bar">
-  <div class="filter-chip active" onclick="filterTasks('all', this)">🔥 Alle Live ({len(live_tasks)})</div>
-  <div class="filter-chip" onclick="filterTasks('filter-in-prog', this)">🚀 Nur In Arbeit ({in_prog_count})</div>
-  <div class="filter-chip" onclick="filterTasks('filter-done', this)">✅ Kürzlich verifiziert ({recent_done_count})</div>
-  <div class="filter-chip" onclick="filterTasks('stream-infra', this)">🛠️ Systeme &amp; IT</div>
-  <div class="filter-chip" onclick="filterTasks('stream-growbox', this)">🌱 GrowBox / IoT</div>
-  <div class="filter-chip" onclick="filterTasks('stream-agents', this)">🦞 KI-Agenten</div>
-  <div class="filter-chip" onclick="filterTasks('stream-radio', this)">📻 Radio</div>
-  <div class="filter-chip" onclick="filterTasks('stream-auftraege', this)">💼 Aufträge</div>
-  <div class="filter-chip" onclick="filterTasks('stream-wolf', this)">🔒 Wolf</div>
+<!-- Tab Content Containers -->
+<div id="view-frawo" class="tab-content">
+  <div class="section-title">⚡ Aktive FraWo-Kernarbeiten (IT, GrowBox, KI, Radio)</div>
+  <div class="grid-tasks">
+    {frawo_rendered}
+  </div>
 </div>
 
-<div class="grid-tasks" id="tasksGrid">
-  {cards_rendered}
+<div id="view-wolf" class="tab-content" style="display:none;">
+  <div class="section-title" style="color:#ffb300;">🙋 Entscheidungs-Radar: Aufgaben, die Wolfs Freigabe / Antwort brauchen</div>
+  <div class="grid-tasks">
+    {wolf_rendered}
+  </div>
 </div>
 
+<div id="view-auftraege" class="tab-content" style="display:none;">
+  <div class="section-title">💼 Kunden-Aufträge, Events &amp; Abrechnung</div>
+  <div class="grid-tasks">
+    {auftraege_rendered}
+  </div>
+</div>
+
+<div id="view-fremd" class="tab-content" style="display:none;">
+  <div class="section-title" style="color:#e91e63;">🔒 Fremdgewerke: Inselhalle (#99) &amp; Familie Stockenweiler (#90)</div>
+  <div class="grid-tasks">
+    {fremd_rendered}
+  </div>
+</div>
+
+<!-- Timesheet Section -->
 <div class="section-title">⏱️ Heute gebuchte Zeiterfassung ({today_hours:.2f} Stunden)</div>
 <div class="ts-box">
   {ts_rendered}
 </div>
 
+<!-- Touch Detail Modal -->
+<div id="taskModal" class="modal-overlay" onclick="closeModal(event)">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <div id="modalHeaderTitle" class="modal-title">Aufgaben-Details</div>
+      <button onclick="closeModalDirect()" style="background:transparent; border:none; color:#9fa8da; font-size:22px; cursor:pointer;">✕</button>
+    </div>
+    <div class="modal-body">
+      <div>
+        <div style="font-size:11px; font-weight:800; color:#7986cb; text-transform:uppercase;">Projekt &amp; Status</div>
+        <div id="modalMeta" style="font-size:13px; font-weight:700; color:#c5cae9; margin-top:3px;">-</div>
+      </div>
+      <div>
+        <div style="font-size:11px; font-weight:800; color:#00e5ff; text-transform:uppercase;">Aufgabenstellung / Beschreibung</div>
+        <div id="modalDesc" style="font-size:13px; color:#e8eaf6; line-height:1.5; margin-top:4px; max-height:220px; overflow-y:auto; background:rgba(0,0,0,0.3); padding:10px; border-radius:10px;">-</div>
+      </div>
+      <div>
+        <div style="font-size:11px; font-weight:800; color:#a050f0; text-transform:uppercase;">Letzter Agenten-Bericht / Status</div>
+        <div id="modalNote" style="font-size:13px; color:#c5cae9; line-height:1.45; margin-top:4px; background:rgba(160,80,240,0.06); border:1px solid rgba(160,80,240,0.2); padding:10px; border-radius:10px;">-</div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-modal-close" onclick="closeModalDirect()">✕ Schließen</button>
+      <a id="modalOdooLink" href="#" target="_blank" class="btn-modal-odoo">⚡ In vollem Odoo-Backend öffnen →</a>
+    </div>
+  </div>
+</div>
+
 {self.KIOSK_BACK_HTML}
 
 <script>
-let currentStreamFilter = 'all';
-
-function filterTasks(cls, btn) {{
-  document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.stream-card').forEach(c => c.classList.remove('active-stream'));
-  if (btn) btn.classList.add('active');
+function switchView(tabKey, btnElem) {{
+  document.querySelectorAll('.touch-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
   
-  const cards = document.querySelectorAll('.task-card');
-  cards.forEach(card => {{
-    if (cls === 'all' || card.classList.contains(cls)) {{
-      card.style.display = 'flex';
-    }} else {{
-      card.style.display = 'none';
-    }}
-  }});
+  if (btnElem) btnElem.classList.add('active');
+  const target = document.getElementById('view-' + tabKey);
+  if (target) target.style.display = 'block';
 }}
 
-function filterByStream(streamKey, cardElem) {{
-  const targetClass = 'stream-' + streamKey;
-  const isAlreadyActive = cardElem.classList.contains('active-stream');
+function toggleAlertsDrawer() {{
+  const d = document.getElementById('alertsDrawer');
+  if (d) d.style.display = (d.style.display === 'none' || !d.style.display) ? 'block' : 'none';
+}}
 
-  document.querySelectorAll('.stream-card').forEach(c => c.classList.remove('active-stream'));
-  document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
+function showTaskDetail(data) {{
+  document.getElementById('modalHeaderTitle').innerText = '#' + data.id + ' · ' + data.name;
+  document.getElementById('modalMeta').innerHTML = '<span style="color:#00e5ff;">' + (data.project || '-') + '</span> · ' + (data.stage || '-') + (data.prio ? ' · ' + data.prio : '');
+  document.getElementById('modalDesc').innerText = data.desc || 'Keine nähere Aufgabenstellung hinterlegt.';
+  document.getElementById('modalNote').innerText = data.note || 'Kein aktueller Chatter-Bericht vorhanden.';
+  document.getElementById('modalOdooLink').href = data.url;
+  document.getElementById('taskModal').style.display = 'flex';
+}}
 
-  if (isAlreadyActive) {{
-    // Reset to all
-    filterTasks('all', document.querySelector('.filter-chip'));
-  }} else {{
-    cardElem.classList.add('active-stream');
-    const cards = document.querySelectorAll('.task-card');
-    cards.forEach(card => {{
-      if (card.classList.contains(targetClass)) {{
-        card.style.display = 'flex';
-      }} else {{
-        card.style.display = 'none';
-      }}
-    }});
-  }}
+function closeModal(e) {{
+  document.getElementById('taskModal').style.display = 'none';
+}}
+
+function closeModalDirect() {{
+  document.getElementById('taskModal').style.display = 'none';
 }}
 </script>
 
@@ -2919,6 +3102,7 @@ function filterByStream(streamKey, cardElem) {{
         except Exception as e:
             _logger.error("touch_operations_cockpit error: %s", str(e))
             return request.make_response(f"<p style='color:#fff'>Fehler: {str(e)}</p>", status=500, headers=[('Content-Type', 'text/html')])
+
 
     @http.route('/frawo/touch/api/summary', type='http', auth='none', methods=['GET'], cors='*', csrf=False, sitemap=False)
     def touch_api_summary(self, **kwargs):
