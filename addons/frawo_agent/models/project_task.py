@@ -78,11 +78,13 @@ class ProjectTask(models.Model):
                 Log.create({"name": "Ollama ohne Antwort", "level": "error",
                             "task_id": task.id,
                             "message": "Kein Text vom Modell – Task uebersprungen."})
+                task.message_post(
+                    body="⚠️ Agent-Aufbereitung fehlgeschlagen (Ollama ohne Antwort). @Jarvis bitte pruefen.")
                 return
             # autonom: Beschreibung + Rollen-Tag + Chatter
             tag_id = self._role_tag_id(role)
             task.sudo().write({
-                "description": "<pre>%s</pre>" % html_escape(text),
+                "description": text.strip(),
                 "tag_ids": [(4, tag_id)],
                 "agent_state": "done",
             })
@@ -96,6 +98,8 @@ class ProjectTask(models.Model):
             task.sudo().agent_state = "error"
             Log.create({"name": "Verarbeitungsfehler", "level": "error",
                         "task_id": task.id, "message": str(e)})
+            task.message_post(
+                body="⚠️ Agent-Aufbereitung Fehler: %s. @Jarvis bitte pruefen." % str(e))
 
     def _post_suggestion_activity(self, task, role):
         owner = {"handwerk": "Franz Bienert", "devops": "🤖 Agent"}.get(role, "Wolf")
