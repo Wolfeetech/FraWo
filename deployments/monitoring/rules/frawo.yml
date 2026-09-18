@@ -20,7 +20,7 @@ groups:
     rules:
       - alert: HighCPU
         expr: >-
-          100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle",instance!="monitoring-stack"}[5m])) * 100) > 80
+          100 - (avg by(instance) (rate(node_cpu_seconds_total{mode=~"idle|iowait",instance!="monitoring-stack"}[5m])) * 100) > 80
         for: 5m
         labels:
           severity: warning
