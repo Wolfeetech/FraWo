@@ -58,6 +58,7 @@ scrape_configs:
       - targets:
           - http://10.1.0.112:8069/web/health   # Odoo (ERP)
           - http://10.1.0.40:8123               # Home Assistant Rothkreuz
+          - http://10.0.0.227:11434             # Ollama KI-Dienst (OptiPlex)
           # - https://funk.frawo.tech             # Radio (wartet auf Musik-HDD)
           # - http://10.1.0.94:4533               # Navidrome (Musik, CT120 tot)
           - http://10.1.0.100:8000              # Paperless (CT110)
