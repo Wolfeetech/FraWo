@@ -1,0 +1,24 @@
+﻿[OPTIONS]
+enable: 1
+policy_in: DROP
+policy_out: ACCEPT
+
+[RULES]
+# --- Management Networks (alle Ports erlaubt) ---
+IN ACCEPT -source 100.64.0.0/10 -log nolog            # Tailscale (alle Services)
+IN ACCEPT -source 10.4.0.0/24 -log nolog               # CT/VM-Netz (Monitoring, DNS)
+
+# Server-VLAN101 (Odoo CT140, Jarvis CT150, Monitoring CT155)
+IN ACCEPT -source 10.1.0.0/24 -p tcp -dport 22 -log nolog     # SSH
+IN ACCEPT -source 10.1.0.0/24 -p tcp -dport 8006 -log nolog   # Proxmox-Weboberflaeche
+IN ACCEPT -source 10.1.0.0/24 -p tcp -dport 9100 -log nolog   # Prometheus Node Exporter
+IN ACCEPT -source 10.1.0.0/24 -p tcp -dport 11434 -log nolog  # Ollama KI-Dienst (fuer Odoo & Jarvis)
+
+# Default-LAN (StudioPC & lokales Management)
+IN ACCEPT -source 10.0.0.0/24 -p tcp -dport 22 -log nolog     # Default-LAN: SSH
+IN ACCEPT -source 10.0.0.0/24 -p tcp -dport 8006 -log nolog   # Default-LAN: PVE-UI
+IN ACCEPT -source 10.0.0.0/24 -p tcp -dport 9100 -log nolog   # Default-LAN: Node Exporter
+IN ACCEPT -source 10.0.0.0/24 -p tcp -dport 11434 -log nolog  # Default-LAN: Ollama
+
+# --- Immer erlaubt ---
+IN ACCEPT -p icmp -log nolog                           # Ping / Diagnose
