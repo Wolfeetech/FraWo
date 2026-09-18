@@ -1,0 +1,9 @@
+[Unit]
+Description=AdGuard Home Sync alle 10 Minuten ausfuehren
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=10min
+
+[Install]
+WantedBy=timers.target

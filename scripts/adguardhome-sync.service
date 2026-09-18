@@ -1,0 +1,7 @@
+[Unit]
+Description=AdGuard Home Sync (Anker CT101 -> OptiPlex CT102)
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/adguardhome-sync run --config /etc/adguardhome-sync.yaml --api-port 0

@@ -1,0 +1,5 @@
+logLevel: info
+origin:
+  url: http://10.1.0.27:3000
+replicas:
+  - url: http://10.0.0.53:3000
