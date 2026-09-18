@@ -124,7 +124,7 @@ doc_data = get_paperless_document(DOC_ID)
 if not doc_data:
     sys.exit(1)
 
-content = (doc_data.get("content") or "")[:12000]  # Textmenge begrenzen
+content = (doc_data.get("content") or "")[:5000]  # Erste 5000 Zeichen genügen für Header/Metadaten und beschleunigen CPU-Inferenz
 title = doc_data.get("title", DOC_FILENAME)
 
 # 22.08.2026: Dateien ohne (oder mit kaum) OCR-Text -- typischerweise
@@ -141,7 +141,7 @@ if len(content.strip()) < 20:
     tag_ids = [t for t in [review_tag_id] if t]
     paperless_request(f"/documents/{DOC_ID}/", method="PATCH",
                        body={"tags": tag_ids} if tag_ids else {})
-    print("=== SMART ROUTER v3 FERTIG (uebersprungen, kein OCR-Text) ===")
+    print("=== SMART ROUTER v4 FERTIG (uebersprungen, kein OCR-Text) ===")
     sys.exit(0)
 
 
@@ -190,7 +190,7 @@ def call_ollama(text, title_str):
         "options": {"temperature": 0.1},
     }).encode("utf-8")
     req = urllib.request.Request(url, data=body, headers={"Content-Type": "application/json"})
-    with urllib.request.urlopen(req, timeout=35) as r:
+    with urllib.request.urlopen(req, timeout=60) as r:
         raw = json.loads(r.read().decode("utf-8"))
         res_text = raw.get("response", "")
         return json.loads(res_text)
@@ -511,7 +511,7 @@ def create_odoo_task(info, doc_id, doc_title):
             if already_billed:
                 print(f"Lieferantenrechnung fuer Dokument #{doc_id} existiert bereits ({already_billed}x) - ueberspringe, keine doppelte Buchung.")
             else:
-                create_odoo_vendor_bill(models, uid, info, doc_id, doc_title, pdf_bytes)
+                create_odoo_vendor_bill(info=info, doc_id=doc_id, doc_title=doc_title, pdf_bytes=pdf_bytes, models=models, uid=uid)
 
         return task_id
     except Exception as e:
@@ -605,7 +605,7 @@ if classification.get("document_type") in ["Rechnung", "Kassenbeleg", "Quittung"
             pdf_bytes = r.read()
     except Exception as att_err:
         print(f"Hinweis: PDF fuer Rechnungsanhang konnte nicht geladen werden: {att_err}")
-    create_odoo_vendor_bill(classification, DOC_ID, title, pdf_bytes)
+    create_odoo_vendor_bill(info=classification, doc_id=DOC_ID, doc_title=title, pdf_bytes=pdf_bytes)
 
 # 2. Odoo-Aufgabe bei Handlungsbedarf
 if classification.get("requires_action") or classification.get("action_required"):
@@ -613,4 +613,4 @@ if classification.get("requires_action") or classification.get("action_required"
 else:
     print("Kein Handlungsbedarf erkannt — keine Odoo-Aufgabe.")
 
-print("=== SMART ROUTER v3 FERTIG ===")
+print("=== SMART ROUTER v4 FERTIG ===")
