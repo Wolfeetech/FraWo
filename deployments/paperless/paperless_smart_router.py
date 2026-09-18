@@ -37,6 +37,8 @@ PAPERLESS_URL = "http://localhost:8000/api"
 PAPERLESS_API_TOKEN = os.environ.get("PAPERLESS_API_TOKEN", "")
 
 ODOO_URL = os.environ.get("ODOO_URL", "http://10.1.0.112:8069")
+if "10.1.0.140" in ODOO_URL:
+    ODOO_URL = ODOO_URL.replace("10.1.0.140", "10.1.0.112")
 ODOO_DB = os.environ.get("ODOO_DB", "FraWo_GbR")
 ODOO_USER = os.environ.get("ODOO_USER", "wolf@frawo.tech")
 ODOO_PASS = os.environ.get("ODOO_PASS", "")
