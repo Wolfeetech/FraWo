@@ -1,20 +1,20 @@
 #!/usr/bin/env python3
 """
-Paperless-ngx Smart Router v3
+Paperless-ngx Smart Router v4
 Läuft als PAPERLESS_POST_CONSUME_SCRIPT nach jedem eingelesenen Dokument.
 
 Ablauf:
   1. OCR-Text von Paperless holen
-  2. Gemini liest den Text: Person/Entität, Ablage-Kategorie, Absender,
-     Betrag, Frist, Handlungsbedarf, Kurzzusammenfassung
+  2. Lokaler KI-Dienst (Ollama auf OptiPlex, qwen2.5:3b) analysiert den Text:
+     Person/Entität, Ablage-Kategorie, Absender, Betrag, Frist, Handlungsbedarf,
+     Kurzzusammenfassung. Bei Ausfall: nahtloser Fallback auf Gemini Cloud.
   3. Correspondent/Document-Type/Tags in Paperless setzen (inkl.
      ablage:<kategorie>-Tag, den das host-seitige Filing-Skript liest)
   4. Bei Handlungsbedarf: Odoo-Aufgabe bei der richtigen Person anlegen
 
-v2 → v3: Gemini statt reiner Stichwortliste, partner_id-Bug behoben
-(Franz landete fälschlich auf Partner "Luki"), Zielprojekt korrigiert
-auf "📥 Eingang / Inbox" (id 32) statt "Masterplan & Strategie" (id 1),
-Zugangsdaten kommen aus Umgebungsvariablen statt Klartext im Skript.
+v3 → v4: Lokaler KI-Dienst Ollama (qwen2.5:3b auf OptiPlex 10.0.0.227) als primäre,
+datenschutzkonforme Ingest-Pipeline ohne API-Limits/Kosten; nahtloser automatischer
+Fallback auf Gemini Cloud bei Nicht-Erreichbarkeit.
 """
 
 import os
@@ -41,6 +41,9 @@ ODOO_DB = os.environ.get("ODOO_DB", "FraWo_GbR")
 ODOO_USER = os.environ.get("ODOO_USER", "wolf@frawo.tech")
 ODOO_PASS = os.environ.get("ODOO_PASS", "")
 
+OLLAMA_URL = os.environ.get("OLLAMA_URL", "http://10.0.0.227:11434")
+OLLAMA_MODEL = os.environ.get("OLLAMA_MODEL", "qwen2.5:3b")
+
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
 GEMINI_MODEL = "gemini-3.5-flash-lite"  # deutlich hoeheres Frei-Kontingent als 3.6-flash (dort nur 20/Tag)
 
@@ -54,7 +57,7 @@ ENTITY_MAP = {
     "FraWo_GbR":     {"user_id": 6,  "partner_id": False, "project_id": 32},
 }
 
-# Kategorie-Kürzel, das Gemini liefert -> Tag "ablage:<kürzel>". Das
+# Kategorie-Kürzel, das Gemini/Ollama liefert -> Tag "ablage:<kürzel>". Das
 # Kategorie-Kürzel steuert die Ablage in FOLDER_MAP (siehe unten).
 VALID_CATEGORIES = {
     "finanzen", "vertraege", "amt_behoerden", "gesundheit",
@@ -67,14 +70,14 @@ VALID_DOCUMENT_TYPES = {
     "Antrag", "Angebot", "Sonstiges",
 }
 
-print(f"=== PAPERLESS SMART ROUTER v3 · Dokument #{DOC_ID} ({DOC_FILENAME}) ===")
+print(f"=== PAPERLESS SMART ROUTER v4 · Dokument #{DOC_ID} ({DOC_FILENAME}) ===")
 
 if not DOC_ID:
     print("Fehler: Kein DOCUMENT_ID von Paperless übergeben.")
     sys.exit(0)
 
-if not GEMINI_API_KEY:
-    print("Fehler: GEMINI_API_KEY nicht gesetzt — Router kann nicht klassifizieren.")
+if not OLLAMA_URL and not GEMINI_API_KEY:
+    print("Fehler: Weder OLLAMA_URL noch GEMINI_API_KEY gesetzt — Router kann nicht klassifizieren.")
     sys.exit(0)
 
 
@@ -142,11 +145,11 @@ if len(content.strip()) < 20:
     sys.exit(0)
 
 
-def call_gemini(text, title_str):
-    prompt = f"""Du analysierst ein eingescanntes Dokument einer Familie/Firma
-(FraWo GbR) mit 5 möglichen Empfängern: Wolf Prinz, Franz Bienert,
-Alois Prinz (Stockenweiler/Landwirtschaft), Heidi Prinz (Alois' Frau,
-Stockenweiler), oder die Firma FraWo GbR selbst.
+def build_classification_prompt(text, title_str):
+    return f"""Du analysierst ein eingescanntes Dokument einer Familie/Firma
+(FraWo GbR) mit 5 möglichen Empfängern: Wolf_Prinz, Franz_Bienert,
+Alois_Prinz (Stockenweiler/Landwirtschaft), Heidi_Prinz (Alois' Frau,
+Stockenweiler), oder die Firma FraWo_GbR selbst.
 
 Titel: {title_str}
 Text (OCR, ggf. unvollständig):
@@ -154,7 +157,7 @@ Text (OCR, ggf. unvollständig):
 {text}
 ---
 
-Antworte NUR mit einem JSON-Objekt, keine Erklärung, kein Markdown:
+Antworte NUR mit einem gültigen JSON-Objekt im folgenden Format:
 {{
   "entity": "Wolf_Prinz" | "Franz_Bienert" | "Alois_Prinz" | "Heidi_Prinz" | "FraWo_GbR",
   "category": "finanzen" | "vertraege" | "amt_behoerden" | "gesundheit" | "wohnen" | "arbeit" | "projekte" | "sonstiges",
@@ -175,6 +178,26 @@ projekte=laufende Vorhaben, sonstiges=alles andere.
 requires_action=true nur bei echtem Handlungsbedarf (zahlen, antworten,
 unterschreiben, Frist einhalten) — reine Infoschreiben sind false."""
 
+
+def call_ollama(text, title_str):
+    prompt = build_classification_prompt(text, title_str)
+    url = f"{OLLAMA_URL.rstrip('/')}/api/generate"
+    body = json.dumps({
+        "model": OLLAMA_MODEL,
+        "prompt": prompt,
+        "format": "json",
+        "stream": False,
+        "options": {"temperature": 0.1},
+    }).encode("utf-8")
+    req = urllib.request.Request(url, data=body, headers={"Content-Type": "application/json"})
+    with urllib.request.urlopen(req, timeout=35) as r:
+        raw = json.loads(r.read().decode("utf-8"))
+        res_text = raw.get("response", "")
+        return json.loads(res_text)
+
+
+def call_gemini(text, title_str):
+    prompt = build_classification_prompt(text, title_str)
     url = (f"https://generativelanguage.googleapis.com/v1beta/models/"
            f"{GEMINI_MODEL}:generateContent?key={GEMINI_API_KEY}")
     body = json.dumps({
@@ -183,20 +206,15 @@ unterschreiben, Frist einhalten) — reine Infoschreiben sind false."""
     }).encode("utf-8")
     req = urllib.request.Request(url, data=body, method="POST")
     req.add_header("Content-Type", "application/json")
-    try:
-        with urllib.request.urlopen(req, timeout=45) as r:
-            resp = json.loads(r.read().decode("utf-8"))
-        raw_text = resp["candidates"][0]["content"]["parts"][0]["text"]
-        result = json.loads(raw_text)
-    except Exception as e:
-        print(f"Gemini-Fehler, falle auf sichere Defaults zurück: {e}")
-        return {
-            "entity": "FraWo_GbR", "category": "sonstiges", "document_type": "Sonstiges",
-            "vendor": "Unbekannt", "document_date": None, "clean_title": title_str,
-            "amount": 0.0, "due_date": None, "requires_action": True,
-            "summary": f"Automatische Auswertung fehlgeschlagen für: {title_str}",
-        }
+    with urllib.request.urlopen(req, timeout=45) as r:
+        resp = json.loads(r.read().decode("utf-8"))
+    raw_text = resp["candidates"][0]["content"]["parts"][0]["text"]
+    return json.loads(raw_text)
 
+
+def sanitize_classification(result, title_str):
+    if not isinstance(result, dict):
+        result = {}
     if result.get("entity") not in ENTITY_MAP:
         result["entity"] = "FraWo_GbR"
     if result.get("category") not in VALID_CATEGORIES:
@@ -206,13 +224,11 @@ unterschreiben, Frist einhalten) — reine Infoschreiben sind false."""
     if not result.get("clean_title"):
         result["clean_title"] = title_str
     else:
-        # Sicherheitsnetz: Gemini schreibt trotz Prompt-Hinweis gelegentlich
-        # woertlich "null" statt das fehlende Datum wegzulassen.
-        cleaned = re.sub(r"\s+null\s*$", "", result["clean_title"], flags=re.IGNORECASE).strip()
+        cleaned = re.sub(r"\s+null\s*$", "", str(result["clean_title"]), flags=re.IGNORECASE).strip()
         result["clean_title"] = cleaned or title_str
     if result.get("document_date"):
         try:
-            datetime.strptime(result["document_date"], "%Y-%m-%d")
+            datetime.strptime(str(result["document_date"]), "%Y-%m-%d")
         except ValueError:
             result["document_date"] = None
     try:
@@ -221,13 +237,52 @@ unterschreiben, Frist einhalten) — reine Infoschreiben sind false."""
         result["amount"] = 0.0
     if result.get("due_date"):
         try:
-            datetime.strptime(result["due_date"], "%Y-%m-%d")
+            datetime.strptime(str(result["due_date"]), "%Y-%m-%d")
         except ValueError:
             result["due_date"] = None
+    if "requires_action" not in result:
+        result["requires_action"] = False
+    if not result.get("vendor"):
+        result["vendor"] = "Unbekannt"
+    if not result.get("summary"):
+        result["summary"] = f"Dokument: {title_str}"
     return result
 
 
-classification = call_gemini(content, title)
+def classify_document(text, title_str):
+    # 1. Lokaler KI-Dienst (Ollama auf OptiPlex)
+    if OLLAMA_URL:
+        try:
+            print(f"Klassifiziere primär lokal mit Ollama ({OLLAMA_MODEL} @ {OLLAMA_URL})...")
+            res = call_ollama(text, title_str)
+            if isinstance(res, dict) and (res.get("entity") or res.get("vendor") or res.get("document_type")):
+                print("Erfolgreich lokal durch Ollama klassifiziert.")
+                return sanitize_classification(res, title_str)
+        except Exception as e:
+            print(f"Warnung: Lokaler Ollama-Aufruf fehlgeschlagen ({e}). Wechsle auf Fallback...")
+
+    # 2. Cloud-Fallback (Gemini)
+    if GEMINI_API_KEY:
+        try:
+            print(f"Klassifiziere mit Gemini Cloud ({GEMINI_MODEL})...")
+            res = call_gemini(text, title_str)
+            if isinstance(res, dict):
+                print("Erfolgreich durch Gemini Cloud klassifiziert.")
+                return sanitize_classification(res, title_str)
+        except Exception as e:
+            print(f"Warnung: Gemini-Aufruf fehlgeschlagen ({e}).")
+
+    # 3. Sicherer Notfall-Fallback
+    print("Alle KI-Dienste fehlgeschlagen — nutze sichere Fallback-Werte.")
+    return sanitize_classification({
+        "entity": "FraWo_GbR", "category": "sonstiges", "document_type": "Sonstiges",
+        "vendor": "Unbekannt", "document_date": None, "clean_title": title_str,
+        "amount": 0.0, "due_date": None, "requires_action": True,
+        "summary": f"Automatische Auswertung fehlgeschlagen für: {title_str}",
+    }, title_str)
+
+
+classification = classify_document(content, title)
 print("Klassifikation:")
 print(json.dumps(classification, indent=2, ensure_ascii=False))
 
