@@ -21,8 +21,9 @@ scrape_configs:
     static_configs:
       - targets:
           - localhost:9100
-          - 10.1.0.128:9100
+          # - 10.1.0.128:9100 # ProDesk tot
           - 100.69.179.87:9100
+          - 10.0.0.227:9100
         labels:
           env: frawo
     relabel_configs:
@@ -37,6 +38,10 @@ scrape_configs:
       - source_labels: [__address__]
         regex: "100.69.179.87:9100"
         replacement: anker-pve
+        target_label: instance
+      - source_labels: [__address__]
+        regex: "10.0.0.227:.*"
+        replacement: optiplex-pve
         target_label: instance
 
   - job_name: mobil
@@ -60,7 +65,7 @@ scrape_configs:
           - https://cloud.frawo.tech/status.php # Nextcloud
           - https://vault.frawo.tech            # Vaultwarden (Passwortsafe)
           - https://frawo.tech                  # Firmen-Webseite
-          - http://10.1.0.248:8123              # HA Eltern (VM 360 auf ProDesk)
+          # - http://10.1.0.248:8123              # HA Eltern (VM 360 auf ProDesk tot)
           - http://10.1.0.112:8069/anker_tracker/health # Getraenke-Tracker
     relabel_configs:
       - source_labels: [__address__]
