@@ -3,8 +3,16 @@
 > **Zuerst lesen.** Diese Datei beschreibt, **was läuft** — nicht, was passiert ist.
 > Historie steht in der Git-Historie, Entscheidungen und Aufgaben in **Odoo (CT140, `10.1.0.112:8069`) = einzige Quelle der Wahrheit**.
 >
-> **🔴 Stand 15.09.2026 — eine Sache braucht Wolf, bevor irgendetwas anderes zählt:**
-> - **ZFS-Pool `anker-backup` ist SUSPENDED, PBS-Sicherungsserver nicht erreichbar.** Beide Spiegelplatten sind vom USB verschwunden (13.09. 14:47 die eine, 14.09. 18:25 die andere). ZFS sagt selbst: Geräte anschließen, dann `zpool clear`. Zwei Platten am selben Rechner innerhalb von zwei Tagen deutet auf Hub/Port/Strom, nicht auf zwei Plattendefekte — und passt zum Shelly-Befund oben. Odoo #1457.
+> **🟢 Stand 18.09.2026 (mittags) — ZFS-Pool `anker-backup` wieder ONLINE & PBS läuft:**
+> - **USB-Spiegelplatten von Wolf neu gesteckt & ZFS-Pool reaktiviert:** Beide WD Elements Platten (`sdb`, `sdd`) erkannt. `zpool clear anker-backup` ausgeführt. Pool-Status: **`ONLINE`**, Resilver läuft aktiv (~19 MB/s). Datasets `/anker-backup` (1,6 TB frei) und `/anker-backup/musik` (33,4 GB) vollständig les- und schreibbar.
+> - **Proxmox Backup Server (VM 240, `10.1.0.7`) wieder aktiv:** Boot-ZVOL `vm-240-disk-0` läuft, Port 8007 antwortet einwandfrei (`ServiceDown` behoben). Backup-TÜV: `pbs_datastore` **BESTANDEN**.
+> - **Alarm-Hygiene (Grafana/Prometheus): 9 von 14 Alarmen behoben:**
+>   * `ServiceDown https://10.1.0.7:8007` (PBS) -> Behoben
+>   * `BackupPruefungFehlgeschlagen pbs_datastore` -> Behoben
+>   * `DiskUsageWarning` auf anker-pve (/ und /srv/pbs-datastore) -> Behoben (apt-get clean, Belegung 75%)
+>   * `HighCPU` auf anker-pve -> Behoben (Prometheus-Regel korrigiert: `iowait` von CPU-Last getrennt)
+>   * 4x Alarme durch Altskript auf stock-pve (`BackupTuevDurchgefallen` & 3x `BackupPruefungFehlgeschlagen`) -> Behoben (5/5 Prüfungen bestanden)
+>   * Host-Last (Load5) von 41,5 auf **8,4** gefallen und sinkt weiter.
 >
 > **Am 18.09.2026 umgesetzt & verifiziert — FraWo 2.0 Säule 1 & 2 (Antigravity, Odoo #1495):**
 > - **Login-Sicherheit & AI-Bot-Sperre scharfgestellt (Odoo #1495):**
