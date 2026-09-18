@@ -1,0 +1,7 @@
+[Unit]
+Description=OptiPlex Host-Konfiguration auf PBS sichern
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/optiplex-host-backup.sh
