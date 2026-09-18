@@ -16,8 +16,10 @@
 *.swp
 *.swo
 *~
+*.bak*
 *.log
 *.retry
+
 __pycache__/
 .pytest_cache/
 .mypy_cache/
