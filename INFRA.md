@@ -35,8 +35,8 @@ Kopie im Repo: `INFRA.md`
 | **210** | anker-pve | `haos` | `10.1.0.40` | 8123 (Home Assistant) | Hausautomation Rothkreuz, Lovelace Touch Dashboard |
 | **240** | anker-pve | `PBS-FraWo` | `10.1.0.7` | 8007 (PBS API/Web) | Proxmox Backup Server |
 | **300** | anker-pve | `nextcloud` | `10.1.0.21` | 80 / 443 | Cloud Storage (`cloud.frawo.tech`) |
-| **360** | stock-pve | `homeassistant-eltern` | `10.1.0.248` | 8123 (Home Assistant) | **Smart Home Alois (Stockenweiler)** — aktiv, WireGuard-VPN nach `192.168.178.0/24` |
-| **—** | OptiPlex 7050 | `frawo-ai-worker` | `10.1.0.227` / `10.0.0.227` | 11434 (Ollama), 8080 (Open WebUI), 8081 (SearXNG) | **FraWo On-Premises KI (24/7 Mitarbeiter, Employee #13)** — Qwen 2.5 7B (`frawo-mitarbeiter`) & 3B (`frawo-mitarbeiter-fast`), `nomic-embed-text` (RAG), Open WebUI (`https://frawo.tech/ai/` & `http://10.1.0.227:8080`), SearXNG Metasuche |
+| **—** | OptiPlex 7050 | `frawo-ai-worker` | `10.1.0.227` / `10.0.0.227` | 11434 (Ollama CPU), 8080 (Open WebUI), 8081 (SearXNG) | **FraWo 24/7 KI-Worker (Employee #13)** — Qwen 2.5 7B & 3B, `nomic-embed-text` (RAG), Open WebUI (`https://frawo.tech/ai/` & `http://10.0.0.227:8080`), SearXNG Metasuche |
+| **—** | StudioPC | `frawo-gpu-powernode` | `10.0.0.156` (LAN) / `100.98.31.60` (TS) | 11434 (Ollama GPU) | **FraWo GPU-Powernode (NVIDIA GeForce RTX 4060 8 GB GDDR6, CUDA 12.8, Compute 8.9)** — On-Demand Inferenz: `frawo-mitarbeiter:latest` (50,2 tok/s), `frawo-mitarbeiter-fast:latest` (101,7 tok/s). Eingebunden in Open WebUI via `OLLAMA_BASE_URLS` |
 
 ### Hinweise zu Speichermounts & Radio
 - **AzuraCast VM 210/220 (`10.1.0.38`):** Bind-Mount `/mnt/library` (`//10.1.0.94/music`) mit `:rslave`. In AzuraCast-Konfiguration muss `enable_auto_cue: false` bleiben, da synchrone Lautheitsanalysen über CIFS das 29s-Liquidsoap-Timeout überschreiten.
