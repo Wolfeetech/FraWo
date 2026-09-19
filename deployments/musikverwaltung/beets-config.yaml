@@ -103,7 +103,11 @@ scrub:
 fetchart:
     auto: yes
     minwidth: 500
-    sources: coverart itunes albumart
+    sources:
+        - filesystem
+        - coverart
+        - itunes
+        - albumart
 embedart:
     auto: yes
     maxwidth: 1000
