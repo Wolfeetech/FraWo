@@ -2516,9 +2516,9 @@
           activeOpenQuestions.forEach(q => { questionsByTaskId[q.id] = q; });
 
           // 5. Franz Tasks (Ambient)
-          if (data.focus_franz && data.focus_franz.length) {
-            const listFranz = document.getElementById('amb-list-franz');
-            if (listFranz) {
+          const listFranz = document.getElementById('amb-list-franz');
+          if (listFranz) {
+            if (data.focus_franz && data.focus_franz.length) {
               listFranz.innerHTML = data.focus_franz.map(t => `
                 <li class="amb-task-item">
                   <span class="amb-task-bullet">▸</span>
@@ -2528,13 +2528,15 @@
                   </div>
                 </li>
               `).join('');
+            } else {
+              listFranz.innerHTML = '<li class="amb-task-item"><div class="amb-task-sub">Keine anstehenden Aufgaben</div></li>';
             }
           }
 
           // 6. Wolf Tasks (Ambient)
-          if (data.focus_wolf && data.focus_wolf.length) {
-            const listWolf = document.getElementById('amb-list-wolf');
-            if (listWolf) {
+          const listWolf = document.getElementById('amb-list-wolf');
+          if (listWolf) {
+            if (data.focus_wolf && data.focus_wolf.length) {
               listWolf.innerHTML = data.focus_wolf.map(t => `
                 <li class="amb-task-item">
                   <span class="amb-task-bullet">▸</span>
@@ -2544,16 +2546,20 @@
                   </div>
                 </li>
               `).join('');
+            } else {
+              listWolf.innerHTML = '<li class="amb-task-item"><div class="amb-task-sub">Keine anstehenden Aufgaben</div></li>';
             }
           }
 
           // 7. Upcoming Events (Ambient Banner)
-          if (data.upcoming_events && data.upcoming_events.length) {
-            const evBanner = document.getElementById('amb-event-banner-text');
-            if (evBanner) {
+          const evBanner = document.getElementById('amb-event-banner-text');
+          if (evBanner) {
+            if (data.upcoming_events && data.upcoming_events.length) {
               evBanner.innerHTML = data.upcoming_events.map(ev => 
                 `<b>${escapeHtml(ev.title)}</b>${ev.date ? ' (' + escapeHtml(ev.date) + ')' : ''}`
               ).join(' &nbsp;·&nbsp; ');
+            } else {
+              evBanner.innerHTML = '<span style="color:var(--text-dim);">Keine anstehenden Einsätze eingetragen</span>';
             }
           }
 
