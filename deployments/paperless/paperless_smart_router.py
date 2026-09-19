@@ -343,7 +343,8 @@ def file_to_drive(doc, classification, doc_id):
     archived_name = doc.get("archived_file_name") or doc.get("original_file_name") or ""
     ext = os.path.splitext(archived_name)[1] or ".pdf"
     target_folder = FOLDER_MAP.get(classification["category"], "99_Archiv")
-    target_name = safe_filename(title, f"dokument_{doc_id}") + ext
+    doc_title = classification.get("clean_title") or doc.get("title") or title
+    target_name = safe_filename(doc_title, f"dokument_{doc_id}") + ext
 
     req = urllib.request.Request(f"{PAPERLESS_URL}/documents/{doc_id}/download/")
     req.add_header("Authorization", paperless_auth_header())
@@ -360,16 +361,22 @@ def file_to_drive(doc, classification, doc_id):
             [
                 "rclone", "--config", "/etc/rclone/rclone.conf",
                 "copyto", tmp_path, f"gdrive:{target_folder}/{target_name}",
-                "--drive-chunk-size", "64M",
             ],
-            capture_output=True, text=True, timeout=90,
+            capture_output=True, text=True, timeout=180,
         )
-    finally:
-        os.remove(tmp_path)
-
-    if result.returncode != 0:
-        print(f"rclone-Fehler bei der Drive-Ablage: {result.stderr[:400]}")
+        if result.returncode != 0:
+            print(f"rclone-Fehler bei der Drive-Ablage: {result.stderr[:400]}")
+            return False
+    except subprocess.TimeoutExpired:
+        print(f"rclone Timeout (>180s) bei Drive-Ablage fuer {target_name}")
         return False
+    except Exception as e:
+        print(f"Unerwarteter Fehler bei Drive-Ablage: {e}")
+        return False
+    finally:
+        if os.path.exists(tmp_path):
+            os.remove(tmp_path)
+
     print(f"In Drive abgelegt: {target_folder}/{target_name}")
     return True
 
