@@ -1,6 +1,7 @@
 from odoo import http, fields
 from odoo.http import request
 import logging
+import json
 import re
 import time
 import requests
@@ -2885,12 +2886,12 @@ class RadioController(http.Controller):
 
 <!-- Kiosk Top Nav (Geprüfte, funktionierende Routen) -->
 <div class="top-nav">
-  <a href="http://10.1.0.40:8123/lovelace/0" class="nav-btn">🏠 Home</a>
-  <a href="http://10.1.0.40:8123/lovelace/growbox" class="nav-btn">🌱 GrowBox</a>
-  <a href="http://10.1.0.40:8123/lovelace/0#standorte" class="nav-btn">📍 Standorte</a>
-  <a href="https://frawo.tech/radio" class="nav-btn">🎛️ Radio</a>
+  <a href="http://10.1.0.40:8123/lovelace/0" onclick="if(window.parent&&window.parent.switchTab){{window.parent.switchTab('tab-ha');return false;}}" class="nav-btn">🏠 Home</a>
+  <a href="http://10.1.0.40:8123/lovelace/growbox" onclick="if(window.parent&&window.parent.switchTab){{var hf=window.parent.document.getElementById('ha-frame');if(hf)hf.src='http://10.1.0.40:8123/lovelace/growbox';window.parent.switchTab('tab-ha');return false;}}" class="nav-btn">🌱 GrowBox</a>
+  <a href="http://10.1.0.40:8123/lovelace/0#standorte" onclick="if(window.parent&&window.parent.switchTab){{var hf=window.parent.document.getElementById('ha-frame');if(hf)hf.src='http://10.1.0.40:8123/lovelace/cockpit#standorte';window.parent.switchTab('tab-ha');return false;}}" class="nav-btn">📍 Standorte</a>
+  <a href="https://frawo.tech/radio" onclick="if(window.parent&&window.parent.switchTab){{window.parent.switchTab('tab-radio');return false;}}" class="nav-btn">📻 Radio</a>
   <a href="/frawo/touch/cockpit" class="nav-btn active">⚡ Operations Cockpit</a>
-  <a href="http://10.1.0.40:8123/lovelace/0" class="nav-btn">📋 HA Menü</a>
+  <a href="http://10.1.0.40:8123/lovelace/0" onclick="if(window.parent&&window.parent.switchTab){{window.parent.switchTab('tab-ha');return false;}}" class="nav-btn">📋 HA Menü</a>
 </div>
 
 <!-- System & Backup Vital Bar -->
@@ -3210,24 +3211,71 @@ function closeModalDirect() {{
                 ('stage_id.name', 'not in', ['✅ Erledigt', '🗑️ Abgebrochen'])
             ], order='priority desc, write_date desc', limit=8)
 
+            def _parse_task_questions(desc, title):
+                if not desc:
+                    return []
+                qs = []
+                # 1. Parse HTML Tables (ONLY if table header explicitly contains 'Frage' or 'Entscheidung')
+                if '<table' in desc.lower():
+                    tables = re.findall(r'<table[^>]*>(.*?)</table>', desc, re.DOTALL | re.IGNORECASE)
+                    for tbl in tables:
+                        header_row = re.search(r'<tr[^>]*>(.*?)</tr>', tbl, re.DOTALL | re.IGNORECASE)
+                        is_q_table = False
+                        if header_row:
+                            header_text = re.sub(r'<[^>]+>', ' ', header_row.group(1)).lower()
+                            if 'frage' in header_text or 'entscheidung' in header_text:
+                                is_q_table = True
+                        if is_q_table:
+                            rows = re.findall(r'<tr[^>]*>(.*?)</tr>', tbl, re.DOTALL | re.IGNORECASE)
+                            for r in rows[1:]:
+                                cells = [re.sub(r'<[^>]+>', ' ', c).strip() for c in re.findall(r'<t[dh][^>]*>(.*?)</t[dh]>', r, re.DOTALL | re.IGNORECASE)]
+                                if cells and cells[0]:
+                                    col0 = cells[0].strip()
+                                    hint = f" (Hinweis: {cells[2]})" if len(cells) >= 3 and cells[2] and not cells[2].startswith('(') else (f" {cells[2]}" if len(cells) >= 3 and cells[2] else "")
+                                    qs.append(f"{col0}{hint}")
+                # 2. Parse "Offene Frage(n)" or "Frage:" sections
+                if not qs:
+                    m = re.search(r'(?:<b>\s*(?:Offene\s+)?Fragen?(?:\s*an\s+Wolf)?:\s*</b>|<h[1-4]>\s*(?:Offene\s+)?Fragen?.*?</h[1-4]>)(.*?)(?:<h[1-4]>|<p><b>(?:Fertig|Ergebnis|Aufgabenstellung)|$)', desc, re.DOTALL | re.IGNORECASE)
+                    if m:
+                        section_html = m.group(1)
+                        items = re.findall(r'<li[^>]*>(.*?)</li>', section_html, re.DOTALL | re.IGNORECASE)
+                        if not items:
+                            items = re.split(r'<br\s*/?>|</p>|\n', section_html)
+                        for item in items:
+                            c_item = re.sub(r'<[^>]+>', ' ', item).strip()
+                            c_item = re.sub(r'\s+', ' ', c_item)
+                            if c_item and len(c_item) > 6 and not any(skip in c_item.lower() for skip in ['keine', 'nichts']):
+                                qs.append(c_item)
+                # 3. Explicit question sentences with '?'
+                if not qs:
+                    clean_full = re.sub(r'<[^>]+>', ' ', desc)
+                    clean_full = re.sub(r'\s+', ' ', clean_full)
+                    for qm in re.findall(r'([^.!?\n\r]{8,150}\?)', clean_full):
+                        qm_clean = qm.strip()
+                        if any(k in qm_clean.lower() for k in ['welche', 'welcher', 'welches', 'wann', 'wie', 'wo', 'wer', 'warum', 'ob', 'soll', 'kann', 'ist', 'bitte', 'mpu', 'oder', 'nötig', 'möglich']):
+                            qs.append(qm_clean)
+                return qs
+
             open_questions = []
             for qt in q_tasks:
                 desc = qt.description or ''
-                q_text = ""
-                if "Offene Fragen" in desc or "Offene Frage" in desc:
-                    m = re.search(r'(?:<b>\s*Offene Fragen?:\s*</b>|<h3>\s*Offene Fragen?.*?</h3>)(.*?)(?:<h[1-4]>|<p><b>Fertig|$)', desc, re.DOTALL | re.IGNORECASE)
-                    if m:
-                        q_text = re.sub(r'<[^>]+>', ' ', m.group(1)).strip()
-                if not q_text:
-                    q_text = re.sub(r'<[^>]+>', ' ', desc).strip()[:180]
-
-                open_questions.append({
-                    "id": qt.id,
-                    "title": qt.name,
-                    "project": qt.project_id.name if qt.project_id else '',
-                    "question": q_text,
-                    "stage": qt.stage_id.name or ''
-                })
+                qs = _parse_task_questions(desc, qt.name)
+                
+                # Only include in open_questions if there is an actual question!
+                if qs:
+                    if len(qs) == 1:
+                        q_text = qs[0]
+                    else:
+                        q_text = "\n".join([f"{i}. {q}" for i, q in enumerate(qs, 1)])
+                    
+                    open_questions.append({
+                        "id": qt.id,
+                        "title": qt.name,
+                        "project": qt.project_id.name if qt.project_id else '',
+                        "question": q_text,
+                        "questions_list": qs,
+                        "stage": qt.stage_id.name or ''
+                    })
 
             # Today stats
             today_str = datetime.date.today().isoformat()
@@ -3257,6 +3305,284 @@ function closeModalDirect() {{
             return request.make_response(
                 json.dumps({"success": False, "error": str(e)}),
                 headers=[('Content-Type', 'application/json; charset=utf-8')],
+                status=500
+            )
+
+    # ─────────────────────────────────────────────────────────────
+    # FraWo Touch / Kiosk: Radio Control Endpoints
+    # ─────────────────────────────────────────────────────────────
+
+    @http.route('/frawo/touch/api/radio/skip', type='http', auth='none', methods=['POST', 'GET'], cors='*', csrf=False, sitemap=False)
+    def touch_radio_skip(self, **kwargs):
+        """Skip currently playing track on AzuraCast station 1."""
+        try:
+            base_url, api_key = self._get_azuracast_config()
+            if not api_key:
+                return request.make_response(
+                    json.dumps({"status": "error", "message": "AzuraCast API-Key nicht konfiguriert"}),
+                    headers=[('Content-Type', 'application/json; charset=utf-8'), ('Access-Control-Allow-Origin', '*')],
+                    status=500
+                )
+            api_url = f"{base_url}/api/station/1/backend/skip"
+            headers = {"X-API-Key": api_key}
+            r = requests.post(api_url, headers=headers, verify=False, timeout=5)
+            if r.status_code == 200:
+                try:
+                    request.env["frawo.agent.log"].sudo().create({
+                        "name": "Radio: Song übersprungen",
+                        "level": "info",
+                        "message": "AzuraCast Track via Touchboard / Kiosk übersprungen."
+                    })
+                except Exception as log_err:
+                    _logger.warning("Radio log error: %s", log_err)
+                return request.make_response(
+                    json.dumps({"status": "success", "message": "Song erfolgreich übersprungen!"}),
+                    headers=[('Content-Type', 'application/json; charset=utf-8'), ('Access-Control-Allow-Origin', '*')],
+                    status=200
+                )
+            else:
+                return request.make_response(
+                    json.dumps({"status": "error", "message": f"AzuraCast Skip fehlgeschlagen (HTTP {r.status_code})"}),
+                    headers=[('Content-Type', 'application/json; charset=utf-8'), ('Access-Control-Allow-Origin', '*')],
+                    status=r.status_code
+                )
+        except Exception as e:
+            _logger.error("touch_radio_skip error: %s", str(e))
+            return request.make_response(
+                json.dumps({"status": "error", "message": str(e)}),
+                headers=[('Content-Type', 'application/json; charset=utf-8'), ('Access-Control-Allow-Origin', '*')],
+                status=500
+            )
+
+    @http.route('/frawo/touch/api/radio/playlists', type='http', auth='none', methods=['GET'], cors='*', csrf=False, sitemap=False)
+    def touch_radio_playlists(self, **kwargs):
+        """List station playlists with status and weights."""
+        try:
+            base_url, api_key = self._get_azuracast_config()
+            if not api_key:
+                return request.make_response(
+                    json.dumps({"status": "error", "message": "AzuraCast API-Key nicht konfiguriert"}),
+                    headers=[('Content-Type', 'application/json; charset=utf-8'), ('Access-Control-Allow-Origin', '*')],
+                    status=500
+                )
+            api_url = f"{base_url}/api/station/1/playlists"
+            headers = {"X-API-Key": api_key}
+            r = requests.get(api_url, headers=headers, verify=False, timeout=6)
+            if r.status_code == 200:
+                raw_pls = r.json()
+                clean_pls = []
+                for p in raw_pls:
+                    clean_pls.append({
+                        "id": p.get("id"),
+                        "name": p.get("name"),
+                        "description": p.get("description") or "",
+                        "is_enabled": bool(p.get("is_enabled")),
+                        "weight": p.get("weight", 3),
+                        "type": p.get("type", "default"),
+                        "num_songs": p.get("num_songs", 0),
+                        "order": p.get("order", "shuffle")
+                    })
+                # Sort: enabled first, then by name
+                clean_pls.sort(key=lambda x: (not x["is_enabled"], x["name"]))
+                return request.make_response(
+                    json.dumps({"status": "success", "playlists": clean_pls}),
+                    headers=[('Content-Type', 'application/json; charset=utf-8'), ('Access-Control-Allow-Origin', '*')],
+                    status=200
+                )
+            return request.make_response(
+                json.dumps({"status": "error", "message": f"AzuraCast HTTP {r.status_code}"}),
+                headers=[('Content-Type', 'application/json; charset=utf-8'), ('Access-Control-Allow-Origin', '*')],
+                status=r.status_code
+            )
+        except Exception as e:
+            _logger.error("touch_radio_playlists error: %s", str(e))
+            return request.make_response(
+                json.dumps({"status": "error", "message": str(e)}),
+                headers=[('Content-Type', 'application/json; charset=utf-8'), ('Access-Control-Allow-Origin', '*')],
+                status=500
+            )
+
+    @http.route('/frawo/touch/api/radio/playlist/update', type='http', auth='none', methods=['POST'], cors='*', csrf=False, sitemap=False)
+    def touch_radio_playlist_update(self, **kwargs):
+        """Update playlist is_enabled or weight."""
+        try:
+            data = {}
+            try:
+                data = request.httprequest.get_json(force=True, silent=True) or {}
+            except Exception:
+                pass
+            if not data:
+                data = kwargs or {}
+
+            pl_id = data.get('id')
+            if not pl_id:
+                return request.make_response(
+                    json.dumps({"status": "error", "message": "Playlist-ID fehlt"}),
+                    headers=[('Content-Type', 'application/json; charset=utf-8'), ('Access-Control-Allow-Origin', '*')],
+                    status=400
+                )
+
+            update_payload = {}
+            if 'is_enabled' in data:
+                update_payload['is_enabled'] = bool(data['is_enabled'])
+            if 'weight' in data:
+                try:
+                    update_payload['weight'] = max(1, min(25, int(data['weight'])))
+                except (ValueError, TypeError):
+                    pass
+
+            if not update_payload:
+                return request.make_response(
+                    json.dumps({"status": "error", "message": "Keine Änderungen übergeben"}),
+                    headers=[('Content-Type', 'application/json; charset=utf-8'), ('Access-Control-Allow-Origin', '*')],
+                    status=400
+                )
+
+            base_url, api_key = self._get_azuracast_config()
+            api_url = f"{base_url}/api/station/1/playlist/{pl_id}"
+            headers = {"X-API-Key": api_key, "Content-Type": "application/json"}
+            r = requests.put(api_url, headers=headers, json=update_payload, verify=False, timeout=6)
+            
+            if r.status_code == 200:
+                try:
+                    request.env["frawo.agent.log"].sudo().create({
+                        "name": f"Radio: Playlist {pl_id} aktualisiert",
+                        "level": "info",
+                        "message": f"Playlist {pl_id} geändert: {update_payload}"
+                    })
+                except Exception as log_err:
+                    _logger.warning("Radio log error: %s", log_err)
+                return request.make_response(
+                    json.dumps({"status": "success", "updated": update_payload}),
+                    headers=[('Content-Type', 'application/json; charset=utf-8'), ('Access-Control-Allow-Origin', '*')],
+                    status=200
+                )
+            return request.make_response(
+                json.dumps({"status": "error", "message": f"AzuraCast HTTP {r.status_code}: {r.text}"}),
+                headers=[('Content-Type', 'application/json; charset=utf-8'), ('Access-Control-Allow-Origin', '*')],
+                status=r.status_code
+            )
+        except Exception as e:
+            _logger.error("touch_radio_playlist_update error: %s", str(e))
+            return request.make_response(
+                json.dumps({"status": "error", "message": str(e)}),
+                headers=[('Content-Type', 'application/json; charset=utf-8'), ('Access-Control-Allow-Origin', '*')],
+                status=500
+            )
+
+    @http.route('/frawo/touch/api/radio/search', type='http', auth='none', methods=['POST', 'GET'], cors='*', csrf=False, sitemap=False)
+    def touch_radio_search(self, **kwargs):
+        """Search requestable tracks in AzuraCast library."""
+        try:
+            data = {}
+            try:
+                data = request.httprequest.get_json(force=True, silent=True) or {}
+            except Exception:
+                pass
+            if not data:
+                data = kwargs or {}
+
+            query = (data.get('query') or data.get('q') or '').strip().lower()
+            if not query:
+                return request.make_response(
+                    json.dumps({"status": "success", "tracks": []}),
+                    headers=[('Content-Type', 'application/json; charset=utf-8'), ('Access-Control-Allow-Origin', '*')],
+                    status=200
+                )
+
+            base_url, api_key = self._get_azuracast_config()
+            api_url = f"{base_url}/api/station/1/requests"
+            headers = {"X-API-Key": api_key}
+            r = requests.get(api_url, headers=headers, verify=False, timeout=6)
+            if r.status_code != 200:
+                return request.make_response(
+                    json.dumps({"status": "error", "message": f"AzuraCast HTTP {r.status_code}"}),
+                    headers=[('Content-Type', 'application/json; charset=utf-8'), ('Access-Control-Allow-Origin', '*')],
+                    status=r.status_code
+                )
+
+            all_tracks = r.json()
+            results = []
+            for item in all_tracks:
+                song = item.get("song", {})
+                title = song.get("title", "") or ""
+                artist = song.get("artist", "") or ""
+                album = song.get("album", "") or ""
+                if query in title.lower() or query in artist.lower() or query in album.lower():
+                    results.append({
+                        "request_id": item.get("request_id"),
+                        "title": title,
+                        "artist": artist,
+                        "album": album,
+                        "art": song.get("art")
+                    })
+                    if len(results) >= 20:
+                        break
+
+            return request.make_response(
+                json.dumps({"status": "success", "tracks": results}),
+                headers=[('Content-Type', 'application/json; charset=utf-8'), ('Access-Control-Allow-Origin', '*')],
+                status=200
+            )
+        except Exception as e:
+            _logger.error("touch_radio_search error: %s", str(e))
+            return request.make_response(
+                json.dumps({"status": "error", "message": str(e)}),
+                headers=[('Content-Type', 'application/json; charset=utf-8'), ('Access-Control-Allow-Origin', '*')],
+                status=500
+            )
+
+    @http.route('/frawo/touch/api/radio/request', type='http', auth='none', methods=['POST'], cors='*', csrf=False, sitemap=False)
+    def touch_radio_request(self, **kwargs):
+        """Enqueue a requested song on AzuraCast station 1."""
+        try:
+            data = {}
+            try:
+                data = request.httprequest.get_json(force=True, silent=True) or {}
+            except Exception:
+                pass
+            if not data:
+                data = kwargs or {}
+
+            req_id = data.get('request_id')
+            if not req_id:
+                return request.make_response(
+                    json.dumps({"status": "error", "message": "request_id fehlt"}),
+                    headers=[('Content-Type', 'application/json; charset=utf-8'), ('Access-Control-Allow-Origin', '*')],
+                    status=400
+                )
+
+            base_url, api_key = self._get_azuracast_config()
+            api_url = f"{base_url}/api/station/1/request/{req_id}"
+            headers = {"X-API-Key": api_key}
+            r = requests.post(api_url, headers=headers, verify=False, timeout=6)
+            if r.status_code == 200:
+                res_data = r.json()
+                msg = res_data.get("message", "Song erfolgreich eingereiht!")
+                try:
+                    request.env["frawo.agent.log"].sudo().create({
+                        "name": "Radio: Song-Wunsch eingereiht",
+                        "level": "info",
+                        "message": f"Wunsch-Track {req_id} eingereiht: {msg}"
+                    })
+                except Exception as log_err:
+                    _logger.warning("Radio log error: %s", log_err)
+                return request.make_response(
+                    json.dumps({"status": "success", "message": msg}),
+                    headers=[('Content-Type', 'application/json; charset=utf-8'), ('Access-Control-Allow-Origin', '*')],
+                    status=200
+                )
+            else:
+                return request.make_response(
+                    json.dumps({"status": "error", "message": f"Request fehlgeschlagen (HTTP {r.status_code})"}),
+                    headers=[('Content-Type', 'application/json; charset=utf-8'), ('Access-Control-Allow-Origin', '*')],
+                    status=r.status_code
+                )
+        except Exception as e:
+            _logger.error("touch_radio_request error: %s", str(e))
+            return request.make_response(
+                json.dumps({"status": "error", "message": str(e)}),
+                headers=[('Content-Type', 'application/json; charset=utf-8'), ('Access-Control-Allow-Origin', '*')],
                 status=500
             )
 
