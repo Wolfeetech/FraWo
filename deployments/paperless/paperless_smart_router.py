@@ -179,13 +179,23 @@ requires_action=true nur bei echtem Handlungsbedarf (zahlen, antworten,
 unterschreiben, Frist einhalten). Ist eine Rechnung bereits bezahlt oder handelt es sich um ein reines Infoschreiben: false."""
 
 
+def parse_json_flexible(raw_text):
+    text = (raw_text or "").strip()
+    m = re.search(r"```(?:json)?\s*(\{.*?\})\s*```", text, re.DOTALL)
+    if m:
+        return json.loads(m.group(1))
+    m = re.search(r"\{.*\}", text, re.DOTALL)
+    if m:
+        return json.loads(m.group(0))
+    return json.loads(text)
+
+
 def call_ollama(text, title_str):
     prompt = build_classification_prompt(text, title_str)
     url = f"{OLLAMA_URL.rstrip('/')}/api/generate"
     body = json.dumps({
         "model": OLLAMA_MODEL,
         "prompt": prompt,
-        "format": "json",
         "stream": False,
         "options": {"temperature": 0.1},
     }).encode("utf-8")
@@ -193,7 +203,7 @@ def call_ollama(text, title_str):
     with urllib.request.urlopen(req, timeout=120) as r:
         raw = json.loads(r.read().decode("utf-8"))
         res_text = raw.get("response", "")
-        return json.loads(res_text)
+        return parse_json_flexible(res_text)
 
 
 def call_gemini(text, title_str):
@@ -209,7 +219,7 @@ def call_gemini(text, title_str):
     with urllib.request.urlopen(req, timeout=45) as r:
         resp = json.loads(r.read().decode("utf-8"))
     raw_text = resp["candidates"][0]["content"]["parts"][0]["text"]
-    return json.loads(raw_text)
+    return parse_json_flexible(raw_text)
 
 
 def sanitize_classification(result, title_str):
