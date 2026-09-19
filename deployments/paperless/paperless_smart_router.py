@@ -44,7 +44,7 @@ ODOO_USER = os.environ.get("ODOO_USER", "wolf@frawo.tech")
 ODOO_PASS = os.environ.get("ODOO_PASS", "")
 
 OLLAMA_URL = os.environ.get("OLLAMA_URL", "http://10.0.0.227:11434")
-OLLAMA_MODEL = os.environ.get("OLLAMA_MODEL", "qwen2.5:3b")
+OLLAMA_MODEL = os.environ.get("OLLAMA_MODEL", "qwen2.5:7b")
 
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
 GEMINI_MODEL = "gemini-3.5-flash-lite"  # deutlich hoeheres Frei-Kontingent als 3.6-flash (dort nur 20/Tag)
@@ -148,10 +148,8 @@ if len(content.strip()) < 20:
 
 
 def build_classification_prompt(text, title_str):
-    return f"""Du analysierst ein eingescanntes Dokument einer Familie/Firma
-(FraWo GbR) mit 5 möglichen Empfängern: Wolf_Prinz, Franz_Bienert,
-Alois_Prinz (Stockenweiler/Landwirtschaft), Heidi_Prinz (Alois' Frau,
-Stockenweiler), oder die Firma FraWo_GbR selbst.
+    return f"""Du bist der digitale Assistent der FraWo GbR.
+Analysiere das folgende eingescannte Dokument aufmerksam. Erkenne selbstständig neue oder bestehende Absender, erfasse den Sachverhalt und den richtigen Empfänger (Wolf_Prinz, Franz_Bienert, FraWo_GbR, Alois_Prinz, Heidi_Prinz).
 
 Titel: {title_str}
 Text (OCR, ggf. unvollständig):
@@ -164,13 +162,13 @@ Antworte NUR mit einem gültigen JSON-Objekt im folgenden Format:
   "entity": "Wolf_Prinz" | "Franz_Bienert" | "Alois_Prinz" | "Heidi_Prinz" | "FraWo_GbR",
   "category": "finanzen" | "vertraege" | "amt_behoerden" | "gesundheit" | "wohnen" | "arbeit" | "projekte" | "sonstiges",
   "document_type": "Rechnung" | "Mahnung" | "Vertrag" | "Bescheid" | "Kontoauszug" | "Versicherungspolice" | "Zeugnis" | "Bewerbung" | "Kündigung" | "Antrag" | "Angebot" | "Sonstiges",
-  "vendor": "<Absender/Firma, kurz>",
+  "vendor": "<Absender/Firma/Behörde, präzise und vollständig>",
   "document_date": "<Datum AUF dem Dokument selbst, YYYY-MM-DD, oder null wenn nicht erkennbar>",
-  "clean_title": "<kurzer, sauberer Titel nach dem Muster 'Dokumenttyp Absender Datum', z.B. 'Rechnung Thomann GmbH 2026-08-15', OHNE Dateiendung. Ist kein Datum erkennbar: Datum im Titel KOMPLETT WEGLASSEN, nicht 'null' oder aehnliches einsetzen>",
-  "amount": <Zahl in Euro oder 0>,
-  "due_date": "<YYYY-MM-DD oder null>",
+  "clean_title": "<kurzer, sauberer Titel nach dem Muster 'Dokumenttyp Absender Datum', z.B. 'Rechnung Thomann GmbH 2026-08-15', OHNE Dateiendung. Ist kein Datum erkennbar: Datum im Titel weglassen>",
+  "amount": <Zahl in Euro oder 0.0 falls keine Zahlungsaufforderung>,
+  "due_date": "<Fristdatum YYYY-MM-DD oder null>",
   "requires_action": true | false,
-  "summary": "<ein Satz, worum es geht>"
+  "summary": "<ein präziser deutscher Satz, der den Sachverhalt auf den Punkt bringt>"
 }}
 
 Kategorien: finanzen=Rechnungen/Bank/Versicherung, vertraege=Verträge,
@@ -178,7 +176,7 @@ amt_behoerden=Ämter/Finanzamt/Bescheide, gesundheit=Arzt/Krankenkasse,
 wohnen=Miete/Nebenkosten/Haus, arbeit=Job/Gewerbe/Ausbildung,
 projekte=laufende Vorhaben, sonstiges=alles andere.
 requires_action=true nur bei echtem Handlungsbedarf (zahlen, antworten,
-unterschreiben, Frist einhalten) — reine Infoschreiben sind false."""
+unterschreiben, Frist einhalten). Ist eine Rechnung bereits bezahlt oder handelt es sich um ein reines Infoschreiben: false."""
 
 
 def call_ollama(text, title_str):
