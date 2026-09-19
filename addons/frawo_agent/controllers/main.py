@@ -2319,7 +2319,7 @@ class RadioController(http.Controller):
                         'text': (raw_b[:400] + '...') if len(raw_b) > 400 else raw_b
                     })
 
-                return json.dumps({
+                payload = json.dumps({
                     'id': task.id,
                     'name': task.name,
                     'project': pname,
@@ -2331,6 +2331,7 @@ class RadioController(http.Controller):
                     'timeline': timeline,
                     'url': f"/frawo/touch/login?redirect=/odoo/project.task/{task.id}"
                 })
+                return pyhtml.escape(payload, quote=True)
 
             # ── 5. KARTEN-GENERIERUNG: LIVE IN ARBEIT (HERO) ──
             active_cards_html = []
@@ -2354,7 +2355,7 @@ class RadioController(http.Controller):
                 modal_json = build_modal_json(t, t_msgs, agent_name, status_text)
 
                 card = f'''
-                <div class="task-card live-card agent-filter-{agent_key}" onclick='showTaskDetail({modal_json})'>
+                <div class="task-card live-card agent-filter-{agent_key}" data-task="{modal_json}" onclick="showTaskDetail(this)">
                     <div class="card-header">
                         <div style="display:flex; align-items:center; gap:8px;">
                             <span class="proj-badge" style="background:rgba(255,255,255,0.07); color:#fff; border:1px solid rgba(255,255,255,0.15);">{pname}</span>
@@ -2396,7 +2397,7 @@ class RadioController(http.Controller):
                 modal_json = build_modal_json(wt, w_msgs, agent_name, "Wartet auf Wolf")
 
                 wcard = f'''
-                <div class="task-card card-wolf-decision" onclick='showTaskDetail({modal_json})'>
+                <div class="task-card card-wolf-decision" data-task="{modal_json}" onclick="showTaskDetail(this)">
                     <div class="wolf-badge-header">
                         <span>🙋 BRAUCHT WOLF (ENTSCHEIDUNG)</span>
                         {prio_html}
@@ -2437,7 +2438,7 @@ class RadioController(http.Controller):
                     pname = t.project_id.name if t.project_id else 'Allgemein'
                     modal_json = build_modal_json(t, t_msgs, agent_name, status_text)
                     c = f'''
-                    <div class="task-card" onclick='showTaskDetail({modal_json})'>
+                    <div class="task-card" data-task="{modal_json}" onclick="showTaskDetail(this)">
                         <div class="card-header">
                             <span class="proj-badge" style="background:rgba(255,255,255,0.06); color:#c5cae9;">{pname}</span>
                             <span class="status-pill status-other">{t.stage_id.name if t.stage_id else 'Offen'}</span>
@@ -3062,7 +3063,14 @@ function toggleAlertsDrawer() {{
   if (d) d.style.display = (d.style.display === 'none' || !d.style.display) ? 'block' : 'none';
 }}
 
-function showTaskDetail(data) {{
+function showTaskDetail(elem) {{
+  let data;
+  try {{
+    data = (typeof elem === 'object' && elem.dataset && elem.dataset.task) ? JSON.parse(elem.dataset.task) : elem;
+  }} catch (e) {{
+    console.error('Failed to parse task data', e);
+    return;
+  }}
   document.getElementById('modalHeaderTitle').innerText = '#' + data.id + ' · ' + data.name;
   document.getElementById('modalMeta').innerHTML = '<span style="color:#00e5ff;">' + (data.project || '-') + '</span> · ' + (data.stage || '-') + (data.prio ? ' · ' + data.prio : '') + ' · <span style="color:#ffb300;">' + (data.agent || '') + '</span>';
   document.getElementById('modalDesc').innerText = data.desc || 'Keine nähere Aufgabenstellung hinterlegt.';
