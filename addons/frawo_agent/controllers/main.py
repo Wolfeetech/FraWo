@@ -34,6 +34,35 @@ class RadioController(http.Controller):
         # Check if user has internal user group
         return user.has_group('base.group_user')
 
+    def _is_trusted_network(self):
+        """Check if request comes from local LAN (10.0.0.0/8, 192.168.0.0/16, 172.16.0.0/12),
+        Tailscale (100.64.0.0/10), or localhost (127.0.0.1, ::1)."""
+        import ipaddress
+        ip_str = request.httprequest.remote_addr or ''
+        if not ip_str:
+            return False
+        try:
+            ip = ipaddress.ip_address(ip_str.strip())
+            if ip.is_private or ip.is_loopback:
+                return True
+            if ip in ipaddress.ip_network('100.64.0.0/10'):
+                return True
+        except Exception:
+            pass
+        return False
+
+    def _is_trusted_or_authenticated(self):
+        """Allow access if request is from trusted network OR if user is authenticated in Odoo."""
+        if self._is_trusted_network():
+            return True
+        try:
+            user = request.env.user
+            if user and not user._is_public():
+                return True
+        except Exception:
+            pass
+        return False
+
     def _check_rate_limit(self, action, cooldown):
         """Per-browser-session cooldown for public write endpoints (radio votes/requests,
         lead form). These routes are intentionally auth='public' — anonymous website
@@ -2096,6 +2125,8 @@ class RadioController(http.Controller):
     @http.route('/frawo/touch/login', type='http', auth='none', csrf=False, sitemap=False)
     def touch_auto_login(self, **kwargs):
         """Auto-authenticates Wolf Prinz on the local Touchscreen/LAN and redirects to /odoo or target."""
+        if not self._is_trusted_network():
+            return request.make_response("403 Forbidden: Touch Auto-Login ist nur im lokalen FraWo-Netzwerk erlaubt.", status=403)
         try:
             db = 'FraWo_GbR'
             env = request.env(user=1)
@@ -2132,6 +2163,8 @@ class RadioController(http.Controller):
         - Instant Client-Filter (Alle, Antigravity, Claude, Jarvis, Braucht Wolf)
         - Live-Infra & Backup-Ampel (Prometheus, PBS 10.1.0.7:8007, ZFS Pool, Google Drive 10/10)
         - Korrigierte Navigation (Home, GrowBox, Radio, Kiosk)"""
+        if not self._is_trusted_or_authenticated():
+            return request.redirect('/web/login?redirect=/frawo/touch/cockpit')
         try:
             import datetime, re, json, urllib.request, urllib.error, html as pyhtml
             db = 'FraWo_GbR'
@@ -3116,6 +3149,12 @@ function closeModalDirect() {{
     def touch_api_summary(self, **kwargs):
         """JSON summary for Surface Go Touchboard & Ambient Glanceable Display."""
         import json, datetime, re
+        if not self._is_trusted_or_authenticated():
+            return request.make_response(
+                json.dumps({"error": "Forbidden", "message": "Internes Netzwerk oder Anmeldung erforderlich"}),
+                headers=[('Content-Type', 'application/json; charset=utf-8')],
+                status=403
+            )
         try:
             env = request.env(user=1)
             hub = kwargs.get('hub', 'anker')
@@ -3586,6 +3625,248 @@ function closeModalDirect() {{
                 status=500
             )
 
+    @http.route(['/frawo/touch/api/radio/queue', '/api/radio/queue'], type='http', auth='none', methods=['GET'], cors='*', csrf=False, sitemap=False)
+    def touch_radio_queue(self, **kwargs):
+        """Fetch live Liquidsoap playback queue from AzuraCast."""
+        try:
+            base_url, api_key = self._get_azuracast_config()
+            headers = {"X-API-Key": api_key} if api_key else {}
+            r = requests.get(f"{base_url}/api/station/1/queue", headers=headers, verify=False, timeout=5)
+            if r.status_code == 200:
+                raw_queue = r.json()
+                clean_queue = []
+                for item in (raw_queue if isinstance(raw_queue, list) else []):
+                    song = item.get("song", {})
+                    clean_queue.append({
+                        "id": item.get("id") or song.get("id"),
+                        "title": song.get("title") or "Unbekannter Titel",
+                        "artist": song.get("artist") or "FraWo Funk",
+                        "album": song.get("album") or "",
+                        "playlist": item.get("playlist") or song.get("playlist") or "AutoDJ",
+                        "duration": int(item.get("duration", 0)),
+                        "cued_at": item.get("cued_at", 0),
+                        "played_at": item.get("played_at", 0),
+                        "is_request": bool(item.get("is_request", False)),
+                        "art": (song.get("art") or "").replace("http://10.1.0.38", "https://funk.frawo.tech").replace("https://10.1.0.38", "https://funk.frawo.tech")
+                    })
+                return request.make_response(
+                    json.dumps({"status": "success", "queue": clean_queue[:10]}),
+                    headers=[('Content-Type', 'application/json; charset=utf-8'), ('Access-Control-Allow-Origin', '*')],
+                    status=200
+                )
+            # Fallback to nowplaying playing_next
+            r_np = requests.get(f"{base_url}/api/station/1/nowplaying", verify=False, timeout=5)
+            if r_np.status_code == 200:
+                np = r_np.json()
+                next_song = np.get("playing_next")
+                clean_queue = []
+                if next_song and next_song.get("song"):
+                    s = next_song["song"]
+                    clean_queue.append({
+                        "id": s.get("id"),
+                        "title": s.get("title") or "Nächster Titel",
+                        "artist": s.get("artist") or "FraWo Funk",
+                        "album": s.get("album") or "",
+                        "playlist": next_song.get("playlist") or "AutoDJ",
+                        "duration": int(next_song.get("duration", 0)),
+                        "cued_at": next_song.get("cued_at", 0),
+                        "is_request": bool(next_song.get("is_request", False)),
+                        "art": (s.get("art") or "").replace("http://10.1.0.38", "https://funk.frawo.tech").replace("https://10.1.0.38", "https://funk.frawo.tech")
+                    })
+                return request.make_response(
+                    json.dumps({"status": "success", "queue": clean_queue}),
+                    headers=[('Content-Type', 'application/json; charset=utf-8'), ('Access-Control-Allow-Origin', '*')],
+                    status=200
+                )
+            return request.make_response(json.dumps({"status": "error", "message": f"HTTP {r.status_code}"}), headers=[('Content-Type', 'application/json; charset=utf-8'), ('Access-Control-Allow-Origin', '*')], status=r.status_code)
+        except Exception as e:
+            _logger.error("touch_radio_queue error: %s", str(e))
+            return request.make_response(json.dumps({"status": "error", "message": str(e)}), headers=[('Content-Type', 'application/json; charset=utf-8'), ('Access-Control-Allow-Origin', '*')], status=500)
+
+    @http.route(['/frawo/touch/api/radio/history', '/api/radio/history'], type='http', auth='none', methods=['GET'], cors='*', csrf=False, sitemap=False)
+    def touch_radio_history(self, **kwargs):
+        """Fetch recently played song history from AzuraCast."""
+        try:
+            base_url, api_key = self._get_azuracast_config()
+            headers = {"X-API-Key": api_key} if api_key else {}
+            r = requests.get(f"{base_url}/api/station/1/history", headers=headers, verify=False, timeout=5)
+            raw_history = []
+            if r.status_code == 200:
+                raw_history = r.json()
+            else:
+                r_np = requests.get(f"{base_url}/api/station/1/nowplaying", verify=False, timeout=5)
+                if r_np.status_code == 200:
+                    raw_history = r_np.json().get("song_history", [])
+            
+            clean_history = []
+            for item in (raw_history if isinstance(raw_history, list) else []):
+                song = item.get("song", {})
+                clean_history.append({
+                    "sh_id": item.get("sh_id"),
+                    "title": song.get("title") or "Unbekannter Titel",
+                    "artist": song.get("artist") or "FraWo Funk",
+                    "album": song.get("album") or "",
+                    "playlist": item.get("playlist") or song.get("playlist") or "AutoDJ",
+                    "played_at": item.get("played_at", 0),
+                    "duration": int(item.get("duration", 0)),
+                    "listeners_start": item.get("listeners_start", 0),
+                    "is_request": bool(item.get("is_request", False)),
+                    "art": (song.get("art") or "").replace("http://10.1.0.38", "https://funk.frawo.tech").replace("https://10.1.0.38", "https://funk.frawo.tech")
+                })
+            return request.make_response(
+                json.dumps({"status": "success", "history": clean_history[:10]}),
+                headers=[('Content-Type', 'application/json; charset=utf-8'), ('Access-Control-Allow-Origin', '*')],
+                status=200
+            )
+        except Exception as e:
+            _logger.error("touch_radio_history error: %s", str(e))
+            return request.make_response(json.dumps({"status": "error", "message": str(e)}), headers=[('Content-Type', 'application/json; charset=utf-8'), ('Access-Control-Allow-Origin', '*')], status=500)
+
+    @http.route(['/frawo/touch/api/radio/restart', '/api/radio/restart'], type='http', auth='none', methods=['POST'], cors='*', csrf=False, sitemap=False)
+    def touch_radio_restart(self, **kwargs):
+        """Trigger soft restart of Liquidsoap AutoDJ backend engine."""
+        try:
+            base_url, api_key = self._get_azuracast_config()
+            if not api_key:
+                return request.make_response(
+                    json.dumps({"status": "error", "message": "AzuraCast API-Key nicht konfiguriert"}),
+                    headers=[('Content-Type', 'application/json; charset=utf-8'), ('Access-Control-Allow-Origin', '*')],
+                    status=500
+                )
+            api_url = f"{base_url}/api/station/1/backend/restart"
+            headers = {"X-API-Key": api_key}
+            r = requests.post(api_url, headers=headers, verify=False, timeout=10)
+            if r.status_code == 200:
+                try:
+                    request.env["frawo.agent.log"].sudo().create({
+                        "name": "Radio: AutoDJ Backend neu gestartet",
+                        "level": "info",
+                        "message": "Liquidsoap AutoDJ via Touchboard / Kiosk neu gestartet."
+                    })
+                except Exception as log_err:
+                    _logger.warning("Radio log error: %s", log_err)
+                return request.make_response(
+                    json.dumps({"status": "success", "message": "LiquidSoap AutoDJ erfolgreich neu gestartet!"}),
+                    headers=[('Content-Type', 'application/json; charset=utf-8'), ('Access-Control-Allow-Origin', '*')],
+                    status=200
+                )
+            return request.make_response(
+                json.dumps({"status": "error", "message": f"AzuraCast HTTP {r.status_code}: {r.text}"}),
+                headers=[('Content-Type', 'application/json; charset=utf-8'), ('Access-Control-Allow-Origin', '*')],
+                status=r.status_code
+            )
+        except Exception as e:
+            _logger.error("touch_radio_restart error: %s", str(e))
+            return request.make_response(json.dumps({"status": "error", "message": str(e)}), headers=[('Content-Type', 'application/json; charset=utf-8'), ('Access-Control-Allow-Origin', '*')], status=500)
+
+    @http.route(['/frawo/touch/api/radio/preset/apply', '/api/radio/preset/apply'], type='http', auth='none', methods=['POST'], cors='*', csrf=False, sitemap=False)
+    def touch_radio_preset_apply(self, **kwargs):
+        """Batch apply mood presets to AzuraCast playlists."""
+        try:
+            data = {}
+            try:
+                data = request.httprequest.get_json(force=True, silent=True) or {}
+            except Exception:
+                pass
+            if not data:
+                data = kwargs or {}
+
+            preset_name = (data.get('preset') or data.get('preset_name') or 'balanced').strip().lower()
+            base_url, api_key = self._get_azuracast_config()
+            if not api_key:
+                return request.make_response(
+                    json.dumps({"status": "error", "message": "AzuraCast API-Key nicht konfiguriert"}),
+                    headers=[('Content-Type', 'application/json; charset=utf-8'), ('Access-Control-Allow-Origin', '*')],
+                    status=500
+                )
+
+            headers = {"X-API-Key": api_key, "Content-Type": "application/json"}
+            r_pls = requests.get(f"{base_url}/api/station/1/playlists", headers={"X-API-Key": api_key}, verify=False, timeout=6)
+            if r_pls.status_code != 200:
+                return request.make_response(json.dumps({"status": "error", "message": f"Playlists abrufen fehlgeschlagen (HTTP {r_pls.status_code})"}), headers=[('Content-Type', 'application/json; charset=utf-8'), ('Access-Control-Allow-Origin', '*')], status=500)
+
+            playlists = r_pls.json()
+
+            PRESETS = {
+                "daytime": {
+                    "lunch groove": 10,
+                    "afternoon flow": 10,
+                    "morning drive": 6,
+                    "sunday roadtrip": 5,
+                    "sunrise": 4,
+                    "peak time club": 1,
+                    "deep night": 1,
+                    "harder": 1
+                },
+                "sunset": {
+                    "evening warmup": 12,
+                    "afro world": 10,
+                    "sunset": 10,
+                    "sunrise": 6,
+                    "lunch groove": 4,
+                    "peak time club": 2,
+                    "harder": 1
+                },
+                "rave": {
+                    "peak time club": 15,
+                    "dj sets": 10,
+                    "evening warmup": 8,
+                    "harder": 8,
+                    "afro world": 4,
+                    "sunrise": 1,
+                    "sunday roadtrip": 1
+                },
+                "night": {
+                    "deep night": 15,
+                    "evening warmup": 6,
+                    "afro world": 4,
+                    "morning drive": 1,
+                    "lunch groove": 1,
+                    "sunday roadtrip": 1
+                },
+                "balanced": {}
+            }
+
+            target_weights = PRESETS.get(preset_name, {})
+            updated_count = 0
+
+            for pl in playlists:
+                pl_id = pl.get("id")
+                pl_name_lower = (pl.get("name") or "").lower()
+                
+                w = 3
+                if preset_name != "balanced":
+                    for pat, target_w in target_weights.items():
+                        if pat in pl_name_lower:
+                            w = target_w
+                            break
+
+                current_w = pl.get("weight", 3)
+                if current_w != w:
+                    try:
+                        requests.put(f"{base_url}/api/station/1/playlist/{pl_id}", headers=headers, json={"weight": w}, verify=False, timeout=4)
+                        updated_count += 1
+                    except Exception as pe:
+                        _logger.warning("Failed updating playlist %s: %s", pl_id, pe)
+
+            try:
+                request.env["frawo.agent.log"].sudo().create({
+                    "name": f"Radio: Preset '{preset_name}' aktiviert",
+                    "level": "info",
+                    "message": f"Sende-Preset '{preset_name}' angewendet ({updated_count} Playlists angepasst)."
+                })
+            except Exception as log_err:
+                _logger.warning("Radio log error: %s", log_err)
+
+            return request.make_response(
+                json.dumps({"status": "success", "preset": preset_name, "updated_playlists": updated_count, "message": f"Preset '{preset_name.capitalize()}' aktiv ({updated_count} Anpassungen)."}),
+                headers=[('Content-Type', 'application/json; charset=utf-8'), ('Access-Control-Allow-Origin', '*')],
+                status=200
+            )
+        except Exception as e:
+            _logger.error("touch_radio_preset_apply error: %s", str(e))
+            return request.make_response(json.dumps({"status": "error", "message": str(e)}), headers=[('Content-Type', 'application/json; charset=utf-8'), ('Access-Control-Allow-Origin', '*')], status=500)
+
 
     # ─────────────────────────────────────────────────────────────
     # FraWo Hub (HTTPS Domain Access: https://frawo.tech/hub)
@@ -3595,6 +3876,8 @@ function closeModalDirect() {{
     def frawo_hub_page(self, **kwargs):
         """Serves FraWo Hub directly via HTTPS (https://frawo.tech/hub)."""
         import os
+        if not self._is_trusted_or_authenticated():
+            return request.redirect('/web/login?redirect=/hub')
         try:
             view_path = os.path.join(os.path.dirname(__file__), '..', 'views', 'frawo_hub.html')
             if not os.path.exists(view_path):
@@ -3621,6 +3904,12 @@ function closeModalDirect() {{
     def api_task_answer(self, **kwargs):
         """Processes question answers directly from the Hub into Odoo chatter and sets Tag 160."""
         import json
+        if not self._is_trusted_or_authenticated():
+            return request.make_response(
+                json.dumps({"success": False, "error": "403 Forbidden: Internes Netzwerk oder Anmeldung erforderlich"}),
+                headers=[('Content-Type', 'application/json; charset=utf-8')],
+                status=403
+            )
         try:
             body = request.httprequest.data.decode('utf-8')
             data = json.loads(body)
@@ -3718,6 +4007,12 @@ function closeModalDirect() {{
     def api_ollama_refine(self, **kwargs):
         """Refines text with local Ollama on OptiPlex (10.1.0.227:11434)."""
         import json, urllib.request
+        if not self._is_trusted_or_authenticated():
+            return request.make_response(
+                json.dumps({"success": False, "error": "403 Forbidden: Internes Netzwerk oder Anmeldung erforderlich"}),
+                headers=[('Content-Type', 'application/json; charset=utf-8')],
+                status=403
+            )
         try:
             body = request.httprequest.data.decode('utf-8')
             data = json.loads(body)
@@ -3766,6 +4061,12 @@ function closeModalDirect() {{
     def api_web_research(self, **kwargs):
         """Searches the web via DuckDuckGo and synthesizes the findings with local Ollama on OptiPlex."""
         import json, urllib.request, urllib.parse, re, html
+        if not self._is_trusted_or_authenticated():
+            return request.make_response(
+                json.dumps({"success": False, "error": "403 Forbidden: Internes Netzwerk oder Anmeldung erforderlich"}),
+                headers=[('Content-Type', 'application/json; charset=utf-8')],
+                status=403
+            )
         try:
             body = request.httprequest.data.decode('utf-8')
             data = json.loads(body)
@@ -3778,33 +4079,47 @@ function closeModalDirect() {{
                     status=400
                 )
 
-            # 1. Search DuckDuckGo Lite
-            url = "https://lite.duckduckgo.com/lite/"
-            payload = urllib.parse.urlencode({"q": query}).encode("utf-8")
-            req = urllib.request.Request(url, data=payload, headers={
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-                "Content-Type": "application/x-www-form-urlencoded"
-            })
-            
+            # 1. Search SearXNG on OptiPlex (10.1.0.227:8081)
             search_results = []
             try:
-                with urllib.request.urlopen(req, timeout=6.0) as resp:
-                    content = resp.read().decode("utf-8", errors="ignore")
-                
-                links = re.findall(r"<a[^>]+class=['\"]result-link['\"][^>]*href=['\"]([^'\"]+)['\"][^>]*>(.*?)</a>", content)
-                snippets = re.findall(r"<td[^>]+class=['\"]result-snippet['\"][^>]*>(.*?)</td>", content, re.DOTALL)
-                
-                for i in range(min(len(links), len(snippets), 4)):
-                    href, raw_t = links[i]
-                    t = re.sub(r"<[^>]+>", "", raw_t).strip()
-                    s = re.sub(r"<[^>]+>", "", snippets[i]).strip()
-                    search_results.append({
-                        "title": html.unescape(t),
-                        "url": href,
-                        "snippet": html.unescape(s)
-                    })
+                searx_url = f"http://10.1.0.227:8081/search?q={urllib.parse.quote(query)}&format=json"
+                searx_req = urllib.request.Request(searx_url, headers={"User-Agent": "FraWo-Agent/1.0"})
+                with urllib.request.urlopen(searx_req, timeout=8.0) as resp:
+                    if resp.status == 200:
+                        searx_data = json.loads(resp.read().decode('utf-8'))
+                        for item in searx_data.get('results', [])[:4]:
+                            search_results.append({
+                                "title": item.get('title', ''),
+                                "url": item.get('url', ''),
+                                "snippet": item.get('content', '')
+                            })
             except Exception as se:
-                _logger.warning("DuckDuckGo search error: %s", str(se))
+                _logger.warning("SearXNG search error: %s", str(se))
+
+            # Fallback to DuckDuckGo Lite if SearXNG returned empty
+            if not search_results:
+                try:
+                    url = "https://lite.duckduckgo.com/lite/"
+                    payload = urllib.parse.urlencode({"q": query}).encode("utf-8")
+                    req = urllib.request.Request(url, data=payload, headers={
+                        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    })
+                    with urllib.request.urlopen(req, timeout=5.0) as resp:
+                        content = resp.read().decode("utf-8", errors="ignore")
+                    links = re.findall(r"<a[^>]+class=['\"]result-link['\"][^>]*href=['\"]([^'\"]+)['\"][^>]*>(.*?)</a>", content)
+                    snippets = re.findall(r"<td[^>]+class=['\"]result-snippet['\"][^>]*>(.*?)</td>", content, re.DOTALL)
+                    for i in range(min(len(links), len(snippets), 4)):
+                        href, raw_t = links[i]
+                        t = re.sub(r"<[^>]+>", "", raw_t).strip()
+                        s = re.sub(r"<[^>]+>", "", snippets[i]).strip()
+                        search_results.append({
+                            "title": html.unescape(t),
+                            "url": href,
+                            "snippet": html.unescape(s)
+                        })
+                except Exception as de:
+                    _logger.warning("DuckDuckGo fallback search error: %s", str(de))
 
             if not search_results:
                 return request.make_response(

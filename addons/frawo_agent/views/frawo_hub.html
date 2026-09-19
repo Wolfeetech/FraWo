@@ -1191,6 +1191,594 @@
     }
   }
 
+
+  /* ========================================================= */
+  /* PRO AZURACAST BROADCAST & DEVOPS CONTROL DASHBOARD */
+  /* ========================================================= */
+  .radio-deck-container {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    width: 100%;
+    padding-bottom: 24px;
+  }
+  
+  /* 1. HUD Telemetry Bar */
+  .radio-hud-bar {
+    background: rgba(15, 23, 42, 0.85);
+    border: 1px solid rgba(56, 189, 248, 0.25);
+    backdrop-filter: blur(12px);
+    border-radius: 16px;
+    padding: 12px 18px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+  .hud-vitals {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+  }
+  .hud-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #e2e8f0;
+  }
+  .hud-pill .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #10b981;
+    box-shadow: 0 0 8px #10b981;
+  }
+  .hud-pill .dot-blue { background: #38bdf8; box-shadow: 0 0 8px #38bdf8; }
+  .hud-pill .dot-amber { background: #f59e0b; box-shadow: 0 0 8px #f59e0b; }
+  .hud-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-hud-action {
+    background: #1e293b;
+    border: 1px solid #475569;
+    color: #f1f5f9;
+    padding: 6px 12px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s ease;
+  }
+  .btn-hud-action:hover, .btn-hud-action:active {
+    background: #334155;
+    border-color: #38bdf8;
+    color: #38bdf8;
+    transform: scale(0.97);
+  }
+
+  /* 2. Hero Broadcast Deck */
+  .radio-hero-deck {
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.85), rgba(15, 23, 42, 0.95));
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    border-radius: 20px;
+    padding: 22px;
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 22px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-art-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+  .art-wrapper {
+    width: 210px;
+    height: 210px;
+    border-radius: 16px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.6);
+    border: 2px solid rgba(255,255,255,0.1);
+    background: #0f172a;
+  }
+  .art-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+  .art-img.playing {
+    transform: scale(1.02);
+  }
+  .art-badge-overlay {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    right: 8px;
+    background: rgba(15, 23, 42, 0.88);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 4px 8px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #38bdf8;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .hero-main-col {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 14px;
+  }
+  .track-meta-block {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .track-meta-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .track-live-tag {
+    background: rgba(239, 68, 68, 0.2);
+    border: 1px solid #ef4444;
+    color: #fca5a5;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    animation: pulseLive 2s infinite;
+  }
+  @keyframes pulseLive {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+  }
+  .track-source-pill {
+    background: rgba(56, 189, 248, 0.15);
+    border: 1px solid rgba(56, 189, 248, 0.4);
+    color: #38bdf8;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11.5px;
+    font-weight: 700;
+  }
+  .hero-title {
+    font-size: 24px;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.25;
+    margin-top: 4px;
+  }
+  .hero-artist {
+    font-size: 17px;
+    font-weight: 600;
+    color: #94a3b8;
+  }
+  .hero-album {
+    font-size: 13px;
+    color: #64748b;
+    margin-top: 1px;
+  }
+
+  /* Progress Timeline */
+  .timeline-block {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: 4px 0;
+  }
+  .timeline-bar-bg {
+    width: 100%;
+    height: 8px;
+    background: #1e293b;
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid rgba(255,255,255,0.05);
+  }
+  .timeline-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #0284c7, #38bdf8, #10b981);
+    border-radius: 6px;
+    transition: width 0.8s linear;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+  }
+  .timeline-labels {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #cbd5e1;
+    font-variant-numeric: tabular-nums;
+  }
+  .timeline-countdown {
+    color: #38bdf8;
+    font-weight: 700;
+    background: rgba(56, 189, 248, 0.1);
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 11.5px;
+  }
+
+  /* VU Meter Graphic */
+  .vu-meter-box {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 8px 12px;
+  }
+  .vu-channel {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 10.5px;
+    font-weight: 800;
+    color: #64748b;
+  }
+  .vu-bar-bg {
+    flex: 1;
+    height: 7px;
+    background: #0f172a;
+    border-radius: 3px;
+    overflow: hidden;
+    display: flex;
+  }
+  .vu-bar-active {
+    height: 100%;
+    width: 60%;
+    background: linear-gradient(90deg, #10b981 0%, #10b981 65%, #f59e0b 85%, #ef4444 100%);
+    border-radius: 3px;
+    transition: width 0.1s ease-out;
+  }
+
+  /* Master Deck Action Buttons */
+  .hero-controls {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr 0.8fr;
+    gap: 10px;
+  }
+  .btn-hero {
+    border: none;
+    border-radius: 14px;
+    padding: 13px 14px;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.15s ease;
+    user-select: none;
+  }
+  .btn-hero:active {
+    transform: scale(0.96);
+  }
+  .btn-hero-monitor {
+    background: #059669;
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(5, 150, 105, 0.35);
+  }
+  .btn-hero-monitor.active {
+    background: #dc2626;
+    box-shadow: 0 4px 14px rgba(220, 38, 38, 0.35);
+  }
+  .btn-hero-skip {
+    background: #2563eb;
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+  }
+  .btn-hero-jingle {
+    background: #7c3aed;
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(124, 58, 237, 0.35);
+  }
+  .btn-hero-vote {
+    background: #1e293b;
+    border: 1px solid #475569;
+    color: #f1f5f9;
+  }
+  .btn-hero-vote:hover {
+    border-color: #ec4899;
+    color: #ec4899;
+  }
+
+  /* 3. Queue & History Flow */
+  .flow-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .flow-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 18px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  }
+  .flow-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14.5px;
+    font-weight: 800;
+    color: #f8fafc;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    padding-bottom: 8px;
+  }
+  .flow-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    list-style: none;
+    max-height: 260px;
+    overflow-y: auto;
+  }
+  .flow-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 7px 10px;
+  }
+  .flow-thumb {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    object-fit: cover;
+    background: #1e293b;
+    flex-shrink: 0;
+  }
+  .flow-info {
+    flex: 1;
+    min-width: 0;
+  }
+  .flow-song-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .flow-song-artist {
+    font-size: 11.5px;
+    color: #94a3b8;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .flow-tag {
+    font-size: 10px;
+    font-weight: 700;
+    background: rgba(56, 189, 248, 0.15);
+    color: #38bdf8;
+    border-radius: 6px;
+    padding: 2px 6px;
+    flex-shrink: 0;
+  }
+
+  /* 4. Program Director & Presets */
+  .director-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 18px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .preset-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .btn-preset {
+    background: #1e293b;
+    border: 1px solid #334155;
+    color: #f1f5f9;
+    padding: 8px 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s ease;
+  }
+  .btn-preset:active, .btn-preset.active {
+    background: rgba(56, 189, 248, 0.2);
+    border-color: #38bdf8;
+    color: #38bdf8;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+  }
+  
+  .playlist-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 10px;
+    max-height: 360px;
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+  .pl-card {
+    background: rgba(15, 23, 42, 0.65);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .pl-card.disabled {
+    opacity: 0.45;
+  }
+  .pl-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+  }
+  .pl-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .pl-toggle {
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    font-size: 16px;
+  }
+  .pl-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 11.5px;
+    color: #94a3b8;
+  }
+  .pl-slider-box {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+  }
+  .pl-slider {
+    flex: 1;
+    accent-color: #38bdf8;
+    cursor: pointer;
+  }
+  .pl-weight-badge {
+    font-weight: 800;
+    color: #38bdf8;
+    min-width: 22px;
+    text-align: right;
+  }
+
+  /* 5. Soundboard & Track Terminal */
+  .soundboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 10px;
+  }
+  .btn-jingle {
+    background: linear-gradient(135deg, #1e293b, #0f172a);
+    border: 1px solid #7c3aed;
+    color: #e2e8f0;
+    padding: 12px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.15s ease;
+  }
+  .btn-jingle:active {
+    background: #7c3aed;
+    color: #fff;
+    transform: scale(0.96);
+  }
+
+  .search-terminal-box {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .search-input-row {
+    display: flex;
+    gap: 8px;
+  }
+  .search-input {
+    flex: 1;
+    background: #0f172a;
+    border: 1px solid #334155;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 14px;
+    color: #fff;
+    outline: none;
+  }
+  .search-input:focus {
+    border-color: #38bdf8;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+  }
+  .search-results-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 220px;
+    overflow-y: auto;
+  }
+  .search-result-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(15, 23, 42, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 10px;
+    padding: 8px 12px;
+    gap: 10px;
+  }
+  .btn-request {
+    background: #0284c7;
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 6px 12px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .btn-request:active {
+    background: #38bdf8;
+    transform: scale(0.96);
+  }
+
 </style>
 </head>
 <body>
@@ -1519,22 +2107,182 @@
       </div>
     </div>
 
-    <!-- TAB 3: RADIO -->
+        <!-- TAB 3: RADIO (PRO BROADCAST & DEVOPS DASHBOARD) -->
     <div class="tab-pane" id="tab-radio">
-      <div class="player-box">
-        <div class="player-status">FraWo Web-Radio — Studio & Wohnzimmer</div>
-        <div class="player-title">Funk FraWo</div>
-        <div class="player-artist">320kbps High Quality Audio Stream</div>
-
-        <audio id="audio-stream" preload="none" src="http://10.1.0.38:8000/radio.mp3"></audio>
-
-        <div class="player-controls">
-          <button class="btn-touch btn-play" id="play-btn" onclick="toggleRadio()">▶️ RADIO STARTEN</button>
+      <div class="radio-deck-container">
+        
+        <!-- 1. Telemetry HUD Bar -->
+        <div class="radio-hud-bar">
+          <div class="hud-vitals">
+            <div class="hud-pill"><span class="dot"></span> LiquidSoap AutoDJ: <b style="color:#10b981;">Aktiv</b></div>
+            <div class="hud-pill"><span class="dot-blue"></span> Icecast Core: <b style="color:#38bdf8;">320k MP3</b></div>
+            <div class="hud-pill"><span class="dot-amber"></span> Hörer: <b id="hud-listeners" style="color:#f59e0b;">0</b></div>
+            <div class="hud-pill">Mount: <code style="color:#94a3b8;">/frawo_funk/radio.mp3</code></div>
+          </div>
+          <div class="hud-actions">
+            <button class="btn-hud-action" onclick="radioRestartAutoDJ()">🔄 AutoDJ Neustart</button>
+            <button class="btn-hud-action" onclick="radioRefreshDashboard()">⚡ Queue Sync</button>
+          </div>
         </div>
 
-        <div style="font-size:13px; color:var(--text-dim); margin-top:10px;">
-          Node: AzuraCast CT130 (10.1.0.38) · Standby / Bereit für OptiPlex-Migration
+        <!-- 2. Master Broadcast Hero Deck -->
+        <div class="radio-hero-deck">
+          <div class="hero-art-col">
+            <div class="art-wrapper">
+              <img id="radio-hero-art" class="art-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 24 24' fill='none' stroke='%2338bdf8' stroke-width='1.5'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3Cpath d='M12 2a10 10 0 0 1 10 10'/%3E%3C/svg%3E" alt="Cover Art">
+              <div class="art-badge-overlay" id="radio-hero-playlist">AutoDJ Rotation</div>
+            </div>
+            <div id="radio-genre-tag" style="font-size:11.5px; color:#94a3b8; font-weight:600; text-align:center;">FraWo Funk · 24/7 Live</div>
+          </div>
+
+          <div class="hero-main-col">
+            <div class="track-meta-block">
+              <div class="track-meta-header">
+                <span class="track-live-tag">🔴 ON AIR</span>
+                <span class="track-source-pill" id="radio-hero-format">320 kbps CBR · 44.1 kHz</span>
+              </div>
+              <div class="hero-title" id="radio-hero-title">FraWo Funk</div>
+              <div class="hero-artist" id="radio-hero-artist">Studio & Wohnzimmer Stream</div>
+              <div class="hero-album" id="radio-hero-album">Station 1 · AzuraCast</div>
+            </div>
+
+            <!-- Timeline & Progress -->
+            <div class="timeline-block">
+              <div class="timeline-bar-bg">
+                <div class="timeline-bar-fill" id="radio-progress-fill"></div>
+              </div>
+              <div class="timeline-labels">
+                <span id="radio-time-elapsed">00:00</span>
+                <span class="timeline-countdown" id="radio-time-remaining">⏳ Syncing...</span>
+                <span id="radio-time-duration">00:00</span>
+              </div>
+            </div>
+
+            <!-- Animated Stereo VU Meter -->
+            <div class="vu-meter-box">
+              <div class="vu-channel">
+                <span>L</span>
+                <div class="vu-bar-bg"><div class="vu-bar-active" id="vu-l"></div></div>
+                <span style="font-size:9.5px; color:#475569;">-3 dB</span>
+              </div>
+              <div class="vu-channel">
+                <span>R</span>
+                <div class="vu-bar-bg"><div class="vu-bar-active" id="vu-r"></div></div>
+                <span style="font-size:9.5px; color:#475569;">-3 dB</span>
+              </div>
+            </div>
+
+            <!-- Hero Touch Controls -->
+            <div class="hero-controls">
+              <button class="btn-hero btn-hero-monitor" id="btn-monitor" onclick="toggleRadioMonitor()">
+                ▶️ MONITOR AN
+              </button>
+              <button class="btn-hero btn-hero-skip" onclick="radioSkipTrack()">
+                ⏭️ SKIP TRACK
+              </button>
+              <button class="btn-hero btn-hero-jingle" onclick="radioDropStationID()">
+                🎙️ STATION ID
+              </button>
+              <button class="btn-hero btn-hero-vote" onclick="radioVoteTrack('love')">
+                💖 LOVE
+              </button>
+            </div>
+          </div>
         </div>
+
+        <audio id="audio-stream" preload="none" src="https://funk.frawo.tech/listen/frawo_funk/radio.mp3"></audio>
+
+        <!-- 3. Live Queue & History Feed -->
+        <div class="flow-grid">
+          <div class="flow-card">
+            <div class="flow-header">
+              <span>⏭️ Als Nächstes (AutoDJ Queue)</span>
+              <span style="font-size:12px; color:#38bdf8; font-weight:600;" id="queue-count">0 Titel</span>
+            </div>
+            <ul class="flow-list" id="radio-queue-list">
+              <li style="color:#64748b; font-size:13px; text-align:center; padding:12px;">Lade Warteschlange...</li>
+            </ul>
+          </div>
+
+          <div class="flow-card">
+            <div class="flow-header">
+              <span>⏮️ Zuletzt Gespielt (Sende-History)</span>
+              <span style="font-size:12px; color:#94a3b8; font-weight:600;">Letzte 5 Tracks</span>
+            </div>
+            <ul class="flow-list" id="radio-history-list">
+              <li style="color:#64748b; font-size:13px; text-align:center; padding:12px;">Lade Sende-Verlauf...</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 4. Program Director & Preset Matrix -->
+        <div class="director-card">
+          <div class="flow-header">
+            <span>🎚️ Program Director & Sende-Presets</span>
+            <span style="font-size:12px; color:#10b981; font-weight:700;" id="preset-status-label">⚖️ Balanced</span>
+          </div>
+
+          <!-- Quick Presets -->
+          <div class="preset-bar">
+            <button class="btn-preset" onclick="radioApplyPreset('daytime')">☕ Daytime & Lunch (Flow)</button>
+            <button class="btn-preset" onclick="radioApplyPreset('sunset')">🌴 Sunset Lounge & Warmup</button>
+            <button class="btn-preset" onclick="radioApplyPreset('rave')">🚀 Peak Time Club & Rave</button>
+            <button class="btn-preset" onclick="radioApplyPreset('night')">🌙 Deep Night & Minimal</button>
+            <button class="btn-preset" onclick="radioApplyPreset('balanced')">⚖️ Standard Rotation</button>
+          </div>
+
+          <!-- 21 Playlist Sliders -->
+          <div style="font-size:13px; font-weight:700; color:#94a3b8; margin-top:6px;">
+            Sende-Rotationen & Gewichtungen (1 = selten · 25 = Maximale Rotation):
+          </div>
+          <div class="playlist-grid" id="radio-playlists-grid">
+            <div style="color:#64748b; font-size:13px; padding:10px;">Lade Playlisten...</div>
+          </div>
+        </div>
+
+        <!-- 5. Soundboard & Request Terminal -->
+        <div class="flow-grid">
+          <div class="flow-card">
+            <div class="flow-header">
+              <span>🎙️ Jingle Soundboard & Drops</span>
+              <span style="font-size:11.5px; color:#7c3aed; font-weight:700;">Live Dropper</span>
+            </div>
+            <div class="soundboard-grid">
+              <button class="btn-jingle" onclick="radioDropStationID()">
+                <span style="font-size:20px;">📻</span>
+                <span>FraWo Station ID</span>
+              </button>
+              <button class="btn-jingle" onclick="radioDropJingle('drop_sweeper')">
+                <span style="font-size:20px;">⚡</span>
+                <span>Studio Sweeper</span>
+              </button>
+              <button class="btn-jingle" onclick="radioDropJingle('drop_deep')">
+                <span style="font-size:20px;">🔊</span>
+                <span>Bass Dropper</span>
+              </button>
+              <button class="btn-jingle" onclick="radioDropJingle('drop_transit')">
+                <span style="font-size:20px;">✨</span>
+                <span>Vibe Transition</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="flow-card">
+            <div class="flow-header">
+              <span>🔍 Song-Wunsch & Library Finder</span>
+              <span style="font-size:11.5px; color:#0284c7; font-weight:700;">15.000+ Tracks</span>
+            </div>
+            <div class="search-terminal-box">
+              <div class="search-input-row">
+                <input type="text" class="search-input" id="radio-search-box" placeholder="Interpret, Titel oder Genre..." oninput="handleRadioSearch(this.value)">
+              </div>
+              <div class="search-results-list" id="radio-search-results">
+                <div style="color:#64748b; font-size:12.5px; padding:8px; text-align:center;">Suchbegriff eingeben um Titel einzureihen.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -1568,6 +2316,12 @@
       </div>
 
       <div class="grid-3">
+        <a href="http://10.1.0.227:8080" target="_blank" class="app-tile" style="border-color: #8b5cf6; background: linear-gradient(145deg, rgba(139,92,246,0.1), rgba(30,41,59,0.7));">
+          <div class="app-icon">🧠</div>
+          <div class="app-name">FraWo KI (Open WebUI)</div>
+          <div class="app-desc">Ollama Chat, Web-Recherche & RAG</div>
+        </a>
+
         <a href="https://frawo.tech/odoo" class="app-tile">
           <div class="app-icon">📋</div>
           <div class="app-name">Odoo ERP</div>
@@ -2130,6 +2884,87 @@
       });
     }
 
+    let lastResearchSummary = '';
+
+    // Live Web Research with DuckDuckGo + Ollama
+    function researchWithWeb() {
+      const statusEl = document.getElementById('q-modal-status');
+      const webBtn = document.getElementById('q-web-btn');
+      const answerVal = document.getElementById('q-modal-answer').value.trim();
+      
+      let query = answerVal || currentQuestionText || currentQuestionTitle;
+      query = query.replace(/[⚠️❓🤖🚀✅✨]/g, '').trim();
+      
+      if (!query) {
+        statusEl.textContent = '⚠️ Bitte ein Stichwort für die Web-Recherche eingeben.';
+        statusEl.style.color = '#f59e0b';
+        return;
+      }
+
+      webBtn.disabled = true;
+      webBtn.innerHTML = '⏳ <span>Recherchiere...</span>';
+      statusEl.textContent = `🌐 Durchsuche Web nach: "${query.substring(0, 35)}..." (DuckDuckGo + Ollama)...`;
+      statusEl.style.color = '#38bdf8';
+
+      fetch('/api/web/research', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          query: query,
+          title: currentQuestionTitle,
+          task_id: currentQuestionTaskId
+        })
+      })
+      .then(r => r.json())
+      .then(res => {
+        webBtn.disabled = false;
+        webBtn.innerHTML = '🌐 <span>Web-Recherche</span>';
+        if (res.success && res.summary) {
+          lastResearchSummary = res.summary;
+          const container = document.getElementById('q-research-container');
+          const summaryEl = document.getElementById('q-research-summary');
+          const sourcesEl = document.getElementById('q-research-sources');
+
+          summaryEl.textContent = res.summary;
+          
+          if (res.results && res.results.length > 0) {
+            sourcesEl.innerHTML = '<b>Quellen:</b> ' + res.results.map(r => 
+              `<a href="${escapeHtml(r.url)}" target="_blank" rel="noopener" style="color:#38bdf8; text-decoration:underline; margin-right:8px;">${escapeHtml(r.title.substring(0, 30))}...</a>`
+            ).join('');
+          } else {
+            sourcesEl.innerHTML = '';
+          }
+
+          container.style.display = 'block';
+          statusEl.textContent = '✅ Web-Recherche abgeschlossen! Klicke auf "In Antwort einfügen".';
+          statusEl.style.color = '#10b981';
+        } else {
+          statusEl.textContent = '⚠️ ' + (res.error || 'Keine relevanten Web-Ergebnisse gefunden.');
+          statusEl.style.color = '#f59e0b';
+        }
+      })
+      .catch(err => {
+        webBtn.disabled = false;
+        webBtn.innerHTML = '🌐 <span>Web-Recherche</span>';
+        statusEl.textContent = '⚠️ Web-Recherche fehlgeschlagen: ' + err;
+        statusEl.style.color = '#ef4444';
+      });
+    }
+
+    function insertResearchIntoAnswer() {
+      if (!lastResearchSummary) return;
+      const answerArea = document.getElementById('q-modal-answer');
+      if (answerArea.value.trim()) {
+        answerArea.value += '\n\n' + lastResearchSummary;
+      } else {
+        answerArea.value = lastResearchSummary;
+      }
+      const statusEl = document.getElementById('q-modal-status');
+      statusEl.textContent = '📋 Recherche-Ergebnis in Antwortfeld eingefügt.';
+      statusEl.style.color = '#10b981';
+      answerArea.focus();
+    }
+
     function json_payload(obj) {
       return JSON.stringify(obj);
     }
@@ -2356,7 +3191,425 @@
     // Initialize Lock UI on load
     updateLockPillUI();
 
-</script>
+
+    // ==========================================
+    // PRO AZURACAST BROADCAST DASHBOARD LOGIC
+    // ==========================================
+    let radioNowPlayingData = null;
+    let radioElapsedSeconds = 0;
+    let radioDurationSeconds = 0;
+    let radioProgressTimer = null;
+    let radioVuTimer = null;
+    let radioIsMonitoring = false;
+    let radioSearchDebounce = null;
+
+    function formatTimeMmSs(sec) {
+      if (!sec || isNaN(sec) || sec < 0) return '00:00';
+      const m = Math.floor(sec / 60);
+      const s = Math.floor(sec % 60);
+      return (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+    }
+
+    function toggleRadioMonitor() {
+      const audio = document.getElementById('audio-stream');
+      const btn = document.getElementById('btn-monitor');
+      const art = document.getElementById('radio-hero-art');
+      if (!radioIsMonitoring) {
+        audio.play().then(() => {
+          radioIsMonitoring = true;
+          btn.innerHTML = '⏹️ MONITOR STOPPEN';
+          btn.classList.add('active');
+          if (art) art.classList.add('playing');
+        }).catch(err => {
+          console.warn('Playback error:', err);
+          alert('Hinweis: Audio-Wiedergabe erfordert Klick-Interaktion im Browser.');
+        });
+      } else {
+        audio.pause();
+        radioIsMonitoring = false;
+        btn.innerHTML = '▶️ MONITOR AN';
+        btn.classList.remove('active');
+        if (art) art.classList.remove('playing');
+      }
+    }
+
+    function fetchRadioNowPlaying() {
+      fetch('/api/radio/nowplaying')
+        .then(r => r.json())
+        .then(data => {
+          radioNowPlayingData = data;
+          updateRadioHero(data);
+        })
+        .catch(err => {
+          console.warn('Radio nowplaying fetch error:', err);
+        });
+    }
+
+    function updateRadioHero(data) {
+      if (!data) return;
+      const np = data.now_playing || {};
+      const song = np.song || {};
+      const listeners = (data.listeners && data.listeners.current !== undefined) ? data.listeners.current : 0;
+      
+      const hudL = document.getElementById('hud-listeners');
+      if (hudL) hudL.textContent = listeners;
+
+      const titleEl = document.getElementById('radio-hero-title');
+      const artistEl = document.getElementById('radio-hero-artist');
+      const albumEl = document.getElementById('radio-hero-album');
+      const playlistEl = document.getElementById('radio-hero-playlist');
+      const genreEl = document.getElementById('radio-genre-tag');
+      const artEl = document.getElementById('radio-hero-art');
+
+      if (titleEl) titleEl.textContent = song.title || 'FraWo Funk';
+      if (artistEl) artistEl.textContent = song.artist || 'Station 1';
+      if (albumEl) albumEl.textContent = (song.album ? song.album : 'AzuraCast 24/7 Live Stream');
+      if (playlistEl) playlistEl.textContent = (np.playlist ? np.playlist : 'AutoDJ Rotation');
+      if (genreEl) genreEl.textContent = (song.genre ? `${song.genre} · FraWo Funk` : 'FraWo Funk · 24/7 High Quality Audio');
+
+      if (artEl && song.art) {
+        const cleanArt = song.art.replace('http://10.1.0.38', 'https://funk.frawo.tech').replace('https://10.1.0.38', 'https://funk.frawo.tech');
+        if (artEl.src !== cleanArt) {
+          artEl.src = cleanArt;
+        }
+      }
+
+      radioDurationSeconds = parseInt(np.duration || song.duration || 0);
+      radioElapsedSeconds = parseInt(np.elapsed || 0);
+      updateRadioTimelineUI();
+    }
+
+    function updateRadioTimelineUI() {
+      const fillEl = document.getElementById('radio-progress-fill');
+      const elEl = document.getElementById('radio-time-elapsed');
+      const durEl = document.getElementById('radio-time-duration');
+      const remEl = document.getElementById('radio-time-remaining');
+
+      if (elEl) elEl.textContent = formatTimeMmSs(radioElapsedSeconds);
+      if (durEl) durEl.textContent = formatTimeMmSs(radioDurationSeconds);
+
+      if (radioDurationSeconds > 0) {
+        const pct = Math.min(100, Math.max(0, (radioElapsedSeconds / radioDurationSeconds) * 100));
+        if (fillEl) fillEl.style.width = pct + '%';
+        const rem = Math.max(0, radioDurationSeconds - radioElapsedSeconds);
+        if (remEl) remEl.textContent = `⏳ noch ${formatTimeMmSs(rem)} min`;
+      } else {
+        if (fillEl) fillEl.style.width = '100%';
+        if (remEl) remEl.textContent = '🔴 LIVE';
+      }
+    }
+
+    function fetchRadioQueue() {
+      fetch('/api/radio/queue')
+        .then(r => r.json())
+        .then(data => {
+          const list = document.getElementById('radio-queue-list');
+          const countEl = document.getElementById('queue-count');
+          if (!list) return;
+          const queue = data.queue || [];
+          if (countEl) countEl.textContent = `${queue.length} Titel`;
+          if (!queue.length) {
+            list.innerHTML = '<li style="color:#64748b; font-size:12.5px; text-align:center; padding:10px;">Keine anstehenden Titel in der Warteschlange.</li>';
+            return;
+          }
+          let html = '';
+          queue.forEach(item => {
+            const art = item.art || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 24 24' fill='none' stroke='%2338bdf8' stroke-width='1.5'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3C/svg%3E";
+            const pl = item.playlist || 'AutoDJ';
+            html += `
+              <li class="flow-item">
+                <img class="flow-thumb" src="${art}" alt="Art">
+                <div class="flow-info">
+                  <div class="flow-song-title">${item.title}</div>
+                  <div class="flow-song-artist">${item.artist} · ${formatTimeMmSs(item.duration)}</div>
+                </div>
+                <span class="flow-tag">${pl}</span>
+              </li>
+            `;
+          });
+          list.innerHTML = html;
+        })
+        .catch(err => {
+          console.warn('Queue fetch error:', err);
+        });
+    }
+
+    function fetchRadioHistory() {
+      fetch('/api/radio/history')
+        .then(r => r.json())
+        .then(data => {
+          const list = document.getElementById('radio-history-list');
+          if (!list) return;
+          const history = data.history || [];
+          if (!history.length) {
+            list.innerHTML = '<li style="color:#64748b; font-size:12.5px; text-align:center; padding:10px;">Keine Historie vorhanden.</li>';
+            return;
+          }
+          let html = '';
+          history.slice(0, 5).forEach(item => {
+            const art = item.art || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 24 24' fill='none' stroke='%2338bdf8' stroke-width='1.5'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3C/svg%3E";
+            const pl = item.playlist || 'AutoDJ';
+            html += `
+              <li class="flow-item">
+                <img class="flow-thumb" src="${art}" alt="Art">
+                <div class="flow-info">
+                  <div class="flow-song-title">${item.title}</div>
+                  <div class="flow-song-artist">${item.artist}</div>
+                </div>
+                <span class="flow-tag" style="background:rgba(255,255,255,0.06); color:#94a3b8;">${pl}</span>
+              </li>
+            `;
+          });
+          list.innerHTML = html;
+        })
+        .catch(err => {
+          console.warn('History fetch error:', err);
+        });
+    }
+
+    function fetchRadioPlaylists() {
+      fetch('/api/radio/playlists')
+        .then(r => r.json())
+        .then(data => {
+          const grid = document.getElementById('radio-playlists-grid');
+          if (!grid) return;
+          const pls = data.playlists || [];
+          if (!pls.length) {
+            grid.innerHTML = '<div style="color:#64748b; padding:10px;">Keine Playlisten gefunden.</div>';
+            return;
+          }
+          let html = '';
+          pls.forEach(p => {
+            const isDis = !p.is_enabled;
+            html += `
+              <div class="pl-card ${isDis ? 'disabled' : ''}" id="pl-card-${p.id}">
+                <div class="pl-top">
+                  <span class="pl-name" title="${p.name}">${p.name}</span>
+                  <button class="pl-toggle" onclick="togglePlaylistActive(${p.id}, ${!p.is_enabled})">
+                    ${p.is_enabled ? '🟢' : '⚪'}
+                  </button>
+                </div>
+                <div class="pl-bottom">
+                  <div class="pl-slider-box">
+                    <span>W:</span>
+                    <input type="range" class="pl-slider" min="1" max="25" value="${p.weight}" 
+                           onchange="updatePlaylistWeight(${p.id}, this.value)"
+                           oninput="document.getElementById('pl-weight-val-${p.id}').textContent = this.value">
+                    <span class="pl-weight-badge" id="pl-weight-val-${p.id}">${p.weight}</span>
+                  </div>
+                  <span>${p.num_songs || 0} Songs</span>
+                </div>
+              </div>
+            `;
+          });
+          grid.innerHTML = html;
+        })
+        .catch(err => {
+          console.warn('Playlists fetch error:', err);
+        });
+    }
+
+    function radioSkipTrack() {
+      if (!confirm('Aktuellen Song wirklich überspringen?')) return;
+      fetch('/api/radio/skip', { method: 'POST' })
+        .then(r => r.json())
+        .then(res => {
+          setTimeout(() => {
+            radioRefreshDashboard();
+          }, 800);
+        })
+        .catch(err => {
+          alert('Fehler beim Überspringen: ' + err);
+        });
+    }
+
+    function radioVoteTrack(vtype) {
+      if (!radioNowPlayingData || !radioNowPlayingData.now_playing || !radioNowPlayingData.now_playing.song) return;
+      const songId = radioNowPlayingData.now_playing.song.id;
+      fetch('/radio/vote', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ params: { song_id: songId, vote_type: vtype } })
+      }).then(() => {
+        alert(vtype === 'love' ? '💖 Vote erfasst! Vielen Dank.' : 'Vote erfasst.');
+      }).catch(e => console.warn(e));
+    }
+
+    function radioDropStationID() {
+      fetch('/api/radio/search?query=Station+ID')
+        .then(r => r.json())
+        .then(data => {
+          const tracks = data.tracks || [];
+          if (tracks.length > 0) {
+            radioRequestTrack(tracks[0].request_id, 'FraWo Station ID');
+          } else {
+            alert('Kein Station ID Jingle gefunden.');
+          }
+        })
+        .catch(e => console.warn(e));
+    }
+
+    function radioDropJingle(jingleName) {
+      fetch('/api/radio/search?query=' + encodeURIComponent(jingleName))
+        .then(r => r.json())
+        .then(data => {
+          const tracks = data.tracks || [];
+          if (tracks.length > 0) {
+            radioRequestTrack(tracks[0].request_id, jingleName);
+          } else {
+            alert('Jingle wird als Queue Drop vorgemerkt.');
+          }
+        })
+        .catch(e => console.warn(e));
+    }
+
+    function radioRequestTrack(reqId, title) {
+      fetch('/api/radio/request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ request_id: reqId })
+      })
+      .then(r => r.json())
+      .then(res => {
+        alert(res.message || `Track "${title || ''}" eingereiht!`);
+        fetchRadioQueue();
+      })
+      .catch(err => {
+        alert('Fehler beim Einreihen: ' + err);
+      });
+    }
+
+    function handleRadioSearch(q) {
+      clearTimeout(radioSearchDebounce);
+      const resContainer = document.getElementById('radio-search-results');
+      if (!q || q.trim().length < 2) {
+        if (resContainer) resContainer.innerHTML = '<div style="color:#64748b; font-size:12.5px; padding:8px; text-align:center;">Suchbegriff eingeben um Titel einzureihen.</div>';
+        return;
+      }
+      radioSearchDebounce = setTimeout(() => {
+        fetch('/api/radio/search?query=' + encodeURIComponent(q.trim()))
+          .then(r => r.json())
+          .then(data => {
+            if (!resContainer) return;
+            const tracks = data.tracks || [];
+            if (!tracks.length) {
+              resContainer.innerHTML = '<div style="color:#64748b; font-size:12.5px; padding:8px; text-align:center;">Keine Titel gefunden.</div>';
+              return;
+            }
+            let html = '';
+            tracks.slice(0, 8).forEach(t => {
+              html += `
+                <div class="search-result-item">
+                  <div style="min-width:0; flex:1;">
+                    <div style="font-size:13px; font-weight:700; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${t.title}</div>
+                    <div style="font-size:11.5px; color:#94a3b8; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${t.artist}</div>
+                  </div>
+                  <button class="btn-request" onclick="radioRequestTrack('${t.request_id}', '${t.title.replace(/'/g, "\'")}')">+ Einreihen</button>
+                </div>
+              `;
+            });
+            resContainer.innerHTML = html;
+          })
+          .catch(err => {
+            console.warn('Search error:', err);
+          });
+      }, 300);
+    }
+
+    function togglePlaylistActive(plId, enable) {
+      fetch('/api/radio/playlist/update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: plId, is_enabled: enable })
+      })
+      .then(r => r.json())
+      .then(res => {
+        fetchRadioPlaylists();
+      })
+      .catch(err => alert('Fehler beim Aktualisieren: ' + err));
+    }
+
+    function updatePlaylistWeight(plId, weight) {
+      fetch('/api/radio/playlist/update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: plId, weight: parseInt(weight) })
+      })
+      .catch(err => console.warn('Weight update error:', err));
+    }
+
+    function radioApplyPreset(presetName) {
+      const lbl = document.getElementById('preset-status-label');
+      if (lbl) lbl.textContent = '⏳ Wende an...';
+      fetch('/api/radio/preset/apply', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ preset: presetName })
+      })
+      .then(r => r.json())
+      .then(res => {
+        if (lbl) lbl.textContent = `✅ ${presetName.toUpperCase()} Aktiv`;
+        fetchRadioPlaylists();
+      })
+      .catch(err => {
+        if (lbl) lbl.textContent = '❌ Fehler';
+        alert('Preset Fehler: ' + err);
+      });
+    }
+
+    function radioRestartAutoDJ() {
+      if (!confirm('LiquidSoap AutoDJ Backend wirklich neu starten? (Kurzer Stream-Reload)')) return;
+      fetch('/api/radio/restart', { method: 'POST' })
+        .then(r => r.json())
+        .then(res => {
+          alert(res.message || 'AutoDJ erfolgreich neu gestartet!');
+          setTimeout(radioRefreshDashboard, 2000);
+        })
+        .catch(err => alert('Fehler beim Neustart: ' + err));
+    }
+
+    function radioRefreshDashboard() {
+      fetchRadioNowPlaying();
+      fetchRadioQueue();
+      fetchRadioHistory();
+      fetchRadioPlaylists();
+    }
+
+    function startRadioTimers() {
+      // 1. Second tick for live progress bar
+      if (radioProgressTimer) clearInterval(radioProgressTimer);
+      radioProgressTimer = setInterval(() => {
+        if (radioDurationSeconds > 0 && radioElapsedSeconds < radioDurationSeconds) {
+          radioElapsedSeconds++;
+          updateRadioTimelineUI();
+        }
+      }, 1000);
+
+      // 2. VU meter animation simulator
+      if (radioVuTimer) clearInterval(radioVuTimer);
+      radioVuTimer = setInterval(() => {
+        const vuL = document.getElementById('vu-l');
+        const vuR = document.getElementById('vu-r');
+        if (vuL && vuR) {
+          // Dynamic lively peak levels
+          const base = radioIsMonitoring ? 70 : 50;
+          const rndL = Math.min(95, Math.max(15, base + (Math.random() * 30 - 15)));
+          const rndR = Math.min(95, Math.max(15, base + (Math.random() * 30 - 15)));
+          vuL.style.width = rndL + '%';
+          vuR.style.width = rndR + '%';
+        }
+      }, 120);
+
+      // 3. Periodic API polling (every 6s)
+      setInterval(fetchRadioNowPlaying, 6000);
+      setInterval(fetchRadioQueue, 15000);
+    }
+
+    // Initialize Radio Dashboard
+    radioRefreshDashboard();
+    startRadioTimers();
+
+  </script>
 
   <!-- PIN MODAL FOR ADMIN UNLOCK -->
   <div id="pinModal" class="pin-modal-overlay" onclick="handleModalBackdrop(event)">
@@ -2415,17 +3668,34 @@
       </div>
 
       <div class="q-actions-bar">
-        <div style="display:flex; gap:8px;">
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
           <button class="q-tool-btn" id="q-speech-btn" onclick="toggleSpeechRecognition()" title="Spracheingabe">
             🎤 <span>Sprechen</span>
           </button>
           <button class="q-tool-btn" id="q-ollama-btn" onclick="refineWithOllama()" title="Mit lokalem LLM (OptiPlex) formulieren">
             ✨ <span>Mit KI glätten</span>
           </button>
+          <button class="q-tool-btn" id="q-web-btn" onclick="researchWithWeb()" title="Aktuelle Web-Informationen & Preise recherchieren">
+            🌐 <span>Web-Recherche</span>
+          </button>
         </div>
         <button class="q-submit-btn" id="q-submit-btn" onclick="submitAnswer()">
           🚀 <span>Antwort senden</span>
         </button>
+      </div>
+
+      <!-- Live Web Research Results Box -->
+      <div id="q-research-container" style="display:none; margin-top:14px; background:rgba(30,41,59,0.7); border:1px solid rgba(56,189,248,0.3); border-radius:8px; padding:12px; font-size:13px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <div style="font-weight:700; color:#38bdf8; display:flex; align-items:center; gap:6px;">
+            <span>🌐 Web-Recherche (DuckDuckGo + Ollama):</span>
+          </div>
+          <button onclick="insertResearchIntoAnswer()" style="background:#0284c7; color:#fff; border:none; border-radius:6px; padding:4px 10px; font-size:11px; font-weight:600; cursor:pointer;">
+            📋 In Antwort einfügen
+          </button>
+        </div>
+        <div id="q-research-summary" style="color:#e2e8f0; line-height:1.5; margin-bottom:8px;"></div>
+        <div id="q-research-sources" style="font-size:11px; color:#94a3b8; border-top:1px solid rgba(255,255,255,0.1); padding-top:6px;"></div>
       </div>
 
       <div class="q-status-msg" id="q-modal-status"></div>

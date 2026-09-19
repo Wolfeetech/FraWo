@@ -321,161 +321,6 @@
     text-align: center;
   }
 
-  /* Radio Playlists & Search */
-  .playlists-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 14px;
-  }
-  .playlist-card {
-    background: rgba(15, 23, 42, 0.65);
-    border: 1px solid #334155;
-    border-radius: 12px;
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    transition: all 0.2s ease;
-  }
-  .playlist-card.pl-active {
-    border-color: rgba(16, 185, 129, 0.4);
-  }
-  .playlist-card.pl-paused {
-    opacity: 0.55;
-    border-color: #1e293b;
-  }
-  .pl-name {
-    font-size: 15px;
-    font-weight: 600;
-    color: #fff;
-    margin-bottom: 4px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .pl-desc {
-    font-size: 12px;
-    color: var(--text-dim);
-    line-height: 1.4;
-  }
-  .btn-pl-status {
-    font-size: 12px;
-    padding: 6px 12px;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    font-weight: 600;
-    white-space: nowrap;
-  }
-  .btn-pl-status.active {
-    background: rgba(16, 185, 129, 0.2);
-    color: #10b981;
-    border: 1px solid #10b981;
-  }
-  .btn-pl-status.paused {
-    background: rgba(148, 163, 184, 0.1);
-    color: #94a3b8;
-    border: 1px solid #475569;
-  }
-  .pl-controls-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 14px;
-    padding-top: 12px;
-    border-top: 1px solid rgba(255,255,255,0.06);
-  }
-  .pl-weight-label {
-    font-size: 13px;
-    color: var(--text-dim);
-  }
-  .pl-weight-val {
-    font-weight: 700;
-    color: #38bdf8;
-    font-size: 14px;
-  }
-  .pl-weight-btns {
-    display: flex;
-    gap: 6px;
-    align-items: center;
-  }
-  .btn-weight-adj {
-    background: #1e293b;
-    color: #fff;
-    border: 1px solid #334155;
-    border-radius: 6px;
-    padding: 6px 10px;
-    font-size: 12px;
-    cursor: pointer;
-  }
-  .btn-weight-adj:active {
-    background: #334155;
-    transform: scale(0.95);
-  }
-  .btn-weight-quick {
-    background: #334155;
-    color: #f8fafc;
-    border: 1px solid #475569;
-    border-radius: 6px;
-    padding: 6px 10px;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-  }
-  .btn-weight-quick.boosted {
-    background: rgba(245, 158, 11, 0.25);
-    color: #f59e0b;
-    border-color: #f59e0b;
-  }
-  .search-track-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 10px 14px;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-  }
-  .search-track-row:last-child {
-    border-bottom: none;
-  }
-  .search-track-cover {
-    width: 44px;
-    height: 44px;
-    border-radius: 8px;
-    object-fit: cover;
-    border: 1px solid #334155;
-    background: #000;
-  }
-  .search-track-title {
-    font-size: 14px;
-    font-weight: 600;
-    color: #fff;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .search-track-artist {
-    font-size: 12px;
-    color: var(--text-dim);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .btn-request {
-    font-size: 12px;
-    padding: 8px 14px;
-    background: #0284c7;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 600;
-    white-space: nowrap;
-  }
-  .btn-request:active {
-    background: #0369a1;
-    transform: scale(0.95);
-  }
-
   /* ========================================= */
   /* AMBIENT GLANCEABLE OVERLAY (LEERLAUF)     */
   /* ========================================= */
@@ -793,6 +638,1147 @@
   }
   .admin-lock-now-btn:active { background: #dc2626; }
 
+  /* ODOO LOGIN PILL */
+  .login-pill {
+    background: #1e293b;
+    border: 1px solid #475569;
+    color: #f1f5f9;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+  .login-pill:active { transform: scale(0.96); }
+  .login-pill:hover { border-color: #38bdf8; color: #38bdf8; box-shadow: 0 0 10px rgba(56, 189, 248, 0.25); }
+
+  /* HUB SELECTOR BAR */
+  .hub-bar {
+    background: #0f172a;
+    border-bottom: 2px solid var(--card-border);
+    padding: 8px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+    z-index: 9;
+  }
+  .hub-tabs {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+  }
+  .hub-tab {
+    background: #1e293b;
+    border: 1px solid #334155;
+    color: var(--text-dim);
+    padding: 8px 14px;
+    border-radius: 12px;
+    font-size: 13.5px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+  }
+  .hub-tab:active { transform: scale(0.97); }
+  .hub-tab.active {
+    background: rgba(56, 189, 248, 0.18);
+    border-color: #38bdf8;
+    color: #38bdf8;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
+  }
+  .q-badge-btn {
+    background: rgba(245, 158, 11, 0.15);
+    border: 1px solid #f59e0b;
+    color: #f59e0b;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s ease;
+    animation: pulseWarn 2.5s infinite ease-in-out;
+  }
+  @keyframes pulseWarn {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.03); }
+  }
+  .q-badge-btn:active { transform: scale(0.96); }
+
+  /* COCKPIT FILTER BAR (WIP / IN BEARBEITUNG) */
+  .cockpit-filter-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    padding: 10px 16px;
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 16px;
+    gap: 12px;
+  }
+  .filter-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-dim);
+    letter-spacing: 0.3px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .filter-buttons {
+    display: flex;
+    gap: 8px;
+  }
+  .filter-pill {
+    background: #0f172a;
+    border: 1px solid #334155;
+    color: var(--text-dim);
+    padding: 7px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s ease;
+  }
+  .filter-pill:active { transform: scale(0.96); }
+  .filter-pill.active {
+    background: var(--primary);
+    color: #0b1120;
+    border-color: var(--primary);
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+  }
+
+  /* QUESTION MODAL */
+  .question-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(11, 17, 32, 0.9);
+    backdrop-filter: blur(12px);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+  .question-modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .question-dialog {
+    background: #0f172a;
+    border: 2px solid #f59e0b;
+    border-radius: 22px;
+    padding: 24px 28px;
+    width: 620px;
+    max-width: 94vw;
+    max-height: 92vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.7), 0 0 25px rgba(245, 158, 11, 0.25);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .q-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .q-title {
+    font-size: 18px;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.3;
+  }
+  .q-proj {
+    font-size: 12px;
+    color: var(--primary);
+    font-weight: 700;
+    margin-top: 4px;
+  }
+  .q-close-btn {
+    background: #1e293b;
+    border: 1px solid #334155;
+    color: var(--text-dim);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .q-close-btn:active { background: #334155; }
+  .q-box {
+    background: rgba(245, 158, 11, 0.08);
+    border: 1px solid rgba(245, 158, 11, 0.35);
+    border-radius: 14px;
+    padding: 14px 16px;
+    color: #f1f5f9;
+    font-size: 14.5px;
+    line-height: 1.5;
+  }
+  .q-box-label {
+    font-size: 11px;
+    font-weight: 800;
+    color: #f59e0b;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+  }
+  .q-textarea {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 14px;
+    padding: 14px;
+    color: #fff;
+    font-size: 15px;
+    font-family: inherit;
+    resize: vertical;
+    min-height: 110px;
+    outline: none;
+    transition: border-color 0.15s;
+    width: 100%;
+  }
+  .q-textarea:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 8px rgba(56, 189, 248, 0.25);
+  }
+  .q-actions-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .q-tool-btn {
+    background: #334155;
+    border: 1px solid #475569;
+    color: #f1f5f9;
+    padding: 9px 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s;
+  }
+  .q-tool-btn:active { background: #475569; }
+  .q-tool-btn.listening {
+    background: #ef4444;
+    border-color: #f87171;
+    color: #fff;
+    animation: micPulse 1s infinite;
+  }
+  @keyframes micPulse {
+    0%, 100% { box-shadow: 0 0 0 rgba(239, 68, 68, 0.4); }
+    50% { box-shadow: 0 0 14px rgba(239, 68, 68, 0.8); }
+  }
+  .q-submit-btn {
+    background: #10b981;
+    border: none;
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.15s;
+  }
+  .q-submit-btn:active { background: #059669; }
+  .q-submit-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .q-status-msg {
+    font-size: 13px;
+    min-height: 18px;
+    font-weight: 600;
+  }
+  .card-question-highlight {
+    border: 2px solid #f59e0b !important;
+    background: linear-gradient(145deg, #242938, #182234) !important;
+    box-shadow: 0 0 16px rgba(245, 158, 11, 0.22) !important;
+  }
+  .q-card-snippet {
+    background: rgba(245, 158, 11, 0.1);
+    border-left: 3px solid #f59e0b;
+    padding: 6px 10px;
+    border-radius: 0 8px 8px 0;
+    font-size: 12.5px;
+    color: #fef08a;
+    margin-top: 8px;
+  }
+  .btn-warning { background: #d97706 !important; }
+  .btn-warning:active { background: #b45309 !important; }
+
+  /* ========================================= */
+  /* RESPONSIVE & MOBILE OPTIMIZATIONS         */
+  /* ========================================= */
+  @media (max-width: 850px) {
+    body {
+      height: 100dvh;
+      min-height: 100vh;
+      overflow-y: auto;
+    }
+
+    header {
+      padding: 8px 12px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .brand {
+      gap: 8px;
+    }
+    .brand-logo {
+      font-size: 24px;
+    }
+    .brand-title {
+      font-size: 16px;
+    }
+    .brand-subtitle {
+      font-size: 11px;
+    }
+    .header-right {
+      text-align: right;
+    }
+    .clock {
+      font-size: 18px;
+    }
+    .date-str {
+      font-size: 10px;
+    }
+    .header-center {
+      order: 3;
+      width: 100%;
+      display: flex;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      gap: 6px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .header-center::-webkit-scrollbar { display: none; }
+    .status-pill, .lock-pill, .login-pill, .ambient-btn {
+      padding: 6px 10px;
+      font-size: 11.5px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* GRID TO SINGLE COLUMN: Full width cards for phone readability */
+    .grid-2 {
+      grid-template-columns: 1fr !important;
+      gap: 14px;
+    }
+    .grid-3 {
+      grid-template-columns: repeat(2, 1fr) !important;
+      gap: 12px;
+    }
+
+    main {
+      padding: 12px;
+      gap: 14px;
+      overflow-y: visible;
+    }
+
+    .card {
+      padding: 16px;
+      border-radius: 16px;
+    }
+    .card-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .card-title {
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.35;
+      flex: 1 1 180px;
+    }
+    .badge {
+      font-size: 11px;
+      padding: 4px 8px;
+      white-space: nowrap;
+      align-self: flex-start;
+    }
+    .card-body {
+      font-size: 14.5px;
+      line-height: 1.55;
+      color: #cbd5e1;
+      margin-bottom: 14px;
+    }
+    .card-body b {
+      color: #fff;
+      font-size: 15px;
+    }
+    .q-card-snippet {
+      font-size: 13.5px;
+      padding: 10px 12px;
+      line-height: 1.5;
+      margin-top: 10px;
+      border-radius: 6px;
+    }
+
+    .btn-touch {
+      padding: 14px 16px;
+      font-size: 15px;
+      min-height: 48px;
+      border-radius: 12px;
+    }
+
+    /* HUB TABS: Touch Friendly Scroll */
+    .hub-bar {
+      padding: 8px 10px;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 8px;
+    }
+    .hub-tabs {
+      overflow-x: auto;
+      padding-bottom: 4px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .hub-tabs::-webkit-scrollbar { display: none; }
+    .hub-tab {
+      padding: 9px 14px;
+      font-size: 13.5px;
+      flex-shrink: 0;
+    }
+    .hub-extra {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    /* COCKPIT FILTER BAR */
+    .cockpit-filter-bar {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
+      padding: 12px;
+    }
+    .filter-buttons {
+      display: flex;
+      width: 100%;
+    }
+    .filter-pill {
+      flex: 1;
+      justify-content: center;
+      padding: 8px 10px;
+      font-size: 13px;
+    }
+
+    /* NAVIGATION TABS */
+    .nav-btn {
+      font-size: 12.5px;
+      padding: 10px 4px;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .nav-btn span {
+      font-size: 11px;
+      text-align: center;
+    }
+
+    /* QUESTION MODAL */
+    .question-dialog {
+      width: 95vw;
+      max-width: 95vw;
+      padding: 18px 16px;
+      gap: 14px;
+    }
+    .q-title {
+      font-size: 16px;
+    }
+    .q-box {
+      font-size: 14px;
+      padding: 12px;
+    }
+    .q-textarea {
+      font-size: 16px; /* Prevents auto-zoom in mobile Safari */
+      min-height: 120px;
+      padding: 12px;
+    }
+    .q-actions-bar {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
+    }
+    .q-actions-bar > div {
+      display: flex;
+      gap: 8px;
+      width: 100%;
+    }
+    .q-tool-btn {
+      flex: 1;
+      justify-content: center;
+      padding: 12px 10px;
+      font-size: 13px;
+      min-height: 44px;
+    }
+    .q-submit-btn {
+      width: 100%;
+      justify-content: center;
+      padding: 14px 20px;
+      font-size: 16px;
+      min-height: 48px;
+    }
+
+    /* AMBIENT ON MOBILE */
+    #ambient-overlay {
+      padding: 18px 16px;
+    }
+    .ambient-top {
+      flex-direction: column;
+      gap: 14px;
+    }
+    .amb-clock {
+      font-size: 54px;
+    }
+    .ambient-middle {
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .grid-3 {
+      grid-template-columns: 1fr !important;
+    }
+    .app-tile {
+      padding: 14px 14px;
+      flex-direction: row;
+      justify-content: flex-start;
+      gap: 16px;
+      text-align: left;
+    }
+    .app-tile .app-icon {
+      font-size: 30px;
+      flex-shrink: 0;
+    }
+    .app-tile .app-desc {
+      text-align: left;
+    }
+  }
+
+
+  /* ========================================================= */
+  /* PRO AZURACAST BROADCAST & DEVOPS CONTROL DASHBOARD */
+  /* ========================================================= */
+  .radio-deck-container {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    width: 100%;
+    padding-bottom: 24px;
+  }
+  
+  /* 1. HUD Telemetry Bar */
+  .radio-hud-bar {
+    background: rgba(15, 23, 42, 0.85);
+    border: 1px solid rgba(56, 189, 248, 0.25);
+    backdrop-filter: blur(12px);
+    border-radius: 16px;
+    padding: 12px 18px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+  .hud-vitals {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+  }
+  .hud-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #e2e8f0;
+  }
+  .hud-pill .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #10b981;
+    box-shadow: 0 0 8px #10b981;
+  }
+  .hud-pill .dot-blue { background: #38bdf8; box-shadow: 0 0 8px #38bdf8; }
+  .hud-pill .dot-amber { background: #f59e0b; box-shadow: 0 0 8px #f59e0b; }
+  .hud-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-hud-action {
+    background: #1e293b;
+    border: 1px solid #475569;
+    color: #f1f5f9;
+    padding: 6px 12px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s ease;
+  }
+  .btn-hud-action:hover, .btn-hud-action:active {
+    background: #334155;
+    border-color: #38bdf8;
+    color: #38bdf8;
+    transform: scale(0.97);
+  }
+
+  /* 2. Hero Broadcast Deck */
+  .radio-hero-deck {
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.85), rgba(15, 23, 42, 0.95));
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    border-radius: 20px;
+    padding: 22px;
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 22px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-art-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+  .art-wrapper {
+    width: 210px;
+    height: 210px;
+    border-radius: 16px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.6);
+    border: 2px solid rgba(255,255,255,0.1);
+    background: #0f172a;
+  }
+  .art-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+  .art-img.playing {
+    transform: scale(1.02);
+  }
+  .art-badge-overlay {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    right: 8px;
+    background: rgba(15, 23, 42, 0.88);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 4px 8px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #38bdf8;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .hero-main-col {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 14px;
+  }
+  .track-meta-block {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .track-meta-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .track-live-tag {
+    background: rgba(239, 68, 68, 0.2);
+    border: 1px solid #ef4444;
+    color: #fca5a5;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    animation: pulseLive 2s infinite;
+  }
+  @keyframes pulseLive {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+  }
+  .track-source-pill {
+    background: rgba(56, 189, 248, 0.15);
+    border: 1px solid rgba(56, 189, 248, 0.4);
+    color: #38bdf8;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11.5px;
+    font-weight: 700;
+  }
+  .hero-title {
+    font-size: 24px;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.25;
+    margin-top: 4px;
+  }
+  .hero-artist {
+    font-size: 17px;
+    font-weight: 600;
+    color: #94a3b8;
+  }
+  .hero-album {
+    font-size: 13px;
+    color: #64748b;
+    margin-top: 1px;
+  }
+
+  /* Progress Timeline */
+  .timeline-block {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: 4px 0;
+  }
+  .timeline-bar-bg {
+    width: 100%;
+    height: 8px;
+    background: #1e293b;
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid rgba(255,255,255,0.05);
+  }
+  .timeline-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #0284c7, #38bdf8, #10b981);
+    border-radius: 6px;
+    transition: width 0.8s linear;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+  }
+  .timeline-labels {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #cbd5e1;
+    font-variant-numeric: tabular-nums;
+  }
+  .timeline-countdown {
+    color: #38bdf8;
+    font-weight: 700;
+    background: rgba(56, 189, 248, 0.1);
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 11.5px;
+  }
+
+  /* VU Meter Graphic */
+  .vu-meter-box {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 8px 12px;
+  }
+  .vu-channel {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 10.5px;
+    font-weight: 800;
+    color: #64748b;
+  }
+  .vu-bar-bg {
+    flex: 1;
+    height: 7px;
+    background: #0f172a;
+    border-radius: 3px;
+    overflow: hidden;
+    display: flex;
+  }
+  .vu-bar-active {
+    height: 100%;
+    width: 60%;
+    background: linear-gradient(90deg, #10b981 0%, #10b981 65%, #f59e0b 85%, #ef4444 100%);
+    border-radius: 3px;
+    transition: width 0.1s ease-out;
+  }
+
+  /* Master Deck Action Buttons */
+  .hero-controls {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr 0.8fr;
+    gap: 10px;
+  }
+  .btn-hero {
+    border: none;
+    border-radius: 14px;
+    padding: 13px 14px;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.15s ease;
+    user-select: none;
+  }
+  .btn-hero:active {
+    transform: scale(0.96);
+  }
+  .btn-hero-monitor {
+    background: #059669;
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(5, 150, 105, 0.35);
+  }
+  .btn-hero-monitor.active {
+    background: #dc2626;
+    box-shadow: 0 4px 14px rgba(220, 38, 38, 0.35);
+  }
+  .btn-hero-skip {
+    background: #2563eb;
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+  }
+  .btn-hero-jingle {
+    background: #7c3aed;
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(124, 58, 237, 0.35);
+  }
+  .btn-hero-vote {
+    background: #1e293b;
+    border: 1px solid #475569;
+    color: #f1f5f9;
+  }
+  .btn-hero-vote:hover {
+    border-color: #ec4899;
+    color: #ec4899;
+  }
+
+  /* 3. Queue & History Flow */
+  .flow-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .flow-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 18px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  }
+  .flow-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14.5px;
+    font-weight: 800;
+    color: #f8fafc;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    padding-bottom: 8px;
+  }
+  .flow-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    list-style: none;
+    max-height: 260px;
+    overflow-y: auto;
+  }
+  .flow-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 7px 10px;
+  }
+  .flow-thumb {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    object-fit: cover;
+    background: #1e293b;
+    flex-shrink: 0;
+  }
+  .flow-info {
+    flex: 1;
+    min-width: 0;
+  }
+  .flow-song-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .flow-song-artist {
+    font-size: 11.5px;
+    color: #94a3b8;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .flow-tag {
+    font-size: 10px;
+    font-weight: 700;
+    background: rgba(56, 189, 248, 0.15);
+    color: #38bdf8;
+    border-radius: 6px;
+    padding: 2px 6px;
+    flex-shrink: 0;
+  }
+
+  /* 4. Program Director & Presets */
+  .director-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 18px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .preset-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .btn-preset {
+    background: #1e293b;
+    border: 1px solid #334155;
+    color: #f1f5f9;
+    padding: 8px 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s ease;
+  }
+  .btn-preset:active, .btn-preset.active {
+    background: rgba(56, 189, 248, 0.2);
+    border-color: #38bdf8;
+    color: #38bdf8;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+  }
+  
+  .playlist-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 10px;
+    max-height: 360px;
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+  .pl-card {
+    background: rgba(15, 23, 42, 0.65);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .pl-card.disabled {
+    opacity: 0.45;
+  }
+  .pl-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+  }
+  .pl-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .pl-toggle {
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    font-size: 16px;
+  }
+  .pl-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 11.5px;
+    color: #94a3b8;
+  }
+  .pl-slider-box {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+  }
+  .pl-slider {
+    flex: 1;
+    accent-color: #38bdf8;
+    cursor: pointer;
+  }
+  .pl-weight-badge {
+    font-weight: 800;
+    color: #38bdf8;
+    min-width: 22px;
+    text-align: right;
+  }
+
+  /* 5. Soundboard & Track Terminal */
+  .soundboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 10px;
+  }
+  .btn-jingle {
+    background: linear-gradient(135deg, #1e293b, #0f172a);
+    border: 1px solid #7c3aed;
+    color: #e2e8f0;
+    padding: 12px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.15s ease;
+  }
+  .btn-jingle:active {
+    background: #7c3aed;
+    color: #fff;
+    transform: scale(0.96);
+  }
+
+  .search-terminal-box {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .search-input-row {
+    display: flex;
+    gap: 8px;
+  }
+  .search-input {
+    flex: 1;
+    background: #0f172a;
+    border: 1px solid #334155;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 14px;
+    color: #fff;
+    outline: none;
+  }
+  .search-input:focus {
+    border-color: #38bdf8;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+  }
+  .search-results-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 220px;
+    overflow-y: auto;
+  }
+  .search-result-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(15, 23, 42, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 10px;
+    padding: 8px 12px;
+    gap: 10px;
+  }
+  .btn-request {
+    background: #0284c7;
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 6px 12px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .btn-request:active {
+    background: #38bdf8;
+    transform: scale(0.96);
+  }
+
 </style>
 </head>
 <body>
@@ -880,7 +1866,7 @@
     <div class="ambient-banner">
       <div>
         <span class="amb-event-pill">📅 Nächste Einsätze:</span>
-        <span style="color:#fff; margin-left:8px;" id="amb-event-banner-text">🎵 Leichte Liebe Open Air (Bregenz) &nbsp;·&nbsp; 🎶 Closing Wasserburg &nbsp;·&nbsp; ⛸️ Eishalle Presets</span>
+        <span style="color:#fff; margin-left:8px;" id="amb-event-banner-text">🎶 Closing — Wasserburg (26.09.) &nbsp;·&nbsp; 🎃 Halloweenparty — Luki (31.10.)</span>
       </div>
       <div style="font-size:12px; color:var(--text-dim);">Aktualisiert live</div>
     </div>
@@ -917,6 +1903,9 @@
         <span id="lockIcon">🔒</span>
         <span id="lockText">Wohnzimmer</span>
       </button>
+      <a href="https://frawo.tech/frawo/touch/login?redirect=/hub" class="login-pill" id="odooLoginBtn" title="In Odoo als Wolf anmelden (für jeden PC, Tablet oder Smartphone)">
+        <span>🔑</span> <span>Odoo Login</span>
+      </a>
       <button class="ambient-btn" onclick="toggleAmbient(true)" title="Leerlauf-Modus aktivieren">🌙 Ambient</button>
     </div>
     <div class="header-right">
@@ -925,29 +1914,154 @@
     </div>
   </header>
 
+  <!-- HUB SELECTOR BAR -->
+  <div class="hub-bar">
+    <div class="hub-tabs">
+      <button class="hub-tab active" id="hub-btn-anker" onclick="selectHub('anker')">
+        <span>⚓</span> FraWo Anker
+      </button>
+      <button class="hub-tab" id="hub-btn-villa" onclick="selectHub('villa')">
+        <span>🏛️</span> FraWo Villa
+      </button>
+      <button class="hub-tab" id="hub-btn-stockenweiler" onclick="selectHub('stockenweiler')">
+        <span>🏡</span> Prinz Stockenweiler
+      </button>
+      <button class="hub-tab" id="hub-btn-jobs" onclick="selectHub('jobs')">
+        <span>💼</span> Jobs &amp; Events
+      </button>
+    </div>
+    <div class="hub-extra">
+      <button class="q-badge-btn" id="q-counter-btn" onclick="openQuestionsOverview()" style="display:none;">
+        <span class="dot-yellow"></span> <span id="q-counter-text">0 offene Fragen</span>
+      </button>
+    </div>
+  </div>
+
   <!-- TABS -->
   <nav>
-    <button class="nav-btn active" onclick="switchTab('tab-cockpit')">📋 <span>Cockpit & Aufgaben</span></button>
-    <button class="nav-btn" onclick="switchTab('tab-ha')">🏠 <span>Home Assistant</span></button>
-    <button class="nav-btn" onclick="switchTab('tab-wohnzimmer')">📺 <span>Wohnzimmer & TV</span></button>
-    <button class="nav-btn" onclick="switchTab('tab-radio')">📻 <span>Audio & Funk</span></button>
-    <button class="nav-btn" onclick="switchTab('tab-apps')">⚡ <span>FraWo Apps</span></button>
+    <button class="nav-btn active" onclick="switchTab('tab-cockpit')">📋 <span>Cockpit</span></button>
+    <button class="nav-btn" onclick="switchTab('tab-wohnzimmer')">🏠 <span>Wohnzimmer</span></button>
+    <button class="nav-btn" onclick="switchTab('tab-radio')">📻 <span>Radio</span></button>
+    <button class="nav-btn" onclick="switchTab('tab-apps')">⚡ <span>Apps</span></button>
   </nav>
 
   <!-- MAIN VIEWPORT -->
   <main>
 
     <!-- TAB 1: COCKPIT -->
-    <div class="tab-pane active" id="tab-cockpit" style="padding: 0; margin: 0; height: calc(100vh - 120px); flex: 1;">
-      <iframe src="/cockpit" style="width: 100%; height: 100%; min-height: 750px; border: none; border-radius: 12px; background: #0b0f19;"></iframe>
+    <div class="tab-pane active" id="tab-cockpit">
+      <!-- COCKPIT FILTER BAR (WIP / IN BEARBEITUNG) -->
+      <div class="cockpit-filter-bar">
+        <div class="filter-title"><span>⚡</span> Aktuell in Bearbeitung:</div>
+        <div class="filter-buttons">
+          <button class="filter-pill active" id="filter-btn-all" onclick="filterCockpit('all')">
+            <span>⚡</span> Alle
+          </button>
+          <button class="filter-pill" id="filter-btn-franz" onclick="filterCockpit('franz')">
+            <span>🔨</span> Franz
+          </button>
+          <button class="filter-pill" id="filter-btn-wolf" onclick="filterCockpit('wolf')">
+            <span>💼</span> Wolf
+          </button>
+        </div>
+      </div>
+
+      <div class="grid-2" id="cockpit-cards-grid">
+
+        <!-- CARD 1 -->
+        <div class="card">
+          <div>
+            <div class="card-header">
+              <div class="card-title">🔨 Franz — Werkstatt</div>
+              <span class="badge badge-blue">Als Nächstes</span>
+            </div>
+            <div class="card-body">
+              <b>#1406: Werkstatt arbeitsfähig machen</b><br>
+              Festool Führungsschiene &amp; Absaugung beschaffen. PreSonus Messmikrofon &amp; REW vorhanden (0 €).
+            </div>
+          </div>
+          <a href="https://frawo.tech/odoo/project/160/tasks/1406" class="btn-touch">Aufgabe in Odoo öffnen</a>
+        </div>
+
+        <!-- CARD 2 -->
+        <div class="card">
+          <div>
+            <div class="card-header">
+              <div class="card-title">🛒 PSA &amp; Arbeitskleidung</div>
+              <span class="badge badge-green">Größen erfasst</span>
+            </div>
+            <div class="card-body">
+              <b>#1421: Grundausstattung Wolf &amp; Franz</b><br>
+              Schuhgröße <b>42 / 43</b>, Kleidergröße <b>M / S</b> (Hosen 46/48). Warenkorb für Engelbert Strauss vorbereitet.
+            </div>
+          </div>
+          <a href="https://frawo.tech/odoo/project/160/tasks/1421" class="btn-touch">Warenkorb ansehen</a>
+        </div>
+
+        <!-- CARD 3 -->
+        <div class="card">
+          <div>
+            <div class="card-header">
+              <div class="card-title">🍺 Bar-Abrechnung Christiane</div>
+              <span class="badge badge-green">Berechnet</span>
+            </div>
+            <div class="card-body">
+              <b>#1359: Bar-Abrechnung Alkoholisch</b><br>
+              Offener Gesamtbetrag: <b>174,57 €</b> (Wolf 151,02 €, Franz 23,55 €). Geht bar an Christiane.
+            </div>
+          </div>
+          <a href="https://frawo.tech/odoo/project/104/tasks/1359" class="btn-touch btn-green">Abrechnungsbeleg ansehen</a>
+        </div>
+
+        <!-- CARD 4 -->
+        <div class="card">
+          <div>
+            <div class="card-header">
+              <div class="card-title">📱 Pixel 9 Pro Display</div>
+              <span class="badge badge-yellow">Garantie</span>
+            </div>
+            <div class="card-body">
+              <b>#1219: Display-Reparatur</b><br>
+              Grüner/Lila Streifen (OLED-Panelfehler). 5 Monate alt &rarr; Google/Back Market Herstellergarantie (0 €).
+            </div>
+          </div>
+          <a href="https://frawo.tech/odoo/project/107/tasks/1219" class="btn-touch">Status prüfen</a>
+        </div>
+
+        <!-- CARD 5 -->
+        <div class="card">
+          <div>
+            <div class="card-header">
+              <div class="card-title">⚡ Stromanteil Serveranlage</div>
+              <span class="badge badge-blue">Messwerte Live</span>
+            </div>
+            <div class="card-body">
+              <b>#1365: Shelly-Zuordnung verifiziert</b><br>
+              Shelly 10.4.0.11 (IT &amp; Werkstatt): <span id="card-pwr-server">131 W</span> (&gt;511 kWh). Shelly 10.4.0.10 (Bildschirm): <span id="card-pwr-screen">88 W</span>.
+            </div>
+          </div>
+          <a href="https://frawo.tech/odoo/project/163/tasks/1365" class="btn-touch">Aufgabe ansehen</a>
+        </div>
+
+        <!-- CARD 6 -->
+        <div class="card">
+          <div>
+            <div class="card-header">
+              <div class="card-title">🐕 Hundesteuer Hergensweiler</div>
+              <span class="badge badge-green">✅ Erledigt</span>
+            </div>
+            <div class="card-body">
+              <b>#1210: Vollständig bezahlt</b><br>
+              85,50 € wurden am 30.04.2026 an die VG Sigmarszell überwiesen (Beleg im N26-Kontoauszug #203).
+            </div>
+          </div>
+          <a href="https://frawo.tech/odoo/project/107/tasks/1210" class="btn-touch btn-dark">Archivierte Aufgabe</a>
+        </div>
+
+      </div>
     </div>
 
-    <!-- TAB 2: HOME ASSISTANT -->
-    <div class="tab-pane" id="tab-ha" style="padding: 0; margin: 0; height: calc(100vh - 120px); flex: 1;">
-      <iframe id="ha-frame" src="http://10.1.0.40:8123/lovelace/cockpit" style="width: 100%; height: 100%; min-height: 750px; border: none; border-radius: 12px; background: #111;"></iframe>
-    </div>
-
-    <!-- TAB 3: WOHNZIMMER -->
+    <!-- TAB 2: WOHNZIMMER -->
     <div class="tab-pane" id="tab-wohnzimmer">
       <div class="grid-2">
         <div class="card">
@@ -975,7 +2089,7 @@
               Senderwahl, Lautstärke &amp; HDMI-Eingänge direkt von diesem Tablet steuern.
             </div>
           </div>
-          <a href="https://frawo.tech/odoo/project/105/tasks/1425" class="btn-touch" onclick="event.preventDefault(); openAppViewer('https://frawo.tech/odoo/project/105/tasks/1425', 'Odoo #1425: Smart-TV')">TV-Aufgabe öffnen</a>
+          <a href="https://frawo.tech/odoo/project/105/tasks/1425" class="btn-touch">TV-Aufgabe öffnen</a>
         </div>
 
         <div class="card">
@@ -988,78 +2102,187 @@
               Vollständiges Haus-Dashboard für Beleuchtung, Heizung und Sensoren auf <code>10.1.0.40:8123</code>.
             </div>
           </div>
-          <button class="btn-touch btn-green" onclick="switchTab('tab-ha')">🏠 Home Assistant öffnen</button>
+          <a href="http://10.1.0.40:8123" class="btn-touch btn-green">Home Assistant öffnen</a>
         </div>
       </div>
     </div>
 
-    <!-- TAB 4: RADIO -->
+        <!-- TAB 3: RADIO (PRO BROADCAST & DEVOPS DASHBOARD) -->
     <div class="tab-pane" id="tab-radio">
-      <!-- Player Card -->
-      <div class="player-box" style="max-width: 750px; margin: 20px auto; width: 100%; border-radius: 16px; background: rgba(15, 23, 42, 0.75); border: 1px solid var(--border); padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+      <div class="radio-deck-container">
         
-        <div class="player-status" style="display: flex; align-items: center; gap: 10px; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 12px; margin-bottom: 16px;">
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <span class="dot-green"></span> <b>FraWo Funk Live</b>
-            <span class="badge badge-green" style="font-size: 11px;">320 KBPS</span>
+        <!-- 1. Telemetry HUD Bar -->
+        <div class="radio-hud-bar">
+          <div class="hud-vitals">
+            <div class="hud-pill"><span class="dot"></span> LiquidSoap AutoDJ: <b style="color:#10b981;">Aktiv</b></div>
+            <div class="hud-pill"><span class="dot-blue"></span> Icecast Core: <b style="color:#38bdf8;">320k MP3</b></div>
+            <div class="hud-pill"><span class="dot-amber"></span> Hörer: <b id="hud-listeners" style="color:#f59e0b;">0</b></div>
+            <div class="hud-pill">Mount: <code style="color:#94a3b8;">/frawo_funk/radio.mp3</code></div>
           </div>
-          <div style="font-size: 12px; color: var(--text-dim); display: flex; gap: 12px;">
-            <span>📻 AzuraCast Station 1</span>
-            <span>🌐 funk.frawo.tech</span>
+          <div class="hud-actions">
+            <button class="btn-hud-action" onclick="radioRestartAutoDJ()">🔄 AutoDJ Neustart</button>
+            <button class="btn-hud-action" onclick="radioRefreshDashboard()">⚡ Queue Sync</button>
           </div>
         </div>
 
-        <div style="display: flex; align-items: center; gap: 24px; width: 100%; margin: 12px 0;">
-          <img id="radio-track-cover" src="https://frawo.tech/logo.png?company=1" alt="Radio Cover" style="width: 110px; height: 110px; border-radius: 16px; object-fit: cover; border: 2px solid #334155; background: #000; box-shadow: 0 6px 20px rgba(0,0,0,0.6);">
-          <div style="text-align: left; flex: 1; min-width: 0;">
-            <div class="player-title" id="radio-track-title" style="font-size: 22px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #fff;">FraWo Funk Live</div>
-            <div class="player-artist" id="radio-track-artist" style="font-size: 16px; margin-top: 4px; color: #94a3b8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">High Quality Audio Stream</div>
-            <div id="radio-next-track" style="font-size: 13px; color: #38bdf8; margin-top: 8px; display: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"></div>
+        <!-- 2. Master Broadcast Hero Deck -->
+        <div class="radio-hero-deck">
+          <div class="hero-art-col">
+            <div class="art-wrapper">
+              <img id="radio-hero-art" class="art-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 24 24' fill='none' stroke='%2338bdf8' stroke-width='1.5'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3Cpath d='M12 2a10 10 0 0 1 10 10'/%3E%3C/svg%3E" alt="Cover Art">
+              <div class="art-badge-overlay" id="radio-hero-playlist">AutoDJ Rotation</div>
+            </div>
+            <div id="radio-genre-tag" style="font-size:11.5px; color:#94a3b8; font-weight:600; text-align:center;">FraWo Funk · 24/7 Live</div>
+          </div>
+
+          <div class="hero-main-col">
+            <div class="track-meta-block">
+              <div class="track-meta-header">
+                <span class="track-live-tag">🔴 ON AIR</span>
+                <span class="track-source-pill" id="radio-hero-format">320 kbps CBR · 44.1 kHz</span>
+              </div>
+              <div class="hero-title" id="radio-hero-title">FraWo Funk</div>
+              <div class="hero-artist" id="radio-hero-artist">Studio & Wohnzimmer Stream</div>
+              <div class="hero-album" id="radio-hero-album">Station 1 · AzuraCast</div>
+            </div>
+
+            <!-- Timeline & Progress -->
+            <div class="timeline-block">
+              <div class="timeline-bar-bg">
+                <div class="timeline-bar-fill" id="radio-progress-fill"></div>
+              </div>
+              <div class="timeline-labels">
+                <span id="radio-time-elapsed">00:00</span>
+                <span class="timeline-countdown" id="radio-time-remaining">⏳ Syncing...</span>
+                <span id="radio-time-duration">00:00</span>
+              </div>
+            </div>
+
+            <!-- Animated Stereo VU Meter -->
+            <div class="vu-meter-box">
+              <div class="vu-channel">
+                <span>L</span>
+                <div class="vu-bar-bg"><div class="vu-bar-active" id="vu-l"></div></div>
+                <span style="font-size:9.5px; color:#475569;">-3 dB</span>
+              </div>
+              <div class="vu-channel">
+                <span>R</span>
+                <div class="vu-bar-bg"><div class="vu-bar-active" id="vu-r"></div></div>
+                <span style="font-size:9.5px; color:#475569;">-3 dB</span>
+              </div>
+            </div>
+
+            <!-- Hero Touch Controls -->
+            <div class="hero-controls">
+              <button class="btn-hero btn-hero-monitor" id="btn-monitor" onclick="toggleRadioMonitor()">
+                ▶️ MONITOR AN
+              </button>
+              <button class="btn-hero btn-hero-skip" onclick="radioSkipTrack()">
+                ⏭️ SKIP TRACK
+              </button>
+              <button class="btn-hero btn-hero-jingle" onclick="radioDropStationID()">
+                🎙️ STATION ID
+              </button>
+              <button class="btn-hero btn-hero-vote" onclick="radioVoteTrack('love')">
+                💖 LOVE
+              </button>
+            </div>
           </div>
         </div>
 
         <audio id="audio-stream" preload="none" src="https://funk.frawo.tech/listen/frawo_funk/radio.mp3"></audio>
 
-        <!-- Player Controls (Start/Stop + Skip) -->
-        <div style="display: flex; gap: 14px; width: 100%; margin-top: 16px;">
-          <button class="btn-touch btn-play" id="play-btn" onclick="toggleRadio()" style="flex: 1.2; font-size: 16px; padding: 14px 20px; font-weight: 700; border-radius: 12px; background: #10b981; color: #fff; border: none; cursor: pointer;">▶️ RADIO STARTEN</button>
-          <button class="btn-touch" id="skip-btn" onclick="skipRadioTrack()" style="flex: 1; font-size: 15px; padding: 14px 18px; font-weight: 600; border-radius: 12px; background: #334155; color: #f8fafc; border: 1px solid #475569; cursor: pointer;">⏭️ SONG ÜBERSPRINGEN</button>
-        </div>
-
-        <!-- Volume Slider -->
-        <div style="display: flex; align-items: center; gap: 14px; width: 100%; margin-top: 14px; background: rgba(0,0,0,0.25); padding: 10px 16px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05);">
-          <span style="font-size: 18px;">🔈</span>
-          <input type="range" id="radio-volume" min="0" max="1" step="0.05" value="0.8" style="flex: 1; accent-color: var(--primary); cursor: pointer;" oninput="setRadioVolume(this.value)">
-          <span style="font-size: 18px;">🔊</span>
-        </div>
-
-        <!-- Live Feedback Banner -->
-        <div id="radio-feedback" style="display: none; margin-top: 12px; padding: 10px 14px; border-radius: 8px; background: rgba(56, 189, 248, 0.15); border: 1px solid #38bdf8; color: #38bdf8; font-size: 14px; text-align: center; font-weight: 500;"></div>
-      </div>
-
-      <!-- Playlists & Programm Section -->
-      <div style="max-width: 950px; margin: 24px auto; width: 100%;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
-          <div>
-            <h3 style="margin: 0; font-size: 18px; color: #fff;">📻 Sender-Playlisten &amp; Live-Rotation</h3>
-            <p style="margin: 4px 0 0 0; font-size: 13px; color: var(--text-dim);">Spontan Gewichtung anpassen oder Playlisten aktivieren / pausieren</p>
+        <!-- 3. Live Queue & History Feed -->
+        <div class="flow-grid">
+          <div class="flow-card">
+            <div class="flow-header">
+              <span>⏭️ Als Nächstes (AutoDJ Queue)</span>
+              <span style="font-size:12px; color:#38bdf8; font-weight:600;" id="queue-count">0 Titel</span>
+            </div>
+            <ul class="flow-list" id="radio-queue-list">
+              <li style="color:#64748b; font-size:13px; text-align:center; padding:12px;">Lade Warteschlange...</li>
+            </ul>
           </div>
-          <button class="btn-touch" onclick="loadRadioPlaylists()" style="padding: 8px 16px; font-size: 13px; background: #1e293b; color: #94a3b8; border: 1px solid #334155; border-radius: 8px; cursor: pointer;">🔄 Aktualisieren</button>
+
+          <div class="flow-card">
+            <div class="flow-header">
+              <span>⏮️ Zuletzt Gespielt (Sende-History)</span>
+              <span style="font-size:12px; color:#94a3b8; font-weight:600;">Letzte 5 Tracks</span>
+            </div>
+            <ul class="flow-list" id="radio-history-list">
+              <li style="color:#64748b; font-size:13px; text-align:center; padding:12px;">Lade Sende-Verlauf...</li>
+            </ul>
+          </div>
         </div>
 
-        <div id="radio-playlists-container" class="playlists-grid">
-          <div style="padding: 24px; text-align: center; color: var(--text-dim); grid-column: 1 / -1;">Lade Playlisten...</div>
-        </div>
-      </div>
+        <!-- 4. Program Director & Preset Matrix -->
+        <div class="director-card">
+          <div class="flow-header">
+            <span>🎚️ Program Director & Sende-Presets</span>
+            <span style="font-size:12px; color:#10b981; font-weight:700;" id="preset-status-label">⚖️ Balanced</span>
+          </div>
 
-      <!-- Song Search & Request Section -->
-      <div style="max-width: 950px; margin: 24px auto 40px auto; width: 100%;">
-        <h3 style="margin: 0 0 8px 0; font-size: 18px; color: #fff;">🎵 Song-Wunsch &amp; Archiv</h3>
-        <p style="margin: 0 0 14px 0; font-size: 13px; color: var(--text-dim);">Titel aus der 15.000+ Track-Bibliothek suchen und sofort als nächsten Song einreihen</p>
-        
-        <input type="text" id="radio-search-input" placeholder="🔍 Song, Künstler oder Album suchen..." oninput="onRadioSearch(this.value)" style="width: 100%; padding: 14px 18px; font-size: 15px; border-radius: 12px; background: #0f172a; border: 1px solid #334155; color: #fff; box-sizing: border-box; outline: none;">
-        
-        <div id="radio-search-results" style="display: none; margin-top: 10px; background: #0f172a; border: 1px solid #334155; border-radius: 12px; max-height: 380px; overflow-y: auto;"></div>
+          <!-- Quick Presets -->
+          <div class="preset-bar">
+            <button class="btn-preset" onclick="radioApplyPreset('daytime')">☕ Daytime & Lunch (Flow)</button>
+            <button class="btn-preset" onclick="radioApplyPreset('sunset')">🌴 Sunset Lounge & Warmup</button>
+            <button class="btn-preset" onclick="radioApplyPreset('rave')">🚀 Peak Time Club & Rave</button>
+            <button class="btn-preset" onclick="radioApplyPreset('night')">🌙 Deep Night & Minimal</button>
+            <button class="btn-preset" onclick="radioApplyPreset('balanced')">⚖️ Standard Rotation</button>
+          </div>
+
+          <!-- 21 Playlist Sliders -->
+          <div style="font-size:13px; font-weight:700; color:#94a3b8; margin-top:6px;">
+            Sende-Rotationen & Gewichtungen (1 = selten · 25 = Maximale Rotation):
+          </div>
+          <div class="playlist-grid" id="radio-playlists-grid">
+            <div style="color:#64748b; font-size:13px; padding:10px;">Lade Playlisten...</div>
+          </div>
+        </div>
+
+        <!-- 5. Soundboard & Request Terminal -->
+        <div class="flow-grid">
+          <div class="flow-card">
+            <div class="flow-header">
+              <span>🎙️ Jingle Soundboard & Drops</span>
+              <span style="font-size:11.5px; color:#7c3aed; font-weight:700;">Live Dropper</span>
+            </div>
+            <div class="soundboard-grid">
+              <button class="btn-jingle" onclick="radioDropStationID()">
+                <span style="font-size:20px;">📻</span>
+                <span>FraWo Station ID</span>
+              </button>
+              <button class="btn-jingle" onclick="radioDropJingle('drop_sweeper')">
+                <span style="font-size:20px;">⚡</span>
+                <span>Studio Sweeper</span>
+              </button>
+              <button class="btn-jingle" onclick="radioDropJingle('drop_deep')">
+                <span style="font-size:20px;">🔊</span>
+                <span>Bass Dropper</span>
+              </button>
+              <button class="btn-jingle" onclick="radioDropJingle('drop_transit')">
+                <span style="font-size:20px;">✨</span>
+                <span>Vibe Transition</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="flow-card">
+            <div class="flow-header">
+              <span>🔍 Song-Wunsch & Library Finder</span>
+              <span style="font-size:11.5px; color:#0284c7; font-weight:700;">15.000+ Tracks</span>
+            </div>
+            <div class="search-terminal-box">
+              <div class="search-input-row">
+                <input type="text" class="search-input" id="radio-search-box" placeholder="Interpret, Titel oder Genre..." oninput="handleRadioSearch(this.value)">
+              </div>
+              <div class="search-results-list" id="radio-search-results">
+                <div style="color:#64748b; font-size:12.5px; padding:8px; text-align:center;">Suchbegriff eingeben um Titel einzureihen.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -1074,56 +2297,56 @@
           <button class="admin-lock-now-btn" onclick="lockAdmin()">🔒 Sofort sperren</button>
         </div>
         <div class="grid-3" style="margin-bottom: 20px;">
-          <div class="app-tile" style="border-color: #38bdf8; cursor: pointer;" onclick="openAppViewer('https://10.1.0.1', 'UniFi UCG Gateway')">
+          <a href="https://10.1.0.1" target="_blank" class="app-tile" style="border-color: #38bdf8;">
             <div class="app-icon">🌐</div>
             <div class="app-name">UniFi UCG Gateway</div>
             <div class="app-desc">Router, Firewall & VLAN-Setup</div>
-          </div>
-          <div class="app-tile" style="border-color: #38bdf8; cursor: pointer;" onclick="openAppViewer('https://10.1.0.92:8006', 'Proxmox PVE (Anker)')">
+          </a>
+          <a href="https://10.1.0.92:8006" target="_blank" class="app-tile" style="border-color: #38bdf8;">
             <div class="app-icon">🖥️</div>
             <div class="app-name">Proxmox PVE (Anker)</div>
             <div class="app-desc">Container & VM Management</div>
-          </div>
-          <div class="app-tile" style="border-color: #38bdf8; cursor: pointer;" onclick="openAppViewer('https://frawo.tech/odoo', 'Odoo 19 Backend')">
+          </a>
+          <a href="https://frawo.tech/odoo" target="_blank" class="app-tile" style="border-color: #38bdf8;">
             <div class="app-icon">⚙️</div>
             <div class="app-name">Odoo 19 Backend</div>
             <div class="app-desc">ERP, Einstellungen & Buchhaltung</div>
-          </div>
+          </a>
         </div>
       </div>
 
       <div class="grid-3">
-        <div class="app-tile" style="cursor: pointer;" onclick="openAppViewer('https://frawo.tech/odoo', 'Odoo ERP')">
+        <a href="https://frawo.tech/odoo" class="app-tile">
           <div class="app-icon">📋</div>
           <div class="app-name">Odoo ERP</div>
           <div class="app-desc">Projekte, Aufgaben & CRM</div>
-        </div>
+        </a>
 
-        <div class="app-tile" style="cursor: pointer;" onclick="openAppViewer('http://10.1.0.96:8000', 'Paperless DMS')">
+        <a href="http://10.1.0.96:8000" class="app-tile">
           <div class="app-icon">📑</div>
           <div class="app-name">Paperless DMS</div>
           <div class="app-desc">Belege & Dokumentenarchiv</div>
-        </div>
+        </a>
 
-        <div class="app-tile" style="cursor: pointer;" onclick="openAppViewer('https://10.1.0.1', 'UniFi UCG')">
+        <a href="https://10.1.0.1" class="app-tile">
           <div class="app-icon">🌐</div>
           <div class="app-name">UniFi UCG</div>
           <div class="app-desc">Netzwerk & WLAN-Steuerung</div>
-        </div>
+        </a>
 
-        <div class="app-tile" style="cursor: pointer;" onclick="switchTab('tab-ha')">
+        <a href="http://10.1.0.40:8123" class="app-tile">
           <div class="app-icon">🏠</div>
           <div class="app-name">Home Assistant</div>
           <div class="app-desc">Smart Home & Hausautomation</div>
-        </div>
+        </a>
 
-        <div class="app-tile" style="cursor: pointer;" onclick="openAppViewer('http://10.1.0.35:3000', 'Grafana Server-Monitoring')">
+        <a href="http://10.1.0.35:3000" class="app-tile">
           <div class="app-icon">📊</div>
           <div class="app-name">Grafana</div>
           <div class="app-desc">Server-Metriken & Monitoring</div>
-        </div>
+        </a>
 
-        <a href="https://t.me/ServAssi_bot" target="_blank" class="app-tile">
+        <a href="https://t.me/ServAssi_bot" class="app-tile">
           <div class="app-icon">🤖</div>
           <div class="app-name">Jarvis / Telegram</div>
           <div class="app-desc">Persistenter Assistent</div>
@@ -1132,16 +2355,6 @@
     </div>
 
   </main>
-
-  <!-- APP VIEWER OVERLAY (MIT ZURÜCK-BUTTON ZUM ANKER HUB) -->
-  <div id="appViewerOverlay" style="display:none; position:fixed; inset:0; z-index:9000; background:#0b1120; flex-direction:column;">
-    <div style="background:#0f172a; border-bottom:2px solid #334155; padding:12px 20px; display:flex; justify-content:space-between; align-items:center; flex-shrink:0;">
-      <button class="btn-touch" style="width:auto; padding:10px 22px; background:#2563eb; font-size:15px;" onclick="closeAppViewer()">⬅️ Zurück zum FraWo Anker Hub</button>
-      <span id="appViewerTitle" style="font-weight:700; font-size:16px; color:#fff;">FraWo App</span>
-      <button class="btn-touch" style="width:auto; padding:10px 18px; background:#334155; font-size:14px;" onclick="reloadAppViewer()">🔄 Neu laden</button>
-    </div>
-    <iframe id="appViewerFrame" src="about:blank" style="flex:1; width:100%; border:none; background:#0b1120;"></iframe>
-  </div>
 
   <script>
     // Live Clock & Date
@@ -1163,33 +2376,8 @@
     setInterval(updateTime, 1000);
     updateTime();
 
-    // App Viewer Modal Logic (Ensures return to Hub)
-    function openAppViewer(url, title) {
-      const titleEl = document.getElementById('appViewerTitle');
-      const frameEl = document.getElementById('appViewerFrame');
-      const overlayEl = document.getElementById('appViewerOverlay');
-      if (titleEl) titleEl.textContent = title || 'FraWo App';
-      if (frameEl) frameEl.src = url;
-      if (overlayEl) overlayEl.style.display = 'flex';
-    }
-
-    function closeAppViewer() {
-      const overlayEl = document.getElementById('appViewerOverlay');
-      const frameEl = document.getElementById('appViewerFrame');
-      if (overlayEl) overlayEl.style.display = 'none';
-      if (frameEl) frameEl.src = 'about:blank';
-    }
-
-    function reloadAppViewer() {
-      const frameEl = document.getElementById('appViewerFrame');
-      if (frameEl && frameEl.src && frameEl.src !== 'about:blank') {
-        frameEl.src = frameEl.src;
-      }
-    }
-
     // Tab Navigation
     function switchTab(tabId) {
-      closeAppViewer();
       document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
       
@@ -1198,32 +2386,9 @@
 
       const btn = Array.from(document.querySelectorAll('.nav-btn')).find(b => b.getAttribute('onclick') && b.getAttribute('onclick').includes(tabId));
       if (btn) btn.classList.add('active');
-
-      if (tabId === 'tab-radio') {
-        loadRadioPlaylists();
-        fetchRadioMeta();
-      }
     }
 
-    // Intercept any click on HA links to switch to tab-ha directly
-    document.addEventListener('click', function(e) {
-      const a = e.target.closest('a');
-      if (!a) return;
-      const href = a.getAttribute('href');
-      if (!href) return;
-      if (href.includes('10.1.0.40:8123')) {
-        e.preventDefault();
-        const haFrame = document.getElementById('ha-frame');
-        if (haFrame && href.includes('/lovelace/')) {
-          haFrame.src = href;
-        }
-        switchTab('tab-ha');
-      }
-    });
-
-    // ==========================================
-    // AUDIO & FRAWO FUNK CONTROLS
-    // ==========================================
+    // Audio Play / Pause
     let isPlaying = false;
     function toggleRadio() {
       const audio = document.getElementById('audio-stream');
@@ -1234,7 +2399,7 @@
           btn.textContent = '⏹️ RADIO STOPPEN';
           btn.style.background = '#ef4444';
         }).catch(err => {
-          console.warn('Radio playback error:', err);
+          alert('Radio-Stream aktuell noch im Standby (OptiPlex-Migration steht an).');
         });
       } else {
         audio.pause();
@@ -1243,271 +2408,6 @@
         btn.style.background = '#10b981';
       }
     }
-
-    function setRadioVolume(val) {
-      const audio = document.getElementById('audio-stream');
-      if (audio) audio.volume = parseFloat(val);
-    }
-
-    // Radio Track Skip
-    let isSkipping = false;
-    function skipRadioTrack() {
-      if (isSkipping) return;
-      isSkipping = true;
-      const skipBtn = document.getElementById('skip-btn');
-      const fb = document.getElementById('radio-feedback');
-      if (skipBtn) {
-        skipBtn.textContent = '⏳ ÜBERSPRINGE...';
-        skipBtn.style.opacity = '0.6';
-      }
-      if (fb) {
-        fb.textContent = '⏭️ Song wird übersprungen...';
-        fb.style.display = 'block';
-      }
-
-      fetch('/api/radio/skip', { method: 'POST' })
-        .then(r => r.json())
-        .then(data => {
-          if (data.status === 'success') {
-            if (fb) fb.textContent = '✅ Song erfolgreich übersprungen! Nächster Track lädt...';
-            setTimeout(() => {
-              fetchRadioMeta();
-              if (fb) setTimeout(() => { fb.style.display = 'none'; }, 4000);
-            }, 1500);
-          } else {
-            if (fb) fb.textContent = '⚠️ ' + (data.message || 'Skip fehlgeschlagen');
-          }
-        })
-        .catch(err => {
-          if (fb) fb.textContent = '❌ Fehler beim Überspringen';
-        })
-        .finally(() => {
-          setTimeout(() => {
-            isSkipping = false;
-            if (skipBtn) {
-              skipBtn.textContent = '⏭️ SONG ÜBERSPRINGEN';
-              skipBtn.style.opacity = '1';
-            }
-          }, 2000);
-        });
-    }
-
-    // Playlists Management
-    let cachedPlaylists = [];
-    function loadRadioPlaylists() {
-      const container = document.getElementById('radio-playlists-container');
-      if (!container) return;
-      
-      fetch('/api/radio/playlists')
-        .then(r => r.json())
-        .then(data => {
-          if (data.status === 'success' && Array.isArray(data.playlists)) {
-            cachedPlaylists = data.playlists;
-            renderRadioPlaylists(data.playlists);
-          }
-        })
-        .catch(err => {
-          console.warn('Playlists fetch error:', err);
-        });
-    }
-
-    function renderRadioPlaylists(playlists) {
-      const container = document.getElementById('radio-playlists-container');
-      if (!container) return;
-
-      container.innerHTML = playlists.map(pl => {
-        const isEn = pl.is_enabled;
-        const w = pl.weight || 3;
-        const statusBtn = isEn
-          ? `<button class="btn-touch btn-pl-status active" onclick="togglePlaylist(${pl.id}, true)">🟢 Aktiv</button>`
-          : `<button class="btn-touch btn-pl-status paused" onclick="togglePlaylist(${pl.id}, false)">⚪ Pausiert</button>`;
-
-        return `
-          <div class="playlist-card ${isEn ? 'pl-active' : 'pl-paused'}" id="pl-card-${pl.id}">
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px;">
-              <div style="flex: 1; min-width: 0;">
-                <div class="pl-name">${pl.name}</div>
-                <div class="pl-desc">${pl.description || (pl.type === 'default' ? 'Standard Rotation' : pl.type)} · <b>${pl.num_songs} Tracks</b></div>
-              </div>
-              <div>${statusBtn}</div>
-            </div>
-
-            <div class="pl-controls-row">
-              <div class="pl-weight-label">
-                Priorität: <span class="pl-weight-val" id="pl-weight-${pl.id}">${w}</span>
-              </div>
-              <div class="pl-weight-btns">
-                <button class="btn-weight-adj" onclick="changePlaylistWeight(${pl.id}, -1)">➖</button>
-                <button class="btn-weight-adj" onclick="changePlaylistWeight(${pl.id}, 1)">➕</button>
-                <button class="btn-weight-quick ${w >= 10 ? 'boosted' : ''}" onclick="setPlaylistWeight(${pl.id}, ${w >= 10 ? 3 : 12})">${w >= 10 ? '⚖️ Normal' : '🚀 Boost'}</button>
-              </div>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function togglePlaylist(id, currentState) {
-      const newState = !currentState;
-      const fb = document.getElementById('radio-feedback');
-      if (fb) {
-        fb.textContent = `⏳ Ändere Playlist-Status...`;
-        fb.style.display = 'block';
-      }
-
-      fetch('/api/radio/playlist/update', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: `id=${id}&is_enabled=${newState ? '1' : '0'}`
-      })
-      .then(r => r.json())
-      .then(data => {
-        if (data.status === 'success') {
-          if (fb) {
-            fb.textContent = `✅ Playlist ${newState ? 'aktiviert' : 'pausiert'}!`;
-            setTimeout(() => { fb.style.display = 'none'; }, 3000);
-          }
-          loadRadioPlaylists();
-        } else {
-          if (fb) fb.textContent = `⚠️ Fehler: ${data.message || 'Konnte nicht aktualisiert werden'}`;
-        }
-      })
-      .catch(err => {
-        if (fb) fb.textContent = `❌ Netzwerkfehler bei Playlist-Update`;
-      });
-    }
-
-    function setPlaylistWeight(id, weight) {
-      const fb = document.getElementById('radio-feedback');
-      if (fb) {
-        fb.textContent = `⏳ Setze Priorität auf ${weight}...`;
-        fb.style.display = 'block';
-      }
-
-      fetch('/api/radio/playlist/update', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: `id=${id}&weight=${weight}`
-      })
-      .then(r => r.json())
-      .then(data => {
-        if (data.status === 'success') {
-          if (fb) {
-            fb.textContent = `✅ Priorität auf ${weight} gesetzt!`;
-            setTimeout(() => { fb.style.display = 'none'; }, 3000);
-          }
-          loadRadioPlaylists();
-        }
-      })
-      .catch(err => {
-        if (fb) fb.textContent = `❌ Fehler beim Setzen der Priorität`;
-      });
-    }
-
-    function changePlaylistWeight(id, delta) {
-      const pl = cachedPlaylists.find(p => p.id === id);
-      const current = pl ? (pl.weight || 3) : 3;
-      const next = Math.max(1, Math.min(25, current + delta));
-      setPlaylistWeight(id, next);
-    }
-
-    // Song Request Search
-    let searchDebounceTimer = null;
-    function onRadioSearch(query) {
-      clearTimeout(searchDebounceTimer);
-      const resContainer = document.getElementById('radio-search-results');
-      if (!query || query.trim().length < 2) {
-        if (resContainer) resContainer.style.display = 'none';
-        return;
-      }
-
-      searchDebounceTimer = setTimeout(() => {
-        fetch(`/api/radio/search?q=${encodeURIComponent(query.trim())}`)
-          .then(r => r.json())
-          .then(data => {
-            if (!resContainer) return;
-            if (data.status === 'success' && Array.isArray(data.tracks) && data.tracks.length > 0) {
-              resContainer.style.display = 'block';
-              resContainer.innerHTML = data.tracks.map(t => `
-                <div class="search-track-row">
-                  <img src="${t.art || 'https://frawo.tech/logo.png?company=1'}" class="search-track-cover" alt="Art">
-                  <div style="flex:1; min-width:0;">
-                    <div class="search-track-title">${t.title}</div>
-                    <div class="search-track-artist">${t.artist || 'Unbekannt'} ${t.album ? '· ' + t.album : ''}</div>
-                  </div>
-                  <button class="btn-touch btn-request" onclick="requestRadioSong('${t.request_id}', '${(t.title || '').replace(/'/g, "\\'")}')">🎵 Wünschen</button>
-                </div>
-              `).join('');
-            } else {
-              resContainer.style.display = 'block';
-              resContainer.innerHTML = `<div style="padding: 12px; color: var(--text-dim); text-align: center;">Keine passenden Songs gefunden.</div>`;
-            }
-          })
-          .catch(err => {
-            console.warn('Search error:', err);
-          });
-      }, 350);
-    }
-
-    function requestRadioSong(requestId, title) {
-      const fb = document.getElementById('radio-feedback');
-      if (fb) {
-        fb.textContent = `⏳ Reihend Wunsch ein: "${title}"...`;
-        fb.style.display = 'block';
-      }
-
-      fetch('/api/radio/request', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: `request_id=${encodeURIComponent(requestId)}`
-      })
-      .then(r => r.json())
-      .then(data => {
-        if (data.status === 'success') {
-          if (fb) {
-            fb.textContent = `🎵 "${title}" erfolgreich eingereiht! Wird in Kürze gespielt.`;
-            setTimeout(() => { fb.style.display = 'none'; }, 5000);
-          }
-          const resContainer = document.getElementById('radio-search-results');
-          if (resContainer) resContainer.style.display = 'none';
-          const input = document.getElementById('radio-search-input');
-          if (input) input.value = '';
-        } else {
-          if (fb) fb.textContent = `⚠️ Wunsch fehlgeschlagen: ${data.message || ''}`;
-        }
-      })
-      .catch(err => {
-        if (fb) fb.textContent = `❌ Fehler beim Einreihen des Wunsches`;
-      });
-    }
-
-    function fetchRadioMeta() {
-      fetch('https://funk.frawo.tech/api/nowplaying/frawo_funk')
-        .then(r => r.json())
-        .then(data => {
-          if (data && data.now_playing && data.now_playing.song) {
-            const s = data.now_playing.song;
-            const tEl = document.getElementById('radio-track-title');
-            const aEl = document.getElementById('radio-track-artist');
-            const cEl = document.getElementById('radio-track-cover');
-            if (tEl && s.title) tEl.textContent = s.title;
-            if (aEl && s.artist) aEl.textContent = s.artist;
-            if (cEl && s.art) cEl.src = s.art;
-          }
-          if (data && data.playing_next && data.playing_next.song) {
-            const nextEl = document.getElementById('radio-next-track');
-            if (nextEl) {
-              const ns = data.playing_next.song;
-              nextEl.textContent = `⏭️ Als Nächstes: ${ns.artist || ''} - ${ns.title || ''}`;
-              nextEl.style.display = 'block';
-            }
-          }
-        })
-        .catch(err => {});
-    }
-    fetchRadioMeta();
-    setInterval(fetchRadioMeta, 10000);
-    loadRadioPlaylists();
 
     // Native Shelly Screen Toggle via local proxy API
     function toggleScreenShelly() {
@@ -1522,10 +2422,54 @@
     }
 
     // ==========================================
+    // HUB SCOPE SELECTION (Anker, Villa, Stockenweiler, Jobs)
+    // ==========================================
+    let currentHub = localStorage.getItem('frawo_active_hub') || (location.hash ? location.hash.replace('#', '') : 'anker');
+    if (!['anker', 'villa', 'stockenweiler', 'jobs'].includes(currentHub)) {
+      currentHub = 'anker';
+    }
+
+    const HUB_SUBTITLES = {
+      anker: "Wohnzimmer & RK22a Touchboard (Infra & Cluster)",
+      villa: "Studio & Unternehmensstandort (Rothkreuz 14)",
+      stockenweiler: "Prinz Stockenweiler (Projekt 90 & Familie)",
+      jobs: "Jobs, Veranstaltungen & ERP-Pipeline"
+    };
+
+    function selectHub(hubName) {
+      currentHub = hubName;
+      localStorage.setItem('frawo_active_hub', hubName);
+      try { history.replaceState(null, null, '#' + hubName); } catch(e){}
+
+      // Update Hub Buttons UI
+      document.querySelectorAll('.hub-tab').forEach(b => b.classList.remove('active'));
+      const activeBtn = document.getElementById(`hub-btn-${hubName}`);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      // Update Brand Subtitle
+      const sub = document.querySelector('.brand-subtitle');
+      if (sub && HUB_SUBTITLES[hubName]) {
+        sub.textContent = HUB_SUBTITLES[hubName];
+      }
+
+      fetchTelemetry();
+    }
+
+    // Listen to URL hash change
+    window.addEventListener('hashchange', () => {
+      const h = location.hash.replace('#', '');
+      if (['anker', 'villa', 'stockenweiler', 'jobs'].includes(h)) {
+        selectHub(h);
+      }
+    });
+
+    // ==========================================
     // LIVE TELEMETRY & AUTO-REFRESH
     // ==========================================
+    let activeOpenQuestions = [];
+
     function fetchTelemetry() {
-      fetch('/api/telemetry')
+      fetch(`/api/telemetry?hub=${currentHub}`)
         .then(r => r.json())
         .then(data => {
           // 1. Weather
@@ -1580,7 +2524,22 @@
             }
           }
 
-          // 4. Franz Tasks (Ambient & Cockpit)
+          // 4. Open Questions Counter
+          activeOpenQuestions = data.open_questions || [];
+          const qCounterBtn = document.getElementById('q-counter-btn');
+          const qCounterText = document.getElementById('q-counter-text');
+          if (qCounterBtn && qCounterText) {
+            if (activeOpenQuestions.length > 0) {
+              qCounterBtn.style.display = 'flex';
+              qCounterText.textContent = `${activeOpenQuestions.length} offene Frage${activeOpenQuestions.length > 1 ? 'n' : ''}`;
+            } else {
+              qCounterBtn.style.display = 'none';
+            }
+          }
+          const questionsByTaskId = {};
+          activeOpenQuestions.forEach(q => { questionsByTaskId[q.id] = q; });
+
+          // 5. Franz Tasks (Ambient)
           if (data.focus_franz && data.focus_franz.length) {
             const listFranz = document.getElementById('amb-list-franz');
             if (listFranz) {
@@ -1596,7 +2555,7 @@
             }
           }
 
-          // 5. Wolf Tasks (Ambient & Cockpit)
+          // 6. Wolf Tasks (Ambient)
           if (data.focus_wolf && data.focus_wolf.length) {
             const listWolf = document.getElementById('amb-list-wolf');
             if (listWolf) {
@@ -1612,7 +2571,7 @@
             }
           }
 
-          // 6. Upcoming Events (Ambient Banner)
+          // 7. Upcoming Events (Ambient Banner)
           if (data.upcoming_events && data.upcoming_events.length) {
             const evBanner = document.getElementById('amb-event-banner-text');
             if (evBanner) {
@@ -1622,35 +2581,116 @@
             }
           }
 
-          // 7. Dynamic Cockpit Cards in Main Tab
+          // 8. Dynamic Cockpit Cards in Main Tab
           if (data.focus_franz && data.focus_wolf) {
-            const cockpitGrid = document.getElementById('cockpit-cards-grid');
-            if (cockpitGrid) {
-              const allTasks = [
+            let allTasks = [];
+
+            if (currentHub === 'jobs') {
+              // In Jobs view, display upcoming event jobs prominently
+              allTasks = [
+                ...(data.upcoming_events || []).map(ev => ({
+                  id: ev.id,
+                  title: ev.title,
+                  sub: `Einsatz / Termin: ${ev.date || 'Festgelegt'} · Stufe: ${ev.stage || 'Geplant'}`,
+                  owner: 'Event',
+                  stage: ev.stage || 'Auftrag',
+                  badge: 'badge-yellow'
+                })),
+                ...data.focus_wolf.map(t => ({...t, owner: 'Wolf', badge: 'badge-purple'}))
+              ];
+            } else {
+              allTasks = [
                 ...data.focus_franz.map(t => ({...t, owner: 'Franz', badge: 'badge-blue'})),
                 ...data.focus_wolf.map(t => ({...t, owner: 'Wolf', badge: 'badge-purple'}))
               ];
-              cockpitGrid.innerHTML = allTasks.map(t => `
-                <div class="card">
-                  <div>
-                    <div class="card-header">
-                      <div class="card-title">${t.owner === 'Franz' ? '🔨 Franz' : '💼 Wolf'} — ${escapeHtml(t.title)}</div>
-                      <span class="badge ${t.badge}">${escapeHtml(t.stage || 'In Arbeit')}</span>
-                    </div>
-                    <div class="card-body">
-                      <b>#${t.id}: ${escapeHtml(t.title)}</b><br>
-                      ${escapeHtml(t.sub || 'Keine Notizen hinterlegt')}
-                    </div>
-                  </div>
-                  <a href="https://frawo.tech/frawo/touch/login?redirect=/odoo/project.task/${t.id}" class="btn-touch">Aufgabe in Odoo öffnen</a>
-                </div>
-              `).join('');
             }
+
+            window.cachedCockpitTasks = allTasks;
+            window.cachedQuestionsByTaskId = questionsByTaskId;
+            renderCockpitCards();
           }
         })
         .catch(err => {
           console.log('Telemetry poll info:', err);
         });
+    }
+
+    // ==========================================
+    // COCKPIT TASK FILTER (ALLE / FRANZ / WOLF)
+    // ==========================================
+    let currentCockpitFilter = 'all';
+
+    function filterCockpit(filterName) {
+      currentCockpitFilter = filterName;
+      document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+      const btn = document.getElementById(`filter-btn-${filterName}`);
+      if (btn) btn.classList.add('active');
+      renderCockpitCards();
+    }
+
+    function renderCockpitCards() {
+      const cockpitGrid = document.getElementById('cockpit-cards-grid');
+      if (!cockpitGrid || !window.cachedCockpitTasks) return;
+
+      const questionsByTaskId = window.cachedQuestionsByTaskId || {};
+      let tasks = window.cachedCockpitTasks;
+
+      if (currentCockpitFilter === 'franz') {
+        tasks = tasks.filter(t => t.owner === 'Franz');
+      } else if (currentCockpitFilter === 'wolf') {
+        tasks = tasks.filter(t => t.owner === 'Wolf');
+      }
+
+      if (tasks.length === 0) {
+        cockpitGrid.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; padding: 44px 20px; background: rgba(30, 41, 59, 0.4); border-radius: 16px; border: 1px dashed var(--card-border); color: var(--text-dim);">
+            <div style="font-size: 32px; margin-bottom: 8px;">✨</div>
+            <div style="font-size: 16px; font-weight: 700; color: #fff;">Keine Aufgaben in Bearbeitung</div>
+            <div style="font-size: 13px; margin-top: 4px;">Aktuell liegen keine Aufgaben für den Filter '${escapeHtml(currentCockpitFilter)}' vor.</div>
+          </div>
+        `;
+        return;
+      }
+
+      cockpitGrid.innerHTML = tasks.map(t => {
+        const hasQ = questionsByTaskId[t.id];
+        const qSnippet = hasQ ? `
+          <div class="q-card-snippet">
+            ❓ <b>Offene Frage(n):</b><br>${escapeHtml(hasQ.question).replace(/\n/g, '<br>')}
+          </div>
+        ` : '';
+
+        const qActionBtn = hasQ ? `
+          <button class="btn-touch btn-warning" onclick="openAnswerModal(${t.id}, '${escapeJs(t.title)}', '${escapeJs(t.project || hasQ.project || '')}', '${escapeJs(hasQ.question)}')">
+            💬 Frage direkt beantworten
+          </button>
+          <a href="https://frawo.tech/frawo/touch/login?redirect=/odoo/project.task/${t.id}" class="btn-touch btn-dark" style="padding:9px; font-size:12px;">
+            In Odoo ansehen
+          </a>
+        ` : `
+          <a href="https://frawo.tech/frawo/touch/login?redirect=/odoo/project.task/${t.id}" class="btn-touch">Aufgabe in Odoo öffnen</a>
+        `;
+
+        return `
+          <div class="card ${hasQ ? 'card-question-highlight' : ''}">
+            <div>
+              <div class="card-header">
+                <div class="card-title">${t.owner === 'Franz' ? '🔨 Franz' : (t.owner === 'Event' ? '🎪 Event' : '💼 Wolf')} — ${escapeHtml(t.title)}</div>
+                <span class="badge ${hasQ ? 'badge-yellow' : t.badge}">${hasQ ? '❓ Frage offen' : escapeHtml(t.stage || 'In Arbeit')}</span>
+              </div>
+              <div class="card-body">
+                <b>#${t.id}: ${escapeHtml(t.title)}</b><br>
+                ${escapeHtml(t.sub || 'Keine Notizen hinterlegt')}
+                ${qSnippet}
+              </div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              ${qActionBtn}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
 
     function escapeHtml(str) {
       if (!str) return '';
@@ -1660,10 +2700,241 @@
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;');
     }
+
+    function escapeJs(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/\\/g, '\\\\')
+        .replace(/'/g, "\\'")
+        .replace(/"/g, '\\"')
+        .replace(/\n/g, ' ')
+        .replace(/\r/g, '');
     }
 
-    // Run telemetry every 20 seconds
-    fetchTelemetry();
+    // ==========================================
+    // INTERACTIVE QUESTION ANSWERING LOGIC
+    // ==========================================
+    let currentQuestionTaskId = 0;
+    let currentQuestionText = "";
+    let speechRecognition = null;
+    let isListening = false;
+
+    function openAnswerModal(taskId, title, project, questionText) {
+      currentQuestionTaskId = taskId;
+      currentQuestionText = questionText || "";
+
+      document.getElementById('q-modal-title').textContent = `#${taskId} · ${title}`;
+      document.getElementById('q-modal-proj').textContent = project ? `Projekt: ${project}` : 'FraWo GbR';
+      
+      const qBox = document.getElementById('q-modal-question');
+      if (!questionText || questionText.includes('⚠️')) {
+        qBox.innerHTML = `<div style="color:#f59e0b; font-weight:600;">${escapeHtml(questionText || 'Keine spezifische Frage in der Aufgabe gefunden.')}</div>`;
+      } else if (questionText.includes('\n')) {
+        qBox.innerHTML = questionText.split('\n').filter(Boolean).map(q => `
+          <div style="margin-bottom: 8px; padding: 6px 10px; background: rgba(245, 158, 11, 0.12); border-radius: 8px; font-weight: 600;">
+            ${escapeHtml(q)}
+          </div>
+        `).join('');
+      } else {
+        qBox.innerHTML = `<div style="font-weight: 600;">${escapeHtml(questionText)}</div>`;
+      }
+      document.getElementById('q-modal-answer').value = '';
+      document.getElementById('q-modal-status').textContent = '';
+      document.getElementById('q-submit-btn').disabled = false;
+      document.getElementById('q-submit-btn').innerHTML = '🚀 <span>Antwort senden</span>';
+
+      document.getElementById('questionModal').classList.add('active');
+      setTimeout(() => {
+        document.getElementById('q-modal-answer').focus();
+      }, 150);
+    }
+
+    function closeAnswerModal() {
+      document.getElementById('questionModal').classList.remove('active');
+      stopSpeechRecognition();
+    }
+
+    function handleQuestionModalBackdrop(e) {
+      closeAnswerModal();
+    }
+
+    function openQuestionsOverview() {
+      if (activeOpenQuestions.length > 0) {
+        const firstQ = activeOpenQuestions[0];
+        openAnswerModal(firstQ.id, firstQ.title, firstQ.project, firstQ.question);
+      }
+    }
+
+    // Speech-to-Text via Web Speech API
+    function toggleSpeechRecognition() {
+      const btn = document.getElementById('q-speech-btn');
+      if (isListening) {
+        stopSpeechRecognition();
+        return;
+      }
+
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        alert('Spracherkennung wird von diesem Browser nicht unterstützt. Bitte Tastatur nutzen.');
+        return;
+      }
+
+      try {
+        speechRecognition = new SpeechRecognition();
+        speechRecognition.lang = 'de-DE';
+        speechRecognition.continuous = true;
+        speechRecognition.interimResults = true;
+
+        speechRecognition.onstart = () => {
+          isListening = true;
+          btn.classList.add('listening');
+          btn.innerHTML = '🛑 <span>Stopp</span>';
+        };
+
+        speechRecognition.onresult = (event) => {
+          let transcript = '';
+          for (let i = event.resultIndex; i < event.results.length; i++) {
+            transcript += event.results[i][0].transcript;
+          }
+          const textarea = document.getElementById('q-modal-answer');
+          textarea.value = (textarea.value ? textarea.value + ' ' : '') + transcript;
+        };
+
+        speechRecognition.onerror = (e) => {
+          console.warn('Speech error:', e);
+          stopSpeechRecognition();
+        };
+
+        speechRecognition.onend = () => {
+          stopSpeechRecognition();
+        };
+
+        speechRecognition.start();
+      } catch (err) {
+        console.error('Speech init error:', err);
+        stopSpeechRecognition();
+      }
+    }
+
+    function stopSpeechRecognition() {
+      isListening = false;
+      const btn = document.getElementById('q-speech-btn');
+      if (btn) {
+        btn.classList.remove('listening');
+        btn.innerHTML = '🎤 <span>Sprechen</span>';
+      }
+      if (speechRecognition) {
+        try { speechRecognition.stop(); } catch(e){}
+        speechRecognition = null;
+      }
+    }
+
+    // AI Refinement with local Ollama
+    function refineWithOllama() {
+      const rawAnswer = document.getElementById('q-modal-answer').value.trim();
+      const statusEl = document.getElementById('q-modal-status');
+      const ollamaBtn = document.getElementById('q-ollama-btn');
+
+      if (!rawAnswer) {
+        statusEl.textContent = '⚠️ Bitte zuerst Stichpunkte oder eine Rohantwort eingeben.';
+        statusEl.style.color = '#f59e0b';
+        return;
+      }
+
+      ollamaBtn.disabled = true;
+      ollamaBtn.innerHTML = '⏳ <span>KI rechnet...</span>';
+      statusEl.textContent = '✨ Formuliere Antwort mit lokalem LLM (OptiPlex)...';
+      statusEl.style.color = '#38bdf8';
+
+      fetch('/api/ollama/refine', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: json_payload({
+          question: currentQuestionText,
+          answer: rawAnswer
+        })
+      })
+      .then(r => r.json())
+      .then(res => {
+        ollamaBtn.disabled = false;
+        ollamaBtn.innerHTML = '✨ <span>Mit KI glätten</span>';
+        if (res.success && res.refined) {
+          document.getElementById('q-modal-answer').value = res.refined;
+          statusEl.textContent = '✅ Antwort erfolgreich mit KI formuliert.';
+          statusEl.style.color = '#10b981';
+        } else {
+          statusEl.textContent = '⚠️ KI-Antwort nicht verfügbar, Originaltext beibehalten.';
+          statusEl.style.color = '#f59e0b';
+        }
+      })
+      .catch(err => {
+        ollamaBtn.disabled = false;
+        ollamaBtn.innerHTML = '✨ <span>Mit KI glätten</span>';
+        statusEl.textContent = '⚠️ Verbindung zu Ollama fehlgeschlagen.';
+        statusEl.style.color = '#ef4444';
+      });
+    }
+
+    function json_payload(obj) {
+      return JSON.stringify(obj);
+    }
+
+    // Submit Answer to Odoo Chatter & Update Tags
+    function submitAnswer() {
+      const answer = document.getElementById('q-modal-answer').value.trim();
+      const statusEl = document.getElementById('q-modal-status');
+      const submitBtn = document.getElementById('q-submit-btn');
+
+      if (!answer) {
+        statusEl.textContent = '⚠️ Bitte eine Antwort eingeben.';
+        statusEl.style.color = '#f59e0b';
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '⏳ <span>Wird verarbeitet...</span>';
+      statusEl.textContent = '🚀 Übertrage in Odoo-Chatter (inkl. Ollama KI-Glättung auf OptiPlex)...';
+      statusEl.style.color = '#38bdf8';
+
+      fetch('/api/task/answer', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          task_id: currentQuestionTaskId,
+          answer: answer,
+          question: currentQuestionText,
+          use_ollama: true
+        })
+      })
+      .then(r => r.json())
+      .then(res => {
+        if (res.success) {
+          submitBtn.innerHTML = '✅ <span>Gespeichert!</span>';
+          submitBtn.style.background = '#059669';
+          statusEl.textContent = '✅ Antwort & Ollama KI-Zusammenfassung im Odoo-Chatter erfasst!';
+          statusEl.style.color = '#10b981';
+          
+          setTimeout(() => {
+            closeAnswerModal();
+            fetchTelemetry();
+          }, 1200);
+        } else {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '🚀 <span>Antwort senden</span>';
+          statusEl.textContent = `❌ Fehler: ${res.error || 'Speichern fehlgeschlagen'}`;
+          statusEl.style.color = '#ef4444';
+        }
+      })
+      .catch(err => {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '🚀 <span>Antwort senden</span>';
+        statusEl.textContent = `❌ Netzwerkfehler: ${err.message}`;
+        statusEl.style.color = '#ef4444';
+      });
+    }
+
+    // Run telemetry on load and every 20s
+    selectHub(currentHub);
     setInterval(fetchTelemetry, 20000);
 
     // ==========================================
@@ -1830,7 +3101,425 @@
     // Initialize Lock UI on load
     updateLockPillUI();
 
-</script>
+
+    // ==========================================
+    // PRO AZURACAST BROADCAST DASHBOARD LOGIC
+    // ==========================================
+    let radioNowPlayingData = null;
+    let radioElapsedSeconds = 0;
+    let radioDurationSeconds = 0;
+    let radioProgressTimer = null;
+    let radioVuTimer = null;
+    let radioIsMonitoring = false;
+    let radioSearchDebounce = null;
+
+    function formatTimeMmSs(sec) {
+      if (!sec || isNaN(sec) || sec < 0) return '00:00';
+      const m = Math.floor(sec / 60);
+      const s = Math.floor(sec % 60);
+      return (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+    }
+
+    function toggleRadioMonitor() {
+      const audio = document.getElementById('audio-stream');
+      const btn = document.getElementById('btn-monitor');
+      const art = document.getElementById('radio-hero-art');
+      if (!radioIsMonitoring) {
+        audio.play().then(() => {
+          radioIsMonitoring = true;
+          btn.innerHTML = '⏹️ MONITOR STOPPEN';
+          btn.classList.add('active');
+          if (art) art.classList.add('playing');
+        }).catch(err => {
+          console.warn('Playback error:', err);
+          alert('Hinweis: Audio-Wiedergabe erfordert Klick-Interaktion im Browser.');
+        });
+      } else {
+        audio.pause();
+        radioIsMonitoring = false;
+        btn.innerHTML = '▶️ MONITOR AN';
+        btn.classList.remove('active');
+        if (art) art.classList.remove('playing');
+      }
+    }
+
+    function fetchRadioNowPlaying() {
+      fetch('/api/radio/nowplaying')
+        .then(r => r.json())
+        .then(data => {
+          radioNowPlayingData = data;
+          updateRadioHero(data);
+        })
+        .catch(err => {
+          console.warn('Radio nowplaying fetch error:', err);
+        });
+    }
+
+    function updateRadioHero(data) {
+      if (!data) return;
+      const np = data.now_playing || {};
+      const song = np.song || {};
+      const listeners = (data.listeners && data.listeners.current !== undefined) ? data.listeners.current : 0;
+      
+      const hudL = document.getElementById('hud-listeners');
+      if (hudL) hudL.textContent = listeners;
+
+      const titleEl = document.getElementById('radio-hero-title');
+      const artistEl = document.getElementById('radio-hero-artist');
+      const albumEl = document.getElementById('radio-hero-album');
+      const playlistEl = document.getElementById('radio-hero-playlist');
+      const genreEl = document.getElementById('radio-genre-tag');
+      const artEl = document.getElementById('radio-hero-art');
+
+      if (titleEl) titleEl.textContent = song.title || 'FraWo Funk';
+      if (artistEl) artistEl.textContent = song.artist || 'Station 1';
+      if (albumEl) albumEl.textContent = (song.album ? song.album : 'AzuraCast 24/7 Live Stream');
+      if (playlistEl) playlistEl.textContent = (np.playlist ? np.playlist : 'AutoDJ Rotation');
+      if (genreEl) genreEl.textContent = (song.genre ? `${song.genre} · FraWo Funk` : 'FraWo Funk · 24/7 High Quality Audio');
+
+      if (artEl && song.art) {
+        const cleanArt = song.art.replace('http://10.1.0.38', 'https://funk.frawo.tech').replace('https://10.1.0.38', 'https://funk.frawo.tech');
+        if (artEl.src !== cleanArt) {
+          artEl.src = cleanArt;
+        }
+      }
+
+      radioDurationSeconds = parseInt(np.duration || song.duration || 0);
+      radioElapsedSeconds = parseInt(np.elapsed || 0);
+      updateRadioTimelineUI();
+    }
+
+    function updateRadioTimelineUI() {
+      const fillEl = document.getElementById('radio-progress-fill');
+      const elEl = document.getElementById('radio-time-elapsed');
+      const durEl = document.getElementById('radio-time-duration');
+      const remEl = document.getElementById('radio-time-remaining');
+
+      if (elEl) elEl.textContent = formatTimeMmSs(radioElapsedSeconds);
+      if (durEl) durEl.textContent = formatTimeMmSs(radioDurationSeconds);
+
+      if (radioDurationSeconds > 0) {
+        const pct = Math.min(100, Math.max(0, (radioElapsedSeconds / radioDurationSeconds) * 100));
+        if (fillEl) fillEl.style.width = pct + '%';
+        const rem = Math.max(0, radioDurationSeconds - radioElapsedSeconds);
+        if (remEl) remEl.textContent = `⏳ noch ${formatTimeMmSs(rem)} min`;
+      } else {
+        if (fillEl) fillEl.style.width = '100%';
+        if (remEl) remEl.textContent = '🔴 LIVE';
+      }
+    }
+
+    function fetchRadioQueue() {
+      fetch('/api/radio/queue')
+        .then(r => r.json())
+        .then(data => {
+          const list = document.getElementById('radio-queue-list');
+          const countEl = document.getElementById('queue-count');
+          if (!list) return;
+          const queue = data.queue || [];
+          if (countEl) countEl.textContent = `${queue.length} Titel`;
+          if (!queue.length) {
+            list.innerHTML = '<li style="color:#64748b; font-size:12.5px; text-align:center; padding:10px;">Keine anstehenden Titel in der Warteschlange.</li>';
+            return;
+          }
+          let html = '';
+          queue.forEach(item => {
+            const art = item.art || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 24 24' fill='none' stroke='%2338bdf8' stroke-width='1.5'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3C/svg%3E";
+            const pl = item.playlist || 'AutoDJ';
+            html += `
+              <li class="flow-item">
+                <img class="flow-thumb" src="${art}" alt="Art">
+                <div class="flow-info">
+                  <div class="flow-song-title">${item.title}</div>
+                  <div class="flow-song-artist">${item.artist} · ${formatTimeMmSs(item.duration)}</div>
+                </div>
+                <span class="flow-tag">${pl}</span>
+              </li>
+            `;
+          });
+          list.innerHTML = html;
+        })
+        .catch(err => {
+          console.warn('Queue fetch error:', err);
+        });
+    }
+
+    function fetchRadioHistory() {
+      fetch('/api/radio/history')
+        .then(r => r.json())
+        .then(data => {
+          const list = document.getElementById('radio-history-list');
+          if (!list) return;
+          const history = data.history || [];
+          if (!history.length) {
+            list.innerHTML = '<li style="color:#64748b; font-size:12.5px; text-align:center; padding:10px;">Keine Historie vorhanden.</li>';
+            return;
+          }
+          let html = '';
+          history.slice(0, 5).forEach(item => {
+            const art = item.art || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 24 24' fill='none' stroke='%2338bdf8' stroke-width='1.5'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3C/svg%3E";
+            const pl = item.playlist || 'AutoDJ';
+            html += `
+              <li class="flow-item">
+                <img class="flow-thumb" src="${art}" alt="Art">
+                <div class="flow-info">
+                  <div class="flow-song-title">${item.title}</div>
+                  <div class="flow-song-artist">${item.artist}</div>
+                </div>
+                <span class="flow-tag" style="background:rgba(255,255,255,0.06); color:#94a3b8;">${pl}</span>
+              </li>
+            `;
+          });
+          list.innerHTML = html;
+        })
+        .catch(err => {
+          console.warn('History fetch error:', err);
+        });
+    }
+
+    function fetchRadioPlaylists() {
+      fetch('/api/radio/playlists')
+        .then(r => r.json())
+        .then(data => {
+          const grid = document.getElementById('radio-playlists-grid');
+          if (!grid) return;
+          const pls = data.playlists || [];
+          if (!pls.length) {
+            grid.innerHTML = '<div style="color:#64748b; padding:10px;">Keine Playlisten gefunden.</div>';
+            return;
+          }
+          let html = '';
+          pls.forEach(p => {
+            const isDis = !p.is_enabled;
+            html += `
+              <div class="pl-card ${isDis ? 'disabled' : ''}" id="pl-card-${p.id}">
+                <div class="pl-top">
+                  <span class="pl-name" title="${p.name}">${p.name}</span>
+                  <button class="pl-toggle" onclick="togglePlaylistActive(${p.id}, ${!p.is_enabled})">
+                    ${p.is_enabled ? '🟢' : '⚪'}
+                  </button>
+                </div>
+                <div class="pl-bottom">
+                  <div class="pl-slider-box">
+                    <span>W:</span>
+                    <input type="range" class="pl-slider" min="1" max="25" value="${p.weight}" 
+                           onchange="updatePlaylistWeight(${p.id}, this.value)"
+                           oninput="document.getElementById('pl-weight-val-${p.id}').textContent = this.value">
+                    <span class="pl-weight-badge" id="pl-weight-val-${p.id}">${p.weight}</span>
+                  </div>
+                  <span>${p.num_songs || 0} Songs</span>
+                </div>
+              </div>
+            `;
+          });
+          grid.innerHTML = html;
+        })
+        .catch(err => {
+          console.warn('Playlists fetch error:', err);
+        });
+    }
+
+    function radioSkipTrack() {
+      if (!confirm('Aktuellen Song wirklich überspringen?')) return;
+      fetch('/api/radio/skip', { method: 'POST' })
+        .then(r => r.json())
+        .then(res => {
+          setTimeout(() => {
+            radioRefreshDashboard();
+          }, 800);
+        })
+        .catch(err => {
+          alert('Fehler beim Überspringen: ' + err);
+        });
+    }
+
+    function radioVoteTrack(vtype) {
+      if (!radioNowPlayingData || !radioNowPlayingData.now_playing || !radioNowPlayingData.now_playing.song) return;
+      const songId = radioNowPlayingData.now_playing.song.id;
+      fetch('/radio/vote', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ params: { song_id: songId, vote_type: vtype } })
+      }).then(() => {
+        alert(vtype === 'love' ? '💖 Vote erfasst! Vielen Dank.' : 'Vote erfasst.');
+      }).catch(e => console.warn(e));
+    }
+
+    function radioDropStationID() {
+      fetch('/api/radio/search?query=Station+ID')
+        .then(r => r.json())
+        .then(data => {
+          const tracks = data.tracks || [];
+          if (tracks.length > 0) {
+            radioRequestTrack(tracks[0].request_id, 'FraWo Station ID');
+          } else {
+            alert('Kein Station ID Jingle gefunden.');
+          }
+        })
+        .catch(e => console.warn(e));
+    }
+
+    function radioDropJingle(jingleName) {
+      fetch('/api/radio/search?query=' + encodeURIComponent(jingleName))
+        .then(r => r.json())
+        .then(data => {
+          const tracks = data.tracks || [];
+          if (tracks.length > 0) {
+            radioRequestTrack(tracks[0].request_id, jingleName);
+          } else {
+            alert('Jingle wird als Queue Drop vorgemerkt.');
+          }
+        })
+        .catch(e => console.warn(e));
+    }
+
+    function radioRequestTrack(reqId, title) {
+      fetch('/api/radio/request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ request_id: reqId })
+      })
+      .then(r => r.json())
+      .then(res => {
+        alert(res.message || `Track "${title || ''}" eingereiht!`);
+        fetchRadioQueue();
+      })
+      .catch(err => {
+        alert('Fehler beim Einreihen: ' + err);
+      });
+    }
+
+    function handleRadioSearch(q) {
+      clearTimeout(radioSearchDebounce);
+      const resContainer = document.getElementById('radio-search-results');
+      if (!q || q.trim().length < 2) {
+        if (resContainer) resContainer.innerHTML = '<div style="color:#64748b; font-size:12.5px; padding:8px; text-align:center;">Suchbegriff eingeben um Titel einzureihen.</div>';
+        return;
+      }
+      radioSearchDebounce = setTimeout(() => {
+        fetch('/api/radio/search?query=' + encodeURIComponent(q.trim()))
+          .then(r => r.json())
+          .then(data => {
+            if (!resContainer) return;
+            const tracks = data.tracks || [];
+            if (!tracks.length) {
+              resContainer.innerHTML = '<div style="color:#64748b; font-size:12.5px; padding:8px; text-align:center;">Keine Titel gefunden.</div>';
+              return;
+            }
+            let html = '';
+            tracks.slice(0, 8).forEach(t => {
+              html += `
+                <div class="search-result-item">
+                  <div style="min-width:0; flex:1;">
+                    <div style="font-size:13px; font-weight:700; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${t.title}</div>
+                    <div style="font-size:11.5px; color:#94a3b8; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${t.artist}</div>
+                  </div>
+                  <button class="btn-request" onclick="radioRequestTrack('${t.request_id}', '${t.title.replace(/'/g, "\'")}')">+ Einreihen</button>
+                </div>
+              `;
+            });
+            resContainer.innerHTML = html;
+          })
+          .catch(err => {
+            console.warn('Search error:', err);
+          });
+      }, 300);
+    }
+
+    function togglePlaylistActive(plId, enable) {
+      fetch('/api/radio/playlist/update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: plId, is_enabled: enable })
+      })
+      .then(r => r.json())
+      .then(res => {
+        fetchRadioPlaylists();
+      })
+      .catch(err => alert('Fehler beim Aktualisieren: ' + err));
+    }
+
+    function updatePlaylistWeight(plId, weight) {
+      fetch('/api/radio/playlist/update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: plId, weight: parseInt(weight) })
+      })
+      .catch(err => console.warn('Weight update error:', err));
+    }
+
+    function radioApplyPreset(presetName) {
+      const lbl = document.getElementById('preset-status-label');
+      if (lbl) lbl.textContent = '⏳ Wende an...';
+      fetch('/api/radio/preset/apply', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ preset: presetName })
+      })
+      .then(r => r.json())
+      .then(res => {
+        if (lbl) lbl.textContent = `✅ ${presetName.toUpperCase()} Aktiv`;
+        fetchRadioPlaylists();
+      })
+      .catch(err => {
+        if (lbl) lbl.textContent = '❌ Fehler';
+        alert('Preset Fehler: ' + err);
+      });
+    }
+
+    function radioRestartAutoDJ() {
+      if (!confirm('LiquidSoap AutoDJ Backend wirklich neu starten? (Kurzer Stream-Reload)')) return;
+      fetch('/api/radio/restart', { method: 'POST' })
+        .then(r => r.json())
+        .then(res => {
+          alert(res.message || 'AutoDJ erfolgreich neu gestartet!');
+          setTimeout(radioRefreshDashboard, 2000);
+        })
+        .catch(err => alert('Fehler beim Neustart: ' + err));
+    }
+
+    function radioRefreshDashboard() {
+      fetchRadioNowPlaying();
+      fetchRadioQueue();
+      fetchRadioHistory();
+      fetchRadioPlaylists();
+    }
+
+    function startRadioTimers() {
+      // 1. Second tick for live progress bar
+      if (radioProgressTimer) clearInterval(radioProgressTimer);
+      radioProgressTimer = setInterval(() => {
+        if (radioDurationSeconds > 0 && radioElapsedSeconds < radioDurationSeconds) {
+          radioElapsedSeconds++;
+          updateRadioTimelineUI();
+        }
+      }, 1000);
+
+      // 2. VU meter animation simulator
+      if (radioVuTimer) clearInterval(radioVuTimer);
+      radioVuTimer = setInterval(() => {
+        const vuL = document.getElementById('vu-l');
+        const vuR = document.getElementById('vu-r');
+        if (vuL && vuR) {
+          // Dynamic lively peak levels
+          const base = radioIsMonitoring ? 70 : 50;
+          const rndL = Math.min(95, Math.max(15, base + (Math.random() * 30 - 15)));
+          const rndR = Math.min(95, Math.max(15, base + (Math.random() * 30 - 15)));
+          vuL.style.width = rndL + '%';
+          vuR.style.width = rndR + '%';
+        }
+      }, 120);
+
+      // 3. Periodic API polling (every 6s)
+      setInterval(fetchRadioNowPlaying, 6000);
+      setInterval(fetchRadioQueue, 15000);
+    }
+
+    // Initialize Radio Dashboard
+    radioRefreshDashboard();
+    startRadioTimers();
+
+  </script>
 
   <!-- PIN MODAL FOR ADMIN UNLOCK -->
   <div id="pinModal" class="pin-modal-overlay" onclick="handleModalBackdrop(event)">
@@ -1861,6 +3550,48 @@
       </div>
 
       <div class="pin-error" id="pinError"></div>
+    </div>
+  </div>
+
+  <!-- INTERACTIVE QUESTION ANSWERING MODAL -->
+  <div id="questionModal" class="question-modal-overlay" onclick="handleQuestionModalBackdrop(event)">
+    <div class="question-dialog" onclick="event.stopPropagation()">
+      <div class="q-header">
+        <div>
+          <div class="q-title" id="q-modal-title">Frage zu Aufgabe</div>
+          <div class="q-proj" id="q-modal-proj">Projekt</div>
+        </div>
+        <button class="q-close-btn" onclick="closeAnswerModal()">✖</button>
+      </div>
+
+      <div class="q-box">
+        <div class="q-box-label">❓ Offene Frage(n):</div>
+        <div id="q-modal-question">Lade Frage...</div>
+      </div>
+
+      <div class="q-input-container">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <label style="font-size:12px; font-weight:700; color:var(--text-dim);">Deine Antwort:</label>
+          <span style="font-size:11px; color:#94a3b8;">Wird direkt im Odoo-Chatter erfasst</span>
+        </div>
+        <textarea id="q-modal-answer" class="q-textarea" placeholder="Antwort oder Stichpunkte hier eingeben oder per Mikrofon sprechen..."></textarea>
+      </div>
+
+      <div class="q-actions-bar">
+        <div style="display:flex; gap:8px;">
+          <button class="q-tool-btn" id="q-speech-btn" onclick="toggleSpeechRecognition()" title="Spracheingabe">
+            🎤 <span>Sprechen</span>
+          </button>
+          <button class="q-tool-btn" id="q-ollama-btn" onclick="refineWithOllama()" title="Mit lokalem LLM (OptiPlex) formulieren">
+            ✨ <span>Mit KI glätten</span>
+          </button>
+        </div>
+        <button class="q-submit-btn" id="q-submit-btn" onclick="submitAnswer()">
+          🚀 <span>Antwort senden</span>
+        </button>
+      </div>
+
+      <div class="q-status-msg" id="q-modal-status"></div>
     </div>
   </div>
 
