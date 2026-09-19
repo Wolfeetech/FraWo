@@ -35,7 +35,15 @@
     <field name="view_mode">list,form</field>
   </record>
 
+  <record id="action_frawo_ki" model="ir.actions.act_url">
+    <field name="name">🧠 FraWo KI (Ollama / WebUI)</field>
+    <field name="url">/ai/</field>
+    <field name="target">new</field>
+  </record>
+
   <menuitem id="menu_frawo_agent_root" name="🤖 Agent" sequence="95"/>
+  <menuitem id="menu_frawo_ki" name="🧠 FraWo KI"
+            parent="menu_frawo_agent_root" action="action_frawo_ki" sequence="5"/>
   <menuitem id="menu_agent_log" name="Logbuch"
             parent="menu_frawo_agent_root" action="action_agent_log" sequence="10"/>
 </odoo>
