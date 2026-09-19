@@ -3111,48 +3111,71 @@ function closeModalDirect() {{
             return request.make_response(f"<p style='color:#fff'>Fehler: {str(e)}</p>", status=500, headers=[('Content-Type', 'text/html')])
 
 
-    @http.route('/frawo/touch/api/summary', type='http', auth='none', methods=['GET'], cors='*', csrf=False, sitemap=False)
+    @http.route(['/frawo/touch/api/summary', '/api/telemetry'], type='http', auth='none', methods=['GET'], cors='*', csrf=False, sitemap=False)
     def touch_api_summary(self, **kwargs):
         """JSON summary for Surface Go Touchboard & Ambient Glanceable Display."""
-        import json, datetime
+        import json, datetime, re
         try:
             env = request.env(user=1)
+            hub = kwargs.get('hub', 'anker')
+            now_dt = datetime.datetime.now()
+            two_days_future = (now_dt + datetime.timedelta(days=2)).strftime('%Y-%m-%d %H:%M:%S')
 
-            # Franz tasks: strictly tasks assigned to Franz (user 10)
-            franz_records = env['project.task'].sudo().search([
+            # Franz tasks: strictly actionable tasks assigned to Franz (user 10)
+            # Exclude Project 104 future event tasks (>2 days away) unless explicitly 'In Arbeit'
+            franz_records = []
+            raw_franz = env['project.task'].sudo().search([
                 ('active', '=', True),
                 ('user_ids', 'in', [10]),
                 ('stage_id.name', 'in', ['📥 Als Nächstes', '🚀 In Arbeit (max 6)', 'In Arbeit', 'Als Nächstes'])
-            ], order='stage_id desc, write_date desc', limit=4)
+            ], order='stage_id desc, write_date desc', limit=10)
 
-            focus_franz = []
-            for t in franz_records:
+            for t in raw_franz:
+                # Exclude future event tasks (> 2 days) not yet in work
+                if t.project_id.id == 104 and t.date_deadline and str(t.date_deadline) > two_days_future and 'In Arbeit' not in (t.stage_id.name or ''):
+                    continue
                 clean_desc = re.sub(r'<[^>]+>', ' ', t.description or '').strip()
                 clean_desc = re.sub(r'\s+', ' ', clean_desc)[:110]
-                focus_franz.append({
+                franz_records.append({
                     "id": t.id,
                     "title": t.name,
                     "sub": clean_desc or (t.stage_id.name or ''),
                     "stage": t.stage_id.name or ''
                 })
+                if len(franz_records) >= 4:
+                    break
 
-            # Wolf tasks: Project 60 / 50 / 70 or assigned to Wolf (user 6 / 7)
-            wolf_records = env['project.task'].sudo().search([
+            focus_franz = franz_records
+
+            # Wolf tasks: filter by Hub scope
+            wolf_domain = [
                 ('active', '=', True),
-                ('user_ids', 'in', [6, 7]),
-                ('project_id.name', 'not ilike', 'Familie'),
                 ('stage_id.name', 'in', ['📥 Als Nächstes', '🚀 In Arbeit (max 6)', 'In Arbeit', 'Als Nächstes'])
-            ], order='stage_id desc, write_date desc', limit=4)
+            ]
+            if hub == 'stockenweiler':
+                # Strictly Projekt 90 / @stockenweiler
+                wolf_domain.extend(['|', ('project_id', '=', 106), ('tag_ids', 'in', [156])])
+            elif hub == 'villa':
+                # Rothkreuz 14 / Studio / Werkstatt / Business
+                wolf_domain.extend(['|', ('tag_ids', 'in', [155]), ('project_id', 'in', [159, 160, 161, 162, 163, 110])])
+            elif hub == 'jobs':
+                # Aufträge & Events
+                wolf_domain.extend([('project_id', '=', 104)])
+            else:
+                # Default 'anker': RK22a, IT & Infra, Server
+                wolf_domain.extend(['|', ('tag_ids', 'in', [154]), ('project_id', 'in', [105, 107])])
 
+            raw_wolf = env['project.task'].sudo().search(wolf_domain, order='stage_id desc, write_date desc', limit=4)
             focus_wolf = []
-            for t in wolf_records:
+            for t in raw_wolf:
                 clean_desc = re.sub(r'<[^>]+>', ' ', t.description or '').strip()
                 clean_desc = re.sub(r'\s+', ' ', clean_desc)[:110]
                 focus_wolf.append({
                     "id": t.id,
                     "title": t.name,
                     "sub": clean_desc or (t.stage_id.name or ''),
-                    "stage": t.stage_id.name or ''
+                    "stage": t.stage_id.name or '',
+                    "project": t.project_id.name if t.project_id else ''
                 })
 
             # Upcoming events: Project 10 (Aufträge & Events)
@@ -3160,7 +3183,7 @@ function closeModalDirect() {{
                 ('active', '=', True),
                 ('project_id.name', 'ilike', 'Aufträge'),
                 ('stage_id.name', 'not in', ['✅ Erledigt', '🗑️ Abgebrochen'])
-            ], order='date_deadline asc nulls last, id asc', limit=4)
+            ], order='date_deadline asc nulls last, id asc', limit=6)
 
             upcoming_events = []
             for ev in event_records:
@@ -3172,6 +3195,32 @@ function closeModalDirect() {{
                     "stage": ev.stage_id.name or ''
                 })
 
+            # Open questions for Wolf / Franz (Tag 153 '🙋 braucht Wolf')
+            q_tasks = env['project.task'].sudo().search([
+                ('active', '=', True),
+                ('tag_ids', 'in', [153]),
+                ('stage_id.name', 'not in', ['✅ Erledigt', '🗑️ Abgebrochen'])
+            ], order='priority desc, write_date desc', limit=8)
+
+            open_questions = []
+            for qt in q_tasks:
+                desc = qt.description or ''
+                q_text = ""
+                if "Offene Fragen" in desc or "Offene Frage" in desc:
+                    m = re.search(r'(?:<b>\s*Offene Fragen?:\s*</b>|<h3>\s*Offene Fragen?.*?</h3>)(.*?)(?:<h[1-4]>|<p><b>Fertig|$)', desc, re.DOTALL | re.IGNORECASE)
+                    if m:
+                        q_text = re.sub(r'<[^>]+>', ' ', m.group(1)).strip()
+                if not q_text:
+                    q_text = re.sub(r'<[^>]+>', ' ', desc).strip()[:180]
+
+                open_questions.append({
+                    "id": qt.id,
+                    "title": qt.name,
+                    "project": qt.project_id.name if qt.project_id else '',
+                    "question": q_text,
+                    "stage": qt.stage_id.name or ''
+                })
+
             # Today stats
             today_str = datetime.date.today().isoformat()
             ts = env['account.analytic.line'].sudo().search([('date', '=', today_str)])
@@ -3180,10 +3229,12 @@ function closeModalDirect() {{
             data = {
                 "success": True,
                 "timestamp": int(datetime.datetime.now().timestamp()),
+                "hub": hub,
                 "today_hours": today_hours,
                 "focus_franz": focus_franz,
                 "focus_wolf": focus_wolf,
-                "upcoming_events": upcoming_events
+                "upcoming_events": upcoming_events,
+                "open_questions": open_questions
             }
             return request.make_response(
                 json.dumps(data, ensure_ascii=False),
@@ -3200,4 +3251,172 @@ function closeModalDirect() {{
                 headers=[('Content-Type', 'application/json; charset=utf-8')],
                 status=500
             )
+
+
+    # ─────────────────────────────────────────────────────────────
+    # FraWo Hub (HTTPS Domain Access: https://frawo.tech/hub)
+    # ─────────────────────────────────────────────────────────────
+
+    @http.route(['/hub', '/frawo/hub', '/frawo/touch/hub'], type='http', auth='none', csrf=False, sitemap=False)
+    def frawo_hub_page(self, **kwargs):
+        """Serves FraWo Hub directly via HTTPS (https://frawo.tech/hub)."""
+        import os
+        try:
+            view_path = os.path.join(os.path.dirname(__file__), '..', 'views', 'frawo_hub.html')
+            if not os.path.exists(view_path):
+                # Fallback to surface deployment path
+                view_path = os.path.join(os.path.dirname(__file__), '..', '..', '..', 'deployments', 'surface', 'frawo_anker_hub.html')
+            
+            if os.path.exists(view_path):
+                with open(view_path, 'r', encoding='utf-8') as f:
+                    content = f.read()
+                return request.make_response(
+                    content,
+                    headers=[
+                        ('Content-Type', 'text/html; charset=utf-8'),
+                        ('Cache-Control', 'no-cache, no-store, must-revalidate')
+                    ]
+                )
+            return request.make_response("<p>FraWo Hub Template nicht gefunden.</p>", status=404, headers=[('Content-Type', 'text/html')])
+        except Exception as e:
+            _logger.error("frawo_hub_page error: %s", str(e))
+            return request.make_response(f"<p>Fehler beim Laden des Hubs: {str(e)}</p>", status=500, headers=[('Content-Type', 'text/html')])
+
+
+    @http.route('/api/task/answer', type='http', auth='none', methods=['POST'], csrf=False, cors='*', sitemap=False)
+    def api_task_answer(self, **kwargs):
+        """Processes question answers directly from the Hub into Odoo chatter and sets Tag 160."""
+        import json
+        try:
+            body = request.httprequest.data.decode('utf-8')
+            data = json.loads(body)
+            task_id = int(data.get('task_id', 0))
+            raw_answer = data.get('answer', '').strip()
+            use_ollama = bool(data.get('use_ollama', False))
+            question = data.get('question', '')
+
+            if not task_id or not raw_answer:
+                return request.make_response(
+                    json.dumps({"success": False, "error": "task_id und answer sind erforderlich"}),
+                    headers=[('Content-Type', 'application/json; charset=utf-8')],
+                    status=400
+                )
+
+            final_answer = raw_answer
+            if use_ollama:
+                try:
+                    import urllib.request
+                    prompt = (
+                        "Du bist der KI-Assistent im FraWo-Betrieb. "
+                        "Formuliere die Antwort von Wolf Prinz zu einer offenen Frage "
+                        "in eine präzise, sachliche, kurze Antwort (1-2 Sätze) für den Odoo-Chatter um. "
+                        "Regel: Nur Fakten, keine Floskeln.\n\n"
+                        f"Frage: {question}\n"
+                        f"Wolfs Notiz: {raw_answer}\n\n"
+                        "Formulierte Antwort:"
+                    )
+                    payload = json.dumps({
+                        "model": "frawo-mitarbeiter-fast:latest",
+                        "prompt": prompt,
+                        "stream": False,
+                        "options": {"temperature": 0.2, "top_p": 0.9}
+                    }).encode('utf-8')
+                    req = urllib.request.Request("http://10.1.0.227:11434/api/generate", data=payload, headers={"Content-Type": "application/json"})
+                    with urllib.request.urlopen(req, timeout=5.0) as resp:
+                        if resp.status == 200:
+                            res_data = json.loads(resp.read().decode('utf-8'))
+                            refined = res_data.get('response', '').strip()
+                            if refined:
+                                final_answer = refined
+                except Exception as oe:
+                    _logger.warning("Ollama refine fallback: %s", str(oe))
+
+            env = request.env(user=1)
+            task = env['project.task'].sudo().browse(task_id)
+            if not task.exists():
+                return request.make_response(
+                    json.dumps({"success": False, "error": f"Task #{task_id} existiert nicht"}),
+                    headers=[('Content-Type', 'application/json; charset=utf-8')],
+                    status=404
+                )
+
+            # 1. Post chatter message
+            chatter_body = f"<p><b>Antwort von Wolf (via FraWo Hub):</b><br>{final_answer}</p>"
+            task.message_post(
+                body=chatter_body,
+                message_type='comment',
+                subtype_xmlid='mail.mt_comment'
+            )
+
+            # 2. Update tags: remove 153 ('🙋 braucht Wolf'), add 160 ('✅ beantwortet')
+            new_tags = [t.id for t in task.tag_ids if t.id != 153]
+            if 160 not in new_tags:
+                new_tags.append(160)
+            task.write({'tag_ids': [(6, 0, new_tags)]})
+
+            return request.make_response(
+                json.dumps({
+                    "success": True,
+                    "task_id": task_id,
+                    "answer": final_answer,
+                    "message": "Erfolgreich in Odoo erfasst & Tag '✅ beantwortet' gesetzt."
+                }),
+                headers=[('Content-Type', 'application/json; charset=utf-8')]
+            )
+        except Exception as e:
+            _logger.error("api_task_answer error: %s", str(e))
+            return request.make_response(
+                json.dumps({"success": False, "error": str(e)}),
+                headers=[('Content-Type', 'application/json; charset=utf-8')],
+                status=500
+            )
+
+
+    @http.route('/api/ollama/refine', type='http', auth='none', methods=['POST'], csrf=False, cors='*', sitemap=False)
+    def api_ollama_refine(self, **kwargs):
+        """Refines text with local Ollama on OptiPlex (10.1.0.227:11434)."""
+        import json, urllib.request
+        try:
+            body = request.httprequest.data.decode('utf-8')
+            data = json.loads(body)
+            question = data.get('question', '')
+            raw_answer = data.get('answer', '')
+
+            prompt = (
+                "Du bist der KI-Assistent im FraWo-Betrieb. "
+                "Formuliere die folgende stichpunktartige Antwort von Wolf Prinz zu einer offenen Frage "
+                "in eine präzise, sachliche, kurze Antwort (1-2 Sätze) für den Odoo-Chatter um. "
+                "Regel: Nur Fakten, keine Floskeln, kein 'Hallo/Tschüss'.\n\n"
+                f"Frage: {question}\n"
+                f"Wolfs Notiz: {raw_answer}\n\n"
+                "Formulierte Antwort:"
+            )
+            payload = json.dumps({
+                "model": "frawo-mitarbeiter-fast:latest",
+                "prompt": prompt,
+                "stream": False,
+                "options": {"temperature": 0.2, "top_p": 0.9}
+            }).encode('utf-8')
+            req = urllib.request.Request("http://10.1.0.227:11434/api/generate", data=payload, headers={"Content-Type": "application/json"})
+            with urllib.request.urlopen(req, timeout=6.0) as resp:
+                if resp.status == 200:
+                    res_data = json.loads(resp.read().decode('utf-8'))
+                    refined = res_data.get('response', '').strip()
+                    return request.make_response(
+                        json.dumps({"success": True, "refined": refined}),
+                        headers=[('Content-Type', 'application/json; charset=utf-8')]
+                    )
+            return request.make_response(
+                json.dumps({"success": False, "error": "Ollama antwortete nicht mit 200"}),
+                headers=[('Content-Type', 'application/json; charset=utf-8')],
+                status=502
+            )
+        except Exception as e:
+            _logger.error("api_ollama_refine error: %s", str(e))
+            return request.make_response(
+                json.dumps({"success": False, "error": str(e)}),
+                headers=[('Content-Type', 'application/json; charset=utf-8')],
+                status=500
+            )
+
 

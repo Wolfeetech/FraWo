@@ -36,9 +36,10 @@ Kopie im Repo: `INFRA.md`
 | **240** | anker-pve | `PBS-FraWo` | `10.1.0.7` | 8007 (PBS API/Web) | Proxmox Backup Server |
 | **300** | anker-pve | `nextcloud` | `10.1.0.21` | 80 / 443 | Cloud Storage (`cloud.frawo.tech`) |
 | **360** | stock-pve | `homeassistant-eltern` | `10.1.0.248` | 8123 (Home Assistant) | **Smart Home Alois (Stockenweiler)** — aktiv, WireGuard-VPN nach `192.168.178.0/24` |
+| **—** | OptiPlex 7050 | `frawo-ai-worker` | `10.1.0.227` / `10.0.0.227` | 11434 (Ollama) | **FraWo On-Premises KI (24/7 Mitarbeiter, Employee #13)** — Qwen 2.5 7B (`frawo-mitarbeiter`) & 3B (`frawo-mitarbeiter-fast`), persistently resident in RAM |
 
-### Ruhende / Vorbereitete Dienste
-- **Dell OptiPlex 7050:** Wartet auf Netzteil-Lieferung (~15.09.), Onboarding-Bootstrap vorbereitet (`scripts/optiplex_7050_bootstrap.sh`).
+### Hinweise zu Speichermounts & Radio
+- **AzuraCast VM 210/220 (`10.1.0.38`):** Bind-Mount `/mnt/library` (`//10.1.0.94/music`) mit `:rslave`. In AzuraCast-Konfiguration muss `enable_auto_cue: false` bleiben, da synchrone Lautheitsanalysen über CIFS das 29s-Liquidsoap-Timeout überschreiten.
 
 ---
 
