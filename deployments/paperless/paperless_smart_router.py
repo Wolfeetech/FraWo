@@ -190,7 +190,7 @@ def call_ollama(text, title_str):
         "options": {"temperature": 0.1},
     }).encode("utf-8")
     req = urllib.request.Request(url, data=body, headers={"Content-Type": "application/json"})
-    with urllib.request.urlopen(req, timeout=60) as r:
+    with urllib.request.urlopen(req, timeout=120) as r:
         raw = json.loads(r.read().decode("utf-8"))
         res_text = raw.get("response", "")
         return json.loads(res_text)
