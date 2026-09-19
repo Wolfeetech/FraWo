@@ -1992,6 +1992,9 @@
       }
       document.getElementById('q-modal-answer').value = '';
       document.getElementById('q-modal-status').textContent = '';
+      const rBox = document.getElementById('q-research-container');
+      if (rBox) rBox.style.display = 'none';
+      lastResearchSummary = '';
       document.getElementById('q-submit-btn').disabled = false;
       document.getElementById('q-submit-btn').innerHTML = '🚀 <span>Antwort senden</span>';
 
@@ -2144,8 +2147,8 @@
       }
 
       submitBtn.disabled = true;
-      submitBtn.innerHTML = '⏳ <span>Wird gespeichert...</span>';
-      statusEl.textContent = '🚀 Übertrage in Odoo-Chatter und setze Tag „✅ beantwortet"...';
+      submitBtn.innerHTML = '⏳ <span>Wird verarbeitet...</span>';
+      statusEl.textContent = '🚀 Übertrage in Odoo-Chatter (inkl. Ollama KI-Glättung auf OptiPlex)...';
       statusEl.style.color = '#38bdf8';
 
       fetch('/api/task/answer', {
@@ -2155,7 +2158,7 @@
           task_id: currentQuestionTaskId,
           answer: answer,
           question: currentQuestionText,
-          use_ollama: false
+          use_ollama: true
         })
       })
       .then(r => r.json())
@@ -2163,7 +2166,7 @@
         if (res.success) {
           submitBtn.innerHTML = '✅ <span>Gespeichert!</span>';
           submitBtn.style.background = '#059669';
-          statusEl.textContent = '✅ Antwort im Odoo-Chatter erfasst & Tag „✅ beantwortet" gesetzt!';
+          statusEl.textContent = '✅ Antwort & Ollama KI-Zusammenfassung im Odoo-Chatter erfasst!';
           statusEl.style.color = '#10b981';
           
           setTimeout(() => {

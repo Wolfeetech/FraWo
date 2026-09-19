@@ -3312,7 +3312,7 @@ function closeModalDirect() {{
     # FraWo Touch / Kiosk: Radio Control Endpoints
     # ─────────────────────────────────────────────────────────────
 
-    @http.route('/frawo/touch/api/radio/skip', type='http', auth='none', methods=['POST', 'GET'], cors='*', csrf=False, sitemap=False)
+    @http.route(['/frawo/touch/api/radio/skip', '/api/radio/skip'], type='http', auth='none', methods=['POST', 'GET'], cors='*', csrf=False, sitemap=False)
     def touch_radio_skip(self, **kwargs):
         """Skip currently playing track on AzuraCast station 1."""
         try:
@@ -3354,7 +3354,7 @@ function closeModalDirect() {{
                 status=500
             )
 
-    @http.route('/frawo/touch/api/radio/playlists', type='http', auth='none', methods=['GET'], cors='*', csrf=False, sitemap=False)
+    @http.route(['/frawo/touch/api/radio/playlists', '/api/radio/playlists'], type='http', auth='none', methods=['GET'], cors='*', csrf=False, sitemap=False)
     def touch_radio_playlists(self, **kwargs):
         """List station playlists with status and weights."""
         try:
@@ -3402,7 +3402,7 @@ function closeModalDirect() {{
                 status=500
             )
 
-    @http.route('/frawo/touch/api/radio/playlist/update', type='http', auth='none', methods=['POST'], cors='*', csrf=False, sitemap=False)
+    @http.route(['/frawo/touch/api/radio/playlist/update', '/api/radio/playlist/update'], type='http', auth='none', methods=['POST'], cors='*', csrf=False, sitemap=False)
     def touch_radio_playlist_update(self, **kwargs):
         """Update playlist is_enabled or weight."""
         try:
@@ -3470,7 +3470,7 @@ function closeModalDirect() {{
                 status=500
             )
 
-    @http.route('/frawo/touch/api/radio/search', type='http', auth='none', methods=['POST', 'GET'], cors='*', csrf=False, sitemap=False)
+    @http.route(['/frawo/touch/api/radio/search', '/api/radio/search'], type='http', auth='none', methods=['POST', 'GET'], cors='*', csrf=False, sitemap=False)
     def touch_radio_search(self, **kwargs):
         """Search requestable tracks in AzuraCast library."""
         try:
@@ -3532,7 +3532,7 @@ function closeModalDirect() {{
                 status=500
             )
 
-    @http.route('/frawo/touch/api/radio/request', type='http', auth='none', methods=['POST'], cors='*', csrf=False, sitemap=False)
+    @http.route(['/frawo/touch/api/radio/request', '/api/radio/request'], type='http', auth='none', methods=['POST'], cors='*', csrf=False, sitemap=False)
     def touch_radio_request(self, **kwargs):
         """Enqueue a requested song on AzuraCast station 1."""
         try:
@@ -3626,7 +3626,7 @@ function closeModalDirect() {{
             data = json.loads(body)
             task_id = int(data.get('task_id', 0))
             raw_answer = data.get('answer', '').strip()
-            use_ollama = bool(data.get('use_ollama', False))
+            use_ollama = bool(data.get('use_ollama', True))
             question = data.get('question', '')
 
             if not task_id or not raw_answer:
@@ -3636,7 +3636,7 @@ function closeModalDirect() {{
                     status=400
                 )
 
-            final_answer = raw_answer
+            refined_answer = None
             if use_ollama:
                 try:
                     import urllib.request
@@ -3644,7 +3644,7 @@ function closeModalDirect() {{
                         "Du bist der KI-Assistent im FraWo-Betrieb. "
                         "Formuliere die Antwort von Wolf Prinz zu einer offenen Frage "
                         "in eine präzise, sachliche, kurze Antwort (1-2 Sätze) für den Odoo-Chatter um. "
-                        "Regel: Nur Fakten, keine Floskeln.\n\n"
+                        "Regel: Nur Fakten, keine Floskeln, kein Hallo/Tschüss.\n\n"
                         f"Frage: {question}\n"
                         f"Wolfs Notiz: {raw_answer}\n\n"
                         "Formulierte Antwort:"
@@ -3656,12 +3656,12 @@ function closeModalDirect() {{
                         "options": {"temperature": 0.2, "top_p": 0.9}
                     }).encode('utf-8')
                     req = urllib.request.Request("http://10.1.0.227:11434/api/generate", data=payload, headers={"Content-Type": "application/json"})
-                    with urllib.request.urlopen(req, timeout=5.0) as resp:
+                    with urllib.request.urlopen(req, timeout=6.0) as resp:
                         if resp.status == 200:
                             res_data = json.loads(resp.read().decode('utf-8'))
                             refined = res_data.get('response', '').strip()
                             if refined:
-                                final_answer = refined
+                                refined_answer = refined
                 except Exception as oe:
                     _logger.warning("Ollama refine fallback: %s", str(oe))
 
@@ -3674,8 +3674,15 @@ function closeModalDirect() {{
                     status=404
                 )
 
-            # 1. Post chatter message
-            chatter_body = f"<p><b>Antwort von Wolf (via FraWo Hub):</b><br>{final_answer}</p>"
+            # 1. Post chatter message with both original note and Ollama refined summary
+            if refined_answer and refined_answer != raw_answer:
+                chatter_body = (
+                    f"<p><b>Antwort von Wolf (via FraWo Hub):</b><br>{raw_answer}</p>"
+                    f"<p>🤖 <b>Ollama KI-Strukturierung (OptiPlex 10.1.0.227):</b><br>{refined_answer}</p>"
+                )
+            else:
+                chatter_body = f"<p><b>Antwort von Wolf (via FraWo Hub):</b><br>{raw_answer}</p>"
+
             task.message_post(
                 body=chatter_body,
                 message_type='comment',
@@ -3688,6 +3695,7 @@ function closeModalDirect() {{
                 new_tags.append(160)
             task.write({'tag_ids': [(6, 0, new_tags)]})
 
+            final_answer = refined_answer or raw_answer
             return request.make_response(
                 json.dumps({
                     "success": True,
@@ -3752,5 +3760,108 @@ function closeModalDirect() {{
                 headers=[('Content-Type', 'application/json; charset=utf-8')],
                 status=500
             )
+
+
+    @http.route('/api/web/research', type='http', auth='none', methods=['POST'], csrf=False, cors='*', sitemap=False)
+    def api_web_research(self, **kwargs):
+        """Searches the web via DuckDuckGo and synthesizes the findings with local Ollama on OptiPlex."""
+        import json, urllib.request, urllib.parse, re, html
+        try:
+            body = request.httprequest.data.decode('utf-8')
+            data = json.loads(body)
+            query = data.get('query', '').strip()
+
+            if not query:
+                return request.make_response(
+                    json.dumps({"success": False, "error": "Suchbegriff / Frage erforderlich"}),
+                    headers=[('Content-Type', 'application/json; charset=utf-8')],
+                    status=400
+                )
+
+            # 1. Search DuckDuckGo Lite
+            url = "https://lite.duckduckgo.com/lite/"
+            payload = urllib.parse.urlencode({"q": query}).encode("utf-8")
+            req = urllib.request.Request(url, data=payload, headers={
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                "Content-Type": "application/x-www-form-urlencoded"
+            })
+            
+            search_results = []
+            try:
+                with urllib.request.urlopen(req, timeout=6.0) as resp:
+                    content = resp.read().decode("utf-8", errors="ignore")
+                
+                links = re.findall(r"<a[^>]+class=['\"]result-link['\"][^>]*href=['\"]([^'\"]+)['\"][^>]*>(.*?)</a>", content)
+                snippets = re.findall(r"<td[^>]+class=['\"]result-snippet['\"][^>]*>(.*?)</td>", content, re.DOTALL)
+                
+                for i in range(min(len(links), len(snippets), 4)):
+                    href, raw_t = links[i]
+                    t = re.sub(r"<[^>]+>", "", raw_t).strip()
+                    s = re.sub(r"<[^>]+>", "", snippets[i]).strip()
+                    search_results.append({
+                        "title": html.unescape(t),
+                        "url": href,
+                        "snippet": html.unescape(s)
+                    })
+            except Exception as se:
+                _logger.warning("DuckDuckGo search error: %s", str(se))
+
+            if not search_results:
+                return request.make_response(
+                    json.dumps({"success": False, "error": "Keine Suchergebnisse gefunden oder Timeout."}),
+                    headers=[('Content-Type', 'application/json; charset=utf-8')],
+                    status=502
+                )
+
+            # 2. Synthesize with Ollama on OptiPlex (10.1.0.227:11434)
+            snippets_text = "\n\n".join([
+                f"- Titel: {r['title']}\n  Quelle: {r['url']}\n  Auszug: {r['snippet']}"
+                for r in search_results
+            ])
+            
+            prompt = (
+                "Du bist der KI-Recherche-Assistent im FraWo-Betrieb. "
+                "Fasse die folgenden Web-Suchergebnisse zu der Frage/Aufgabe präzise, sachlich und kompakt zusammen (maximal 2-3 Sätze). "
+                "Nenne konkrete Fakten, Zahlen, Spezifikationen oder Preise falls vorhanden. "
+                "Regel: Nur Fakten, keine Begrüßung, kein Konjunktiv, keine Floskeln.\n\n"
+                f"Suchanfrage / Frage: {query}\n\n"
+                f"Suchergebnisse aus dem Web:\n{snippets_text}\n\n"
+                "Kompakte Recherche-Zusammenfassung:"
+            )
+
+            ollama_summary = ""
+            try:
+                ollama_payload = json.dumps({
+                    "model": "frawo-mitarbeiter-fast:latest",
+                    "prompt": prompt,
+                    "stream": False,
+                    "options": {"temperature": 0.2, "top_p": 0.9}
+                }).encode('utf-8')
+                ollama_req = urllib.request.Request("http://10.1.0.227:11434/api/generate", data=ollama_payload, headers={"Content-Type": "application/json"})
+                with urllib.request.urlopen(ollama_req, timeout=8.0) as o_resp:
+                    if o_resp.status == 200:
+                        o_data = json.loads(o_resp.read().decode('utf-8'))
+                        ollama_summary = o_data.get('response', '').strip()
+            except Exception as oe:
+                _logger.warning("Ollama web synthesis error: %s", str(oe))
+                ollama_summary = search_results[0]['snippet']
+
+            return request.make_response(
+                json.dumps({
+                    "success": True,
+                    "query": query,
+                    "summary": ollama_summary,
+                    "results": search_results
+                }),
+                headers=[('Content-Type', 'application/json; charset=utf-8')]
+            )
+        except Exception as e:
+            _logger.error("api_web_research error: %s", str(e))
+            return request.make_response(
+                json.dumps({"success": False, "error": str(e)}),
+                headers=[('Content-Type', 'application/json; charset=utf-8')],
+                status=500
+            )
+
 
 
