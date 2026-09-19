@@ -2061,48 +2061,24 @@
       </div>
     </div>
 
-    <!-- TAB 2: WOHNZIMMER -->
+    <!-- TAB 2: WOHNZIMMER & SMART HOME -->
     <div class="tab-pane" id="tab-wohnzimmer">
-      <div class="grid-2">
-        <div class="card">
-          <div>
-            <div class="card-header">
-              <div class="card-title">📺 TV &amp; Studio-Bildschirm</div>
-              <span class="badge badge-green" id="screen-badge">Shelly 10.4.0.10</span>
-            </div>
-            <div class="card-body">
-              Schaltet den Stromkreis des großen Displays im Studio/Wohnzimmer.<br>
-              Aktueller Verbrauch: <b id="screen-power-val">88 W</b>.
-            </div>
+      <div style="display:flex; flex-direction:column; gap:14px; height:100%;">
+        <!-- Quick Control Bar -->
+        <div style="display:flex; gap:12px; align-items:center; justify-content:space-between; background:var(--card-bg); border:1px solid var(--card-border); border-radius:14px; padding:10px 16px;">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <span style="font-weight:700; color:#fff; font-size:14px;">📺 TV &amp; Studio-Bildschirm:</span>
+            <span class="badge badge-green" id="screen-badge">Shelly 10.4.0.10 (<span id="screen-power-val">88 W</span>)</span>
           </div>
-          <button class="btn-touch btn-danger" id="screen-toggle-btn" onclick="toggleScreenShelly()">📺 Bildschirm Schalten</button>
+          <div style="display:flex; gap:10px;">
+            <button class="btn-touch btn-danger" style="padding:7px 16px; font-size:13px;" id="screen-toggle-btn" onclick="toggleScreenShelly()">📺 Schalten</button>
+            <a href="http://10.1.0.40:8123" target="_blank" class="btn-touch btn-dark" style="padding:7px 14px; font-size:13px;">↗️ Vollbild öffnen</a>
+          </div>
         </div>
 
-        <div class="card">
-          <div>
-            <div class="card-header">
-              <div class="card-title">📺 Smart-TV (Thomson)</div>
-              <span class="badge badge-yellow">Vorbereitung</span>
-            </div>
-            <div class="card-body">
-              <b>#1425: Steuerung vom Touchboard</b><br>
-              Senderwahl, Lautstärke &amp; HDMI-Eingänge direkt von diesem Tablet steuern.
-            </div>
-          </div>
-          <a href="https://frawo.tech/odoo/project/105/tasks/1425" class="btn-touch">TV-Aufgabe öffnen</a>
-        </div>
-
-        <div class="card">
-          <div>
-            <div class="card-header">
-              <div class="card-title">🏠 Home Assistant Steuerung</div>
-              <span class="badge badge-green">Lokal Aktiv</span>
-            </div>
-            <div class="card-body">
-              Vollständiges Haus-Dashboard für Beleuchtung, Heizung und Sensoren auf <code>10.1.0.40:8123</code>.
-            </div>
-          </div>
-          <a href="http://10.1.0.40:8123" class="btn-touch btn-green">Home Assistant öffnen</a>
+        <!-- Embedded Home Assistant View -->
+        <div style="flex:1; min-height:580px; border-radius:16px; overflow:hidden; border:1px solid var(--card-border); background:#0f172a; box-shadow:0 4px 16px rgba(0,0,0,0.3);">
+          <iframe id="ha-frame" src="http://10.1.0.40:8123" style="width:100%; height:580px; border:none;" allow="fullscreen"></iframe>
         </div>
       </div>
     </div>

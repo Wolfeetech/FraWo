@@ -203,7 +203,7 @@ class RadioController(http.Controller):
             return {"status": "error", "message": str(e)}
 
 
-    @http.route('/radio/nowplaying', type='http', auth='public', methods=['GET'], cors='*', csrf=False)
+    @http.route(['/frawo/touch/api/radio/nowplaying', '/api/radio/nowplaying', '/radio/nowplaying'], type='http', auth='public', methods=['GET'], cors='*', csrf=False)
     def radio_nowplaying_proxy(self, **kwargs):
         try:
             base_url, api_key = self._get_azuracast_config()
