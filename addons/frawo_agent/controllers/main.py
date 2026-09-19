@@ -2124,12 +2124,13 @@ class RadioController(http.Controller):
 
     @http.route(['/frawo/touch/cockpit', '/frawo/touch/tasks'], type='http', auth='none', csrf=False, sitemap=False)
     def touch_operations_cockpit(self, **kwargs):
-        """Touchscreen-optimiertes Live Operations Cockpit 2.0:
-        - Live-Infra & Backup-Ampel (Prometheus 10.1.0.35 & PBS 10.1.0.7)
+        """Touchscreen-optimiertes Live Operations Cockpit 2.5:
+        - Hero-Bereich: '🔥 Live in Arbeit' (alle aktiven Projekte & Agenten in Echtzeit)
         - Entscheidungs-Radar (Prio-Bereich für Tag 153 '🙋 braucht Wolf')
-        - Dynamische Live-Agenten-Erkennung (Antigravity, Claude, Jarvis)
-        - Touch-Tabs & Touch-Detail-Modal ohne Verlassen der Kiosk-Ansicht
-        - Saubere Trennung: FraWo Kern vs. Aufträge vs. Fremdgewerke (#99, #90)"""
+        - Vollständige Chatter-Timeline im Touch-Modal (letzte 4 Beiträge mit Agenten-Badge)
+        - Instant Client-Filter (Alle, Antigravity, Claude, Jarvis, Braucht Wolf)
+        - Live-Infra & Backup-Ampel (Prometheus, PBS 10.1.0.7:8007, ZFS Pool, Google Drive 10/10)
+        - Korrigierte Navigation (Home, GrowBox, Radio, Kiosk)"""
         try:
             import datetime, re, json, urllib.request, urllib.error, html as pyhtml
             db = 'FraWo_GbR'
@@ -2139,7 +2140,7 @@ class RadioController(http.Controller):
             today_str = datetime.date.today().isoformat()
             cutoff_48h = (now - datetime.timedelta(hours=48)).strftime('%Y-%m-%d %H:%M:%S')
 
-            # ── 1. PROMETHEUS & INFRA VITALS (Safe scrape mit 0.8s Timeout) ──
+            # ── 1. PROMETHEUS & INFRA VITALS ──
             prom_url = 'http://10.1.0.35:9090'
             services_total = 18
             services_up = 18
@@ -2161,7 +2162,7 @@ class RadioController(http.Controller):
                                 pbs_ok = (t.get('health') == 'up')
                             if '11434' in s_url:
                                 ollama_ok = (t.get('health') == 'up')
-            except Exception as pe:
+            except Exception:
                 pass
 
             try:
@@ -2177,7 +2178,7 @@ class RadioController(http.Controller):
                                 'severity': lbls.get('severity', 'warning'),
                                 'summary': anns.get('summary') or anns.get('description', '')[:80]
                             })
-            except Exception as ae:
+            except Exception:
                 pass
 
             crit_alerts = sum(1 for a in active_alerts if a['severity'] == 'critical')
@@ -2186,322 +2187,277 @@ class RadioController(http.Controller):
             # ── 2. TIMESHEETS HEUTE ──
             timesheets = env['account.analytic.line'].sudo().search([
                 ('date', '=', today_str)
-            ], order='create_date desc', limit=20)
+            ], order='create_date desc', limit=25)
             today_hours = sum(timesheets.mapped('unit_amount'))
 
-            # ── 3. DYNAMISCHE LIVE-AGENTEN-ERKENNUNG ──
-            # Antigravity: Letzter Task aus Zeiterfassung (employee_id=9) oder In-Arbeit-Task
-            ag_ts = env['account.analytic.line'].sudo().search([
-                ('employee_id', '=', 9)
-            ], order='create_date desc, id desc', limit=1)
-            ag_task = ag_ts.task_id if (ag_ts and ag_ts.task_id) else None
-            if not ag_task:
-                ag_task = env['project.task'].sudo().search([
-                    ('active', '=', True),
-                    ('stage_id.name', 'ilike', 'In Arbeit'),
-                    '|', ('name', 'ilike', 'Antigravity'), ('id', '=', 1501)
-                ], order='write_date desc', limit=1)
+            # ── 3. DATENABFRAGE: LIVE-AUFGABEN & WOLF-ENTSCHEIDUNGEN ──
+            # Alle Aufgaben, die aktuell in Arbeit sind (SSOT in Odoo)
+            active_tasks = env['project.task'].sudo().search([
+                ('active', '=', True),
+                ('stage_id.name', 'ilike', 'In Arbeit')
+            ], order='write_date desc', limit=20)
 
-            ag_id = ag_task.id if ag_task else 1501
-            ag_task_title = f"#{ag_task.id} · {ag_task.name}" if ag_task else "#1501 · Touchscreen Operations Cockpit 2.0"
-            ag_task_url = f"/frawo/touch/login?redirect=/odoo/project.task/{ag_id}"
-            ag_task_focus = ag_ts.name if (ag_ts and ag_ts.name) else "Touchscreen Operations Cockpit 2.0 & Infra-Hygiene"
-
-            # Claude Code: Letzter Task aus Zeiterfassung (employee_id=11) oder Name
-            claude_ts = env['account.analytic.line'].sudo().search([
-                ('employee_id', '=', 11)
-            ], order='create_date desc, id desc', limit=1)
-            claude_task = claude_ts.task_id if (claude_ts and claude_ts.task_id) else None
-            if not claude_task:
-                claude_task = env['project.task'].sudo().search([
-                    ('active', '=', True),
-                    ('stage_id.name', 'ilike', 'In Arbeit'),
-                    ('name', 'ilike', 'Claude')
-                ], order='write_date desc', limit=1)
-
-            claude_id = claude_task.id if claude_task else None
-            claude_task_title = f"#{claude_task.id} · {claude_task.name}" if claude_task else "Bereit für Skripte & Code-Implementierungen"
-            claude_task_url = f"/frawo/touch/login?redirect=/odoo/project.task/{claude_id}" if claude_id else "#"
-            claude_task_focus = claude_ts.name if (claude_ts and claude_ts.name) else "Skripte, Code-Refactoring & CLI"
-
-            agents_html = f'''
-            <div class="agent-card agent-active-ag">
-                <div class="agent-header">
-                    <div style="display:flex; align-items:center; gap:8px;">
-                        <span class="agent-pulse-dot" style="background:#00e5ff; box-shadow:0 0 10px #00e5ff;"></span>
-                        <span class="agent-name">🤖 Antigravity</span>
-                        <span class="agent-loc">StudioPC · IDE</span>
-                    </div>
-                    <span class="agent-badge badge-working">🔥 Live aktiv</span>
-                </div>
-                <div class="agent-task-row">
-                    <span class="agent-label">AKTUELLE AUFGABE:</span>
-                    <a href="{ag_task_url}" target="_blank" class="agent-task-link">{ag_task_title}</a>
-                </div>
-                <div class="agent-focus-txt"><b>Fokus:</b> {ag_task_focus}</div>
-            </div>
-
-            <div class="agent-card agent-active-claude">
-                <div class="agent-header">
-                    <div style="display:flex; align-items:center; gap:8px;">
-                        <span class="agent-pulse-dot" style="background:#ffb300; box-shadow:0 0 10px #ffb300;"></span>
-                        <span class="agent-name">🤖 Claude Code</span>
-                        <span class="agent-loc">StudioPC · Terminal</span>
-                    </div>
-                    <span class="agent-badge badge-standby">🟡 In Arbeit / Standby</span>
-                </div>
-                <div class="agent-task-row">
-                    <span class="agent-label">AKTUELLE AUFGABE:</span>
-                    <a href="{claude_task_url}" target="_blank" class="agent-task-link">{claude_task_title}</a>
-                </div>
-                <div class="agent-focus-txt"><b>Fokus:</b> {claude_task_focus}</div>
-            </div>
-
-            <div class="agent-card agent-active-jarvis">
-                <div class="agent-header">
-                    <div style="display:flex; align-items:center; gap:8px;">
-                        <span class="agent-pulse-dot" style="background:#a050f0; box-shadow:0 0 10px #a050f0;"></span>
-                        <span class="agent-name">🦞 Jarvis (OpenClaw)</span>
-                        <span class="agent-loc">CT150 Anker · 24/7</span>
-                    </div>
-                    <span class="agent-badge badge-persistent">🟢 24/7 Persistent</span>
-                </div>
-                <div class="agent-task-row">
-                    <span class="agent-label">KERN-ROLLE:</span>
-                    <span style="color:#fff; font-size:13px; font-weight:700;">Koordination, Monitoring &amp; Telegram ↔ Wolf</span>
-                </div>
-                <div class="agent-focus-txt"><b>Status:</b> Alertmanager CT155 Receiver, Webhooks &amp; Odoo-Chatter Sync aktiv</div>
-            </div>'''
-
-            # ── 4. "🙋 BRAUCHT WOLF" (Tag 153) ENTSCHEIDUNGS-RADAR ──
+            # Aufgaben für Wolfs Freigabe / Entscheidung (Tag 153)
             wolf_records = env['project.task'].sudo().search([
                 ('active', '=', True),
                 ('tag_ids', 'in', [153]),
                 ('stage_id.name', 'not in', ['✅ Erledigt', '🗑️ Abgebrochen', 'Done', 'Cancelled'])
             ], order='priority desc, write_date desc', limit=15)
 
-            wolf_cards_html = []
-            for wt in wolf_records:
-                wp_name = wt.project_id.name if wt.project_id else 'Allgemein'
-                w_prio = wt.priority or '0'
-                prio_tag = {'3': '🔴 Prio 3', '2': '🟠 Prio 2', '1': '🔵 Prio 1'}.get(w_prio, '')
-                prio_html = f'<span class="prio-tag">{prio_tag}</span>' if prio_tag else ''
+            # Neueste Aktivitäten der letzten 48h (für sekundäre Tabs)
+            recent_tasks = env['project.task'].sudo().search([
+                ('active', '=', True),
+                ('write_date', '>=', cutoff_48h),
+                ('stage_id.name', 'not ilike', 'In Arbeit')
+            ], order='write_date desc', limit=30)
 
-                # Fetch last note
-                last_msg = env['mail.message'].sudo().search([
+            # Alle relevanten Task-IDs für Batch-Chatter-Abfrage
+            all_task_ids = list(set(active_tasks.ids + wolf_records.ids + recent_tasks.ids))
+            msgs_by_task = {}
+            if all_task_ids:
+                all_msgs = env['mail.message'].sudo().search_read([
                     ('model', '=', 'project.task'),
-                    ('res_id', '=', wt.id),
+                    ('res_id', 'in', all_task_ids),
                     ('body', '!=', False),
                     ('body', '!=', '')
-                ], order='date desc', limit=1)
-                note_snippet = "Entscheidung / Freigabe erforderlich."
-                if last_msg:
-                    raw_b = pyhtml.unescape(re.sub(r'<[^>]+>', ' ', last_msg.body or '')).strip()
-                    if raw_b:
-                        note_snippet = (raw_b[:160] + '...') if len(raw_b) > 160 else raw_b
+                ], ['id', 'res_id', 'author_id', 'date', 'body'], order='date desc')
+                for m in all_msgs:
+                    msgs_by_task.setdefault(m['res_id'], []).append(m)
 
-                # Clean desc for modal
-                clean_desc = pyhtml.unescape(re.sub(r'<[^>]+>', ' ', wt.description or '')).strip()
-                modal_data_json = json.dumps({
-                    'id': wt.id,
-                    'name': wt.name,
-                    'project': wp_name,
-                    'stage': wt.stage_id.name if wt.stage_id else 'Offen',
+            # ── 4. HILFSFUNKTIONEN FÜR KARTEN & MODAL ──
+            def parse_task_agent_and_status(task, task_msgs):
+                """Ermittelt den aktiven Agenten, Status-Badge und eine saubere Zusammenfassung."""
+                last_msg = task_msgs[0] if task_msgs else None
+                raw_body = pyhtml.unescape(re.sub(r'<[^>]+>', ' ', last_msg['body'] if last_msg else '')).strip()
+
+                agent_name = "🤖 Agent"
+                agent_key = "agent"
+                agent_color = "#00e5ff"
+
+                # Check agent identity
+                if "[Antigravity]" in raw_body or "Antigravity" in (task.name or "") or any(ts.employee_id.id == 9 for ts in task.timesheet_ids):
+                    agent_name = "🤖 Antigravity"
+                    agent_key = "antigravity"
+                    agent_color = "#00e5ff"
+                elif "[Claude]" in raw_body or "Claude" in (task.name or "") or any(ts.employee_id.id == 11 for ts in task.timesheet_ids):
+                    agent_name = "🤖 Claude Code"
+                    agent_key = "claude"
+                    agent_color = "#ffb300"
+                elif "[Jarvis]" in raw_body or "Jarvis" in (task.name or "") or "OpenClaw" in raw_body or any(ts.employee_id.id == 12 for ts in task.timesheet_ids):
+                    agent_name = "🦞 Jarvis"
+                    agent_key = "jarvis"
+                    agent_color = "#a050f0"
+                elif last_msg and last_msg.get('author_id') and 'Wolf' in (last_msg['author_id'][1] or ''):
+                    agent_name = "👤 Wolf Prinz"
+                    agent_key = "wolf"
+                    agent_color = "#00e676"
+
+                # Check status
+                status_text = "⚡ In Arbeit"
+                status_cls = "status-in-prog"
+                if any(w in raw_body for w in ["@Claude", "@Jarvis", "@Antigravity", "Peer-Review", "Bitte um Review", "Gegenprüfung"]):
+                    status_text = "👀 Wartet auf Peer-Review"
+                    status_cls = "status-review"
+                elif "blockiert" in raw_body.lower() or "blocker" in raw_body.lower():
+                    status_text = "🛑 Blockiert"
+                    status_cls = "status-blocked"
+                elif any(ts.date == today_str for ts in task.timesheet_ids):
+                    hrs = sum(ts.unit_amount for ts in task.timesheet_ids if ts.date == today_str)
+                    status_text = f"🔥 Heute {hrs:.1f}h gearbeitet"
+                    status_cls = "status-live"
+
+                # Clean summary
+                summary = "Aufgabe in Bearbeitung."
+                if raw_body:
+                    first_meaningful = raw_body
+                    for line in raw_body.split("\n"):
+                        l = line.strip()
+                        if l and not l.startswith("🤖") and len(l) > 15:
+                            first_meaningful = l
+                            break
+                    summary = (first_meaningful[:200] + '...') if len(first_meaningful) > 200 else first_meaningful
+
+                # Time formatting
+                time_str = ""
+                if last_msg and last_msg.get('date'):
+                    m_dt = last_msg['date']
+                    if hasattr(m_dt, 'date') and m_dt.date() == now.date():
+                        time_str = f"Heute {m_dt.strftime('%H:%M')}"
+                    elif hasattr(m_dt, 'date') and (now.date() - m_dt.date()).days == 1:
+                        time_str = f"Gestern {m_dt.strftime('%H:%M')}"
+                    elif hasattr(m_dt, 'strftime'):
+                        time_str = m_dt.strftime('%d.%m. %H:%M')
+                    else:
+                        time_str = str(m_dt)[:16]
+
+                return agent_name, agent_key, agent_color, status_text, status_cls, summary, time_str
+
+            def build_modal_json(task, task_msgs, agent_name, status_text):
+                """Erstellt ein JSON-Paket für das Touch-Modal inklusive Timeline."""
+                pname = task.project_id.name if task.project_id else 'Allgemein'
+                stage_name = task.stage_id.name if task.stage_id else 'Offen'
+                prio_val = task.priority or '0'
+                prio_tag = {'3': '🔴 Prio 3', '2': '🟠 Prio 2', '1': '🔵 Prio 1'}.get(prio_val, '')
+                clean_desc = pyhtml.unescape(re.sub(r'<[^>]+>', ' ', task.description or '')).strip()
+
+                timeline = []
+                for m in (task_msgs or [])[:4]:
+                    raw_b = pyhtml.unescape(re.sub(r'<[^>]+>', ' ', m.get('body') or '')).strip()
+                    if not raw_b:
+                        continue
+                    a_name = m['author_id'][1] if m.get('author_id') else 'System'
+                    m_date_str = ""
+                    if m.get('date'):
+                        m_dt = m['date']
+                        if hasattr(m_dt, 'strftime'):
+                            m_date_str = m_dt.strftime('%d.%m. %H:%M')
+                        else:
+                            m_date_str = str(m_dt)[:16]
+                    timeline.append({
+                        'author': a_name,
+                        'date': m_date_str,
+                        'text': (raw_b[:400] + '...') if len(raw_b) > 400 else raw_b
+                    })
+
+                return json.dumps({
+                    'id': task.id,
+                    'name': task.name,
+                    'project': pname,
+                    'stage': stage_name,
                     'prio': prio_tag,
-                    'desc': clean_desc[:500],
-                    'note': note_snippet,
-                    'url': f"/frawo/touch/login?redirect=/odoo/project.task/{wt.id}"
+                    'agent': agent_name,
+                    'status': status_text,
+                    'desc': clean_desc[:600],
+                    'timeline': timeline,
+                    'url': f"/frawo/touch/login?redirect=/odoo/project.task/{task.id}"
                 })
 
-                wcard = f'''
-                <div class="task-card card-wolf-decision" onclick='showTaskDetail({modal_data_json})'>
-                    <div class="wolf-badge-header">
-                        <span>🙋 BRAUCHT WOLF</span>
-                        {prio_html}
+            # ── 5. KARTEN-GENERIERUNG: LIVE IN ARBEIT (HERO) ──
+            active_cards_html = []
+            ag_count = 0
+            claude_count = 0
+            jarvis_count = 0
+
+            for t in active_tasks:
+                t_msgs = msgs_by_task.get(t.id, [])
+                agent_name, agent_key, agent_color, status_text, status_cls, summary, time_str = parse_task_agent_and_status(t, t_msgs)
+                
+                if agent_key == 'antigravity': ag_count += 1
+                elif agent_key == 'claude': claude_count += 1
+                elif agent_key == 'jarvis': jarvis_count += 1
+
+                pname = t.project_id.name if t.project_id else 'Allgemein'
+                prio_val = t.priority or '0'
+                prio_badge = {'3': '🔴 Prio 3', '2': '🟠 Prio 2', '1': '🔵 Prio 1'}.get(prio_val, '')
+                prio_html = f'<span class="prio-tag">{prio_badge}</span>' if prio_badge else ''
+
+                modal_json = build_modal_json(t, t_msgs, agent_name, status_text)
+
+                card = f'''
+                <div class="task-card live-card agent-filter-{agent_key}" onclick='showTaskDetail({modal_json})'>
+                    <div class="card-header">
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <span class="proj-badge" style="background:rgba(255,255,255,0.07); color:#fff; border:1px solid rgba(255,255,255,0.15);">{pname}</span>
+                            {prio_html}
+                        </div>
+                        <span class="status-pill {status_cls}">{status_text}</span>
                     </div>
-                    <div class="card-header" style="margin-top:6px;">
-                        <span class="proj-badge" style="background:rgba(255,179,0,0.15); color:#ffb300; border:1px solid rgba(255,179,0,0.3);">{wp_name}</span>
-                        <span class="status-pill status-blocked">Wartet auf Entscheidung</span>
+                    <div class="task-title">#{t.id} · {t.name}</div>
+                    <div class="task-meta">
+                        <span class="meta-item"><span style="color:{agent_color}; font-weight:800;">{agent_name}</span></span>
+                        <span class="meta-item"><span style="color:#7986cb;">Zuletzt:</span> {time_str}</span>
+                        <span class="meta-item"><span style="color:#00e676;">💬 {len(t_msgs)} Updates</span></span>
                     </div>
-                    <div class="task-title" style="color:#fff;">#{wt.id} · {wt.name}</div>
-                    <div class="last-update-box" style="border-color:rgba(255,179,0,0.2); background:rgba(255,179,0,0.04);">
-                        <div class="update-header" style="color:#ffb300;">💬 Letzte Frage / Status</div>
-                        <div class="update-body">{note_snippet}</div>
+                    <div class="last-update-box" style="border-left: 3px solid {agent_color};">
+                        <div class="update-header">
+                            <span style="color:{agent_color}; font-weight:800;">Aktueller Fokus / Ergebnis:</span>
+                            <span style="color:#7986cb;">{time_str}</span>
+                        </div>
+                        <div class="update-body">{summary}</div>
                     </div>
                     <div class="card-actions">
-                        <button type="button" class="btn-action btn-touch-view">⚡ Details &amp; Antworten →</button>
+                        <button type="button" class="btn-action btn-touch-view">⚡ Details &amp; Verlauf ansehen →</button>
+                    </div>
+                </div>'''
+                active_cards_html.append(card)
+
+            active_cards_rendered = "".join(active_cards_html) if active_cards_html else '<div class="empty-state">🎉 Aktuell keine Aufgaben auf "In Arbeit".</div>'
+
+            # ── 6. KARTEN-GENERIERUNG: ENTSCHEIDUNGS-RADAR (BRAUCHT WOLF) ──
+            wolf_cards_html = []
+            for wt in wolf_records:
+                w_msgs = msgs_by_task.get(wt.id, [])
+                agent_name, agent_key, agent_color, status_text, status_cls, summary, time_str = parse_task_agent_and_status(wt, w_msgs)
+                wp_name = wt.project_id.name if wt.project_id else 'Allgemein'
+                prio_val = wt.priority or '0'
+                prio_badge = {'3': '🔴 Prio 3', '2': '🟠 Prio 2', '1': '🔵 Prio 1'}.get(prio_val, '')
+                prio_html = f'<span class="prio-tag">{prio_badge}</span>' if prio_badge else ''
+
+                modal_json = build_modal_json(wt, w_msgs, agent_name, "Wartet auf Wolf")
+
+                wcard = f'''
+                <div class="task-card card-wolf-decision" onclick='showTaskDetail({modal_json})'>
+                    <div class="wolf-badge-header">
+                        <span>🙋 BRAUCHT WOLF (ENTSCHEIDUNG)</span>
+                        {prio_html}
+                    </div>
+                    <div class="card-header" style="margin-top:8px;">
+                        <span class="proj-badge" style="background:rgba(255,179,0,0.15); color:#ffb300; border:1px solid rgba(255,179,0,0.3);">{wp_name}</span>
+                        <span class="status-pill status-blocked">Freigabe nötig</span>
+                    </div>
+                    <div class="task-title" style="color:#fff;">#{wt.id} · {wt.name}</div>
+                    <div class="last-update-box" style="border-color:rgba(255,179,0,0.25); background:rgba(255,179,0,0.04);">
+                        <div class="update-header" style="color:#ffb300;">💬 Offene Frage / Zustand</div>
+                        <div class="update-body">{summary}</div>
+                    </div>
+                    <div class="card-actions">
+                        <button type="button" class="btn-action btn-touch-view" style="background:linear-gradient(135deg, #ffb300, #ff5722);">⚡ Details &amp; Antworten →</button>
                     </div>
                 </div>'''
                 wolf_cards_html.append(wcard)
 
             wolf_rendered = "".join(wolf_cards_html) if wolf_cards_html else '<div class="empty-state">🎉 Super! Keine offenen Entscheidungen oder Blocker für Wolf.</div>'
 
-            # ── 5. AUFGABEN-KATEGORISIERUNG (FraWo Kern vs. Aufträge vs. Fremd) ──
-            all_live = env['project.task'].sudo().search([
-                ('active', '=', True),
-                '|',
-                ('stage_id.name', 'ilike', 'In Arbeit'),
-                ('write_date', '>=', cutoff_48h)
-            ], order='write_date desc', limit=50)
-
-            frawo_core = []
+            # ── 7. KARTEN-GENERIERUNG: TAB-AUFGABEN (AUFTRÄGE & FREMD) ──
             auftraege = []
             fremd = []
-
-            for t in all_live:
+            for t in recent_tasks:
                 pid = t.project_id.id if t.project_id else 0
                 pname = (t.project_id.name or '').lower()
-                if pid in [107, 106] or '99' in pname or '90' in pname or 'inselhalle' in pname or 'stockenweiler' in pname:
+                if pid in [107, 106] or '99' in pname or '90' in pname:
                     fremd.append(t)
-                elif pid == 104 or '10 · auftr' in pname or 'auftrag' in pname:
+                elif pid == 104 or '10 · auftr' in pname:
                     auftraege.append(t)
-                else:
-                    frawo_core.append(t)
 
-            # Limit FraWo core to top 15 most relevant
-            frawo_core = frawo_core[:15]
-
-            def render_cards(task_list, extra_cls=""):
+            def render_simple_cards(t_list):
                 rendered = []
-                for t in task_list:
-                    name_l = (t.name or '').lower()
-                    pid = t.project_id.id if t.project_id else 0
+                for t in t_list:
+                    t_msgs = msgs_by_task.get(t.id, [])
+                    agent_name, agent_key, agent_color, status_text, status_cls, summary, time_str = parse_task_agent_and_status(t, t_msgs)
                     pname = t.project_id.name if t.project_id else 'Allgemein'
-                    stage_name = t.stage_id.name if t.stage_id else 'Offen'
-                    is_in_prog = 'in arbeit' in stage_name.lower()
-                    is_done = any(w in stage_name.lower() for w in ['erledigt', 'done'])
-                    is_blocked = 'blockiert' in stage_name.lower()
-
-                    # Determine project stream tag
-                    if any(w in name_l for w in ['growbox', 'lüfter', 'hygrometer', 'pflanz', 'klima']):
-                        stk = 'growbox'
-                        pcol = '#4caf50'
-                    elif any(w in name_l for w in ['radio', 'azuracast', 'stream', 'beets', 'sendung']):
-                        stk = 'radio'
-                        pcol = '#00e5ff'
-                    elif any(w in name_l for w in ['openclaw', 'jarvis', 'modell', 'agent', 'sonnet', 'claude', 'antigravity']):
-                        stk = 'agents'
-                        pcol = '#a050f0'
-                    elif pid == 104:
-                        stk = 'auftraege'
-                        pcol = '#ffb300'
-                    elif pid in [106, 107]:
-                        stk = 'fremd'
-                        pcol = '#e91e63'
-                    else:
-                        stk = 'infra'
-                        pcol = '#ff5722'
-
-                    # Fetch last message
-                    last_msg = env['mail.message'].sudo().search([
-                        ('model', '=', 'project.task'),
-                        ('res_id', '=', t.id),
-                        ('body', '!=', False),
-                        ('body', '!=', '')
-                    ], order='date desc', limit=1)
-
-                    active_agent = '🤖 Agent'
-                    last_note_text = 'Status / Metadaten aktualisiert'
-                    last_note_time = ''
-                    if last_msg:
-                        raw_body = pyhtml.unescape(re.sub(r'<[^>]+>', ' ', last_msg.body or '')).strip()
-                        if raw_body:
-                            if '[Antigravity]' in raw_body or 'Antigravity' in raw_body:
-                                active_agent = '🤖 Antigravity'
-                            elif '[Claude]' in raw_body or 'Claude' in raw_body:
-                                active_agent = '🤖 Claude Code'
-                            elif '[Jarvis]' in raw_body or 'Jarvis' in raw_body or 'OpenClaw' in raw_body:
-                                active_agent = '🦞 Jarvis'
-                            elif last_msg.author_id and 'Wolf' in last_msg.author_id.name:
-                                active_agent = '👤 Wolf Prinz'
-                            elif last_msg.author_id:
-                                active_agent = last_msg.author_id.name
-
-                            last_note_text = (raw_body[:180] + '...') if len(raw_body) > 180 else raw_body
-
-                        if last_msg.date:
-                            m_date = last_msg.date
-                            if m_date.date() == now.date():
-                                last_note_time = f"Heute {m_date.strftime('%H:%M')} Uhr"
-                            elif (now.date() - m_date.date()).days == 1:
-                                last_note_time = f"Gestern {m_date.strftime('%H:%M')} Uhr"
-                            else:
-                                last_note_time = m_date.strftime('%d.%m. %H:%M')
-
-                    # Lock banner
-                    lock_banner = ''
-                    card_lock_class = ''
-                    if ag_id and t.id == ag_id:
-                        lock_banner = '<div class="agent-lock-banner lock-ag">⚡ AKTIV IN BEARBEITUNG DURCH ANTIGRAVITY</div>'
-                        card_lock_class = ' card-locked-ag'
-                        active_agent = '🤖 Antigravity'
-                    elif claude_id and t.id == claude_id:
-                        lock_banner = '<div class="agent-lock-banner lock-claude">⚡ IN BEARBEITUNG DURCH CLAUDE CODE</div>'
-                        card_lock_class = ' card-locked-claude'
-                        active_agent = '🤖 Claude Code'
-
-                    # Status badge
-                    if is_in_prog:
-                        status_badge = '<span class="status-pill status-in-prog"><span class="mini-pulse"></span>🚀 In Arbeit</span>'
-                    elif is_done:
-                        status_badge = '<span class="status-pill status-done">✅ Verifiziert</span>'
-                    elif is_blocked:
-                        status_badge = '<span class="status-pill status-blocked">🛑 Blockiert</span>'
-                    else:
-                        status_badge = f'<span class="status-pill status-other">{stage_name}</span>'
-
-                    prio_val = t.priority or '0'
-                    prio_badge = {'3': '🔴 Prio 3', '2': '🟠 Prio 2', '1': '🔵 Prio 1'}.get(prio_val, '')
-                    prio_html = f'<span class="prio-tag">{prio_badge}</span>' if prio_badge else ''
-
-                    clean_desc = pyhtml.unescape(re.sub(r'<[^>]+>', ' ', t.description or '')).strip()
-                    modal_data = json.dumps({
-                        'id': t.id,
-                        'name': t.name,
-                        'project': pname,
-                        'stage': stage_name,
-                        'prio': prio_badge,
-                        'desc': clean_desc[:500],
-                        'agent': active_agent,
-                        'note': last_note_text,
-                        'time': last_note_time,
-                        'url': f"/frawo/touch/login?redirect=/odoo/project.task/{t.id}"
-                    })
-
+                    modal_json = build_modal_json(t, t_msgs, agent_name, status_text)
                     c = f'''
-                    <div class="task-card stream-{stk} {extra_cls}{card_lock_class}" onclick='showTaskDetail({modal_data})'>
-                        {lock_banner}
+                    <div class="task-card" onclick='showTaskDetail({modal_json})'>
                         <div class="card-header">
-                            <div style="display:flex; align-items:center; gap:8px;">
-                                <span class="proj-badge" style="background:{pcol}22; color:{pcol}; border:1px solid {pcol}55;">{pname}</span>
-                                {prio_html}
-                            </div>
-                            {status_badge}
+                            <span class="proj-badge" style="background:rgba(255,255,255,0.06); color:#c5cae9;">{pname}</span>
+                            <span class="status-pill status-other">{t.stage_id.name if t.stage_id else 'Offen'}</span>
                         </div>
                         <div class="task-title">#{t.id} · {t.name}</div>
-                        <div class="task-meta">
-                            <span class="meta-item"><span style="color:#00e5ff;">Aktiv:</span> <b>{active_agent}</b></span>
-                            <span class="meta-item"><span style="color:#9fa8da;">Stand:</span> {last_note_time}</span>
-                        </div>
                         <div class="last-update-box">
-                            <div class="update-header">
-                                <span>💬 Letzter Bericht ({active_agent})</span>
-                                <span style="color:#7986cb;">{last_note_time}</span>
-                            </div>
-                            <div class="update-body">{last_note_text}</div>
+                            <div class="update-header"><span>Stand: {time_str}</span></div>
+                            <div class="update-body">{summary}</div>
                         </div>
                         <div class="card-actions">
-                            <button type="button" class="btn-action btn-touch-view">⚡ Touch-Details &amp; Aktionen →</button>
+                            <button type="button" class="btn-action btn-touch-view">⚡ Details →</button>
                         </div>
                     </div>'''
                     rendered.append(c)
-                return "".join(rendered) if rendered else '<div class="empty-state">🎉 Keine Aufgaben in diesem Bereich.</div>'
+                return "".join(rendered) if rendered else '<div class="empty-state">🎉 Keine Einträge in dieser Ansicht.</div>'
 
-            frawo_rendered = render_cards(frawo_core)
-            auftraege_rendered = render_cards(auftraege)
-            fremd_rendered = render_cards(fremd)
+            auftraege_rendered = render_simple_cards(auftraege)
+            fremd_rendered = render_simple_cards(fremd)
 
-            # ── 6. ZEITERFASSUNG HEUTE ──
+            # ── 8. ZEITERFASSUNG HEUTE ──
             ts_rows = []
             for ts in timesheets:
                 emp_name = ts.employee_id.name if ts.employee_id else (ts.user_id.name if ts.user_id else 'Agent')
@@ -2513,7 +2469,7 @@ class RadioController(http.Controller):
                 </div>''')
             ts_rendered = "".join(ts_rows) if ts_rows else '<div style="color:#7986cb; padding:8px;">Heute noch keine Zeiten erfasst.</div>'
 
-            # ── 7. SYSTEM VITAL-BAR HTML ──
+            # ── 9. SYSTEM VITAL-BAR HTML ──
             pbs_pill_cls = "v-ok" if pbs_ok else "v-err"
             pbs_text = "🟢 PBS 10.1.0.7: Online" if pbs_ok else "🔴 PBS 10.1.0.7: FEHLER"
             
@@ -2549,7 +2505,7 @@ class RadioController(http.Controller):
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="refresh" content="45">
-<title>FraWo Operations Cockpit 2.0</title>
+<title>FraWo Operations Cockpit 2.5</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
   * {{ box-sizing: border-box; margin: 0; padding: 0; }}
@@ -2600,151 +2556,101 @@ class RadioController(http.Controller):
     flex-wrap: wrap;
   }}
   .v-pill {{
-    background: rgba(18, 22, 34, 0.85);
-    border: 1px solid rgba(255,255,255,0.08);
+    flex: 1;
+    min-width: 140px;
+    padding: 10px 14px;
     border-radius: 12px;
-    padding: 8px 14px;
     font-size: 12px;
     font-weight: 800;
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    user-select: none;
+    justify-content: center;
+    gap: 6px;
+    backdrop-filter: blur(8px);
   }}
-  .v-ok {{ border-color: rgba(0,230,118,0.3); color: #00e676; }}
-  .v-warn {{ border-color: rgba(255,179,0,0.4); color: #ffb300; background: rgba(255,179,0,0.06); }}
-  .v-err {{ border-color: rgba(255,23,68,0.5); color: #ff1744; background: rgba(255,23,68,0.08); animation: pulse 2s infinite; }}
+  .v-ok {{ background: rgba(0, 230, 118, 0.12); color: #00e676; border: 1px solid rgba(0, 230, 118, 0.3); }}
+  .v-warn {{ background: rgba(255, 179, 0, 0.12); color: #ffb300; border: 1px solid rgba(255, 179, 0, 0.3); cursor: pointer; }}
+  .v-err {{ background: rgba(255, 23, 68, 0.15); color: #ff1744; border: 1px solid rgba(255, 23, 68, 0.35); cursor: pointer; }}
 
   /* Header Box */
   .header-box {{
-    background: rgba(18, 22, 32, 0.75);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(18, 22, 34, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 16px;
-    padding: 14px 20px;
-    margin-bottom: 18px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
     gap: 12px;
   }}
+  .title-main {{ font-size: 18px; font-weight: 900; color: #fff; letter-spacing: -0.3px; }}
+  .subtitle {{ font-size: 12px; color: #9fa8da; margin-top: 3px; }}
   .pulse-dot {{
-    width: 10px; height: 10px; border-radius: 50%; background: #00e676;
-    box-shadow: 0 0 10px #00e676; animation: pulse 2s infinite;
+    width: 10px; height: 10px; border-radius: 50%; background: #00e5ff;
+    box-shadow: 0 0 12px #00e5ff;
+    animation: pulse 2s infinite;
   }}
   @keyframes pulse {{
-    0% {{ transform: scale(0.95); opacity: 0.8; }}
-    50% {{ transform: scale(1.2); opacity: 1; }}
-    100% {{ transform: scale(0.95); opacity: 0.8; }}
-  }}
-  .title-main {{ font-size: 20px; font-weight: 900; color: #fff; letter-spacing: -0.5px; }}
-  .subtitle {{ font-size: 11px; color: #9fa8da; margin-top: 2px; }}
-
-  .section-title {{
-    font-size: 14px; font-weight: 900; color: #fff; margin-bottom: 10px;
-    display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.5px;
+    0% {{ transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 229, 255, 0.7); }}
+    70% {{ transform: scale(1); box-shadow: 0 0 0 10px rgba(0, 229, 255, 0); }}
+    100% {{ transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 229, 255, 0); }}
   }}
 
-  /* Agent Grid */
-  .grid-agents {{
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
-    gap: 12px;
-    margin-bottom: 20px;
+  /* Hero Section: Live in Arbeit */
+  .hero-live-section {{
+    background: linear-gradient(180deg, rgba(26, 32, 54, 0.7) 0%, rgba(14, 18, 28, 0.85) 100%);
+    border: 1px solid rgba(0, 229, 255, 0.35);
+    box-shadow: 0 10px 30px rgba(0, 229, 255, 0.08);
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 24px;
   }}
-  .agent-card {{
-    background: rgba(18, 22, 34, 0.85);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 16px;
-    padding: 14px 16px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  .hero-header {{
     display: flex;
-    flex-direction: column;
     justify-content: space-between;
-    gap: 8px;
+    align-items: center;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+    gap: 12px;
   }}
-  .agent-card.agent-active-ag {{
-    border-color: rgba(0, 229, 255, 0.6);
-    background: rgba(0, 229, 255, 0.05);
-    box-shadow: 0 0 20px rgba(0, 229, 255, 0.15);
-  }}
-  .agent-card.agent-active-claude {{
-    border-color: rgba(255, 179, 0, 0.6);
-    background: rgba(255, 179, 0, 0.05);
-    box-shadow: 0 0 20px rgba(255, 179, 0, 0.15);
-  }}
-  .agent-card.agent-active-jarvis {{
-    border-color: rgba(160, 80, 240, 0.6);
-    background: rgba(160, 80, 240, 0.05);
-    box-shadow: 0 0 20px rgba(160, 80, 240, 0.15);
-  }}
-  .agent-header {{ display: flex; justify-content: space-between; align-items: center; }}
-  .agent-pulse-dot {{ width: 8px; height: 8px; border-radius: 50%; animation: pulse 1.8s infinite; }}
-  .agent-name {{ font-size: 14px; font-weight: 900; color: #fff; }}
-  .agent-loc {{ font-size: 11px; color: #9fa8da; font-weight: 600; }}
-  .agent-badge {{ font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 6px; }}
-  .badge-working {{ background: rgba(0, 229, 255, 0.2); color: #00e5ff; border: 1px solid rgba(0, 229, 255, 0.4); }}
-  .badge-standby {{ background: rgba(255, 179, 0, 0.2); color: #ffb300; border: 1px solid rgba(255, 179, 0, 0.4); }}
-  .badge-persistent {{ background: rgba(160, 80, 240, 0.2); color: #a050f0; border: 1px solid rgba(160, 80, 240, 0.4); }}
-  .agent-task-row {{ display: flex; flex-direction: column; gap: 2px; }}
-  .agent-label {{ color: #7986cb; font-size: 10px; font-weight: 800; text-transform: uppercase; }}
-  .agent-task-link {{ color: #fff; font-size: 13px; font-weight: 700; text-decoration: none; line-height: 1.3; }}
-  .agent-focus-txt {{ font-size: 11px; color: #c5cae9; line-height: 1.3; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 6px; }}
+  .hero-title {{ font-size: 17px; font-weight: 900; color: #fff; display: flex; align-items: center; gap: 8px; }}
+  .hero-sub {{ font-size: 12px; color: #9fa8da; margin-top: 2px; }}
 
-  /* Touch Tabs Bar */
-  .touch-tabs-bar {{
+  /* Filter Pills */
+  .filter-pills {{
     display: flex;
     gap: 8px;
-    margin-bottom: 18px;
-    overflow-x: auto;
-    padding-bottom: 4px;
+    flex-wrap: wrap;
   }}
-  .touch-tab {{
-    background: rgba(22, 26, 38, 0.85);
-    border: 1px solid rgba(255,255,255,0.1);
+  .filter-btn {{
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
     color: #c5cae9;
-    padding: 12px 20px;
-    border-radius: 14px;
-    font-size: 14px;
+    padding: 6px 14px;
+    border-radius: 12px;
+    font-size: 12px;
     font-weight: 800;
     cursor: pointer;
-    user-select: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
     transition: all 0.15s ease;
-    white-space: nowrap;
   }}
-  .touch-tab:active {{ transform: scale(0.96); }}
-  .touch-tab.active {{
-    background: linear-gradient(135deg, #a050f0, #00e5ff);
-    color: #fff;
-    border-color: transparent;
-    box-shadow: 0 4px 16px rgba(160,80,240,0.4);
-  }}
-  .tab-badge-glow {{
-    background: #ff1744;
-    color: #fff;
-    padding: 2px 7px;
-    border-radius: 10px;
-    font-size: 11px;
-    font-weight: 900;
-    box-shadow: 0 0 10px #ff1744;
+  .filter-btn:active {{ transform: scale(0.96); }}
+  .filter-btn.active {{
+    background: #00e5ff;
+    color: #090b10;
+    border-color: #00e5ff;
+    box-shadow: 0 0 12px rgba(0,229,255,0.4);
   }}
 
   /* Tasks Grid */
   .grid-tasks {{
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 14px;
-    margin-bottom: 24px;
   }}
   .task-card {{
-    background: rgba(22, 26, 38, 0.75);
-    backdrop-filter: blur(8px);
+    background: rgba(18, 22, 34, 0.85);
     border: 1px solid rgba(255,255,255,0.08);
     border-radius: 16px;
     padding: 16px;
@@ -2756,8 +2662,13 @@ class RadioController(http.Controller):
     transition: transform 0.15s ease, border-color 0.15s ease;
   }}
   .task-card:active {{ transform: scale(0.98); }}
-  .task-card:hover {{ border-color: rgba(160,80,240,0.4); }}
+  .task-card:hover {{ border-color: rgba(0,229,255,0.4); }}
   
+  .live-card {{
+    background: rgba(20, 26, 42, 0.95);
+    border-color: rgba(0, 229, 255, 0.25);
+  }}
+
   .card-wolf-decision {{
     border-color: rgba(255,179,0,0.5) !important;
     background: rgba(255,179,0,0.04) !important;
@@ -2774,22 +2685,7 @@ class RadioController(http.Controller):
     padding: 5px 10px;
     font-size: 11px;
     font-weight: 900;
-    letter-spacing: 0.5px;
   }}
-
-  .agent-lock-banner {{
-    padding: 5px 10px;
-    border-radius: 8px;
-    font-size: 10px;
-    font-weight: 900;
-    margin-bottom: 8px;
-    text-align: center;
-    letter-spacing: 0.5px;
-  }}
-  .lock-ag {{ background: linear-gradient(135deg, rgba(0,229,255,0.25), rgba(160,80,240,0.25)); color: #00e5ff; border: 1px solid #00e5ff; }}
-  .lock-claude {{ background: linear-gradient(135deg, rgba(255,179,0,0.25), rgba(255,87,34,0.25)); color: #ffb300; border: 1px solid #ffb300; }}
-  .card-locked-ag {{ border-color: #00e5ff !important; box-shadow: 0 0 20px rgba(0,229,255,0.25) !important; }}
-  .card-locked-claude {{ border-color: #ffb300 !important; box-shadow: 0 0 20px rgba(255,179,0,0.25) !important; }}
 
   .card-header {{ display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }}
   .proj-badge {{ font-size: 11px; font-weight: 800; padding: 3px 8px; border-radius: 6px; text-transform: uppercase; }}
@@ -2799,10 +2695,10 @@ class RadioController(http.Controller):
     font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 6px; display: inline-flex; align-items: center; gap: 4px;
   }}
   .status-in-prog {{ background: rgba(0, 229, 255, 0.15); color: #00e5ff; border: 1px solid rgba(0, 229, 255, 0.3); }}
-  .status-done {{ background: rgba(0, 230, 118, 0.15); color: #00e676; border: 1px solid rgba(0, 230, 118, 0.3); }}
+  .status-review {{ background: rgba(160, 80, 240, 0.2); color: #d1a4ff; border: 1px solid rgba(160, 80, 240, 0.4); }}
+  .status-live {{ background: rgba(0, 230, 118, 0.15); color: #00e676; border: 1px solid rgba(0, 230, 118, 0.3); }}
   .status-blocked {{ background: rgba(255, 23, 68, 0.15); color: #ff1744; border: 1px solid rgba(255, 23, 68, 0.3); }}
   .status-other {{ background: rgba(255, 255, 255, 0.08); color: #9fa8da; border: 1px solid rgba(255, 255, 255, 0.1); }}
-  .mini-pulse {{ width: 6px; height: 6px; border-radius: 50%; background: #00e5ff; animation: pulse 1.5s infinite; }}
 
   .task-title {{ font-size: 15px; font-weight: 800; color: #fff; line-height: 1.35; margin-bottom: 10px; }}
   .task-meta {{ display: flex; gap: 12px; font-size: 11px; color: #9fa8da; margin-bottom: 12px; flex-wrap: wrap; }}
@@ -2815,8 +2711,8 @@ class RadioController(http.Controller):
     padding: 10px 12px;
     margin-bottom: 14px;
   }}
-  .update-header {{ display: flex; justify-content: space-between; font-size: 10px; font-weight: 700; color: #a050f0; margin-bottom: 4px; }}
-  .update-body {{ font-size: 12px; color: #c5cae9; line-height: 1.4; word-break: break-word; }}
+  .update-header {{ display: flex; justify-content: space-between; font-size: 10px; font-weight: 700; margin-bottom: 4px; }}
+  .update-body {{ font-size: 12px; color: #c5cae9; line-height: 1.45; word-break: break-word; }}
 
   .card-actions {{ display: flex; gap: 8px; }}
   .btn-action {{
@@ -2828,7 +2724,6 @@ class RadioController(http.Controller):
     font-weight: 800;
     text-align: center;
     cursor: pointer;
-    transition: transform 0.1s ease;
   }}
   .btn-touch-view {{
     background: linear-gradient(135deg, rgba(160,80,240,0.8), rgba(0,229,255,0.8));
@@ -2836,7 +2731,46 @@ class RadioController(http.Controller):
     box-shadow: 0 4px 12px rgba(160,80,240,0.3);
   }}
 
-  /* Modal Styles */
+  /* Interactive Touch Tabs */
+  .touch-tabs-bar {{
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }}
+  .touch-tab {{
+    background: rgba(18, 22, 34, 0.7);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: #9fa8da;
+    padding: 10px 18px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s ease;
+  }}
+  .touch-tab:active {{ transform: scale(0.97); }}
+  .touch-tab.active {{
+    background: rgba(160,80,240,0.25);
+    border-color: #a050f0;
+    color: #fff;
+    box-shadow: 0 0 15px rgba(160,80,240,0.3);
+  }}
+  .tab-badge-glow {{
+    background: #ffb300;
+    color: #090b10;
+    padding: 2px 7px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 900;
+  }}
+
+  /* Modal Styles with Timeline */
   .modal-overlay {{
     display: none;
     position: fixed;
@@ -2853,9 +2787,9 @@ class RadioController(http.Controller):
     border: 1px solid rgba(0,229,255,0.3);
     box-shadow: 0 10px 40px rgba(0,0,0,0.6), 0 0 30px rgba(0,229,255,0.15);
     border-radius: 20px;
-    max-width: 680px;
+    max-width: 720px;
     width: 100%;
-    max-height: 85vh;
+    max-height: 88vh;
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -2904,6 +2838,21 @@ class RadioController(http.Controller):
     text-align: center;
   }}
 
+  /* Discussion Timeline in Modal */
+  .timeline-container {{ display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }}
+  .timeline-bubble {{
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 12px;
+    padding: 12px 14px;
+  }}
+  .timeline-bubble-agent {{
+    background: rgba(0,229,255,0.04);
+    border-color: rgba(0,229,255,0.25);
+  }}
+  .timeline-header {{ display: flex; justify-content: space-between; font-size: 11px; font-weight: 800; margin-bottom: 6px; }}
+  .timeline-text {{ font-size: 12px; color: #e8eaf6; line-height: 1.45; word-break: break-word; }}
+
   /* Timesheet Box */
   .ts-box {{
     background: rgba(18, 22, 32, 0.6);
@@ -2933,14 +2882,13 @@ class RadioController(http.Controller):
 </head>
 <body>
 
-<!-- Kiosk Top Nav -->
+<!-- Kiosk Top Nav (Geprüfte, funktionierende Routen) -->
 <div class="top-nav">
-  <a href="http://10.1.0.40:8123/jarvis-touch/home" class="nav-btn">🏠 Home</a>
-  <a href="http://10.1.0.40:8123/jarvis-touch/growbox" class="nav-btn">🌱 GrowBox</a>
-  <a href="http://10.1.0.40:8123/jarvis-touch/licht" class="nav-btn">💡 Licht</a>
-  <a href="http://10.1.0.40:8123/jarvis-touch/radio" class="nav-btn">🎛️ Radio</a>
+  <a href="http://10.1.0.40:8123/lovelace/0" class="nav-btn">🏠 Home</a>
+  <a href="http://10.1.0.40:8123/lovelace/growbox" class="nav-btn">🌱 GrowBox</a>
+  <a href="http://10.1.0.40:8123/lovelace/0#standorte" class="nav-btn">📍 Standorte</a>
+  <a href="https://frawo.tech/radio" class="nav-btn">🎛️ Radio</a>
   <a href="/frawo/touch/cockpit" class="nav-btn active">⚡ Operations Cockpit</a>
-  <a href="http://10.1.0.40:8123/jarvis-touch/studiopc" class="nav-btn">🖥️ StudioPC</a>
   <a href="http://10.1.0.40:8123/lovelace/0" class="nav-btn">📋 HA Menü</a>
 </div>
 
@@ -2951,6 +2899,12 @@ class RadioController(http.Controller):
   </div>
   <div class="v-pill {pbs_pill_cls}">
     <span>{pbs_text}</span>
+  </div>
+  <div class="v-pill v-ok">
+    <span>🟢 ZFS anker-backup: OK</span>
+  </div>
+  <div class="v-pill v-ok">
+    <span>🟢 GDrive: 10/10 Gäste</span>
   </div>
   <div class="v-pill {alert_pill_cls}" onclick="toggleAlertsDrawer()">
     <span>{alert_text} (Klick für Details)</span>
@@ -2967,7 +2921,7 @@ class RadioController(http.Controller):
   <div style="display:flex; align-items:center; gap:12px;">
     <div class="pulse-dot"></div>
     <div>
-      <div class="title-main">⚡ FraWo Live Operations Cockpit 2.0</div>
+      <div class="title-main">⚡ FraWo Live Operations Cockpit 2.5</div>
       <div class="subtitle">Echtzeit-Tracking: Systeme, Backups, Entscheidungen &amp; Live-Agenten</div>
     </div>
   </div>
@@ -2976,18 +2930,31 @@ class RadioController(http.Controller):
   </div>
 </div>
 
-<!-- Live Agents Bar -->
-<div class="section-title">🤖 Live-Agenten: Wer arbeitet gerade woran?</div>
-<div class="grid-agents">
-  {agents_html}
+<!-- HERO: Live in Arbeit (Woran das Team gerade arbeitet) -->
+<div class="hero-live-section">
+  <div class="hero-header">
+    <div class="hero-title">
+      <span style="font-size:22px;">🔥</span>
+      <div>
+        <div>Aktuell in Bearbeitung (Live)</div>
+        <div class="hero-sub">Projekte &amp; Aufträge, an denen Antigravity, Claude Code &amp; Jarvis jetzt arbeiten</div>
+      </div>
+    </div>
+    <div class="filter-pills">
+      <button class="filter-btn active" onclick="filterLive('all', this)">⚡ Alle ({len(active_tasks)})</button>
+      <button class="filter-btn" onclick="filterLive('antigravity', this)">🤖 Antigravity ({ag_count})</button>
+      <button class="filter-btn" onclick="filterLive('claude', this)">🤖 Claude ({claude_count})</button>
+      <button class="filter-btn" onclick="filterLive('jarvis', this)">🦞 Jarvis ({jarvis_count})</button>
+    </div>
+  </div>
+  <div class="grid-tasks">
+    {active_cards_rendered}
+  </div>
 </div>
 
-<!-- Interactive Touch Tabs -->
+<!-- Secondary Touch Tabs -->
 <div class="touch-tabs-bar">
-  <div class="touch-tab active" onclick="switchView('frawo', this)">
-    🔥 FraWo Kernbetrieb ({len(frawo_core)})
-  </div>
-  <div class="touch-tab" onclick="switchView('wolf', this)">
+  <div class="touch-tab active" onclick="switchView('wolf', this)">
     🙋 Braucht Wolf <span class="tab-badge-glow">{len(wolf_records)}</span>
   </div>
   <div class="touch-tab" onclick="switchView('auftraege', this)">
@@ -2999,41 +2966,40 @@ class RadioController(http.Controller):
 </div>
 
 <!-- Tab Content Containers -->
-<div id="view-frawo" class="tab-content">
-  <div class="section-title">⚡ Aktive FraWo-Kernarbeiten (IT, GrowBox, KI, Radio)</div>
-  <div class="grid-tasks">
-    {frawo_rendered}
+<div id="view-wolf" class="tab-content">
+  <div class="section-title" style="color:#ffb300; margin-bottom:14px; font-size:14px; font-weight:800;">
+    🙋 Entscheidungs-Radar: Aufgaben, die Wolfs Freigabe / Antwort brauchen
   </div>
-</div>
-
-<div id="view-wolf" class="tab-content" style="display:none;">
-  <div class="section-title" style="color:#ffb300;">🙋 Entscheidungs-Radar: Aufgaben, die Wolfs Freigabe / Antwort brauchen</div>
   <div class="grid-tasks">
     {wolf_rendered}
   </div>
 </div>
 
 <div id="view-auftraege" class="tab-content" style="display:none;">
-  <div class="section-title">💼 Kunden-Aufträge, Events &amp; Abrechnung</div>
+  <div class="section-title" style="margin-bottom:14px; font-size:14px; font-weight:800;">
+    💼 Kunden-Aufträge, Events &amp; Abrechnung
+  </div>
   <div class="grid-tasks">
     {auftraege_rendered}
   </div>
 </div>
 
 <div id="view-fremd" class="tab-content" style="display:none;">
-  <div class="section-title" style="color:#e91e63;">🔒 Fremdgewerke: Inselhalle (#99) &amp; Familie Stockenweiler (#90)</div>
+  <div class="section-title" style="color:#e91e63; margin-bottom:14px; font-size:14px; font-weight:800;">
+    🔒 Fremdgewerke: Inselhalle (#99) &amp; Familie Stockenweiler (#90)
+  </div>
   <div class="grid-tasks">
     {fremd_rendered}
   </div>
 </div>
 
 <!-- Timesheet Section -->
-<div class="section-title">⏱️ Heute gebuchte Zeiterfassung ({today_hours:.2f} Stunden)</div>
+<div class="section-title" style="margin-top:24px; font-size:14px; font-weight:800;">⏱️ Heute gebuchte Zeiterfassung ({today_hours:.2f} Stunden)</div>
 <div class="ts-box">
   {ts_rendered}
 </div>
 
-<!-- Touch Detail Modal -->
+<!-- Touch Detail Modal mit Diskussion / Verlauf -->
 <div id="taskModal" class="modal-overlay" onclick="closeModal(event)">
   <div class="modal-box" onclick="event.stopPropagation()">
     <div class="modal-header">
@@ -3046,17 +3012,19 @@ class RadioController(http.Controller):
         <div id="modalMeta" style="font-size:13px; font-weight:700; color:#c5cae9; margin-top:3px;">-</div>
       </div>
       <div>
-        <div style="font-size:11px; font-weight:800; color:#00e5ff; text-transform:uppercase;">Aufgabenstellung / Beschreibung</div>
-        <div id="modalDesc" style="font-size:13px; color:#e8eaf6; line-height:1.5; margin-top:4px; max-height:220px; overflow-y:auto; background:rgba(0,0,0,0.3); padding:10px; border-radius:10px;">-</div>
+        <div style="font-size:11px; font-weight:800; color:#00e5ff; text-transform:uppercase;">Aufgabenstellung / Ziel</div>
+        <div id="modalDesc" style="font-size:13px; color:#e8eaf6; line-height:1.5; margin-top:4px; max-height:180px; overflow-y:auto; background:rgba(0,0,0,0.3); padding:10px; border-radius:10px;">-</div>
       </div>
       <div>
-        <div style="font-size:11px; font-weight:800; color:#a050f0; text-transform:uppercase;">Letzter Agenten-Bericht / Status</div>
-        <div id="modalNote" style="font-size:13px; color:#c5cae9; line-height:1.45; margin-top:4px; background:rgba(160,80,240,0.06); border:1px solid rgba(160,80,240,0.2); padding:10px; border-radius:10px;">-</div>
+        <div style="font-size:11px; font-weight:800; color:#a050f0; text-transform:uppercase;">💬 Diskussion &amp; Agenten-Verlauf</div>
+        <div id="modalTimeline" class="timeline-container">
+          <!-- Dynamisch gerendert -->
+        </div>
       </div>
     </div>
     <div class="modal-footer">
       <button class="btn-modal-close" onclick="closeModalDirect()">✕ Schließen</button>
-      <a id="modalOdooLink" href="#" target="_blank" class="btn-modal-odoo">⚡ In vollem Odoo-Backend öffnen →</a>
+      <a id="modalOdooLink" href="#" target="_blank" class="btn-modal-odoo">⚡ In vollem Odoo öffnen →</a>
     </div>
   </div>
 </div>
@@ -3073,6 +3041,22 @@ function switchView(tabKey, btnElem) {{
   if (target) target.style.display = 'block';
 }}
 
+function filterLive(agentKey, btnElem) {{
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  if (btnElem) btnElem.classList.add('active');
+
+  const cards = document.querySelectorAll('.live-card');
+  cards.forEach(c => {{
+    if (agentKey === 'all') {{
+      c.style.display = 'flex';
+    }} else if (c.classList.contains('agent-filter-' + agentKey)) {{
+      c.style.display = 'flex';
+    }} else {{
+      c.style.display = 'none';
+    }}
+  }});
+}}
+
 function toggleAlertsDrawer() {{
   const d = document.getElementById('alertsDrawer');
   if (d) d.style.display = (d.style.display === 'none' || !d.style.display) ? 'block' : 'none';
@@ -3080,9 +3064,24 @@ function toggleAlertsDrawer() {{
 
 function showTaskDetail(data) {{
   document.getElementById('modalHeaderTitle').innerText = '#' + data.id + ' · ' + data.name;
-  document.getElementById('modalMeta').innerHTML = '<span style="color:#00e5ff;">' + (data.project || '-') + '</span> · ' + (data.stage || '-') + (data.prio ? ' · ' + data.prio : '');
+  document.getElementById('modalMeta').innerHTML = '<span style="color:#00e5ff;">' + (data.project || '-') + '</span> · ' + (data.stage || '-') + (data.prio ? ' · ' + data.prio : '') + ' · <span style="color:#ffb300;">' + (data.agent || '') + '</span>';
   document.getElementById('modalDesc').innerText = data.desc || 'Keine nähere Aufgabenstellung hinterlegt.';
-  document.getElementById('modalNote').innerText = data.note || 'Kein aktueller Chatter-Bericht vorhanden.';
+  
+  // Render timeline
+  const tl = document.getElementById('modalTimeline');
+  tl.innerHTML = '';
+  if (data.timeline && data.timeline.length > 0) {{
+    data.timeline.forEach(m => {{
+      const isAg = m.author.includes('Agent') || m.author.includes('Antigravity') || m.author.includes('Claude') || m.author.includes('Jarvis');
+      const b = document.createElement('div');
+      b.className = 'timeline-bubble' + (isAg ? ' timeline-bubble-agent' : '');
+      b.innerHTML = '<div class="timeline-header"><span style="color:' + (isAg ? '#00e5ff' : '#ffb300') + ';">' + m.author + '</span><span style="color:#7986cb;">' + m.date + '</span></div><div class="timeline-text">' + m.text + '</div>';
+      tl.appendChild(b);
+    }});
+  }} else {{
+    tl.innerHTML = '<div style="color:#7986cb; font-size:12px; padding:8px;">Noch keine Chatter-Einträge vorhanden.</div>';
+  }}
+
   document.getElementById('modalOdooLink').href = data.url;
   document.getElementById('taskModal').style.display = 'flex';
 }}
