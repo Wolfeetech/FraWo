@@ -3178,15 +3178,23 @@ function closeModalDirect() {{
                     "project": t.project_id.name if t.project_id else ''
                 })
 
-            # Upcoming events: Project 10 (Aufträge & Events)
+            # Upcoming events: Project 10 (Aufträge & Events) - strictly future events (date_deadline >= today, max 90 days)
+            today_start = datetime.date.today().strftime('%Y-%m-%d 00:00:00')
+            max_future = (datetime.date.today() + datetime.timedelta(days=90)).strftime('%Y-%m-%d 23:59:59')
             event_records = env['project.task'].sudo().search([
                 ('active', '=', True),
                 ('project_id.name', 'ilike', 'Aufträge'),
+                ('tag_ids', 'in', [149]),
+                ('date_deadline', '>=', today_start),
+                ('date_deadline', '<=', max_future),
                 ('stage_id.name', 'not in', ['✅ Erledigt', '🗑️ Abgebrochen'])
-            ], order='date_deadline asc nulls last, id asc', limit=6)
+            ], order='date_deadline asc, id asc', limit=6)
 
             upcoming_events = []
             for ev in event_records:
+                name_lower = (ev.name or '').lower()
+                if any(k in name_lower for k in ['abrechnung', '[epic]', 'vorlage']):
+                    continue
                 dt_str = ev.date_deadline.strftime('%d.%m.') if ev.date_deadline else ''
                 upcoming_events.append({
                     "id": ev.id,

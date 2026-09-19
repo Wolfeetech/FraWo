@@ -265,14 +265,26 @@ def query_odoo_hubs():
             ], limit=6)
         }
 
-        # 3. Upcoming events (Project 10)
+        # 3. Upcoming events (Project 10) - strictly future events (max 90 days, tag 149 Event/Verleih)
+        today_str = datetime.date.today().strftime('%Y-%m-%d 00:00:00')
+        max_future = (datetime.date.today() + datetime.timedelta(days=90)).strftime('%Y-%m-%d 23:59:59')
         upcoming_recs = models.execute_kw(
             ODOO_DB, uid, ODOO_PASS, 'project.task', 'search_read',
-            [[('active', '=', True), ('project_id', '=', 104), ('stage_id.name', 'not in', ['✅ Erledigt', '🗑️ Abgebrochen'])]],
-            {'fields': ['id', 'name', 'date_deadline', 'stage_id'], 'limit': 6, 'order': 'date_deadline asc nulls last, id asc'}
+            [[
+                ('active', '=', True),
+                ('project_id', '=', 104),
+                ('tag_ids', 'in', [149]),
+                ('date_deadline', '>=', today_str),
+                ('date_deadline', '<=', max_future),
+                ('stage_id.name', 'not in', ['✅ Erledigt', '🗑️ Abgebrochen'])
+            ]],
+            {'fields': ['id', 'name', 'date_deadline', 'stage_id'], 'limit': 6, 'order': 'date_deadline asc, id asc'}
         )
         upcoming_events = []
         for ev in upcoming_recs:
+            name_lower = (ev.get('name') or '').lower()
+            if any(k in name_lower for k in ['abrechnung', '[epic]', 'vorlage']):
+                continue
             dl = ev.get('date_deadline')
             dt_str = dl[8:10] + '.' + dl[5:7] + '.' if dl and len(dl) >= 10 else ''
             upcoming_events.append({

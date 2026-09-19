@@ -717,6 +717,53 @@
   }
   .q-badge-btn:active { transform: scale(0.96); }
 
+  /* COCKPIT FILTER BAR (WIP / IN BEARBEITUNG) */
+  .cockpit-filter-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    padding: 10px 16px;
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 16px;
+    gap: 12px;
+  }
+  .filter-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-dim);
+    letter-spacing: 0.3px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .filter-buttons {
+    display: flex;
+    gap: 8px;
+  }
+  .filter-pill {
+    background: #0f172a;
+    border: 1px solid #334155;
+    color: var(--text-dim);
+    padding: 7px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s ease;
+  }
+  .filter-pill:active { transform: scale(0.96); }
+  .filter-pill.active {
+    background: var(--primary);
+    color: #0b1120;
+    border-color: var(--primary);
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+  }
+
   /* QUESTION MODAL */
   .question-modal-overlay {
     position: fixed;
@@ -977,7 +1024,7 @@
     <div class="ambient-banner">
       <div>
         <span class="amb-event-pill">📅 Nächste Einsätze:</span>
-        <span style="color:#fff; margin-left:8px;" id="amb-event-banner-text">🎵 Leichte Liebe Open Air (Bregenz) &nbsp;·&nbsp; 🎶 Closing Wasserburg &nbsp;·&nbsp; ⛸️ Eishalle Presets</span>
+        <span style="color:#fff; margin-left:8px;" id="amb-event-banner-text">🎶 Closing — Wasserburg (26.09.) &nbsp;·&nbsp; 🎃 Halloweenparty — Luki (31.10.)</span>
       </div>
       <div style="font-size:12px; color:var(--text-dim);">Aktualisiert live</div>
     </div>
@@ -1061,6 +1108,22 @@
 
     <!-- TAB 1: COCKPIT -->
     <div class="tab-pane active" id="tab-cockpit">
+      <!-- COCKPIT FILTER BAR (WIP / IN BEARBEITUNG) -->
+      <div class="cockpit-filter-bar">
+        <div class="filter-title"><span>⚡</span> Aktuell in Bearbeitung:</div>
+        <div class="filter-buttons">
+          <button class="filter-pill active" id="filter-btn-all" onclick="filterCockpit('all')">
+            <span>⚡</span> Alle
+          </button>
+          <button class="filter-pill" id="filter-btn-franz" onclick="filterCockpit('franz')">
+            <span>🔨</span> Franz
+          </button>
+          <button class="filter-pill" id="filter-btn-wolf" onclick="filterCockpit('wolf')">
+            <span>💼</span> Wolf
+          </button>
+        </div>
+      </div>
+
       <div class="grid-2" id="cockpit-cards-grid">
 
         <!-- CARD 1 -->
@@ -1518,74 +1581,113 @@
 
           // 8. Dynamic Cockpit Cards in Main Tab
           if (data.focus_franz && data.focus_wolf) {
-            const cockpitGrid = document.getElementById('cockpit-cards-grid');
-            if (cockpitGrid) {
-              let allTasks = [];
+            let allTasks = [];
 
-              if (currentHub === 'jobs') {
-                // In Jobs view, display upcoming event jobs prominently
-                allTasks = [
-                  ...(data.upcoming_events || []).map(ev => ({
-                    id: ev.id,
-                    title: ev.title,
-                    sub: `Einsatz / Termin: ${ev.date || 'Festgelegt'} · Stufe: ${ev.stage || 'Geplant'}`,
-                    owner: 'Event',
-                    stage: ev.stage || 'Auftrag',
-                    badge: 'badge-yellow'
-                  })),
-                  ...data.focus_wolf.map(t => ({...t, owner: 'Wolf', badge: 'badge-purple'}))
-                ];
-              } else {
-                allTasks = [
-                  ...data.focus_franz.map(t => ({...t, owner: 'Franz', badge: 'badge-blue'})),
-                  ...data.focus_wolf.map(t => ({...t, owner: 'Wolf', badge: 'badge-purple'}))
-                ];
-              }
-
-              cockpitGrid.innerHTML = allTasks.map(t => {
-                const hasQ = questionsByTaskId[t.id];
-                const qSnippet = hasQ ? `
-                  <div class="q-card-snippet">
-                    ❓ <b>Offene Frage:</b> ${escapeHtml(hasQ.question)}
-                  </div>
-                ` : '';
-
-                const qActionBtn = hasQ ? `
-                  <button class="btn-touch btn-warning" onclick="openAnswerModal(${t.id}, '${escapeJs(t.title)}', '${escapeJs(t.project || hasQ.project || '')}', '${escapeJs(hasQ.question)}')">
-                    💬 Frage direkt beantworten
-                  </button>
-                  <a href="https://frawo.tech/frawo/touch/login?redirect=/odoo/project.task/${t.id}" class="btn-touch btn-dark" style="padding:9px; font-size:12px;">
-                    In Odoo ansehen
-                  </a>
-                ` : `
-                  <a href="https://frawo.tech/frawo/touch/login?redirect=/odoo/project.task/${t.id}" class="btn-touch">Aufgabe in Odoo öffnen</a>
-                `;
-
-                return `
-                  <div class="card ${hasQ ? 'card-question-highlight' : ''}">
-                    <div>
-                      <div class="card-header">
-                        <div class="card-title">${t.owner === 'Franz' ? '🔨 Franz' : (t.owner === 'Event' ? '🎪 Event' : '💼 Wolf')} — ${escapeHtml(t.title)}</div>
-                        <span class="badge ${hasQ ? 'badge-yellow' : t.badge}">${hasQ ? '❓ Frage offen' : escapeHtml(t.stage || 'In Arbeit')}</span>
-                      </div>
-                      <div class="card-body">
-                        <b>#${t.id}: ${escapeHtml(t.title)}</b><br>
-                        ${escapeHtml(t.sub || 'Keine Notizen hinterlegt')}
-                        ${qSnippet}
-                      </div>
-                    </div>
-                    <div style="display:flex; flex-direction:column; gap:8px;">
-                      ${qActionBtn}
-                    </div>
-                  </div>
-                `;
-              }).join('');
+            if (currentHub === 'jobs') {
+              // In Jobs view, display upcoming event jobs prominently
+              allTasks = [
+                ...(data.upcoming_events || []).map(ev => ({
+                  id: ev.id,
+                  title: ev.title,
+                  sub: `Einsatz / Termin: ${ev.date || 'Festgelegt'} · Stufe: ${ev.stage || 'Geplant'}`,
+                  owner: 'Event',
+                  stage: ev.stage || 'Auftrag',
+                  badge: 'badge-yellow'
+                })),
+                ...data.focus_wolf.map(t => ({...t, owner: 'Wolf', badge: 'badge-purple'}))
+              ];
+            } else {
+              allTasks = [
+                ...data.focus_franz.map(t => ({...t, owner: 'Franz', badge: 'badge-blue'})),
+                ...data.focus_wolf.map(t => ({...t, owner: 'Wolf', badge: 'badge-purple'}))
+              ];
             }
+
+            window.cachedCockpitTasks = allTasks;
+            window.cachedQuestionsByTaskId = questionsByTaskId;
+            renderCockpitCards();
           }
         })
         .catch(err => {
           console.log('Telemetry poll info:', err);
         });
+    }
+
+    // ==========================================
+    // COCKPIT TASK FILTER (ALLE / FRANZ / WOLF)
+    // ==========================================
+    let currentCockpitFilter = 'all';
+
+    function filterCockpit(filterName) {
+      currentCockpitFilter = filterName;
+      document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+      const btn = document.getElementById(`filter-btn-${filterName}`);
+      if (btn) btn.classList.add('active');
+      renderCockpitCards();
+    }
+
+    function renderCockpitCards() {
+      const cockpitGrid = document.getElementById('cockpit-cards-grid');
+      if (!cockpitGrid || !window.cachedCockpitTasks) return;
+
+      const questionsByTaskId = window.cachedQuestionsByTaskId || {};
+      let tasks = window.cachedCockpitTasks;
+
+      if (currentCockpitFilter === 'franz') {
+        tasks = tasks.filter(t => t.owner === 'Franz');
+      } else if (currentCockpitFilter === 'wolf') {
+        tasks = tasks.filter(t => t.owner === 'Wolf');
+      }
+
+      if (tasks.length === 0) {
+        cockpitGrid.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; padding: 44px 20px; background: rgba(30, 41, 59, 0.4); border-radius: 16px; border: 1px dashed var(--card-border); color: var(--text-dim);">
+            <div style="font-size: 32px; margin-bottom: 8px;">✨</div>
+            <div style="font-size: 16px; font-weight: 700; color: #fff;">Keine Aufgaben in Bearbeitung</div>
+            <div style="font-size: 13px; margin-top: 4px;">Aktuell liegen keine Aufgaben für den Filter '${escapeHtml(currentCockpitFilter)}' vor.</div>
+          </div>
+        `;
+        return;
+      }
+
+      cockpitGrid.innerHTML = tasks.map(t => {
+        const hasQ = questionsByTaskId[t.id];
+        const qSnippet = hasQ ? `
+          <div class="q-card-snippet">
+            ❓ <b>Offene Frage:</b> ${escapeHtml(hasQ.question)}
+          </div>
+        ` : '';
+
+        const qActionBtn = hasQ ? `
+          <button class="btn-touch btn-warning" onclick="openAnswerModal(${t.id}, '${escapeJs(t.title)}', '${escapeJs(t.project || hasQ.project || '')}', '${escapeJs(hasQ.question)}')">
+            💬 Frage direkt beantworten
+          </button>
+          <a href="https://frawo.tech/frawo/touch/login?redirect=/odoo/project.task/${t.id}" class="btn-touch btn-dark" style="padding:9px; font-size:12px;">
+            In Odoo ansehen
+          </a>
+        ` : `
+          <a href="https://frawo.tech/frawo/touch/login?redirect=/odoo/project.task/${t.id}" class="btn-touch">Aufgabe in Odoo öffnen</a>
+        `;
+
+        return `
+          <div class="card ${hasQ ? 'card-question-highlight' : ''}">
+            <div>
+              <div class="card-header">
+                <div class="card-title">${t.owner === 'Franz' ? '🔨 Franz' : (t.owner === 'Event' ? '🎪 Event' : '💼 Wolf')} — ${escapeHtml(t.title)}</div>
+                <span class="badge ${hasQ ? 'badge-yellow' : t.badge}">${hasQ ? '❓ Frage offen' : escapeHtml(t.stage || 'In Arbeit')}</span>
+              </div>
+              <div class="card-body">
+                <b>#${t.id}: ${escapeHtml(t.title)}</b><br>
+                ${escapeHtml(t.sub || 'Keine Notizen hinterlegt')}
+                ${qSnippet}
+              </div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              ${qActionBtn}
+            </div>
+          </div>
+        `;
+      }).join('');
     }
 
     function escapeHtml(str) {
