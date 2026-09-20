@@ -1,0 +1,692 @@
+{
+  "description": "Der Sicherungs-TÜV prüft jede Nacht nicht, ob ein Sicherungslauf gestartet ist, sondern ob am Ende eine Datei da ist, die groß genug, jung genug und vor allem lesbar ist. Genau das war der blinde Fleck: drei Sicherungen meldeten monatelang Erfolg und erzeugten nichts.",
+  "editable": true,
+  "id": 1592762010230784,
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "panels": [],
+      "title": "Ergebnis der letzten Prüfung",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "cfqrxzeq29fcwb"
+      },
+      "description": "Jede Zeile ist eine Prüfung. Grün heißt: Datei vorhanden, groß genug, jung genug und lesbar. Lücken bedeuten, dass zu dem Zeitpunkt noch nicht geprüft wurde.",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "fillOpacity": 90,
+            "lineWidth": 0
+          },
+          "mappings": [
+            {
+              "options": {
+                "0": {
+                  "color": "red",
+                  "index": 0,
+                  "text": "durchgefallen"
+                },
+                "1": {
+                  "color": "green",
+                  "index": 1,
+                  "text": "in Ordnung"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 24,
+        "x": 0,
+        "y": 1
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "mergeValues": true,
+        "rowHeight": 0.9,
+        "showValue": "never"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "cfqrxzeq29fcwb"
+          },
+          "expr": "frawo_backup_tuev",
+          "legendFormat": "{{pruefung}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Sicherungs-TÜV — Verlauf der letzten Tage",
+      "type": "state-timeline"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 12
+      },
+      "panels": [],
+      "title": "Wie alt ist die jeweils neueste Sicherung?",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "cfqrxzeq29fcwb"
+      },
+      "description": "Abstand zum letzten erfolgreichen Lauf. Odoo läuft täglich, die Radio-Sicherung täglich, die VM-Sicherungen teils wöchentlich. Wird ein Balken deutlich länger als gewohnt, läuft etwas nicht mehr.",
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 172800
+              },
+              {
+                "color": "red",
+                "value": 604800
+              }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 13
+      },
+      "options": {
+        "displayMode": "gradient",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": true
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "cfqrxzeq29fcwb"
+          },
+          "expr": "time() - frawo_odoo_backup_last_success_timestamp_seconds",
+          "instant": true,
+          "legendFormat": "Odoo (Datenbank + Dateien)",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "cfqrxzeq29fcwb"
+          },
+          "expr": "time() - frawo_azuracast_backup_last_success_timestamp_seconds",
+          "instant": true,
+          "legendFormat": "Radio (AzuraCast)",
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "cfqrxzeq29fcwb"
+          },
+          "expr": "time() - frawo_vm_cloud_backup_last_success_timestamp_seconds",
+          "instant": true,
+          "legendFormat": "VMs in die Cloud",
+          "refId": "C"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "cfqrxzeq29fcwb"
+          },
+          "expr": "time() - frawo_backup_tuev_letzter_lauf_timestamp_seconds",
+          "instant": true,
+          "legendFormat": "letzter TÜV-Durchlauf",
+          "refId": "D"
+        }
+      ],
+      "title": "Alter der neuesten Sicherung",
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "cfqrxzeq29fcwb"
+      },
+      "description": "Eine Sicherung, die plötzlich viel kleiner wird, ist meist kaputt — nicht sparsam. Deshalb steht die Größe hier neben dem Alter.",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "fillOpacity": 10,
+            "lineWidth": 2,
+            "showPoints": "never"
+          },
+          "unit": "bytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 13
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "cfqrxzeq29fcwb"
+          },
+          "expr": "frawo_odoo_backup_size_bytes",
+          "legendFormat": "Odoo",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "cfqrxzeq29fcwb"
+          },
+          "expr": "frawo_azuracast_backup_size_bytes",
+          "legendFormat": "Radio",
+          "refId": "B"
+        }
+      ],
+      "title": "Größe der Sicherungen",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 21
+      },
+      "panels": [],
+      "title": "Zweitkopien und Wiederherstellung",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "cfqrxzeq29fcwb"
+      },
+      "description": "Zweite Kopie am anderen Standort. Regel 3-2-1: drei Kopien, zwei Medien, eine außer Haus.",
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            {
+              "options": {
+                "0": {
+                  "index": 0,
+                  "text": "FEHLT"
+                },
+                "1": {
+                  "index": 1,
+                  "text": "vorhanden"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 0,
+        "y": 22
+      },
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "cfqrxzeq29fcwb"
+          },
+          "expr": "frawo_odoo_backup_offsite_ok",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Odoo — Kopie auf dem Anker",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "cfqrxzeq29fcwb"
+      },
+      "description": "Dritte Kopie, verschlüsselt hochgeladen. Ohne den Schlüssel ist sie für den Anbieter unlesbar.",
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            {
+              "options": {
+                "0": {
+                  "index": 0,
+                  "text": "FEHLT"
+                },
+                "1": {
+                  "index": 1,
+                  "text": "vorhanden"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 6,
+        "y": 22
+      },
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "cfqrxzeq29fcwb"
+          },
+          "expr": "frawo_odoo_backup_cloud_ok",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Odoo — verschlüsselte Kopie in der Cloud",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "cfqrxzeq29fcwb"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            {
+              "options": {
+                "0": {
+                  "index": 0,
+                  "text": "FEHLT"
+                },
+                "1": {
+                  "index": 1,
+                  "text": "vorhanden"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 12,
+        "y": 22
+      },
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "cfqrxzeq29fcwb"
+          },
+          "expr": "frawo_azuracast_backup_offsite_ok",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Radio — Kopie auf dem Anker",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "cfqrxzeq29fcwb"
+      },
+      "description": "Die Odoo-Sicherung wird testweise in eine Wegwerf-Datenbank zurückgespielt und Zeile für Zeile mit dem Original verglichen. Erst das beweist, dass die Sicherung im Ernstfall taugt.",
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 864000
+              },
+              {
+                "color": "red",
+                "value": 1814400
+              }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 18,
+        "y": 22
+      },
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "cfqrxzeq29fcwb"
+          },
+          "expr": "time() - frawo_odoo_restore_test_timestamp_seconds",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Letzter Wiederherstellungstest",
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 27
+      },
+      "panels": [],
+      "title": "Maschinen ohne Sicherungsauftrag",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "cfqrxzeq29fcwb"
+      },
+      "description": "Proxmox meldet selbst, welche Maschinen in keinem Sicherungsplan stehen. Eine bekannte Ausnahme ist der Sicherungsserver PBS-FraWo (VM 240) auf dem Anker — der sichert sich nicht in sich selbst.",
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            {
+              "options": {
+                "0": {
+                  "index": 0,
+                  "text": "alle gesichert"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 2
+              },
+              {
+                "color": "red",
+                "value": 3
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 8,
+        "x": 0,
+        "y": 28
+      },
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "cfqrxzeq29fcwb"
+          },
+          "expr": "sum(pve_not_backed_up_total)",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Ohne Sicherungsauftrag",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "cfqrxzeq29fcwb"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto"
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 16,
+        "x": 8,
+        "y": 28
+      },
+      "options": {
+        "showHeader": true
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "cfqrxzeq29fcwb"
+          },
+          "expr": "pve_not_backed_up_info",
+          "format": "table",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Welche Maschinen sind das?",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "Value": true,
+              "__name__": true,
+              "instance": true,
+              "job": true,
+              "node": true
+            },
+            "renameByName": {
+              "id": "Maschine",
+              "name": "Name",
+              "pve_node": "Server",
+              "type": "Art"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    }
+  ],
+  "refresh": "5m",
+  "schemaVersion": 39,
+  "tags": [
+    "frawo",
+    "sicherung"
+  ],
+  "time": {
+    "from": "now-7d",
+    "to": "now"
+  },
+  "timezone": "browser",
+  "title": "FraWo — Sicherungen",
+  "uid": "frawo-sicherungen",
+  "version": 1
+}
