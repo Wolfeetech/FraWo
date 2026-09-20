@@ -1807,27 +1807,7 @@
           <span>🔨</span> FRANZ — WERKSTATT & ANSTEHEND
         </div>
         <ul class="amb-task-list" id="amb-list-franz">
-          <li class="amb-task-item">
-            <span class="amb-task-bullet">▸</span>
-            <div>
-              <b>🔧 Werkstatt arbeitsfähig machen (#1406)</b>
-              <div class="amb-task-sub">Führungsschiene, Absaugung &amp; Messmikrofon</div>
-            </div>
-          </li>
-          <li class="amb-task-item">
-            <span class="amb-task-bullet">▸</span>
-            <div>
-              <b>🛒 PSA &amp; Arbeitskleidung bestellen (#1421)</b>
-              <div class="amb-task-sub">Größen erfasst: Schuhe 42/43 · Kleidung M/S</div>
-            </div>
-          </li>
-          <li class="amb-task-item">
-            <span class="amb-task-bullet">▸</span>
-            <div>
-              <b>📦 Verleihanlagen &amp; Messung (#1411)</b>
-              <div class="amb-task-sub">Messung vor Kistenpacken (#1051)</div>
-            </div>
-          </li>
+          <li class="amb-task-item"><div class="amb-task-sub">Lade aktuellen Stand aus Odoo &hellip;</div></li>
         </ul>
       </div>
 
@@ -1837,27 +1817,7 @@
           <span>💼</span> WOLF — BUSINESS & ORGA
         </div>
         <ul class="amb-task-list" id="amb-list-wolf">
-          <li class="amb-task-item">
-            <span class="amb-task-bullet">▸</span>
-            <div>
-              <b>🍺 Bar-Abrechnung Christiane (#1359)</b>
-              <div class="amb-task-sub">174,57 € Barübergabe fertig berechnet</div>
-            </div>
-          </li>
-          <li class="amb-task-item">
-            <span class="amb-task-bullet">▸</span>
-            <div>
-              <b>📱 Pixel 9 Pro Displayfehler (#1219)</b>
-              <div class="amb-task-sub">Google/Back Market Garantie vorziehen (0 €)</div>
-            </div>
-          </li>
-          <li class="amb-task-item">
-            <span class="amb-task-bullet">▸</span>
-            <div>
-              <b>🏦 Finom GbR-Konto (#1430)</b>
-              <div class="amb-task-sub">Kontoeröffnung zum Jahreswechsel (N26 in Paperless)</div>
-            </div>
-          </li>
+          <li class="amb-task-item"><div class="amb-task-sub">Lade aktuellen Stand aus Odoo &hellip;</div></li>
         </ul>
       </div>
     </div>
@@ -1866,7 +1826,7 @@
     <div class="ambient-banner">
       <div>
         <span class="amb-event-pill">📅 Nächste Einsätze:</span>
-        <span style="color:#fff; margin-left:8px;" id="amb-event-banner-text">🎶 Closing — Wasserburg (26.09.) &nbsp;·&nbsp; 🎃 Halloweenparty — Luki (31.10.)</span>
+        <span style="color:#fff; margin-left:8px;" id="amb-event-banner-text">Lade Einsätze aus Odoo &hellip;</span>
       </div>
       <div style="font-size:12px; color:var(--text-dim);">Aktualisiert live</div>
     </div>
@@ -1968,94 +1928,22 @@
 
       <div class="grid-2" id="cockpit-cards-grid">
 
-        <!-- CARD 1 -->
-        <div class="card">
+        <!-- Karten kommen LIVE aus Odoo (fetchTelemetry -> renderCockpitCards).
+             Hier steht bewusst keine eingetippte Aufgabe mehr: die Kopien standen
+             monatelang auf erledigten und abgebrochenen Vorgaengen (#1210, #1365,
+             #203) und sahen wie der aktuelle Stand aus. -->
+        <div class="card" id="cockpit-placeholder">
           <div>
             <div class="card-header">
-              <div class="card-title">🔨 Franz — Werkstatt</div>
-              <span class="badge badge-blue">Als Nächstes</span>
+              <div class="card-title">Aufgaben werden geladen</div>
+              <span class="badge badge-blue">Odoo</span>
             </div>
             <div class="card-body">
-              <b>#1406: Werkstatt arbeitsfähig machen</b><br>
-              Festool Führungsschiene &amp; Absaugung beschaffen. PreSonus Messmikrofon &amp; REW vorhanden (0 €).
+              Der aktuelle Stand wird aus Odoo geholt. Bleibt diese Karte stehen,
+              antwortet Odoo gerade nicht &mdash; dann ist hier nichts veraltet,
+              sondern schlicht nichts da.
             </div>
           </div>
-          <a href="https://frawo.tech/odoo/project/160/tasks/1406" class="btn-touch">Aufgabe in Odoo öffnen</a>
-        </div>
-
-        <!-- CARD 2 -->
-        <div class="card">
-          <div>
-            <div class="card-header">
-              <div class="card-title">🛒 PSA &amp; Arbeitskleidung</div>
-              <span class="badge badge-green">Größen erfasst</span>
-            </div>
-            <div class="card-body">
-              <b>#1421: Grundausstattung Wolf &amp; Franz</b><br>
-              Schuhgröße <b>42 / 43</b>, Kleidergröße <b>M / S</b> (Hosen 46/48). Warenkorb für Engelbert Strauss vorbereitet.
-            </div>
-          </div>
-          <a href="https://frawo.tech/odoo/project/160/tasks/1421" class="btn-touch">Warenkorb ansehen</a>
-        </div>
-
-        <!-- CARD 3 -->
-        <div class="card">
-          <div>
-            <div class="card-header">
-              <div class="card-title">🍺 Bar-Abrechnung Christiane</div>
-              <span class="badge badge-green">Berechnet</span>
-            </div>
-            <div class="card-body">
-              <b>#1359: Bar-Abrechnung Alkoholisch</b><br>
-              Offener Gesamtbetrag: <b>174,57 €</b> (Wolf 151,02 €, Franz 23,55 €). Geht bar an Christiane.
-            </div>
-          </div>
-          <a href="https://frawo.tech/odoo/project/104/tasks/1359" class="btn-touch btn-green">Abrechnungsbeleg ansehen</a>
-        </div>
-
-        <!-- CARD 4 -->
-        <div class="card">
-          <div>
-            <div class="card-header">
-              <div class="card-title">📱 Pixel 9 Pro Display</div>
-              <span class="badge badge-yellow">Garantie</span>
-            </div>
-            <div class="card-body">
-              <b>#1219: Display-Reparatur</b><br>
-              Grüner/Lila Streifen (OLED-Panelfehler). 5 Monate alt &rarr; Google/Back Market Herstellergarantie (0 €).
-            </div>
-          </div>
-          <a href="https://frawo.tech/odoo/project/107/tasks/1219" class="btn-touch">Status prüfen</a>
-        </div>
-
-        <!-- CARD 5 -->
-        <div class="card">
-          <div>
-            <div class="card-header">
-              <div class="card-title">⚡ Stromanteil Serveranlage</div>
-              <span class="badge badge-blue">Messwerte Live</span>
-            </div>
-            <div class="card-body">
-              <b>#1365: Shelly-Zuordnung verifiziert</b><br>
-              Shelly 10.4.0.11 (IT &amp; Werkstatt): <span id="card-pwr-server">131 W</span> (&gt;511 kWh). Shelly 10.4.0.10 (Bildschirm): <span id="card-pwr-screen">88 W</span>.
-            </div>
-          </div>
-          <a href="https://frawo.tech/odoo/project/163/tasks/1365" class="btn-touch">Aufgabe ansehen</a>
-        </div>
-
-        <!-- CARD 6 -->
-        <div class="card">
-          <div>
-            <div class="card-header">
-              <div class="card-title">🐕 Hundesteuer Hergensweiler</div>
-              <span class="badge badge-green">✅ Erledigt</span>
-            </div>
-            <div class="card-body">
-              <b>#1210: Vollständig bezahlt</b><br>
-              85,50 € wurden am 30.04.2026 an die VG Sigmarszell überwiesen (Beleg im N26-Kontoauszug #203).
-            </div>
-          </div>
-          <a href="https://frawo.tech/odoo/project/107/tasks/1210" class="btn-touch btn-dark">Archivierte Aufgabe</a>
         </div>
 
       </div>
@@ -2500,6 +2388,10 @@
             }
           }
 
+          // 3b. Ehrlichkeits-Anzeige: sagt die Seite gerade die Wahrheit?
+          // Ohne das sah ein eingefrorener Stand genauso aus wie ein frischer.
+          markOdooFreshness(data.odoo_ok !== false, data.odoo_age);
+
           // 4. Open Questions Counter
           activeOpenQuestions = data.open_questions || [];
           const qCounterBtn = document.getElementById('q-counter-btn');
@@ -2594,7 +2486,31 @@
         })
         .catch(err => {
           console.log('Telemetry poll info:', err);
+          // Stiller Fehler war die eigentliche Falle: die Seite zeigte weiter
+          // ihren Anfangsstand, als waere alles in Ordnung.
+          markOdooFreshness(false, null);
         });
+    }
+
+    // Blendet einen Hinweis ein, wenn die Aufgabenliste nicht mehr vom SSOT kommt.
+    function markOdooFreshness(ok, ageSeconds) {
+      let bar = document.getElementById('odoo-stale-bar');
+      if (!bar) {
+        bar = document.createElement('div');
+        bar.id = 'odoo-stale-bar';
+        bar.style.cssText = 'display:none; position:fixed; left:0; right:0; bottom:0; z-index:9999;'
+          + 'background:#b45309; color:#fff; font-size:13px; padding:7px 14px; text-align:center;';
+        document.body.appendChild(bar);
+      }
+      if (ok) {
+        bar.style.display = 'none';
+        return;
+      }
+      const alter = (ageSeconds && ageSeconds > 60)
+        ? ` Letzter bekannter Stand ist ${Math.round(ageSeconds / 60)} Minuten alt.`
+        : '';
+      bar.textContent = `⚠️ Keine Verbindung zu Odoo — die Aufgaben unten sind nicht aktuell.${alter}`;
+      bar.style.display = 'block';
     }
 
     // ==========================================

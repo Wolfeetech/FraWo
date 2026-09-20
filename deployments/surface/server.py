@@ -14,6 +14,7 @@ import threading
 import time
 import urllib.request
 import urllib.error
+import urllib.parse
 
 PORT = 17827
 BIND_HOST = "127.0.0.1"
@@ -32,33 +33,32 @@ telemetry_data = {
         "wind_speed": 5.0,
         "humidity": 65,
     },
+    # Messwerte starten leer (None), nicht mit erfundenen Zahlen: ein Standardwert,
+    # der wie eine Messung aussieht, ist schlimmer als gar keine Anzeige.
     "power": {
-        "server_watts": 131.0,
-        "server_total_kwh": 511.2,
-        "screen_watts": 88.0,
-        "screen_state": True,
+        "server_watts": None,
+        "server_total_kwh": None,
+        "screen_watts": None,
+        "screen_state": None,
     },
     "system": {
-        "ha_online": True,
-        "gateway_online": True,
-        "anker_online": True,
-        "internet_online": True,
+        "ha_online": None,
+        "gateway_online": None,
+        "anker_online": None,
+        "internet_online": None,
     },
-    "focus_franz": [
-        {"id": 1406, "title": "Werkstatt arbeitsfähig machen", "sub": "Führungsschiene, Absaugung & Messmikrofon"},
-        {"id": 1421, "title": "PSA & Arbeitskleidung", "sub": "Größen Wolf & Franz (42/43, M/S) erfasst"},
-        {"id": 1411, "title": "Verleihanlagen & Messung", "sub": "Messung vor Kistenpacken (#1051)"}
-    ],
-    "focus_wolf": [
-        {"id": 1359, "title": "Bar-Abrechnung", "sub": "174,57 € bar an Christiane übergeben"},
-        {"id": 1219, "title": "Pixel 9 Pro Displayfehler", "sub": "Google/Back Market Garantie vorziehen (0 €)"},
-        {"id": 1430, "title": "Finom GbR-Konto", "sub": "Kontoeröffnung zum Jahreswechsel"}
-    ],
-    "upcoming_events": [
-        {"title": "Leichte Liebe Open Air", "loc": "Bregenz, Beach Bar", "task_id": 1057},
-        {"title": "Closing Wasserburg", "loc": "Wasserburg", "task_id": 1059},
-        {"title": "Eishalle Einlassshow", "loc": "Lindau Eishalle", "task_id": 1356}
-    ]
+    # Aufgaben NIE fest eintippen: eine Kopie ist eine zweite Wahrheit und laeuft
+    # ab der ersten Sekunde auseinander (AGENTS.md, Rote Linie 6). Leer heisst hier
+    # "noch nichts von Odoo geholt" - die Seite zeigt das als Hinweis an.
+    "focus_franz": [],
+    "focus_wolf": [],
+    "upcoming_events": [],
+    "open_questions": [],
+    "today_hours": 0.0,
+    # Alter der Odoo-Daten: 0 = noch nie erfolgreich geholt. Die Seite blendet
+    # eine Warnung ein, sobald das aelter als zwei Minuten ist.
+    "odoo_ok": False,
+    "odoo_ts": 0,
 }
 telemetry_lock = threading.Lock()
 
@@ -100,6 +100,39 @@ def fetch_json(url, timeout=2.5):
         pass
     return None
 
+ODOO_SUMMARY_URL = "http://10.1.0.112:8069/frawo/touch/api/summary"
+ODOO_CACHE_TTL = 20.0
+_odoo_cache = {}
+_odoo_cache_lock = threading.Lock()
+
+
+def get_odoo_summary(hub):
+    """Aufgaben fuer EINEN Hub aus Odoo holen, kurz zwischengespeichert.
+
+    Der Hub-Name muss mitgereicht werden - sonst liefert Odoo immer 'anker'
+    und der Umschalter auf der Seite wirkt nicht.
+    Rueckgabe: (daten_oder_None, alter_in_sekunden).
+    """
+    hub = hub if hub in ("anker", "villa", "jobs", "stockenweiler") else "anker"
+    now = time.time()
+    with _odoo_cache_lock:
+        cached = _odoo_cache.get(hub)
+    if cached and (now - cached[0]) < ODOO_CACHE_TTL:
+        return cached[1], now - cached[0]
+
+    data = fetch_json(f"{ODOO_SUMMARY_URL}?hub={hub}", timeout=4.0)
+    if data and data.get("success"):
+        with _odoo_cache_lock:
+            _odoo_cache[hub] = (now, data)
+        return data, 0.0
+
+    # Fehlgeschlagen: den letzten bekannten Stand zurueckgeben, aber MIT Alter,
+    # damit die Seite ihn als veraltet kennzeichnen kann statt ihn als frisch zu zeigen.
+    if cached:
+        return cached[1], now - cached[0]
+    return None, None
+
+
 def telemetry_poller():
     """Background thread polling weather and device status every 25 seconds."""
     while True:
@@ -124,9 +157,10 @@ def telemetry_poller():
             anker_ok = check_tcp_port("10.1.0.92", 22, timeout=1.0)
             inet_ok = check_tcp_port("1.1.1.1", 53, timeout=1.5)
 
-            # 5. Odoo Live Telemetry (Focus Franz, Focus Wolf, Upcoming Events, Hours)
-            odoo_data = fetch_json("http://10.1.0.112:8069/frawo/touch/api/summary", timeout=4.0)
-            
+            # 5. Odoo Live-Aufgaben: haelt den Zwischenspeicher fuer den Standard-Hub warm.
+            #    Die Seite fragt ihren eigenen Hub selbst an (get_odoo_summary).
+            get_odoo_summary("anker")
+
             with telemetry_lock:
                 telemetry_data["timestamp"] = int(time.time())
                 
@@ -186,18 +220,51 @@ class PortalRequestHandler(http.server.SimpleHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self):
-        if self.path == "/api/telemetry":
+        # Pfad und Abfrageteil trennen: "/api/telemetry?hub=villa" ist derselbe
+        # Endpunkt wie "/api/telemetry". Ein exakter Zeichenkettenvergleich hat hier
+        # jede Anfrage mit Hub-Angabe in den Datei-Server laufen lassen -> 404,
+        # und die Seite blieb dauerhaft auf ihrem Anfangsstand stehen.
+        parsed = urllib.parse.urlparse(self.path)
+        route = parsed.path
+        query = urllib.parse.parse_qs(parsed.query)
+
+        if route == "/api/telemetry":
+            hub = (query.get("hub") or ["anker"])[0]
+            if hub not in ("anker", "villa", "jobs", "stockenweiler"):
+                hub = "anker"
+            odoo_data, odoo_age = get_odoo_summary(hub)
+
+            with telemetry_lock:
+                payload = dict(telemetry_data)
+
+            payload["hub"] = hub
+            payload["timestamp"] = int(time.time())
+            if odoo_data:
+                for key in ("focus_franz", "focus_wolf", "upcoming_events",
+                            "open_questions", "today_hours"):
+                    if key in odoo_data:
+                        payload[key] = odoo_data[key]
+                payload["odoo_ok"] = odoo_age is not None and odoo_age < ODOO_CACHE_TTL * 3
+                payload["odoo_age"] = round(odoo_age, 1) if odoo_age is not None else None
+            else:
+                # Odoo nicht erreichbar und nichts im Zwischenspeicher: lieber leer
+                # anzeigen als einen alten Stand, der wie der aktuelle aussieht.
+                payload["focus_franz"] = []
+                payload["focus_wolf"] = []
+                payload["upcoming_events"] = []
+                payload["open_questions"] = []
+                payload["odoo_ok"] = False
+                payload["odoo_age"] = None
+
             self.send_response(200)
             self.send_header("Content-Type", "application/json; charset=utf-8")
             self.send_header("Cache-Control", "no-cache, no-store, must-revalidate")
             self.send_header("Access-Control-Allow-Origin", "*")
             self.end_headers()
-            with telemetry_lock:
-                payload = json.dumps(telemetry_data).encode("utf-8")
-            self.wfile.write(payload)
+            self.wfile.write(json.dumps(payload, ensure_ascii=False).encode("utf-8"))
             return
-            
-        elif self.path == "/api/screen_toggle":
+
+        elif route == "/api/screen_toggle":
             # Toggle only living room screen Shelly 10.4.0.10 (NEVER 10.4.0.11!)
             res = fetch_json("http://10.4.0.10/rpc/Switch.Toggle?id=0", timeout=2.0)
             self.send_response(200)
@@ -229,7 +296,7 @@ class PortalRequestHandler(http.server.SimpleHTTPRequestHandler):
                 self.wfile.write(json.dumps({"status": "error", "message": f"Proxy error: {e}"}).encode("utf-8"))
                 return
 
-        elif self.path == "/cockpit" or self.path.startswith("/frawo/touch/"):
+        elif route == "/cockpit" or self.path.startswith("/frawo/touch/"):
             try:
                 target_url = f"http://10.1.0.112:8069{self.path}" if self.path.startswith("/frawo/") else "http://10.1.0.112:8069/frawo/touch/cockpit"
                 req = urllib.request.Request(target_url, headers={"User-Agent": "FraWo-Surface-Kiosk"})
