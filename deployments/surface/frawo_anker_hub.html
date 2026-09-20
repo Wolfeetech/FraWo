@@ -2023,11 +2023,12 @@
             </div>
 
             <!-- Live-Zahlen statt Zierbalken.
-                 Hier stand ein Stereo-Zeiger, dessen Ausschlag mit Math.random()
+                 Hier stand ein Stereo-Zeiger, dessen Ausschlag mit Zufallszahlen
                  erzeugt wurde - er bewegte sich auch dann, wenn gar nichts lief.
-                 Ein echter Pegel ist im Browser nicht messbar: der Stream liefert
-                 keinen CORS-Kopf, die Web-Audio-Messung wuerde den Ton stummschalten.
-                 Deshalb stehen hier die Zahlen, die AzuraCast wirklich meldet. -->
+                 Ein ECHTER Pegel ist moeglich, sobald der Stream einen
+                 Access-Control-Allow-Origin-Kopf mitliefert (oder ueber dieselbe
+                 Adresse ausgeliefert wird) - dann per Web-Audio-Analyse. Bis dahin
+                 stehen hier die Zahlen, die AzuraCast wirklich meldet. -->
             <div class="vu-meter-box" id="radio-live-facts">
               <div class="vu-channel">
                 <span style="font-size:9.5px; color:#475569;">HÖRER</span>
