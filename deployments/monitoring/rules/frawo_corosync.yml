@@ -1,0 +1,107 @@
+groups:
+  - name: frawo_corosync
+    rules:
+
+      # ── Der Fehler vom 20.09.2026 ────────────────────────────────────────
+      # corosync empfing Pakete, sendete aber keine mehr - und meldete dabei
+      # durchgehend "Quorate: Yes". Der Zustand war also gesund, die Wirkung
+      # nicht. Diese Regel misst die Wirkung.
+      - alert: VerbunddienstSendetNicht
+        expr: |
+          rate(frawo_corosync_empfangene_pakete_total[5m]) > 1
+          and
+          rate(frawo_corosync_gesendete_pakete_total[5m]) < 0.5
+        for: 3m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Verbunddienst auf {{ $labels.instance }} empfaengt, sendet aber nicht"
+          description: >-
+            corosync auf {{ $labels.instance }} nimmt Pakete entgegen, schickt
+            aber keine zurueck. Genau dieser Zustand hat am 20.09.2026 den
+            Verbund lahmgelegt, waehrend der Dienst sich als gesund meldete.
+            Abhilfe: systemctl restart corosync AUF DIESEM Knoten - nicht auf
+            dem Knoten, der das Symptom zeigt.
+
+      # ── Speicherleck, das dem Fehler vorausging ──────────────────────────
+      # Ueblich sind ~180-200 MB. Beim Vorfall waren es 1.958 MB.
+      - alert: VerbunddienstSpeicherWaechst
+        expr: frawo_corosync_speicher_bytes > 600 * 1024 * 1024
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Verbunddienst auf {{ $labels.instance }} braucht {{ $value | humanize1024 }}B Speicher"
+          description: >-
+            Ueblich sind rund 200 MB. Am 20.09.2026 war der Dienst auf 1.958 MB
+            angewachsen und hat danach das Senden eingestellt. Ein Neustart des
+            Dienstes setzt den Verbrauch zurueck.
+
+      - alert: VerbunddienstSpeicherKritisch
+        expr: frawo_corosync_speicher_bytes > 1200 * 1024 * 1024
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Verbunddienst auf {{ $labels.instance }} bei {{ $value | humanize1024 }}B - Ausfall droht"
+          description: >-
+            Ab dieser Groessenordnung ist am 20.09.2026 das Senden ausgefallen.
+            Jetzt handeln, bevor der Verbund auseinanderfaellt.
+
+      # ── Verbund unvollstaendig ───────────────────────────────────────────
+      - alert: VerbundUnvollstaendig
+        expr: frawo_corosync_mitglieder < 3
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Nur {{ $value }} von 3 Knoten im Verbund ({{ $labels.instance }})"
+          description: >-
+            Faellt die Zahl auf 1, bekommt der Knoten kein Quorum mehr - dann
+            startet dort KEIN Gast mehr. Das ist am 20.09.2026 passiert:
+            Odoo, Home Assistant und die Ueberwachung blieben aus.
+
+      # ── Flattern: die 170 Abrisse in 24 Stunden ──────────────────────────
+      - alert: VerbundFlattert
+        expr: increase(frawo_corosync_verbindung_abrisse_total[1h]) > 3
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Verbindung zu Knoten {{ $labels.knoten }} riss {{ $value | printf \"%.0f\" }}x in einer Stunde ab"
+          description: >-
+            Am 20.09.2026 waren es 170 Abrisse in 24 Stunden. Jeder Abriss
+            zwingt das gemeinsame Dateisystem zur Neusynchronisierung; dabei
+            bleiben Verwaltungsprozesse haengen und die Sicherung faellt aus.
+            Haeufigste Ursache: zu wenig freier Arbeitsspeicher auf dem Knoten.
+
+      # ── Der Waechter selbst ──────────────────────────────────────────────
+      # Eine fehlende Kennzahl ist selbst ein Alarm (Sicherheitsstandards).
+      # Ohne diese Regel wuerde ein toter Waechter wie "alles in Ordnung"
+      # aussehen - dieselbe Falle wie der Dienst, den er ueberwacht.
+      - alert: VerbundWaechterSchweigt
+        expr: |
+          absent(frawo_corosync_letzte_messung_zeitstempel)
+          or
+          (time() - frawo_corosync_letzte_messung_zeitstempel) > 600
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Die Verbund-Ueberwachung liefert keine Messwerte mehr"
+          description: >-
+            Der Waechter frawo-corosync-metriken.timer misst nicht mehr oder
+            seine Werte sind aelter als 10 Minuten. Solange schweigen auch alle
+            anderen Regeln dieser Gruppe - Stille bedeutet hier NICHT, dass
+            alles in Ordnung ist.
+
+      - alert: VerbunddienstAus
+        expr: frawo_corosync_up == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Verbunddienst auf {{ $labels.instance }} laeuft nicht"
+          description: >-
+            corosync ist gestoppt. Der Knoten verliert damit sein Quorum und
+            kann keine Gaeste mehr starten.

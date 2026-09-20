@@ -1,0 +1,14 @@
+[Unit]
+Description=FraWo - Verbunddienst corosync jede Minute messen
+Documentation=https://github.com/Wolfeetech/FraWo Odoo-Aufgabe 1514
+
+[Timer]
+# Jede Minute. Der Vorfall vom 20.09. lief 170-mal in 24 Stunden - bei einem
+# groesseren Abstand waeren einzelne Abrisse unsichtbar geblieben.
+OnBootSec=2min
+OnUnitActiveSec=1min
+AccuracySec=10s
+Unit=frawo-corosync-metriken.service
+
+[Install]
+WantedBy=timers.target

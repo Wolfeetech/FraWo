@@ -1,0 +1,12 @@
+[Unit]
+Description=FraWo - Messwerte des Verbunddienstes corosync erheben
+Documentation=https://github.com/Wolfeetech/FraWo Odoo-Aufgabe 1514
+After=corosync.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/frawo-corosync-metriken.sh
+# Der Waechter darf das System nicht belasten, das er ueberwacht.
+Nice=10
+IOSchedulingClass=idle
+TimeoutStartSec=30
