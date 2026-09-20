@@ -36,16 +36,26 @@ if (-not (Test-Path $OllamaExe)) {
 Write-Host "=== 1. Docker-Container abschalten ===" -ForegroundColor Cyan
 # Der Container darf nicht mehr automatisch hochkommen, sonst streiten sich
 # beide um Port 11434.
-& docker update --restart=no ollama-gpu 2>$null | Out-Null
-& docker stop ollama-gpu 2>$null | Out-Null
+# Native Programme (docker) koennen auf die Fehlerausgabe schreiben; in
+# PowerShell 5.1 wird daraus mit ErrorActionPreference='Stop' ein Abbruch.
+# Deshalb hier bewusst tolerant.
+$alt = $ErrorActionPreference
+$ErrorActionPreference = 'Continue'
+& docker update --restart=no ollama-gpu 2>&1 | Out-Null
+& docker stop ollama-gpu 2>&1 | Out-Null
+$ErrorActionPreference = $alt
 Write-Host "  Container gestoppt, Autostart entfernt (die Modelle bleiben, sie"
 Write-Host "  liegen ohnehin unter $env:USERPROFILE\.ollama)"
 
 Write-Host ""
 Write-Host "=== 2. Alte Aufgabe entfernen, falls vorhanden ===" -ForegroundColor Cyan
-schtasks /query /tn "$AufgabeName" 2>$null | Out-Null
-if ($LASTEXITCODE -eq 0) {
-    schtasks /delete /tn "$AufgabeName" /f | Out-Null
+# NICHT schtasks verwenden: Das Programm schreibt bei einer unbekannten Aufgabe
+# auf die Fehlerausgabe, und PowerShell 5.1 macht daraus zusammen mit
+# ErrorActionPreference='Stop' einen NativeCommandError, der das ganze Skript
+# abbricht. Die PowerShell-eigenen Befehle kennen -ErrorAction.
+$vorhanden = Get-ScheduledTask -TaskName $AufgabeName -ErrorAction SilentlyContinue
+if ($vorhanden) {
+    Unregister-ScheduledTask -TaskName $AufgabeName -Confirm:$false
     Write-Host "  alte Aufgabe entfernt"
 } else {
     Write-Host "  keine alte Aufgabe vorhanden"
