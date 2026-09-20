@@ -21,7 +21,7 @@ scrape_configs:
     static_configs:
       - targets:
           - localhost:9100
-          # - 10.1.0.128:9100 # ProDesk tot
+          - 10.1.0.128:9100
           - 100.69.179.87:9100
           - 10.0.0.227:9100
         labels:
@@ -58,15 +58,16 @@ scrape_configs:
       - targets:
           - http://10.1.0.112:8069/web/health   # Odoo (ERP)
           - http://10.1.0.40:8123               # Home Assistant Rothkreuz
+          - http://10.0.0.156:11434             # Ollama KI-Dienst (StudioPC, Grafikkarte)
           - http://10.0.0.227:11434             # Ollama KI-Dienst (OptiPlex)
-          # - https://funk.frawo.tech             # Radio (wartet auf Musik-HDD)
-          # - http://10.1.0.94:4533               # Navidrome (Musik, CT120 tot)
+          - https://funk.frawo.tech             # Radio
+          - http://10.1.0.94:4533               # Navidrome (Musik)
           - http://10.1.0.100:8000              # Paperless (CT110)
           - http://10.1.0.100:5678              # n8n
           - https://cloud.frawo.tech/status.php # Nextcloud
           - https://vault.frawo.tech            # Vaultwarden (Passwortsafe)
           - https://frawo.tech                  # Firmen-Webseite
-          # - http://10.1.0.248:8123              # HA Eltern (VM 360 auf ProDesk tot)
+          - http://10.1.0.248:8123              # HA Eltern (VM 360 auf ProDesk)
           - http://10.1.0.112:8069/anker_tracker/health # Getraenke-Tracker
     relabel_configs:
       - source_labels: [__address__]
@@ -83,7 +84,7 @@ scrape_configs:
     static_configs:
       - targets:
           - https://10.1.0.7:8007               # PBS
-          # - https://10.1.0.38                 # AzuraCast (ProDesk tot)
+          - https://10.1.0.38                   # AzuraCast (ProDesk)
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target
@@ -92,10 +93,31 @@ scrape_configs:
       - target_label: __address__
         replacement: localhost:9115
 
-  # ProDesk tot — voruebergehend deaktiviert
-  # - job_name: blackbox_radio_stream
-  # - job_name: blackbox_tcp
-  # - job_name: pve_prodesk
+  - job_name: blackbox_radio_stream
+    metrics_path: /probe
+    params:
+      module: [radio_stream]
+    static_configs:
+      - targets:
+          - https://funk.frawo.tech/listen/frawo_funk/radio.mp3  # oeffentlicher Weg
+          - http://10.1.0.38:8000/radio.mp3                      # direkt am Sender
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: localhost:9115
+
+  - job_name: pve_prodesk
+    metrics_path: /pve
+    params:
+      module: [prodesk]
+      target: [10.1.0.128]
+    static_configs:
+      - targets: [127.0.0.1:9221]
+        labels:
+          pve_node: stockenweiler-pve
 
   - job_name: pve_anker
     metrics_path: /pve
@@ -120,8 +142,9 @@ scrape_configs:
       module: [dns_check]
     static_configs:
       - targets:
-          # - 10.1.0.52:53   # AdGuard primaer (ProDesk tot)
+          - 10.1.0.52:53   # AdGuard primaer (ProDesk)
           - 10.1.0.27:53   # AdGuard sekundaer (Anker, CT101)
+          - 10.0.0.53:53   # AdGuard Redundanz (OptiPlex, CT102)
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target
