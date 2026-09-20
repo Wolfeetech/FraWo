@@ -1,0 +1,172 @@
+===================================================================
+FraWo Ist-Zustand  ·  erhoben 2026-09-20 11:36      ·  Odoo #1511
+===================================================================
+
+################ Anker (10.1.0.92) ################
+--- Versionen ---
+pve-manager/9.2.20/49318c671b82f31e (running kernel: 7.0.14-17-pve)
+Corosync Cluster Engine, version ''
+7.0.14-17-pve
+--- CPU (Kerne vs Threads!) ---
+CPU(s): 6
+Model name: Intel(R) Core(TM) i5-8500T CPU @ 2.10GHz
+Thread(s) per core: 1
+Core(s) per socket: 6
+Socket(s): 1
+CPU(s) scaling MHz: 93%
+--- Speicher ---
+               total        used        free      shared  buff/cache   available
+Mem:           15828       11062        1196         161        4080        4766
+Swap:           8191         437        7754
+--- Speicherdruck (PSI) ---
+some avg10=0.00 avg60=0.00 avg300=0.00 total=776388
+full avg10=0.00 avg60=0.00 avg300=0.00 total=745100
+--- Auslagerung: laufende Vorgaenge ---
+pswpin 18241
+pswpout 115634
+--- Notabschaltungen (OOM) seit Start ---
+0
+--- corosync ---
+RSS 197 MB, Laufzeit 39:51
+--- Netz ---
+nic0             UP             
+tailscale0       UNKNOWN        100.69.179.87/32 fd7a:115c:a1e0::c63a:b357/128 fe80::49b8:e198:4c4c:3e23/64 
+vmbr0            UP             10.1.0.92/24 fe80::fa75:a4ff:fe06:408a/64 
+veth140i0@if2    UP             
+veth106i0@if2    UP             
+veth110i0@if2    UP             
+veth108i0@if2    UP             
+veth155i0@if2    UP             
+tap210i0         UNKNOWN        
+fwbr210i0        UP             
+fwpr210p0@fwln210i0 UP             
+fwln210i0@fwpr210p0 UP             
+tap240i0         UNKNOWN        
+tap300i0         UNKNOWN        
+veth101i0@if2    UP             
+veth150i0@if2    UP             
+veth130i0@if2    UP             
+  nic0: 1000Mbit/full Fehler=0
+--- Speicherziele ---
+Name                      Type     Status     Total (KiB)      Used (KiB) Available (KiB)        %
+anker-backup           zfspool     active      1885863936       532391440      1353472496   28.23%
+google-drive               dir     active      5400166400      4455617772       944548628   82.51%
+hdd-backup                 dir   disabled               0               0               0      N/A
+local                      dir     active        70892712        17350548        49895292   24.47%
+local-lvm              lvmthin     active       164495360       115936329        48559030   70.48%
+pbs-frawo                  pbs   inactive               0               0               0    0.00%
+pbs-optiplex               pbs   disabled               0               0               0      N/A
+pbs-prodesk                pbs   disabled               0               0               0      N/A
+pbs-usb                    dir   disabled               0               0               0      N/A
+--- Verbund ---
+Nodes:            3
+Quorate:          Yes
+Total votes:      3
+Flags:            Quorate 
+
+################ OptiPlex (10.1.0.227) ################
+--- Versionen ---
+pve-manager/9.2.20/49318c671b82f31e (running kernel: 7.0.14-17-pve)
+Corosync Cluster Engine, version ''
+7.0.14-17-pve
+--- CPU (Kerne vs Threads!) ---
+CPU(s): 4
+Model name: Intel(R) Core(TM) i5-7500T CPU @ 2.70GHz
+Thread(s) per core: 1
+Core(s) per socket: 4
+Socket(s): 1
+CPU(s) scaling MHz: 94%
+--- Speicher ---
+               total        used        free      shared  buff/cache   available
+Mem:           15855        8495        1137          40        6604        7359
+Swap:           8191          36        8155
+--- Speicherdruck (PSI) ---
+some avg10=0.00 avg60=0.00 avg300=0.00 total=640085
+full avg10=0.00 avg60=0.00 avg300=0.00 total=618706
+--- Auslagerung: laufende Vorgaenge ---
+pswpin 0
+pswpout 205
+--- Notabschaltungen (OOM) seit Start ---
+0
+--- corosync ---
+RSS 196 MB, Laufzeit 28:14
+--- Netz ---
+nic0             UP             
+wlp2s0           DOWN           
+vmbr0            UP             10.0.0.227/24 fe80::16b3:1fff:fe2c:1c2c/64 
+tailscale0       UNKNOWN        fe80::314d:676e:3f18:3476/64 
+veth102i0@if2    UP             
+vmbr0.101@vmbr0  UP             10.1.0.227/24 fe80::16b3:1fff:fe2c:1c2c/64 
+docker0          UP             172.17.0.1/16 fe80::42:85ff:feae:b4fa/64 
+veth87d3de7@if3914 UP             fe80::bc48:78ff:fefb:3b2/64 
+veth44c90ee@if3936 UP             fe80::f084:50ff:feef:5601/64 
+  nic0: 100Mbit/full Fehler=0
+--- Speicherziele ---
+Name                      Type     Status     Total (KiB)      Used (KiB) Available (KiB)        %
+anker-backup           zfspool   disabled               0               0               0      N/A
+google-drive               dir   disabled               0               0               0      N/A
+hdd-backup                 dir   disabled               0               0               0      N/A
+local                      dir     active        98497780        20889648        72558584   21.21%
+local-lvm              lvmthin     active      1793056768          896528      1792160239    0.05%
+pbs-frawo                  pbs   disabled               0               0               0      N/A
+pbs-optiplex               pbs   inactive               0               0               0    0.00%
+pbs-prodesk                pbs   disabled               0               0               0      N/A
+pbs-usb                    dir   disabled               0               0               0      N/A
+--- Verbund ---
+Nodes:            3
+Quorate:          Yes
+Total votes:      3
+Flags:            Quorate 
+
+################ ProDesk (10.1.0.128) ################
+--- Versionen ---
+pve-manager/9.2.20/49318c671b82f31e (running kernel: 7.0.14-17-pve)
+Corosync Cluster Engine, version ''
+7.0.14-17-pve
+--- CPU (Kerne vs Threads!) ---
+CPU(s): 8
+Model name: Intel(R) Core(TM) i7-7700T CPU @ 2.90GHz
+Thread(s) per core: 2
+Core(s) per socket: 4
+Socket(s): 1
+CPU(s) scaling MHz: 95%
+--- Speicher ---
+               total        used        free      shared  buff/cache   available
+Mem:           15866        8877        4441         191        3081        6988
+Swap:           8191           0        8191
+--- Speicherdruck (PSI) ---
+some avg10=0.00 avg60=0.00 avg300=0.00 total=0
+full avg10=0.00 avg60=0.00 avg300=0.00 total=0
+--- Auslagerung: laufende Vorgaenge ---
+pswpin 0
+pswpout 0
+--- Notabschaltungen (OOM) seit Start ---
+0
+--- corosync ---
+RSS 177 MB, Laufzeit 11:17
+--- Netz ---
+eno1             UP             
+wlp1s0           DOWN           
+tailscale0       UNKNOWN        100.91.20.116/32 fd7a:115c:a1e0::ed3a:1474/128 fe80::b297:713:e214:f58c/64 
+vmbr0            UP             10.1.0.128/24 fe80::1262:e5ff:fe14:97ed/64 
+veth120i0@if2    UP             
+veth103i0@if2    UP             
+tap220i0         UNKNOWN        
+tap360i0         UNKNOWN        
+  eno1: 1000Mbit/full Fehler=0
+--- Speicherziele ---
+Name                      Type     Status     Total (KiB)      Used (KiB) Available (KiB)        %
+anker-backup           zfspool   disabled               0               0               0      N/A
+google-drive               dir   disabled               0               0               0      N/A
+hdd-backup                 dir     active       976727036       506351084       470375952   51.84%
+local                      dir     active        71017632        31423536        35940876   44.25%
+local-lvm              lvmthin     active       164864000        85234688        79629312   51.70%
+pbs-frawo                  pbs   disabled               0               0               0      N/A
+pbs-optiplex               pbs   disabled               0               0               0      N/A
+pbs-prodesk                pbs   inactive               0               0               0    0.00%
+pbs-usb                    dir   disabled               0               0               0      N/A
+--- Verbund ---
+Nodes:            3
+Quorate:          Yes
+Total votes:      3
+Flags:            Quorate 
