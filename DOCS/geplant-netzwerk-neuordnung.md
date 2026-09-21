@@ -24,6 +24,58 @@ historisch gewachsen: feste Adressen quer über den ganzen Bereich verstreut,
 DHCP-Bereiche, die sich mit fest vergebenen Adressen überlappen, keine Regel,
 welcher Bereich wofür gedacht ist.
 
+## Nachtrag 21.09.2026 — zwei weitere Schwächen, beide am selben Tag aufgeflogen
+
+### A) Das Arbeitsnetz hängt an einer einzigen, unsichtbaren Einstellung
+
+`Anker-Lan` (10.0.0.0/24) ist **VLAN 100, also getaggt**. Ungetaggt läuft am
+Gateway das nie genutzte Werksnetz `Default` (192.168.1.0/24). Damit die Geräte
+ihr Netz ungetaggt bekommen, muss an **jedem einzelnen Port** eine Sonderregel
+stehen:
+
+```json
+{"port_idx":N,"native_networkconf_id":"69d0ff7727ec024b992dcb6f"}
+```
+
+Fällt diese Liste weg, rutschen alle Anschlüsse ins Werksnetz. Die Geräte behalten
+ihre `10.0.0.x`-Adressen, finden aber ihr Gateway nicht mehr — **das ganze Haus ist
+tot, obwohl jeder Server läuft.** Genau das ist passiert.
+
+Besonders tückisch: **alle getaggten VLANs laufen unbeirrt weiter.** Während das
+Hausnetz tot war, waren 13 IoT-Geräte online und der Access Point erreichbar. Es
+sieht deshalb nicht nach einem Netzwerkfehler aus.
+
+**Gehört in die Neuordnung:** Das produktive Arbeitsnetz darf nicht vom Werksnetz
+abhängen. Entweder `Anker-Lan` wird das ungetaggte Netz, oder die Port-Zuordnung
+wird dokumentiert, versioniert und überwacht — nicht beides dem Zufall überlassen.
+
+### B) Die WLAN-Herkunft war nirgends aufgeschrieben
+
+`frawodirekt` kommt **direkt aus der EasyBox**, nur `central` und `iot` kommen vom
+UCG-Access-Point. Das stand in keiner Doku — ich habe es falsch zugeordnet und
+daraus eine falsche Ursachenkette gebaut, bis Wolf es richtiggestellt hat.
+
+Dabei ist `frawodirekt` die **wertvollste Messsonde der ganzen Anlage**: das einzige
+WLAN *vor* dem eigenen Gateway. Eine Frage — „hat frawodirekt auch kein Internet?" —
+hätte den Ausfall in Sekunden eingegrenzt:
+
+| frawodirekt | central / iot | Störung liegt |
+|---|---|---|
+| tot | tot | **bei EasyBox / Vodafone** — alles Eigene unschuldig |
+| läuft | tot | **im eigenen Netz** (UCG, VLANs, Ports, Firewall) |
+
+**Gehört in die Neuordnung:** Die Übersicht aus Punkt 4 muss zu jedem WLAN und jedem
+Anschluss festhalten, **an welchem Gerät er hängt** — nicht nur, welche Adresse er
+bekommt.
+
+### C) Ein gefundener Fehler ist nicht *der* Fehler
+
+Am 21.09. lagen **drei unabhängige Störungen übereinander**: der gekaperte Gateway-
+Adressraum (CT106), die geleerte Port-Zuordnung, und eine tote Vodafone-Leitung
+(rote Telefonlampe bei grüner Internetlampe). Jede einzelne hätte für sich das
+Symptom „kein Internet" erzeugt. Nach jeder Reparatur **neu messen**, statt Erfolg
+anzunehmen.
+
 ## Was erreicht werden soll
 
 Eine Infrastruktur, die professionellem Standard entspricht — mit einer
