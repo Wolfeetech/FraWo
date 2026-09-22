@@ -2023,12 +2023,11 @@
             </div>
 
             <!-- Live-Zahlen statt Zierbalken.
-                 Hier stand ein Stereo-Zeiger, dessen Ausschlag mit Zufallszahlen
+                 Hier stand ein Stereo-Zeiger, dessen Ausschlag mit Math.random()
                  erzeugt wurde - er bewegte sich auch dann, wenn gar nichts lief.
-                 Ein ECHTER Pegel ist moeglich, sobald der Stream einen
-                 Access-Control-Allow-Origin-Kopf mitliefert (oder ueber dieselbe
-                 Adresse ausgeliefert wird) - dann per Web-Audio-Analyse. Bis dahin
-                 stehen hier die Zahlen, die AzuraCast wirklich meldet. -->
+                 Ein echter Pegel ist im Browser nicht messbar: der Stream liefert
+                 keinen CORS-Kopf, die Web-Audio-Messung wuerde den Ton stummschalten.
+                 Deshalb stehen hier die Zahlen, die AzuraCast wirklich meldet. -->
             <div class="vu-meter-box" id="radio-live-facts">
               <div class="vu-channel">
                 <span style="font-size:9.5px; color:#475569;">HÖRER</span>
@@ -2169,29 +2168,58 @@
           <button class="admin-lock-now-btn" onclick="lockAdmin()">🔒 Sofort sperren</button>
         </div>
         <div class="grid-3" style="margin-bottom: 20px;">
-          <a href="https://10.1.0.1" target="_blank" class="app-tile" style="border-color: #38bdf8;">
-            <div class="app-icon">🌐</div>
-            <div class="app-name">UniFi UCG Gateway</div>
-            <div class="app-desc">Router, Firewall & VLAN-Setup</div>
-          </a>
           <a href="https://10.0.0.99:8006" target="_blank" class="app-tile" style="border-color: #38bdf8;">
             <div class="app-icon">🖥️</div>
-            <div class="app-name">Proxmox PVE (Anker)</div>
-            <div class="app-desc">Container & VM Management</div>
+            <div class="app-name">Proxmox Anker</div>
+            <div class="app-desc">Container & VMs — Knoten A</div>
           </a>
-          <a href="https://frawo.tech/odoo" target="_blank" class="app-tile" style="border-color: #38bdf8;">
-            <div class="app-icon">⚙️</div>
-            <div class="app-name">Odoo 19 Backend</div>
-            <div class="app-desc">ERP, Einstellungen & Buchhaltung</div>
+          <a href="https://10.0.0.191:8006" target="_blank" class="app-tile" style="border-color: #38bdf8;">
+            <div class="app-icon">🖥️</div>
+            <div class="app-name">Proxmox ProDesk</div>
+            <div class="app-desc">Container & VMs — Knoten B</div>
+          </a>
+          <a href="https://10.0.0.227:8006" target="_blank" class="app-tile" style="border-color: #38bdf8;">
+            <div class="app-icon">🖥️</div>
+            <div class="app-name">Proxmox OptiPlex</div>
+            <div class="app-desc">Container & VMs — Knoten C</div>
+          </a>
+          <a href="https://10.1.0.1" target="_blank" class="app-tile" style="border-color: #38bdf8;">
+            <div class="app-icon">🌐</div>
+            <div class="app-name">UniFi Gateway</div>
+            <div class="app-desc">Router, Firewall & VLANs</div>
           </a>
         </div>
       </div>
 
       <div class="grid-3">
+        <a href="http://10.0.0.183:8123" class="app-tile">
+          <div class="app-icon">🏠</div>
+          <div class="app-name">Home Assistant Rothkreuz</div>
+          <div class="app-desc">Smart Home — hier</div>
+        </a>
+
+        <a href="http://10.0.0.215:8123" class="app-tile">
+          <div class="app-icon">🏡</div>
+          <div class="app-name">Home Assistant Stockenweiler</div>
+          <div class="app-desc">Smart Home — bei den Eltern</div>
+        </a>
+
         <a href="https://frawo.tech/odoo" class="app-tile">
           <div class="app-icon">📋</div>
           <div class="app-name">Odoo ERP</div>
-          <div class="app-desc">Projekte, Aufgaben & CRM</div>
+          <div class="app-desc">Projekte, Aufträge & CRM</div>
+        </a>
+
+        <a href="http://10.0.0.64" class="app-tile">
+          <div class="app-icon">🔑</div>
+          <div class="app-name">Vaultwarden</div>
+          <div class="app-desc">Passwörter & Zugänge</div>
+        </a>
+
+        <a href="http://10.0.0.204" class="app-tile">
+          <div class="app-icon">☁️</div>
+          <div class="app-name">Nextcloud</div>
+          <div class="app-desc">Dateien & Kalender</div>
         </a>
 
         <a href="http://10.0.0.106:8000" class="app-tile">
@@ -2200,16 +2228,16 @@
           <div class="app-desc">Belege & Dokumentenarchiv</div>
         </a>
 
-        <a href="https://10.1.0.1" class="app-tile">
-          <div class="app-icon">🌐</div>
-          <div class="app-name">UniFi UCG</div>
-          <div class="app-desc">Netzwerk & WLAN-Steuerung</div>
+        <a href="http://10.0.0.106:5678" class="app-tile">
+          <div class="app-icon">🔗</div>
+          <div class="app-name">n8n Automatisierung</div>
+          <div class="app-desc">Abläufe & Verknüpfungen</div>
         </a>
 
-        <a href="http://10.0.0.183:8123" class="app-tile">
-          <div class="app-icon">🏠</div>
-          <div class="app-name">Home Assistant</div>
-          <div class="app-desc">Smart Home & Hausautomation</div>
+        <a href="http://10.0.0.186" class="app-tile">
+          <div class="app-icon">📻</div>
+          <div class="app-name">FraWo Funk (Radio)</div>
+          <div class="app-desc">AzuraCast-Steuerung</div>
         </a>
 
         <a href="http://10.0.0.100:3000" class="app-tile">
@@ -3517,12 +3545,12 @@
 <script>
 (function(){
   function applyHashTab(){
-    var h=location.hash.replace("#","");
-    if(h.indexOf("tab-")===0 && typeof switchTab==="function"){try{switchTab(h);}catch(e){}}
+    var h=location.hash.replace('#','');
+    if(h.indexOf('tab-')===0 && typeof switchTab==='function'){try{switchTab(h);}catch(e){}}
   }
-  window.addEventListener("hashchange",applyHashTab);
-  if(document.readyState!=="loading"){setTimeout(applyHashTab,400);}
-  else{window.addEventListener("DOMContentLoaded",function(){setTimeout(applyHashTab,400);});}
+  window.addEventListener('hashchange',applyHashTab);
+  if(document.readyState!=='loading'){setTimeout(applyHashTab,400);}
+  else{window.addEventListener('DOMContentLoaded',function(){setTimeout(applyHashTab,400);});}
 })();
 </script>
 </body>
