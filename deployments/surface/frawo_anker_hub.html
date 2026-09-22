@@ -3514,5 +3514,16 @@
     </div>
   </div>
 
+<script>
+(function(){
+  function applyHashTab(){
+    var h=location.hash.replace("#","");
+    if(h.indexOf("tab-")===0 && typeof switchTab==="function"){try{switchTab(h);}catch(e){}}
+  }
+  window.addEventListener("hashchange",applyHashTab);
+  if(document.readyState!=="loading"){setTimeout(applyHashTab,400);}
+  else{window.addEventListener("DOMContentLoaded",function(){setTimeout(applyHashTab,400);});}
+})();
+</script>
 </body>
 </html>
