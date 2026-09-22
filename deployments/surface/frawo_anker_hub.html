@@ -1960,13 +1960,13 @@
           </div>
           <div style="display:flex; gap:10px;">
             <button class="btn-touch btn-danger" style="padding:7px 16px; font-size:13px;" id="screen-toggle-btn" onclick="toggleScreenShelly()">📺 Schalten</button>
-            <a href="http://10.1.0.40:8123" target="_blank" class="btn-touch btn-dark" style="padding:7px 14px; font-size:13px;">↗️ Vollbild öffnen</a>
+            <a href="http://10.0.0.183:8123" target="_blank" class="btn-touch btn-dark" style="padding:7px 14px; font-size:13px;">↗️ Vollbild öffnen</a>
           </div>
         </div>
 
         <!-- Embedded Home Assistant View -->
         <div style="flex:1; min-height:580px; border-radius:16px; overflow:hidden; border:1px solid var(--card-border); background:#0f172a; box-shadow:0 4px 16px rgba(0,0,0,0.3);">
-          <iframe id="ha-frame" src="http://10.1.0.40:8123" style="width:100%; height:580px; border:none;" allow="fullscreen"></iframe>
+          <iframe id="ha-frame" src="http://10.0.0.183:8123" style="width:100%; height:580px; border:none;" allow="fullscreen"></iframe>
         </div>
       </div>
     </div>
@@ -2174,7 +2174,7 @@
             <div class="app-name">UniFi UCG Gateway</div>
             <div class="app-desc">Router, Firewall & VLAN-Setup</div>
           </a>
-          <a href="https://10.1.0.92:8006" target="_blank" class="app-tile" style="border-color: #38bdf8;">
+          <a href="https://10.0.0.99:8006" target="_blank" class="app-tile" style="border-color: #38bdf8;">
             <div class="app-icon">🖥️</div>
             <div class="app-name">Proxmox PVE (Anker)</div>
             <div class="app-desc">Container & VM Management</div>
@@ -2194,7 +2194,7 @@
           <div class="app-desc">Projekte, Aufgaben & CRM</div>
         </a>
 
-        <a href="http://10.1.0.96:8000" class="app-tile">
+        <a href="http://10.0.0.106:8000" class="app-tile">
           <div class="app-icon">📑</div>
           <div class="app-name">Paperless DMS</div>
           <div class="app-desc">Belege & Dokumentenarchiv</div>
@@ -2206,13 +2206,13 @@
           <div class="app-desc">Netzwerk & WLAN-Steuerung</div>
         </a>
 
-        <a href="http://10.1.0.40:8123" class="app-tile">
+        <a href="http://10.0.0.183:8123" class="app-tile">
           <div class="app-icon">🏠</div>
           <div class="app-name">Home Assistant</div>
           <div class="app-desc">Smart Home & Hausautomation</div>
         </a>
 
-        <a href="http://10.1.0.35:3000" class="app-tile">
+        <a href="http://10.0.0.100:3000" class="app-tile">
           <div class="app-icon">📊</div>
           <div class="app-name">Grafana</div>
           <div class="app-desc">Server-Metriken & Monitoring</div>
@@ -3087,7 +3087,7 @@
       if (genreEl) genreEl.textContent = (song.genre ? `${song.genre} · FraWo Funk` : 'FraWo Funk · 24/7 High Quality Audio');
 
       if (artEl && song.art) {
-        const cleanArt = song.art.replace('http://10.1.0.38', 'https://funk.frawo.tech').replace('https://10.1.0.38', 'https://funk.frawo.tech');
+        const cleanArt = song.art.replace('http://10.0.0.186', 'https://funk.frawo.tech').replace('https://10.0.0.186', 'https://funk.frawo.tech');
         if (artEl.src !== cleanArt) {
           artEl.src = cleanArt;
         }
