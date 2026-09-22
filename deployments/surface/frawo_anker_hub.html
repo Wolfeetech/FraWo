@@ -1960,13 +1960,13 @@
           </div>
           <div style="display:flex; gap:10px;">
             <button class="btn-touch btn-danger" style="padding:7px 16px; font-size:13px;" id="screen-toggle-btn" onclick="toggleScreenShelly()">📺 Schalten</button>
-            <a href="http://10.0.0.183:8123" target="_blank" class="btn-touch btn-dark" style="padding:7px 14px; font-size:13px;">↗️ Vollbild öffnen</a>
+            <a href="http://10.1.0.40:8123" target="_blank" class="btn-touch btn-dark" style="padding:7px 14px; font-size:13px;">↗️ Vollbild öffnen</a>
           </div>
         </div>
 
         <!-- Embedded Home Assistant View -->
         <div style="flex:1; min-height:580px; border-radius:16px; overflow:hidden; border:1px solid var(--card-border); background:#0f172a; box-shadow:0 4px 16px rgba(0,0,0,0.3);">
-          <iframe id="ha-frame" src="http://10.0.0.183:8123" style="width:100%; height:580px; border:none;" allow="fullscreen"></iframe>
+          <iframe id="ha-frame" src="http://10.1.0.40:8123" style="width:100%; height:580px; border:none;" allow="fullscreen"></iframe>
         </div>
       </div>
     </div>
@@ -2168,17 +2168,17 @@
           <button class="admin-lock-now-btn" onclick="lockAdmin()">🔒 Sofort sperren</button>
         </div>
         <div class="grid-3" style="margin-bottom: 20px;">
-          <a href="https://10.0.0.99:8006" target="_blank" class="app-tile" style="border-color: #38bdf8;">
+          <a href="https://10.1.0.92:8006" target="_blank" class="app-tile" style="border-color: #38bdf8;">
             <div class="app-icon">🖥️</div>
             <div class="app-name">Proxmox Anker</div>
             <div class="app-desc">Container & VMs — Knoten A</div>
           </a>
-          <a href="https://10.0.0.191:8006" target="_blank" class="app-tile" style="border-color: #38bdf8;">
+          <a href="https://10.1.0.128:8006" target="_blank" class="app-tile" style="border-color: #38bdf8;">
             <div class="app-icon">🖥️</div>
             <div class="app-name">Proxmox ProDesk</div>
             <div class="app-desc">Container & VMs — Knoten B</div>
           </a>
-          <a href="https://10.0.0.227:8006" target="_blank" class="app-tile" style="border-color: #38bdf8;">
+          <a href="https://10.1.0.227:8006" target="_blank" class="app-tile" style="border-color: #38bdf8;">
             <div class="app-icon">🖥️</div>
             <div class="app-name">Proxmox OptiPlex</div>
             <div class="app-desc">Container & VMs — Knoten C</div>
@@ -2192,13 +2192,13 @@
       </div>
 
       <div class="grid-3">
-        <a href="http://10.0.0.183:8123" class="app-tile">
+        <a href="http://10.1.0.40:8123" class="app-tile">
           <div class="app-icon">🏠</div>
           <div class="app-name">Home Assistant Rothkreuz</div>
           <div class="app-desc">Smart Home — hier</div>
         </a>
 
-        <a href="http://10.0.0.215:8123" class="app-tile">
+        <a href="http://10.1.0.248:8123" class="app-tile">
           <div class="app-icon">🏡</div>
           <div class="app-name">Home Assistant Stockenweiler</div>
           <div class="app-desc">Smart Home — bei den Eltern</div>
@@ -2210,37 +2210,37 @@
           <div class="app-desc">Projekte, Aufträge & CRM</div>
         </a>
 
-        <a href="http://10.0.0.64" class="app-tile">
+        <a href="http://10.1.0.95" class="app-tile">
           <div class="app-icon">🔑</div>
           <div class="app-name">Vaultwarden</div>
           <div class="app-desc">Passwörter & Zugänge</div>
         </a>
 
-        <a href="http://10.0.0.204" class="app-tile">
+        <a href="http://10.1.0.21" class="app-tile">
           <div class="app-icon">☁️</div>
           <div class="app-name">Nextcloud</div>
           <div class="app-desc">Dateien & Kalender</div>
         </a>
 
-        <a href="http://10.0.0.106:8000" class="app-tile">
+        <a href="http://10.1.0.100:8000" class="app-tile">
           <div class="app-icon">📑</div>
           <div class="app-name">Paperless DMS</div>
           <div class="app-desc">Belege & Dokumentenarchiv</div>
         </a>
 
-        <a href="http://10.0.0.106:5678" class="app-tile">
+        <a href="http://10.1.0.100:5678" class="app-tile">
           <div class="app-icon">🔗</div>
           <div class="app-name">n8n Automatisierung</div>
           <div class="app-desc">Abläufe & Verknüpfungen</div>
         </a>
 
-        <a href="http://10.0.0.186" class="app-tile">
+        <a href="http://10.1.0.38" class="app-tile">
           <div class="app-icon">📻</div>
           <div class="app-name">FraWo Funk (Radio)</div>
           <div class="app-desc">AzuraCast-Steuerung</div>
         </a>
 
-        <a href="http://10.0.0.100:3000" class="app-tile">
+        <a href="http://10.1.0.35:3000" class="app-tile">
           <div class="app-icon">📊</div>
           <div class="app-name">Grafana</div>
           <div class="app-desc">Server-Metriken & Monitoring</div>
@@ -3115,7 +3115,7 @@
       if (genreEl) genreEl.textContent = (song.genre ? `${song.genre} · FraWo Funk` : 'FraWo Funk · 24/7 High Quality Audio');
 
       if (artEl && song.art) {
-        const cleanArt = song.art.replace('http://10.0.0.186', 'https://funk.frawo.tech').replace('https://10.0.0.186', 'https://funk.frawo.tech');
+        const cleanArt = song.art.replace('http://10.1.0.38', 'https://funk.frawo.tech').replace('https://10.1.0.38', 'https://funk.frawo.tech');
         if (artEl.src !== cleanArt) {
           artEl.src = cleanArt;
         }

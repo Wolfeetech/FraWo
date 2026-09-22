@@ -3,7 +3,7 @@
 FraWo Surface Go Portal Server (Port 17827)
 Serves frawo_anker_hub.html and provides live telemetry (/api/telemetry)
 for weather, Shelly power, system status, and focus tasks for Wolf & Franz.
-Also proxies /api/radio/* and /cockpit to Odoo CT140 (10.0.0.55:8069).
+Also proxies /api/radio/* and /cockpit to Odoo CT140 (10.1.0.112:8069).
 """
 
 import http.server
@@ -100,7 +100,7 @@ def fetch_json(url, timeout=2.5):
         pass
     return None
 
-ODOO_SUMMARY_URL = "http://10.0.0.55:8069/frawo/touch/api/summary"
+ODOO_SUMMARY_URL = "http://10.1.0.112:8069/frawo/touch/api/summary"
 ODOO_CACHE_TTL = 20.0
 _odoo_cache = {}
 _odoo_cache_lock = threading.Lock()
@@ -152,9 +152,9 @@ def telemetry_poller():
             s10_data = fetch_json("http://10.4.0.10/rpc/Switch.GetStatus?id=0", timeout=2.0)
             
             # 4. Connectivity checks
-            ha_ok = check_tcp_port("10.0.0.183", 8123, timeout=1.5)
+            ha_ok = check_tcp_port("10.1.0.40", 8123, timeout=1.5)
             gw_ok = check_tcp_port("10.4.0.1", 53, timeout=1.0) or check_tcp_port("10.1.0.1", 443, timeout=1.0)
-            anker_ok = check_tcp_port("10.0.0.99", 22, timeout=1.0)
+            anker_ok = check_tcp_port("10.1.0.92", 22, timeout=1.0)
             inet_ok = check_tcp_port("1.1.1.1", 53, timeout=1.5)
 
             # 5. Odoo Live-Aufgaben: haelt den Zwischenspeicher fuer den Standard-Hub warm.
@@ -277,7 +277,7 @@ class PortalRequestHandler(http.server.SimpleHTTPRequestHandler):
         elif self.path.startswith("/api/radio/") or self.path.startswith("/frawo/touch/api/radio/"):
             try:
                 odoo_path = self.path if self.path.startswith("/frawo/touch/") else self.path.replace("/api/radio/", "/frawo/touch/api/radio/")
-                target_url = f"http://10.0.0.55:8069{odoo_path}"
+                target_url = f"http://10.1.0.112:8069{odoo_path}"
                 req = urllib.request.Request(target_url, headers={"User-Agent": "FraWo-Surface-Kiosk"})
                 with urllib.request.urlopen(req, timeout=6.0) as resp:
                     content = resp.read()
@@ -298,7 +298,7 @@ class PortalRequestHandler(http.server.SimpleHTTPRequestHandler):
 
         elif route == "/cockpit" or self.path.startswith("/frawo/touch/"):
             try:
-                target_url = f"http://10.0.0.55:8069{self.path}" if self.path.startswith("/frawo/") else "http://10.0.0.55:8069/frawo/touch/cockpit"
+                target_url = f"http://10.1.0.112:8069{self.path}" if self.path.startswith("/frawo/") else "http://10.1.0.112:8069/frawo/touch/cockpit"
                 req = urllib.request.Request(target_url, headers={"User-Agent": "FraWo-Surface-Kiosk"})
                 with urllib.request.urlopen(req, timeout=5.0) as resp:
                     content = resp.read()
@@ -323,7 +323,7 @@ class PortalRequestHandler(http.server.SimpleHTTPRequestHandler):
                 content_length = int(self.headers.get('Content-Length', 0))
                 body = self.rfile.read(content_length) if content_length > 0 else b""
                 odoo_path = self.path if self.path.startswith("/frawo/touch/") else self.path.replace("/api/radio/", "/frawo/touch/api/radio/")
-                target_url = f"http://10.0.0.55:8069{odoo_path}"
+                target_url = f"http://10.1.0.112:8069{odoo_path}"
                 req = urllib.request.Request(
                     target_url,
                     data=body,
