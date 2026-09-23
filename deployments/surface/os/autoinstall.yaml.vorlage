@@ -17,7 +17,9 @@ autoinstall:
         dhcp4: true
         optional: true
     wifis:
-      wlp1s0:
+      wlan:
+        match:
+          name: "wl*"
         dhcp4: true
         optional: true
         access-points:
