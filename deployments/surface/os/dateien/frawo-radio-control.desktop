@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=FRAWO Radio Control
+Comment=Radio auf den Lautsprechern steuern
+Exec=/snap/bin/chromium --app=http://127.0.0.1:17827/#tab-radio --ozone-platform=wayland --enable-wayland-ime --force-device-scale-factor=1.6 --no-first-run
+Icon=audio-x-generic
+Terminal=false
+Categories=Utility;

@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=FRAWO Home Control (Autostart)
+Exec=/snap/bin/chromium --app=http://127.0.0.1:17827/ --ozone-platform=wayland --enable-wayland-ime --force-device-scale-factor=1.6 --no-first-run --start-fullscreen
+X-GNOME-Autostart-Delay=5
+Terminal=false

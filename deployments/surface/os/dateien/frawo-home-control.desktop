@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=FRAWO Home Control
+Comment=Touchboard: Haus, Aufgaben, Termine
+Exec=/snap/bin/chromium --app=http://127.0.0.1:17827/ --ozone-platform=wayland --enable-wayland-ime --force-device-scale-factor=1.6 --no-first-run
+Icon=go-home
+Terminal=false
+Categories=Utility;

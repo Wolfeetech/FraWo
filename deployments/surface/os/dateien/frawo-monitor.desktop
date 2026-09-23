@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=FRAWO Monitor
+Comment=Zustand der Anlage
+Exec=/snap/bin/chromium --app=http://10.1.0.35:3000/d/frawo-zentrale --ozone-platform=wayland --enable-wayland-ime --force-device-scale-factor=1.6 --no-first-run
+Icon=utilities-system-monitor
+Terminal=false
+Categories=Utility;
