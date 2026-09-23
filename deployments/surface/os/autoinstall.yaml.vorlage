@@ -1,0 +1,47 @@
+autoinstall:
+  version: 1
+  refresh-installer:
+    update: false
+  locale: de_DE.UTF-8
+  timezone: Europe/Berlin
+  keyboard:
+    layout: de
+  source:
+    id: ubuntu-server-minimal
+  network:
+    version: 2
+    ethernets:
+      kabel:
+        match:
+          name: "en*"
+        dhcp4: true
+        optional: true
+    wifis:
+      wlp1s0:
+        dhcp4: true
+        optional: true
+        access-points:
+          "FraWo__ioT":
+            password: "@@WLAN_PSK@@"
+  apt:
+    fallback: offline-install
+  storage:
+    layout:
+      name: direct
+  identity:
+    hostname: surface-go
+    realname: FraWo Wartung
+    username: frawo
+    password: "@@PASSWORT_HASH@@"
+  ssh:
+    install-server: true
+    allow-pw: false
+    authorized-keys:
+@@SSH_KEYS@@
+  packages:
+    - wpasupplicant
+    - curl
+  late-commands:
+    - "echo 'frawo ALL=(ALL) NOPASSWD:ALL' > /target/etc/sudoers.d/frawo && chmod 440 /target/etc/sudoers.d/frawo"
+    - "curtin in-target -- passwd -l frawo"
+  shutdown: reboot
