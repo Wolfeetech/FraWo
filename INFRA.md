@@ -65,6 +65,15 @@ Kopie im Repo: `INFRA.md`
 5. **Tagesbericht an Wolf:**
    - **Odoo-Cron 44 / Server-Aktion 828:** Täglich um 12:04 CEST via Brevo-Relay per E-Mail an `wolf@frawo.tech`.
    - **Inhalt:** Tagesplan, Kalendertermine, Aufgaben nach Ort (@rk22, @villa, @stockenweiler, etc.), offene Entscheidungen, Meilensteine.
+6. **Chatter-Erwähnungen → Jarvis oder Ollama (Odoo #1581, seit 23.09.2026):**
+   - **Eingang:** genau **einer** — `odoo-webhook.service` auf CT150, `POST /klausi-chatter/<secret>` (Port 19001, LAN). Kein zweiter Webhook.
+   - **Auslöser:** Odoo-Automatik **1** auf `mail.message` (`on_create`), Server-Aktion **647** (Typ *Webhook*). Das `code`-Feld der Aktion ist totes Altmaterial — gesteuert wird über `filter_domain` der Automatik.
+   - **Wegegabelung im Handler:** `@Klausi/@Jarvis/@OpenClaw` → OpenClaw-Agent wie bisher · `@Ollama` → lokales Modell, Antwort als **🤖 Ollama Mitarbeiter** (Odoo-Nutzer 30, Partner 160) im selben Chatter.
+   - **Rechenknoten (in dieser Reihenfolge):** StudioPC `10.0.0.156:11434` (GPU, nur zeitweise an) → OptiPlex-Dauerläufer `10.0.0.227:11434` (CPU). Klopftest 4 s, dann Ausweichen. Läuft keiner, kommt eine kurze Notiz in den Chatter statt Schweigen.
+   - **Geheimnisse:** `/etc/frawo/ollama-chatter.env` (root, `0600`), eingebunden über `EnvironmentFile` in `/etc/systemd/system/odoo-webhook.service.d/env.conf`. **Im Quelltext steht nichts mehr** — fehlt ein Pflichtwert, startet der Dienst nicht (fail closed).
+   - **Rechte des Ollama-Zugangs:** Gruppe *„Ollama Mitarbeiter - nur antworten"* (117) + *Internal User*. Nachgemessen: Aufgaben **nur lesen**, Chatter-Beitrag erlaubt; Ändern, Abschließen, Löschen, Buchhaltung und Systemparameter werden von Odoo abgewiesen.
+   - **Schleifenschutz:** Beiträge von Partner 160 lösen nichts aus (greift im Echtbetrieb — Ollamas eigene Antwort enthält die Erwähnung). Dedupe je Nachricht 5 Minuten.
+   - ⚠️ **Offen:** `FRAWO_TASK_SECRET` und `FRAWO_ALERT_SECRET` stecken unverändert auch in der Git-Historie (`infra/openclaw/odoo_webhook_handler.py` vor v3) — Rotation nötig, betrifft Odoo-Parameter `frawo_agent.servassi_webhook_secret` und die Alertmanager-Konfiguration auf CT155.
 
 ---
 
