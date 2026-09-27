@@ -3,6 +3,15 @@
 > **Zuerst lesen.** Diese Datei beschreibt, **was läuft** — nicht, was passiert ist.
 > Historie steht in der Git-Historie, Entscheidungen und Aufgaben in **Odoo (CT140, `10.1.0.112:8069`) = einzige Quelle der Wahrheit**.
 >
+> **🟢 Stand 24.09.2026 — Neuer PBS auf dem OptiPlex, VM240 ist Geschichte (Odoo #1462):**
+> - **PBS = VM241 auf dem OptiPlex, `10.1.0.8:8007`**, PBS 4.2. System (32 GB, Seriennr. `PBSSYS`) und Sicherungen (750 GB, `PBSDATA`, Datenspeicher `frawo`) auf **getrennten** Platten — das war der Konstruktionsfehler von VM240 (Datenspeicher lag im Root-Dateisystem der kaputten Systemplatte). SSH nur mit `pve-access` (`~/.ssh/pve_ed25519`) und Jarvis-Schlüssel; root-Passwort zufällig, nirgends gespeichert.
+> - **Verbund-Ziel `pbs`** (alle drei Knoten), Konto `sicherung@pbs!pve` mit nur `DatastoreBackup` → Knoten können sichern, **nicht löschen**. Aufräumen macht der PBS selbst (06:00, 7 T/4 W/3 M), Bereinigung 06:30, Prüfung So 07:00.
+> - **Auftrag `pbs-alle-nachts` 01:00 = alle Gäste außer 240/241/990.** Vorher gab es nur den Cloud-Auftrag der Anker-Gäste — **ProDesk (103, 120, 220, 360) und OptiPlex (102) waren ungesichert.** Wiederherstellung am 24.09. mit CT102 bewiesen.
+> - Alte Einträge `pbs-frawo`/`pbs-prodesk`/`pbs-optiplex` nur **abgeschaltet** (zeigen auf die tote VM240, `10.1.0.7`). VM240 + ZFS-Volume unangetastet.
+> - 🔴 **Falle:** Docker auf dem OptiPlex setzt `FORWARD` auf DROP. Jede VM mit `firewall=1` hängt an einer eigenen Brücke `fwbrNNNi0` und braucht einen eigenen Eintrag in `frawo-docker-bruecke.service` — `vmbr0` allein reicht nicht.
+> - 🔴 **Falle:** Unter dem Namen `studiopc@wolfstudioPC` stehen **fünf verschiedene** Schlüssel in `/etc/pve/priv/authorized_keys`. Nie nach Kommentar auswählen, immer nach Fingerabdruck.
+> - Skripte: `deployments/optiplex/pbs241/`. Cloud-Auftrag bleibt vorerst täglich; geplant: wöchentlich, weil ~60 GB/Nacht die ~2 MB/s-Leitung nicht schafft.
+>
 > **🟢 Stand 18.09.2026 (mittags) — ZFS-Pool `anker-backup` wieder ONLINE & PBS läuft:**
 > - **USB-Spiegelplatten von Wolf neu gesteckt & ZFS-Pool reaktiviert:** Beide WD Elements Platten (`sdb`, `sdd`) erkannt. `zpool clear anker-backup` ausgeführt. Pool-Status: **`ONLINE`**, Resilver läuft aktiv (~19 MB/s). Datasets `/anker-backup` (1,6 TB frei) und `/anker-backup/musik` (33,4 GB) vollständig les- und schreibbar.
 > - **Proxmox Backup Server (VM 240, `10.1.0.7`) wieder aktiv:** Boot-ZVOL `vm-240-disk-0` läuft, Port 8007 antwortet einwandfrei (`ServiceDown` behoben). Backup-TÜV: `pbs_datastore` **BESTANDEN**.
