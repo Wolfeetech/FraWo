@@ -3,6 +3,13 @@
 > **Zuerst lesen.** Diese Datei beschreibt, **was läuft** — nicht, was passiert ist.
 > Historie steht in der Git-Historie, Entscheidungen und Aufgaben in **Odoo (CT140, `10.1.0.112:8069`) = einzige Quelle der Wahrheit**.
 >
+> **🧾 Seit 28.09.2026 — Abrechnung aus der Projektmappe (Odoo #1595):**
+> - **Ein Auftrag pro Einsatz**, Kundenreferenz = Eventname. Tagessatz-Produkte (`FW-001` Helfer, `SRV-FACHKRAFT-TAG`) erzeugen beim Bestätigen eine **eigene Mappe** aus Vorlage „Projektmappe“ (#164) mit einer Aufgabe je Position + Checkliste „🧾 Leistungsnachweis & Abrechnung“.
+> - **Abgerechnet werden Einsatztage, nicht Stunden:** Automatik #30/#31 zählt je Tagessatz-Position die Tage mit Zeiteintrag je Person, höchstens die beauftragte Menge; mehr = Hinweis „Mehrleistung/Nachtrag“ im Auftrag. Anfahrt gilt als erbracht, sobald ein Einsatztag erfasst ist. Rechnung: in der Mappe „Rechnung erstellen“.
+> - 🔴 **Falle:** Produkt-Einheit nie ändern, solange gesperrte Aufträge existieren — Odoo will sie in allen Altaufträgen nachziehen (UserError „gesperrter Auftrag: Einheit“). Helfer bleibt „Stück = 1 Tagessatz“.
+> - 🔴 **Falle:** Odoo-Serveraktionen erlauben keine Feldzuweisung (`forbidden opcode STORE_ATTR`) → immer `.write()`. Übersetzbare Namen (Projekt) per Konsole setzen nur `en_US` → deutsche Oberfläche zeigt weiter den alten Namen.
+> - Skript + Test (spielt Wasserburg durch, setzt zurück): `deployments/odoo_wartung/2026-09-28_abrechnung_projektmappe.*`
+>
 > **🔀 Seit 28.09.2026 — Eine Wahrheit für alle Agenten (Odoo #1593, AGENTS.md v1.3):**
 > - **Das Git-Repo (`main`) ist die einzige Quelle** für `AGENTS.md`, `NOW.md`, `INFRA.md`. Jarvis' Workspace bekommt stündlich Kopien (`scripts/frawo-wissen-sync.sh`, Kopfvermerk „KOPIE … NICHT HIER BEARBEITEN“); `C:\Users\StudioPC\AGENTS.md` ist nur noch ein Verweis.
 > - 🔴 **Falle, die zu Doppelarbeit führte:** Alle Agenten sind Odoo-User 7 → Zuweisung sperrt nichts. **Lock = Schlagwort** `🔒 Claude` (168) / `🔒 Jarvis` (169) / `🔒 Antigravity` (170).
