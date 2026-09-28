@@ -57,7 +57,14 @@ def einrichten():
     modell =E['ir.model']._get('account.analytic.line')
     ergebnis = []
     for name, trigger, aus in (('erfassen/aendern', 'on_create_or_write', 'False'), ('loeschen', 'on_unlink', 'True')):
-        sa = E['ir.actions.server'].create({
+        # Wiederholbar: nie doppelt anlegen (AGENTS.md Verbot 6) - Pruefung ueber Modell + Ausloeser + Code-Marke.
+        vorhanden = E['base.automation'].with_context(active_test=False).search([
+            ('model_id', '=', modell.id), ('trigger', '=', trigger),
+            ('action_server_ids.code', 'like', 'Einsatztage aus der Zeiterfassung')])
+        if vorhanden:
+            ergebnis.append(vorhanden[0])
+            continue
+        sa =E['ir.actions.server'].create({
             'name': 'FraWo: Einsatztage aus Zeiterfassung (%s)' % name, 'model_id': modell.id,
             'state': 'code', 'usage': 'base_automation', 'code': 'AUSSCHLUSS = %s\n' % aus + CODE})
         vals = {'name': 'FraWo: Einsatztage aus Zeiterfassung (%s)' % name, 'model_id': modell.id,
