@@ -8,7 +8,8 @@
 > - 🔴 **Falle:** Container ohne eigenen node_exporter fielen durch jede Plattenregel. Neu: `ContainerPlatteWarnung`/`-Kritisch` über den **pve-exporter** in `frawo_storage_alerts.yml` (CT155), gilt für alle LXC.
 > - 🔴 **Falle:** Die Warteschlange des Webhook-Handlers (CT150) hat **kein Ablaufdatum** → nach jedem Ausfall kommen alle Alten auf einmal. Fix liegt bei Jarvis (#1581).
 > - **HA Stockenweiler:** Growatt-Shelly (Garten) ist **Ertragsmesser**, stand aber in „Familie Prinz Verbrauch“ (September 176 → 90 kWh). Energie-Dashboard: Growatt jetzt Solar statt Batterie; Lottis vier 4PM-Kanäle zeigten seit der Umbenennung 16.09. ins Leere, umgehängt. Odoo #1487 (Kette bis Monatsabschluss 01.10.).
-> - Prometheus prüft den PBS jetzt auf `10.1.0.8`.
+> - Prometheus prüft den PBS jetzt auf `10.1.0.8`. **Alte VM240 + Volume gelöscht**, ebenso die Speicherziele `pbs-frawo/-prodesk/-optiplex`; ZFS `anker-backup` ohne Datenfehler (Scrub 28.09.). Odoo #1589.
+> - **StudioPC läuft planmäßig NICHT 24/7** (Wolf, 28.09.): KI-Grundlast, Open WebUI und Paperless bleiben auf dem OptiPlex, der StudioPC ist Power-Rechner auf Abruf. Sein Ollama steht deshalb nicht mehr in der Dienst-Überwachung (kein Alarm, wenn er aus ist).
 >
 > **🟢 Stand 24.09.2026 — Neuer PBS auf dem OptiPlex, VM240 ist Geschichte (Odoo #1462):**
 > - **PBS = VM241 auf dem OptiPlex, `10.1.0.8:8007`**, PBS 4.2. System (32 GB, Seriennr. `PBSSYS`) und Sicherungen (750 GB, `PBSDATA`, Datenspeicher `frawo`) auf **getrennten** Platten — das war der Konstruktionsfehler von VM240 (Datenspeicher lag im Root-Dateisystem der kaputten Systemplatte). SSH nur mit `pve-access` (`~/.ssh/pve_ed25519`) und Jarvis-Schlüssel; root-Passwort zufällig, nirgends gespeichert.
