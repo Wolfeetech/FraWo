@@ -40,4 +40,21 @@ rm -rf "$ZIEL"
 mv "$TMP" "$ZIEL"
 echo "$(date '+%Y-%m-%d %H:%M') - $ANZAHL Dateien uebernommen"
 
+# Seit 28.09.2026 (Odoo #1593): Die Dateien, die Jarvis direkt im Workspace
+# liest, sind KOPIEN des Repos. Vorher lagen dort Staende vom 06.09./13.09.,
+# waehrend Repo und StudioPC laengst weiter waren. Jede Kopie traegt einen
+# Kopfvermerk, damit niemand sie fuer das Original haelt. Atomar per mv.
+WS="$VOL/workspace"
+kopie() {  # $1 = Datei im Repo, $2 = Zielname im Workspace
+  [ -s "$REPO/$1" ] || { echo "FEHLER: $1 fehlt oder leer - Kopie uebersprungen" >&2; return 1; }
+  { printf '<!-- KOPIE aus github.com/Wolfeetech/FraWo (main) %s, Stand %s. NICHT HIER BEARBEITEN - Aenderungen nur im Repo. -->\n' \
+      "$1" "$(git -C "$REPO" log -1 --format=%h)"
+    cat "$REPO/$1"; } > "$WS/$2.neu"
+  mv "$WS/$2.neu" "$WS/$2"
+}
+kopie AGENTS.md AGENTS-PROTOCOL.md
+kopie INFRA.md INFRA.md
+kopie NOW.md NOW.md
+echo "$(date '+%Y-%m-%d %H:%M') - Protokoll, INFRA.md, NOW.md in den Workspace kopiert"
+
 docker exec openclaw openclaw memory index

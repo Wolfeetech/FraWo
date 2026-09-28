@@ -32,6 +32,7 @@ import json
 import logging
 import os
 import re
+import sqlite3
 import subprocess
 import threading
 import time
@@ -68,9 +69,20 @@ ODOO_DB = _need("ODOO_DB")
 ODOO_LOGIN = _need("ODOO_LOGIN")
 ODOO_APIKEY = _need("ODOO_APIKEY")
 
-OLLAMA_URL = _need("OLLAMA_URL").rstrip("/")
-OLLAMA_MODEL = os.environ.get("OLLAMA_MODEL", "frawo-mitarbeiter")
 OLLAMA_TIMEOUT = int(os.environ.get("OLLAMA_TIMEOUT", "240"))
+QUEUE_DB = os.environ.get(
+    "FRAWO_QUEUE_DB", "/var/lib/frawo/odoo-webhook-queue.sqlite3")
+
+# Getrennte Rollen statt eines stillen Fallbacks:
+# - Routine-Lama (OptiPlex): 24/7, kurze Chatter-Zuarbeit.
+# - Power-Lama (StudioPC): nur bei ausdrücklicher Bitte "Power"; dafür ist
+#   ein stärkeres Modell und mehr Zeit vorgesehen. Fällt der StudioPC aus,
+#   wird NICHT heimlich auf die Routine-Qualität zurückgefallen.
+OLLAMA_ROUTINE_ZIELE = [(_need("OLLAMA_URL").rstrip("/"),
+                         os.environ.get("OLLAMA_MODEL", "frawo-mitarbeiter-fast"))]
+_power_url = os.environ.get("OLLAMA_POWER_URL", "").strip().rstrip("/")
+_power_model = os.environ.get("OLLAMA_POWER_MODEL", "").strip()
+OLLAMA_POWER_ZIELE = [(_power_url, _power_model)] if _power_url and _power_model else []
 
 # Partner-ID des Odoo-Nutzers "🤖 Ollama Mitarbeiter" — eigene Beiträge dürfen
 # niemals eine neue Runde auslösen.
@@ -102,8 +114,61 @@ def is_duplicate(kind: str, key: str) -> bool:
         return False
 
 
-# --- Agent-Trigger (asynchron, serialisiert) ------------------------------
-_trigger_lock = threading.Lock()
+# --- Persistente Agenten-Inbox ---------------------------------------------
+# Ereignisse werden VOR dem HTTP-ACK atomar in SQLite (WAL + FULL) abgelegt.
+# Der Worker ist Teil dieses Dienstes; kein Cron und kein weiterer Alarmkanal.
+_queue_wake = threading.Event()
+
+
+def _queue_connection():
+    os.makedirs(os.path.dirname(QUEUE_DB), mode=0o700, exist_ok=True)
+    conn = sqlite3.connect(QUEUE_DB, timeout=10)
+    conn.execute("PRAGMA journal_mode=WAL")
+    conn.execute("PRAGMA synchronous=FULL")
+    return conn
+
+
+def init_queue():
+    with _queue_connection() as conn:
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS events (
+              id TEXT PRIMARY KEY, kind TEXT NOT NULL, label TEXT NOT NULL,
+              message TEXT NOT NULL, state TEXT NOT NULL,
+              attempts INTEGER NOT NULL DEFAULT 0, created REAL NOT NULL,
+              next_attempt REAL NOT NULL DEFAULT 0, delivered REAL,
+              last_error TEXT
+            )
+        """)
+        # Ein Neustart darf ein gerade laufendes Ereignis nicht verschwinden lassen.
+        conn.execute("UPDATE events SET state='pending', next_attempt=0, "
+                     "last_error='Worker nach Dienstneustart erneut eingeplant' "
+                     "WHERE state='running'")
+
+
+def enqueue_agent_event(kind: str, key: str, message: str, label: str) -> bool:
+    """Speichert genau ein Ereignis pro Dedupe-Zeitfenster dauerhaft.
+
+    True bedeutet neu gespeichert; False bedeutet bereits dauerhaft vorhanden.
+    Eine Ausnahme muss zum HTTP-503 führen – ohne Persistenz kein ACK.
+    """
+    now = time.time()
+    ttl = DEDUPE_TTL.get(kind, 600)
+    bucket = int(now // ttl)
+    event_id = hashlib.sha256(f"{kind}:{key}:{bucket}".encode()).hexdigest()
+    with _queue_connection() as conn:
+        cur = conn.execute(
+            "INSERT OR IGNORE INTO events "
+            "(id,kind,label,message,state,created,next_attempt) VALUES "
+            "(?,?,?,?, 'pending', ?, 0)",
+            (event_id, kind, label, message, now),
+        )
+        inserted = cur.rowcount == 1
+    if inserted:
+        _queue_wake.set()
+        log.info("Persistente Inbox: %s gespeichert (%s)", label, event_id[:12])
+    else:
+        log.info("Persistente Inbox: Duplicate ignoriert (%s)", event_id[:12])
+    return inserted
 
 AGENT_PROMPT_TEMPLATE = """NEUER DEVOPS-TASK #{task_id} von Wolf:
 
@@ -182,24 +247,58 @@ def _run_agent(message: str, label: str) -> bool:
         log.error(f"Agent failed for {label}: {result.stderr[-500:]}")
         return False
     except subprocess.TimeoutExpired:
-        log.info(f"Agent started (timeout OK — runs async) for {label}")
-        return True
+        # Ohne Rückgabecode ist die Zustellung nicht belegt. Das Ereignis
+        # bleibt in der Inbox und wird mit Backoff erneut versucht.
+        log.error(f"Agent-Trigger Timeout für {label}")
+        return False
     except Exception as e:
         log.error(f"Error triggering agent for {label}: {e}")
         return False
 
 
-def trigger_agent_async(message: str, label: str) -> None:
-    """Startet den Agent-Trigger im Hintergrund; serialisiert via Lock,
-    1 Retry nach 30s bei Fehlschlag. HTTP-Antwort hängt NICHT daran."""
-    def worker():
-        with _trigger_lock:
-            ok = _run_agent(message, label)
-            if not ok:
-                log.info(f"Retry in 30s for {label}")
-                time.sleep(30)
-                _run_agent(message, f"{label} (retry)")
-    threading.Thread(target=worker, daemon=True).start()
+def run_queue_once() -> bool:
+    """Liefert höchstens ein fälliges Ereignis aus; Rückgabe = Arbeit getan."""
+    now = time.time()
+    with _queue_connection() as conn:
+        conn.execute("DELETE FROM events WHERE state='delivered' AND delivered < ?",
+                     (now - 7 * 86400,))
+        row = conn.execute(
+            "SELECT id,label,message,attempts FROM events "
+            "WHERE state='pending' AND next_attempt <= ? "
+            "ORDER BY created LIMIT 1", (now,)).fetchone()
+        if not row:
+            return False
+        event_id, label, message, attempts = row
+        conn.execute("UPDATE events SET state='running' WHERE id=?", (event_id,))
+
+    ok = _run_agent(message, label)
+    now = time.time()
+    with _queue_connection() as conn:
+        if ok:
+            conn.execute("UPDATE events SET state='delivered', delivered=?, "
+                         "last_error=NULL WHERE id=?", (now, event_id))
+            log.info("Persistente Inbox: zugestellt (%s)", event_id[:12])
+        else:
+            attempts += 1
+            delay = min(3600, 30 * (2 ** min(attempts - 1, 6)))
+            conn.execute("UPDATE events SET state='pending', attempts=?, "
+                         "next_attempt=?, last_error=? WHERE id=?",
+                         (attempts, now + delay,
+                          "Agent nicht angenommen; erneuter Versuch geplant", event_id))
+            log.error("Persistente Inbox: Zustellung fehlgeschlagen (%s), "
+                      "Retry in %ss", event_id[:12], delay)
+    return True
+
+
+def queue_worker() -> None:
+    while True:
+        try:
+            did_work = run_queue_once()
+        except Exception as e:
+            log.exception("Persistente Inbox: Workerfehler: %s", e)
+            did_work = False
+        _queue_wake.wait(0.2 if did_work else 5)
+        _queue_wake.clear()
 
 
 # --- Ollama-Mitarbeiter ---------------------------------------------------
@@ -227,6 +326,10 @@ Aktion
 Nachweis
 Status
 Naechster Schritt
+
+Gib die Überschriften genau so aus, jeweils ohne Markdown-Zeichen und mit
+Doppelpunkt, beispielsweise "Auftrag:". Keine #, keine Tabellen, keine
+Codeblöcke.
 
 Kurz halten: zusammen höchstens etwa 200 Wörter. Keine Einleitung, keine
 Grußformel, keine Wiederholung der Frage."""
@@ -260,7 +363,7 @@ def _to_html(text: str) -> str:
     out = []
     in_list = False
     for line in (text or "").splitlines():
-        line = line.strip()
+        line = re.sub(r"^#{1,6}\s*", "", line.strip())
         if not line:
             continue
         if line.startswith(("- ", "* ", "• ")):
@@ -336,7 +439,7 @@ def _gather_context(rpc: OdooRPC, model: str, res_id: int) -> str:
                 parts.append("Frist: %s" % rec["date_deadline"])
             desc = _strip_html(rec.get("description") or "")
             if desc:
-                parts.append("Beschreibung:\n%s" % desc[:2500])
+                parts.append("Beschreibung:\n%s" % desc[:1400])
     else:
         rows = rpc.call(model, "read", [[res_id]], {"fields": ["display_name"]})
         if rows:
@@ -346,13 +449,13 @@ def _gather_context(rpc: OdooRPC, model: str, res_id: int) -> str:
     msgs = rpc.call("mail.message", "search_read", [[
         ["model", "=", model], ["res_id", "=", res_id],
         ["message_type", "in", ["comment", "email"]],
-    ]], {"fields": ["date", "author_id", "body"], "limit": 6,
+    ]], {"fields": ["date", "author_id", "body"], "limit": 4,
          "order": "date desc"})
     if msgs:
         lines = []
         for m in reversed(msgs):
             who = (m.get("author_id") or [0, "System"])[1]
-            body = _strip_html(m.get("body") or "")[:700]
+            body = _strip_html(m.get("body") or "")[:450]
             if body:
                 lines.append("[%s] %s: %s" % (m.get("date"), who, body))
         if lines:
@@ -360,22 +463,47 @@ def _gather_context(rpc: OdooRPC, model: str, res_id: int) -> str:
     return "\n\n".join(parts)
 
 
-def _ask_ollama(system: str, prompt: str) -> str:
-    payload = json.dumps({
-        "model": OLLAMA_MODEL,
-        "stream": False,
-        "messages": [
-            {"role": "system", "content": system},
-            {"role": "user", "content": prompt},
-        ],
-        "options": {"temperature": 0.2, "num_predict": 700},
-    }).encode("utf-8")
-    req = urllib.request.Request(
-        f"{OLLAMA_URL}/api/chat", data=payload,
-        headers={"Content-Type": "application/json"})
-    with urllib.request.urlopen(req, timeout=OLLAMA_TIMEOUT) as resp:
-        data = json.loads(resp.read().decode("utf-8"))
-    return (data.get("message") or {}).get("content", "").strip()
+class KeinRechenknoten(Exception):
+    """Kein einziger Ollama-Knoten hat geantwortet."""
+
+
+def _erreichbar(url: str) -> bool:
+    """Kurzer Klopftest, damit ein abgeschalteter Rechner die Antwort nicht
+    erst nach dem vollen Zeitlimit scheitern lässt."""
+    try:
+        with urllib.request.urlopen(url + "/api/tags", timeout=4) as resp:
+            return resp.status == 200
+    except Exception:
+        return False
+
+
+def _ask_ollama(system: str, prompt: str, power: bool = False):
+    """Fragt die gewählte Rolle. Gibt (Antwort, Modellname) zurück."""
+    versucht = []
+    ziele = OLLAMA_POWER_ZIELE if power else OLLAMA_ROUTINE_ZIELE
+    rolle = "Power-Lama" if power else "Routine-Lama"
+    if not ziele:
+        raise KeinRechenknoten(f"{rolle} ist nicht konfiguriert")
+    for url, model in ziele:
+        if not _erreichbar(url):
+            versucht.append(f"{url} (aus)")
+            continue
+        payload = json.dumps({
+            "model": model,
+            "stream": False,
+            "messages": [
+                {"role": "system", "content": system},
+                {"role": "user", "content": prompt},
+            ],
+            "options": {"temperature": 0.2, "num_predict": 700},
+        }).encode("utf-8")
+        req = urllib.request.Request(
+            f"{url}/api/chat", data=payload,
+            headers={"Content-Type": "application/json"})
+        with urllib.request.urlopen(req, timeout=OLLAMA_TIMEOUT) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+        return (data.get("message") or {}).get("content", "").strip(), model
+    raise KeinRechenknoten(", ".join(versucht) or f"{rolle} nicht erreichbar")
 
 
 def _post(rpc: OdooRPC, model: str, res_id: int, body_html: str, note: bool = False):
@@ -403,16 +531,19 @@ def handle_ollama_async(model: str, res_id: int, record_name: str,
             "Vorgang: %s\n\n%s\n\n---\nFrage an dich (Partner-ID %s):\n%s"
             % (record_name, context, author_id, question)
         )
+        # @Ollama Power: ... wählt bewusst den StudioPC. Kein automatischer
+        # Qualitätswechsel und kein unbemerkter Ausweichweg.
+        power = bool(re.search(r"\bpower(?:[\s_-]*lama)?\b", question.lower()))
         try:
-            answer = _ask_ollama(OLLAMA_SYSTEM, prompt)
-        except (urllib.error.URLError, OSError) as e:
-            log.warning(f"Ollama nicht erreichbar für {label}: {e}")
+            answer, used_model = _ask_ollama(OLLAMA_SYSTEM, prompt, power=power)
+        except (KeinRechenknoten, urllib.error.URLError, OSError) as e:
+            log.warning(f"Kein Ollama-Knoten erreichbar für {label}: {e}")
             try:
                 _post(rpc, model, res_id,
-                      "<p>🤖 <b>Ollama Mitarbeiter</b> ist gerade nicht erreichbar "
-                      "(StudioPC vermutlich aus). Die Frage bleibt unbeantwortet — "
-                      "einfach erneut <code>@Ollama</code> schreiben, wenn der "
-                      "Rechner läuft.</p>", note=True)
+                      "<p>🤖 <b>Ollama Mitarbeiter</b> konnte nicht antworten: " +
+                      ("Power-Lama (StudioPC)" if power else "Routine-Lama (OptiPlex)") +
+                      " ist gerade nicht erreichbar. Die Frage bleibt offen — "
+                      "bitte später erneut erwähnen.</p>", note=True)
             except Exception as e2:
                 log.error(f"Ollama: Ausfallhinweis nicht zustellbar: {e2}")
             return
@@ -426,7 +557,7 @@ def handle_ollama_async(model: str, res_id: int, record_name: str,
         body = _to_html(answer[:6000])
         body += ('<p style="color:#888;font-size:90%%">🤖 Automatische Antwort von '
                  '%s (lokales Modell, CT150). Keine Freigabe, keine Buchung, '
-                 'kein Abschluss.</p>' % OLLAMA_MODEL)
+                 'kein Abschluss.</p>' % used_model)
         try:
             _post(rpc, model, res_id, body)
             log.info(f"Ollama-Antwort gepostet auf {label}")
@@ -507,11 +638,6 @@ class WebhookHandler(BaseHTTPRequestHandler):
             return
 
         task_id = data.get("task_id", "?")
-        if is_duplicate("task", str(task_id)):
-            log.info(f"Duplicate task #{task_id} ignoriert (TTL)")
-            self._respond(200, dedup=True)
-            return
-
         name = data.get("name", "Unbekannter Task")
         description = data.get("description", "Keine Beschreibung")
         description_clean = description[:800] if description else ""
@@ -519,9 +645,15 @@ class WebhookHandler(BaseHTTPRequestHandler):
         message = AGENT_PROMPT_TEMPLATE.format(
             task_id=task_id, name=name, description=description_clean,
         )
-        log.info(f"Triggering agent for task #{task_id}: {name}")
-        self._respond(200)
-        trigger_agent_async(message, f"task #{task_id}")
+        try:
+            inserted = enqueue_agent_event("task", str(task_id), message,
+                                           f"task #{task_id}")
+        except Exception as e:
+            log.exception("Task konnte nicht persistent eingereiht werden: %s", e)
+            self.send_response(503)
+            self.end_headers()
+            return
+        self._respond(200, dedup=not inserted)
 
     def _handle_alertmanager(self):
         auth = self.headers.get("Authorization", "")
@@ -545,16 +677,16 @@ class WebhookHandler(BaseHTTPRequestHandler):
             return
 
         key = alert_dedupe_key(data)
-        if is_duplicate("alert", key):
-            log.info(f"Duplicate alert ignoriert (TTL): {key}")
-            self._respond(200, dedup=True)
-            return
-
         summary = format_alerts(data)
         message = ALERT_PROMPT_TEMPLATE.format(alert_summary=summary)
-        log.info(f"Triggering agent for firing alert(s): {summary[:200]}")
-        self._respond(200)
-        trigger_agent_async(message, "alertmanager")
+        try:
+            inserted = enqueue_agent_event("alert", key, message, "alertmanager")
+        except Exception as e:
+            log.exception("Alarm konnte nicht persistent eingereiht werden: %s", e)
+            self.send_response(503)
+            self.end_headers()
+            return
+        self._respond(200, dedup=not inserted)
 
     def _handle_klausi_chatter(self):
         try:
@@ -593,7 +725,24 @@ class WebhookHandler(BaseHTTPRequestHandler):
             f"{model}:{res_id}:{author_id}:{raw_body}".encode()
         ).hexdigest()[:16]
 
-        self._respond(200)
+        agent_inserted = None
+        agent_message = None
+        if want_agent:
+            agent_message = KLAUSI_PROMPT_TEMPLATE.format(
+                author_id=author_id, body=text, record_name=record_name,
+                model=model, res_id=res_id,
+            )
+            try:
+                agent_inserted = enqueue_agent_event(
+                    "chatter", key, agent_message,
+                    f"klausi-chatter on {record_name}")
+            except Exception as e:
+                log.exception("Chatter konnte nicht persistent eingereiht werden: %s", e)
+                self.send_response(503)
+                self.end_headers()
+                return
+
+        self._respond(200, dedup=(want_agent and not agent_inserted))
 
         if want_ollama and res_id:
             if is_duplicate("ollama", key):
@@ -602,20 +751,12 @@ class WebhookHandler(BaseHTTPRequestHandler):
                 log.info(f"Ollama-Lauf für {model}#{res_id} ({record_name})")
                 handle_ollama_async(model, res_id, record_name, text, author_id)
 
-        if want_agent:
-            if is_duplicate("chatter", key):
-                log.info(f"Duplicate chatter event ignoriert (TTL): {record_name}")
-            else:
-                message = KLAUSI_PROMPT_TEMPLATE.format(
-                    author_id=author_id, body=text, record_name=record_name,
-                    model=model, res_id=res_id,
-                )
-                log.info(f"Triggering agent for chatter mention on {record_name} "
-                         f"by partner {author_id}")
-                trigger_agent_async(message, f"klausi-chatter on {record_name}")
 
 
 if __name__ == "__main__":
+    init_queue()
+    threading.Thread(target=queue_worker, daemon=True,
+                     name="persistente-agent-inbox").start()
     server = ThreadingHTTPServer(("0.0.0.0", 19001), WebhookHandler)
     log.info("Webhook handler v3 listening on :19001 "
              "(/odoo-task, /alertmanager-hook, /klausi-chatter) — "

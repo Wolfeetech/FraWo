@@ -1,7 +1,7 @@
 # FraWo Agenten-Protokoll (AGENTS.md)
 
-**Version 1.2 — 2026-09-06 | Gilt für ALLE Agenten: Jarvis (OpenClaw), Claude Code, Antigravity**
-Master-Kopie: OpenClaw-Workspace `/root/.openclaw/workspace/AGENTS-PROTOCOL.md` · Kopie auf StudioPC: `C:\Users\StudioPC\AGENTS.md`
+**Version 1.3 — 2026-09-28 | Gilt für ALLE Agenten: Jarvis (OpenClaw), Claude Code, Antigravity**
+**Master = diese Datei im Git-Repo** `github.com/Wolfeetech/FraWo`, Zweig `main`. Alle anderen Fundorte sind automatisch befüllte Kopien — **dort nie bearbeiten** (siehe *Eine Wahrheit*).
 
 ---
 
@@ -15,8 +15,8 @@ Master-Kopie: OpenClaw-Workspace `/root/.openclaw/workspace/AGENTS-PROTOCOL.md` 
 
 ## Single Source of Truth
 
-1. **Aufgaben:** Odoo (10.1.0.112:8069, DB FraWo_GbR). Ein Task = ein Auftrag. **Zuweisung = Lock** — kein Agent arbeitet an fremd-zugewiesenen Tasks.
-2. **Infrastruktur-Doku:** `INFRA.md` im OpenClaw-Workspace = Master für IPs/Hosts/Services/Credentials-Fundorte. Änderung an Infra → INFRA.md updaten oder Jarvis via Odoo-Chatter informieren.
+1. **Aufgaben:** Odoo (10.1.0.112:8069, DB FraWo_GbR). Ein Task = ein Auftrag. **Das Sperr-Schlagwort ist der Lock** (`🔒 Claude` 168 · `🔒 Jarvis` 169 · `🔒 Antigravity` 170) — die Zuweisung allein sperrt nichts, weil alle Agenten derselbe Odoo-User 7 sind.
+2. **Doku:** `AGENTS.md`, `NOW.md`, `INFRA.md` — **nur im Git-Repo** (`main`). IPs/Hosts/Services/Fundorte der Zugangsdaten stehen in `INFRA.md`. Änderung an Infra → `INFRA.md` im Repo nachziehen, im selben Arbeitsgang pushen.
 3. **Secrets:** Nur Vaultwarden (vault.frawo-tech.de). Nie in Files, Commits oder Chats.
 
 ## Arbeits-Workflow (für jeden Task)
@@ -105,7 +105,14 @@ Wolf am 09.09.2026: *„alles was ich anklicke ist nur so halbfertig formuliert 
 
 **Titel sind Titel, keine Sätze.** Kein Preis, keine Begründung, keine Klammerzusätze. Wolf am 09.09.2026: *„warum schreibst du so viele Infos in den Titel der Aufgaben, das ist komplett unübersichtlich"*. Berechtigt.
 
-**Fremde Arbeit trennen.** Projekt 90 (Stockenweiler) ist das Bauprojekt von Wolfs **Vater**, Projekt 99 (Inselhalle) sein **Arbeitgeber**. Beides gehört nicht in dieselbe Liste wie FraWo-Arbeit — der Tagesbericht zählt sie getrennt. Wolfs Arbeitszeiten dürfen **nie** als Termin oder Besprechung angelegt werden.
+**Aktivitäten und Benachrichtigungen (seit 22.09.2026).** Wolf empfindet jede Meldung als Last (*„unfassbar stressig“*). Deshalb:
+
+- **Keine Aktivität und kein Kalendertermin als Kopie einer Frist.** Die Frist steht an der Aufgabe, Überfälliges zeigt der Tagesbericht. (Automatik #10 „Frist → Kalendertermin“ am 22.09. abgeschaltet, 60 Termine archiviert.)
+- **Eine Aktivität nur, wenn Wolf wirklich etwas tun muss:** Zusammenfassung = ein Satz mit Verb · Notiz = kurze Liste (`<ul>`) · Link zur Aufgabe. Nie `\n` in HTML-Feldern — das wird zu Fließtext.
+- **Massenänderungen leise:** Kalender, Aufgaben, Aktivitäten ab drei Datensätzen am Server mit Kontext `no_mail_to_attendees`, `dont_notify`, `mail_auto_subscribe_no_notify`, `tracking_disable`. Über MCP erzeugt jede Zuweisung an Wolf eine Meldung „zugewiesen“, jeder Teilnehmer eine „Einladung“.
+- **Test auf Stille:** nicht nur `mail_mail` (E-Mails) zählen, sondern auch `mail_notification` für Partner 7 (Odoo-Postfach). Am 22.09. zeigte die Mail-Tabelle 0, im Postfach landeten 31 Meldungen.
+
+**Fremde Arbeit trennen.** Projekt 90 (Stockenweiler) ist das Bauprojekt von Wolfs **Vater**, Projekt 99 (Inselhalle) sein **Arbeitgeber**. Beides gehört nicht in dieselbe Liste wie FraWo-Arbeit — der Tagesbericht zählt sie getrennt. Wolfs Inselhalle-Dienste sind **Arbeitszeit, keine Termine oder Besprechungen**: Er ist dann physisch in der Inselhalle, und das wird **nicht** mit der GbR verrechnet. Sie stehen im Kalender als „Inselhalle Dienst (…)“ mit der echten Arbeitszeit laut Dienstplan, Ort *Inselhalle Lindau*, Kategorie *🏛️ Inselhalle*, als „beschäftigt“, Wolf (User 6) als Organisator **und** Teilnehmer — sonst erscheinen sie weder in seinem Kalender noch am Handy. Aufgaben, die in einem Dienst stattfinden, bekommen ihre Frist auf diesen Tag. *(Präzisiert 22.09.2026 auf Wolfs Anweisung — die alte Kurzform „nie als Termin anlegen“ wurde als Verbot missverstanden.)*
 
 **Stufen hängen als many2many an Projekten.** Ein neues Projekt ohne Stufenzuordnung kippt alles in eine Spalte, und eine Aufgabe in einer Stufe, die ihr Projekt nicht kennt, ist **unsichtbar statt unsortiert**. Nach jedem Projektanlegen prüfen — muss 0 ergeben:
 
@@ -151,6 +158,26 @@ Am 09.09.2026 sind drei „geprüfte" Änderungen im Betrieb gescheitert. Daraus
 
 **Kleinkram** (Doku-Tippfehler, Log-Rotation, read-only-Analysen) braucht kein Review — im Zweifel: Review.
 
+## Eine Wahrheit — keine parallelen Versionen (seit 28.09.2026)
+
+Wolf am 28.09.2026: *„Das kann ja keine Best Practice sein, dass wenn zwei Mitarbeiter am gleichen Projekt arbeiten, sie sich gegenseitig zurückhauen.“* Anlass (Odoo #1593): Surface-Schritte M1/M2 doppelt gebaut (Jarvis auf `main`, Claude parallel in einem lokalen Zweig — Jarvis' Review-Bitten kamen nie an) · Jarvis las ein Protokoll vom 06.09. · Webhook-Handler in drei Fassungen (Server, zwei Repo-Kopien) · Claude-Commits lagen tagelang nur lokal.
+
+**1. Vor jeder Arbeit — Pflicht, in dieser Reihenfolge:**
+1. `git pull --rebase` im Repo. Scheitert das → erst klären, dann arbeiten.
+2. Die Aufgabe **samt Chatter** lesen. Steht dort eine Übergabe oder Review-Bitte an dich, ist **die** zuerst dran.
+3. Offene Erwähnungen an dich suchen (`mail.message`, Text enthält `@Claude` bzw. `@Jarvis`/`@Antigravity`, letzte 7 Tage). Unbeantwortete Review-Bitten gehen vor neuer Arbeit.
+
+**2. Aufgabe sperren (Lock):** Eigenes Sperr-Schlagwort setzen + Chatter „🤖 [Name] übernimmt“. Trägt eine Aufgabe (oder ihre Oberaufgabe) das Schlagwort eines **anderen** Agenten → **nicht anfassen**, auch nicht „nur schnell“. Mitarbeiten nur nach Absprache im Chatter. Beim Abschluss oder Abgeben das Schlagwort entfernen.
+
+**3. Git:**
+- **Commit = Push.** Direkt nach jedem Commit `git push`. Ungepushte Arbeit gilt als **nicht erledigt** — sie existiert für die anderen nicht. Kann ein Agent nicht pushen, meldet er das sofort im Chatter, statt weiterzubauen.
+- **Nur auf `main`**, keine langlebigen Zweige oder Worktrees. Ein Zweig lebt höchstens eine Sitzung und wird vor Sitzungsende gemergt oder gelöscht.
+- `/opt/frawo-repo` auf CT150 ist ein **Spiegel** (wird stündlich hart auf `origin/main` gesetzt) — dort nie arbeiten, lokale Commits gingen verloren. Jarvis arbeitet in `/root/.openclaw/FraWo`.
+
+**4. Server und Repo:** Hat eine Datei auf einem Server eine Kopie im Repo (z. B. `infra/openclaw/odoo_webhook_handler.py`), gilt: **vorher** Server-Stand gegen Repo vergleichen, **nachher** Server-Stand ins Repo kopieren, committen, pushen — im selben Arbeitsgang. Eine Abweichung zwischen Server und Repo ist ein Fehler, keine zweite Meinung.
+
+**5. Kopien sind Kopien:** `AGENTS.md`, `NOW.md`, `INFRA.md` außerhalb des Repos (Jarvis-Workspace, `C:\Users\StudioPC\AGENTS.md`) werden automatisch befüllt bzw. verweisen nur auf das Repo. Wer dort etwas ändert, erzeugt die nächste zweite Wahrheit.
+
 ## Eskalation
 
 - Blocker, den ein anderer Agent lösen kann → Odoo-Chatter-Mention am Task
@@ -159,4 +186,4 @@ Am 09.09.2026 sind drei „geprüfte" Änderungen im Betrieb gescheitert. Daraus
 
 ---
 
-*Änderungen an diesem Protokoll: nur mit Wolfs Zustimmung. Jarvis synchronisiert Master → StudioPC-Kopie.*
+*Änderungen an diesem Protokoll: nur mit Wolfs Zustimmung, und nur hier im Repo. Die Kopie in Jarvis' Workspace befüllt `scripts/frawo-wissen-sync.sh` stündlich automatisch.*

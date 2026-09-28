@@ -1,7 +1,6 @@
 # FraWo Infrastruktur-Dokumentation (INFRA.md)
 
-**Master-Kopie:** OpenClaw-Workspace `/root/.openclaw/workspace/INFRA.md` (Stand: 12.09.2026)  
-Kopie im Repo: `INFRA.md`
+**Master = diese Datei im Git-Repo** (`main`), seit 28.09.2026. Die Kopie im OpenClaw-Workspace wird stündlich automatisch befüllt — dort nie bearbeiten (AGENTS.md, *Eine Wahrheit*).
 
 ---
 
