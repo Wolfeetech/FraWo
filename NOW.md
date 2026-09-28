@@ -3,6 +3,13 @@
 > **Zuerst lesen.** Diese Datei beschreibt, **was läuft** — nicht, was passiert ist.
 > Historie steht in der Git-Historie, Entscheidungen und Aufgaben in **Odoo (CT140, `10.1.0.112:8069`) = einzige Quelle der Wahrheit**.
 >
+> **🔀 Seit 28.09.2026 — Eine Wahrheit für alle Agenten (Odoo #1593, AGENTS.md v1.3):**
+> - **Das Git-Repo (`main`) ist die einzige Quelle** für `AGENTS.md`, `NOW.md`, `INFRA.md`. Jarvis' Workspace bekommt stündlich Kopien (`scripts/frawo-wissen-sync.sh`, Kopfvermerk „KOPIE … NICHT HIER BEARBEITEN“); `C:\Users\StudioPC\AGENTS.md` ist nur noch ein Verweis.
+> - 🔴 **Falle, die zu Doppelarbeit führte:** Alle Agenten sind Odoo-User 7 → Zuweisung sperrt nichts. **Lock = Schlagwort** `🔒 Claude` (168) / `🔒 Jarvis` (169) / `🔒 Antigravity` (170).
+> - 🔴 **Falle:** Jarvis' Review-Bitten an @Claude vom 23.09. wurden nie gelesen → Claude baute parallel. Jetzt: vor der Arbeit offene Erwähnungen suchen; Claude-SessionStart-Hook meldet ungepushte Commits, fehlende fremde Commits und offene Worktrees.
+> - **Commit = Push**, nur `main`. `/opt/frawo-repo` auf CT150 ist ein Spiegel (`reset --hard` stündlich) — Jarvis arbeitet in `/root/.openclaw/FraWo`.
+> - CT150-`resolv.conf` war nach der vollen Platte **leer** (kein DNS für git/apt) — wiederhergestellt.
+>
 > **🟢 Stand 28.09.2026 — CT150 (Jarvis) war voll, Stromzähler Stockenweiler korrigiert:**
 > - **CT150 lief 24.–28.09. mit 100 % voller Platte** → keine Alarme bei Jarvis (4 von 49 zugestellt). Bau-Cache + Protokolle geleert, jetzt 77 %. 45 gestaute Alarme in der Warteschlange auf `expired` gesetzt (nicht gelöscht), sonst Telegram-Flut beim Freiwerden. Odoo #1591.
 > - 🔴 **Falle:** Container ohne eigenen node_exporter fielen durch jede Plattenregel. Neu: `ContainerPlatteWarnung`/`-Kritisch` über den **pve-exporter** in `frawo_storage_alerts.yml` (CT155), gilt für alle LXC.
