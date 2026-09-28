@@ -1,0 +1,64 @@
+{
+ "energy_sources": [
+  {
+   "type": "solar",
+   "stat_energy_from": "sensor.balkonkraftwerk_total_energy",
+   "config_entry_solar_forecast": [
+    "01K6ZN5F9D524GGYVZQDTJ0D5Z"
+   ]
+  },
+  {
+   "type": "battery",
+   "stat_energy_from": "sensor.outdoor_balkonkraftwerk_shelly_gen_3_growatt_balkonkraftwerk_returned_energy",
+   "stat_energy_to": "sensor.bkw_stockenweiler_total_energie_heute"
+  }
+ ],
+ "device_consumption": [
+  {
+   "stat_consumption": "sensor.buro_vater_shelly_mac_windows_shelly_total_energy"
+  },
+  {
+   "stat_consumption": "sensor.wolf_elw_kuhlschrank_kuhlschrank_total_energy",
+   "included_in_stat": "sensor.whg_steckdosen_total_energy"
+  },
+  {
+   "stat_consumption": "sensor.unbekannt_total_energy"
+  },
+  {
+   "stat_consumption": "sensor.container_licht_total_energy"
+  },
+  {
+   "stat_consumption": "sensor.container_studio_total_energy"
+  },
+  {
+   "stat_consumption": "sensor.keller_pumpe_shelly_keller_pumpe_shelly_total_energy"
+  },
+  {
+   "stat_consumption": "sensor.kueche_total_energy"
+  },
+  {
+   "stat_consumption": "sensor.routerschrank_shelly_routerschrank_shelly_total_energy"
+  },
+  {
+   "stat_consumption": "sensor.server_total_energy"
+  },
+  {
+   "stat_consumption": "sensor.whg_steckdosen_total_energy"
+  },
+  {
+   "stat_consumption": "sensor.licht_flur_bad_total_energy"
+  },
+  {
+   "stat_consumption": "sensor.shellyplugsg3_8cbfeaa3ace8_total_energy"
+  },
+  {
+   "stat_consumption": "sensor.shelly_gefrierschrank_total_energy",
+   "name": "Gefrierschrank"
+  },
+  {
+   "stat_consumption": "sensor.wohnkuche_tv_sauna_wohnkuche_total_energy",
+   "name": "Sauna"
+  }
+ ],
+ "device_consumption_water": []
+}
