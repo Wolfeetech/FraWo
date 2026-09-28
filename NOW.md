@@ -25,7 +25,7 @@
 > - Alte Einträge `pbs-frawo`/`pbs-prodesk`/`pbs-optiplex` nur **abgeschaltet** (zeigen auf die tote VM240, `10.1.0.7`). VM240 + ZFS-Volume unangetastet.
 > - 🔴 **Falle:** Docker auf dem OptiPlex setzt `FORWARD` auf DROP. Jede VM mit `firewall=1` hängt an einer eigenen Brücke `fwbrNNNi0` und braucht einen eigenen Eintrag in `frawo-docker-bruecke.service` — `vmbr0` allein reicht nicht.
 > - 🔴 **Falle:** Unter dem Namen `studiopc@wolfstudioPC` stehen **fünf verschiedene** Schlüssel in `/etc/pve/priv/authorized_keys`. Nie nach Kommentar auswählen, immer nach Fingerabdruck.
-> - Skripte: `deployments/optiplex/pbs241/`. Cloud-Auftrag bleibt vorerst täglich; geplant: wöchentlich, weil ~60 GB/Nacht die ~2 MB/s-Leitung nicht schafft.
+> - Skripte: `deployments/optiplex/pbs241/`. **Cloud (Google Drive) seit 28.09. wöchentlich in drei Gruppen** `cloud-woche-mo` (300,150,155,101,106) · `-mi` (130,210,108) · `-fr` (140,110), je 04:00, ≤ 20 GB. 🔴 **Falle:** Der rclone-Zwischenspeicher fasst nur 25 GB (`--vfs-cache-max-size 25G`); ein Lauf mit allen Gästen (~52 GB) schreibt schneller als 2 MB/s hochladen → der letzte Gast scheitert mit `Input/output error`. Neue Gäste nur in eine Gruppe mit Platz. TÜV-Frist `gaeste_cloud`: 8 Tage (Odoo #1590).
 >
 > **🟢 Stand 18.09.2026 (mittags) — ZFS-Pool `anker-backup` wieder ONLINE & PBS läuft:**
 > - **USB-Spiegelplatten von Wolf neu gesteckt & ZFS-Pool reaktiviert:** Beide WD Elements Platten (`sdb`, `sdd`) erkannt. `zpool clear anker-backup` ausgeführt. Pool-Status: **`ONLINE`**, Resilver läuft aktiv (~19 MB/s). Datasets `/anker-backup` (1,6 TB frei) und `/anker-backup/musik` (33,4 GB) vollständig les- und schreibbar.
