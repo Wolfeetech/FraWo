@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>FraWo Crew – Technik-Personal für Veranstaltungen am Bodensee</title>
+<!-- 🤖 [Claude] 29.09.2026, Odoo #1638 · CI v3.0 (Print: Invoice Paper/Ink, Forest-Flächen, Violet-Akzent, Inter, kantig, Du) -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  @page { size: A4; margin: 0; }
+  :root { --paper:#f9fbfb; --ink:#0d1110; --forest:#004030; --violet:#a050f0; --sage:#98a29e; --line:#d5dbd9; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--paper); color: var(--ink); font-family: 'Inter', Arial, sans-serif; }
+  body { width: 210mm; padding: 10mm 14mm 8mm; font-size: 9.6pt; line-height: 1.5; }
+  .kopf { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid var(--forest); padding-bottom: 4mm; }
+  .kopf img { height: 18mm; }
+  .kopf .ort { text-align: right; font-size: 8.5pt; color: #4a524f; line-height: 1.45; }
+  .claim { background: var(--forest); color: #fff; padding: 5mm 6mm; margin: 4.5mm 0 3mm; }
+  .claim .etikett { font-size: 8pt; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #c9b3f5; }
+  .claim h1 { margin: 1mm 0 1.5mm; font-size: 18.5pt; line-height: 1.15; font-weight: 700; letter-spacing: -0.01em; }
+  .claim p { margin: 0; font-size: 10pt; max-width: 150mm; }
+  h2 { font-size: 8.5pt; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--forest); margin: 4mm 0 2mm; border-left: 3px solid var(--violet); padding-left: 2.5mm; }
+  .team { display: grid; grid-template-columns: 1fr 1fr; gap: 5mm; }
+  .person { border: 1px solid var(--line); padding: 3mm 4mm; background: #fff; }
+  .person .name { font-size: 12pt; font-weight: 700; }
+  .person .rolle { font-size: 9pt; font-weight: 600; color: var(--violet); margin-bottom: 1.5mm; }
+  .person ul, .leistungen ul { margin: 0; padding-left: 4.5mm; }
+  .person li, .leistungen li { margin: 0.3mm 0; }
+  .leistungen { display: grid; grid-template-columns: 1fr 1fr; gap: 1mm 6mm; }
+  table { width: 100%; border-collapse: collapse; font-size: 9.5pt; }
+  th { background: var(--forest); color: #fff; text-align: left; font-weight: 600; padding: 2mm 3mm; font-size: 8.5pt; letter-spacing: 0.04em; }
+  td { border-bottom: 1px solid var(--line); padding: 1.6mm 3mm; vertical-align: top; }
+  td.preis { font-weight: 700; white-space: nowrap; }
+  .referenz { border: 1px solid var(--line); background: #fff; padding: 3.5mm 4.5mm; }
+  .referenz b { color: var(--forest); }
+  .klein { font-size: 8.5pt; color: #4a524f; }
+  .fuss { margin-top: 4mm; display: flex; justify-content: space-between; align-items: center; border-top: 2px solid var(--forest); padding-top: 3.5mm; }
+  .fuss .kontakt { font-size: 10pt; font-weight: 600; }
+  .fuss .kontakt span { color: var(--violet); }
+  .fuss .recht { font-size: 7.5pt; color: #4a524f; text-align: right; line-height: 1.4; }
+</style>
+</head>
+<body>
+
+  <div class="kopf">
+    <img src="../../brand_assets/logo_transparent.png" alt="FraWo – Smart Media &amp; Event">
+    <div class="ort">FraWo GbR · Rothkreuz 14 · 88138 Weißensberg<br>Einsatzgebiet: Bodensee · Oberschwaben · Allgäu · Vorarlberg</div>
+  </div>
+
+  <div class="claim">
+    <div class="etikett">FraWo Crew · Technik-Personal</div>
+    <h1>Zwei Techniker, auf die du dich<br>bei deinen Einsätzen verlassen kannst.</h1>
+    <p>Du brauchst Leute für Auf- und Abbau, Betreuung oder Licht und Ton? Wir springen für Veranstaltungstechnik-Firmen, Hallen und Veranstalter ein – eingespielt, pünktlich, mit Blick fürs Ganze.</p>
+  </div>
+
+  <h2>Wer wir sind</h2>
+  <div class="team">
+    <div class="person">
+      <div class="name">Wolfgang „Wolf“ Prinz</div>
+      <div class="rolle">Fachkraft für Veranstaltungstechnik</div>
+      <ul>
+        <li>Ton- und Lichtbetreuung, Lichtprogrammierung (DMX)</li>
+        <li>Netzwerk und IT am Set, Systemeinrichtung</li>
+        <li>Lautstärkemessung und Standby auf dem Gelände</li>
+      </ul>
+    </div>
+    <div class="person">
+      <div class="name">Franz Bienert</div>
+      <div class="rolle">Handwerk &amp; Bühnenbau</div>
+      <ul>
+        <li>Sauberer Auf- und Abbau, Kabelwege, Sicherung</li>
+        <li>Holz- und Bühnenbau, Reparaturen vor Ort</li>
+        <li>Transport mit eigenem Anhänger</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>Was du bei uns buchen kannst</h2>
+  <div class="leistungen">
+    <ul>
+      <li>Auf- und Abbau, Stagehand-Einsätze</li>
+      <li>Betreuung von Ton und Licht während der Veranstaltung</li>
+      <li>Lichtprogrammierung und Show-Presets</li>
+    </ul>
+    <ul>
+      <li>Netzwerk, WLAN und IT rund um die Technik</li>
+      <li>Standby und Lautstärkemessung auf Open Airs</li>
+      <li>Kurzfristige Einsätze, auch abends und am Wochenende</li>
+    </ul>
+  </div>
+
+  <h2>Konditionen</h2>
+  <table>
+    <tr><th>Leistung</th><th>Umfang</th><th>Preis</th></tr>
+    <tr><td>Fachkraft für Veranstaltungstechnik</td><td>Tagessatz bis 8 Std. (+ Pause)</td><td class="preis">ab 400 €</td></tr>
+    <tr><td>Crew / Helfer</td><td>Tagessatz bis 8 Std. (+ Pause)</td><td class="preis">ab 300 €</td></tr>
+    <tr><td>Stundensatz (kurze Einsätze, Verlängerung)</td><td>je angefangene Stunde</td><td class="preis">ab 50 €</td></tr>
+    <tr><td>Anfahrt</td><td>bis 30 km inklusive, darüber</td><td class="preis">0,50 €/km</td></tr>
+  </table>
+  <p class="klein" style="margin:2mm 0 0;">Abrechnung nach Leistungsnachweis je Einsatz – du zahlst die tatsächlich geleisteten Einsatztage. Als Kleinunternehmer berechnen wir keine Umsatzsteuer (§ 19 UStG).</p>
+
+  <h2>Referenz</h2>
+  <div class="referenz">
+    <b>L.H. Veranstaltungstechnik</b> (Kressbronn) · regelmäßige Einsätze 2026, u. a. Leichte Liebe Open Air (Bregenz), Eishalle Lindau, Surfschule Closing Wasserburg – Aufbau, Betreuung, Lichtprogrammierung und Abbau.
+  </div>
+
+  <div class="fuss">
+    <div class="kontakt">Anfrage: <span>0151 55243164</span> · <span>info@frawo.tech</span> · frawo.tech</div>
+    <div class="recht">FraWo GbR · Gesellschafter: Wolfgang Prinz &amp; Franz Bienert<br>Steuernummer 134/159/50068</div>
+  </div>
+
+</body>
+</html>
