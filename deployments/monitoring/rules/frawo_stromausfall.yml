@@ -1,0 +1,67 @@
+groups:
+  - name: frawo_stromausfall
+    rules:
+
+      # 🤖 [Claude] 29.09.2026, Odoo #1513
+      # ── Der Fehler vom 17.-29.09.2026 ────────────────────────────────────
+      # Eine HA-Automatik schaltete jede Nacht um 00:00 die IT-Steckdose
+      # (Shelly 10.4.0.11) aus; auto_on schaltete nach 10 ms wieder ein.
+      # UCG und ProDesk starteten jede Nacht neu, der Verbund brach - zwoelf
+      # Naechte lang, ohne einen einzigen Alarm. Schon am 14./15.09. (Odoo
+      # #1461) war derselbe 10-ms-Ausfall durch einen Zeitplan im Geraet
+      # passiert. Diese Regeln messen die WIRKUNG, egal wer schaltet.
+
+      - alert: StromaussetzerITSchiene
+        expr: |
+          resets(frawo_ucg_laufzeit_sekunden[1h]) > 0
+          and on()
+          (time() - node_boot_time_seconds{instance="prodesk-pve"}) < 3600
+        labels:
+          severity: critical
+        annotations:
+          summary: "Gateway UND ProDesk sind gleichzeitig neu gestartet - Stromaussetzer an der IT-Steckdose"
+          description: >-
+            Beide haengen an der Shelly 10.4.0.11. Starten sie zusammen neu,
+            hat jemand oder etwas die Steckdose geschaltet (auto_on schaltet
+            nach 10 ms wieder ein). Pruefen: HA-Automatiken auf
+            switch.outdoor_garage_werkstatt und /rpc/Schedule.List am Geraet -
+            NUR LESEN, die Steckdose nie schalten.
+
+      - alert: GatewayNeugestartet
+        expr: resets(frawo_ucg_laufzeit_sekunden[1h]) > 0
+        labels:
+          severity: warning
+        annotations:
+          summary: "Das Cloud Gateway (UCG) ist in der letzten Stunde neu gestartet"
+          description: >-
+            Ein Neustart kappt fuer rund eine Minute alle Server-Verbindungen
+            und den Rechnerverbund. Geplante Neustarts gibt es nicht
+            (ucg-nightly-reboot.timer ist seit 29.09.2026 stillgelegt).
+
+      - alert: ServerNeugestartet
+        expr: (time() - node_boot_time_seconds{instance=~".*-pve"}) < 1800
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.instance }} ist vor weniger als 30 Minuten neu gestartet"
+          description: >-
+            War der Neustart nicht angekuendigt, mit journalctl --list-boots
+            pruefen: Endet der vorige Start ohne systemd-shutdown, war es ein
+            Stromausfall und kein sauberes Herunterfahren.
+
+      # ── Der Waechter selbst ──────────────────────────────────────────────
+      # Eine fehlende Kennzahl ist selbst ein Alarm (Sicherheitsstandards).
+      - alert: GatewayWaechterSchweigt
+        expr: |
+          absent(frawo_ucg_letzte_messung_zeitstempel)
+          or
+          (time() - frawo_ucg_letzte_messung_zeitstempel) > 600
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Die Gateway-Ueberwachung liefert keine Messwerte mehr"
+          description: >-
+            frawo-ucg-metriken.timer auf dem OptiPlex misst nicht mehr oder
+            seine Werte sind aelter als 10 Minuten. Solange schweigen auch
+            GatewayNeugestartet und StromaussetzerITSchiene.

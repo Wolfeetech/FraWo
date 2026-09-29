@@ -19,6 +19,7 @@
 >
 > **🟢 Stand 29.09.2026 — Nächtlicher Netz- und Verbundausfall behoben (Odoo #1513):**
 > - Das UCG startete seit mindestens 22.09. **jede Nacht um 00:00** neu; der ProDesk verlor dabei den Strom, und der Rechnerverbund brach jede Nacht auseinander. Ursache war die HA-Automatik Rothkreuz `frawo_werkstatt_night_off` („Werkstatt: Steckdose aus um Mitternacht“). Sie schaltete die **Shelly 10.4.0.11** aus, also genau die Steckdose, die nie geschaltet werden darf. `auto_on` schaltete sie nach 0,01 s wieder ein, doch das reichte für einen Neustart. **Automatik entfernt** (Backup `/config/automations.yaml.bak-20260929` in VM210).
+> - **Rückfall von #1461** (15.09.: derselbe 10-ms-Ausfall durch einen Zeitplan im Gerät). Die HA-Automatik tauchte danach auf (erster Treffer: ProDesk 17.09. 00:00) und blieb 12 Nächte unbemerkt, weil **keine Regel auf Neustarts reagierte**. Neu: `frawo_stromausfall.yml` auf CT155 mit `StromaussetzerITSchiene` (UCG + ProDesk gleichzeitig), `GatewayNeugestartet`, `ServerNeugestartet` und `GatewayWaechterSchweigt`, an der Nacht zum 29.09. rückgerechnet.
 > - **Regel:** An `switch.outdoor_garage_werkstatt` darf keine Automatik schalten. `frawo_werkstatt_morning_on` (07:00 an) bleibt, sie ist wirkungslos, weil die Steckdose ohnehin an ist.
 > - Das OptiPlex-Kabel ist ebenfalls erledigt: Port 3, 1000 Mbit voll. `ucg-nightly-reboot.timer` auf dem ProDesk war wirkungslos (leerer Befehl) und ist seit 29.09. stillgelegt (Backup `.bak-20260929`).
 
