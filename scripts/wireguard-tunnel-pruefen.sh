@@ -31,10 +31,23 @@ export PATH="/usr/sbin:/usr/bin:/sbin:/bin"
 # Probe mit künstlich altem Handshake:
 #   METRIK=/tmp/wg-probe.prom /usr/local/bin/wireguard-tunnel-pruefen.sh
 CT="${CT:-106}"
+PVE_HOST="${PVE_HOST:-10.1.0.92}"
 METRIK="${METRIK:-/var/lib/node_exporter/textfile_collector/wireguard.prom}"
 SCHWELLE="${SCHWELLE:-300}"
 
 JETZT=$(date +%s)
+
+# CT106 laeuft seit der Konsolidierung auf anker-pve, waehrend der Timer
+# weiterhin auf dem ProDesk sitzt. Der Zugriff erfolgt deshalb ueber die
+# bestehende root-SSH-Verbindung. PVE_HOST=local erhaelt den lokalen Testweg.
+pct_exec() {
+    if [ "$PVE_HOST" = "local" ]; then
+        pct exec "$CT" -- "$@"
+    else
+        ssh -o BatchMode=yes -o ConnectTimeout=5 "root@${PVE_HOST}" \
+            pct exec "$CT" -- "$@"
+    fi
+}
 
 # Klarnamen statt Schlüsselfragmente. Im Alarm soll stehen, WOHIN der Tunnel
 # geht — nicht, wie sein öffentlicher Schlüssel anfängt.
@@ -50,7 +63,7 @@ zeilen_alter=""
 zeilen_ok=""
 schnittstellen=0
 
-schnittstellen_liste=$(pct exec "$CT" -- wg show interfaces 2>/dev/null | tr -s ' \t' '\n')
+schnittstellen_liste=$(pct_exec wg show interfaces 2>/dev/null | tr -s ' \t' '\n')
 
 for iface in $schnittstellen_liste; do
     [ -n "$iface" ] || continue
@@ -77,7 +90,7 @@ for iface in $schnittstellen_liste; do
 
         zeilen_alter="${zeilen_alter}frawo_wireguard_handshake_alter_sekunden{interface=\"${iface}\",gegenstelle=\"${name}\"} ${a}"$'\n'
         zeilen_ok="${zeilen_ok}frawo_wireguard_gegenstelle_ok{interface=\"${iface}\",gegenstelle=\"${name}\"} ${f}"$'\n'
-    done < <(pct exec "$CT" -- wg show "$iface" dump 2>/dev/null | tail -n +2)
+    done < <(pct_exec wg show "$iface" dump 2>/dev/null | tail -n +2)
 done
 
 # Atomar schreiben. Ein halb geschriebenes .prom bringt den Exporter dazu,
