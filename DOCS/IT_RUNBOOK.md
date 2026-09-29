@@ -122,7 +122,7 @@ docker exec openclaw openclaw mcp list
 
 | Timer | Zeit | Funktion |
 |---|---|---|
-| `ucg-nightly-reboot.timer` | täglich 04:00 | UCG-Gateway Neustart via API |
+| ~~`ucg-nightly-reboot.timer`~~ | ~~04:00~~ | **Wirkungslos und stillzulegen** (29.09.2026, #1513): Neustart-Befehl im Skript leer. Das UCG soll nachts **nicht** neu starten. |
 | `pve-fstrim.timer` | So 03:00 | LXC fstrim → LVM Thin Pool Rückgewinnung |
 | PBS Backup-Job | täglich 03:00 | Backup aller VMs/CTs |
 
