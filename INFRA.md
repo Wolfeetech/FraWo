@@ -34,7 +34,7 @@
 | **210** | anker-pve | `haos` | `10.1.0.40` | 8123 (Home Assistant) | Hausautomation Rothkreuz, Lovelace Touch Dashboard |
 | **240** | anker-pve | `PBS-FraWo` | `10.1.0.7` | 8007 (PBS API/Web) | Proxmox Backup Server |
 | **300** | anker-pve | `nextcloud` | `10.1.0.21` | 80 / 443 | Cloud Storage (`cloud.frawo.tech`) |
-| **—** | OptiPlex 7050 | `frawo-ai-worker` | `10.1.0.227` / `10.0.0.227` | 11434 (Ollama CPU), 8080 (Open WebUI), 8081 (SearXNG) | **FraWo 24/7 KI-Worker (Employee #13)** — Qwen 2.5 7B & 3B, `nomic-embed-text` (RAG), Open WebUI (`https://frawo.tech/ai/` & `http://10.0.0.227:8080`), SearXNG Metasuche |
+| **—** | OptiPlex 7050 | `frawo-ai-worker` | `10.1.0.227` / `10.0.0.227` | 11434 (Ollama CPU), 8080 (Open WebUI), 8081 (SearXNG) | **FraWo 24/7 KI-Worker (Employee #13)** — Qwen 2.5 7B & 3B, `nomic-embed-text` (RAG), Open WebUI (`https://frawo.tech/ai/` & `http://10.0.0.227:8080`), SearXNG Metasuche. **Firewall (cluster.fw) Port 11434 nur für:** CT155 Prometheus `10.1.0.35`, CT150 Jarvis `10.1.0.31`, CT110 Paperless-Router `10.1.0.100` (seit 29.09.2026, #1645) |
 | **—** | StudioPC | `frawo-gpu-powernode` | `10.0.0.156` (LAN) / `100.98.31.60` (TS) | 11434 (Ollama GPU) | **FraWo GPU-Powernode (NVIDIA GeForce RTX 4060 8 GB GDDR6, CUDA 12.8, Compute 8.9)** — On-Demand Inferenz: `frawo-mitarbeiter:latest` (50,2 tok/s), `frawo-mitarbeiter-fast:latest` (101,7 tok/s). Eingebunden in Open WebUI via `OLLAMA_BASE_URLS` |
 
 ### Hinweise zu Speichermounts & Radio
