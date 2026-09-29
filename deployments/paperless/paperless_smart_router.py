@@ -649,6 +649,24 @@ def create_odoo_vendor_bill(info, doc_id, doc_title, pdf_bytes=None, models=None
                 print(f"Bestellung {bestellnr} bereits als Rechnung #{ziel['id']} gebucht — Beleg angehängt, keine Dublette.")
                 return ziel['id']
 
+        # 0b. Derselbe Beleg nochmal hochgeladen (neue Paperless-Nummer, gleicher Inhalt)?
+        #     Stabiles Merkmal: Lieferant + Rechnungsdatum + Betrag (29.09.2026: smartRepair doppelt).
+        inv_datum = info.get("document_date")
+        if inv_datum:
+            gleich = models.execute_kw(
+                ODOO_DB, uid, ODOO_PASS, 'account.move', 'search_read',
+                [[['move_type', '=', 'in_invoice'], ['state', '!=', 'cancel'],
+                  ['partner_id.name', 'ilike', vendor_name[:25]], ['invoice_date', '=', inv_datum],
+                  ['amount_total', '>=', amount - 0.005], ['amount_total', '<=', amount + 0.005]]],
+                {'fields': ['id', 'name'], 'limit': 1})
+            if gleich:
+                models.execute_kw(ODOO_DB, uid, ODOO_PASS, 'account.move', 'message_post', [[gleich[0]['id']]], {
+                    'body': f"🤖 Paperless-Router: Paperless #{doc_id} ist derselbe Beleg (Lieferant, Datum, Betrag {amount:.2f} € gleich) "
+                            f"— keine zweite Rechnung angelegt.",
+                    'message_type': 'comment', 'subtype_xmlid': 'mail.mt_note'})
+                print(f"Gleicher Beleg schon als Rechnung #{gleich[0]['id']} vorhanden — keine Dublette.")
+                return gleich[0]['id']
+
         # 1. Partner suchen oder anlegen
         partners = models.execute_kw(ODOO_DB, uid, ODOO_PASS, 'res.partner', 'search_read',
                                      [[['name', 'ilike', vendor_name]]], {'fields': ['id', 'name'], 'limit': 1})
