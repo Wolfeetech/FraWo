@@ -84,6 +84,7 @@
 | Zahl (Preis, Kosten, Menge) | **Beschreibung**, erste Zeile | **Nie in den Titel** |
 | Erledigt / bezahlt | Stufe `✅ Erledigt` + kurzer Chatter-Eintrag warum | Verschwindet aus dem Tagesbericht |
 | Hängt an etwas anderem | Feld **„Blockiert durch" (`depend_on_ids`)** | Odoo kennt die Kette — Fließtext kann es nicht lesen |
+| Auf `🛑 Blockiert` setzen | **Erste Zeile der Beschreibung:** `🛑 Wartet auf: … · Liegt bei: Wolf/Franz/Jarvis/Claude/Extern · Wieder prüfen: TT.MM.` | Der Tagesbericht zeigt Wolf nur, was bei **ihm** liegt und dessen Prüfdatum erreicht ist — **mit Grund**. Ohne diese Zeile warnt der Bericht. Keine Aktivität „Blocker prüfen“ (Wolf 29.09.: *„damit kann ich so nichts anfangen“*, #1557) |
 | Beleg / Dokument | **Paperless** | OCR, Ablage, auffindbar |
 | Wo etwas stattfindet | Schlagwort `@rk22 @villa @stockenweiler @inselhalle @unterwegs @remote` | Block „Was steht wo an" im Tagesbericht |
 | Gehört uns gar nicht | Stufe `🛑 Blockiert` + Chatter „Fremdgewerk, liegt bei X" | Zählt nicht mehr als FraWo-Arbeit |
@@ -137,7 +138,8 @@ Am 09.09.2026 sind drei „geprüfte" Änderungen im Betrieb gescheitert. Daraus
 - **Nach jedem Reload das Ergebnis am Ziel messen**, nicht den Rückgabewert lesen. Prometheus: `curl /api/v1/rules` **und** `reloadConfigSuccess`.
 - **Bei Zeitplänen beide Zeitzonen prüfen.** systemd rechnet in der Zeitzone des **Wirts**, Container-Cron oft in **UTC**. Ein Kopierlauf „nach" dem Abzug lief dadurch drei Stunden **davor** und kopierte täglich die Datei vom Vortag — mit grüner Erfolgsmeldung.
 - **Zeilenenden:** Unter Windows geschriebene Skripte für Linux **binär oder mit `newline='
-'`** schreiben. `` ist kein Syntaxfehler, deshalb meldet `bash -n` auf der Windows-Seite nichts — auf dem Ziel scheitert es trotzdem.
+'`** schreiben. `
+` ist kein Syntaxfehler, deshalb meldet `bash -n` auf der Windows-Seite nichts — auf dem Ziel scheitert es trotzdem.
 
 ## Peer-Review (Vier-Augen-Prinzip) — PFLICHT
 

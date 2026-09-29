@@ -13,6 +13,9 @@
 #   safe_eval kennt KEIN hasattr(). isinstance gibt es.
 #   compile() findet beides nicht.
 #
+# FASSUNG 6 (29.09.2026, #1557): Block 'Blockiert bei dir' mit Grund statt
+#   leerer Aktivitaeten; Warnung bei Blockiert ohne Grund-Zeile.
+#
 # FASSUNG 5 (09.09.2026):
 #   Ergänzt: TAG_BEANTWORTET (160) - Aufgaben, die Wolf/Kunde beantwortet hat
 #   und die auf Abarbeitung durch den Agenten warten (#1415 Punkt 4).
@@ -26,6 +29,7 @@ STILL_TAGE = 14
 VORSCHAU = 7
 TAG_WOLF = 153
 TAG_BEANTWORTET = 160
+BLOCKIERT = 5
 MAX = 8
 WOLF_UID = 6
 FRANZ_UID = 10
@@ -115,6 +119,39 @@ beantwortet = Task.search(OFFEN + [('tag_ids', 'in', [TAG_BEANTWORTET])])
 meilensteine = env['project.milestone'].search(
     [('is_reached', '=', False), ('deadline', '<', HEUTE)],
     order='deadline asc').filtered(lambda m: not m.name.startswith('[FREMD]'))
+# Blockiert (#1557, 29.09.2026): Jede blockierte Aufgabe traegt als erste Zeile
+#   Wartet auf: ... · Liegt bei: ... · Wieder pruefen: TT.MM.
+# Wolf sieht nur, was bei IHM liegt und dessen Pruefdatum erreicht ist - mit Grund.
+# Ersetzt Automatik #4 (leere Aktivitaet "Blocker pruefen - ist er noch echt?").
+blockiert = Task.search([('stage_id', '=', BLOCKIERT),
+                         ('project_id', 'not in', FREMDE_PROJEKTE)])
+
+
+def blocker_teil(t, schluessel, ende):
+    s = str(t.description or '')
+    if schluessel not in s:
+        return ''
+    return s.split(schluessel, 1)[1].split(ende, 1)[0]
+
+
+def pruef_datum(t):
+    teil = blocker_teil(t, 'Wieder prüfen:</b> ', '</p>')[:6]
+    if len(teil) < 5 or not (teil[0:2].isdigit() and teil[3:5].isdigit()):
+        return None
+    tag, mon = int(teil[0:2]), int(teil[3:5])
+    if not (1 <= mon <= 12 and 1 <= tag <= 31):
+        return None
+    d = datetime.date(HEUTE.year, mon, min(tag, 28 if mon == 2 else 30 if mon in (4, 6, 9, 11) else 31))
+    if (HEUTE - d).days > 180:
+        d = datetime.date(HEUTE.year + 1, d.month, d.day)
+    return d
+
+
+blockiert_bei_wolf = blockiert.filtered(
+    lambda t: 'Liegt bei:</b> Wolf' in str(t.description or '')
+    and pruef_datum(t) is not None and pruef_datum(t) <= HEUTE)
+blockiert_ohne_grund = blockiert.filtered(lambda t: 'Wartet auf:</b>' not in str(t.description or ''))
+
 entwuerfe = env['account.move'].search([('state', '=', 'draft'),
     ('move_type', 'in', ['out_invoice', 'out_refund', 'in_invoice', 'in_refund'])])
 
@@ -140,6 +177,8 @@ if len(laufend) > WIP_GRENZE:
     warn.append('%d in Arbeit (max %d)' % (len(laufend), WIP_GRENZE))
 if liegen:
     warn.append('%d seit %d Tagen unbewegt' % (len(liegen), STILL_TAGE))
+if blockiert_ohne_grund:
+    warn.append('%d blockiert ohne Grund (Agenten)' % len(blockiert_ohne_grund))
 if beantwortet:
     warn.append('%d Antwort(en) warten auf Agent' % len(beantwortet))
 
@@ -152,6 +191,12 @@ else:
 teile.append(block('Ueberfaellig', ueberfaellig))
 teile.append(block('Wartet auf deine Entscheidung', braucht_wolf))
 teile.append(block('Beantwortet (wartet auf Agenten-Verarbeitung)', beantwortet))
+if blockiert_bei_wolf:
+    zs = ''.join('<tr><td valign="top">%s&nbsp;&nbsp;</td><td><i>wartet auf:</i> %s</td></tr>'
+                 % (t.name[:60], blocker_teil(t, 'Wartet auf:</b> ', ' · <b>Liegt bei')[:140])
+                 for t in blockiert_bei_wolf[:MAX])
+    teile.append('<p><b>Blockiert bei dir &ndash; heute pruefen (%d von %d blockierten)</b></p>'
+                 '<table>%s</table>' % (len(blockiert_bei_wolf), len(blockiert), zs))
 teile.append(block('Seit %d Tagen unbewegt' % STILL_TAGE, liegen))
 
 if meilensteine:
