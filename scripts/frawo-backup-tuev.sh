@@ -97,9 +97,18 @@ fi
 # --- 3. Alle 10 aktiven Anker-Gäste in Google Drive (vzdump) ----------------
 ANKER_GAESTE="101 106 108 110 130 140 150 155 210 300"
 GDRIVE_LISTE=$(timeout "$TIMEOUT_REMOTE" pvesm list google-drive 2>/dev/null || true)
+# Seit 29.09.2026 (Odoo #1594): Das Laufwerk /mnt/google-drive ist ein rclone-Mount mit
+# Schreib-Zwischenspeicher. vzdump meldet "Finished Backup", sobald die Datei im
+# Zwischenspeicher liegt - der eigentliche Upload kommt danach und kann scheitern
+# (28.09.: Input/output error bei VM 300). Laufwerksliste und vzdump-Log sehen davon
+# nichts. Deshalb zaehlt eine Sicherung nur, wenn sie DIREKT in Google Drive liegt,
+# in derselben Groesse.
+GDRIVE_ECHT=$(timeout "$TIMEOUT_REMOTE" rclone lsl gdrive:dump --max-depth 1 2>/dev/null || true)
 
 if [ -z "$GDRIVE_LISTE" ]; then
     pruefe "gaeste_cloud" 0 "Google Drive Backup-Speicher nicht abrufbar"
+elif [ -z "$GDRIVE_ECHT" ]; then
+    pruefe "gaeste_cloud" 0 "Google Drive direkt (rclone lsl gdrive:dump) nicht abrufbar"
 else
     # Seit 28.09.2026 woechentlich in drei Gruppen (Mo/Mi/Fr, Odoo #1590) -> Frist 8 Tage.
     DATUMS=$(for i in 0 1 2 3 4 5 6 7 8; do date -d "-$i day" +%Y_%m_%d; done | paste -sd'|')
@@ -115,8 +124,12 @@ else
         G_GROESSE=$(printf '%s' "$G_ZEILE" | awk '{print $(NF-1)}')
         case "$G_GROESSE" in
             ''|*[!0-9]*) FEHLEND="$FEHLEND ${G_ID}(Größe unlesbar)" ;;
-            *) if [ "$G_GROESSE" -lt 52428800 ]; then
+            *) G_DATEI=$(printf '%s' "$G_ZEILE" | awk '{print $1}'); G_DATEI="${G_DATEI##*/}"
+               G_ECHT=$(printf '%s\n' "$GDRIVE_ECHT" | awk -v n="$G_DATEI" '$4==n{print $1}' | head -1)
+               if [ "$G_GROESSE" -lt 52428800 ]; then
                    FEHLEND="$FEHLEND ${G_ID}(nur $((G_GROESSE/1024/1024))MB)"
+               elif [ "$G_ECHT" != "$G_GROESSE" ]; then
+                   FEHLEND="$FEHLEND ${G_ID}(nicht hochgeladen: ${G_DATEI})"
                else
                    OK_COUNT=$((OK_COUNT + 1))
                fi ;;
@@ -125,7 +138,7 @@ else
     if [ -n "$FEHLEND" ]; then
         pruefe "gaeste_cloud" 0 "Fehlende/zu kleine Gäste-Sicherungen:$FEHLEND"
     else
-        pruefe "gaeste_cloud" 1 "$OK_COUNT/10 Gäste in Google Drive, jüngste höchstens 8 Tage alt"
+        pruefe "gaeste_cloud" 1 "$OK_COUNT/10 Gäste in Google Drive (direkt geprüft, Größe gleich), jüngste höchstens 8 Tage alt"
     fi
 fi
 
