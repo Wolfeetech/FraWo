@@ -24,12 +24,19 @@ for f in "$STAGING"/*; do
   
   # Seit 29.09.2026 (Claude): Handy-Uploads kommen teils ohne ".pdf" an (z. B. "...Pixel9pdf").
   # Paperless ignoriert Dateien ohne bekannte Endung STILLSCHWEIGEND - so lagen Belege
-  # wochenlang im Eingang. Erkennung am Inhalt (%PDF-), nicht am Namen.
-  if [ "$(head -c 5 "$f")" = "%PDF-" ] && [[ "${clean_name,,}" != *.pdf ]]; then
-    basis="${clean_name%[Pp][Dd][Ff]}"; basis="${basis%.}"
+  # wochenlang im Eingang. Erkennung am Inhalt (PDF/PNG/JPEG), nicht am Namen.
+  kopf="$(head -c 4 "$f" | od -An -tx1 | tr -d ' \n')"
+  case "$kopf" in
+    25504446) endung=pdf ;;              # %PDF
+    89504e47) endung=png ;;              # PNG
+    ffd8ff*)  endung=jpg ;;              # JPEG
+    *)        endung="" ;;
+  esac
+  if [ -n "$endung" ] && [[ ! "${clean_name,,}" =~ \.(pdf|png|jpe?g)$ ]]; then
+    basis="${clean_name%[Pp][Dd][Ff]}"; basis="${basis%[Pp][Nn][Gg]}"; basis="${basis%[Jj][Pp][Gg]}"; basis="${basis%.}"
     basis="$(printf '%s' "$basis" | sed 's/[[:space:]]*$//')"
-    echo "$(date -Is) UMBENANNT $clean_name -> ${basis}.pdf" >> "$LOG"
-    clean_name="${basis}.pdf"
+    echo "$(date -Is) UMBENANNT $clean_name -> ${basis}.${endung}" >> "$LOG"
+    clean_name="${basis}.${endung}"
     mv "$f" "$STAGING/$clean_name"
     f="$STAGING/$clean_name"
   fi
