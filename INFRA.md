@@ -9,7 +9,7 @@
 | Host | IP | Hardware / Rolle | Storage / Backups |
 |---|---|---|---|
 | **stock-pve** | `10.1.0.128` | HP ProDesk 600 G4 Mini (am UCG Port 1) — 🟢 **Wieder online seit 13.09.2026** | PVE 8.2, 15 GiB RAM (4,8G belegt), Thin-Pool `data` (54%), Tailscale `100.91.20.116`. |
-| **anker-pve** | `10.1.0.92` | Lenovo ThinkCentre M720q (Anker-Server) — **Trägt gesamten Kernbetrieb** | Proxmox VE 8, ZFS Mirror `anker-backup` (1,7 TB frei), Thin-Pool `data` (65%), rclone GDrive. |
+| **anker-pve** | `10.1.0.92` | Lenovo ThinkCentre M720q (Anker-Server) — **Trägt gesamten Kernbetrieb** | Proxmox VE 8, ZFS Mirror `anker-backup` (1,7 TB frei), Thin-Pool `data` (65%), rclone GDrive. Node Exporter: `10.1.0.92:9100` (LAN; Monitoring darf nicht von Tailscale-Login abhängen). |
 | **pbs-frawo** | `10.1.0.7` | Proxmox Backup Server (VM 240 auf anker-pve) | Tägliche PBS-Snapshots & vzdump um 04:00 Uhr nach Google Drive (`daily-all-pbs`). |
 | **StudioPC** | `10.1.0.211` | Windows 11 Workstation (**NVIDIA GeForce RTX 4060 8 GB GDDR6, CUDA 12.8**) | UltraVNC (Port 5900), Tailscale `100.98.31.60`, GPU-Powernode für schwere KI-Inferenz. |
 | **UCG Ultra** | `10.1.0.1` | UniFi Cloud Gateway (Router/Firewall) | Port 1: stock-pve, Port 2: AC Mesh, Port 3: StudioPC, Port 4: anker-pve, Port 5: WAN1 (FritzBox). |
