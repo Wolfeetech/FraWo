@@ -43,7 +43,9 @@ ODOO_DB = os.environ.get("ODOO_DB", "FraWo_GbR")
 ODOO_USER = os.environ.get("ODOO_USER", "wolf@frawo.tech")
 ODOO_PASS = os.environ.get("ODOO_PASS", "")
 
-OLLAMA_URL = os.environ.get("OLLAMA_URL", "http://10.0.0.227:11434")
+# Live-Stand 29.09.2026: StudioPC. Die OptiPlex-KI (10.1.0.227) ist aus CT110 nicht
+# erreichbar (Zeitueberschreitung) - offen in Odoo #1517/#1645. StudioPC aus = Ersatzweg Gemini.
+OLLAMA_URL = os.environ.get("OLLAMA_URL", "http://10.0.0.156:11434")
 OLLAMA_MODEL = os.environ.get("OLLAMA_MODEL", "qwen2.5:7b")
 
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
@@ -71,6 +73,25 @@ VALID_DOCUMENT_TYPES = {
     "Versicherungspolice", "Zeugnis", "Bewerbung", "Kündigung",
     "Antrag", "Angebot", "Sonstiges",
 }
+
+# Eingangsrechnungen (Odoo #1645, 29.09.2026). Kleinunternehmer § 19 UStG: Einkauf wird
+# BRUTTO gebucht, OHNE Steuer. Die Firma hat als Einkaufs-Standardsteuer "VSt 19%" hinterlegt -
+# deshalb setzt der Router tax_ids ausdruecklich leer.
+# Kostenart (von der KI) -> Kontonummer. Alles andere: Standardkonto des Einkaufsjournals
+# (600000 Aufwand). Vorher nahm der Router das ERSTE Aufwandskonto = 443000 Skontoverlust.
+KOSTENART_KONTO = {
+    "ausruestung": "611000",    # Einkauf von Ausruestung
+    "versicherung": "627000",
+    "miete": "612000",
+    "bankgebuehren": "620000",
+    "sonstiges": None,
+}
+# Eine Bestellung kommt oft als mehrere Belege (Bestelluebersicht + Haendlerrechnungen).
+# Die Bestellnummer ist das stabile Merkmal gegen Doppelbuchung (AGENTS.md Verbot 6).
+BESTELLNR_MUSTER = [
+    re.compile(r"\b\d{3}-\d{7}-\d{7}\b"),                                    # Amazon
+    re.compile(r"(?i)bestell(?:ung|nummer|-nr\.?|nr\.?)\s*[:#]?\s*([A-Z0-9][A-Z0-9-]{5,})"),
+]
 
 print(f"=== PAPERLESS SMART ROUTER v4 · Dokument #{DOC_ID} ({DOC_FILENAME}) ===")
 
@@ -166,6 +187,9 @@ Antworte NUR mit einem gültigen JSON-Objekt im folgenden Format:
   "document_date": "<Datum AUF dem Dokument selbst, YYYY-MM-DD, oder null wenn nicht erkennbar>",
   "clean_title": "<kurzer, sauberer Titel nach dem Muster 'Dokumenttyp Absender Datum', z.B. 'Rechnung Thomann GmbH 2026-08-15', OHNE Dateiendung. Ist kein Datum erkennbar: Datum im Titel weglassen>",
   "amount": <Zahl in Euro oder 0.0 falls keine Zahlungsaufforderung>,
+  "bestellnummer": "<Bestell- oder Auftragsnummer des Händlers, z.B. Amazon 028-5051623-4280329, oder null>",
+  "kostenart": "ausruestung" | "versicherung" | "miete" | "bankgebuehren" | "sonstiges",
+  "positionen": [{{"text": "<Artikelbezeichnung wie auf dem Beleg>", "betrag": <Bruttobetrag dieser Zeile in Euro>}}],
   "due_date": "<Fristdatum YYYY-MM-DD oder null>",
   "requires_action": true | false,
   "summary": "<ein präziser deutscher Satz, der den Sachverhalt auf den Punkt bringt>"
@@ -175,6 +199,9 @@ Kategorien: finanzen=Rechnungen/Bank/Versicherung, vertraege=Verträge,
 amt_behoerden=Ämter/Finanzamt/Bescheide, gesundheit=Arzt/Krankenkasse,
 wohnen=Miete/Nebenkosten/Haus, arbeit=Job/Gewerbe/Ausbildung,
 projekte=laufende Vorhaben, sonstiges=alles andere.
+positionen: jede Artikelzeile einer Rechnung mit ihrem Bruttobetrag (inkl. MwSt),
+Versand als eigene Zeile; leere Liste, wenn es keine Rechnung ist.
+kostenart: ausruestung = Technik, Kabel, Werkzeug, Geräte; sonst passend oder sonstiges.
 requires_action=true nur bei echtem Handlungsbedarf (zahlen, antworten,
 unterschreiben, Frist einhalten). Ist eine Rechnung bereits bezahlt oder handelt es sich um ein reines Infoschreiben: false."""
 
@@ -256,6 +283,19 @@ def sanitize_classification(result, title_str):
         result["vendor"] = "Unbekannt"
     if not result.get("summary"):
         result["summary"] = f"Dokument: {title_str}"
+    if result.get("kostenart") not in KOSTENART_KONTO:
+        result["kostenart"] = "sonstiges"
+    pos = []
+    for p in result.get("positionen") or []:
+        try:
+            text, betrag = str(p.get("text") or "").strip(), round(float(p.get("betrag") or 0), 2)
+        except (AttributeError, TypeError, ValueError):
+            continue
+        if text and betrag > 0:
+            pos.append({"text": text[:200], "betrag": betrag})
+    result["positionen"] = pos
+    bn = result.get("bestellnummer")
+    result["bestellnummer"] = str(bn).strip() if bn and str(bn).strip().lower() not in ("null", "none") else None
     return result
 
 
@@ -560,7 +600,39 @@ def create_odoo_vendor_bill(info, doc_id, doc_title, pdf_bytes=None, models=None
         if existing > 0:
             print(f"Lieferantenrechnung für Paperless #{doc_id} existiert bereits ({existing}x) — überspringe Duplikat.")
             return None
-        
+
+        # 0. Dieselbe Bestellung schon gebucht? Dann Beleg anhaengen statt neue Rechnung (#1645).
+        bestellnr = None
+        for muster in BESTELLNR_MUSTER:
+            m = muster.search(content or "")
+            if m:
+                bestellnr = m.group(1) if m.groups() else m.group(0)
+                break
+        bestellnr = bestellnr or info.get("bestellnummer")
+        if bestellnr:
+            vorhanden = models.execute_kw(
+                ODOO_DB, uid, ODOO_PASS, 'account.move', 'search_read',
+                [[['move_type', '=', 'in_invoice'], ['ref', 'ilike', bestellnr]]],
+                {'fields': ['id', 'ref', 'state'], 'limit': 1})
+            if vorhanden:
+                ziel = vorhanden[0]
+                if ziel['state'] == 'draft':
+                    models.execute_kw(ODOO_DB, uid, ODOO_PASS, 'account.move', 'write',
+                                      [[ziel['id']], {'ref': f"Paperless #{doc_id}: {ziel['ref'] or ''}"[:250]}])
+                if pdf_bytes:
+                    import base64
+                    models.execute_kw(ODOO_DB, uid, ODOO_PASS, 'ir.attachment', 'create', [{
+                        'name': f"Beleg_{safe_filename(doc_title, 'beleg')}.pdf",
+                        'datas': base64.b64encode(pdf_bytes).decode('ascii'),
+                        'res_model': 'account.move', 'res_id': ziel['id'], 'mimetype': 'application/pdf'}])
+                models.execute_kw(ODOO_DB, uid, ODOO_PASS, 'account.move', 'message_post', [[ziel['id']]], {
+                    'body': f"🤖 Paperless-Router: Beleg Paperless #{doc_id} gehört zu Bestellung {bestellnr} "
+                            f"und wurde angehängt — keine zweite Rechnung angelegt. Betrag laut Beleg: {amount:.2f} €. "
+                            f"Bitte Positionen prüfen.",
+                    'message_type': 'comment', 'subtype_xmlid': 'mail.mt_note'})
+                print(f"Bestellung {bestellnr} bereits als Rechnung #{ziel['id']} gebucht — Beleg angehängt, keine Dublette.")
+                return ziel['id']
+
         # 1. Partner suchen oder anlegen
         partners = models.execute_kw(ODOO_DB, uid, ODOO_PASS, 'res.partner', 'search_read',
                                      [[['name', 'ilike', vendor_name]]], {'fields': ['id', 'name'], 'limit': 1})
@@ -570,27 +642,38 @@ def create_odoo_vendor_bill(info, doc_id, doc_title, pdf_bytes=None, models=None
             partner_id = models.execute_kw(ODOO_DB, uid, ODOO_PASS, 'res.partner', 'create',
                                            [{'name': vendor_name, 'supplier_rank': 1}])
 
-        # 2. Aufwandskonto suchen
-        expense_accs = models.execute_kw(ODOO_DB, uid, ODOO_PASS, 'account.account', 'search_read',
-                                         [[['account_type', '=', 'expense']]], {'fields': ['id'], 'limit': 1})
-        account_id = expense_accs[0]['id'] if expense_accs else False
+        # 2. Aufwandskonto: nach Kostenart, sonst Standardkonto des Einkaufsjournals.
+        account_id = False
+        code = KOSTENART_KONTO.get(info.get("kostenart"))
+        if code:
+            acc = models.execute_kw(ODOO_DB, uid, ODOO_PASS, 'account.account', 'search_read',
+                                    [[['code', '=', code]]], {'fields': ['id'], 'limit': 1})
+            account_id = acc[0]['id'] if acc else False
+        if not account_id:
+            jr = models.execute_kw(ODOO_DB, uid, ODOO_PASS, 'account.journal', 'search_read',
+                                   [[['type', '=', 'purchase']]], {'fields': ['default_account_id'], 'limit': 1})
+            account_id = jr[0]['default_account_id'][0] if jr and jr[0]['default_account_id'] else False
 
         inv_date = info.get("document_date") or datetime.now().strftime("%Y-%m-%d")
         due_date = info.get("due_date") or (datetime.now() + timedelta(days=14)).strftime("%Y-%m-%d")
 
+        # 3. Zeilen: Artikelzeilen nur, wenn ihre Summe exakt zum Gesamtbetrag passt -
+        #    sonst eine Zeile mit dem Belegtitel (kein KI-Satz). Steuer immer leer (§ 19).
+        positionen = info.get("positionen") or []
+        if positionen and abs(sum(p["betrag"] for p in positionen) - amount) <= 0.05:
+            zeilen = [(p["text"], p["betrag"]) for p in positionen]
+        else:
+            zeilen = [(doc_title, amount)]
         bill_vals = {
             'move_type': 'in_invoice',
             'partner_id': partner_id,
             'invoice_date': inv_date,
             'invoice_date_due': due_date,
-            'ref': f"Paperless #{doc_id}: {doc_title[:40]}",
+            'ref': f"Paperless #{doc_id}: {(bestellnr + ' ') if bestellnr else ''}{doc_title[:40]}",
             'invoice_line_ids': [
-                (0, 0, {
-                    'name': info.get("summary") or doc_title,
-                    'price_unit': amount,
-                    'quantity': 1,
-                    'account_id': account_id
-                })
+                (0, 0, {'name': text, 'price_unit': betrag, 'quantity': 1,
+                        'account_id': account_id, 'tax_ids': [(6, 0, [])]})
+                for text, betrag in zeilen
             ]
         }
         bill_id = models.execute_kw(ODOO_DB, uid, ODOO_PASS, 'account.move', 'create', [bill_vals])
