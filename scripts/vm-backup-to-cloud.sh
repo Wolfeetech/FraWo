@@ -24,7 +24,7 @@ export PATH="/usr/sbin:/usr/bin:/sbin:/bin"
 SRC=/mnt/data_family/proxmox_backups/dump
 REMOTE=gdrive:FraWo-ProDesk-VMs
 DAILY_VMID=360
-WEEKLY_VMID=210
+WEEKLY_VMID=220      # AzuraCast (frueher 210, seit Umzug VM 220) - Claude 29.09.2026 #1588
 WEEKLY_DAY=7          # 7 = Sonntag
 KEEP_REMOTE=3
 
