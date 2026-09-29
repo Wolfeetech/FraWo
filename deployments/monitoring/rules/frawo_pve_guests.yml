@@ -24,10 +24,20 @@ groups:
       # diesem einen Knoten gefasst. Sobald über die alte VM entschieden ist
       # (Odoo-Aufgabe "Alte AzuraCast-VM 211 am Anker: behalten oder abräumen"),
       # gehört sie hier wieder raus.
+      #
+      # 29.09.2026 — qemu/990 ebenfalls ausgenommen. Das ist die bewusst
+      # abgeschaltete Surface-Test-VM auf dem Optiplex (Odoo #1560), kein
+      # Produktivgast. Der Cluster-Exporter liefert sie derzeit im Job
+      # pve_anker mit pve_node="proxmox-anker"; deshalb wird sie nur über ihre
+      # clusterweit eindeutige ID ausgenommen. Sobald der Test abgeschlossen
+      # und VM 990 entfernt ist, gehört auch diese Ausnahme wieder raus.
       - alert: GuestDown
         expr: >-
           (pve_up{id=~"(qemu|lxc)/.*"} == 0)
-          unless (pve_up{pve_node="proxmox-anker", id="qemu/211"})
+          unless (
+            pve_up{pve_node="proxmox-anker", id="qemu/211"}
+            or pve_up{id="qemu/990"}
+          )
         for: 5m
         labels:
           severity: critical
