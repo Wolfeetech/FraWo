@@ -43,9 +43,10 @@ ODOO_DB = os.environ.get("ODOO_DB", "FraWo_GbR")
 ODOO_USER = os.environ.get("ODOO_USER", "wolf@frawo.tech")
 ODOO_PASS = os.environ.get("ODOO_PASS", "")
 
-# Live-Stand 29.09.2026: StudioPC. Die OptiPlex-KI (10.1.0.227) ist aus CT110 nicht
-# erreichbar (Zeitueberschreitung) - offen in Odoo #1517/#1645. StudioPC aus = Ersatzweg Gemini.
+# Zuerst StudioPC (schnell, nicht 24/7), dann OptiPlex (24/7). Die OptiPlex-KI braucht
+# die Firewall-Regel "CT110 -> 11434" in cluster.fw (29.09.2026, Odoo #1645).
 OLLAMA_URL = os.environ.get("OLLAMA_URL", "http://10.0.0.156:11434")
+OLLAMA_URL_OPTIPLEX = os.environ.get("OLLAMA_URL_OPTIPLEX", "http://10.1.0.227:11434")
 OLLAMA_MODEL = os.environ.get("OLLAMA_MODEL", "qwen2.5:7b")
 
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
@@ -217,9 +218,9 @@ def parse_json_flexible(raw_text):
     return json.loads(text)
 
 
-def call_ollama(text, title_str):
+def call_ollama(text, title_str, basis=None, timeout=120):
     prompt = build_classification_prompt(text, title_str)
-    url = f"{OLLAMA_URL.rstrip('/')}/api/generate"
+    url = f"{(basis or OLLAMA_URL).rstrip('/')}/api/generate"
     body = json.dumps({
         "model": OLLAMA_MODEL,
         "prompt": prompt,
@@ -227,7 +228,7 @@ def call_ollama(text, title_str):
         "options": {"temperature": 0.1},
     }).encode("utf-8")
     req = urllib.request.Request(url, data=body, headers={"Content-Type": "application/json"})
-    with urllib.request.urlopen(req, timeout=120) as r:
+    with urllib.request.urlopen(req, timeout=timeout) as r:
         raw = json.loads(r.read().decode("utf-8"))
         res_text = raw.get("response", "")
         return parse_json_flexible(res_text)
@@ -300,16 +301,19 @@ def sanitize_classification(result, title_str):
 
 
 def classify_document(text, title_str):
-    # 1. Lokaler KI-Dienst (Ollama auf OptiPlex)
-    if OLLAMA_URL:
+    # 1. Lokale KI: zuerst StudioPC (schnell, aber nicht 24/7), dann OptiPlex (24/7, ~6 Token/s,
+    #    daher lange Wartezeit). Reihenfolge seit 29.09.2026, Odoo #1645/#1517.
+    for basis, frist in ((OLLAMA_URL, 120), (OLLAMA_URL_OPTIPLEX, 360)):
+        if not basis:
+            continue
         try:
-            print(f"Klassifiziere primär lokal mit Ollama ({OLLAMA_MODEL} @ {OLLAMA_URL})...")
-            res = call_ollama(text, title_str)
+            print(f"Klassifiziere lokal mit Ollama ({OLLAMA_MODEL} @ {basis}, max. {frist}s)...")
+            res = call_ollama(text, title_str, basis, frist)
             if isinstance(res, dict) and (res.get("entity") or res.get("vendor") or res.get("document_type")):
-                print("Erfolgreich lokal durch Ollama klassifiziert.")
+                print(f"Erfolgreich lokal durch Ollama @ {basis} klassifiziert.")
                 return sanitize_classification(res, title_str)
         except Exception as e:
-            print(f"Warnung: Lokaler Ollama-Aufruf fehlgeschlagen ({e}). Wechsle auf Fallback...")
+            print(f"Warnung: Ollama @ {basis} fehlgeschlagen ({e}). Nächster Weg...")
 
     # 2. Cloud-Fallback (Gemini)
     if GEMINI_API_KEY:
