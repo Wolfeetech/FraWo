@@ -3,6 +3,14 @@
 > **Zuerst lesen.** Diese Datei beschreibt, **was läuft** — nicht, was passiert ist.
 > Historie steht in der Git-Historie, Entscheidungen und Aufgaben in **Odoo (CT140, `10.1.0.112:8069`) = einzige Quelle der Wahrheit**.
 >
+> **🧭 SCHWERPUNKTE OKTOBER 2026 (Wolf, Portfolio-Durchsicht 29.09.) — daran richtet sich die Arbeit aller Agenten aus:**
+> 1. **Aufträge & Crew** (#1638, #1530 ist darin aufgegangen): Halloween 31.10. (Mappe S00057, Projekt 171), Wasserburg-Rechnung #170, Crew-Profil, Anschreiben. Angebotsvorlagen Paket S/M/L + Fußballdart stehen (#1640).
+> 2. **Stabiler Betrieb:** Cluster #1510 bis 11.10., danach **Netz professionell #1523** (zuerst M2: zweiter Alarmweg ohne Hausinternet). Kein neuer Infrastruktur-Ausbau.
+> 3. **Werkstatt mit Franz** (#1089 „ruht bis Oktober“ aufgehoben) · 4. **Studio Villa** (Projekt 159).
+> 5. **Radio nutzbar machen bis 31.10.** (#1090): Bibliothek ohne Dubletten + eine Steuerung, mit der Wolf arbeiten kann. Sonst ruht das Radio.
+> - Weiter verfolgt, ohne Oktober-Frist: **Smart Home als Dienstleistung** (#588), **Odoo als FraWo-Jarvis** (#927).
+> - **Ruht bis 01.03.2027:** GrowBox-Ausbau + Server-Garten (#1091) — der GrowBox-Betrieb mit Automatik läuft weiter.
+>
 > **🧾 Seit 28.09.2026 — Abrechnung aus der Projektmappe (Odoo #1595):**
 > - **Ein Auftrag pro Einsatz**, Kundenreferenz = Eventname. Tagessatz-Produkte (`FW-001` Helfer, `SRV-FACHKRAFT-TAG`) erzeugen beim Bestätigen eine **eigene Mappe** aus Vorlage „Projektmappe“ (#164) mit einer Aufgabe je Position + Checkliste „🧾 Leistungsnachweis & Abrechnung“.
 > - **Abgerechnet werden Einsatztage, nicht Stunden:** Automatik #30/#31 zählt je Tagessatz-Position die Tage mit Zeiteintrag je Person, höchstens die beauftragte Menge; mehr = Hinweis „Mehrleistung/Nachtrag“ im Auftrag. Anfahrt gilt als erbracht, sobald ein Einsatztag erfasst ist. Rechnung: in der Mappe „Rechnung erstellen“.
