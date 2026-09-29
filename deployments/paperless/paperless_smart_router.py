@@ -201,7 +201,7 @@ amt_behoerden=Ämter/Finanzamt/Bescheide, gesundheit=Arzt/Krankenkasse,
 wohnen=Miete/Nebenkosten/Haus, arbeit=Job/Gewerbe/Ausbildung,
 projekte=laufende Vorhaben, sonstiges=alles andere.
 positionen: jede Artikelzeile einer Rechnung mit ihrem Bruttobetrag (inkl. MwSt),
-Versand als eigene Zeile; leere Liste, wenn es keine Rechnung ist.
+Versand als eigene Zeile; MwSt/USt NIE als eigene Zeile; leere Liste, wenn es keine Rechnung ist.
 kostenart: ausruestung = Technik, Kabel, Werkzeug, Geräte; sonst passend oder sonstiges.
 requires_action=true nur bei echtem Handlungsbedarf (zahlen, antworten,
 unterschreiben, Frist einhalten). Ist eine Rechnung bereits bezahlt oder handelt es sich um ein reines Infoschreiben: false."""
@@ -286,15 +286,27 @@ def sanitize_classification(result, title_str):
         result["summary"] = f"Dokument: {title_str}"
     if result.get("kostenart") not in KOSTENART_KONTO:
         result["kostenart"] = "sonstiges"
-    pos = []
+    pos, steuer = [], 0.0
     for p in result.get("positionen") or []:
         try:
             text, betrag = str(p.get("text") or "").strip(), round(float(p.get("betrag") or 0), 2)
         except (AttributeError, TypeError, ValueError):
             continue
+        # Steuer ist nie eine Artikelzeile (29.09.2026: ReTech "MwSt.-Betrag 3,18" als eigene Position).
+        # Bei genau einer Artikelzeile wird der Steuerbetrag in sie eingerechnet (brutto, § 19).
+        if re.search(r"(?i)\b(mwst|ust|umsatzsteuer|mehrwertsteuer|vorsteuer)\b", text):
+            steuer += betrag
+            continue
         if text and betrag > 0:
             pos.append({"text": text[:200], "betrag": betrag})
+    if steuer and len(pos) == 1:
+        pos[0]["betrag"] = round(pos[0]["betrag"] + steuer, 2)
     result["positionen"] = pos
+    # Sichtbar schon bezahlte Belege brauchen keine Aufgabe fuer Wolf (29.09.2026: smartRepair, EC-Karte).
+    if result.get("document_type") == "Rechnung" and re.search(
+            r"(?i)(zahlungsart\W{0,5}(ec|karte|bar|girocard|paypal|kredit)|ec-karte|kartenzahlung|bar bezahlt|betrag erhalten|bereits bezahlt|\bpaid\b)",
+            content or ""):
+        result["requires_action"] = False
     bn = result.get("bestellnummer")
     result["bestellnummer"] = str(bn).strip() if bn and str(bn).strip().lower() not in ("null", "none") else None
     return result
