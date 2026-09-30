@@ -153,8 +153,17 @@ blockiert_bei_wolf = blockiert.filtered(
     lambda t: 'Liegt bei:</b> Wolf' in str(t.description or '')
     and pruef_datum(t) is not None and pruef_datum(t) <= HEUTE)
 BLOCKER_MARKER = ('Wartet auf:</b>', 'Liegt bei:</b>', 'Wieder prüfen:</b>')
+
+
+def hat_alle_blocker_marker(beschreibung):
+    for marker in BLOCKER_MARKER:
+        if marker not in beschreibung:
+            return False
+    return True
+
+
 blockiert_ohne_grund = blockiert.filtered(
-    lambda t: any(m not in str(t.description or '') for m in BLOCKER_MARKER))
+    lambda t: not hat_alle_blocker_marker(str(t.description or '')))
 
 entwuerfe = env['account.move'].search([('state', '=', 'draft'),
     ('move_type', 'in', ['out_invoice', 'out_refund', 'in_invoice', 'in_refund'])])
