@@ -113,6 +113,8 @@ Wolf am 09.09.2026: *„alles was ich anklicke ist nur so halbfertig formuliert 
 - **Wie:** `python scripts/odoo_anhang.py <Aufgaben-ID> <Datei> [--agent Claude|Jarvis|Antigravity] [--notiz "…"]` — wandelt HTML/Markdown per Chrome/Edge headless in PDF, hängt an und schreibt eine interne Notiz (benachrichtigt niemanden). Schlüssel aus `ODOO_RPC_API_KEY`/`ODOO_API_KEY`. Auf CT150 gibt es kein Chrome: Das Skript hängt dann das Original an und vermerkt „PDF fehlt“. Jarvis bittet in diesem Fall Claude/Antigravity im Chatter um das PDF.
 - **Ohne Skript (MCP/XML-RPC):** `ir.attachment` anlegen mit `name`, `datas` (Base64), `res_model='project.task'`, `res_id=<ID>` → dann `message_post` mit `attachment_ids=[…]`, `subtype_xmlid='mail.mt_note'`. Der Agent-User (7) hat die nötigen Rechte.
 
+**Automatisch angelegte Aufgaben (seit 30.09.2026, #1585):** Eine Automatik (Router, Server-Aktion, Agent) legt nur dann eine Aufgabe an, wenn ein Mensch wirklich etwas tun muss. Titel = was zu tun ist, erste Zeile = Was · Warum · Bis wann · Wer, Beleg hängt an. Kann sie das nicht (Absender unbekannt, KI ausgefallen, schon bezahlt): **keine Aufgabe**, sondern Buchung (bezahlter GbR-Beleg von Wolf privat = Rechnung `Wolf_Einkauf_JJJJ_NN` + Auslage-Zahlung BNK1), Notiz oder Schlagwort. Umsetzung: `aufgabe_pruefen()` in `deployments/paperless/paperless_smart_router.py`.
+
 **Titel sind Titel, keine Sätze.** Kein Preis, keine Begründung, keine Klammerzusätze. Wolf am 09.09.2026: *„warum schreibst du so viele Infos in den Titel der Aufgaben, das ist komplett unübersichtlich"*. Berechtigt.
 
 **Aktivitäten und Benachrichtigungen (seit 22.09.2026).** Wolf empfindet jede Meldung als Last (*„unfassbar stressig“*). Deshalb:

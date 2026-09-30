@@ -70,10 +70,41 @@ VALID_CATEGORIES = {
 }
 
 VALID_DOCUMENT_TYPES = {
-    "Rechnung", "Mahnung", "Vertrag", "Bescheid", "Kontoauszug",
+    "Rechnung", "Quittung", "Mahnung", "Vertrag", "Bescheid", "Kontoauszug",
     "Versicherungspolice", "Zeugnis", "Bewerbung", "Kündigung",
     "Antrag", "Angebot", "Sonstiges",
 }
+BELEG_TYPEN = ("Rechnung", "Quittung", "Kassenbeleg")
+
+# Probelauf: ROUTER_PROBE=1 klassifiziert und zeigt die geplante Entscheidung, schreibt aber
+# NICHTS (weder Paperless noch Drive noch Odoo). Aufruf siehe README.md.
+PROBE = os.environ.get("ROUTER_PROBE") == "1"
+
+# --- Qualitaetsregel fuer automatisch angelegte Odoo-Aufgaben (30.09.2026, Odoo #1585) ---
+# Wolf: "eine schwachsinnige Aufgabe, aus der niemand schlau wird" (#1585: "Unbekannt — 0,00 €",
+# entstanden, weil ALLE KI-Dienste ausgefallen waren; dazu wurde ein fremder Beleg angehaengt).
+#   1. Eine Aufgabe entsteht NUR, wenn ein Mensch wirklich etwas tun muss (zahlen, antworten,
+#      unterschreiben, Frist einhalten). Bezahlte Belege werden gebucht, nicht als Aufgabe abgelegt.
+#   2. Der Titel sagt, was zu tun ist ("Rechnung bezahlen: Thomann GmbH"), ohne Betrag.
+#   3. Erste Zeile der Beschreibung: Was · Warum · Bis wann · Wer.
+#   4. Der Beleg haengt als PDF an der Aufgabe.
+#   5. Wer die Regeln nicht erfuellen kann (KI ausgefallen, Absender unbekannt, keine Aktion),
+#      legt KEINE Aufgabe an - lieber Buchung, Paperless-Schlagwort oder gar nichts.
+AKTION_JE_TYP = {
+    "Rechnung": "Rechnung bezahlen", "Quittung": "Beleg prüfen", "Mahnung": "Mahnung klären",
+    "Vertrag": "Vertrag prüfen", "Bescheid": "Bescheid prüfen", "Kündigung": "Kündigung prüfen",
+    "Antrag": "Antrag ausfüllen", "Angebot": "Angebot entscheiden", "Versicherungspolice": "Police prüfen",
+}
+KI_AUSFALL_TAG = "ki-ausfall-nachholen"
+
+# Bezahlt erkennen (deutsch + englisch). 30.09.2026: GitHub-Quittung "We received payment ...
+# Charged to PayPal account" rutschte durch, weil nur deutsche Formulierungen geprueft wurden.
+BEZAHLT_MUSTER = re.compile(
+    r"(?i)(zahlungsart\W{0,5}(ec|karte|bar|girocard|paypal|kredit|n26|visa|master)|ec-karte|kartenzahlung|"
+    r"bar bezahlt|betrag erhalten|bereits bezahlt|zahlung erhalten|bezahlt am|\bpaid\b|n26 bank se\W+•|"
+    r"we received payment|payment received|charged to|receipt for your payment|amount paid)")
+# Von einem GbR-Konto bezahlt -> keine Auslage Wolf (Qonto, N26-Space "FraWo" ...5630 56).
+GBR_KONTO_MUSTER = re.compile(r"(?i)(qonto|frawo space|5630\s?56)")
 
 # Eingangsrechnungen (Odoo #1645, 29.09.2026). Kleinunternehmer § 19 UStG: Einkauf wird
 # BRUTTO gebucht, OHNE Steuer. Die Firma hat als Einkaufs-Standardsteuer "VSt 19%" hinterlegt -
@@ -183,11 +214,14 @@ Antworte NUR mit einem gültigen JSON-Objekt im folgenden Format:
 {{
   "entity": "Wolf_Prinz" | "Franz_Bienert" | "Alois_Prinz" | "Heidi_Prinz" | "FraWo_GbR",
   "category": "finanzen" | "vertraege" | "amt_behoerden" | "gesundheit" | "wohnen" | "arbeit" | "projekte" | "sonstiges",
-  "document_type": "Rechnung" | "Mahnung" | "Vertrag" | "Bescheid" | "Kontoauszug" | "Versicherungspolice" | "Zeugnis" | "Bewerbung" | "Kündigung" | "Antrag" | "Angebot" | "Sonstiges",
+  "document_type": "Rechnung" | "Quittung" | "Mahnung" | "Vertrag" | "Bescheid" | "Kontoauszug" | "Versicherungspolice" | "Zeugnis" | "Bewerbung" | "Kündigung" | "Antrag" | "Angebot" | "Sonstiges",
   "vendor": "<Absender/Firma/Behörde, präzise und vollständig>",
   "document_date": "<Datum AUF dem Dokument selbst, YYYY-MM-DD, oder null wenn nicht erkennbar>",
   "clean_title": "<kurzer, sauberer Titel nach dem Muster 'Dokumenttyp Absender Datum', z.B. 'Rechnung Thomann GmbH 2026-08-15', OHNE Dateiendung. Ist kein Datum erkennbar: Datum im Titel weglassen>",
-  "amount": <Zahl in Euro oder 0.0 falls keine Zahlungsaufforderung>,
+  "amount": <Gesamtbetrag in der Waehrung des Belegs, 0.0 wenn kein Betrag>,
+  "waehrung": "<ISO-Code der Waehrung des Betrags, z.B. EUR oder USD>",
+  "bezahlt": true | false,
+  "aktion": "<was ein Mensch jetzt tun muss, 2-4 Woerter mit Verb, z.B. 'Rechnung bezahlen', 'Brief beantworten', oder null>",
   "bestellnummer": "<Bestell- oder Auftragsnummer des Händlers, z.B. Amazon 028-5051623-4280329, oder null>",
   "kostenart": "ausruestung" | "versicherung" | "miete" | "bankgebuehren" | "sonstiges",
   "positionen": [{{"text": "<Artikelbezeichnung wie auf dem Beleg>", "betrag": <Bruttobetrag dieser Zeile in Euro>}}],
@@ -202,7 +236,9 @@ wohnen=Miete/Nebenkosten/Haus, arbeit=Job/Gewerbe/Ausbildung,
 projekte=laufende Vorhaben, sonstiges=alles andere.
 positionen: jede Artikelzeile einer Rechnung mit ihrem Bruttobetrag (inkl. MwSt),
 Versand als eigene Zeile; MwSt/USt NIE als eigene Zeile; leere Liste, wenn es keine Rechnung ist.
-kostenart: ausruestung = Technik, Kabel, Werkzeug, Geräte; sonst passend oder sonstiges.
+kostenart: ausruestung = Technik, Kabel, Werkzeug, Geräte (zum Anfassen); Software, Abos, Online-Dienste = sonstiges; sonst passend oder sonstiges.
+Quittung = Zahlungsbestaetigung/Kassenbon/Receipt ueber einen schon bezahlten Kauf oder ein Abo.
+bezahlt=true, wenn der Beleg zeigt, dass schon bezahlt wurde (Karte, PayPal, bar, "paid", "payment received").
 requires_action=true nur bei echtem Handlungsbedarf (zahlen, antworten,
 unterschreiben, Frist einhalten). Ist eine Rechnung bereits bezahlt oder handelt es sich um ein reines Infoschreiben: false."""
 
@@ -302,11 +338,24 @@ def sanitize_classification(result, title_str):
     if steuer and len(pos) == 1:
         pos[0]["betrag"] = round(pos[0]["betrag"] + steuer, 2)
     result["positionen"] = pos
-    # Sichtbar schon bezahlte Belege brauchen keine Aufgabe fuer Wolf (29.09.2026: smartRepair, EC-Karte).
-    if result.get("document_type") == "Rechnung" and re.search(
-            r"(?i)(zahlungsart\W{0,5}(ec|karte|bar|girocard|paypal|kredit)|ec-karte|kartenzahlung|bar bezahlt|betrag erhalten|bereits bezahlt|\bpaid\b)",
-            content or ""):
+    # Sichtbar schon bezahlte Belege brauchen keine Aufgabe fuer Wolf (29.09.2026: smartRepair, EC-Karte;
+    # 30.09.2026: GitHub-Quittung auf Englisch, #1585). Eine Quittung ist per Definition bezahlt.
+    # Amazon-Rechnungen sind immer schon bezahlt (Versand erst nach Zahlung), nennen aber die
+    # Zahlungsart nicht (#1585: Paperless #230 Cable Matters) -> bezahlt, aber keine Auslage ohne Zahlungsquelle.
+    amazon = bool(re.search(r"(?i)amazon", content or "") and BESTELLNR_MUSTER[0].search(content or ""))
+    result["bezahlt"] = bool(result.get("bezahlt") is True or result["document_type"] == "Quittung"
+                             or (result["document_type"] == "Rechnung" and (amazon or BEZAHLT_MUSTER.search(content or ""))))
+    if result["bezahlt"] and result["document_type"] in BELEG_TYPEN:
         result["requires_action"] = False
+    w = str(result.get("waehrung") or "").strip().upper()
+    if not re.fullmatch(r"[A-Z]{3}", w):
+        w = "EUR"
+    # Die KI liest "$34.00 USD" gern als Euro - der Belegtext entscheidet, wenn er eindeutig ist.
+    if w == "EUR" and re.search(r"\bUSD\b|\$\s?\d", content or "") and not re.search(r"€|\bEUR\b", content or ""):
+        w = "USD"
+    result["waehrung"] = w
+    aktion = str(result.get("aktion") or "").strip()
+    result["aktion"] = aktion if aktion and aktion.lower() not in ("null", "none", "keine") else None
     bn = result.get("bestellnummer")
     result["bestellnummer"] = str(bn).strip() if bn and str(bn).strip().lower() not in ("null", "none") else None
     return result
@@ -338,19 +387,111 @@ def classify_document(text, title_str):
         except Exception as e:
             print(f"Warnung: Gemini-Aufruf fehlgeschlagen ({e}).")
 
-    # 3. Sicherer Notfall-Fallback
-    print("Alle KI-Dienste fehlgeschlagen — nutze sichere Fallback-Werte.")
-    return sanitize_classification({
-        "entity": "FraWo_GbR", "category": "sonstiges", "document_type": "Sonstiges",
-        "vendor": "Unbekannt", "document_date": None, "clean_title": title_str,
-        "amount": 0.0, "due_date": None, "requires_action": True,
-        "summary": f"Automatische Auswertung fehlgeschlagen für: {title_str}",
-    }, title_str)
+    # 3. Alle KI-Dienste ausgefallen. Frueher entstand hier eine Aufgabe "Unbekannt — 0,00 €"
+    #    (#1585, 24.09.2026: StudioPC aus + Gemini 503). Jetzt: keine Aufgabe, keine Buchung -
+    #    nur das Paperless-Schlagwort KI_AUSFALL_TAG; nachholen per Neulauf (README.md).
+    print("Alle KI-Dienste fehlgeschlagen — keine Auswertung, Dokument wird zum Nachholen markiert.")
+    return None
+
+
+def ezb_kurs(waehrung, datum):
+    """EZB-Referenzkurs (1 EUR = x Waehrung) am Belegdatum bzw. letzten Bankarbeitstag davor."""
+    ende = datum or datetime.now().strftime("%Y-%m-%d")
+    start = (datetime.strptime(ende, "%Y-%m-%d") - timedelta(days=10)).strftime("%Y-%m-%d")
+    url = (f"https://data-api.ecb.europa.eu/service/data/EXR/D.{waehrung}.EUR.SP00.A"
+           f"?startPeriod={start}&endPeriod={ende}&format=csvdata")
+    with urllib.request.urlopen(url, timeout=20) as r:
+        zeilen = r.read().decode("utf-8").strip().splitlines()
+    kopf = zeilen[0].split(",")
+    letzte = zeilen[-1].split(",")
+    return letzte[kopf.index("TIME_PERIOD")], float(letzte[kopf.index("OBS_VALUE")])
+
+
+def in_euro_umrechnen(info):
+    """Fremdwaehrung -> EUR nach EZB-Kurs; Originalbetrag bleibt im Zeilentext sichtbar.
+    Klappt die Umrechnung nicht, wird NICHT gebucht (info['umrechnung_fehlt'])."""
+    w = info.get("waehrung") or "EUR"
+    if w == "EUR" or not info.get("amount"):
+        return info
+    try:
+        kurstag, kurs = ezb_kurs(w, info.get("document_date"))
+    except Exception as e:
+        print(f"EZB-Kurs {w} nicht abrufbar ({e}) — keine automatische Buchung.")
+        info["umrechnung_fehlt"] = True
+        return info
+    fmt = lambda x: f"{x:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+    info["amount_original"] = info["amount"]
+    info["amount"] = round(info["amount"] / kurs, 2)
+    pos = [{"text": f"{p['text']} ({fmt(p['betrag'])} {w})"[:200], "betrag": round(p["betrag"] / kurs, 2)}
+           for p in info.get("positionen") or []]
+    # Rundungsdifferenz in die letzte Zeile, damit die Zeilen exakt den Gesamtbetrag ergeben.
+    if pos and abs(sum(p["betrag"] for p in pos) - info["amount"]) <= 0.05:
+        pos[-1]["betrag"] = round(pos[-1]["betrag"] + info["amount"] - sum(p["betrag"] for p in pos), 2)
+    info["positionen"] = pos
+    info["kurs_hinweis"] = (f"{fmt(info['amount_original'])} {w} = {fmt(info['amount'])} € "
+                            f"(EZB-Referenzkurs {kurstag}: 1 EUR = {kurs} {w})")
+    print(f"Umgerechnet: {info['kurs_hinweis']}")
+    return info
 
 
 classification = classify_document(content, title)
+if classification is None:
+    if PROBE:
+        print("PROBE: KI ausgefallen -> Plan: nur Paperless-Schlagwort, keine Aufgabe, keine Buchung.")
+        sys.exit(0)
+    tag_id = get_or_create("tags", KI_AUSFALL_TAG)
+    if tag_id:
+        alt = [t for t in (doc_data.get("tags") or [])]
+        paperless_request(f"/documents/{DOC_ID}/", method="PATCH", body={"tags": sorted(set(alt + [tag_id]))})
+    print(f"=== SMART ROUTER v4 FERTIG (KI ausgefallen, Schlagwort '{KI_AUSFALL_TAG}' gesetzt) ===")
+    sys.exit(0)
+classification = in_euro_umrechnen(classification)
 print("Klassifikation:")
 print(json.dumps(classification, indent=2, ensure_ascii=False))
+
+
+def ist_gbr_beleg(info):
+    # "Wolfeetech" = GitHub-Organisation der GbR (github.com/Wolfeetech/FraWo), #1585.
+    return info.get("entity") == "FraWo_GbR" or bool(re.search(r"(?i)frawo|wolfeetech", content or ""))
+
+
+def als_rechnung_buchen(info):
+    return (info.get("document_type") in BELEG_TYPEN and float(info.get("amount") or 0) > 0
+            and info.get("entity") in ("FraWo_GbR", "Wolf_Prinz") and not info.get("umrechnung_fehlt"))
+
+
+def als_auslage_wolf(info):
+    """Bezahlter GbR-Beleg, nicht von einem GbR-Konto bezahlt -> Wolf hat ausgelegt,
+    FraWo schuldet ihm den Betrag (Muster Wolf_Einkauf_JJJJ_NN, Zahlung im Journal BNK1)."""
+    # Nur wenn der Beleg zeigt, WIE bezahlt wurde (Karte, PayPal, N26 ...) - sonst bleibt die
+    # Rechnung Entwurf, weil offen ist, von welchem Konto das Geld kam.
+    zahlquelle = BEZAHLT_MUSTER.search(content or "") or info.get("document_type") == "Quittung"
+    return (bool(info.get("bezahlt")) and bool(zahlquelle) and ist_gbr_beleg(info)
+            and not GBR_KONTO_MUSTER.search(content or ""))
+
+
+def aufgabe_pruefen(info):
+    """Qualitaetsregel (siehe oben). Liefert (erlaubt, Grund)."""
+    if info.get("bezahlt") and info.get("document_type") in BELEG_TYPEN:
+        return False, "Beleg ist bezahlt — wird gebucht, keine Aufgabe"
+    if info.get("umrechnung_fehlt"):
+        return True, "Fremdwährung ohne Kurs — Mensch muss buchen"
+    if not (info.get("requires_action") or info.get("action_required")):
+        return False, "kein Handlungsbedarf"
+    if not info.get("vendor") or info["vendor"] == "Unbekannt":
+        return False, "Absender unbekannt — daraus wird niemand schlau"
+    if not (info.get("aktion") or AKTION_JE_TYP.get(info.get("document_type"))):
+        return False, "keine konkrete Aktion erkennbar"
+    return True, "Handlungsbedarf"
+
+
+if PROBE:
+    ok, grund = aufgabe_pruefen(classification)
+    print("PROBE-Plan (nichts wird geschrieben):")
+    print(f"  Rechnung buchen: {als_rechnung_buchen(classification)}"
+          f" · als bezahlte Auslage Wolf: {als_rechnung_buchen(classification) and als_auslage_wolf(classification)}")
+    print(f"  Odoo-Aufgabe: {'ja' if ok else 'nein'} ({grund})")
+    sys.exit(0)
 
 # --- Paperless-Metadaten setzen (Correspondent, Dokumenttyp, Tags, Titel) ---
 correspondent_id = get_or_create("correspondents", classification["vendor"])
@@ -494,13 +635,21 @@ def create_odoo_task(info, doc_id, doc_title):
             return None
 
         mapping = ENTITY_MAP[info["entity"]]
+        frist_vom_beleg = bool(info.get("due_date"))
         due_date = info.get("due_date") or (datetime.now() + timedelta(days=14)).strftime("%Y-%m-%d")
+        if info.get("umrechnung_fehlt"):
+            aktion = f"Beleg in {info.get('waehrung')} buchen"
+        else:
+            aktion = info.get("aktion") or AKTION_JE_TYP.get(info.get("document_type")) or "Dokument bearbeiten"
+        wer = {"Franz_Bienert": "Franz"}.get(info["entity"], "Wolf")
+        betrag = f" · Betrag {info['amount']:.2f} €".replace(".", ",") if info.get("amount") else ""
 
         doc_link = f'<a href="http://10.1.0.100:8000/documents/{doc_id}/details">Paperless-Dokument #{doc_id} ansehen</a>'
 
-        # Erst pruefen, ob zu diesem Absender + dieser Person schon eine
-        # OFFENE Aufgabe existiert (gleicher Fall/Vorgang) -- dann dort
-        # anhaengen statt eine weitere, isolierte Aufgabe anzulegen.
+        # Erst pruefen, ob zu diesem Absender + dieser Person schon eine OFFENE Aufgabe aus dem
+        # Router existiert (gleicher Vorgang) -- dann dort anhaengen. aufgabe_pruefen() hat
+        # "Unbekannt" schon ausgeschlossen; frueher sammelten sich unter "Unbekannt" fremde
+        # Belege in einer Aufgabe (#1585: GitHub-Quittung + Amazon-Rechnung).
         open_stage_ids = models.execute_kw(
             ODOO_DB, uid, ODOO_PASS, 'project.task.type', 'search',
             [[['name', 'not in', ['✅ Erledigt', '🗑️ Abgebrochen', 'Erledigt', 'Abgebrochen']]]],
@@ -510,7 +659,8 @@ def create_odoo_task(info, doc_id, doc_title):
             [[
                 ['project_id', '=', mapping["project_id"]],
                 ['stage_id', 'in', open_stage_ids],
-                ['name', 'ilike', f"[{info['entity']}] {info['vendor']}"],
+                ['name', 'ilike', info['vendor']],
+                ['description', 'ilike', 'Paperless-Import'],
             ]],
             {'fields': ['id', 'name'], 'limit': 1},
         )
@@ -530,13 +680,13 @@ def create_odoo_task(info, doc_id, doc_title):
                                   f"{info['vendor']}: {doc_title}")
             print(f"An bestehende Aufgabe #{task_id} angehaengt statt Duplikat (Dokument #{doc_id}).")
         else:
-            task_name = f"📄 [{info['entity']}] {info['vendor']} — {doc_title}"
-            description = f"""<p><b>Automatischer Paperless-Import #{doc_id}</b></p>
-<p>{info['summary']}</p>
-<p><b>Absender:</b> {info['vendor']}<br/>
-<b>Betrag:</b> {info['amount']:.2f} €<br/>
-<b>Frist:</b> {due_date}</p>
-<p>{doc_link}</p>"""
+            # Titel = was zu tun ist (ohne Betrag). Erste Zeile = Was · Warum · Bis · Wer.
+            task_name = f"📄 {aktion}: {info['vendor']}"[:120]
+            frist_text = datetime.strptime(due_date, "%Y-%m-%d").strftime("%d.%m.%Y") + (
+                "" if frist_vom_beleg else " (keine Frist auf dem Beleg, +14 Tage)")
+            description = f"""<p><b>Was:</b> {aktion} · <b>Warum:</b> {info['summary']} · <b>Bis:</b> {frist_text} · <b>Wer:</b> {wer}</p>
+<p>Absender {info['vendor']}{betrag} · Beleg hängt an · {doc_link}</p>
+<p><i>Automatischer Paperless-Import #{doc_id}</i></p>"""
 
             task_vals = {
                 'name': task_name,
@@ -576,7 +726,7 @@ def create_odoo_task(info, doc_id, doc_title):
         # Wenn es eine Rechnung/Ausgabe fuer die GbR ist -> automatisch Lieferantenrechnung in Odoo Finanzen anlegen!
         # Sperre gegen doppelte Buchung: derselbe doc_id darf nie zwei account.move erzeugen,
         # z.B. wenn Paperless dasselbe Dokument nach einem Retry/Reprocessing erneut konsumiert.
-        if info.get("document_type") in ["Rechnung", "Kassenbeleg"] and info.get("amount", 0) > 0 and info.get("entity") == "FraWo_GbR":
+        if als_rechnung_buchen(info) and info.get("entity") == "FraWo_GbR":
             already_billed = models.execute_kw(
                 ODOO_DB, uid, ODOO_PASS, 'account.move', 'search_count',
                 [[['ref', 'ilike', f"Paperless #{doc_id}:"]]],
@@ -704,6 +854,7 @@ def create_odoo_vendor_bill(info, doc_id, doc_title, pdf_bytes=None, models=None
             'invoice_date': inv_date,
             'invoice_date_due': due_date,
             'ref': f"Paperless #{doc_id}: {(bestellnr + ' ') if bestellnr else ''}{doc_title[:40]}",
+            'narration': info.get("kurs_hinweis") or False,
             'invoice_line_ids': [
                 (0, 0, {'name': text, 'price_unit': betrag, 'quantity': 1,
                         'account_id': account_id, 'tax_ids': [(6, 0, [])]})
@@ -723,14 +874,49 @@ def create_odoo_vendor_bill(info, doc_id, doc_title, pdf_bytes=None, models=None
                 'mimetype': 'application/pdf',
             }
             models.execute_kw(ODOO_DB, uid, ODOO_PASS, 'ir.attachment', 'create', [att_vals])
+        if als_auslage_wolf(info):
+            als_auslage_bezahlen(models, uid, bill_id, inv_date, vendor_name, doc_title, info)
         return bill_id
     except Exception as e:
         print(f"Warnung: Automatische Lieferantenrechnung fehlgeschlagen: {e}")
         return None
 
 
+def als_auslage_bezahlen(models, uid, bill_id, datum, vendor_name, doc_title, info):
+    """Bezahlte GbR-Rechnung, die Wolf privat bezahlt hat: Nummer Wolf_Einkauf_JJJJ_NN vergeben,
+    buchen und im Journal BNK1 als bezahlt eintragen (Vorlage: Wolf_Einkauf_2026_04/06, 29.09.2026).
+    So ist sie erledigt und die Rueckzahlung FraWo -> Wolf nachvollziehbar."""
+    def rpc(model, method, args, kw=None):
+        try:
+            return models.execute_kw(ODOO_DB, uid, ODOO_PASS, model, method, args, kw or {})
+        except xmlrpc.client.Fault as f:
+            if "cannot marshal None" in str(f):   # Methode lief, lieferte nur None zurueck
+                return None
+            raise
+    try:
+        jahr = str(datum)[:4]
+        namen = rpc('account.move', 'search_read', [[['name', '=like', f'Wolf_Einkauf_{jahr}_%']]], {'fields': ['name']})
+        nummern = [int(n['name'].rsplit('_', 1)[1]) for n in namen if n['name'].rsplit('_', 1)[1].isdigit()]
+        nr = f"Wolf_Einkauf_{jahr}_{(max(nummern) + 1) if nummern else 1:02d}"
+        rpc('account.move', 'write', [[bill_id], {'name': nr, 'invoice_date_due': datum}])
+        rpc('account.move', 'action_post', [[bill_id]])
+        memo = f"Auslage Wolf Prinz - {vendor_name[:40]} {datetime.strptime(datum, '%Y-%m-%d').strftime('%d.%m.%Y')} ({nr})"
+        ctx = {'context': {'active_model': 'account.move', 'active_ids': [bill_id]}}
+        wiz = rpc('account.payment.register', 'create', [{'journal_id': 6, 'payment_date': datum, 'communication': memo}], ctx)
+        rpc('account.payment.register', 'action_create_payments', [[wiz]], ctx)
+        stand = rpc('account.move', 'read', [[bill_id], ['name', 'state', 'payment_state']])[0]
+        rpc('account.move', 'message_post', [[bill_id]], {
+            'body': f"🤖 Paperless-Router: Beleg ist bezahlt und nicht von einem GbR-Konto → als "
+                    f"<b>Auslage Wolf</b> gebucht ({memo}). {info.get('kurs_hinweis') or ''} "
+                    f"Kleinunternehmer: brutto ohne Vorsteuer.",
+            'message_type': 'comment', 'subtype_xmlid': 'mail.mt_note'})
+        print(f"Auslage Wolf: Rechnung #{bill_id} = {stand['name']}, {stand['state']}/{stand['payment_state']} ({memo}).")
+    except Exception as e:
+        print(f"Warnung: Auslage-Buchung fuer Rechnung #{bill_id} fehlgeschlagen ({e}) — Rechnung bleibt Entwurf.")
+
+
 # 1. Automatische Lieferantenrechnung in Odoo Finanzen
-if classification.get("document_type") in ["Rechnung", "Kassenbeleg", "Quittung"] and float(classification.get("amount") or 0.0) > 0 and classification.get("entity") in ["FraWo_GbR", "Wolf_Prinz"]:
+if als_rechnung_buchen(classification):
     pdf_bytes = None
     try:
         pdf_req = urllib.request.Request(f"{PAPERLESS_URL}/documents/{DOC_ID}/download/")
@@ -741,10 +927,11 @@ if classification.get("document_type") in ["Rechnung", "Kassenbeleg", "Quittung"
         print(f"Hinweis: PDF fuer Rechnungsanhang konnte nicht geladen werden: {att_err}")
     create_odoo_vendor_bill(info=classification, doc_id=DOC_ID, doc_title=title, pdf_bytes=pdf_bytes)
 
-# 2. Odoo-Aufgabe bei Handlungsbedarf
-if classification.get("requires_action") or classification.get("action_required"):
+# 2. Odoo-Aufgabe nur, wenn die Qualitaetsregel erfuellt ist (siehe AUFGABE-Regel oben)
+aufgabe_ok, aufgabe_grund = aufgabe_pruefen(classification)
+if aufgabe_ok:
     create_odoo_task(classification, DOC_ID, title)
 else:
-    print("Kein Handlungsbedarf erkannt — keine Odoo-Aufgabe.")
+    print(f"Keine Odoo-Aufgabe: {aufgabe_grund}.")
 
 print("=== SMART ROUTER v4 FERTIG ===")

@@ -37,3 +37,27 @@ behoben (Server-Version = dieser Stand):
 **Keine Zugangsdaten in diesen Dateien** — API-Keys/Tokens kommen zur
 Laufzeit aus Umgebungsvariablen (`.env`-Dateien auf den Servern, nicht im
 Repo).
+
+## Stand 30.09.2026 (Odoo #1585): keine Muell-Aufgaben mehr
+
+Anlass: Aufgabe #1585 „Unbekannt — github-…-receipt, 0,00 €“. Am 24.09. waren
+StudioPC-KI (aus) und Gemini (503) gleichzeitig weg; der Router legte dann mit
+Notfallwerten blind eine Aufgabe an und haengte am 27.09. einen fremden
+Amazon-Beleg dazu, weil beide „Unbekannt“ hiessen.
+
+- **KI ausgefallen** → keine Aufgabe, keine Buchung, nur Paperless-Schlagwort
+  `ki-ausfall-nachholen`. Nachholen per Neulauf (unten).
+- **Qualitaetsregel fuer Aufgaben** (`aufgabe_pruefen()`): nur bei echtem
+  Handlungsbedarf, bekanntem Absender und konkreter Aktion. Titel = Aktion +
+  Absender, erste Zeile = Was · Warum · Bis · Wer, Beleg haengt an.
+- **Bezahlte Belege** (auch englisch „payment received / charged to“, Quittungen,
+  Amazon) → Eingangsrechnung, keine Aufgabe. Sieht man die Zahlungsquelle und
+  ist es ein GbR-Beleg (Entity FraWo, „FraWo“/„Wolfeetech“ im Text) und kein
+  GbR-Konto → **Auslage Wolf**: Nummer `Wolf_Einkauf_JJJJ_NN`, gebucht, Zahlung
+  im Journal BNK1. Sonst bleibt die Rechnung Entwurf.
+- **Fremdwaehrung** → EZB-Referenzkurs am Belegdatum, Originalbetrag im Zeilentext.
+
+Probelauf (schreibt nichts) bzw. Neulauf eines Dokuments, in CT110:
+
+    docker exec -e DOCUMENT_ID=229 -e ROUTER_PROBE=1 paperless-webserver python3 /usr/local/bin/paperless_smart_router.py
+    docker exec -e DOCUMENT_ID=229 paperless-webserver python3 /usr/local/bin/paperless_smart_router.py
