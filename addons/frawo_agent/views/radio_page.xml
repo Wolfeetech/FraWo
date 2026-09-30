@@ -846,12 +846,6 @@ body {
   line-height: 1.45;
   margin-bottom: 16px;
 }
-.ff-card-tag {
-  font-family: var(--ff-font-mono);
-  font-size: 0.65rem;
-  color: var(--ff-text-dim);
-  text-transform: uppercase;
-}
 
 /* History Strip */
 .ff-history-strip {
@@ -2281,6 +2275,35 @@ body {
     return iso ? iso.substr(11, 5) : '';
   }
 
+  function ffBerlinHeute() {
+    // Fallback, wenn kein jetzt-Eintrag vorliegt: heutiges Datum in
+    // Europe/Berlin ueber Intl (nicht Browser-Ortszeit), dieselbe sichere
+    // Konstruktion wie ffWochentag (lokaler Date-Konstruktor aus Y/M/D,
+    // keine erneute Zeitzonen-Interpretation eines Instant-Strings).
+    var teile = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'Europe/Berlin', year: 'numeric', month: '2-digit', day: '2-digit'
+    }).format(new Date());
+    var jahr = parseInt(teile.substr(0, 4), 10);
+    var monat = parseInt(teile.substr(5, 2), 10);
+    var tag = parseInt(teile.substr(8, 2), 10);
+    return new Date(jahr, monat - 1, tag).getDay();
+  }
+
+  function ffHeuteTag() {
+    // "Heute" konsistent mit ffWochentag aus den Serverdaten ableiten, nicht
+    // aus (new Date()).getDay() (Browser-Ortszeit) -- sonst zeigt die Seite
+    // fuer Besucher ausserhalb Europe/Berlin nahe der Tagesgrenze den
+    // falschen Reiter bzw. markiert die laufende Sendung nicht.
+    var jetztEintrag = null;
+    ffScheduleData.forEach(function (e) {
+      if (e.jetzt) jetztEintrag = e;
+    });
+    if (jetztEintrag) {
+      return ffWochentag(jetztEintrag.start);
+    }
+    return ffBerlinHeute();
+  }
+
   function ffZeigeSendeplanFehler() {
     var box = document.getElementById('ff-schedule-live');
     if (!box) return;
@@ -2319,7 +2342,7 @@ body {
       eimer[ffWochentag(e.start)].push(e);
     });
 
-    var heute = (new Date()).getDay();
+    var heute = ffHeuteTag();
 
     box.textContent = '';
 
@@ -2441,7 +2464,7 @@ body {
     var ziel = currentPlaylist || (lastNowPlaying ? lastNowPlaying.playlist : null);
     if (ziel) {
       var zielTief = ziel.toLowerCase();
-      var heute = (new Date()).getDay();
+      var heute = ffHeuteTag();
       var karten = Array.prototype.slice.call(document.querySelectorAll('#ff-schedule .ff-card'));
       karten.forEach(function (c) {
         var istHeute = parseInt(c.getAttribute('data-day'), 10) === heute;
