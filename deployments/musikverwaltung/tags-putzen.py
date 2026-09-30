@@ -79,6 +79,12 @@ NIE_FRAME = re.compile(r'^(APIC|PIC|GEOB|PRIV|UFID|RVA2|MCDI|covr|METADATA_BLOCK
 
 def putze(feld, wert):
     """Geputzter Wert, oder None wenn nichts zu tun ist."""
+    # Mehrwertfelder (beets 2: composers, lyricists, artists, …) Element für Element
+    if isinstance(wert, (list, tuple)):
+        if not any(isinstance(x, str) and MUELL.search(x) for x in wert):
+            return None
+        neu = [putze(feld, x) if isinstance(x, str) and MUELL.search(x) else x for x in wert]
+        return [x for x in neu if x]
     if not isinstance(wert, str) or not wert or not MUELL.search(wert):
         return None
     if feld in GANZ_LEEREN:
@@ -151,7 +157,7 @@ def main():
                 aend[k] = neu
                 db_felder[k] += 1
                 if k not in GANZ_LEEREN:
-                    beispiele.append((k, it.get(k)[:70], neu[:70]))
+                    beispiele.append((k, str(it.get(k))[:70], str(neu)[:70]))
         pfad = it.path
         f, weg = datei_muell(pfad) if os.path.exists(pfad) else (None, [])
         for key in weg:
