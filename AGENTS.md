@@ -34,6 +34,11 @@
 - **Wolf ↔ Claude/Antigravity:** direkt am StudioPC
 - **Agent → Agent:** Odoo-Chatter-Mention am betreffenden Task (Jarvis wird via Webhook getriggert; Claude/Antigravity lesen beim nächsten Start)
 - **Alarme:** Prometheus/Alertmanager läuft seit 07.09.2026 als **CT155 auf dem Anker** (IP unverändert 10.1.0.35) — der ProDesk ist tot. Genau ZWEI Receiver: `telegram-wolf` (Info an Wolf) + `servassi-hook` (Bearbeitung durch Jarvis via 10.1.0.31:19001). **Keine weiteren Alert-Kanäle bauen.**
+- **Alarmtexte für Wolf:** erst alle sicheren automatischen Lösungen versuchen,
+  dann genau eine kurze Abschlussmeldung in Alltagssprache: **Problem · Ursache ·
+  Automatisch getan · Ergebnis · Du musst**. Keine Fachbegriffe, Kürzel,
+  Befehle, Messwertlisten, Zwischenstände oder Wiederholungen. Wolf wird nur
+  gefragt, wenn wirklich eine Entscheidung oder manuelle Handlung nötig ist.
 - **Tagesbericht:** Odoo-Cron 44 / Server-Aktion 828 schickt täglich 12:04 eine Mail an wolf@frawo.tech. Das ist **kein Alarmkanal**, sondern der Lagebericht nach Regel 7 der Sicherheitsstandards — er geht auch raus, wenn nichts brennt. Nicht mit Alarmen mischen.
 
 ## Verbote (Rote Linien)

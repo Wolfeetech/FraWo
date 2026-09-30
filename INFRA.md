@@ -71,7 +71,7 @@
    - **Rechenknoten (in dieser Reihenfolge):** StudioPC `10.0.0.156:11434` (GPU, nur zeitweise an) → OptiPlex-Dauerläufer `10.0.0.227:11434` (CPU). Klopftest 4 s, dann Ausweichen. Läuft keiner, kommt eine kurze Notiz in den Chatter statt Schweigen.
    - **Geheimnisse:** `/etc/frawo/ollama-chatter.env` (root, `0600`), eingebunden über `EnvironmentFile` in `/etc/systemd/system/odoo-webhook.service.d/env.conf`. **Im Quelltext steht nichts mehr** — fehlt ein Pflichtwert, startet der Dienst nicht (fail closed).
    - **Rechte des Ollama-Zugangs:** Gruppe *„Ollama Mitarbeiter - nur antworten"* (117) + *Internal User*. Nachgemessen: Aufgaben **nur lesen**, Chatter-Beitrag erlaubt; Ändern, Abschließen, Löschen, Buchhaltung und Systemparameter werden von Odoo abgewiesen.
-   - **Schleifenschutz:** Beiträge von Partner 160 lösen nichts aus (greift im Echtbetrieb — Ollamas eigene Antwort enthält die Erwähnung). Dedupe je Nachricht 5 Minuten.
+   - **Schleifenschutz:** Beiträge von Partner 160 lösen nichts aus (greift im Echtbetrieb — Ollamas eigene Antwort enthält die Erwähnung). Chatter-Dedupe dauerhaft anhand der stabilen Odoo-`mail.message`-ID; eine erneute Webhook-Zustellung erzeugt keinen zweiten Agentenlauf.
    - ⚠️ **Offen:** `FRAWO_TASK_SECRET` und `FRAWO_ALERT_SECRET` stecken unverändert auch in der Git-Historie (`infra/openclaw/odoo_webhook_handler.py` vor v3) — Rotation nötig, betrifft Odoo-Parameter `frawo_agent.servassi_webhook_secret` und die Alertmanager-Konfiguration auf CT155.
 
 ---

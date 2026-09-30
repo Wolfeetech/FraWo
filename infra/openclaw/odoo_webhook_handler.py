@@ -25,6 +25,23 @@ v3-Änderungen (Odoo #1581, Freigabe Wolf 23.09.2026):
   (Partner 160), lösen nichts aus.
 
 v2 (2026-09-06, Jarvis): ACK sofort, Trigger asynchron + serialisiert, Dedupe.
+
+v3.1 (2026-09-30, Jarvis / Odoo #1581):
+- Alarmmeldungen an Wolf sind laienverständlich und auf eine Abschlussmeldung
+  begrenzt. Technische Diagnose bleibt intern.
+- Ein Agentenlauf darf bis zu 15 Minuten dauern. Der alte äußere 180-s-Abbruch
+  erzeugte Retries, obwohl der Lauf noch arbeitete, und damit Nachrichtenfluten.
+- Alertmanager-Wiederholungen desselben Vorfalls werden anhand Fingerprint bzw.
+  Startzeit dauerhaft dedupliziert; kein neues Ereignis an TTL-Grenzen.
+- Alte Alarme laufen nach sechs Stunden bzw. zwei erfolglosen Agentenläufen
+  nachvollziehbar als ``expired`` aus, statt unbegrenzt erneut zu feuern.
+- Chatter-Ereignisse werden dauerhaft anhand der Odoo-``mail.message``-ID
+  dedupliziert. Eine erneute Webhook-Zustellung erzeugt auch Stunden später
+  keinen zweiten Agentenlauf.
+- Chatter-Antworten bleiben im Odoo-Datensatz. Telegram bekommt genau eine
+  knappe Abschlussnotiz, keine technischen Zwischenstände oder Dedupe-Berichte.
+- Jeder Webhook-Vorfall läuft in einer eigenen Agentensitzung. Technische
+  Ereignisse blähen Wolfs normale Telegram-Unterhaltung dadurch nicht mehr auf.
 """
 import hashlib
 import html as html_mod
@@ -70,6 +87,8 @@ ODOO_LOGIN = _need("ODOO_LOGIN")
 ODOO_APIKEY = _need("ODOO_APIKEY")
 
 OLLAMA_TIMEOUT = int(os.environ.get("OLLAMA_TIMEOUT", "240"))
+AGENT_TIMEOUT = int(os.environ.get("FRAWO_AGENT_TIMEOUT", "900"))
+ALERT_MAX_AGE = int(os.environ.get("FRAWO_ALERT_MAX_AGE", "21600"))
 QUEUE_DB = os.environ.get(
     "FRAWO_QUEUE_DB", "/var/lib/frawo/odoo-webhook-queue.sqlite3")
 
@@ -90,9 +109,9 @@ OLLAMA_PARTNER_ID = int(os.environ.get("OLLAMA_PARTNER_ID", "160"))
 
 # --- Dedupe ---------------------------------------------------------------
 DEDUPE_TTL = {
-    "alert": 1800,   # 30 min: gleicher Alarm (alertname@instance) nur 1x
+    "alert": 21600,  # 6 h; persistent wird zusätzlich der Vorfall-Schlüssel genutzt
     "task": 600,     # 10 min: gleicher Odoo-Task nur 1x
-    "chatter": 300,  # 5 min: gleiche Chatter-Message nur 1x (ServAssi)
+    "chatter": 300,  # Fallback ohne message_id; normal dauerhaft persistent
     "ollama": 300,   # 5 min: gleiche Chatter-Message nur 1x (Ollama)
 }
 _dedupe_lock = threading.Lock()
@@ -152,9 +171,15 @@ def enqueue_agent_event(kind: str, key: str, message: str, label: str) -> bool:
     Eine Ausnahme muss zum HTTP-503 führen – ohne Persistenz kein ACK.
     """
     now = time.time()
-    ttl = DEDUPE_TTL.get(kind, 600)
-    bucket = int(now // ttl)
-    event_id = hashlib.sha256(f"{kind}:{key}:{bucket}".encode()).hexdigest()
+    if kind in {"alert", "chatter"}:
+        # Alertmanager-Fingerprint/Startzeit und Odoos mail.message-ID bleiben
+        # stabil. Eine Zeitfenstergrenze darf daraus keinen neuen Agentenlauf
+        # und keine neue Nachricht an Wolf machen.
+        event_id = hashlib.sha256(f"{kind}:{key}".encode()).hexdigest()
+    else:
+        ttl = DEDUPE_TTL.get(kind, 600)
+        bucket = int(now // ttl)
+        event_id = hashlib.sha256(f"{kind}:{key}:{bucket}".encode()).hexdigest()
     with _queue_connection() as conn:
         cur = conn.execute(
             "INSERT OR IGNORE INTO events "
@@ -179,13 +204,12 @@ AGENT_PROMPT_TEMPLATE = """NEUER DEVOPS-TASK #{task_id} von Wolf:
 Deine Aufgabe als IT-Mitarbeiter (ServAssi):
 1. Recherchiere das Problem/Ziel (nutze Odoo, HA, AzuraCast, SSH — was du brauchst)
 2. Setze den Task auf Stage "In Recherche" (stage_id=3) in Odoo
-3. Schicke Wolf einen klaren Vorschlag via Telegram:
-   - Was du gefunden hast
-   - Was du tun willst (konkret)
-   - Erwartetes Ergebnis
-4. WARTE auf Wolfs Antwort ("mach", "ja", "go" o.ä.)
-5. Führe erst nach Freigabe aus
-6. Melde Ergebnis + markiere Task als Erledigt (stage_id=6) nach Verifikation
+3. Arbeite intern und schreibe Details in den Odoo-Chatter, nicht nach Telegram.
+4. Schicke Wolf am Ende höchstens zwei kurze Sätze in Alltagssprache: worum es
+   geht und genau welche Entscheidung nötig ist. Keine Fachbegriffe oder Liste.
+5. WARTE auf Wolfs Antwort ("mach", "ja", "go" o.ä.)
+6. Führe erst nach Freigabe aus
+7. Melde Ergebnis + markiere Task als Erledigt (stage_id=6) nach Verifikation
 
 SICHERHEITSREGEL: Shelly 10.4.0.11 (MAC e4:b0:63:d5:66:1c) NIEMALS schalten.
 """
@@ -196,11 +220,27 @@ ALERT_PROMPT_TEMPLATE = """SERVER-ALARM (von Alertmanager, automatisch, dedupliz
 
 ---
 Deine Aufgabe als IT-Mitarbeiter (ServAssi):
-1. Prüfe sofort die tatsächliche Ursache (SSH/Exec auf den betroffenen Server, nicht raten)
-2. Schicke Wolf eine kurze Einschätzung + 2-4 konkrete Handlungsoptionen mit deiner Empfehlung
-3. Bei eindeutig risikoarmen Fällen: sag was du tust und mach es direkt
-4. Bei Produktivsystemen/Löschungen/Neustarts von Kernservern: auf Wolfs Antwort warten
-5. Nach Freigabe ausführen, verifizieren, kurz zurückmelden
+1. Prüfe die tatsächliche Ursache direkt am betroffenen System. Nicht raten.
+2. Arbeite intern und nutze alle sicheren, risikoarmen Möglichkeiten selbständig.
+3. Schicke Wolf während der Prüfung KEINE technischen Zwischenstände und KEINE
+   Wiederholungen. Nutze das Message-Tool erst für die eine Abschlussmeldung.
+4. Schreibe ohne IT-Fachbegriffe, Abkürzungen, Messwerte, Befehle, IP-Adressen
+   oder interne Queue-/Monitoring-Details, außer Wolf fragt ausdrücklich danach.
+5. Die Abschlussmeldung hat genau dieses kurze Muster:
+
+   **Problem:** Was ist für Wolf wahrnehmbar ausgefallen oder passiert?
+   **Ursache:** Warum ist es passiert? Wenn noch unbekannt: ehrlich so sagen.
+   **Automatisch getan:** Was wurde automatisch versucht oder behoben?
+   **Ergebnis:** ✅ Behoben / ⏳ läuft noch / ❌ nicht automatisch lösbar
+   **Du musst:** „Nichts.“ oder genau EINE konkrete Entscheidung/Handlung.
+
+6. Frage Wolf nur, wenn du wirklich alle sicheren Möglichkeiten ausgeschöpft
+   hast oder eine riskante Aktion (Produktivsystem, Löschen, Kernserver-Neustart)
+   seine Entscheidung braucht. Keine Optionsliste, wenn eine klare Empfehlung
+   möglich ist.
+7. Wenn derselbe Vorfall schon bearbeitet wurde und live kein Fehler mehr aktiv
+   ist, sende höchstens: „Keine neue Störung. Die verspätete Meldung wurde
+   verworfen. Du musst nichts tun.“
 
 SICHERHEITSREGEL: Shelly 10.4.0.11 (MAC e4:b0:63:d5:66:1c) NIEMALS schalten.
 """
@@ -214,30 +254,33 @@ KLAUSI_PROMPT_TEMPLATE = """ODOO-CHATTER — jemand hat dich erwähnt (Partner-I
 Deine Aufgabe als IT-Mitarbeiter (ServAssi):
 1. Verstehe die Frage/das Anliegen
 2. Recherchiere was nötig ist (Odoo, HA, AzuraCast, SSH — was du brauchst)
-3. Antworte DIREKT im Odoo-Chatter dieses Datensatzes (Modell {model}, ID {res_id}) —
-   das ist hier der Hauptkanal, nicht Telegram
-4. Bei einfachen Auskünften: antworte sofort im Chatter
-5. Bei größeren/riskanten Aktionen: schlage im Chatter vor und warte auf Freigabe
-   (Wolf antwortet dann im selben Chatter-Thread)
-6. Zusätzlich eine kurze Telegram-Notiz an Wolf, dass du geantwortet hast
+3. Antworte genau einmal DIREKT im Odoo-Chatter dieses Datensatzes
+   (Modell {model}, ID {res_id}). Das ist der Hauptkanal.
+4. Sende keine technischen Zwischenstände, Dedupe-Berichte, Memory-Diagnosen
+   oder Wiederholungen an Wolf.
+5. Bei größeren/riskanten Aktionen: schlage im Chatter kurz die empfohlene
+   Vorgehensweise vor und warte dort auf Freigabe.
+6. Telegram bekommt am Ende genau eine Notiz mit höchstens zwei kurzen Sätzen:
+   worum es ging und ob Wolf etwas entscheiden muss. Keine Belegliste.
 
 SICHERHEITSREGEL: Shelly 10.4.0.11 (MAC e4:b0:63:d5:66:1c) NIEMALS schalten.
 """
 
 
-def _run_agent(message: str, label: str) -> bool:
+def _run_agent(message: str, label: str, event_id: str) -> bool:
     try:
         result = subprocess.run(
             [
                 "docker", "exec", "openclaw",
                 "openclaw", "agent",
-                "--session-id", "main",
+                "--session-id", f"frawo-hook-{event_id[:16]}",
                 "--message", message,
                 "--channel", "telegram",
                 "--to", TELEGRAM_ID,
                 "--deliver",
+                "--timeout", str(AGENT_TIMEOUT),
             ],
-            timeout=180,
+            timeout=AGENT_TIMEOUT + 30,
             capture_output=True,
             text=True,
         )
@@ -260,18 +303,30 @@ def run_queue_once() -> bool:
     """Liefert höchstens ein fälliges Ereignis aus; Rückgabe = Arbeit getan."""
     now = time.time()
     with _queue_connection() as conn:
-        conn.execute("DELETE FROM events WHERE state='delivered' AND delivered < ?",
-                     (now - 7 * 86400,))
+        # Chatter-IDs bleiben als dauerhaftes Zustellregister erhalten. Die
+        # kleinen Datensätze verhindern auch nach Wochen eine Wiederholung.
+        conn.execute(
+            "DELETE FROM events WHERE state='delivered' AND kind != 'chatter' "
+            "AND delivered < ?", (now - 7 * 86400,))
         row = conn.execute(
-            "SELECT id,label,message,attempts FROM events "
+            "SELECT id,kind,label,message,attempts,created FROM events "
             "WHERE state='pending' AND next_attempt <= ? "
             "ORDER BY created LIMIT 1", (now,)).fetchone()
         if not row:
             return False
-        event_id, label, message, attempts = row
+        event_id, kind, label, message, attempts, created = row
+        if kind == "alert" and (now - created > ALERT_MAX_AGE or attempts >= 2):
+            conn.execute(
+                "UPDATE events SET state='expired', last_error=? WHERE id=?",
+                ("Alarm ist veraltet oder nach zwei Versuchen nicht zustellbar",
+                 event_id),
+            )
+            log.warning("Persistente Inbox: alter Alarm verworfen (%s)",
+                        event_id[:12])
+            return True
         conn.execute("UPDATE events SET state='running' WHERE id=?", (event_id,))
 
-    ok = _run_agent(message, label)
+    ok = _run_agent(message, label, event_id)
     now = time.time()
     with _queue_connection() as conn:
         if ok:
@@ -584,10 +639,15 @@ def format_alerts(payload: dict) -> str:
 
 
 def alert_dedupe_key(payload: dict) -> str:
-    parts = sorted(
-        f"{a.get('labels', {}).get('alertname', '?')}@{a.get('labels', {}).get('instance', '?')}"
-        for a in payload.get("alerts", [])
-    )
+    parts = []
+    for alert in payload.get("alerts", []):
+        labels = alert.get("labels", {})
+        incident = alert.get("fingerprint") or (
+            f"{labels.get('alertname', '?')}@{labels.get('instance', '?')}"
+        )
+        # startsAt trennt einen späteren neuen Vorfall vom heutigen Vorfall.
+        parts.append(f"{incident}@{alert.get('startsAt', '?')}")
+    parts.sort()
     return "|".join(parts) or "empty"
 
 
@@ -700,6 +760,10 @@ class WebhookHandler(BaseHTTPRequestHandler):
         raw_body = (data.get("body") or "")[:4000]
         author_id = int(data.get("author_id") or 0)
         record_name = data.get("record_name") or "unbekannter Datensatz"
+        # Bei Odoos Webhook auf mail.message ist `_id` die stabile ID der
+        # auslösenden Chatter-Nachricht. `message_id` erlaubt denselben Vertrag
+        # für gezielte Tests oder spätere Odoo-Payloads.
+        message_id = data.get("message_id") or data.get("_id")
 
         # 🔴 Reihenfolge: `model`/`res_id` ist der gemeinte Vorgang.
         # `_model`/`_id` beschreibt nur den Auslöser (immer mail.message).
@@ -721,9 +785,13 @@ class WebhookHandler(BaseHTTPRequestHandler):
         want_ollama = _mentions(low, r"ol{1,2}ama")
         want_agent = any(_mentions(low, t) for t in ("klausi", "jarvis", "openclaw"))
 
-        key = hashlib.sha256(
-            f"{model}:{res_id}:{author_id}:{raw_body}".encode()
-        ).hexdigest()[:16]
+        if message_id:
+            key = f"mail.message:{message_id}"
+        else:
+            # Rückwärtskompatibler Fallback für Payloads ohne Nachrichten-ID.
+            key = hashlib.sha256(
+                f"{model}:{res_id}:{author_id}:{raw_body}".encode()
+            ).hexdigest()[:16]
 
         agent_inserted = None
         agent_message = None
