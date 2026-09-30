@@ -65,7 +65,60 @@ Kein neuer Dienst, keine Hörproben, keine öffentliche Freigabe der Bibliothek.
 - Urteile landen nachts korrekt in beets (Stichprobe 10 Titel).
 - Nach ≥ 50 Energie-Urteilen: Formel trifft ≥ 80 % davon auf ±1 Stufe.
 
-## 7. Offen für Wolf
+## 7. Entscheidungen Wolf (30.09.2026)
 
-1. Passt das so?
-2. Nur Wolf, oder auch Franz als Redaktions-Nutzer?
+- Teil A freigegeben („ja passt“).
+- Redaktions-Nutzer: **Wolf, Franz und ein neuer Odoo-Nutzer „Kiosk“** für die
+  internen Bildschirme (Touchboard/Dashboards). Kiosk bekommt nur die Gruppe
+  „Radio-Redaktion“ plus Leserechte, die die Dashboards brauchen — keine
+  Verwaltungsrechte.
+- Die Knöpfe bauen auf der vorhandenen Sterne-Bewertung auf (`frawo.radio.rating`,
+  `/radio/rating/…`, nur angemeldet) — kein Parallelsystem.
+
+---
+
+# Teil B — Die Radio-Seite nach außen (frawo.tech/radio)
+
+Wolf, 30.09.: „… auf den aktuellen Stand bringen und eben das Radio nach
+außen auch professionell gestalten.“
+
+## B1. Befund (30.09.2026, öffentlicher Aufruf + Quelltext `views/radio_page.xml`)
+
+| Punkt | Befund |
+|---|---|
+| Sendeplan | **von Hand** in der Seite (2.629 Zeilen Datei), 7 Tagesreiter mit festen Uhrzeiten. Stimmt heute grob mit AzuraCast überein, läuft aber auseinander, sobald Sendungen Filter mit weichen Übergängen werden |
+| Technik im Vordergrund | „320 kbps Master Audio“, „Liquidsoap v2 Engine“, „M3U Playlist File (VLC / iTunes)“ |
+| Unklare Knöpfe | „Auf YouTube suchen“ |
+| Ladezustände | „Lade nächsten Track…“, „Stimmen werden laden…“ |
+| Emoji-Menge | viele Emojis in Überschriften und Knöpfen |
+| Abstimmung | funktioniert und zielt korrekt auf die Sendungen 859–868 (Systemparameter geprüft) |
+
+## B2. Was sich ändert
+
+1. **Sendeplan kommt live vom Sender** (`/api/station/1/schedule`, über den
+   vorhandenen Odoo-Proxy wie `nowplaying`) statt von Hand: „Jetzt läuft“,
+   „Danach“, Wochenansicht. Stimmt dadurch immer — auch bei Übergängen.
+2. **Sendungs-Steckbriefe** (Name, 1 Satz, Stilrichtung) aus **einer**
+   Quelle (AzuraCast-Playlist-Beschreibung), nicht doppelt gepflegt.
+3. **Texte klar und deutsch**, Fachbegriffe nur, wo sie Hörern etwas sagen
+   (Musikstile bleiben englisch — das ist in der Szene üblich). Emojis sparsam
+   (höchstens eines je Abschnitt).
+4. **Technik in einen kleinen, zugeklappten Bereich** „In anderen Apps hören“
+   (Stream-Adressen, Playlist-Datei) — ohne iTunes/Engine-Namen.
+5. **„Auf YouTube suchen“ entfällt.** Wunsch-Funktion und Abstimmung bleiben.
+6. **Ladezustände** zeigen sinnvolle Platzhalter („—“) statt Satzfragmente.
+7. **CI v3.0**, Handy zuerst, schnelle Ladezeit; Aussehen für nicht
+   angemeldete Hörer bleibt ruhig — die Redaktions-Knöpfe (Teil A) nur für
+   angemeldete Redaktions-Nutzer.
+
+## B3. Abnahme Teil B
+
+- Sendeplan der Seite = AzuraCast-Zeitplan (Stichprobe Mo, Sa, So).
+- Keine der Befund-Stellen aus B1 mehr sichtbar.
+- Seite am Handy in unter 3 s nutzbar; Player, Wunsch, Abstimmung
+  funktionieren wie vorher (Test vor/nach).
+- Wolf sieht sie sich einmal am Handy an und gibt frei.
+
+## 8. Offen für Wolf
+
+1. Teil B so freigeben?
