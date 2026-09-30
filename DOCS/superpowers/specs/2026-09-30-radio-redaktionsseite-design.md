@@ -1,71 +1,71 @@
-# Radio-Redaktionsseite im Portal (v1: Eichung + Prüfliste) — Design
+# Radio-Redaktion beim Hören (v1) — Design
 
 **Status:** Entwurf zur Freigabe durch Wolf. Noch nichts gebaut.
-**Odoo:** #1090 · **Baut auf:** `2026-09-30-frawo-funk-musikredaktion-design.md` (Abschnitt 7, Schritt 3)
+**Odoo:** #1090 · **Baut auf:** `2026-09-30-frawo-funk-musikredaktion-design.md` (Abschnitt 7)
 
-## 1. Zweck
+## 1. Zweck (Wolfs Worte)
 
-Wolf will die Energie-Eichung (≈ 50 Titel, 1–5) und später die Prüfliste der
-Redaktion (`widerspruch`/`unklar`) **am Handy, beim Hören nebenbei** erledigen
-(Entscheidung 30.09.: „Warten auf die Portal-Seite“ statt Playlist + Tabelle).
-Keine technische Oberfläche, ein Titel pro Bildschirm, große Knöpfe.
+Erster Entwurf (Hörproben-Seite mit 50 Titeln) von Wolf verworfen, 30.09.2026:
+> „Das ist doch Spielzeug … ich will ja, wenn dann, Radio hören … und nicht noch extra irgendwie.“
 
-## 2. Was die Seite kann (v1)
+Also: **keine eigene App, keine Extra-Liste.** Wolf hört FraWo Funk wie immer;
+wenn er angemeldet ist, kann er den **gerade laufenden Titel** mit einem Tipp
+beurteilen. Genau das hatte er am 29.09. als Nutzungsart gewählt („beim Hören,
+nebenbei“).
 
-1. **Eichung** — spielt eine 30-s-Hörprobe aus der Mitte des Titels, Wolf tippt
-   **1 · 2 · 3 · 4 · 5** (ruhig → Peak) oder **„überspringen“**. Nächster Titel
-   kommt automatisch. Fortschritt „17 / 50“.
-2. **Prüfliste** — gleiche Ansicht für Titel mit `widerspruch`/`unklar`:
-   Hörprobe + die gefundenen Quellen-Vorschläge als Knöpfe (z. B. „Deep House
-   (Beatport)“ · „Disco (Discogs)“) + „keins davon“ + Energie 1–5.
+## 2. Was es kann (v1)
 
-Nicht in v1: laufenden Sendetitel bewerten, Titel zwischen Sendungen schieben,
-Suche. Kommt als v2, wenn v1 im Alltag trägt.
+Unter dem Player auf `frawo.tech/radio` erscheinen — **nur für angemeldete
+Redaktions-Nutzer**, für alle anderen unverändert — große Knöpfe zum laufenden Titel:
 
-## 3. Aufbau
+| Knopf | Wirkung auf den Titel |
+|---|---|
+| **Energie 1 · 2 · 3 · 4 · 5** | `energie`, `quelle_energie = "Wolf <Datum>"` |
+| **passt hierher** / **passt nicht** | bestätigt bzw. nimmt den Titel aus der laufenden Sendung (Sendung = Filter, siehe Redaktions-Spec §5) |
+| **★ 1–5** | `sterne` (steuert später die Rotation) |
+| bei Prüf-Titeln zusätzlich: die gefundenen Genre-Vorschläge als Knöpfe + „keins davon“ | `genre`/`style`, `redaktion=belegt`, Quelle „Wolf <Datum>“ |
+
+Alles optional — wer nichts tippt, hört einfach Radio. Ein Tipp gilt für genau
+den Titel, der zum Zeitpunkt des Tipps lief (Titel wird beim Tippen mitgesendet,
+nicht neu abgefragt → kein Verrutschen beim Titelwechsel).
+
+## 3. Wie die Redaktion trotzdem vorankommt
+
+- **Prüf-Titel ins Programm mischen:** Titel mit `redaktion=widerspruch|unklar`
+  und Titel ohne Energie-Urteil werden in eine eigene AzuraCast-Playlist
+  „Redaktion – zum Anhören“ gelegt, die **innerhalb der passenden Sendung** mit
+  kleinem Gewicht mitläuft (z. B. jeder 8.–10. Titel). Welche Sendung „passend“
+  ist, ergibt sich aus Tempo/Stil der Vorschläge. So hört Wolf sie nebenbei.
+- **Eichung der Energie entsteht beim Hören:** Sobald ~50 Energie-Urteile über
+  alle Stufen vorliegen, werden die Mess-Schwellen gesetzt; danach füllt die
+  Messung den Rest der Bibliothek.
+- Kennzeichnung auf der Seite: bei Prüf-Titeln ein kleines „🔍 Redaktion fragt“.
+
+## 4. Aufbau
 
 | Teil | Wo | Aufgabe |
 |---|---|---|
-| **Hörproben-Erzeuger** | CT120 (Musikserver), Skript im Repo `deployments/musikredaktion/hoerproben.py` | schneidet mit `ffmpeg` 30 s ab Titelmitte → MP3 128 kbit/s (~0,5 MB), nur für die Titel auf der jeweiligen Liste |
-| **Ablage der Hörproben** | Odoo, als Anhang (`ir.attachment`) an einem Datensatz `frawo.radio.pruefung` | Odoo prüft den Login; nichts von der Bibliothek wird öffentlich |
-| **Seite** | Modul `frawo_agent`, Route `/radio/redaktion`, nur angemeldete Nutzer der Gruppe „Radio-Redaktion“ (Wolf) | Handy-Ansicht, `<audio>` + Knöpfe, speichert per JSON-Aufruf |
-| **Rückweg in die Bibliothek** | CT120, `rueckschreiben.py` (nachts, Teil der Redaktion) | holt Wolfs Urteile aus Odoo und schreibt sie per beets-Schnittstelle (`energie`, `genre`/`style`, `redaktion=belegt`, `quelle_* = "Wolf <Datum>"`) |
+| Knöpfe unter dem Player | Odoo-Modul `frawo_agent`, bestehende Radio-Seite (View der Website) | nur bei angemeldetem Nutzer der Gruppe „Radio-Redaktion“ sichtbar |
+| Speichern | neuer JSON-Endpunkt in `frawo_agent` (Login nötig) | legt je Tipp einen Datensatz `frawo.radio.urteil` an: AzuraCast-`media_id`, Artist/Titel, Art, Wert, Zeitpunkt, Nutzer |
+| Titel → Bibliothek | AzuraCast-`media.path` → beets-Pfad (`/mnt/music/` + Pfad) → beets-`id` | Zuordnung beim Rückschreiben |
+| Rückschreiben | CT120, `deployments/musikredaktion/rueckschreiben.py`, nachts (Teil des Redaktions-Nachtlaufs) | Urteile per beets-Schnittstelle in die Bibliothek; „passt nicht“ → Titel aus dem Sendungsfilter |
+| Prüf-Playlist | AzuraCast (bestehende API, Schlüssel in Odoo funktioniert, getestet 30.09.) | nachts neu befüllt aus beets |
 
-**Warum Hörproben statt direkt vom Sender:** Getestet 30.09.: Odoo erreicht
-AzuraCast (`/api/station/1/file/<id>/play`, Schlüssel gültig), aber der Sender
-liefert **immer die ganze Datei** (keine Teilbereiche) — bei FLAC 30–50 MB je
-Titel, fürs Handy untauglich. Hörproben sind klein, sofort da und vom Sender
-unabhängig.
-
-**Datenmodell `frawo.radio.pruefung`:** `beets_id`, `artist`, `title`, `art`
-(`eichung`|`pruefliste`), `vorschlaege` (JSON: Quelle, Genre, Stil, URL),
-`energie` (1–5, leer), `entscheidung` (gewählter Vorschlag / „keins“),
-`status` (`offen`|`erledigt`|`uebersprungen`), `erledigt_am`, Anhang = Hörprobe.
-Nach dem Rückschreiben wird die Hörprobe gelöscht (Speicher bleibt klein).
-
-## 4. Eichliste (50 Titel)
-
-Nicht zufällig, sondern **über die Messwerte gestreut**: je 10 Titel aus fünf
-Bereichen (Tempo × Dynamik × Beatport-Stil), damit jede Energiestufe
-Beispiele hat. Nur Titel mit echter Datei und gültiger Messung.
+Kein neuer Dienst, keine Hörproben, keine öffentliche Freigabe der Bibliothek.
 
 ## 5. Fehler und Grenzen
 
-- Titel ohne Datei oder mit Messfehler kommen nicht auf die Liste.
-- Hörprobe lässt sich nicht erzeugen (defekte Datei) → Titel wird übersprungen
-  und in einer Liste vermerkt, nicht stillschweigend verschluckt.
-- Doppelter Tipp (Netzaussetzer) → das Speichern ist idempotent je Datensatz.
-- Kein Autoplay-Zwang: Handy-Browser verlangen einen Tipp zum Start; danach
-  spielt die Seite automatisch weiter.
+- Titel ohne beets-Eintrag (z. B. Jingles, Sets) → Knöpfe ausgeblendet.
+- Doppelter Tipp → der letzte Wert je Titel und Art zählt.
+- Nicht angemeldet → Seite genau wie heute.
 
 ## 6. Abnahme
 
-- Wolf bewertet 50 Titel am Handy in ≤ 20 Minuten ohne Hilfe.
-- Die 50 Urteile stehen danach in beets (`energie`, `quelle_energie="Wolf 2026-…"`).
-- Aus den Urteilen werden die Mess-Schwellen gesetzt; Kontrolle: ≥ 80 % der
-  50 Titel landen mit der Formel in Wolfs Stufe ±1.
+- Wolf beurteilt eine Woche lang nebenbei beim Hören, ohne Anleitung.
+- Urteile landen nachts korrekt in beets (Stichprobe 10 Titel).
+- Nach ≥ 50 Energie-Urteilen: Formel trifft ≥ 80 % davon auf ±1 Stufe.
 
-## 7. Offene Punkte für Wolf
+## 7. Offen für Wolf
 
-1. Passt „ein Titel pro Bildschirm, 30 s ab Mitte, Knöpfe 1–5“?
-2. Soll Franz die Seite auch nutzen dürfen (zweite Meinung) — oder nur Wolf?
+1. Passt das so?
+2. Nur Wolf, oder auch Franz als Redaktions-Nutzer?
