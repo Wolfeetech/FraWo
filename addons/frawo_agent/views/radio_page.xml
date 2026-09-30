@@ -461,6 +461,10 @@ body {
   font-size: 0.65rem;
   color: var(--ff-text-dim);
 }
+.ff-redaktion-label {
+  font-size: 0.65rem;
+  color: var(--ff-text-dim);
+}
 .ff-mood-tally {
   margin-top: 10px;
   font-family: var(--ff-font-mono);
@@ -1209,7 +1213,7 @@ body {
         <span id="ff-redaktion-feedback"></span>
       </div>
 
-      <div class="ff-mood-btn-sub" style="text-align:center; margin-bottom: 8px;">Energie</div>
+      <div class="ff-redaktion-label" style="text-align:center; margin-bottom: 8px;">Energie</div>
       <div class="ff-redaktion-row" style="grid-template-columns: repeat(5, 1fr);">
         <button class="ff-mood-btn ff-redaktion-btn" type="button" data-art="energie" data-wert="1" onclick="if(window.ffJudge) window.ffJudge(this)">
           <div class="ff-mood-btn-title">1</div>
@@ -1228,7 +1232,7 @@ body {
         </button>
       </div>
 
-      <div class="ff-mood-btn-sub" id="ff-redaktion-sendung-label" style="text-align:center; margin: 14px 0 8px 0;">Passt das?</div>
+      <div class="ff-redaktion-label" id="ff-redaktion-sendung-label" style="text-align:center; margin: 14px 0 8px 0;">Passt das?</div>
       <div class="ff-redaktion-row" style="grid-template-columns: 1fr 1fr;">
         <button class="ff-mood-btn ff-redaktion-btn" type="button" data-art="passt" data-wert="1" onclick="if(window.ffJudge) window.ffJudge(this)">
           <div class="ff-mood-btn-title">👍 passt</div>
@@ -1368,7 +1372,9 @@ body {
               ffPaintRedaktionActive('passt', eigene.passt);
               block.style.display = '';
             })
-            .catch(function () {});
+            .catch(function () {
+              block.style.display = 'none';
+            });
         };
 
         window.ffJudge = function (btn) {
