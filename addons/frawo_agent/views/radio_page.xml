@@ -637,6 +637,25 @@ body {
   padding-bottom: 10px;
 }
 
+/* Sendeplan live: Lade-/Fehlerhinweis + "Danach"-Zeile (JS-gebaut) */
+.ff-schedule-hint {
+  padding: 18px 20px;
+  border: 1px dashed var(--ff-border-light);
+  border-radius: 10px;
+  color: var(--ff-text-dim);
+  font-family: var(--ff-font-mono);
+  font-size: 0.78rem;
+  text-align: center;
+  margin-bottom: 20px;
+}
+.ff-schedule-danach {
+  font-family: var(--ff-font-mono);
+  font-size: 0.72rem;
+  color: var(--ff-accent-green);
+  margin-bottom: 10px;
+  letter-spacing: 0.02em;
+}
+
 /* Weekday Tab Navigation */
 .ff-week-tabs {
   display: flex;
@@ -1519,389 +1538,9 @@ body {
     <span>Bodensee-Zeit (CET)</span>
   </div>
 
-  <!-- Weekday Tabs -->
-  <div class="ff-week-tabs" id="ff-week-tabs">
-    <button class="ff-week-tab" data-day="1"><span class="ff-tab-day">MO</span><span class="ff-tab-sub">Deep Focus</span></button>
-    <button class="ff-week-tab" data-day="2"><span class="ff-tab-day">DI</span><span class="ff-tab-sub">Classic Flow</span></button>
-    <button class="ff-week-tab" data-day="3"><span class="ff-tab-day">MI</span><span class="ff-tab-sub">Afro World</span></button>
-    <button class="ff-week-tab" data-day="4"><span class="ff-tab-day">DO</span><span class="ff-tab-sub">Cruising</span></button>
-    <button class="ff-week-tab" data-day="5"><span class="ff-tab-day">FR</span><span class="ff-tab-sub">Weekend Launch</span></button>
-    <button class="ff-week-tab" data-day="6"><span class="ff-tab-day">SA</span><span class="ff-tab-sub">Club &amp; Flow</span></button>
-    <button class="ff-week-tab" data-day="0"><span class="ff-tab-day">SO</span><span class="ff-tab-sub">Roadtrip &amp; Soul</span></button>
-  </div>
-
-  <div id="ff-schedule">
-    <!-- MONTAG: Deep Focus -->
-    <div class="ff-day-panel" data-day="1">
-      <div class="ff-card" data-show="01 Sunrise">
-        <div>
-          <div class="ff-card-time">06:00 – 08:30</div>
-          <div class="ff-card-name">01 Sunrise</div>
-          <div class="ff-card-desc">Ambient, Chillout &amp; Downtempo für den sanften Start.</div>
-        </div>
-        <div class="ff-card-tag">206 Tracks · ø 96 BPM</div>
-      </div>
-      <div class="ff-card" data-show="02 Morning Drive">
-        <div>
-          <div class="ff-card-time">08:30 – 11:30</div>
-          <div class="ff-card-name">02 Morning Drive</div>
-          <div class="ff-card-desc">Nu Disco, Funky House &amp; uplifting Groove für den Kickstart.</div>
-        </div>
-        <div class="ff-card-tag">654 Tracks · ø 123 BPM</div>
-      </div>
-      <div class="ff-card" data-show="03 Lunch Groove">
-        <div>
-          <div class="ff-card-time">11:30 – 14:00</div>
-          <div class="ff-card-name">03 Lunch Groove — Motown &amp; Classic Soul</div>
-          <div class="ff-card-desc">70s Soul, Rare Grooves &amp; Philly Sound zur Mittagspause.</div>
-        </div>
-        <div class="ff-card-tag">614 Tracks · ø 115 BPM</div>
-      </div>
-      <div class="ff-card" data-show="04 Afternoon Flow">
-        <div>
-          <div class="ff-card-time">14:00 – 17:00</div>
-          <div class="ff-card-name">04 Afternoon Flow</div>
-          <div class="ff-card-desc">Deep House &amp; Melodic Beats für den Werkstatt-Flow.</div>
-        </div>
-        <div class="ff-card-tag">346 Tracks · ø 123 BPM</div>
-      </div>
-      <div class="ff-card" data-show="06 Deep Night">
-        <div>
-          <div class="ff-card-time">17:00 – 21:00</div>
-          <div class="ff-card-name">Deep Focus Session</div>
-          <div class="ff-card-desc">Hypnotic Minimal, Dub Techno &amp; Deep Atmosphären ab Feierabend.</div>
-        </div>
-        <div class="ff-card-tag">341 Tracks · ø 128 BPM</div>
-      </div>
-      <div class="ff-card" data-show="06 Deep Night">
-        <div>
-          <div class="ff-card-time">21:00 – 06:00</div>
-          <div class="ff-card-name">06 Deep Night</div>
-          <div class="ff-card-desc">Hypnotic Minimal &amp; Nachtatmosphäre bis Morgengrauen.</div>
-        </div>
-        <div class="ff-card-tag">Nonstop · ø 128 BPM</div>
-      </div>
-    </div>
-
-    <!-- DIENSTAG: Classic Flow -->
-    <div class="ff-day-panel" data-day="2">
-      <div class="ff-card" data-show="01 Sunrise">
-        <div>
-          <div class="ff-card-time">06:00 – 08:30</div>
-          <div class="ff-card-name">01 Sunrise</div>
-          <div class="ff-card-desc">Ambient, Chillout &amp; Downtempo für den sanften Start.</div>
-        </div>
-        <div class="ff-card-tag">206 Tracks · ø 96 BPM</div>
-      </div>
-      <div class="ff-card" data-show="02 Morning Drive">
-        <div>
-          <div class="ff-card-time">08:30 – 11:30</div>
-          <div class="ff-card-name">02 Morning Drive</div>
-          <div class="ff-card-desc">Nu Disco, Funky House &amp; uplifting Groove.</div>
-        </div>
-        <div class="ff-card-tag">654 Tracks · ø 123 BPM</div>
-      </div>
-      <div class="ff-card" data-show="03 Lunch Groove">
-        <div>
-          <div class="ff-card-time">11:30 – 14:00</div>
-          <div class="ff-card-name">03 Lunch Groove — French Touch &amp; Nu-Disco</div>
-          <div class="ff-card-desc">Daft Punk, Breakbot, Folamour &amp; moderne Disco-Edits.</div>
-        </div>
-        <div class="ff-card-tag">614 Tracks · ø 115 BPM</div>
-      </div>
-      <div class="ff-card" data-show="04 Afternoon Flow">
-        <div>
-          <div class="ff-card-time">14:00 – 17:00</div>
-          <div class="ff-card-name">04 Afternoon Flow</div>
-          <div class="ff-card-desc">Deep House &amp; Melodic Beats für den Werkstatt-Flow.</div>
-        </div>
-        <div class="ff-card-tag">346 Tracks · ø 123 BPM</div>
-      </div>
-      <div class="ff-card" data-show="05 Evening Warmup">
-        <div>
-          <div class="ff-card-time">17:00 – 21:00</div>
-          <div class="ff-card-name">05 Evening Warmup</div>
-          <div class="ff-card-desc">Tech House, Basslines &amp; Driving Beats zum Dienstagabend.</div>
-        </div>
-        <div class="ff-card-tag">406 Tracks · ø 127 BPM</div>
-      </div>
-      <div class="ff-card" data-show="06 Deep Night">
-        <div>
-          <div class="ff-card-time">21:00 – 06:00</div>
-          <div class="ff-card-name">06 Deep Night</div>
-          <div class="ff-card-desc">Hypnotic Minimal &amp; Nachtatmosphäre bis Morgengrauen.</div>
-        </div>
-        <div class="ff-card-tag">Nonstop · ø 128 BPM</div>
-      </div>
-    </div>
-
-    <!-- MITTWOCH: Afro World -->
-    <div class="ff-day-panel" data-day="3">
-      <div class="ff-card" data-show="01 Sunrise">
-        <div>
-          <div class="ff-card-time">06:00 – 08:30</div>
-          <div class="ff-card-name">01 Sunrise</div>
-          <div class="ff-card-desc">Ambient, Chillout &amp; Downtempo für den sanften Start.</div>
-        </div>
-        <div class="ff-card-tag">206 Tracks · ø 96 BPM</div>
-      </div>
-      <div class="ff-card" data-show="02 Morning Drive">
-        <div>
-          <div class="ff-card-time">08:30 – 11:30</div>
-          <div class="ff-card-name">02 Morning Drive</div>
-          <div class="ff-card-desc">Nu Disco, Funky House &amp; uplifting Groove.</div>
-        </div>
-        <div class="ff-card-tag">654 Tracks · ø 123 BPM</div>
-      </div>
-      <div class="ff-card" data-show="03 Lunch Groove">
-        <div>
-          <div class="ff-card-time">11:30 – 14:00</div>
-          <div class="ff-card-name">03 Lunch Groove — Rare Grooves &amp; Vinyl Gems</div>
-          <div class="ff-card-desc">Rare Funk, 70s Afro-Funk, Crate-Digger-Perlen &amp; Instrumentals.</div>
-        </div>
-        <div class="ff-card-tag">614 Tracks · ø 115 BPM</div>
-      </div>
-      <div class="ff-card" data-show="04 Afternoon Flow">
-        <div>
-          <div class="ff-card-time">14:00 – 17:00</div>
-          <div class="ff-card-name">04 Afternoon Flow</div>
-          <div class="ff-card-desc">Deep House &amp; Melodic Beats für den Werkstatt-Flow.</div>
-        </div>
-        <div class="ff-card-tag">346 Tracks · ø 123 BPM</div>
-      </div>
-      <div class="ff-card" data-show="09 Afro World">
-        <div>
-          <div class="ff-card-time">17:00 – 21:00</div>
-          <div class="ff-card-name">09 Afro World</div>
-          <div class="ff-card-desc">Afro House, Amapiano, Organic Percussion &amp; Global Beats.</div>
-        </div>
-        <div class="ff-card-tag">137 Tracks · ø 121 BPM</div>
-      </div>
-      <div class="ff-card" data-show="06 Deep Night">
-        <div>
-          <div class="ff-card-time">21:00 – 06:00</div>
-          <div class="ff-card-name">06 Deep Night</div>
-          <div class="ff-card-desc">Hypnotic Minimal &amp; Nachtatmosphäre bis Morgengrauen.</div>
-        </div>
-        <div class="ff-card-tag">Nonstop · ø 128 BPM</div>
-      </div>
-    </div>
-
-    <!-- DONNERSTAG: Cruising & Balearic -->
-    <div class="ff-day-panel" data-day="4">
-      <div class="ff-card" data-show="01 Sunrise">
-        <div>
-          <div class="ff-card-time">06:00 – 08:30</div>
-          <div class="ff-card-name">01 Sunrise</div>
-          <div class="ff-card-desc">Ambient, Chillout &amp; Downtempo für den sanften Start.</div>
-        </div>
-        <div class="ff-card-tag">206 Tracks · ø 96 BPM</div>
-      </div>
-      <div class="ff-card" data-show="02 Morning Drive">
-        <div>
-          <div class="ff-card-time">08:30 – 11:30</div>
-          <div class="ff-card-name">02 Morning Drive</div>
-          <div class="ff-card-desc">Nu Disco, Funky House &amp; uplifting Groove.</div>
-        </div>
-        <div class="ff-card-tag">654 Tracks · ø 123 BPM</div>
-      </div>
-      <div class="ff-card" data-show="03 Lunch Groove">
-        <div>
-          <div class="ff-card-time">11:30 – 14:00</div>
-          <div class="ff-card-name">03 Lunch Groove — Neo-Soul &amp; Acid Jazz</div>
-          <div class="ff-card-desc">Tom Misch, Jamiroquai, Erykah Badu &amp; Laidback Chords.</div>
-        </div>
-        <div class="ff-card-tag">614 Tracks · ø 115 BPM</div>
-      </div>
-      <div class="ff-card" data-show="04 Afternoon Flow">
-        <div>
-          <div class="ff-card-time">14:00 – 17:00</div>
-          <div class="ff-card-name">04 Afternoon Flow</div>
-          <div class="ff-card-desc">Deep House &amp; Melodic Beats für den Werkstatt-Flow.</div>
-        </div>
-        <div class="ff-card-tag">346 Tracks · ø 123 BPM</div>
-      </div>
-      <div class="ff-card" data-show="08 Sunday Roadtrip">
-        <div>
-          <div class="ff-card-time">17:00 – 21:00</div>
-          <div class="ff-card-name">Sunset Cruising &amp; Balearic</div>
-          <div class="ff-card-desc">Sonniger Indie-Sound, 80s Cruising Classics &amp; Balearic Beats.</div>
-        </div>
-        <div class="ff-card-tag">726 Tracks · ø 121 BPM</div>
-      </div>
-      <div class="ff-card" data-show="06 Deep Night">
-        <div>
-          <div class="ff-card-time">21:00 – 06:00</div>
-          <div class="ff-card-name">06 Deep Night</div>
-          <div class="ff-card-desc">Hypnotic Minimal &amp; Nachtatmosphäre bis Morgengrauen.</div>
-        </div>
-        <div class="ff-card-tag">Nonstop · ø 128 BPM</div>
-      </div>
-    </div>
-
-    <!-- FREITAG: Weekend Launch -->
-    <div class="ff-day-panel" data-day="5">
-      <div class="ff-card" data-show="01 Sunrise">
-        <div>
-          <div class="ff-card-time">06:00 – 08:30</div>
-          <div class="ff-card-name">01 Sunrise</div>
-          <div class="ff-card-desc">Ambient, Chillout &amp; Downtempo für den sanften Start.</div>
-        </div>
-        <div class="ff-card-tag">206 Tracks · ø 96 BPM</div>
-      </div>
-      <div class="ff-card" data-show="02 Morning Drive">
-        <div>
-          <div class="ff-card-time">08:30 – 11:30</div>
-          <div class="ff-card-name">02 Morning Drive</div>
-          <div class="ff-card-desc">Nu Disco, Funky House &amp; uplifting Groove.</div>
-        </div>
-        <div class="ff-card-tag">654 Tracks · ø 123 BPM</div>
-      </div>
-      <div class="ff-card" data-show="03 Lunch Groove">
-        <div>
-          <div class="ff-card-time">11:30 – 14:00</div>
-          <div class="ff-card-name">03 Lunch Groove — Feelgood Disco &amp; Weekend Starter</div>
-          <div class="ff-card-desc">High-Energy Disco &amp; House-Edits zum Start ins Wochenende.</div>
-        </div>
-        <div class="ff-card-tag">614 Tracks · ø 115 BPM</div>
-      </div>
-      <div class="ff-card" data-show="04 Afternoon Flow">
-        <div>
-          <div class="ff-card-time">14:00 – 16:00</div>
-          <div class="ff-card-name">04 Afternoon Flow</div>
-          <div class="ff-card-desc">Kurzer Deep-House-Boost vor dem Weekend Launch.</div>
-        </div>
-        <div class="ff-card-tag">346 Tracks · ø 123 BPM</div>
-      </div>
-      <div class="ff-card" data-show="05 Evening Warmup">
-        <div>
-          <div class="ff-card-time">16:00 – 21:00</div>
-          <div class="ff-card-name">Weekend Launch</div>
-          <div class="ff-card-desc">Club Warmup startet 2h früher — der Freitag Feierabend!</div>
-        </div>
-        <div class="ff-card-tag">406 Tracks · ø 127 BPM</div>
-      </div>
-      <div class="ff-card" data-show="07 Peak Time Club">
-        <div>
-          <div class="ff-card-time">21:00 – 02:00</div>
-          <div class="ff-card-name">07 Peak Time Club</div>
-          <div class="ff-card-desc">Peak-Time Rave, Driving Techno &amp; Festival-Energie.</div>
-        </div>
-        <div class="ff-card-tag">395 Tracks · ø 135 BPM</div>
-      </div>
-    </div>
-
-    <!-- SAMSTAG: Club & Flow -->
-    <div class="ff-day-panel" data-day="6">
-      <div class="ff-card" data-show="06 Deep Night">
-        <div>
-          <div class="ff-card-time">02:00 – 06:00</div>
-          <div class="ff-card-name">06 Deep Night — Afterhour</div>
-          <div class="ff-card-desc">Afterhour: Minimal &amp; Dub Techno bis zum Morgen.</div>
-        </div>
-        <div class="ff-card-tag">341 Tracks · ø 128 BPM</div>
-      </div>
-      <div class="ff-card" data-show="01 Sunrise">
-        <div>
-          <div class="ff-card-time">06:00 – 09:30</div>
-          <div class="ff-card-name">01 Sunrise</div>
-          <div class="ff-card-desc">Verlängerter Samstag-Morgen mit Ambient &amp; Chillout.</div>
-        </div>
-        <div class="ff-card-tag">206 Tracks · ø 96 BPM</div>
-      </div>
-      <div class="ff-card" data-show="02 Morning Drive">
-        <div>
-          <div class="ff-card-time">09:30 – 13:00</div>
-          <div class="ff-card-name">Saturday Morning &amp; Coffee</div>
-          <div class="ff-card-desc">Sonniger Nu-Disco, Acoustic Soul &amp; Indie Beats für den Vormittag.</div>
-        </div>
-        <div class="ff-card-tag">654 Tracks · ø 123 BPM</div>
-      </div>
-      <div class="ff-card" data-show="04 Afternoon Flow">
-        <div>
-          <div class="ff-card-time">13:00 – 17:00</div>
-          <div class="ff-card-name">04 Afternoon Flow — Studio &amp; Workshop</div>
-          <div class="ff-card-desc">Vier Stunden Werkstatt- &amp; Schaffensdrang mit Deep House.</div>
-        </div>
-        <div class="ff-card-tag">346 Tracks · ø 123 BPM</div>
-      </div>
-      <div class="ff-card" data-show="05 Evening Warmup">
-        <div>
-          <div class="ff-card-time">17:00 – 20:00</div>
-          <div class="ff-card-name">Saturday Pre-Party</div>
-          <div class="ff-card-desc">Driving Tech House &amp; Club Warmup in den Samstagabend.</div>
-        </div>
-        <div class="ff-card-tag">406 Tracks · ø 127 BPM</div>
-      </div>
-      <div class="ff-card" data-show="10 DJ Sets">
-        <div>
-          <div class="ff-card-time">20:00 – 22:00</div>
-          <div class="ff-card-name">10 DJ Sets</div>
-          <div class="ff-card-desc">Exklusive DJ-Mixe, Studio-Aufnahmen &amp; Live-Mitschnitte.</div>
-        </div>
-        <div class="ff-card-tag">71 Full Sets · Continuous Mix</div>
-      </div>
-      <div class="ff-card" data-show="07 Peak Time Club">
-        <div>
-          <div class="ff-card-time">22:00 – 02:00</div>
-          <div class="ff-card-name">07 Peak Time Club</div>
-          <div class="ff-card-desc">Peak-Time Rave &amp; Acid Techno — die Samstagnacht.</div>
-        </div>
-        <div class="ff-card-tag">395 Tracks · ø 135 BPM</div>
-      </div>
-    </div>
-
-    <!-- SONNTAG: Roadtrip & Soul -->
-    <div class="ff-day-panel" data-day="0">
-      <div class="ff-card" data-show="06 Deep Night">
-        <div>
-          <div class="ff-card-time">02:00 – 06:00</div>
-          <div class="ff-card-name">06 Deep Night — Afterhour</div>
-          <div class="ff-card-desc">Sanfte Afterhour-Klänge bis zum Sonntagssonnenaufgang.</div>
-        </div>
-        <div class="ff-card-tag">341 Tracks · ø 128 BPM</div>
-      </div>
-      <div class="ff-card" data-show="01 Sunrise">
-        <div>
-          <div class="ff-card-time">06:00 – 10:00</div>
-          <div class="ff-card-name">01 Sunrise</div>
-          <div class="ff-card-desc">Langer Sonntagmorgen mit Ambient, Neo-Klassik &amp; Chillout.</div>
-        </div>
-        <div class="ff-card-tag">206 Tracks · ø 96 BPM</div>
-      </div>
-      <div class="ff-card" data-show="03 Lunch Groove">
-        <div>
-          <div class="ff-card-time">10:00 – 13:00</div>
-          <div class="ff-card-name">Sunday Brunch &amp; Soul Session</div>
-          <div class="ff-card-desc">Warme Akustik, Vintage Soul &amp; Rare Grooves zum späten Frühstück.</div>
-        </div>
-        <div class="ff-card-tag">614 Tracks · ø 115 BPM</div>
-      </div>
-      <div class="ff-card" data-show="08 Sunday Roadtrip">
-        <div>
-          <div class="ff-card-time">13:00 – 18:00</div>
-          <div class="ff-card-name">08 Sunday Roadtrip</div>
-          <div class="ff-card-desc">Unterwegs im Auto: Vintage Classics, Indie-Rock &amp; sonniger Roadtrip.</div>
-        </div>
-        <div class="ff-card-tag">726 Tracks · ø 121 BPM</div>
-      </div>
-      <div class="ff-card" data-show="05 Evening Warmup">
-        <div>
-          <div class="ff-card-time">18:00 – 21:30</div>
-          <div class="ff-card-name">Sunday Wind-Down</div>
-          <div class="ff-card-desc">Sanfter Wochenausklang mit Organic Melodic &amp; Warmup Beats.</div>
-        </div>
-        <div class="ff-card-tag">406 Tracks · ø 127 BPM</div>
-      </div>
-      <div class="ff-card" data-show="06 Deep Night">
-        <div>
-          <div class="ff-card-time">21:30 – 06:00</div>
-          <div class="ff-card-name">06 Deep Night</div>
-          <div class="ff-card-desc">Sleep Tones, Hypnotic Minimal &amp; Nachtatmosphäre.</div>
-        </div>
-        <div class="ff-card-tag">Nonstop · ø 128 BPM</div>
-      </div>
-    </div>
+  <!-- Sendeplan live: Wochenreiter + Tagesplan werden per JS aus /radio/schedule gebaut -->
+  <div id="ff-schedule-live" data-ready="0">
+    <div class="ff-schedule-hint">Sendeplan wird geladen…</div>
   </div>
 
   <!-- Zuletzt gespielt -->
@@ -2615,126 +2254,211 @@ body {
     elTicker.innerHTML = parts.join('&lt;span&gt;//&lt;/span&gt;');
   }
 
-  function initWeekTabs() {
-    var tabsWrap = document.getElementById('ff-week-tabs');
-    if (!tabsWrap) return;
-    var tabs = Array.prototype.slice.call(tabsWrap.querySelectorAll('.ff-week-tab'));
-    var panels = Array.prototype.slice.call(document.querySelectorAll('#ff-schedule .ff-day-panel'));
-    var todayDay = (new Date()).getDay();
+  // Sendeplan live: Wochenreiter + Tagesplan werden aus /radio/schedule gebaut.
+  // Ohne spitze Klammern oder Et-Zeichen im Quelltext (Vorgabe Task 5, gueltiges XML).
+  var FF_TAGE = [
+    { tag: 1, kurz: 'MO' },
+    { tag: 2, kurz: 'DI' },
+    { tag: 3, kurz: 'MI' },
+    { tag: 4, kurz: 'DO' },
+    { tag: 5, kurz: 'FR' },
+    { tag: 6, kurz: 'SA' },
+    { tag: 0, kurz: 'SO' }
+  ];
+  var ffScheduleData = [];
 
-    function selectDay(dayNum) {
-      tabs.forEach(function(t) {
-        var d = parseInt(t.getAttribute('data-day'), 10);
-        t.classList.toggle('active', d === dayNum);
-      });
-      panels.forEach(function(p) {
-        var d = parseInt(p.getAttribute('data-day'), 10);
-        p.classList.toggle('active', d === dayNum);
-      });
+  function ffWochentag(isoStart) {
+    // Tagesbestimmung aus dem Datumsteil des ISO-Strings (bereits
+    // Europe/Berlin, siehe Route), NICHT ueber new Date(iso).getDay() --
+    // das wuerde im Browser-Zeitzonen-Kontext neu interpretiert.
+    var jahr = parseInt(isoStart.substr(0, 4), 10);
+    var monat = parseInt(isoStart.substr(5, 2), 10);
+    var tag = parseInt(isoStart.substr(8, 2), 10);
+    return new Date(jahr, monat - 1, tag).getDay();
+  }
+
+  function ffZeit(iso) {
+    return iso ? iso.substr(11, 5) : '';
+  }
+
+  function ffZeigeSendeplanFehler() {
+    var box = document.getElementById('ff-schedule-live');
+    if (!box) return;
+    box.textContent = '';
+    var hinweis = document.createElement('div');
+    hinweis.className = 'ff-schedule-hint';
+    hinweis.textContent = 'Sendeplan gerade nicht erreichbar';
+    box.appendChild(hinweis);
+  }
+
+  function ffZeigeTag(tagNum) {
+    var tabs = Array.prototype.slice.call(document.querySelectorAll('#ff-week-tabs .ff-week-tab'));
+    tabs.forEach(function (t) {
+      var d = parseInt(t.getAttribute('data-day'), 10);
+      t.classList.toggle('active', d === tagNum);
+    });
+    var panels = Array.prototype.slice.call(document.querySelectorAll('#ff-schedule .ff-day-panel'));
+    panels.forEach(function (p) {
+      var d = parseInt(p.getAttribute('data-day'), 10);
+      p.classList.toggle('active', d === tagNum);
+    });
+  }
+
+  function ffBuildSchedule(eintraege) {
+    var box = document.getElementById('ff-schedule-live');
+    if (!box) return;
+    ffScheduleData = eintraege || [];
+
+    if (ffScheduleData.length === 0) {
+      ffZeigeSendeplanFehler();
+      return;
     }
 
-    tabs.forEach(function(t) {
-      var d = parseInt(t.getAttribute('data-day'), 10);
-      if (d === todayDay) {
-        t.classList.add('today');
-      }
-      t.addEventListener('click', function() {
-        selectDay(d);
-      });
+    var eimer = { 0: [], 1: [], 2: [], 3: [], 4: [], 5: [], 6: [] };
+    ffScheduleData.forEach(function (e) {
+      eimer[ffWochentag(e.start)].push(e);
     });
 
-    selectDay(todayDay);
+    var heute = (new Date()).getDay();
+
+    box.textContent = '';
+
+    var jetztEintrag = null;
+    ffScheduleData.forEach(function (e) {
+      if (e.jetzt) jetztEintrag = e;
+    });
+    if (jetztEintrag) {
+      var idx = ffScheduleData.indexOf(jetztEintrag);
+      var danach = ffScheduleData[idx + 1];
+      if (danach) {
+        var danachZeile = document.createElement('div');
+        danachZeile.className = 'ff-schedule-danach';
+        danachZeile.textContent = 'Danach: ' + danach.name + ' ab ' + ffZeit(danach.start) + ' Uhr';
+        box.appendChild(danachZeile);
+      }
+    }
+
+    var tabs = document.createElement('div');
+    tabs.className = 'ff-week-tabs';
+    tabs.id = 'ff-week-tabs';
+
+    var panelsWrap = document.createElement('div');
+    panelsWrap.id = 'ff-schedule';
+
+    FF_TAGE.forEach(function (info) {
+      var btn = document.createElement('button');
+      btn.className = 'ff-week-tab';
+      btn.setAttribute('data-day', String(info.tag));
+
+      var spanTag = document.createElement('span');
+      spanTag.className = 'ff-tab-day';
+      spanTag.textContent = info.kurz;
+      btn.appendChild(spanTag);
+
+      var tagesEintraege = eimer[info.tag];
+
+      var spanSub = document.createElement('span');
+      spanSub.className = 'ff-tab-sub';
+      spanSub.textContent = tagesEintraege[0] ? tagesEintraege[0].name : '';
+      btn.appendChild(spanSub);
+
+      if (info.tag === heute) {
+        btn.classList.add('today');
+      }
+      btn.addEventListener('click', function () {
+        ffZeigeTag(info.tag);
+      });
+      tabs.appendChild(btn);
+
+      var panel = document.createElement('div');
+      panel.className = 'ff-day-panel';
+      panel.setAttribute('data-day', String(info.tag));
+
+      if (tagesEintraege.length === 0) {
+        var leer = document.createElement('div');
+        leer.className = 'ff-schedule-hint';
+        leer.textContent = 'Für diesen Tag liegen aktuell keine Daten vom Sender vor.';
+        panel.appendChild(leer);
+      } else {
+        tagesEintraege.forEach(function (e) {
+          var card = document.createElement('div');
+          card.className = 'ff-card';
+          card.setAttribute('data-show', e.name);
+          card.setAttribute('data-day', String(info.tag));
+          if (e.jetzt) {
+            card.classList.add('active-slot', 'live-now');
+          }
+
+          var inner = document.createElement('div');
+
+          var zeit = document.createElement('div');
+          zeit.className = 'ff-card-time';
+          zeit.textContent = ffZeit(e.start) + ' – ' + ffZeit(e.ende);
+          inner.appendChild(zeit);
+
+          var name = document.createElement('div');
+          name.className = 'ff-card-name';
+          name.textContent = e.name;
+          inner.appendChild(name);
+
+          if (e.beschreibung) {
+            var desc = document.createElement('div');
+            desc.className = 'ff-card-desc';
+            desc.textContent = e.beschreibung;
+            inner.appendChild(desc);
+          }
+
+          card.appendChild(inner);
+          panel.appendChild(card);
+        });
+      }
+
+      panelsWrap.appendChild(panel);
+    });
+
+    box.appendChild(tabs);
+    box.appendChild(panelsWrap);
+
+    ffZeigeTag(heute);
+    updateTicker();
+  }
+
+  function ffLoadSchedule() {
+    fetch('/radio/schedule', { cache: 'no-store' })
+      .then(function (r) {
+        if (!r.ok) throw new Error('http-' + r.status);
+        return r.json();
+      })
+      .then(function (daten) {
+        ffBuildSchedule(daten);
+      })
+      .catch(function () {
+        ffZeigeSendeplanFehler();
+      });
   }
 
   function highlightSchedule(currentPlaylist) {
-    var now = new Date();
-    var day = now.getDay();
-    var hour = now.getHours();
-    var min = now.getMinutes();
-
-    var targetShow = currentPlaylist || (lastNowPlaying ? lastNowPlaying.playlist : null);
-
-    if (!targetShow) {
-      if (day === 0) {
-        if (hour &gt;= 2 &amp;&amp; hour &lt; 6) targetShow = '06 Deep Night';
-        else if (hour &gt;= 6 &amp;&amp; hour &lt; 10) targetShow = '01 Sunrise';
-        else if (hour &gt;= 10 &amp;&amp; hour &lt; 13) targetShow = '03 Lunch Groove';
-        else if (hour &gt;= 13 &amp;&amp; hour &lt; 18) targetShow = '08 Sunday Roadtrip';
-        else if (hour &gt;= 18 &amp;&amp; (hour &lt; 21 || (hour === 21 &amp;&amp; min &lt; 30))) targetShow = '05 Evening Warmup';
-        else targetShow = '06 Deep Night';
-      } else if (day === 6) {
-        if (hour &gt;= 2 &amp;&amp; hour &lt; 6) targetShow = '06 Deep Night';
-        else if (hour &gt;= 6 &amp;&amp; (hour &lt; 9 || (hour === 9 &amp;&amp; min &lt; 30))) targetShow = '01 Sunrise';
-        else if ((hour === 9 &amp;&amp; min &gt;= 30) || (hour &gt;= 10 &amp;&amp; hour &lt; 13)) targetShow = '02 Morning Drive';
-        else if (hour &gt;= 13 &amp;&amp; hour &lt; 17) targetShow = '04 Afternoon Flow';
-        else if (hour &gt;= 17 &amp;&amp; hour &lt; 20) targetShow = '05 Evening Warmup';
-        else if (hour &gt;= 20 &amp;&amp; hour &lt; 22) targetShow = '10 DJ Sets';
-        else if (hour &gt;= 22 || hour &lt; 2) targetShow = '07 Peak Time Club';
-        else targetShow = '06 Deep Night';
-      } else if (day === 5) {
-        if (hour &gt;= 6 &amp;&amp; (hour &lt; 8 || (hour === 8 &amp;&amp; min &lt; 30))) targetShow = '01 Sunrise';
-        else if ((hour === 8 &amp;&amp; min &gt;= 30) || (hour &gt;= 9 &amp;&amp; hour &lt; 11) || (hour === 11 &amp;&amp; min &lt; 30)) targetShow = '02 Morning Drive';
-        else if ((hour === 11 &amp;&amp; min &gt;= 30) || (hour &gt;= 12 &amp;&amp; hour &lt; 14)) targetShow = '03 Lunch Groove';
-        else if (hour &gt;= 14 &amp;&amp; hour &lt; 16) targetShow = '04 Afternoon Flow';
-        else if (hour &gt;= 16 &amp;&amp; hour &lt; 21) targetShow = '05 Evening Warmup';
-        else if (hour &gt;= 21 || hour &lt; 2) targetShow = '07 Peak Time Club';
-        else targetShow = '06 Deep Night';
-      } else {
-        if (hour &gt;= 6 &amp;&amp; (hour &lt; 8 || (hour === 8 &amp;&amp; min &lt; 30))) targetShow = '01 Sunrise';
-        else if ((hour === 8 &amp;&amp; min &gt;= 30) || (hour &gt;= 9 &amp;&amp; hour &lt; 11) || (hour === 11 &amp;&amp; min &lt; 30)) targetShow = '02 Morning Drive';
-        else if ((hour === 11 &amp;&amp; min &gt;= 30) || (hour &gt;= 12 &amp;&amp; hour &lt; 14)) targetShow = '03 Lunch Groove';
-        else if (hour &gt;= 14 &amp;&amp; hour &lt; 17) targetShow = '04 Afternoon Flow';
-        else if (hour &gt;= 17 &amp;&amp; hour &lt; 21) {
-          if (day === 1) targetShow = '06 Deep Night';
-          else if (day === 2) targetShow = '05 Evening Warmup';
-          else if (day === 3) targetShow = '09 Afro World';
-          else if (day === 4) targetShow = '08 Sunday Roadtrip';
-        } else targetShow = '06 Deep Night';
-      }
-    }
-
-    var allCards = Array.prototype.slice.call(document.querySelectorAll('#ff-schedule .ff-card'));
-    allCards.forEach(function(c) {
-      c.classList.remove('active-slot', 'live-now');
-    });
-
-    var todayPanel = document.querySelector('#ff-schedule .ff-day-panel[data-day="' + day + '"]');
-    if (todayPanel) {
-      var todayCards = Array.prototype.slice.call(todayPanel.querySelectorAll('.ff-card'));
-      var matchedCard = null;
-      var tLow = targetShow ? targetShow.toLowerCase() : '';
-
-      for (var i = 0; i &lt; todayCards.length; i++) {
-        var c = todayCards[i];
+    var ziel = currentPlaylist || (lastNowPlaying ? lastNowPlaying.playlist : null);
+    if (ziel) {
+      var zielTief = ziel.toLowerCase();
+      var heute = (new Date()).getDay();
+      var karten = Array.prototype.slice.call(document.querySelectorAll('#ff-schedule .ff-card'));
+      karten.forEach(function (c) {
+        var istHeute = parseInt(c.getAttribute('data-day'), 10) === heute;
         var showAttr = (c.getAttribute('data-show') || '').toLowerCase();
-        if (tLow &amp;&amp; (tLow === showAttr || tLow.indexOf(showAttr) !== -1 || showAttr.indexOf(tLow) !== -1)) {
-          var timeText = (c.querySelector('.ff-card-time') ? c.querySelector('.ff-card-time').textContent : '');
-          var matchTime = true;
-          if (timeText.indexOf('18:00 – 22:00') !== -1 &amp;&amp; !(hour &gt;= 18 &amp;&amp; hour &lt; 22)) matchTime = false;
-          if (timeText.indexOf('22:00 – 06:00') !== -1 &amp;&amp; !(hour &gt;= 22 || hour &lt; 6)) matchTime = false;
-          if (timeText.indexOf('14:00 – 16:00') !== -1 &amp;&amp; !(hour &gt;= 14 &amp;&amp; hour &lt; 16)) matchTime = false;
-          if (timeText.indexOf('16:00 – 22:00') !== -1 &amp;&amp; !(hour &gt;= 16 &amp;&amp; hour &lt; 22)) matchTime = false;
-
-          if (matchTime) {
-            matchedCard = c;
-            break;
-          }
-        }
-      }
-
-      if (matchedCard) {
-        matchedCard.classList.add('active-slot', 'live-now');
-      }
+        var treffer = istHeute ? (showAttr === zielTief) : false;
+        c.classList.toggle('active-slot', treffer);
+        c.classList.toggle('live-now', treffer);
+      });
     }
     updateTicker();
   }
 
-  initWeekTabs();
-  highlightSchedule();
+  ffLoadSchedule();
   loadNowPlaying();
   loadVotes();
   setInterval(loadNowPlaying, 5000);
-  setInterval(highlightSchedule, 60000);
+  setInterval(ffLoadSchedule, 60000);
 })();
 //
 </script>

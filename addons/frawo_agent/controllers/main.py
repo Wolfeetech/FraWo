@@ -7,10 +7,16 @@ import time
 import requests
 import urllib3
 
+from odoo.addons.frawo_agent.models.radio_azuracast import _schedule_vereinfachen
+
 # Suppress insecure certificate warnings for internal API call
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 _logger = logging.getLogger(__name__)
+
+# Sendeplan-Cache im Prozessspeicher (kein Model noetig, 5 Minuten TTL).
+_SCHEDULE_CACHE = {"ts": 0.0, "data": None}
+_SCHEDULE_CACHE_TTL = 300
 
 class RadioController(http.Controller):
 
@@ -225,6 +231,41 @@ class RadioController(http.Controller):
                 f'{{"status":"error","message":"{str(e)}"}}',
                 headers=[('Content-Type', 'application/json')],
                 status=500
+            )
+
+    @http.route('/radio/schedule', type='http', auth='public', methods=['GET'], cors='*', csrf=False)
+    def radio_schedule(self, **kwargs):
+        """Vereinfachter Sendeplan (nur Sendungen) vom AzuraCast-Sender,
+        5 Minuten im Prozessspeicher gecacht. Bei Fehler: HTTP 503 mit
+        leerer Liste, die Seite zeigt dann "Sendeplan gerade nicht erreichbar"."""
+        now = time.time()
+        if _SCHEDULE_CACHE["data"] is not None and (now - _SCHEDULE_CACHE["ts"]) < _SCHEDULE_CACHE_TTL:
+            return request.make_response(
+                json.dumps(_SCHEDULE_CACHE["data"]),
+                headers=[('Content-Type', 'application/json'), ('Access-Control-Allow-Origin', '*')],
+                status=200,
+            )
+        try:
+            base_url, api_key = self._get_azuracast_config()
+            r = requests.get(
+                f"{base_url}/api/station/1/schedule",
+                params={"rows": 200}, verify=False, timeout=8,
+            )
+            r.raise_for_status()
+            vereinfacht = _schedule_vereinfachen(r.json())
+            _SCHEDULE_CACHE["data"] = vereinfacht
+            _SCHEDULE_CACHE["ts"] = now
+            return request.make_response(
+                json.dumps(vereinfacht),
+                headers=[('Content-Type', 'application/json'), ('Access-Control-Allow-Origin', '*')],
+                status=200,
+            )
+        except Exception as e:
+            _logger.warning("Sendeplan nicht erreichbar: %s", e)
+            return request.make_response(
+                json.dumps([]),
+                headers=[('Content-Type', 'application/json'), ('Access-Control-Allow-Origin', '*')],
+                status=503,
             )
 
     # ─────────────────────────────────────────────────────────────

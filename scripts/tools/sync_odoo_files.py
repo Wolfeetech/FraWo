@@ -26,6 +26,7 @@ FILES_TO_SYNC = [
     "addons/frawo_agent/tests/__init__.py",
     "addons/frawo_agent/tests/test_radio_democracy.py",
     "addons/frawo_agent/tests/test_radio_rating.py",
+    "addons/frawo_agent/tests/test_radio_schedule.py",
     "addons/frawo_agent/tests/test_radio_urteil.py",
     "addons/frawo_agent/data/ir_cron.xml",
     "addons/frawo_agent/data/config_params.xml",

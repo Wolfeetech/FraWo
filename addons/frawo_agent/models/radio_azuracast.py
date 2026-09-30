@@ -20,6 +20,61 @@ STATION_ID = 1
 TIMEOUT = 10
 
 
+def _ist_teilmenge(klein, gross):
+    """True, wenn der Zeitraum von ``klein`` vollstaendig in ``gross`` liegt
+    (gleicher Sendungsname) und ``gross`` mindestens genauso weit reicht.
+
+    Deckt die bei AzuraCast beobachtete Dublette ab: eine Sendung, die ueber
+    Mitternacht laeuft (z.B. 21:00-06:00), taucht im Rohabruf manchmal
+    zusaetzlich als zweiter Eintrag ab 00:00 desselben Resttages auf. Der
+    zweite Eintrag ist eine echte Teilmenge des ersten und wird verworfen,
+    damit die Sendung dem Beginn-Tag (21:00) zugeordnet bleibt und nicht
+    doppelt erscheint.
+    """
+    if klein is gross:
+        return False
+    if klein.get("name") != gross.get("name"):
+        return False
+    ks, ke = klein.get("start_timestamp"), klein.get("end_timestamp")
+    gs, ge = gross.get("start_timestamp"), gross.get("end_timestamp")
+    if None in (ks, ke, gs, ge):
+        return False
+    innerhalb = (gs <= ks) and (ge >= ke)
+    echt_kleiner = (gs < ks) or (ge > ke)
+    return innerhalb and echt_kleiner
+
+
+def _schedule_vereinfachen(rohliste):
+    """Reduziert die Rohantwort von GET /api/station/1/schedule auf
+    {name, beschreibung, start, ende, jetzt} -- nur Sendungen (Playlists),
+    keine Jingles. Ueber-Mitternacht-Dubletten (siehe ``_ist_teilmenge``)
+    werden auf den Eintrag mit dem fruehesten Start zusammengefasst, damit
+    eine Sendung immer dem Tag ihres Beginns zugeordnet bleibt und ``jetzt``
+    bei Ueberlappung nicht an mehreren Eintraegen gleichzeitig steht.
+
+    Reine Funktion ohne Odoo-Env -- bewusst model-frei und damit ohne
+    Datenbank testbar.
+    """
+    sendungen = [r for r in (rohliste or []) if r.get("type") == "playlist"]
+
+    behalten = [
+        eintrag for eintrag in sendungen
+        if not any(_ist_teilmenge(eintrag, andere) for andere in sendungen)
+    ]
+    behalten.sort(key=lambda e: (e.get("start_timestamp") or 0))
+
+    return [
+        {
+            "name": e.get("name") or e.get("title") or "",
+            "beschreibung": e.get("description") or "",
+            "start": e.get("start"),
+            "ende": e.get("end"),
+            "jetzt": bool(e.get("is_now")),
+        }
+        for e in behalten
+    ]
+
+
 class FrawoRadioAzuracast(models.AbstractModel):
     _name = "frawo.radio.azuracast"
     _description = "AzuraCast REST-Client (Playlisten-Gewichte)"
