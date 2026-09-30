@@ -521,6 +521,19 @@ body {
   box-shadow: 0 0 16px rgba(192, 132, 252, 0.3);
 }
 
+/* Redaktions-Bereich */
+.ff-redaktion-row {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.ff-redaktion-btn.active {
+  background: rgba(0, 191, 255, 0.18) !important;
+  border-color: rgba(0, 191, 255, 0.8) !important;
+  color: #00BFFF !important;
+  box-shadow: 0 0 16px rgba(0, 191, 255, 0.3);
+}
+
 /* Deck Sub-Footer */
 .ff-deck-footer {
   display: flex;
@@ -1187,6 +1200,45 @@ body {
       <div class="ff-mood-tally" id="ff-mood-tally">Stimmen werden geladen…</div>
     </div>
 
+    <!-- ============================================================
+         REDAKTIONS-BEREICH (nur für Redakteur:innen, nie bei Live-Show)
+         ============================================================ -->
+    <div class="ff-mood-box" id="ff-redaktion" style="display:none;" data-track="" data-sendung="">
+      <div class="ff-mood-header">
+        <span>🎚️ Redaktion</span>
+        <span id="ff-redaktion-feedback"></span>
+      </div>
+
+      <div class="ff-mood-btn-sub" style="text-align:center; margin-bottom: 8px;">Energie</div>
+      <div class="ff-redaktion-row" style="grid-template-columns: repeat(5, 1fr);">
+        <button class="ff-mood-btn ff-redaktion-btn" type="button" data-art="energie" data-wert="1" onclick="if(window.ffJudge) window.ffJudge(this)">
+          <div class="ff-mood-btn-title">1</div>
+        </button>
+        <button class="ff-mood-btn ff-redaktion-btn" type="button" data-art="energie" data-wert="2" onclick="if(window.ffJudge) window.ffJudge(this)">
+          <div class="ff-mood-btn-title">2</div>
+        </button>
+        <button class="ff-mood-btn ff-redaktion-btn" type="button" data-art="energie" data-wert="3" onclick="if(window.ffJudge) window.ffJudge(this)">
+          <div class="ff-mood-btn-title">3</div>
+        </button>
+        <button class="ff-mood-btn ff-redaktion-btn" type="button" data-art="energie" data-wert="4" onclick="if(window.ffJudge) window.ffJudge(this)">
+          <div class="ff-mood-btn-title">4</div>
+        </button>
+        <button class="ff-mood-btn ff-redaktion-btn" type="button" data-art="energie" data-wert="5" onclick="if(window.ffJudge) window.ffJudge(this)">
+          <div class="ff-mood-btn-title">5</div>
+        </button>
+      </div>
+
+      <div class="ff-mood-btn-sub" id="ff-redaktion-sendung-label" style="text-align:center; margin: 14px 0 8px 0;">Passt das?</div>
+      <div class="ff-redaktion-row" style="grid-template-columns: 1fr 1fr;">
+        <button class="ff-mood-btn ff-redaktion-btn" type="button" data-art="passt" data-wert="1" onclick="if(window.ffJudge) window.ffJudge(this)">
+          <div class="ff-mood-btn-title">👍 passt</div>
+        </button>
+        <button class="ff-mood-btn ff-redaktion-btn" type="button" data-art="passt" data-wert="0" onclick="if(window.ffJudge) window.ffJudge(this)">
+          <div class="ff-mood-btn-title">👎 passt nicht</div>
+        </button>
+      </div>
+    </div>
+
     <script>
       (function () {
         var tallyEl = document.getElementById('ff-mood-tally');
@@ -1223,7 +1275,18 @@ body {
           if (window.spawnReaction) window.spawnReaction(emoji);
         };
 
+        var ffRedaktionLiveFlag = false;
+
         window.ffSetLiveMode = function (isLive) {
+          var wasLive = ffRedaktionLiveFlag;
+          ffRedaktionLiveFlag = Boolean(isLive);
+          var redaktionBlock = document.getElementById('ff-redaktion');
+          if (isLive) {
+            if (redaktionBlock) redaktionBlock.style.display = 'none';
+          } else if (wasLive) {
+            if (window.ffLoadRedaktion) window.ffLoadRedaktion();
+          }
+
           var voteGrid = document.querySelector('.ff-mood-grid');
           var showGrid = document.getElementById('ff-show-reactions');
           if (!voteGrid) return;
@@ -1236,6 +1299,104 @@ body {
           }
           voteGrid.style.display = '';
           showGrid.style.display = 'none';
+        };
+
+        function ffPaintRedaktionActive(art, wert) {
+          var btns = document.querySelectorAll('.ff-redaktion-btn');
+          btns.forEach(function (b) {
+            if (b.getAttribute('data-art') !== art) return;
+            var v = b.getAttribute('data-wert');
+            var match = false;
+            if (wert !== null) {
+              if (wert !== undefined) {
+                match = (v === String(wert));
+              }
+            }
+            if (match) {
+              b.classList.add('active');
+            } else {
+              b.classList.remove('active');
+            }
+          });
+        }
+
+        window.ffLoadRedaktion = function () {
+          var block = document.getElementById('ff-redaktion');
+          if (!block) return;
+          var key = window.currentTrackKey || '';
+          if (!key) {
+            block.style.display = 'none';
+            return;
+          }
+          if (key === 'FraWo Funk') {
+            block.style.display = 'none';
+            return;
+          }
+          if (ffRedaktionLiveFlag) {
+            block.style.display = 'none';
+            return;
+          }
+          var sendung = window.ffCurrentSendung || '';
+          fetch('/radio/redaktion/info?track_id=' + encodeURIComponent(key), { cache: 'no-store' })
+            .then(function (r) { return r.json(); })
+            .then(function (d) {
+              if (!d) return;
+              if (!d.ok) return;
+              if (!d.redakteur) {
+                block.style.display = 'none';
+                return;
+              }
+              if (ffRedaktionLiveFlag) {
+                block.style.display = 'none';
+                return;
+              }
+              if (key !== window.currentTrackKey) return;
+              block.setAttribute('data-track', key);
+              block.setAttribute('data-sendung', sendung);
+              var label = document.getElementById('ff-redaktion-sendung-label');
+              if (label) {
+                if (sendung) {
+                  label.textContent = 'Passt in ' + sendung + '?';
+                } else {
+                  label.textContent = 'Passt das?';
+                }
+              }
+              var feedback = document.getElementById('ff-redaktion-feedback');
+              if (feedback) feedback.textContent = '';
+              var eigene = d.eigene || {};
+              ffPaintRedaktionActive('energie', eigene.energie);
+              ffPaintRedaktionActive('passt', eigene.passt);
+              block.style.display = '';
+            })
+            .catch(function () {});
+        };
+
+        window.ffJudge = function (btn) {
+          if (!btn) return;
+          var art = btn.getAttribute('data-art') || '';
+          if (!art) return;
+          var wert = parseInt(btn.getAttribute('data-wert'), 10);
+          var block = document.getElementById('ff-redaktion');
+          if (!block) return;
+          var track = block.getAttribute('data-track') || '';
+          if (!track) return;
+          var sendung = block.getAttribute('data-sendung') || '';
+          var feedback = document.getElementById('ff-redaktion-feedback');
+          if (feedback) feedback.textContent = 'speichert…';
+          fetch('/radio/redaktion/urteil', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ track_id: track, art: art, wert: wert, sendung: sendung })
+          }).then(function (r) {
+            if (!r.ok) {
+              if (feedback) feedback.textContent = 'nicht gespeichert';
+              return;
+            }
+            if (feedback) feedback.textContent = 'gespeichert';
+            ffPaintRedaktionActive(art, wert);
+          }).catch(function () {
+            if (feedback) feedback.textContent = 'nicht gespeichert';
+          });
         };
 
         var starsEl = document.getElementById('ff-stars');
@@ -1317,6 +1478,7 @@ body {
           }
         }
         window.ffLoadRating();
+        if (window.ffLoadRedaktion) window.ffLoadRedaktion();
       })();
     </script>
 
@@ -1970,6 +2132,7 @@ body {
 
   function loadVotes() {
     if (window.ffLoadRating) window.ffLoadRating();
+    if (window.ffLoadRedaktion) window.ffLoadRedaktion();
   }
   function renderNextTrack(np) {}
 
@@ -2355,6 +2518,7 @@ body {
 
               if (elArtist) elArtist.textContent = np.song.artist || 'Studio Stream';
               if (np.playlist) {
+                window.ffCurrentSendung = np.playlist;
                 var showTag = document.getElementById('ff-show-tag');
                 if (showTag) {
                   showTag.textContent = '📻 SHOW: ' + np.playlist.toUpperCase();
