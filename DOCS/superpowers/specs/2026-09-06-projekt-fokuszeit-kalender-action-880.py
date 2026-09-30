@@ -33,43 +33,142 @@ def find_free_slot(env, user, duration_hours, deadline, exclude_event_id=None):
     return None, None
 
 
-def strip_html(value):
+# --- Meldungstext (Fassung 30.09.2026, Claude) ------------------------------
+# Wolf 30.09.: "Ich kann mit solchen Nachrichten im Chatter nichts anfangen".
+# Der Text landet 1:1 als Notiz der Meeting-Aktivitaet im Chatter
+# ("Heute: <Titel> fuer Wolf Prinz"). Frueher: Projekt + Frist mit 00:00 +
+# die ersten 500 Zeichen der Beschreibung + relativer Link. Jetzt vier Zeilen:
+# Worum geht's / Was jetzt zu tun ist - liegt bei / Stand / voller Link.
+# "Was jetzt zu tun ist" kommt aus der ersten Zeile der Beschreibung
+# (Blocker-Format "Wartet auf: ... · Liegt bei: ... · Wieder pruefen: TT.MM."
+# oder "Naechster Schritt: ... · Liegt bei: ...") oder der naechsten offenen
+# Aktivitaet. Fehlt beides, steht das ehrlich da. "Worum geht's" kommt aus
+# einer Zeile "Ziel: ..." der Beschreibung, sonst aus Projekt + Oberaufgabe.
+# safe_eval: kein hasattr, keine Imports; 'timezone' (pytz) ist im Kontext.
+
+BLOCK_ENDE = ('/p', 'br', '/li', '/h1', '/h2', '/h3', '/h4', '/div', '/tr', '/ol', '/ul')
+LEUTE = {6: 'Wolf', 10: 'Franz', 7: '🤖 Agent'}
+
+
+def html_lines(value):
     if not value:
-        return ''
+        return []
     text = []
+    tag = []
     in_tag = False
-    for ch in value:
+    for ch in str(value):
         if ch == '<':
             in_tag = True
+            tag = []
         elif ch == '>':
             in_tag = False
-        elif not in_tag:
+            name = ''.join(tag).strip().lower().split(' ')[0].rstrip('/')
+            if name in BLOCK_ENDE:
+                text.append('\n')
+        elif in_tag:
+            tag.append(ch)
+        else:
             text.append(ch)
     result = ''.join(text)
-    for entity, char in (('&amp;', '&'), ('&lt;', '<'), ('&gt;', '>'), ('&quot;', '"'), ("&#39;", "'"), ('&nbsp;', ' ')):
+    for entity, char in (('&nbsp;', ' '), ('&quot;', '"'), ('&#39;', "'"), ('&lt;', '<'), ('&gt;', '>'), ('&amp;', '&')):
         result = result.replace(entity, char)
-    return result.strip()
+    return [z.strip() for z in result.split('\n') if z.strip()]
+
+
+def esc(value):
+    return str(value or '').replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;')
+
+
+def kurz(value, n):
+    value = (value or '').strip()
+    return value if len(value) <= n else value[:n - 1].rstrip() + '…'
+
+
+def teil(zeile, schluessel):
+    if schluessel not in zeile:
+        return ''
+    rest = zeile.split(schluessel, 1)[1]
+    return rest.split(' · ', 1)[0].strip()
+
+
+def ist_status_zeile(zeile):
+    return 'Wartet auf:' in zeile or 'Nächster Schritt:' in zeile
+
+
+def datum_text(value):
+    # Odoo speichert UTC. 00:00 (UTC oder Ortszeit) heisst "nur Datum".
+    if not value:
+        return ''
+    lokal = timezone('UTC').localize(value).astimezone(timezone('Europe/Berlin'))
+    if value.hour == 0 and value.minute == 0:
+        return value.strftime('%d.%m.%Y')
+    if lokal.hour == 0 and lokal.minute == 0:
+        return lokal.strftime('%d.%m.%Y')
+    return lokal.strftime('%d.%m.%Y, %H:%M Uhr')
 
 
 def build_title(record):
+    name = record.name.split(' — ')[0].strip()
     if record.partner_id:
-        return '%s · %s' % (record.partner_id.name, record.name)
-    return record.name
+        name = '%s · %s' % (record.partner_id.name, name)
+    return kurz(name, 70)
 
 
 def build_description(record):
-    parts = []
-    if record.project_id:
-        parts.append('Projekt: %s' % record.project_id.name)
-    if record.partner_id:
-        parts.append('Kunde: %s' % record.partner_id.name)
+    zeilen = html_lines(record.description)
+    status = zeilen[0] if zeilen and ist_status_zeile(zeilen[0]) else ''
+    # "Worum geht's" nur aus einer Zeile "Ziel: ..." - der Beschreibungsanfang
+    # ist oft Historie ("Blockiert am ...", "Statuskorrektur ..."). Sonst die
+    # Einordnung, die Odoo sicher kennt: Projekt und Oberaufgabe.
+    worum = ''
+    for z in zeilen:
+        if 'Ziel:' in z[:12]:
+            worum = z.split('Ziel:', 1)[1].strip()
+            break
+    if not worum:
+        worum = record.project_id.name or ''
+        if record.parent_id:
+            worum += ' · Teil von „%s“' % kurz(record.parent_id.name, 60)
+    worum = kurz(worum, 160)
+
+    wartet = teil(status, 'Wartet auf:')
+    schritt = teil(status, 'Nächster Schritt:')
+    wer = teil(status, 'Liegt bei:')
+    pruefen = teil(status, 'Wieder prüfen:')
+    if not wartet and not schritt:
+        naechste = env['mail.activity'].search([
+            ('res_model', '=', 'project.task'), ('res_id', '=', record.id),
+            ('calendar_event_id', '=', False)], order='date_deadline asc', limit=1)
+        if naechste:
+            schritt = '%s (bis %s)' % (naechste.summary or naechste.activity_type_id.name,
+                                       naechste.date_deadline.strftime('%d.%m.'))
+            wer = LEUTE.get(naechste.user_id.id, naechste.user_id.name)
+
+    if wartet:
+        tun = 'Warten auf: %s' % esc(wartet)
+    elif schritt:
+        tun = esc(schritt)
+    else:
+        tun = '⚠️ Nächster Schritt fehlt in der Aufgabe.'
+    if (wartet or schritt) and wer:
+        tun += ' — <b>liegt bei: %s</b>' % esc(wer)
+
+    stand = [esc(record.stage_id.name or 'ohne Stufe')]
+    if pruefen:
+        stand.append('wieder prüfen %s' % esc(pruefen))
     if record.date_deadline:
-        parts.append('Frist: %s' % record.date_deadline.strftime('%d.%m.%Y %H:%M'))
-    task_text = strip_html(record.description)[:500]
-    if task_text:
-        parts.append(task_text)
-    parts.append('Aufgabe in Odoo: /odoo/project.task/%d' % record.id)
-    return '\n\n'.join(parts)
+        stand.append('Frist %s' % datum_text(record.date_deadline))
+
+    basis = env['ir.config_parameter'].sudo().get_param('web.base.url') or 'https://frawo.tech'
+    link = '%s/odoo/project.task/%d' % (basis.rstrip('/'), record.id)
+
+    teile = []
+    if worum:
+        teile.append("<p><b>Worum geht's:</b> %s</p>" % esc(worum))
+    teile.append('<p><b>Was jetzt zu tun ist:</b> %s</p>' % tun)
+    teile.append('<p><b>Stand:</b> %s</p>' % ' · '.join(stand))
+    teile.append('<p>→ <a href="%s">%s</a></p>' % (link, link))
+    return ''.join(teile)
 
 
 def sync_now(env, user):
