@@ -7,7 +7,15 @@ Discogs-Abgleich: `discogs_abgleich.norm` auf Artist und Titel) und schreibt
 je Titel den gerundeten Mittelwert aller Energie-Urteile, die Quelle und die
 Sendungen mit mindestens einem passt=0-Urteil. Rät nie: ohne eindeutigen
 Katalog-Treffer wird nichts geschrieben, der Titel landet nur in der
-Offen-Liste. Schreiben ausschließlich über `beets.library` (`item.store()`).
+Offen-Liste. Schreiben ausschließlich über `beets.library` (`item.store()`),
+und nur, wenn sich dabei tatsächlich etwas ändert.
+
+`passt_nicht` wird je Lauf auf den aktuellen Export-Stand GESETZT, nicht
+gemergt: Odoo hält in `frawo.radio.urteil` je Titel/Art/Person nur das
+jeweils letzte Urteil (UNIQUE-Constraint), der Export ist also bereits die
+aktuelle Wahrheit. Wird ein früheres passt=0 später zu passt=1 korrigiert,
+verschwindet die Sendung dadurch auch wieder aus `passt_nicht` (Controller-
+Entscheidung, Task-7-Review Fix-Runde 1).
 
 Spec: DOCS/superpowers/specs/2026-09-30-frawo-funk-musikredaktion-design.md
 """
@@ -16,7 +24,7 @@ import collections
 import csv
 import datetime
 import os
-import shutil
+import sqlite3
 import sys
 
 import requests
@@ -59,7 +67,8 @@ def auswerten(zeilen):
     Energie: kaufmännisch gerundeter Mittelwert aller 'energie'-Urteile
     (None, wenn keine vorliegen). passt_nicht: Sendungen, in denen
     mindestens ein 'passt'-Urteil mit wert=0 abgegeben wurde, alphabetisch
-    sortiert, ohne Duplikate."""
+    sortiert, ohne Duplikate — das ist bereits der AKTUELLE Stand (Export
+    enthält je Person/Titel/Art nur das letzte Urteil), kein Delta."""
     energie = [z['wert'] for z in zeilen if z.get('art') == 'energie']
     passt_nicht = sorted({z.get('sendung') for z in zeilen
                            if z.get('art') == 'passt' and z.get('wert') == 0 and z.get('sendung')})
@@ -88,14 +97,42 @@ def plan_erstellen(export_rows, katalog):
     return zuordnungen, offen
 
 
-def merge_passt_nicht(bestehend, neue):
-    """Kommagetrennte Sendungsliste: bestehenden beets-Wert behalten, neue
-    Sendungen anhängen, keine Duplikate, Reihenfolge stabil."""
-    vorhandene = [s.strip() for s in (bestehend or '').split(',') if s.strip()]
-    for s in neue:
-        if s and s not in vorhandene:
-            vorhandene.append(s)
-    return ', '.join(vorhandene)
+def lauf(export_rows, items, sichern, csv_schreiben, speichern, probe=False):
+    """Orchestriert einen kompletten Durchlauf rein über injizierte
+    I/O-Funktionen — dadurch ohne beets/Netzwerk/Dateisystem mit
+    Mock-Aufruflisten testbar (Review-Befund: main() selbst war
+    ungetestet).
+
+    sichern()        -> wird bei einem echten Lauf GENAU EINMAL aufgerufen,
+                         bevor `speichern` auch nur ein einziges Mal läuft.
+                         Bei `probe=True` NIE.
+    speichern(item_id, energie, passt_nicht_liste)
+                      -> True  = tatsächlich geschrieben (etwas geändert)
+                         False = Item gefunden, aber nichts zu ändern
+                         None  = Item nicht mehr im Katalog vorhanden
+                                 (landet als 'item_verschwunden' in `offen`,
+                                 statt still übersprungen zu werden)
+    csv_schreiben(offen) -> nur aufgerufen, wenn am Ende der Liste (inkl.
+                         evtl. verschwundener Items) nicht leer ist, und nie
+                         bei `probe=True`.
+
+    Rückgabe: {'zuordnungen', 'offen', 'geschrieben'}."""
+    zuordnungen, offen = plan_erstellen(export_rows, items)
+    ergebnis = {'zuordnungen': zuordnungen, 'offen': list(offen), 'geschrieben': 0}
+    if probe:
+        return ergebnis
+
+    sichern()
+    for z in zuordnungen:
+        wurde_geschrieben = speichern(z['item_id'], z['energie'], z['passt_nicht'])
+        if wurde_geschrieben is None:
+            ergebnis['offen'].append({'track_id': z['track_id'], 'grund': 'item_verschwunden', 'anzahl_urteile': 0})
+        elif wurde_geschrieben:
+            ergebnis['geschrieben'] += 1
+
+    if ergebnis['offen']:
+        csv_schreiben(ergebnis['offen'])
+    return ergebnis
 
 
 # ---------------------------------------------------------------------------
@@ -123,16 +160,55 @@ def csv_schreiben(offen, pfad=OFFEN_CSV):
             w.writerow([o['track_id'], o['grund'], o['anzahl_urteile']])
 
 
-def sichern(db_pfad=DB_PFAD, datum=None):
-    """Kopiert die beets-DB vor dem Schreiben weg. Gibt den Zielpfad zurück."""
+def db_sichern(db_pfad=DB_PFAD, datum=None):
+    """Kopiert die beets-DB vor dem Schreiben weg — über die sqlite3-
+    Online-Backup-API (konsistenter Snapshot, auch falls die Quelle gerade
+    von einer anderen Library-Instanz offen gehalten wird; sicherer als ein
+    reiner Dateikopie-`shutil.copy2`). Gibt den Zielpfad zurück."""
     datum = datum or datetime.date.today().isoformat()
     ziel = '%s.vor-rueckschreiben-%s' % (db_pfad, datum)
-    shutil.copy2(db_pfad, ziel)
+    quelle = sqlite3.connect(db_pfad)
+    try:
+        zielverbindung = sqlite3.connect(ziel)
+        try:
+            quelle.backup(zielverbindung)
+        finally:
+            zielverbindung.close()
+    finally:
+        quelle.close()
     return ziel
 
 
 def _katalog_aus_lib(lib):
     return [{'id': it.id, 'artist': it.artist, 'title': it.title} for it in lib.items()]
+
+
+def _macher_speichern(lib, datum):
+    """Baut die echte `speichern`-Funktion für `lauf()`. Schreibt ein Item
+    nur (und zählt es nur als 'geschrieben'), wenn sich energie/
+    quelle_energie oder passt_nicht gegenüber dem aktuellen beets-Wert
+    TATSÄCHLICH ändern — vermeidet unnötige `item.store()`-Aufrufe z. B.
+    wenn für einen Titel nur passt=1-Urteile vorliegen. `passt_nicht` wird
+    gesetzt (nicht gemergt), siehe Moduldoku."""
+    def speichern(item_id, energie, passt_nicht):
+        item = lib.get_item(item_id)
+        if item is None:
+            return None
+        aendert = False
+        if energie is not None:
+            neue_quelle = 'Redaktion %s' % datum
+            if str(item.get('energie', '')) != str(energie) or item.get('quelle_energie', '') != neue_quelle:
+                item.energie = energie
+                item.quelle_energie = neue_quelle
+                aendert = True
+        neu_passt = ', '.join(passt_nicht)
+        if item.get('passt_nicht', '') != neu_passt:
+            item.passt_nicht = neu_passt
+            aendert = True
+        if aendert:
+            item.store()
+        return aendert
+    return speichern
 
 
 def main(argv=None):
@@ -146,49 +222,33 @@ def main(argv=None):
     export = export_holen(token)
     lib = beets.library.Library(DB_PFAD)
     katalog = _katalog_aus_lib(lib)
-    zuordnungen, offen = plan_erstellen(export, katalog)
     datum = datetime.date.today().isoformat()
+
+    def sichern_und_melden():
+        ziel = db_sichern(datum=datum)
+        print('DB gesichert nach', ziel)
+
+    def csv_schreiben_und_melden(offen):
+        csv_schreiben(offen)
+        print('Offen-Liste geschrieben: %s (%d Eintraege)' % (OFFEN_CSV, len(offen)))
+
+    ergebnis = lauf(export, katalog, sichern_und_melden, csv_schreiben_und_melden,
+                     _macher_speichern(lib, datum), probe=args.probe)
 
     titel_gesamt = len({z['track_id'] for z in export})
     print('Export-Zeilen: %d, Titel gesamt: %d, zugeordnet: %d, offen: %d'
-          % (len(export), titel_gesamt, len(zuordnungen), len(offen)))
-    for z in zuordnungen:
+          % (len(export), titel_gesamt, len(ergebnis['zuordnungen']), len(ergebnis['offen'])))
+    for z in ergebnis['zuordnungen']:
         print('  item=%s %s energie=%s passt_nicht=%s'
               % (z['item_id'], z['track_id'], z['energie'], z['passt_nicht'] or '-'))
-    for o in offen:
+    for o in ergebnis['offen']:
         print('  offen: %s (%s, %d Urteil(e))' % (o['track_id'], o['grund'], o['anzahl_urteile']))
 
     if args.probe:
         print('PROBE: nichts geschrieben.')
         return 0
 
-    # DB-Sicherung vor JEDEM echten Lauf, unabhängig davon, ob am Ende
-    # etwas zu schreiben ist (Vorgabe: Sicherung *vor* dem Lauf, nicht nur
-    # vor tatsächlichen Schreibzugriffen).
-    sicherung = sichern(datum=datum)
-    print('DB gesichert nach', sicherung)
-
-    if offen:
-        csv_schreiben(offen)
-        print('Offen-Liste geschrieben:', OFFEN_CSV)
-
-    if not zuordnungen:
-        print('Nichts zu schreiben.')
-        return 0
-
-    geschrieben = 0
-    for z in zuordnungen:
-        item = lib.get_item(z['item_id'])
-        if item is None:
-            continue
-        if z['energie'] is not None:
-            item.energie = z['energie']
-            item.quelle_energie = 'Redaktion %s' % datum
-        if z['passt_nicht']:
-            item.passt_nicht = merge_passt_nicht(item.get('passt_nicht', ''), z['passt_nicht'])
-        item.store()
-        geschrieben += 1
-    print('geschrieben: %d Titel' % geschrieben)
+    print('geschrieben: %d Titel' % ergebnis['geschrieben'])
     return 0
 
 

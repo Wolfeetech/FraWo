@@ -1,4 +1,5 @@
-import os, sys, unittest
+import os, sqlite3, sys, tempfile, unittest
+from unittest import mock
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import rueckschreiben as r
 
@@ -57,21 +58,6 @@ class TestAuswerten(unittest.TestCase):
     def test_passt_1_wird_nicht_aufgenommen(self):
         zeilen = [{'art': 'passt', 'wert': 1, 'sendung': '06 Deep Night'}]
         self.assertEqual(r.auswerten(zeilen)['passt_nicht'], [])
-
-
-class TestMergePasstNicht(unittest.TestCase):
-    def test_leerer_bestand(self):
-        self.assertEqual(r.merge_passt_nicht('', ['06 Deep Night']), '06 Deep Night')
-
-    def test_haengt_neue_an(self):
-        self.assertEqual(r.merge_passt_nicht('01 Sunrise', ['06 Deep Night']), '01 Sunrise, 06 Deep Night')
-
-    def test_kein_duplikat(self):
-        self.assertEqual(r.merge_passt_nicht('01 Sunrise, 06 Deep Night', ['06 Deep Night']),
-                          '01 Sunrise, 06 Deep Night')
-
-    def test_none_bestand_wie_leer(self):
-        self.assertEqual(r.merge_passt_nicht(None, ['06 Deep Night']), '06 Deep Night')
 
 
 class TestPlanErstellen(unittest.TestCase):
@@ -133,18 +119,148 @@ class TestTokenLesen(unittest.TestCase):
             self.assertEqual(r.token_lesen(pfad), 'geheim123')
 
 
-class TestSichern(unittest.TestCase):
-    def test_kopiert_db_mit_datum_im_namen(self):
-        import tempfile
+class TestDbSichern(unittest.TestCase):
+    def test_kopiert_db_mit_datum_im_namen_und_gleichem_inhalt(self):
+        # Minor-Fix: sqlite3-Online-Backup-API statt shutil.copy2 -> Inhalt
+        # ueber eine echte sqlite-Abfrage pruefen, nicht per Byte-Vergleich.
         with tempfile.TemporaryDirectory() as tmp:
             quelle = os.path.join(tmp, 'musik.db')
-            with open(quelle, 'w', encoding='utf-8') as f:
-                f.write('inhalt')
-            ziel = r.sichern(quelle, datum='2026-09-30')
+            c = sqlite3.connect(quelle)
+            c.execute('create table items (id integer, titel text)')
+            c.execute('insert into items values (1, "Testtitel")')
+            c.commit()
+            c.close()
+            ziel = r.db_sichern(quelle, datum='2026-09-30')
             self.assertEqual(ziel, quelle + '.vor-rueckschreiben-2026-09-30')
             self.assertTrue(os.path.exists(ziel))
-            with open(ziel, encoding='utf-8') as f:
-                self.assertEqual(f.read(), 'inhalt')
+            z = sqlite3.connect(ziel)
+            zeile = z.execute('select id, titel from items').fetchone()
+            z.close()
+            self.assertEqual(zeile, (1, 'Testtitel'))
+
+
+class _FakeItem:
+    """Minimales, beets-freies Double für item.get/Attributzugriff/store()."""
+    def __init__(self, **felder):
+        object.__setattr__(self, '_werte', dict(felder))
+        object.__setattr__(self, 'gespeichert', 0)
+
+    def get(self, key, default=None):
+        return self._werte.get(key, default)
+
+    def __setattr__(self, name, value):
+        self._werte[name] = value
+
+    def __getattr__(self, name):
+        try:
+            return self._werte[name]
+        except KeyError:
+            raise AttributeError(name)
+
+    def store(self):
+        object.__setattr__(self, 'gespeichert', self.gespeichert + 1)
+
+
+class _FakeLib:
+    def __init__(self, items_by_id):
+        self._items = items_by_id
+
+    def get_item(self, item_id):
+        return self._items.get(item_id)
+
+
+class TestMacherSpeichern(unittest.TestCase):
+    def test_schreibt_und_zaehlt_bei_aenderung(self):
+        item = _FakeItem()
+        speichern = r._macher_speichern(_FakeLib({1: item}), '2026-10-01')
+        self.assertTrue(speichern(1, 4, ['06 Deep Night']))
+        self.assertEqual(item.gespeichert, 1)
+        self.assertEqual(item.get('energie'), 4)
+        self.assertEqual(item.get('quelle_energie'), 'Redaktion 2026-10-01')
+        self.assertEqual(item.get('passt_nicht'), '06 Deep Night')
+
+    def test_keine_aenderung_kein_store_und_zaehlt_nicht(self):
+        # Wichtig-Befund 2: nur speichern/zaehlen, wenn sich etwas aendert.
+        item = _FakeItem(energie='4', quelle_energie='Redaktion 2026-10-01', passt_nicht='')
+        speichern = r._macher_speichern(_FakeLib({1: item}), '2026-10-01')
+        self.assertFalse(speichern(1, 4, []))
+        self.assertEqual(item.gespeichert, 0)
+
+    def test_nur_passt_1_urteile_lassen_energie_unveraendert(self):
+        item = _FakeItem(energie='3', quelle_energie='Redaktion 2026-09-20', passt_nicht='')
+        speichern = r._macher_speichern(_FakeLib({1: item}), '2026-10-01')
+        self.assertFalse(speichern(1, None, []))
+        self.assertEqual(item.gespeichert, 0)
+        self.assertEqual(item.get('energie'), '3')
+
+    def test_passt_nicht_wird_gesetzt_nicht_gemergt(self):
+        # Controller-Entscheidung: SETZEN, nicht mergen.
+        item = _FakeItem(passt_nicht='06 Deep Night')
+        speichern = r._macher_speichern(_FakeLib({1: item}), '2026-10-01')
+        self.assertTrue(speichern(1, None, ['01 Sunrise']))
+        self.assertEqual(item.get('passt_nicht'), '01 Sunrise')  # ersetzt, nicht angehaengt
+
+    def test_passt_nicht_wird_bei_leerer_liste_geleert(self):
+        item = _FakeItem(passt_nicht='06 Deep Night')
+        speichern = r._macher_speichern(_FakeLib({1: item}), '2026-10-01')
+        self.assertTrue(speichern(1, None, []))
+        self.assertEqual(item.get('passt_nicht'), '')
+
+    def test_item_verschwunden_gibt_none(self):
+        speichern = r._macher_speichern(_FakeLib({}), '2026-10-01')
+        self.assertIsNone(speichern(999, 4, []))
+
+
+class TestLauf(unittest.TestCase):
+    EXPORT = [{'track_id': 'A|Song', 'art': 'energie', 'wert': 5, 'sendung': ''}]
+
+    def test_sichern_laeuft_vor_jedem_speichern(self):
+        reihenfolge = []
+        sichern = mock.Mock(side_effect=lambda: reihenfolge.append('sichern'))
+        speichern = mock.Mock(side_effect=lambda *a: (reihenfolge.append('speichern'), True)[1])
+        csv_schreiben = mock.Mock()
+        r.lauf(self.EXPORT, KATALOG, sichern, csv_schreiben, speichern, probe=False)
+        self.assertEqual(reihenfolge, ['sichern', 'speichern'])
+
+    def test_probe_ruft_weder_sichern_noch_speichern_noch_csv(self):
+        sichern, speichern, csv_schreiben = mock.Mock(), mock.Mock(), mock.Mock()
+        ergebnis = r.lauf(self.EXPORT, KATALOG, sichern, csv_schreiben, speichern, probe=True)
+        sichern.assert_not_called()
+        speichern.assert_not_called()
+        csv_schreiben.assert_not_called()
+        self.assertEqual(len(ergebnis['zuordnungen']), 1)
+
+    def test_sichern_laeuft_auch_ohne_zuordnungen(self):
+        # Sicherung vor dem Lauf, nicht nur vor tatsaechlichen Treffern.
+        sichern, speichern, csv_schreiben = mock.Mock(), mock.Mock(), mock.Mock()
+        r.lauf([], KATALOG, sichern, csv_schreiben, speichern, probe=False)
+        sichern.assert_called_once()
+        speichern.assert_not_called()
+        csv_schreiben.assert_not_called()
+
+    def test_speichern_false_zaehlt_nicht_als_geschrieben(self):
+        sichern, csv_schreiben = mock.Mock(), mock.Mock()
+        speichern = mock.Mock(return_value=False)
+        ergebnis = r.lauf(self.EXPORT, KATALOG, sichern, csv_schreiben, speichern, probe=False)
+        self.assertEqual(ergebnis['geschrieben'], 0)
+        csv_schreiben.assert_not_called()  # nichts offen, nichts verschwunden
+
+    def test_verschwundenes_item_landet_in_offen_csv_statt_stillem_ueberspringen(self):
+        sichern, csv_schreiben = mock.Mock(), mock.Mock()
+        speichern = mock.Mock(return_value=None)
+        ergebnis = r.lauf(self.EXPORT, KATALOG, sichern, csv_schreiben, speichern, probe=False)
+        self.assertEqual(ergebnis['geschrieben'], 0)
+        self.assertTrue(any(o['grund'] == 'item_verschwunden' for o in ergebnis['offen']))
+        csv_schreiben.assert_called_once()
+        offen_arg = csv_schreiben.call_args[0][0]
+        self.assertTrue(any(o['grund'] == 'item_verschwunden' for o in offen_arg))
+
+    def test_mehrdeutige_und_unbekannte_landen_ebenfalls_in_csv(self):
+        export = [{'track_id': 'Boris Brejcha|Bells Of Eternity', 'art': 'energie', 'wert': 3, 'sendung': ''}]
+        sichern, speichern, csv_schreiben = mock.Mock(), mock.Mock(), mock.Mock()
+        ergebnis = r.lauf(export, KATALOG, sichern, csv_schreiben, speichern, probe=False)
+        speichern.assert_not_called()
+        csv_schreiben.assert_called_once_with(ergebnis['offen'])
 
 
 if __name__ == '__main__':
