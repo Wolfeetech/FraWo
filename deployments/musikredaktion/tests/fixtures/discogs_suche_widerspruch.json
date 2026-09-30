@@ -1,0 +1,4 @@
+{"results": [
+  {"id": 1, "type": "release", "title": "Artist - Track", "genre": ["Electronic"], "style": ["Techno"], "uri": "/release/1"},
+  {"id": 2, "type": "release", "title": "Artist - Track", "genre": ["Electronic"], "style": ["Disco", "Nu-Disco"], "uri": "/release/2"}
+]}

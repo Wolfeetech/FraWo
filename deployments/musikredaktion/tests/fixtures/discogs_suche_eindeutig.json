@@ -1,0 +1,8 @@
+{"results": [
+  {"id": 1234567, "type": "release", "title": "Chris Stussy - Won't Stop (Don't)",
+   "genre": ["Electronic"], "style": ["Deep House", "Minimal"],
+   "uri": "/release/1234567-Chris-Stussy-Wont-Stop-Dont"},
+  {"id": 1234568, "type": "release", "title": "Chris Stussy - Won't Stop (Don't)",
+   "genre": ["Electronic"], "style": ["Deep House"],
+   "uri": "/release/1234568-Chris-Stussy-Wont-Stop-Dont"}
+]}
