@@ -235,9 +235,12 @@ class RadioController(http.Controller):
 
     @http.route('/radio/schedule', type='http', auth='public', methods=['GET'], cors='*', csrf=False)
     def radio_schedule(self, **kwargs):
-        """Vereinfachter Sendeplan (nur Sendungen) vom AzuraCast-Sender,
-        5 Minuten im Prozessspeicher gecacht. Bei Fehler: HTTP 503 mit
-        leerer Liste, die Seite zeigt dann "Sendeplan gerade nicht erreichbar"."""
+        """Wiederkehrender Wochen-Sendeplan (Mo-So), aus den schedule_items
+        aller aktivierten Playlists gebaut (GET /api/station/1/playlists,
+        braucht X-API-Key -- anders als der frueher genutzte /schedule-
+        Occurrence-Feed, der kein volles 7-Tage-Fenster liefert), 5 Minuten
+        im Prozessspeicher gecacht. Bei Fehler: HTTP 503 mit leerer Liste,
+        die Seite zeigt dann "Sendeplan gerade nicht erreichbar"."""
         now = time.time()
         if _SCHEDULE_CACHE["data"] is not None and (now - _SCHEDULE_CACHE["ts"]) < _SCHEDULE_CACHE_TTL:
             return request.make_response(
@@ -248,8 +251,8 @@ class RadioController(http.Controller):
         try:
             base_url, api_key = self._get_azuracast_config()
             r = requests.get(
-                f"{base_url}/api/station/1/schedule",
-                params={"rows": 200}, verify=False, timeout=8,
+                f"{base_url}/api/station/1/playlists",
+                headers={'X-API-Key': api_key}, verify=False, timeout=8,
             )
             r.raise_for_status()
             vereinfacht = _schedule_vereinfachen(r.json())
