@@ -15,6 +15,8 @@
 #
 # FASSUNG 6 (29.09.2026, #1557): Block 'Blockiert bei dir' mit Grund statt
 #   leerer Aktivitaeten; Warnung bei Blockiert ohne Grund-Zeile.
+#   Peer-Review Jarvis (30.09., Nachricht 21014): Warnung pruefte nur 'Wartet
+#   auf:', jetzt alle drei Pflicht-Marker (Wartet auf / Liegt bei / Wieder pruefen).
 #
 # FASSUNG 5 (09.09.2026):
 #   Ergänzt: TAG_BEANTWORTET (160) - Aufgaben, die Wolf/Kunde beantwortet hat
@@ -150,7 +152,9 @@ def pruef_datum(t):
 blockiert_bei_wolf = blockiert.filtered(
     lambda t: 'Liegt bei:</b> Wolf' in str(t.description or '')
     and pruef_datum(t) is not None and pruef_datum(t) <= HEUTE)
-blockiert_ohne_grund = blockiert.filtered(lambda t: 'Wartet auf:</b>' not in str(t.description or ''))
+BLOCKER_MARKER = ('Wartet auf:</b>', 'Liegt bei:</b>', 'Wieder prüfen:</b>')
+blockiert_ohne_grund = blockiert.filtered(
+    lambda t: any(m not in str(t.description or '') for m in BLOCKER_MARKER))
 
 entwuerfe = env['account.move'].search([('state', '=', 'draft'),
     ('move_type', 'in', ['out_invoice', 'out_refund', 'in_invoice', 'in_refund'])])

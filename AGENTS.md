@@ -148,9 +148,7 @@ Am 09.09.2026 sind drei „geprüfte" Änderungen im Betrieb gescheitert. Daraus
 - **Eine Prüfung, die nicht korrekt scheitern kann, ist schlechter als keine** — man glaubt ihr. (Die Filter-Selbstprüfung meldete für jeden Filter „nicht auswertbar", obwohl alle 17 in Ordnung waren.)
 - **Nach jedem Reload das Ergebnis am Ziel messen**, nicht den Rückgabewert lesen. Prometheus: `curl /api/v1/rules` **und** `reloadConfigSuccess`.
 - **Bei Zeitplänen beide Zeitzonen prüfen.** systemd rechnet in der Zeitzone des **Wirts**, Container-Cron oft in **UTC**. Ein Kopierlauf „nach" dem Abzug lief dadurch drei Stunden **davor** und kopierte täglich die Datei vom Vortag — mit grüner Erfolgsmeldung.
-- **Zeilenenden:** Unter Windows geschriebene Skripte für Linux **binär oder mit `newline='
-'`** schreiben. `
-` ist kein Syntaxfehler, deshalb meldet `bash -n` auf der Windows-Seite nichts — auf dem Ziel scheitert es trotzdem.
+- **Zeilenenden:** Unter Windows geschriebene Skripte für Linux **binär oder mit `newline='\n'`** schreiben. `\r` ist kein Syntaxfehler, deshalb meldet `bash -n` auf der Windows-Seite nichts — auf dem Ziel scheitert es trotzdem.
 
 ## Peer-Review (Vier-Augen-Prinzip) — PFLICHT
 
