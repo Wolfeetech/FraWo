@@ -108,6 +108,12 @@ class FrawoRadioVotes(http.Controller):
 
     @http.route("/radio/redaktion/urteil", type="http", auth="user", csrf=False, methods=["POST"])
     def radio_redaktion_urteil(self, **kw):
+        if request.httprequest.mimetype != "application/json":
+            return request.make_response(
+                json.dumps({"ok": False, "error": "bad_content_type"}),
+                headers=[("Content-Type", "application/json")],
+                status=415,
+            )
         user = request.env.user
         if not user.has_group("frawo_agent.group_radio_redaktion"):
             return request.make_response(
@@ -118,6 +124,8 @@ class FrawoRadioVotes(http.Controller):
         try:
             body = json.loads(request.httprequest.data.decode("utf-8") or "{}")
         except (ValueError, UnicodeDecodeError):
+            body = {}
+        if not isinstance(body, dict):
             body = {}
         try:
             request.env["frawo.radio.urteil"].urteilen(

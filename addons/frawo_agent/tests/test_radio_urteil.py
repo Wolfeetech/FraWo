@@ -115,6 +115,26 @@ class TestRadioUrteilRoutes(HttpCase):
         self.assertEqual(r.status_code, 400)
         self.assertFalse(r.json()["ok"])
 
+    def test_urteil_falscher_content_type_415(self):
+        self.authenticate("redakteurin_test_urteil", "redakteurin_test_urteil_pw")
+        r = self.url_open(
+            "/radio/redaktion/urteil",
+            data="track_id=A|B&art=energie&wert=3",
+            headers={"Content-Type": "text/plain"},
+        )
+        self.assertEqual(r.status_code, 415)
+        self.assertEqual(r.json(), {"ok": False, "error": "bad_content_type"})
+
+    def test_urteil_json_array_body_400_nicht_500(self):
+        self.authenticate("redakteurin_test_urteil", "redakteurin_test_urteil_pw")
+        r = self.url_open(
+            "/radio/redaktion/urteil",
+            data=json.dumps([1, 2, 3]),
+            headers={"Content-Type": "application/json"},
+        )
+        self.assertEqual(r.status_code, 400)
+        self.assertFalse(r.json()["ok"])
+
     def test_export_ohne_token_401(self):
         r = self.url_open("/radio/redaktion/export")
         self.assertEqual(r.status_code, 401)

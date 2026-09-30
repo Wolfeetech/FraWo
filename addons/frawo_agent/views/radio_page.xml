@@ -2175,6 +2175,8 @@ body {
                 if (showTag) {
                   showTag.textContent = '📻 SHOW: ' + np.playlist.toUpperCase();
                 }
+              } else {
+                window.ffCurrentSendung = '';
               }
               if (elMeta) {
                 var metaBits = [];
@@ -2240,7 +2242,12 @@ body {
 
   function updateTicker() {
     if (!elTicker) return;
-    var showName = (lastNowPlaying &amp;&amp; lastNowPlaying.playlist) ? lastNowPlaying.playlist : null;
+    var showName = null;
+    if (lastNowPlaying) {
+      if (lastNowPlaying.playlist) {
+        showName = lastNowPlaying.playlist;
+      }
+    }
     if (!showName) {
       var activeCard = document.querySelector('#ff-schedule .active-slot .ff-card-name');
       showName = activeCard ? activeCard.textContent : 'FraWo Funk';
@@ -2253,7 +2260,17 @@ body {
     }
     parts.push('● SHOW: ' + showName);
     parts.push('● FRAWO FUNK · 24/7 LIVE');
-    elTicker.innerHTML = parts.join('&lt;span&gt;//&lt;/span&gt;');
+    while (elTicker.firstChild) {
+      elTicker.removeChild(elTicker.firstChild);
+    }
+    parts.forEach(function (part, idx) {
+      if (idx !== 0) {
+        var sep = document.createElement('span');
+        sep.textContent = '//';
+        elTicker.appendChild(sep);
+      }
+      elTicker.appendChild(document.createTextNode(part));
+    });
   }
 
   // Sendeplan live: Wochenreiter + Tagesplan werden aus /radio/schedule gebaut.

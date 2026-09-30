@@ -160,13 +160,17 @@ def csv_schreiben(offen, pfad=OFFEN_CSV):
             w.writerow([o['track_id'], o['grund'], o['anzahl_urteile']])
 
 
-def db_sichern(db_pfad=DB_PFAD, datum=None):
+def db_sichern(db_pfad=DB_PFAD, zeitstempel=None):
     """Kopiert die beets-DB vor dem Schreiben weg — über die sqlite3-
     Online-Backup-API (konsistenter Snapshot, auch falls die Quelle gerade
     von einer anderen Library-Instanz offen gehalten wird; sicherer als ein
-    reiner Dateikopie-`shutil.copy2`). Gibt den Zielpfad zurück."""
-    datum = datum or datetime.date.today().isoformat()
-    ziel = '%s.vor-rueckschreiben-%s' % (db_pfad, datum)
+    reiner Dateikopie-`shutil.copy2`). Gibt den Zielpfad zurück.
+
+    `zeitstempel` statt reinem Datum (Bugfix Fix-Welle): bei mehreren
+    Läufen am selben Tag (z. B. manueller Lauf nach dem Cron) überschreibt
+    ein datumsgenauer Name sonst das Backup vom selben Tag."""
+    zeitstempel = zeitstempel or datetime.datetime.now().strftime('%Y%m%d-%H%M%S')
+    ziel = '%s.vor-rueckschreiben-%s' % (db_pfad, zeitstempel)
     quelle = sqlite3.connect(db_pfad)
     try:
         zielverbindung = sqlite3.connect(ziel)
@@ -196,10 +200,13 @@ def _macher_speichern(lib, datum):
             return None
         aendert = False
         if energie is not None:
-            neue_quelle = 'Redaktion %s' % datum
-            if str(item.get('energie', '')) != str(energie) or item.get('quelle_energie', '') != neue_quelle:
+            # quelle_energie nur bei tatsaechlicher Energie-Aenderung neu
+            # setzen (Bugfix Fix-Welle): `neue_quelle` traegt das heutige
+            # Datum, ein Vergleich dagegen macht den taeglichen Cron-Lauf
+            # sonst JEDEN Tag zu einem Schreibzugriff, auch ohne Aenderung.
+            if str(item.get('energie', '')) != str(energie):
                 item.energie = energie
-                item.quelle_energie = neue_quelle
+                item.quelle_energie = 'Redaktion %s' % datum
                 aendert = True
         neu_passt = ', '.join(passt_nicht)
         if item.get('passt_nicht', '') != neu_passt:
@@ -223,9 +230,10 @@ def main(argv=None):
     lib = beets.library.Library(DB_PFAD)
     katalog = _katalog_aus_lib(lib)
     datum = datetime.date.today().isoformat()
+    zeitstempel = datetime.datetime.now().strftime('%Y%m%d-%H%M%S')
 
     def sichern_und_melden():
-        ziel = db_sichern(datum=datum)
+        ziel = db_sichern(zeitstempel=zeitstempel)
         print('DB gesichert nach', ziel)
 
     def csv_schreiben_und_melden(offen):

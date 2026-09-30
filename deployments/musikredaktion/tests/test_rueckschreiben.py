@@ -120,7 +120,7 @@ class TestTokenLesen(unittest.TestCase):
 
 
 class TestDbSichern(unittest.TestCase):
-    def test_kopiert_db_mit_datum_im_namen_und_gleichem_inhalt(self):
+    def test_kopiert_db_mit_zeitstempel_im_namen_und_gleichem_inhalt(self):
         # Minor-Fix: sqlite3-Online-Backup-API statt shutil.copy2 -> Inhalt
         # ueber eine echte sqlite-Abfrage pruefen, nicht per Byte-Vergleich.
         with tempfile.TemporaryDirectory() as tmp:
@@ -130,13 +130,25 @@ class TestDbSichern(unittest.TestCase):
             c.execute('insert into items values (1, "Testtitel")')
             c.commit()
             c.close()
-            ziel = r.db_sichern(quelle, datum='2026-09-30')
-            self.assertEqual(ziel, quelle + '.vor-rueckschreiben-2026-09-30')
+            ziel = r.db_sichern(quelle, zeitstempel='20260930-221530')
+            self.assertEqual(ziel, quelle + '.vor-rueckschreiben-20260930-221530')
             self.assertTrue(os.path.exists(ziel))
             z = sqlite3.connect(ziel)
             zeile = z.execute('select id, titel from items').fetchone()
             z.close()
             self.assertEqual(zeile, (1, 'Testtitel'))
+
+    def test_ohne_zeitstempel_wird_uhrzeit_mit_sekunden_verwendet(self):
+        # Fix-Welle: reines Datum im Namen ueberschreibt ein zweites Backup
+        # am selben Tag -- Name muss Stunde/Minute/Sekunde tragen.
+        import re
+        with tempfile.TemporaryDirectory() as tmp:
+            quelle = os.path.join(tmp, 'musik.db')
+            sqlite3.connect(quelle).close()
+            ziel = r.db_sichern(quelle)
+            name = os.path.basename(ziel)
+            self.assertRegex(name, r'^musik\.db\.vor-rueckschreiben-\d{8}-\d{6}$')
+            self.assertIsNone(re.search(r'vor-rueckschreiben-\d{4}-\d{2}-\d{2}$', name))
 
 
 class _FakeItem:
@@ -185,6 +197,16 @@ class TestMacherSpeichern(unittest.TestCase):
         speichern = r._macher_speichern(_FakeLib({1: item}), '2026-10-01')
         self.assertFalse(speichern(1, 4, []))
         self.assertEqual(item.gespeichert, 0)
+
+    def test_gleiche_energie_aber_alte_quelle_kein_taeglicher_rewrite(self):
+        # Fix-Welle: quelle_energie traegt das heutige Datum -- ein reiner
+        # Vergleich mit dem gespeicherten Wert schreibt sonst JEDEN Tag neu,
+        # auch wenn sich die Energie seit Tagen nicht geaendert hat.
+        item = _FakeItem(energie='4', quelle_energie='Redaktion 2026-09-20', passt_nicht='')
+        speichern = r._macher_speichern(_FakeLib({1: item}), '2026-10-01')
+        self.assertFalse(speichern(1, 4, []))
+        self.assertEqual(item.gespeichert, 0)
+        self.assertEqual(item.get('quelle_energie'), 'Redaktion 2026-09-20')  # unveraendert
 
     def test_nur_passt_1_urteile_lassen_energie_unveraendert(self):
         item = _FakeItem(energie='3', quelle_energie='Redaktion 2026-09-20', passt_nicht='')
