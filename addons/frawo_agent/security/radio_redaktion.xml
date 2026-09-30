@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="group_radio_redaktion" model="res.groups">
+    <field name="name">Radio-Redaktion</field>
+    <field name="comment">Darf auf frawo.tech/radio den laufenden Titel beurteilen (Energie, passt/passt nicht). Wolf, Franz, Kiosk.</field>
+  </record>
+</odoo>

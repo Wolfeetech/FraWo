@@ -6,6 +6,7 @@
     "license": "LGPL-3",
     "depends": ["project", "mail", "maintenance", "website", "spreadsheet_dashboard"],
     "data": [
+        "security/radio_redaktion.xml",
         "security/ir.model.access.csv",
         "data/config_params.xml",
         "data/ir_cron.xml",

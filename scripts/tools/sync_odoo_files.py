@@ -13,6 +13,7 @@ FILES_TO_SYNC = [
     "addons/frawo_agent/views/project_task_search_views.xml",
     "addons/frawo_agent/views/project_dashboard_views.xml",
     "addons/frawo_agent/security/ir.model.access.csv",
+    "addons/frawo_agent/security/radio_redaktion.xml",
     "addons/frawo_agent/__manifest__.py",
     "addons/frawo_agent/controllers/__init__.py",
     "addons/frawo_agent/controllers/main.py",
