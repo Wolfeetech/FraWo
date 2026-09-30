@@ -10,6 +10,7 @@ import json
 from datetime import timedelta
 
 from odoo import fields, http
+from odoo.exceptions import ValidationError
 from odoo.http import request
 from odoo.tools import consteq
 
@@ -83,6 +84,64 @@ class FrawoRadioVotes(http.Controller):
         except (ValueError, TypeError):
             min_count = 1
         rows = request.env["frawo.radio.rating"].sudo().export_rows(min_count=min_count)
+        return request.make_response(
+            json.dumps(rows),
+            headers=[("Content-Type", "application/json"), ("Cache-Control", "no-store")],
+        )
+
+    @http.route("/radio/redaktion/info", type="http", auth="public", csrf=False, methods=["GET"])
+    def radio_redaktion_info(self, track_id=None, **kw):
+        """Eigene Redaktions-Urteile fuers laufende Titel-Panel (View 3353)."""
+        user = request.env.user
+        is_redakteur = bool(user) and not user._is_public() and user.has_group(
+            "frawo_agent.group_radio_redaktion")
+        data = {"ok": True, "redakteur": is_redakteur, "eigene": {"energie": None, "passt": None}}
+        if is_redakteur:
+            recs = request.env["frawo.radio.urteil"].search(
+                [("track_id", "=", track_id or ""), ("user_id", "=", user.id)])
+            for r in recs:
+                data["eigene"][r.art] = r.wert
+        return request.make_response(
+            json.dumps(data),
+            headers=[("Content-Type", "application/json"), ("Cache-Control", "no-store")],
+        )
+
+    @http.route("/radio/redaktion/urteil", type="http", auth="user", csrf=False, methods=["POST"])
+    def radio_redaktion_urteil(self, **kw):
+        user = request.env.user
+        if not user.has_group("frawo_agent.group_radio_redaktion"):
+            return request.make_response(
+                json.dumps({"ok": False, "error": "forbidden"}),
+                headers=[("Content-Type", "application/json")],
+                status=403,
+            )
+        try:
+            body = json.loads(request.httprequest.data.decode("utf-8") or "{}")
+        except (ValueError, UnicodeDecodeError):
+            body = {}
+        try:
+            request.env["frawo.radio.urteil"].urteilen(
+                body.get("track_id"), body.get("art"), body.get("wert"), body.get("sendung", ""))
+        except (ValueError, TypeError, ValidationError) as e:
+            return request.make_response(
+                json.dumps({"ok": False, "error": str(e)}),
+                headers=[("Content-Type", "application/json")],
+                status=400,
+            )
+        return request.make_response(
+            json.dumps({"ok": True}),
+            headers=[("Content-Type", "application/json")],
+        )
+
+    @http.route("/radio/redaktion/export", type="http", auth="public", csrf=False, methods=["GET"])
+    def radio_redaktion_export(self, **kw):
+        if not self._export_token_ok():
+            return request.make_response(
+                json.dumps({"error": "unauthorized"}),
+                headers=[("Content-Type", "application/json")],
+                status=401,
+            )
+        rows = request.env["frawo.radio.urteil"].sudo().export_rows()
         return request.make_response(
             json.dumps(rows),
             headers=[("Content-Type", "application/json"), ("Cache-Control", "no-store")],
