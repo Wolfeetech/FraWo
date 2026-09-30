@@ -2147,7 +2147,7 @@ body {
           .then(function(list) {
             if (!reqResults) return;
             if (!Array.isArray(list) || list.length === 0) {
-              reqResults.innerHTML = '&lt;div style="font-family:monospace;font-size:0.75rem;color:#94a3b8;padding:8px 0;"&gt;Kein passender Track in der aktuellen Show für "' + q.replace(/&lt;/g, '&amp;lt;') + '".&lt;/div&gt;';
+              reqResults.innerHTML = '&lt;div style="font-family:monospace;font-size:0.75rem;color:#94a3b8;padding:8px 0;"&gt;Kein passender Track in der aktuellen Show für "' + q.replace(/&lt;/g, '&lt;') + '".&lt;/div&gt;';
               return;
             }
 
@@ -2269,19 +2269,19 @@ body {
       var safeArtist = artist.replace(/"/g, '');
 
       div.innerHTML =
-        '<img class="ff-hist-art" src="' + art + '" alt="" loading="lazy"/>' +
-        '<div class="ff-hist-title" title="' + safeTitle + '">' + title + '</div>' +
-        '<div class="ff-hist-artist" title="' + safeArtist + '">' + artist + '</div>' +
-        '<div class="ff-hist-rating">' +
-          '<div class="ff-hist-stars">' +
-            '<span class="ff-hstar" data-v="1" title="1 Stern">☆</span>' +
-            '<span class="ff-hstar" data-v="2" title="2 Sterne">☆</span>' +
-            '<span class="ff-hstar" data-v="3" title="3 Sterne">☆</span>' +
-            '<span class="ff-hstar" data-v="4" title="4 Sterne">☆</span>' +
-            '<span class="ff-hstar" data-v="5" title="5 Sterne">☆</span>' +
-          '</div>' +
-          '<span class="ff-hist-score">...</span>' +
-        '</div>';
+        '&lt;img class="ff-hist-art" src="' + art + '" alt="" loading="lazy"/&gt;' +
+        '&lt;div class="ff-hist-title" title="' + safeTitle + '"&gt;' + title + '&lt;/div&gt;' +
+        '&lt;div class="ff-hist-artist" title="' + safeArtist + '"&gt;' + artist + '&lt;/div&gt;' +
+        '&lt;div class="ff-hist-rating"&gt;' +
+          '&lt;div class="ff-hist-stars"&gt;' +
+            '&lt;span class="ff-hstar" data-v="1" title="1 Stern"&gt;☆&lt;/span&gt;' +
+            '&lt;span class="ff-hstar" data-v="2" title="2 Sterne"&gt;☆&lt;/span&gt;' +
+            '&lt;span class="ff-hstar" data-v="3" title="3 Sterne"&gt;☆&lt;/span&gt;' +
+            '&lt;span class="ff-hstar" data-v="4" title="4 Sterne"&gt;☆&lt;/span&gt;' +
+            '&lt;span class="ff-hstar" data-v="5" title="5 Sterne"&gt;☆&lt;/span&gt;' +
+          '&lt;/div&gt;' +
+          '&lt;span class="ff-hist-score"&gt;...&lt;/span&gt;' +
+        '&lt;/div&gt;';
 
       var ratingWrap = div.querySelector('.ff-hist-rating');
       var starEls = div.querySelectorAll('.ff-hstar');
@@ -2598,7 +2598,7 @@ body {
         <div>
           <div style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #a050f0; margin-bottom: 14px;">Kundenportal</div>
           <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px;">
-            <li><a href="/web/signup" style="font-size: 0.85rem; color: #98a29e; text-decoration: none;">Kundenkonto erstellen</a></li>
+            <li><a href="/contactus" style="font-size: 0.85rem; color: #98a29e; text-decoration: none;">Kundenkonto erstellen</a></li>
             <li><a href="/web/login?redirect=/my" style="font-size: 0.85rem; color: #98a29e; text-decoration: none;">Portal Login</a></li>
             <li><a href="/my" style="font-size: 0.85rem; color: #98a29e; text-decoration: none;">Auftragsstatus</a></li>
             <li><a href="/contactus" style="font-size: 0.85rem; color: #98a29e; text-decoration: none;">Direktanfrage</a></li>
