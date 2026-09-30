@@ -6,5 +6,7 @@ access_anker_tracker_product,anker.tracker.product,model_anker_tracker_product,b
 access_anker_tracker_consumption,anker.tracker.consumption,model_anker_tracker_consumption,base.group_user,1,1,1,1
 access_radio_vote_user,frawo.radio.vote.user,model_frawo_radio_vote,base.group_user,1,0,0,1
 access_radio_rating_user,frawo.radio.rating.user,model_frawo_radio_rating,base.group_user,1,1,1,1
+access_radio_urteil_redaktion,frawo.radio.urteil.redaktion,model_frawo_radio_urteil,frawo_agent.group_radio_redaktion,1,1,1,0
+access_radio_urteil_user,frawo.radio.urteil.user,model_frawo_radio_urteil,base.group_user,1,0,0,0
 
 

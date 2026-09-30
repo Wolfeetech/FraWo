@@ -9,6 +9,7 @@ from . import mail_message
 from . import radio_vote
 from . import radio_azuracast
 from . import radio_rating
+from . import radio_urteil
 
 
 
