@@ -54,8 +54,18 @@ Amazon-Beleg dazu, weil beide „Unbekannt“ hiessen.
   Amazon) → Eingangsrechnung, keine Aufgabe. Sieht man die Zahlungsquelle und
   ist es ein GbR-Beleg (Entity FraWo, „FraWo“/„Wolfeetech“ im Text) und kein
   GbR-Konto → **Auslage Wolf**: Nummer `Wolf_Einkauf_JJJJ_NN`, gebucht, Zahlung
-  im Journal BNK1. Sonst bleibt die Rechnung Entwurf.
+  im Journal ~~BNK1~~ „Auslagen Wolf“ (siehe Korrektur unten). Sonst bleibt die Rechnung Entwurf.
 - **Fremdwaehrung** → EZB-Referenzkurs am Belegdatum, Originalbetrag im Zeilentext.
+
+**Korrektur nach Jarvis-Review (30.09.2026, #1585, Entscheidung Wolf „GbR schuldet mir das Geld“):**
+
+- Auslage Wolf nur mit **ausdrücklichem Zahlungsmittel** (Karte/PayPal/N26) **und** Wolf als
+  Zahler im Beleg (`auslage_nachweis()`). „Quittung“ oder „bezahlt“ allein → Rechnung bleibt Entwurf.
+- Zahlung im Journal **„Auslagen Wolf“ (`AUSW`)** statt BNK1. Sie bucht direkt auf Konto
+  **201100 Verbindlichkeit Gesellschafter Wolf Prinz (Auslagen)** — kein „Ausstehende Zahlungen“.
+- `als_auslage_bezahlen()` ist idempotent: prüft vor jedem Schritt (Nummer, Buchen, Bezahlen) den
+  Ist-Zustand und danach `state`/`payment_state`; ein Neulauf desselben Dokuments setzt fort.
+  Fehlermeldungen nennen den tatsächlichen Zustand der Rechnung.
 
 Probelauf (schreibt nichts) bzw. Neulauf eines Dokuments, in CT110:
 

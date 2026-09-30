@@ -105,6 +105,18 @@ BEZAHLT_MUSTER = re.compile(
     r"we received payment|payment received|charged to|receipt for your payment|amount paid)")
 # Von einem GbR-Konto bezahlt -> keine Auslage Wolf (Qonto, N26-Space "FraWo" ...5630 56).
 GBR_KONTO_MUSTER = re.compile(r"(?i)(qonto|frawo space|5630\s?56)")
+# Auslage Wolf nur mit AUSDRUECKLICHEM Zahlungsmittel im Beleg (Jarvis-Review #1585, 30.09.2026):
+# "bezahlt", "Quittung" oder "payment received" beweisen nur, DASS bezahlt wurde - nicht, WER.
+# Verlangt werden beide: ein konkretes Zahlungsmittel (Karte, PayPal, N26) UND Wolf als Zahler/Kaeufer.
+ZAHLMITTEL_MUSTER = re.compile(
+    r"(?i)(zahlungs(?:art|methode|mittel)\W{0,5}(ec|karte|girocard|paypal|kredit|n26|visa|master|debit)|"
+    r"ec-karte|girocard|kartenzahlung|charged to (?:your )?(paypal|visa|mastercard|card)|"
+    r"paypal account|n26 bank se)")
+WOLF_ZAHLER_MUSTER = re.compile(r"(?i)(\bwolf(?:gang)?\s+(?:ferdinand\s+)?prinz\b|\bw\.prinz)")
+# Journal fuer Auslagen Wolf: bucht die Zahlung direkt auf Konto 201100 "Verbindlichkeit Gesellschafter
+# Wolf Prinz (Auslagen)" - die GbR schuldet Wolf den Betrag (Entscheidung Wolf 30.09.2026, #1585).
+# NICHT BNK1: das buchte auf "Ausstehende Zahlungen", als haette die Firmenbank bezahlt.
+AUSLAGE_JOURNAL_CODE = "AUSW"
 
 # Eingangsrechnungen (Odoo #1645, 29.09.2026). Kleinunternehmer § 19 UStG: Einkauf wird
 # BRUTTO gebucht, OHNE Steuer. Die Firma hat als Einkaufs-Standardsteuer "VSt 19%" hinterlegt -
@@ -460,14 +472,27 @@ def als_rechnung_buchen(info):
             and info.get("entity") in ("FraWo_GbR", "Wolf_Prinz") and not info.get("umrechnung_fehlt"))
 
 
+def auslage_nachweis(info):
+    """Liefert (ist_auslage, Grund). Auslage Wolf = bezahlter GbR-Beleg, den Wolf nachweislich mit
+    eigenem Zahlungsmittel bezahlt hat -> FraWo schuldet ihm den Betrag (Wolf_Einkauf_JJJJ_NN,
+    Zahlung im Journal AUSLAGE_JOURNAL_CODE). Fehlt der Nachweis, bleibt die Rechnung Entwurf."""
+    text = content or ""
+    if not info.get("bezahlt"):
+        return False, "Beleg nicht als bezahlt erkannt"
+    if not ist_gbr_beleg(info):
+        return False, "kein GbR-Beleg"
+    if GBR_KONTO_MUSTER.search(text):
+        return False, "von einem GbR-Konto bezahlt"
+    zm = ZAHLMITTEL_MUSTER.search(text)
+    if not zm:
+        return False, "kein ausdrückliches Zahlungsmittel im Beleg (Quittung/„bezahlt“ allein reicht nicht)"
+    if not WOLF_ZAHLER_MUSTER.search(text):
+        return False, f"Zahlungsmittel „{zm.group(0)}“ ohne Wolf als Zahler im Beleg"
+    return True, f"Zahlungsmittel „{zm.group(0)}“, Zahler Wolf"
+
+
 def als_auslage_wolf(info):
-    """Bezahlter GbR-Beleg, nicht von einem GbR-Konto bezahlt -> Wolf hat ausgelegt,
-    FraWo schuldet ihm den Betrag (Muster Wolf_Einkauf_JJJJ_NN, Zahlung im Journal BNK1)."""
-    # Nur wenn der Beleg zeigt, WIE bezahlt wurde (Karte, PayPal, N26 ...) - sonst bleibt die
-    # Rechnung Entwurf, weil offen ist, von welchem Konto das Geld kam.
-    zahlquelle = BEZAHLT_MUSTER.search(content or "") or info.get("document_type") == "Quittung"
-    return (bool(info.get("bezahlt")) and bool(zahlquelle) and ist_gbr_beleg(info)
-            and not GBR_KONTO_MUSTER.search(content or ""))
+    return auslage_nachweis(info)[0]
 
 
 def aufgabe_pruefen(info):
@@ -488,8 +513,10 @@ def aufgabe_pruefen(info):
 if PROBE:
     ok, grund = aufgabe_pruefen(classification)
     print("PROBE-Plan (nichts wird geschrieben):")
+    ausl_ok, ausl_grund = auslage_nachweis(classification)
     print(f"  Rechnung buchen: {als_rechnung_buchen(classification)}"
-          f" · als bezahlte Auslage Wolf: {als_rechnung_buchen(classification) and als_auslage_wolf(classification)}")
+          f" · als bezahlte Auslage Wolf (Journal {AUSLAGE_JOURNAL_CODE}): "
+          f"{als_rechnung_buchen(classification) and ausl_ok} ({ausl_grund})")
     print(f"  Odoo-Aufgabe: {'ja' if ok else 'nein'} ({grund})")
     sys.exit(0)
 
@@ -760,12 +787,18 @@ def create_odoo_vendor_bill(info, doc_id, doc_title, pdf_bytes=None, models=None
         # Duplikatschutz: Pruefen ob Beleg mit gleicher Paperless-ID schon existiert
         ref_pattern = f"Paperless #{doc_id}:"
         existing = models.execute_kw(
-            ODOO_DB, uid, ODOO_PASS, 'account.move', 'search_count',
-            [[['ref', 'ilike', ref_pattern]]]
+            ODOO_DB, uid, ODOO_PASS, 'account.move', 'search_read',
+            [[['ref', 'ilike', ref_pattern], ['state', '!=', 'cancel']]], {'fields': ['id', 'name', 'state', 'payment_state']}
         )
-        if existing > 0:
-            print(f"Lieferantenrechnung für Paperless #{doc_id} existiert bereits ({existing}x) — überspringe Duplikat.")
-            return None
+        if existing:
+            e0 = existing[0]
+            print(f"Lieferantenrechnung für Paperless #{doc_id} existiert bereits ({len(existing)}x, #{e0['id']} "
+                  f"{e0['name']}: {e0['state']}/{e0['payment_state']}) — keine zweite Rechnung.")
+            # Neulauf nach Teilfehler: die Auslage-Schritte pruefen selbst, was schon erledigt ist.
+            if len(existing) == 1 and als_auslage_wolf(info):
+                als_auslage_bezahlen(models, uid, e0['id'], info.get("document_date") or datetime.now().strftime("%Y-%m-%d"),
+                                     vendor_name, doc_title, info)
+            return e0['id']
 
         # 0. Dieselbe Bestellung schon gebucht? Dann Beleg anhaengen statt neue Rechnung (#1645).
         bestellnr = None
@@ -883,9 +916,15 @@ def create_odoo_vendor_bill(info, doc_id, doc_title, pdf_bytes=None, models=None
 
 
 def als_auslage_bezahlen(models, uid, bill_id, datum, vendor_name, doc_title, info):
-    """Bezahlte GbR-Rechnung, die Wolf privat bezahlt hat: Nummer Wolf_Einkauf_JJJJ_NN vergeben,
-    buchen und im Journal BNK1 als bezahlt eintragen (Vorlage: Wolf_Einkauf_2026_04/06, 29.09.2026).
-    So ist sie erledigt und die Rueckzahlung FraWo -> Wolf nachvollziehbar."""
+    """Bezahlte GbR-Rechnung, die Wolf nachweislich privat bezahlt hat (auslage_nachweis):
+    Nummer Wolf_Einkauf_JJJJ_NN vergeben, buchen und im Journal "Auslagen Wolf" (AUSLAGE_JOURNAL_CODE)
+    bezahlen. Die Zahlung bucht direkt auf Konto 201100 "Verbindlichkeit Gesellschafter Wolf Prinz" -
+    die GbR schuldet Wolf den Betrag, bis sie ihn erstattet (Entscheidung Wolf 30.09.2026, #1585).
+
+    Idempotent (Jarvis-Review #1585): Jeder XML-RPC-Aufruf ist eine eigene Transaktion, ein Fehler
+    mittendrin laesst sich nicht zurueckrollen. Deshalb vor jedem Schritt den Ist-Zustand lesen,
+    nach jedem Schritt state/payment_state nachpruefen; ein Neulauf setzt dort fort, wo es haengt.
+    Fehlermeldungen nennen den tatsaechlichen Zustand der Rechnung."""
     def rpc(model, method, args, kw=None):
         try:
             return models.execute_kw(ODOO_DB, uid, ODOO_PASS, model, method, args, kw or {})
@@ -893,26 +932,77 @@ def als_auslage_bezahlen(models, uid, bill_id, datum, vendor_name, doc_title, in
             if "cannot marshal None" in str(f):   # Methode lief, lieferte nur None zurueck
                 return None
             raise
+
+    def lesen():
+        r = rpc('account.move', 'read', [[bill_id], ['name', 'state', 'payment_state', 'move_type', 'amount_residual']])
+        return r[0] if r else None
+
+    stand = None
     try:
-        jahr = str(datum)[:4]
-        namen = rpc('account.move', 'search_read', [[['name', '=like', f'Wolf_Einkauf_{jahr}_%']]], {'fields': ['name']})
-        nummern = [int(n['name'].rsplit('_', 1)[1]) for n in namen if n['name'].rsplit('_', 1)[1].isdigit()]
-        nr = f"Wolf_Einkauf_{jahr}_{(max(nummern) + 1) if nummern else 1:02d}"
-        rpc('account.move', 'write', [[bill_id], {'name': nr, 'invoice_date_due': datum}])
-        rpc('account.move', 'action_post', [[bill_id]])
+        journal = rpc('account.journal', 'search_read', [[['code', '=', AUSLAGE_JOURNAL_CODE]]], {'fields': ['id', 'name'], 'limit': 1})
+        if not journal:
+            print(f"Warnung: Journal {AUSLAGE_JOURNAL_CODE} fehlt — Auslage für Rechnung #{bill_id} nicht bezahlt.")
+            return
+        journal_id = journal[0]['id']
+
+        stand = lesen()
+        if not stand or stand['move_type'] != 'in_invoice':
+            print(f"Warnung: Rechnung #{bill_id} nicht gefunden oder keine Eingangsrechnung ({stand}) — nichts gebucht.")
+            return
+        if stand['state'] == 'cancel':
+            print(f"Rechnung #{bill_id} ({stand['name']}) ist storniert — keine Auslage-Zahlung.")
+            return
+
+        # Schritt 1: Nummer Wolf_Einkauf_JJJJ_NN (nur im Entwurf, und nur wenn noch keine vergeben ist)
+        if stand['state'] == 'draft' and not str(stand['name'] or '').startswith('Wolf_Einkauf_'):
+            jahr = str(datum)[:4]
+            namen = rpc('account.move', 'search_read', [[['name', '=like', f'Wolf_Einkauf_{jahr}_%']]], {'fields': ['name']})
+            nummern = [int(n['name'].rsplit('_', 1)[1]) for n in namen if n['name'].rsplit('_', 1)[1].isdigit()]
+            nr = f"Wolf_Einkauf_{jahr}_{(max(nummern) + 1) if nummern else 1:02d}"
+            rpc('account.move', 'write', [[bill_id], {'name': nr, 'invoice_date_due': datum}])
+            stand = lesen()
+            if stand['name'] != nr:
+                raise RuntimeError(f"Nummer {nr} nicht gesetzt")
+        nr = stand['name']
+
+        # Schritt 2: buchen
+        if stand['state'] == 'draft':
+            rpc('account.move', 'action_post', [[bill_id]])
+            stand = lesen()
+            if stand['state'] != 'posted':
+                raise RuntimeError("Buchen fehlgeschlagen")
+
+        # Schritt 3: bezahlen ueber "Auslagen Wolf" - nur, was noch offen ist
         memo = f"Auslage Wolf Prinz - {vendor_name[:40]} {datetime.strptime(datum, '%Y-%m-%d').strftime('%d.%m.%Y')} ({nr})"
-        ctx = {'context': {'active_model': 'account.move', 'active_ids': [bill_id]}}
-        wiz = rpc('account.payment.register', 'create', [{'journal_id': 6, 'payment_date': datum, 'communication': memo}], ctx)
-        rpc('account.payment.register', 'action_create_payments', [[wiz]], ctx)
-        stand = rpc('account.move', 'read', [[bill_id], ['name', 'state', 'payment_state']])[0]
-        rpc('account.move', 'message_post', [[bill_id]], {
-            'body': f"🤖 Paperless-Router: Beleg ist bezahlt und nicht von einem GbR-Konto → als "
-                    f"<b>Auslage Wolf</b> gebucht ({memo}). {info.get('kurs_hinweis') or ''} "
-                    f"Kleinunternehmer: brutto ohne Vorsteuer.",
-            'message_type': 'comment', 'subtype_xmlid': 'mail.mt_note'})
+        neu_bezahlt = False
+        if stand['payment_state'] in ('paid', 'in_payment', 'reversed'):
+            print(f"Rechnung #{bill_id} ({nr}) ist schon {stand['payment_state']} — keine weitere Zahlung.")
+        else:
+            ctx = {'context': {'active_model': 'account.move', 'active_ids': [bill_id]}}
+            wiz = rpc('account.payment.register', 'create',
+                      [{'journal_id': journal_id, 'payment_date': datum, 'communication': memo}], ctx)
+            rpc('account.payment.register', 'action_create_payments', [[wiz]], ctx)
+            stand = lesen()
+            if stand['payment_state'] not in ('paid', 'in_payment'):
+                raise RuntimeError("Zahlung über Auslagen Wolf nicht wirksam")
+            neu_bezahlt = True
+
+        if neu_bezahlt:
+            nachweis = auslage_nachweis(info)[1]
+            rpc('account.move', 'message_post', [[bill_id]], {
+                'body': f"🤖 Paperless-Router: Beleg ist bezahlt ({nachweis}) → als <b>Auslage Wolf</b> gebucht, "
+                        f"Zahlung im Journal „{journal[0]['name']}“ = Verbindlichkeit der GbR gegenüber Wolf ({memo}). "
+                        f"{info.get('kurs_hinweis') or ''} Kleinunternehmer: brutto ohne Vorsteuer.",
+                'message_type': 'comment', 'subtype_xmlid': 'mail.mt_note'})
         print(f"Auslage Wolf: Rechnung #{bill_id} = {stand['name']}, {stand['state']}/{stand['payment_state']} ({memo}).")
     except Exception as e:
-        print(f"Warnung: Auslage-Buchung fuer Rechnung #{bill_id} fehlgeschlagen ({e}) — Rechnung bleibt Entwurf.")
+        try:
+            ist = lesen()
+            ist_text = f"{ist['name']}: {ist['state']}/{ist['payment_state']}, offen {ist['amount_residual']:.2f} €" if ist else "nicht lesbar"
+        except Exception as e2:
+            ist_text = f"Zustand nicht lesbar ({e2})"
+        print(f"Warnung: Auslage-Buchung für Rechnung #{bill_id} fehlgeschlagen ({e}). "
+              f"Tatsächlicher Zustand: {ist_text}. Neulauf setzt dort fort (README).")
 
 
 # 1. Automatische Lieferantenrechnung in Odoo Finanzen
