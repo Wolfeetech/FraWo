@@ -28,6 +28,11 @@ zusammen mit AGENTS.md, nicht statt.
 5. **Neue Planungsdokumente erstellt** (`DOCS/STOCKENWEILER_AIRBEAM_VPN_SETUP_GUIDE.md`), obwohl
    AGENTS.md §3 das explizit untersagt ("No Stale Documents") — und eine davon behandelte sogar
    das falsche Thema (aus einer anderen Session reinkopiert).
+6. **(2026-09-30) Dokumente nur als Repo-Pfad „geliefert“**: z. B. Mietvertrag-Vorlage (#1235)
+   mit „Datei: `DOCS/LEGAL/…html` im Git-Repo“ auf Erledigt gesetzt. Wolf kann das am Handy nicht
+   öffnen. **Erstellte Dokumente als PDF an die Odoo-Aufgabe hängen:**
+   `python scripts/odoo_anhang.py <Aufgaben-ID> <Datei> --agent Antigravity` (AGENTS.md,
+   *Dokumente für Wolf*).
 
 ## Zusätzlich, bevor du irgendwas Kundenseitiges baust
 

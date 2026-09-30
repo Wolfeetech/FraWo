@@ -1,6 +1,6 @@
 # FraWo Agenten-Protokoll (AGENTS.md)
 
-**Version 1.3 — 2026-09-28 | Gilt für ALLE Agenten: Jarvis (OpenClaw), Claude Code, Antigravity**
+**Version 1.4 — 2026-09-30 | Gilt für ALLE Agenten: Jarvis (OpenClaw), Claude Code, Antigravity**
 **Master = diese Datei im Git-Repo** `github.com/Wolfeetech/FraWo`, Zweig `main`. Alle anderen Fundorte sind automatisch befüllte Kopien — **dort nie bearbeiten** (siehe *Eine Wahrheit*).
 
 ---
@@ -85,7 +85,8 @@
 | Erledigt / bezahlt | Stufe `✅ Erledigt` + kurzer Chatter-Eintrag warum | Verschwindet aus dem Tagesbericht |
 | Hängt an etwas anderem | Feld **„Blockiert durch" (`depend_on_ids`)** | Odoo kennt die Kette — Fließtext kann es nicht lesen |
 | Auf `🛑 Blockiert` setzen | **Erste Zeile der Beschreibung:** `🛑 Wartet auf: … · Liegt bei: Wolf/Franz/Jarvis/Claude/Extern · Wieder prüfen: TT.MM.` | Der Tagesbericht zeigt Wolf nur, was bei **ihm** liegt und dessen Prüfdatum erreicht ist — **mit Grund**. Ohne diese Zeile warnt der Bericht. Keine Aktivität „Blocker prüfen“ (Wolf 29.09.: *„damit kann ich so nichts anfangen“*, #1557) |
-| Beleg / Dokument | **Paperless** | OCR, Ablage, auffindbar |
+| Eingehender Beleg (Rechnung, Brief, Quittung) | **Paperless** | OCR, Ablage, auffindbar |
+| **Erstelltes Dokument** für Wolf/Franz (Vorlage, Anleitung, Plan, Schreiben, Checkliste) | **Anhang an der Odoo-Aufgabe**: PDF, bei Vorlagen zusätzlich das Original (HTML) — `python scripts/odoo_anhang.py <Aufgaben-ID> <Datei> --agent <Name>` | Wolf öffnet es unterwegs am Handy. **Ein Repo-Pfad allein gilt nicht als geliefert** (siehe *Dokumente für Wolf*) |
 | Wo etwas stattfindet | Schlagwort `@rk22 @villa @stockenweiler @inselhalle @unterwegs @remote` | Block „Was steht wo an" im Tagesbericht |
 | Gehört uns gar nicht | Stufe `🛑 Blockiert` + Chatter „Fremdgewerk, liegt bei X" | Zählt nicht mehr als FraWo-Arbeit |
 
@@ -103,6 +104,14 @@ Wolf am 09.09.2026: *„alles was ich anklicke ist nur so halbfertig formuliert 
 **Regel:** In eine Aufgabe gehört, was **feststeht** — Fakten, Fundstellen, offene Fragen. Nicht, was der Agent für richtig hält. Analyse, Empfehlung und Begründung gehören in den **Chatter** (dort sind sie datiert und als Meinung erkennbar) oder in ein Dokument im Repo. Faustregel: **Beschreibung passt auf einen Handy-Bildschirm.** Wird es länger, ist es ein Chatter-Eintrag.
 
 **Ausnahme:** Aufgaben mit Antworttabelle (Muster #780) dürfen länger sein — dort ist die Länge *Struktur zum Ausfüllen*, nicht Prosa.
+
+**Dokumente für Wolf hängen an der Aufgabe, nicht nur im Repo (seit 30.09.2026).** Wolf am 30.09.2026: *„warum die erstellten Dokumente nicht als Anhang in Odoo sind, sondern komische Links. Die bringen mir unterwegs nichts, soll ja alles via Odoo laufen.“* Anlass: Mietvertrag-Vorlage (#1235), Patchplan, Notfallanleitung u. a. wurden mit „Datei: `DOCS/…` im Git-Repo“ auf ✅ Erledigt gesetzt — am Handy nicht zu öffnen. Am 30.09. für 11 Aufgaben nachgereicht.
+
+- Alles, was Wolf oder Franz **lesen, ausdrucken, unterschreiben oder verschicken** soll, kommt als **PDF-Anhang** an die Aufgabe (Vorlagen zusätzlich als Original). Das Repo bleibt die Quelle für Änderungen, der Anhang ist die Lieferung.
+- Ohne Anhang ist die Aufgabe **nicht erledigt**. Ändert sich das Dokument später, den Anhang erneuern (gleicher Dateiname wird überschrieben, nicht verdoppelt).
+- Reine Agenten-Unterlagen (Specs, Pläne unter `DOCS/superpowers/`, Audits, Runbooks) brauchen keinen Anhang.
+- **Wie:** `python scripts/odoo_anhang.py <Aufgaben-ID> <Datei> [--agent Claude|Jarvis|Antigravity] [--notiz "…"]` — wandelt HTML/Markdown per Chrome/Edge headless in PDF, hängt an und schreibt eine interne Notiz (benachrichtigt niemanden). Schlüssel aus `ODOO_RPC_API_KEY`/`ODOO_API_KEY`. Auf CT150 gibt es kein Chrome: Das Skript hängt dann das Original an und vermerkt „PDF fehlt“. Jarvis bittet in diesem Fall Claude/Antigravity im Chatter um das PDF.
+- **Ohne Skript (MCP/XML-RPC):** `ir.attachment` anlegen mit `name`, `datas` (Base64), `res_model='project.task'`, `res_id=<ID>` → dann `message_post` mit `attachment_ids=[…]`, `subtype_xmlid='mail.mt_note'`. Der Agent-User (7) hat die nötigen Rechte.
 
 **Titel sind Titel, keine Sätze.** Kein Preis, keine Begründung, keine Klammerzusätze. Wolf am 09.09.2026: *„warum schreibst du so viele Infos in den Titel der Aufgaben, das ist komplett unübersichtlich"*. Berechtigt.
 
