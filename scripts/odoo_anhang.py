@@ -99,7 +99,12 @@ def html_zu_pdf(browser: str, html_pfad: Path, pdf_pfad: Path) -> bool:
             browser, "--headless=new", "--disable-gpu", "--no-first-run", "--no-pdf-header-footer",
             f"--user-data-dir={profil}", f"--print-to-pdf={pdf_pfad}", html_pfad.resolve().as_uri(),
         ]
-        subprocess.run(befehl, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=120)
+        try:
+            subprocess.run(befehl, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=120)
+        except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
+            # Browser hängt (Timeout) oder startet gar nicht (falscher Pfad, kaputte Installation):
+            # dokumentierter Rückfall greift über baue_anhaenge() (Original anhängen, "PDF fehlt").
+            return False
     return pdf_pfad.exists() and pdf_pfad.stat().st_size > 1000 and pdf_pfad.read_bytes()[:5] == b"%PDF-"
 
 
@@ -186,6 +191,10 @@ def main() -> int:
         if a.nur_pdf:
             for x in anhaenge:
                 print(x)
+            if warnungen:
+                # Kein PDF entstanden (Browser fehlt/gescheitert oder markdown-it-py fehlt) -
+                # --nur-pdf muss das mit Exit-Code != 0 melden, nicht mit dem Original als Erfolg tarnen.
+                return 1
             return 0
 
         odoo = Odoo()
