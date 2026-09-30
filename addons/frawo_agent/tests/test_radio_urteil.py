@@ -1,3 +1,4 @@
+from odoo.exceptions import ValidationError
 from odoo.tests import TransactionCase, tagged
 
 
@@ -33,3 +34,7 @@ class TestRadioUrteil(TransactionCase):
         self.U.urteilen("A|B", "energie", 5)
         rows = self.U.export_rows()
         self.assertTrue(any(r["track_id"] == "A|B" and r["wert"] == 5 for r in rows))
+
+    def test_direct_create_umgeht_urteilen_nicht(self):
+        with self.assertRaises(ValidationError):
+            self.U.create({"track_id": "A|B", "art": "energie", "wert": 9})

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from odoo import api, fields, models
+from odoo.exceptions import ValidationError
 
 ARTEN = [("energie", "Energie 1–5"), ("passt", "Passt in die Sendung")]
 
@@ -16,6 +17,24 @@ class FrawoRadioUrteil(models.Model):
     user_id = fields.Many2one("res.users", required=True, index=True, default=lambda s: s.env.user, ondelete="cascade")
 
     _urteil_unique = models.Constraint("UNIQUE(track_id, art, user_id)", "Ein Urteil je Titel, Art und Person.")
+
+    @api.constrains("track_id", "art", "wert")
+    def _check_urteil(self):
+        # ORM-seitiges Netz gegen direkte create()/write() (Gruppe hat
+        # create/write-Rechte) — dieselben Regeln wie urteilen(), aber als
+        # ValidationError statt ValueError, damit sie über create()/write()
+        # greifen, nicht nur über den urteilen()-Aufruf.
+        for rec in self:
+            track_id = (rec.track_id or "").strip()
+            teile = track_id.split("|", 1)
+            if len(teile) != 2 or not teile[0].strip() or not teile[1].strip():
+                raise ValidationError("Titel nicht urteilbar")
+            if rec.art not in dict(ARTEN):
+                raise ValidationError("unbekannte Art")
+            if rec.art == "energie" and not (1 <= rec.wert <= 5):
+                raise ValidationError("Energie muss 1–5 sein")
+            if rec.art == "passt" and rec.wert not in (0, 1):
+                raise ValidationError("passt muss 0 oder 1 sein")
 
     @api.model
     def urteilen(self, track_id, art, wert, sendung=""):
