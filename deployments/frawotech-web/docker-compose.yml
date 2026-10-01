@@ -1,0 +1,56 @@
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: odoo
+      POSTGRES_PASSWORD: odoo_FraWo_2026_x9k2
+    command: ["postgres", "-c", "shared_buffers=768MB", "-c", "work_mem=16MB", "-c", "maintenance_work_mem=256MB", "-c", "max_connections=50", "-c", "effective_cache_size=3GB"]
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  odoo:
+    image: frawotech/odoo:19
+    depends_on: [db]
+    environment:
+      HOST: db
+      USER: odoo
+      PASSWORD: odoo_FraWo_2026_x9k2
+    expose:
+      - "8069"
+      - "8072"
+    volumes:
+      - odoo-data:/var/lib/odoo
+      - ./extra-addons:/mnt/extra-addons
+      - ./odoo.conf:/etc/odoo/odoo.conf
+    restart: unless-stopped
+
+  drawio:
+    image: jgraph/drawio:latest
+    container_name: frawotech-drawio-1
+    restart: unless-stopped
+    expose:
+      - "8080"
+
+  web:
+    image: nginx:alpine
+    depends_on: [odoo, drawio]
+    ports:
+      - "8069:8069"
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    restart: unless-stopped
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    depends_on: [web]
+    environment:
+      TUNNEL_TOKEN: "eyJhIjoiYWYzNmNhMjMxNmEwYzEwZGJiZDRiZGQyNTgxMmNmZWQiLCJ0IjoiYWRkN2U5NjctZDU5Ny00NDgzLTkwZTMtMmZiMTlmZWQ4ZmM5IiwicyI6IkdlS0FVMCtSNjB0VEcwUWR2VGRUb3JoVC9JWHV1cFErV2dHdW9TK1RlUDd3YUpyTk1wK2c0S252R2poZUxtbjJJOUtKYjdwL1pySEc1ZjlzYy9NQjdnPT0ifQ=="
+    command: tunnel --no-autoupdate run
+
+volumes:
+  odoo-data:
+  db-data:

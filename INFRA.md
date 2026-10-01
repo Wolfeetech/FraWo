@@ -26,7 +26,7 @@
 | **108** | anker-pve | `vaultwarden` | `10.1.0.95` | 80 / 443 | SSOT für alle Passwörter & Tokens (`vault.frawo.tech`) |
 | **110** | anker-pve | `n8n / paperless` | `10.1.0.100` | 5678 / 8000 | Workflows & Paperless-ngx (`paperless.frawo.tech`), 192 Dokumente |
 | **130** | anker-pve | `radio-node` | `10.1.0.200` | 9500 | Docker: Radio-Backend, PostgreSQL, Redis |
-| **140** | anker-pve | `frawotech-web` | `10.1.0.112` | 8069 (Odoo 19), 80/443 (Nginx) | ERP, CRM, Touch Cockpit, Cloudflare-Tunnel |
+| **140** | anker-pve | `frawotech-web` | `10.1.0.112` | 8069 (Odoo 19), 80 (Nginx), 8080 (Draw.io) | ERP, CRM, Touch Cockpit, Draw.io Skizzierbrett (`frawo.tech/draw`), Cloudflare-Tunnel |
 | **150** | anker-pve | `openclaw` | `10.1.0.31` | 19001 (Servassi-Hook), 19000 (Gateway) | **Jarvis** (Persistenter Koordinator & Monitoring-Empfänger) |
 | **155** | anker-pve | `monitoring-stack` | `10.1.0.35` | 9090 (Prom), 9093 (Alert), 3000 (Grafana) | Prometheus, Alertmanager, Grafana (ex CT150 auf ProDesk) |
 | **120** | stock-pve | `fileserver` | `10.1.0.94` | 445 (SMB) | Samba Fileserver, Musikarchiv (`//10.1.0.94/music`, 1.9 TB) |
