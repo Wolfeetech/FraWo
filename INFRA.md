@@ -73,6 +73,11 @@
    - **Rechte des Ollama-Zugangs:** Gruppe *„Ollama Mitarbeiter - nur antworten"* (117) + *Internal User*. Nachgemessen: Aufgaben **nur lesen**, Chatter-Beitrag erlaubt; Ändern, Abschließen, Löschen, Buchhaltung und Systemparameter werden von Odoo abgewiesen.
    - **Schleifenschutz:** Beiträge von Partner 160 lösen nichts aus (greift im Echtbetrieb — Ollamas eigene Antwort enthält die Erwähnung). Chatter-Dedupe dauerhaft anhand der stabilen Odoo-`mail.message`-ID; eine erneute Webhook-Zustellung erzeugt keinen zweiten Agentenlauf.
    - ⚠️ **Offen:** `FRAWO_TASK_SECRET` und `FRAWO_ALERT_SECRET` stecken unverändert auch in der Git-Historie (`infra/openclaw/odoo_webhook_handler.py` vor v3) — Rotation nötig, betrifft Odoo-Parameter `frawo_agent.servassi_webhook_secret` und die Alertmanager-Konfiguration auf CT155.
+7. **Redaktions-Rueckschreiben (`frawo-rueckschreiben`), Odoo #1090 — ⚠️ installiert, Timer NICHT aktiv (Stand 01.10.2026):**
+   - **Service & Timer:** `frawo-rueckschreiben.service`/`.timer` auf `stock-pve` (ProDesk-**Wirt**, nicht in CT120), `OnCalendar=*-*-* 05:30:00 Europe/Berlin`, `Persistent=true`. Installiert + `systemd-analyze verify` sauber, aber **`systemctl enable` noch nicht ausgeführt** — wartet auf Jarvis-Gegenreview (Nachricht 22101).
+   - **Skript:** `/usr/local/bin/frawo-musikredaktion-rueckschreiben.sh` (Repo: `deployments/prodesk/frawo-musikredaktion-rueckschreiben.sh`), `flock -n` über die gesamte `ExecStart`-Zeile. Ruft `pct exec 120 -- python3 /opt/musikredaktion/rueckschreiben.py` und schreibt danach die Metrik **am Wirt** in den textfile_collector — CT120 hat keinen eigenen node_exporter (gleiches Muster wie `odoo-sql-backup.sh`).
+   - **Metriken:** `frawo_musikredaktion_rueckschreiben_erfolg` (1/0, jeder Lauf) sowie `..._letzter_erfolg_timestamp_seconds`/`..._geschrieben`/`..._offen` (nur bei Erfolg). Alarme: `deployments/monitoring/rules/frawo_musikredaktion_rueckschreiben.yml` (26h-Staleness, `absent()`, Fehlschlag) — geprüft mit `promtool`, auf CT155 ausgerollt, geladen (health `ok`).
+   - **Probe- und Echtlauf am 01.10.2026 erfolgreich** (Exit 0, Export war zu diesem Zeitpunkt leer: 0 Zeilen/0 geschrieben/0 offen).
 
 ---
 

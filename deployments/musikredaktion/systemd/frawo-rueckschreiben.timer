@@ -1,0 +1,13 @@
+[Unit]
+Description=FraWo - taeglicher Lauf des Redaktions-Rueckschreibens (05:30 Europe/Berlin)
+Documentation=https://github.com/Wolfeetech/FraWo Odoo-Aufgabe 1090
+
+[Timer]
+OnCalendar=*-*-* 05:30:00 Europe/Berlin
+# Nach einem Neustart/Ausfall des Wirts nachholen statt einen Tag auslassen.
+Persistent=true
+RandomizedDelaySec=120
+Unit=frawo-rueckschreiben.service
+
+[Install]
+WantedBy=timers.target

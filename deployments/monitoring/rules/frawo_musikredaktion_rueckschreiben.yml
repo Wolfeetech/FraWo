@@ -1,0 +1,81 @@
+# Alarme fuer das naechtliche Rueckschreiben der Radio-Redaktionsurteile
+# nach beets (CT120), Odoo-Aufgabe #1090.
+#
+# Anlass: Jarvis-Review (Nachricht 22101, 30.09./01.10.2026) hat die
+# automatische Ausfuehrung von rueckschreiben.py fachlich befuerwortet, aber
+# nur zusammen mit "Ergebniskennzahl samt Staleness- und Fehleralarm" -- erst
+# danach Gegenreview vor der Aktivierung des Timers.
+#
+# Die Metriken schreibt /usr/local/bin/frawo-musikredaktion-rueckschreiben.sh
+# (Repo: deployments/prodesk/frawo-musikredaktion-rueckschreiben.sh) in den
+# textfile_collector des ProDesk-Wirts (stock-pve) -- CT120 selbst hat
+# keinen eigenen node_exporter. Gleiches Muster wie frawo_odoo_backup.yml.
+#
+# Zwei getrennte Dateien/Zustaende (siehe Skript-Kommentar):
+#   frawo_musikredaktion_rueckschreiben_erfolg                      -> JEDEN
+#     Lauf ueberschrieben (1/0) -- fuer den schnellen Fehler-Alarm.
+#   frawo_musikredaktion_rueckschreiben_letzter_erfolg_timestamp_seconds,
+#   _geschrieben, _offen                                            -> NUR
+#     bei Erfolg ueberschrieben -- fuer die Staleness-Pruefung, bleibt bei
+#     einem einzelnen Fehlschlag auf dem letzten guten Stand stehen.
+
+groups:
+  - name: frawo_musikredaktion_rueckschreiben
+    rules:
+      # Timer laeuft taeglich 05:30 Europe/Berlin. Nach 26 Stunden ohne
+      # Erfolg stimmt etwas nicht (gleiche Schwelle wie OdooBackupVeraltet).
+      - alert: RueckschreibenVeraltet
+        expr: >-
+          (time() - frawo_musikredaktion_rueckschreiben_letzter_erfolg_timestamp_seconds) > 26 * 3600
+        for: 30m
+        labels:
+          severity: warning
+          service: musikredaktion
+        annotations:
+          dashboard: "http://100.100.115.80:3000/d/frawo-sicherungen"
+          summary: "Redaktions-Rueckschreiben seit über 26 Stunden nicht erfolgreich"
+          description: >-
+            Letzter Erfolg vor {{ $value | humanizeDuration }}. Erwartet wird
+            taeglich 05:30 Europe/Berlin. Pruefen auf dem ProDesk-Wirt:
+            `journalctl -u frawo-rueckschreiben.service` und
+            `systemctl status frawo-rueckschreiben.timer`.
+
+      # Fehlt die Kennzahl ganz, laeuft der Timer gar nicht mehr (oder der
+      # textfile_collector schreibt nicht) -- derselbe blinde Fleck wie bei
+      # OdooBackupMetrikFehlt/WacheMeldetSichGarNichtMehr: eine Regel der
+      # Form time()-metrik>x liefert ohne Metrik ein LEERES Ergebnis und
+      # feuert dann nicht von selbst.
+      - alert: RueckschreibenMetrikFehlt
+        expr: absent(frawo_musikredaktion_rueckschreiben_letzter_erfolg_timestamp_seconds)
+        for: 2h
+        labels:
+          severity: critical
+          service: musikredaktion
+        annotations:
+          dashboard: "http://100.100.115.80:3000/d/frawo-sicherungen"
+          summary: "Keine Rueckschreiben-Erfolgs-Metrik mehr vorhanden"
+          description: >-
+            Der node_exporter auf dem ProDesk-Wirt liefert keinen
+            Rueckschreiben-Zeitstempel mehr. Entweder laeuft der Timer nicht
+            mehr, oder das Skript schreibt nicht nach
+            /var/lib/node_exporter/textfile_collector/musikredaktion_rueckschreiben_stand.prom.
+
+      # Der letzte Lauf ist fehlgeschlagen (Exit-Code ungleich 0 oder
+      # Ausgabe nicht auswertbar) -- unabhaengig davon, wie lange der letzte
+      # ECHTE Erfolg zurueckliegt. Schneller Hinweis, nicht erst nach 26h.
+      - alert: RueckschreibenFehlgeschlagen
+        expr: frawo_musikredaktion_rueckschreiben_erfolg == 0
+        for: 10m
+        labels:
+          severity: warning
+          service: musikredaktion
+        annotations:
+          dashboard: "http://100.100.115.80:3000/d/frawo-sicherungen"
+          summary: "Letzter Rueckschreiben-Lauf ist fehlgeschlagen"
+          description: >-
+            frawo_musikredaktion_rueckschreiben_erfolg steht auf 0. Log auf
+            dem ProDesk-Wirt pruefen:
+            `journalctl -u frawo-rueckschreiben.service -n 50`. Haeufige
+            Ursachen: Export-Endpunkt /radio/redaktion/export nicht
+            erreichbar, Token in /etc/frawo/odoo.env (CT120) ungueltig, oder
+            CT120 nicht erreichbar/gestoppt.

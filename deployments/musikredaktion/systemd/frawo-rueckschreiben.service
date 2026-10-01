@@ -1,0 +1,32 @@
+[Unit]
+Description=FraWo - Rueckschreiben der Radio-Redaktionsurteile nach beets (CT120)
+Documentation=https://github.com/Wolfeetech/FraWo Odoo-Aufgabe 1090
+# Laeuft auf dem ProDesk-Wirt (stock-pve), NICHT in CT120: CT120 hat keinen
+# eigenen node_exporter, der Wirt schon. Das Wrapper-Skript ruft per
+# `pct exec 120` ins Ziel und schreibt danach die Metrik in den
+# textfile_collector des Wirts -- gleiches Muster wie das bestehende
+# /usr/local/bin/odoo-sql-backup.sh (Repo: scripts/odoo-sql-backup.sh).
+#
+# Kein OnFailure=: Im Bestand (Stand 01.10.2026) gibt es keine einzige
+# Alarm-Template-Unit, auf die verwiesen werden koennte (geprueft: kein
+# *.service im Repo verwendet OnFailure=). Statt eine neue, bisher
+# unerprobte Eskalationskette einzufuehren, deckt die vorhandene
+# Prometheus-Textfile-Kette den Fehlerfall ab: dieses Skript schreibt bei
+# jedem Lauf frawo_musikredaktion_rueckschreiben_erfolg (1/0), die Regel
+# RueckschreibenFehlgeschlagen in
+# deployments/monitoring/rules/frawo_musikredaktion_rueckschreiben.yml
+# schlaegt darauf an.
+StartLimitIntervalSec=3600
+StartLimitBurst=3
+
+[Service]
+Type=oneshot
+# flock haelt den Lock ueber die GESAMTE Ausfuehrung (pct exec + Metrik
+# schreiben) -- nicht nur einen Teilschritt davon.
+ExecStart=/usr/bin/flock -n /run/lock/frawo-rueckschreiben.lock /usr/local/bin/frawo-musikredaktion-rueckschreiben.sh
+TimeoutStartSec=600
+Nice=10
+# Kein Restart=: ein fehlgeschlagener Lauf soll nicht blind wiederholt
+# werden (gleicher Export, gleicher beets-Stand -- scheitert vermutlich
+# wieder identisch). Der Alarm macht den Fehler sichtbar, der naechste
+# reguläre Lauf ist am naechsten Tag 05:30 Europe/Berlin.
