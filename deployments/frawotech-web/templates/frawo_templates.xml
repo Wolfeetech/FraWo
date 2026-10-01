@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+  <template title="01 - DMX Signalplan &amp; Adressierung" url="/draw/templates/01_dmx_signalplan.drawio" description="FraWo GbR: Wolfmix W1 DMX-Controller, Optischer Booster/Splitter, Moving Heads, Wash PARs, Hazer und 120 Ohm Abschlusswiderstand."/>
+  <template title="02 - Audio Signalfluss &amp; PA-Routing" url="/draw/templates/02_audio_signalfluss.drawio" description="FraWo GbR: DJ Setup, Funkstrecken, FoH Digitalmischpult, DSP Lautsprecher-Management, Endstufen-Rack und Martin Audio CX2 Tops &amp; Subs."/>
+  <template title="03 - Strom &amp; Netzwerk-Infrastruktur" url="/draw/templates/03_event_strom_und_netzwerk.drawio" description="FraWo GbR: CEE 16A/32A Drehstromverteilung, getrennte Phasen (L1 Ton, L2 Licht, L3 Nebel/Bar), UniFi UCG Ultra, PoE Switch &amp; WLAN APs."/>
+  <template title="04 - Bühne &amp; Raumaufbau" url="/draw/templates/04_buehne_und_raumplan.drawio" description="FraWo GbR: Bühnenpodest (4x2m), DJ Riser, Lichtstative mit Safeties, PA Ausrichtung, Tanzfläche, FoH Regieplatz und Fluchtwege."/>
+</templates>

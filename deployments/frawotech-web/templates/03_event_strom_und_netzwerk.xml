@@ -1,0 +1,99 @@
+<mxfile host="frawo.tech" modified="2026-10-01T22:18:00.000Z" agent="FraWo" version="24.0.0">
+  <diagram id="power_network" name="Strom &amp; Netzwerk">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" background="#ffffff">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <!-- Header -->
+        <mxCell id="title" value="FraWo GbR — Strom- &amp; Netzwerk-Infrastruktur" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=18;fontStyle=1;fontColor=#0f172a;" vertex="1" parent="1">
+          <mxGeometry x="40" y="30" width="550" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="meta" value="Projekt / Event: ____________________ | Datum: ________ | Anschlusswert: 16A / 32A CEE" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontColor=#64748b;" vertex="1" parent="1">
+          <mxGeometry x="40" y="60" width="600" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- HAUPTANSCHLUSS -->
+        <mxCell id="pwr_main" value="🔴 CEE Drehstrom&#xa;3~ 400V / 16A (11kW)&#xa;oder 32A (22kW)&#xa;Gebäude-Einspeisung" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#b91c1c;strokeColor=#7f1d1d;fontColor=#ffffff;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="40" y="110" width="160" height="80" as="geometry"/>
+        </mxCell>
+
+        <!-- VERTEILER -->
+        <mxCell id="pwr_dist" value="⚡ Event-Stromverteiler&#xa;RCD / FI 30mA Schutz&#xa;Sicherungsautomaten C16&#xa;Messung: V / A je Phase" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#0f172a;fontColor=#ffffff;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="250" y="110" width="170" height="80" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e_main_dist" value="CEE 5x2.5mm²&#xa;oder 5x6mm²" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#b91c1c;strokeWidth=3;fontColor=#7f1d1d;fontSize=9;" edge="1" parent="1" source="pwr_main" target="pwr_dist">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- PHASENAUFTEILUNG (STROM) -->
+        <!-- L1: AUDIO -->
+        <mxCell id="l1_box" value="🔊 PHASE 1 (L1) — TONTECHNIK&#xa;Max. 3.6 kW | Sauberer Kreis (keine Dimmer!)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#eff6ff;strokeColor=#3b82f6;fontColor=#1e40af;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="470" y="100" width="310" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="l1_loads" value="• FoH Digitalmischpult &amp; DJ Booth (Schuko 1)&#xa;• DSP Lautsprecher-Controller (Schuko 1)&#xa;• Endstufen Tops &amp; Subs (Schuko 2 &amp; 3)&#xa;• Funkempfänger Wireless Mics (Schuko 1)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#1e3a8a;" vertex="1" parent="l1_box">
+          <mxGeometry x="10" y="30" width="290" height="70" as="geometry"/>
+        </mxCell>
+
+        <!-- L2: LICHT -->
+        <mxCell id="l2_box" value="💡 PHASE 2 (L2) — LICHTTECHNIK&#xa;Max. 3.6 kW | Scheinwerfer &amp; Dimmer" style="swimlane;whiteSpace=wrap;html=1;fillColor=#ecfdf5;strokeColor=#10b981;fontColor=#065f46;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="470" y="230" width="310" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="l2_loads" value="• Moving Heads Truss Left/Right (PowerCON)&#xa;• LED PAR Kannen Front-/Gegenlicht&#xa;• Wolfmix DMX Regie &amp; DMX Booster&#xa;• Deko- &amp; Ambiente-Beleuchtung" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#064e3b;" vertex="1" parent="l2_box">
+          <mxGeometry x="10" y="30" width="290" height="70" as="geometry"/>
+        </mxCell>
+
+        <!-- L3: HIGH LOAD / NEBEL & CATERING -->
+        <mxCell id="l3_box" value="💨 PHASE 3 (L3) — EFFEKTE &amp; CATERING&#xa;Max. 3.6 kW | Hohe Einschaltströme &amp; Heizer" style="swimlane;whiteSpace=wrap;html=1;fillColor=#fffbeb;strokeColor=#f59e0b;fontColor=#92400e;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="470" y="360" width="310" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="l3_loads" value="• Hazer / Dunsterzeuger (Heizelement 1.5 kW)&#xa;• Nebelmaschine / Bodennebel (falls im Einsatz)&#xa;• Getränkekühler / Theke (Kompressorlast)&#xa;• Keine Tonleitungen parallel zu dieser Phase!" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#78350f;" vertex="1" parent="l3_box">
+          <mxGeometry x="10" y="30" width="290" height="70" as="geometry"/>
+        </mxCell>
+
+        <!-- Edges Distributor to Phases -->
+        <mxCell id="e_dist_l1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#3b82f6;strokeWidth=2;" edge="1" parent="1" source="pwr_dist" target="l1_box">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_dist_l2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#10b981;strokeWidth=2;" edge="1" parent="1" source="pwr_dist" target="l2_box">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_dist_l3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#f59e0b;strokeWidth=2;" edge="1" parent="1" source="pwr_dist" target="l3_box">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- NETZWERK INFRASTRUKTUR -->
+        <mxCell id="net_grp" value="🌐 EVENT-NETZWERK &amp; IT-INFRASTRUKTUR" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#64748b;fontColor=#334155;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="820" y="100" width="310" height="370" as="geometry"/>
+        </mxCell>
+        <mxCell id="net_gw" value="🛡️ Gateway / Router&#xa;UniFi Cloud Gateway (UCG Ultra)&#xa;WAN: LTE Backup / Haus-Uplink&#xa;IP: 192.168.10.1 (VLANs aktiv)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#0f172a;fontColor=#ffffff;fontStyle=1;fontSize=10;" vertex="1" parent="net_grp">
+          <mxGeometry x="20" y="35" width="270" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="net_sw" value="🔌 PoE Switch (UniFi USW-Lite)&#xa;Port 1-4: PoE+ | Port 5-8: Gigabit&#xa;VLAN 10: Prod/Show | VLAN 20: Kasse | VLAN 30: Guest" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0284c7;strokeColor=#0369a1;fontColor=#ffffff;fontStyle=1;fontSize=10;" vertex="1" parent="net_grp">
+          <mxGeometry x="20" y="105" width="270" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="net_ap" value="📡 Access Point (UniFi U6+)&#xa;SSID: FraWo-Show (Hidden)&#xa;SSID: FraWo-Crew (WPA3)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#10b981;strokeColor=#047857;fontColor=#ffffff;fontStyle=1;fontSize=10;" vertex="1" parent="net_grp">
+          <mxGeometry x="20" y="175" width="270" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="net_clients" value="💻 Endgeräte / Steuerungen:&#xa;• Tablet FoH Mixer Remote (iPad)&#xa;• ArtNet / DMX Node (falls LAN)&#xa;• Odoo POS / SumUp Kartenterminal&#xa;• Jarvis Telemetrie &amp; Sound-Logging" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f1f5f9;strokeColor=#cbd5e1;fontColor=#334155;fontSize=9;align=left;" vertex="1" parent="net_grp">
+          <mxGeometry x="20" y="240" width="270" height="110" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e_gw_sw" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284c7;strokeWidth=2;" edge="1" parent="net_grp" source="net_gw" target="net_sw">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_sw_ap" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#10b981;strokeWidth=2;" edge="1" parent="net_grp" source="net_sw" target="net_ap">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_sw_clients" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#64748b;strokeWidth=2;" edge="1" parent="net_grp" source="net_sw" target="net_clients">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- SECURITY FOOTER -->
+        <mxCell id="sec_notes" value="⚠️ SICHERHEITSVORGABEN:&#xa;• Erdung &amp; Schutzleiter (PE) an jedem Verteiler vor Inbetriebnahme mit Prüfgerät messen!&#xa;• Keine Kabeltrommeln im aufgewickelten Zustand unter Last betreiben (Überhitzungsgefahr!).&#xa;• Signal- und Stromleitungen über Verkehrswegen ausnahmslos in gelb/schwarzen Defender-Kabelbrücken verlegen." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef2f2;strokeColor=#fca5a5;fontColor=#991b1b;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="40" y="490" width="1090" height="50" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
