@@ -4,7 +4,7 @@ services:
     environment:
       POSTGRES_DB: postgres
       POSTGRES_USER: odoo
-      POSTGRES_PASSWORD: odoo_FraWo_2026_x9k2
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     command: ["postgres", "-c", "shared_buffers=768MB", "-c", "work_mem=16MB", "-c", "maintenance_work_mem=256MB", "-c", "max_connections=50", "-c", "effective_cache_size=3GB"]
     volumes:
       - db-data:/var/lib/postgresql/data
@@ -16,7 +16,7 @@ services:
     environment:
       HOST: db
       USER: odoo
-      PASSWORD: odoo_FraWo_2026_x9k2
+      PASSWORD: ${POSTGRES_PASSWORD}
     expose:
       - "8069"
       - "8072"
@@ -54,7 +54,7 @@ services:
     restart: unless-stopped
     depends_on: [web]
     environment:
-      TUNNEL_TOKEN: "eyJhIjoiYWYzNmNhMjMxNmEwYzEwZGJiZDRiZGQyNTgxMmNmZWQiLCJ0IjoiYWRkN2U5NjctZDU5Ny00NDgzLTkwZTMtMmZiMTlmZWQ4ZmM5IiwicyI6IkdlS0FVMCtSNjB0VEcwUWR2VGRUb3JoVC9JWHV1cFErV2dHdW9TK1RlUDd3YUpyTk1wK2c0S252R2poZUxtbjJJOUtKYjdwL1pySEc1ZjlzYy9NQjdnPT0ifQ=="
+      TUNNEL_TOKEN: ${TUNNEL_TOKEN}
     command: tunnel --no-autoupdate run
 
 volumes:
