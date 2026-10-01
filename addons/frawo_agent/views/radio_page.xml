@@ -2177,6 +2177,10 @@ body {
                 }
               } else {
                 window.ffCurrentSendung = '';
+                var showTagLeer = document.getElementById('ff-show-tag');
+                if (showTagLeer) {
+                  showTagLeer.textContent = '📻 SHOW: LIVE';
+                }
               }
               if (elMeta) {
                 var metaBits = [];
