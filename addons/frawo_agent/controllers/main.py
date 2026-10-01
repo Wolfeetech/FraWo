@@ -3278,25 +3278,33 @@ function closeModalDirect() {{
 
             focus_franz = franz_records
 
-            # Wolf tasks: filter by Hub scope
-            wolf_domain = [
+            # Wolf tasks: strictly tasks assigned to Wolf (user 6)
+            # Prioritize tasks matching the selected Hub scope; if fewer than 4, fill up with other active tasks assigned to Wolf.
+            base_wolf_domain = [
                 ('active', '=', True),
+                ('user_ids', 'in', [6]),
                 ('stage_id.name', 'in', ['📥 Als Nächstes', '🚀 In Arbeit (max 6)', 'In Arbeit', 'Als Nächstes'])
             ]
+            hub_domain = list(base_wolf_domain)
             if hub == 'stockenweiler':
-                # Strictly Projekt 90 / @stockenweiler
-                wolf_domain.extend(['|', ('project_id', '=', 106), ('tag_ids', 'in', [156])])
+                hub_domain.extend(['|', ('project_id', '=', 106), ('tag_ids', 'in', [156])])
             elif hub == 'villa':
-                # Rothkreuz 14 / Studio / Werkstatt / Business
-                wolf_domain.extend(['|', ('tag_ids', 'in', [155]), ('project_id', 'in', [159, 160, 161, 162, 163, 110])])
+                hub_domain.extend(['|', ('tag_ids', 'in', [155]), ('project_id', 'in', [159, 160, 161, 162, 163, 110])])
             elif hub == 'jobs':
-                # Aufträge & Events
-                wolf_domain.extend([('project_id', '=', 104)])
+                hub_domain.extend(['|', ('project_id', '=', 104), ('tag_ids', 'in', [149])])
             else:
                 # Default 'anker': RK22a, IT & Infra, Server
-                wolf_domain.extend(['|', ('tag_ids', 'in', [154]), ('project_id', 'in', [105, 107])])
+                hub_domain.extend(['|', ('tag_ids', 'in', [154]), ('project_id', 'in', [105, 107])])
 
-            raw_wolf = env['project.task'].sudo().search(wolf_domain, order='stage_id desc, write_date desc', limit=4)
+            raw_wolf = list(env['project.task'].sudo().search(hub_domain, order='stage_id desc, write_date desc', limit=4))
+            if len(raw_wolf) < 4:
+                existing_ids = [t.id for t in raw_wolf]
+                fallback_domain = list(base_wolf_domain)
+                if existing_ids:
+                    fallback_domain.append(('id', 'not in', existing_ids))
+                needed = 4 - len(raw_wolf)
+                fallback_tasks = env['project.task'].sudo().search(fallback_domain, order='stage_id desc, write_date desc', limit=needed)
+                raw_wolf.extend(fallback_tasks)
             focus_wolf = []
             for t in raw_wolf:
                 clean_desc = re.sub(r'<[^>]+>', ' ', t.description or '').strip()
