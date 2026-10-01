@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
 
 from odoo.tests.common import TransactionCase, tagged
@@ -11,6 +11,16 @@ BERLIN = ZoneInfo("Europe/Berlin")
 
 def _jetzt(jahr, monat, tag, stunde, minute=0):
     return datetime(jahr, monat, tag, stunde, minute, tzinfo=BERLIN)
+
+
+def _jetzt_utc(jahr, monat, tag, stunde, minute=0):
+    """Wie ``_jetzt``, aber ueber eine echte UTC-Instanz aufgeloest -- so wie
+    ``datetime.now(BERLIN)`` es automatisch tut. Fuer Momente in der
+    Umstellungsnacht 25.10.2026 (02:00-03:00 Europe/Berlin kommt zweimal
+    vor) waere eine direkte ``datetime(..., tzinfo=BERLIN)``-Konstruktion
+    zweideutig (``fold`` muesste geraten werden); der Umweg ueber eine
+    eindeutige UTC-Zeit vermeidet das."""
+    return datetime(jahr, monat, tag, stunde, minute, tzinfo=timezone.utc).astimezone(BERLIN)
 
 
 def _item(start_time, end_time, days):
@@ -207,3 +217,51 @@ class TestScheduleVereinfachen(TransactionCase):
         out = _schedule_vereinfachen(playlists, jetzt=_jetzt(2026, 9, 30, 12))
         wochentage = set(datetime.fromisoformat(e["start"]).weekday() for e in out)
         self.assertEqual(wochentage, {0, 1, 2, 3, 4, 5, 6})
+
+    # -- Zeitumstellung 25.10.2026 (Odoo #1805) ------------------------------
+    # Nacht Sa 24.10. -> So 25.10.2026: Uhr wird um 03:00 CEST auf 02:00 CET
+    # zurueckgestellt, 02:00-03:00 Europe/Berlin kommt also zweimal vor. An
+    # echten Python-Werten nachgewiesen: eine direkte Subtraktion zweier
+    # Europe/Berlin-datetimes ueber diese Nacht hinweg (end_dt - start_dt)
+    # ergab 9:00:00 statt der tatsaechlichen 10:00:00 -- die Funktion muss
+    # ueber UTC vergleichen, um das zu vermeiden.
+
+    def _nacht_sendung(self):
+        # Samstag (ISO/AzuraCast-Tag 6) 21:00 -> 06:00.
+        return _playlist("06 Deep Night", [_item(2100, 600, [6])])
+
+    def test_umstellungsnacht_sendung_21_bis_06_laeuft_durch(self):
+        out = _schedule_vereinfachen([self._nacht_sendung()], jetzt=_jetzt_utc(2026, 10, 25, 1, 30))  # 02:30 CET
+        nacht = [e for e in out if e["start"] == "2026-10-24T21:00:00+02:00"]
+        self.assertEqual(len(nacht), 1)
+        self.assertTrue(nacht[0]["jetzt"])
+        self.assertEqual(nacht[0]["ende"], "2026-10-25T06:00:00+01:00")
+
+    def test_umstellungsnacht_jetzt_genau_einmal_gesetzt(self):
+        for label, jetzt in [
+            ("kurz nach Sendebeginn 21:30 CEST", _jetzt_utc(2026, 10, 24, 19, 30)),
+            ("1. Durchlauf 02:30 CEST", _jetzt_utc(2026, 10, 25, 0, 30)),
+            ("2. Durchlauf 02:30 CET", _jetzt_utc(2026, 10, 25, 1, 30)),
+            ("kurz vor Sendeende 05:59 CET", _jetzt_utc(2026, 10, 25, 4, 59)),
+        ]:
+            out = _schedule_vereinfachen([self._nacht_sendung()], jetzt=jetzt)
+            jetzt_eintraege = [e for e in out if e["jetzt"]]
+            self.assertEqual(len(jetzt_eintraege), 1, f"{label}: {jetzt_eintraege}")
+
+    def test_umstellungsnacht_jetzt_ausserhalb_der_sendung_nicht_gesetzt(self):
+        for label, jetzt in [
+            ("vor Sendebeginn 20:59 CEST", _jetzt_utc(2026, 10, 24, 18, 59)),
+            ("nach Sendeende 06:01 CET", _jetzt_utc(2026, 10, 25, 5, 1)),
+        ]:
+            out = _schedule_vereinfachen([self._nacht_sendung()], jetzt=jetzt)
+            jetzt_eintraege = [e for e in out if e["jetzt"]]
+            self.assertEqual(jetzt_eintraege, [], label)
+
+    def test_umstellungsnacht_dauer_ist_zehn_stunden(self):
+        # Die Nacht hat eine Stunde mehr -- 21:00-06:00 dauert real 10h,
+        # nicht die ueblichen 9h (06:00 - 21:00 ohne Umstellung).
+        out = _schedule_vereinfachen([self._nacht_sendung()], jetzt=_jetzt_utc(2026, 10, 25, 1, 30))
+        nacht = [e for e in out if e["start"] == "2026-10-24T21:00:00+02:00"][0]
+        start = datetime.fromisoformat(nacht["start"])
+        ende = datetime.fromisoformat(nacht["ende"])
+        self.assertEqual(ende - start, timedelta(hours=10))

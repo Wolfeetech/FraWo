@@ -6,6 +6,7 @@ import re
 import time
 import requests
 import urllib3
+from urllib.parse import urlsplit
 
 from odoo.addons.frawo_agent.models.radio_azuracast import _schedule_vereinfachen
 
@@ -56,6 +57,20 @@ class RadioController(http.Controller):
         except Exception:
             pass
         return False
+
+    def _same_origin_ok(self):
+        """CSRF-Schutz fuer die PVE-Bridge-Admin-Routen (type='http', csrf=False,
+        weil sie Formulardaten/multipart bzw. gar keinen Body haben und daher
+        nicht das Standard-CSRF-Token nutzen koennen). Prueft Origin- bzw.
+        ersatzweise Referer-Header gegen web.base.url. Fehlen beide Header,
+        wird abgelehnt (fail closed) -- siehe Odoo #1803."""
+        base_url = (request.env['ir.config_parameter'].sudo().get_param('web.base.url') or '').strip()
+        base_netloc = urlsplit(base_url).netloc.lower() if base_url else ''
+        if not base_netloc:
+            return False
+        candidate = request.httprequest.headers.get('Origin') or request.httprequest.headers.get('Referer') or ''
+        candidate_netloc = urlsplit(candidate).netloc.lower() if candidate else ''
+        return bool(candidate_netloc) and candidate_netloc == base_netloc
 
     def _is_trusted_or_authenticated(self):
         """Allow access if request is from trusted network OR if user is authenticated in Odoo."""
@@ -305,6 +320,13 @@ class RadioController(http.Controller):
 
     @http.route('/radio/admin/curate', type='http', auth='user', methods=['POST'], csrf=False)
     def radio_admin_curate(self, **kwargs):
+        # Kein Body -> Content-Type-Pruefung greift nicht, daher Herkunfts-Check.
+        if not self._same_origin_ok():
+            return request.make_response(
+                '{"status":"error","message":"Forbidden"}',
+                headers=[('Content-Type', 'application/json')],
+                status=403
+            )
         if not self._is_internal_user():
             return request.make_response(
                 '{"status":"error","message":"Forbidden"}',
@@ -334,6 +356,22 @@ class RadioController(http.Controller):
 
     @http.route('/radio/admin/upload', type='http', auth='user', methods=['POST'], csrf=False)
     def radio_admin_upload(self, **kwargs):
+        # multipart/form-data ist ein von HTML-Formularen erlaubter Content-Type
+        # (auch von einer fremden Seite) -- die Pruefung allein schuetzt nicht
+        # vor CSRF, daher zusaetzlich Herkunfts-Check.
+        content_type = request.httprequest.content_type or ''
+        if not content_type.startswith('multipart/form-data'):
+            return request.make_response(
+                '{"status":"error","message":"Unsupported Content-Type"}',
+                headers=[('Content-Type', 'application/json')],
+                status=415
+            )
+        if not self._same_origin_ok():
+            return request.make_response(
+                '{"status":"error","message":"Forbidden"}',
+                headers=[('Content-Type', 'application/json')],
+                status=403
+            )
         if not self._is_internal_user():
             return request.make_response(
                 '{"status":"error","message":"Forbidden"}',
@@ -370,6 +408,15 @@ class RadioController(http.Controller):
 
     @http.route('/radio/admin/delete', type='http', auth='user', methods=['POST'], csrf=False)
     def radio_admin_delete(self, **kwargs):
+        # application/json kann ein klassisches HTML-Formular nicht erzeugen
+        # (wie beim Fix an /radio/redaktion/urteil) -- Content-Type-Pruefung
+        # genuegt hier als CSRF-Schutz.
+        if request.httprequest.mimetype != 'application/json':
+            return request.make_response(
+                '{"status":"error","message":"Unsupported Content-Type"}',
+                headers=[('Content-Type', 'application/json')],
+                status=415
+            )
         if not self._is_internal_user():
             return request.make_response(
                 '{"status":"error","message":"Forbidden"}',

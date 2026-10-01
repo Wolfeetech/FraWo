@@ -6,7 +6,7 @@ muesste der Sender neu gestartet werden (NOW.md-Fallentabelle), ueber die
 API benachrichtigt AzuraCast liquidsoap selbst.
 """
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
 
 import requests
@@ -108,8 +108,19 @@ def _ist_teilmenge(klein, gross):
         return False
     if klein["name"] != gross["name"]:
         return False
-    innerhalb = (gross["start_dt"] <= klein["start_dt"]) and (gross["end_dt"] >= klein["end_dt"])
-    echt_kleiner = (gross["start_dt"] < klein["start_dt"]) or (gross["end_dt"] > klein["end_dt"])
+    # In UTC vergleichen statt die rohen Europe/Berlin-datetimes direkt:
+    # an echten Python-Werten nachgewiesen (Odoo #1805), dass eine direkte
+    # Subtraktion zweier zonen-bewusster datetime-Objekte mit
+    # unterschiedlichem UTC-Offset in der Umstellungsnacht um genau eine
+    # Stunde danebenliegen kann (25.10.2026: end_dt - start_dt lieferte
+    # 9:00:00 statt der tatsaechlichen 10:00:00). UTC hat keine
+    # Zeitumstellung, daher sind Vergleiche darueber robust.
+    klein_start = klein["start_dt"].astimezone(timezone.utc)
+    klein_end = klein["end_dt"].astimezone(timezone.utc)
+    gross_start = gross["start_dt"].astimezone(timezone.utc)
+    gross_end = gross["end_dt"].astimezone(timezone.utc)
+    innerhalb = (gross_start <= klein_start) and (gross_end >= klein_end)
+    echt_kleiner = (gross_start < klein_start) or (gross_end > klein_end)
     return innerhalb and echt_kleiner
 
 
@@ -156,16 +167,23 @@ def _schedule_vereinfachen(playlists, jetzt=None):
         if not any(_ist_teilmenge(eintrag, andere) for andere in alle)
     ]
 
+    jetzt_utc = jetzt.astimezone(timezone.utc)
+
     ausgabe = []
     for e in behalten:
         in_anzeige_woche = montag <= e["start_dt"].date() <= sonntag
-        ist_jetzt = e["start_dt"] <= jetzt < e["end_dt"]
+        # "jetzt" und die Sendezeiten in UTC vergleichen (nicht die rohen
+        # Europe/Berlin-datetimes) -- siehe Kommentar in _ist_teilmenge,
+        # schuetzt vor einer falschen Stunde in der Umstellungsnacht.
+        start_utc = e["start_dt"].astimezone(timezone.utc)
+        end_utc = e["end_dt"].astimezone(timezone.utc)
+        ist_jetzt = start_utc <= jetzt_utc < end_utc
         # Ausserhalb der Anzeige-Woche nur behalten, wenn es der gerade
         # laufende Eintrag ist (Wochenwechsel-Randfall, siehe oben).
         if in_anzeige_woche or ist_jetzt:
             ausgabe.append((e, ist_jetzt))
 
-    ausgabe.sort(key=lambda paar: paar[0]["start_dt"])
+    ausgabe.sort(key=lambda paar: paar[0]["start_dt"].astimezone(timezone.utc))
 
     return [
         {
