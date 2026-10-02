@@ -24,8 +24,8 @@
 | **101** | anker-pve | `adguard-slave` | `10.1.0.27` | 53 (DNS), 3000 (Web) | Sekundärer DNS-Server (Anker) |
 | **106** | anker-pve | `wireguard` | `10.1.0.239` | 51820 | VPN Gateway (aus ProDesk-PBS wiederhergestellt) |
 | **108** | anker-pve | `vaultwarden` | `10.1.0.95` | 80 / 443 | SSOT für alle Passwörter & Tokens (`vault.frawo.tech`) |
-| **110** | anker-pve | `n8n / paperless` | `10.1.0.100` | 5678 / 8000 | Workflows & Paperless-ngx (`paperless.frawo.tech`), 192 Dokumente |
-| **130** | anker-pve | `radio-node` | `10.1.0.200` | 9500 | Docker: Radio-Backend, PostgreSQL, Redis |
+| **110** | Optiplex | `n8n / paperless` | `10.1.0.100` | 5678 / 8000 | Workflows & Paperless-ngx (`paperless.frawo.tech`), migriert 02.10.2026 (#1516) |
+| **130** | Optiplex | `radio-node` | `10.1.0.200` | 9500 | Docker: Radio-Backend, PostgreSQL, Redis, migriert 03.10.2026 (#1518) |
 | **140** | anker-pve | `frawotech-web` | `10.1.0.112` | 8069 (Odoo 19), 80 (Nginx), 8080 (Draw.io) | ERP, CRM, Touch Cockpit, Draw.io Skizzierbrett (`frawo.tech/draw`), Cloudflare-Tunnel |
 | **150** | anker-pve | `openclaw` | `10.1.0.31` | 19001 (Servassi-Hook), 19000 (Gateway) | **Jarvis** (Persistenter Koordinator & Monitoring-Empfänger) |
 | **155** | anker-pve | `monitoring-stack` | `10.1.0.35` | 9090 (Prom), 9093 (Alert), 3000 (Grafana) | Prometheus, Alertmanager, Grafana (ex CT150 auf ProDesk) |
@@ -33,7 +33,7 @@
 | **210** | stock-pve | `azuracast-vm` | `10.1.0.38` | 8000 (Icecast), 80 / 443 | Webradio FraWo Funk (`funk.frawo.tech`), AutoDJ, Liquidsoap |
 | **210** | anker-pve | `haos` | `10.1.0.40` | 8123 (Home Assistant) | Hausautomation Rothkreuz, Lovelace Touch Dashboard |
 | **240** | anker-pve | `PBS-FraWo` | `10.1.0.7` | 8007 (PBS API/Web) | Proxmox Backup Server |
-| **300** | anker-pve | `nextcloud` | `10.1.0.21` | 80 / 443 | Cloud Storage (`cloud.frawo.tech`) |
+| **300** | Optiplex | `nextcloud` | `10.1.0.21` | 80 / 443 | Cloud Storage (`cloud.frawo.tech`), migriert 02.10.2026 (#1515) |
 | **—** | OptiPlex 7050 | `frawo-ai-worker` | `10.1.0.227` / `10.0.0.227` | 11434 (Ollama CPU), 8080 (Open WebUI), 8081 (SearXNG) | **FraWo 24/7 KI-Worker (Employee #13)** — Qwen 2.5 7B & 3B, `nomic-embed-text` (RAG), Open WebUI (`https://frawo.tech/ai/` & `http://10.0.0.227:8080`), SearXNG Metasuche. **Firewall (cluster.fw) Port 11434 nur für:** CT155 Prometheus `10.1.0.35`, CT150 Jarvis `10.1.0.31`, CT110 Paperless-Router `10.1.0.100` (seit 29.09.2026, #1645) |
 | **—** | StudioPC | `frawo-gpu-powernode` | `10.0.0.156` (LAN) / `100.98.31.60` (TS) | 11434 (Ollama GPU) | **FraWo GPU-Powernode (NVIDIA GeForce RTX 4060 8 GB GDDR6, CUDA 12.8, Compute 8.9)** — On-Demand Inferenz: `frawo-mitarbeiter:latest` (51,9 tok/s), `frawo-mitarbeiter-fast:latest` (101,7 tok/s), `qwen2.5-coder:7b` (47,8 tok/s für Python, Bash & Skripte). 7,1 GB VRAM frei. Eingebunden in Open WebUI via `OLLAMA_BASE_URLS` |
 
@@ -78,6 +78,10 @@
    - **Skript:** `/usr/local/bin/frawo-musikredaktion-rueckschreiben.sh` (Repo: `deployments/prodesk/frawo-musikredaktion-rueckschreiben.sh`), `flock -n` über die gesamte `ExecStart`-Zeile. Ruft `pct exec 120 -- python3 /opt/musikredaktion/rueckschreiben.py` und schreibt danach die Metrik **am Wirt** in den textfile_collector — CT120 hat keinen eigenen node_exporter (gleiches Muster wie `odoo-sql-backup.sh`).
    - **Metriken:** `frawo_musikredaktion_rueckschreiben_erfolg` (1/0, jeder Lauf) sowie `..._letzter_erfolg_timestamp_seconds`/`..._geschrieben`/`..._offen` (nur bei Erfolg). Alarme: `deployments/monitoring/rules/frawo_musikredaktion_rueckschreiben.yml` (26h-Staleness, `absent()`, Fehlschlag) — geprüft mit `promtool`, auf CT155 ausgerollt, geladen (health `ok`).
    - **Probe- und Echtlauf am 01.10.2026 erfolgreich** (Exit 0, Export war zu diesem Zeitpunkt leer: 0 Zeilen/0 geschrieben/0 offen).
+8. **Draw.io Skizzierbrett (`frawo.tech/draw` & `draw.frawo.tech`), Odoo #1861:**
+   - **Container:** `frawotech-drawio-1` (`jgraph/drawio:latest`) auf CT140 (`frawotech-web`), intern Port 8080.
+   - **Reverse Proxy & Auth:** Nginx auf CT140 schützt alle Routen (`/draw/`, `/Draw/`, Dedicated VHost `draw.frawo.tech`) über `auth_request /_odoo_auth` (`/frawo/auth_check`). Nicht angemeldete Aufrufe leiten automatisch auf `/web/login?redirect=...` um.
+   - **Nutzung:** Mobiles Skizzierbrett für Wolf (Handy, Tablet, Desktop) zur Dokumentation von Netzwerk-, Strom- und Werkstattplänen ohne Drittanbieter-Cloud.
 
 ---
 
