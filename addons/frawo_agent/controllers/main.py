@@ -2080,7 +2080,7 @@ class RadioController(http.Controller):
                     <div class="item-purpose">🎯 {meta['purpose']}</div>
                     <div class="btn-group">
                         <a href="{meta['cart_url']}" target="_blank" class="btn btn-shop">🛒 Direkt im Shop öffnen →</a>
-                        <a href="/odoo/project.task/{t.id}" target="_blank" class="btn btn-odoo">📄 Task #{t.id}</a>
+                        <a href="/frawo/touch/login?redirect=/odoo/action-project.action_view_all_task/{t.id}" target="_blank" class="btn btn-odoo">📄 Task #{t.id}</a>
                     </div>
                 </div>'''
 
@@ -2229,8 +2229,13 @@ class RadioController(http.Controller):
     @http.route('/frawo/touch/login', type='http', auth='none', csrf=False, sitemap=False)
     def touch_auto_login(self, **kwargs):
         """Auto-authenticates Wolf Prinz on the local Touchscreen/LAN and redirects to /odoo or target."""
+        redirect_url = kwargs.get('redirect', '/odoo')
+        # If user is already authenticated in session, redirect directly
+        if request.session.uid:
+            return request.redirect(redirect_url)
+
         if not self._is_trusted_network():
-            return request.make_response("403 Forbidden: Touch Auto-Login ist nur im lokalen FraWo-Netzwerk erlaubt.", status=403)
+            return request.redirect(f'/web/login?redirect={redirect_url}')
         try:
             db = 'FraWo_GbR'
             env = request.env(user=1)
@@ -2245,14 +2250,13 @@ class RadioController(http.Controller):
                 request.session.context = dict(user.context_get())
                 request.session.should_rotate = True
                 _logger.info("Touch auto-login successfully authenticated Wolf Prinz (uid=%s)", user.id)
-                redirect_url = kwargs.get('redirect', '/odoo')
                 return request.redirect(redirect_url)
             else:
                 _logger.error("Touch auto-login: user wolf@frawo.tech not found")
-                return request.redirect('/web/login')
+                return request.redirect(f'/web/login?redirect={redirect_url}')
         except Exception as e:
             _logger.exception("Touch auto-login error: %s", str(e))
-            return request.redirect('/web/login?login=wolf@frawo.tech')
+            return request.redirect(f'/web/login?redirect={redirect_url}')
 
     # ─────────────────────────────────────────────────────────────
     # Touchscreen Live Operations Cockpit (Projekte & Agent Tracker)
@@ -2467,7 +2471,7 @@ class RadioController(http.Controller):
                     'status': status_text,
                     'desc': clean_desc[:600],
                     'timeline': timeline,
-                    'url': f"/frawo/touch/login?redirect=/odoo/project.task/{task.id}"
+                    'url': f"/frawo/touch/login?redirect=/odoo/action-project.action_view_all_task/{task.id}"
                 })
                 return pyhtml.escape(payload, quote=True)
 
@@ -3252,7 +3256,7 @@ function closeModalDirect() {{
     @http.route(['/frawo/touch/api/summary', '/api/telemetry'], type='http', auth='none', methods=['GET'], cors='*', csrf=False, sitemap=False)
     def touch_api_summary(self, **kwargs):
         """JSON summary for Surface Go Touchboard & Ambient Glanceable Display."""
-        import json, datetime, re
+        import json, datetime, re, html as pyhtml
         if not self._is_trusted_or_authenticated():
             return request.make_response(
                 json.dumps({"error": "Forbidden", "message": "Internes Netzwerk oder Anmeldung erforderlich"}),
@@ -3278,11 +3282,11 @@ function closeModalDirect() {{
                 # Exclude future event tasks (> 2 days) not yet in work
                 if t.project_id.id == 104 and t.date_deadline and str(t.date_deadline) > two_days_future and 'In Arbeit' not in (t.stage_id.name or ''):
                     continue
-                clean_desc = re.sub(r'<[^>]+>', ' ', t.description or '').strip()
+                clean_desc = pyhtml.unescape(re.sub(r'<[^>]+>', ' ', t.description or '')).strip()
                 clean_desc = re.sub(r'\s+', ' ', clean_desc)[:110]
                 franz_records.append({
                     "id": t.id,
-                    "title": t.name,
+                    "title": pyhtml.unescape(t.name or ''),
                     "sub": clean_desc or (t.stage_id.name or ''),
                     "stage": t.stage_id.name or ''
                 })
@@ -3320,11 +3324,11 @@ function closeModalDirect() {{
                 raw_wolf.extend(fallback_tasks)
             focus_wolf = []
             for t in raw_wolf:
-                clean_desc = re.sub(r'<[^>]+>', ' ', t.description or '').strip()
+                clean_desc = pyhtml.unescape(re.sub(r'<[^>]+>', ' ', t.description or '')).strip()
                 clean_desc = re.sub(r'\s+', ' ', clean_desc)[:110]
                 focus_wolf.append({
                     "id": t.id,
-                    "title": t.name,
+                    "title": pyhtml.unescape(t.name or ''),
                     "sub": clean_desc or (t.stage_id.name or ''),
                     "stage": t.stage_id.name or '',
                     "project": t.project_id.name if t.project_id else ''
@@ -3350,7 +3354,7 @@ function closeModalDirect() {{
                 dt_str = ev.date_deadline.strftime('%d.%m.') if ev.date_deadline else ''
                 upcoming_events.append({
                     "id": ev.id,
-                    "title": ev.name,
+                    "title": pyhtml.unescape(ev.name or ''),
                     "date": dt_str,
                     "stage": ev.stage_id.name or ''
                 })
@@ -3379,7 +3383,7 @@ function closeModalDirect() {{
                         if is_q_table:
                             rows = re.findall(r'<tr[^>]*>(.*?)</tr>', tbl, re.DOTALL | re.IGNORECASE)
                             for r in rows[1:]:
-                                cells = [re.sub(r'<[^>]+>', ' ', c).strip() for c in re.findall(r'<t[dh][^>]*>(.*?)</t[dh]>', r, re.DOTALL | re.IGNORECASE)]
+                                cells = [pyhtml.unescape(re.sub(r'<[^>]+>', ' ', c)).strip() for c in re.findall(r'<t[dh][^>]*>(.*?)</t[dh]>', r, re.DOTALL | re.IGNORECASE)]
                                 if cells and cells[0]:
                                     col0 = cells[0].strip()
                                     hint = f" (Hinweis: {cells[2]})" if len(cells) >= 3 and cells[2] and not cells[2].startswith('(') else (f" {cells[2]}" if len(cells) >= 3 and cells[2] else "")
@@ -3393,13 +3397,13 @@ function closeModalDirect() {{
                         if not items:
                             items = re.split(r'<br\s*/?>|</p>|\n', section_html)
                         for item in items:
-                            c_item = re.sub(r'<[^>]+>', ' ', item).strip()
+                            c_item = pyhtml.unescape(re.sub(r'<[^>]+>', ' ', item)).strip()
                             c_item = re.sub(r'\s+', ' ', c_item)
                             if c_item and len(c_item) > 6 and not any(skip in c_item.lower() for skip in ['keine', 'nichts']):
                                 qs.append(c_item)
                 # 3. Explicit question sentences with '?'
                 if not qs:
-                    clean_full = re.sub(r'<[^>]+>', ' ', desc)
+                    clean_full = pyhtml.unescape(re.sub(r'<[^>]+>', ' ', desc))
                     clean_full = re.sub(r'\s+', ' ', clean_full)
                     for qm in re.findall(r'([^.!?\n\r]{8,150}\?)', clean_full):
                         qm_clean = qm.strip()
@@ -3421,7 +3425,7 @@ function closeModalDirect() {{
                     
                     open_questions.append({
                         "id": qt.id,
-                        "title": qt.name,
+                        "title": pyhtml.unescape(qt.name or ''),
                         "project": qt.project_id.name if qt.project_id else '',
                         "question": q_text,
                         "questions_list": qs,

@@ -2426,7 +2426,7 @@
           if (listFranz) {
             if (data.focus_franz && data.focus_franz.length) {
               listFranz.innerHTML = data.focus_franz.map(t => `
-                <li class="amb-task-item">
+                <li class="amb-task-item" style="cursor:pointer;" onclick="window.open('/frawo/touch/login?redirect=/odoo/action-project.action_view_all_task/${t.id}', '_blank')">
                   <span class="amb-task-bullet">▸</span>
                   <div>
                     <b>${escapeHtml(t.title)} (#${t.id})</b>
@@ -2444,7 +2444,7 @@
           if (listWolf) {
             if (data.focus_wolf && data.focus_wolf.length) {
               listWolf.innerHTML = data.focus_wolf.map(t => `
-                <li class="amb-task-item">
+                <li class="amb-task-item" style="cursor:pointer;" onclick="window.open('/frawo/touch/login?redirect=/odoo/action-project.action_view_all_task/${t.id}', '_blank')">
                   <span class="amb-task-bullet">▸</span>
                   <div>
                     <b>${escapeHtml(t.title)} (#${t.id})</b>
@@ -2577,11 +2577,11 @@
           <button class="btn-touch btn-warning" onclick="openAnswerModal(${t.id}, '${escapeJs(t.title)}', '${escapeJs(t.project || hasQ.project || '')}', '${escapeJs(hasQ.question)}')">
             💬 Frage direkt beantworten
           </button>
-          <a href="https://frawo.tech/frawo/touch/login?redirect=/odoo/project.task/${t.id}" class="btn-touch btn-dark" style="padding:9px; font-size:12px;">
+          <a href="/frawo/touch/login?redirect=/odoo/action-project.action_view_all_task/${t.id}" target="_blank" class="btn-touch btn-dark" style="padding:9px; font-size:12px;">
             In Odoo ansehen
           </a>
         ` : `
-          <a href="https://frawo.tech/frawo/touch/login?redirect=/odoo/project.task/${t.id}" class="btn-touch">Aufgabe in Odoo öffnen</a>
+          <a href="/frawo/touch/login?redirect=/odoo/action-project.action_view_all_task/${t.id}" target="_blank" class="btn-touch">Aufgabe in Odoo öffnen</a>
         `;
 
         return `
@@ -2607,16 +2607,24 @@
 
     function escapeHtml(str) {
       if (!str) return '';
-      return String(str)
+      // Decode entities first to avoid double-escaping (&amp; -> & -> &amp;)
+      const txt = document.createElement("textarea");
+      txt.innerHTML = String(str);
+      const decoded = txt.value;
+      return decoded
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
     }
 
     function escapeJs(str) {
       if (!str) return '';
-      return String(str)
+      const txt = document.createElement("textarea");
+      txt.innerHTML = String(str);
+      const decoded = txt.value;
+      return decoded
         .replace(/\\/g, '\\\\')
         .replace(/'/g, "\\'")
         .replace(/"/g, '\\"')
