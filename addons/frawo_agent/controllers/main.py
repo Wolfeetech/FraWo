@@ -84,6 +84,19 @@ class RadioController(http.Controller):
             pass
         return False
 
+    @http.route('/frawo/auth_check', type='http', auth='public', methods=['GET', 'HEAD'], csrf=False, sitemap=False)
+    def frawo_auth_check(self, **kw):
+        """Internal endpoint for Nginx auth_request to protect apps (e.g. Draw.io).
+        Returns 200 OK if the user has an active authenticated internal Odoo session.
+        Returns 401 Unauthorized if unauthenticated or public guest."""
+        try:
+            user = request.env.user
+            if user and not user._is_public() and user.has_group('base.group_user'):
+                return request.make_response('OK', status=200, headers=[('Content-Type', 'text/plain; charset=utf-8')])
+        except Exception as e:
+            _logger.warning("frawo_auth_check error: %s", str(e))
+        return request.make_response('Unauthorized', status=401, headers=[('Content-Type', 'text/plain; charset=utf-8')])
+
     def _check_rate_limit(self, action, cooldown):
         """Per-browser-session cooldown for public write endpoints (radio votes/requests,
         lead form). These routes are intentionally auth='public' — anonymous website
