@@ -54,10 +54,10 @@ class TestFormatter(TransactionCase):
         self.assertIn("Maße", p)
         self.assertNotIn("Root Cause", p)
 
-    def test_prompt_wolf_mentions_dod(self):
+    def test_prompt_wolf_mentions_fertig_wenn(self):
         f = self.env["frawo.task.formatter"]
         p = f.build_prompt("Backup prüfen", "devops")
-        self.assertIn("Definition of Done", p)
+        self.assertIn("Fertig wenn:", p)
 
 
 @tagged("post_install", "-at_install", "frawo_agent")
@@ -71,7 +71,7 @@ class TestQueue(TransactionCase):
             Users.create({
                 "name": "FraWo Agent",
                 "login": AGENT_LOGIN,
-                "groups_id": [(6, 0, [self.env.ref("base.group_user").id])],
+                "group_ids": [(6, 0, [self.env.ref("base.group_user").id])],
             })
 
     def _project(self):
@@ -110,6 +110,12 @@ class TestLog(TransactionCase):
 
 @tagged("post_install", "-at_install", "frawo_agent")
 class TestProcessor(TransactionCase):
+
+    def setUp(self):
+        super().setUp()
+        # Vorhandene Queued-Tasks in der Test-Transaktion neutralisieren,
+        # damit der Cron deterministisch die im jeweiligen Test angelegte Aufgabe verarbeitet:
+        self.env["project.task"].search([("agent_state", "=", "queued")]).write({"agent_state": "skip"})
 
     def _queued_task(self, name):
         proj = self.env["project.project"].create({"name": "P"})
