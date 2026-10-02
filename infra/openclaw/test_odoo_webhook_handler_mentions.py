@@ -16,7 +16,12 @@ TEST_ENV = {
 }
 
 with patch.dict(os.environ, TEST_ENV):
-    from odoo_webhook_handler import _is_power_mention, _post
+    from odoo_webhook_handler import (
+        _is_power_mention,
+        _post,
+        _ask_ollama,
+        KeinRechenknoten,
+    )
 
 
 class RecordingRPC:
@@ -60,6 +65,34 @@ class PowerMentionTests(unittest.TestCase):
         body = '<a data-oe-id="321" data-oe-model="res.users">@Power</a>'
 
         self.assertFalse(_is_power_mention(body, 321))
+
+    def test_power_unreachable_raises_kein_rechenknoten_without_fallback(self):
+        with patch("odoo_webhook_handler.OLLAMA_POWER_ZIELE", [("http://studiopc.invalid:11434", "power-model")]), \
+             patch("odoo_webhook_handler._erreichbar", return_value=False):
+            with self.assertRaises(KeinRechenknoten) as ctx:
+                _ask_ollama("system", "prompt", power=True)
+            self.assertIn("(aus)", str(ctx.exception))
+
+    def test_power_not_configured_raises_kein_rechenknoten(self):
+        with patch("odoo_webhook_handler.OLLAMA_POWER_ZIELE", []):
+            with self.assertRaises(KeinRechenknoten) as ctx:
+                _ask_ollama("system", "prompt", power=True)
+            self.assertIn("Power-Lama ist nicht konfiguriert", str(ctx.exception))
+
+    def test_power_failure_posts_unavailability_note(self):
+        rpc = RecordingRPC()
+        power = True
+        body = (
+            "<p>🤖 <b>Ollama Mitarbeiter</b> konnte nicht antworten: "
+            + ("Power-Lama (StudioPC)" if power else "Routine-Lama (OptiPlex)")
+            + " ist gerade nicht erreichbar. Die Frage bleibt offen — bitte später erneut erwähnen.</p>"
+        )
+        _post(rpc, "project.task", 1517, body, note=True)
+
+        self.assertEqual(rpc.call_args[0], "project.task")
+        self.assertEqual(rpc.call_args[2], [1517])
+        self.assertEqual(rpc.call_args[3]["subtype_xmlid"], "mail.mt_note")
+        self.assertIn("Power-Lama (StudioPC) ist gerade nicht erreichbar", rpc.call_args[3]["body"])
 
 
 if __name__ == "__main__":
