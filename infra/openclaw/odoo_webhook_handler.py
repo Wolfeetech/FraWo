@@ -57,6 +57,7 @@ import urllib.error
 import urllib.request
 import xmlrpc.client
 from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
+from html.parser import HTMLParser
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(message)s")
 log = logging.getLogger("odoo-webhook")
@@ -106,6 +107,7 @@ OLLAMA_POWER_ZIELE = [(_power_url, _power_model)] if _power_url and _power_model
 # Partner-ID des Odoo-Nutzers "🤖 Ollama Mitarbeiter" — eigene Beiträge dürfen
 # niemals eine neue Runde auslösen.
 OLLAMA_PARTNER_ID = int(os.environ.get("OLLAMA_PARTNER_ID", "160"))
+OLLAMA_POWER_PARTNER_ID = int(os.environ.get("OLLAMA_POWER_PARTNER_ID", "0"))
 
 # --- Dedupe ---------------------------------------------------------------
 DEDUPE_TTL = {
@@ -402,6 +404,28 @@ def _mentions(text_low: str, name_pattern: str) -> bool:
     return re.search(r"@[^a-z0-9]{0,6}" + name_pattern, text_low) is not None
 
 
+def _is_power_mention(raw_body: str, partner_id: int) -> bool:
+    if not partner_id:
+        return False
+
+    class PartnerMentionParser(HTMLParser):
+        def __init__(self):
+            super().__init__()
+            self.found = False
+
+        def handle_starttag(self, tag, attrs):
+            attributes = dict(attrs)
+            self.found = self.found or (
+                tag == "a"
+                and attributes.get("data-oe-model") == "res.partner"
+                and attributes.get("data-oe-id") == str(partner_id)
+            )
+
+    parser = PartnerMentionParser()
+    parser.feed(raw_body or "")
+    return parser.found
+
+
 def _strip_html(raw: str) -> str:
     """Odoo liefert HTML. Für das Modell brauchen wir lesbaren Fließtext."""
     text = re.sub(r"(?i)<br\s*/?>", "\n", raw or "")
@@ -561,7 +585,7 @@ def _ask_ollama(system: str, prompt: str, power: bool = False):
     raise KeinRechenknoten(", ".join(versucht) or f"{rolle} nicht erreichbar")
 
 
-def _post(rpc: OdooRPC, model: str, res_id: int, body_html: str, note: bool = False):
+def _post(rpc: OdooRPC, model: str, res_id: int, body_html: str, note: bool = True):
     rpc.call(model, "message_post", [res_id], {
         "body": body_html,
         "message_type": "comment",
@@ -570,7 +594,7 @@ def _post(rpc: OdooRPC, model: str, res_id: int, body_html: str, note: bool = Fa
 
 
 def handle_ollama_async(model: str, res_id: int, record_name: str,
-                        question: str, author_id: int) -> None:
+                        question: str, author_id: int, power: bool = False) -> None:
     """Fragt das lokale Modell und schreibt die Antwort in denselben Chatter —
     unter dem eigenen Odoo-Nutzer. Läuft im Hintergrund, die HTTP-Antwort an
     Odoo ist längst raus."""
@@ -586,9 +610,6 @@ def handle_ollama_async(model: str, res_id: int, record_name: str,
             "Vorgang: %s\n\n%s\n\n---\nFrage an dich (Partner-ID %s):\n%s"
             % (record_name, context, author_id, question)
         )
-        # @Ollama Power: ... wählt bewusst den StudioPC. Kein automatischer
-        # Qualitätswechsel und kein unbemerkter Ausweichweg.
-        power = bool(re.search(r"\bpower(?:[\s_-]*lama)?\b", question.lower()))
         try:
             answer, used_model = _ask_ollama(OLLAMA_SYSTEM, prompt, power=power)
         except (KeinRechenknoten, urllib.error.URLError, OSError) as e:
@@ -817,7 +838,9 @@ class WebhookHandler(BaseHTTPRequestHandler):
                 log.info(f"Duplicate @Ollama-Erwähnung ignoriert (TTL): {record_name}")
             else:
                 log.info(f"Ollama-Lauf für {model}#{res_id} ({record_name})")
-                handle_ollama_async(model, res_id, record_name, text, author_id)
+                power = _is_power_mention(raw_body, OLLAMA_POWER_PARTNER_ID)
+                handle_ollama_async(
+                    model, res_id, record_name, text, author_id, power=power)
 
 
 
