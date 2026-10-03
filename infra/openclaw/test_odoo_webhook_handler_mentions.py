@@ -21,6 +21,7 @@ with patch.dict(os.environ, TEST_ENV):
         _post,
         _ask_ollama,
         KeinRechenknoten,
+        EMAIL_PROMPT_TEMPLATE,
     )
 
 
@@ -93,6 +94,20 @@ class PowerMentionTests(unittest.TestCase):
         self.assertEqual(rpc.call_args[2], [1517])
         self.assertEqual(rpc.call_args[3]["subtype_xmlid"], "mail.mt_note")
         self.assertIn("Power-Lama (StudioPC) ist gerade nicht erreichbar", rpc.call_args[3]["body"])
+
+    def test_email_prompt_template_formatting(self):
+        rendered = EMAIL_PROMPT_TEMPLATE.format(
+            sender="kunde@example.com",
+            recipient="agent@frawo.tech",
+            subject="Anfrage Beschallung",
+            date="2026-10-03 10:00:00",
+            body="Hallo, wir brauchen eine Anlage für unser Event.",
+        )
+        self.assertIn("kunde@example.com", rendered)
+        self.assertIn("agent@frawo.tech", rendered)
+        self.assertIn("Anfrage Beschallung", rendered)
+        self.assertIn("SPAM- & RELEVANZ-CHECK", rendered)
+        self.assertIn("Shelly 10.4.0.11", rendered)
 
 
 if __name__ == "__main__":

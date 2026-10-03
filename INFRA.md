@@ -82,6 +82,11 @@
    - **Container:** `frawotech-drawio-1` (`jgraph/drawio:latest`) auf CT140 (`frawotech-web`), intern Port 8080.
    - **Reverse Proxy & Auth:** Nginx auf CT140 schützt alle Routen (`/draw/`, `/Draw/`, Dedicated VHost `draw.frawo.tech`) über `auth_request /_odoo_auth` (`/frawo/auth_check`). Nicht angemeldete Aufrufe leiten automatisch auf `/web/login?redirect=...` um.
    - **Nutzung:** Mobiles Skizzierbrett für Wolf (Handy, Tablet, Desktop) zur Dokumentation von Netzwerk-, Strom- und Werkstattplänen ohne Drittanbieter-Cloud.
+9. **E-Mail-Intake für Jarvis (`agent@frawo.tech`), Odoo #1482:**
+   - **Eingang:** `POST /email-hook/<secret>` auf `odoo-webhook.service` (CT150, Port 19001).
+   - **Authentifizierung:** Pfad-Secret `FRAWO_EMAIL_SECRET` (Fallback auf `FRAWO_CHATTER_SECRET`).
+   - **Verhalten:** Sofortiges HTTP 200 ACK (`{"ok": true}`), Deduplizierung über 7 Tage (`email:<message_id>`).
+   - **Agent-Aufruf:** Jarvis prüft Spam/Priorität, erstellt oder aktualisiert Odoo-Vorgänge (Lead, Ticket, Chatter), versendet KEINE automatischen Antworten an externe Dritte und auditiert Vorgänge via Telegram.
 
 ---
 

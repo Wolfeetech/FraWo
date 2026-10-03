@@ -81,6 +81,7 @@ TELEGRAM_ID = os.environ.get("FRAWO_TELEGRAM_ID", "5924907152")
 SECRET = _need("FRAWO_TASK_SECRET")
 ALERT_SECRET = _need("FRAWO_ALERT_SECRET")
 KLAUSI_SECRET = _need("FRAWO_CHATTER_SECRET")
+EMAIL_SECRET = os.environ.get("FRAWO_EMAIL_SECRET") or KLAUSI_SECRET
 
 ODOO_URL = _need("ODOO_URL")
 ODOO_DB = _need("ODOO_DB")
@@ -115,6 +116,7 @@ DEDUPE_TTL = {
     "task": 600,     # 10 min: gleicher Odoo-Task nur 1x
     "chatter": 300,  # Fallback ohne message_id; normal dauerhaft persistent
     "ollama": 300,   # 5 min: gleiche Chatter-Message nur 1x (Ollama)
+    "email": 604800, # 7 Tage: gleiche E-Mail nur 1x
 }
 _dedupe_lock = threading.Lock()
 _recent: dict[str, float] = {}
@@ -264,6 +266,34 @@ Deine Aufgabe als IT-Mitarbeiter (ServAssi):
    Vorgehensweise vor und warte dort auf Freigabe.
 6. Telegram bekommt am Ende genau eine Notiz mit höchstens zwei kurzen Sätzen:
    worum es ging und ob Wolf etwas entscheiden muss. Keine Belegliste.
+
+SICHERHEITSREGEL: Shelly 10.4.0.11 (MAC e4:b0:63:d5:66:1c) NIEMALS schalten.
+"""
+
+EMAIL_PROMPT_TEMPLATE = """NEUE E-MAIL an {recipient} erhalten:
+
+**Von:** {sender}
+**Datum:** {date}
+**Betreff:** {subject}
+
+**Inhalt:**
+{body}
+
+---
+Deine Aufgabe als FraWo-Koordinator (Jarvis):
+1. SPAM- & RELEVANZ-CHECK:
+   Handelt es sich um offensichtlichen Spam, Phishing oder Werbe-Newsletter?
+   Falls ja: Keine Aktion erforderlich, E-Mail verwerfen / ignorieren.
+2. RELEVANTE E-MAILS:
+   Klassifiziere das Anliegen und übernimm die Daten strukturiert in Odoo:
+   - Geschäftliche Anfrage / Lead: Leads (crm.lead) anlegen oder aktualisieren
+   - Neue Aufgabe / Todo: Task (project.task) im passenden Projekt anlegen
+   - Bezug zu bestehendem Vorgang: Notiz im entsprechenden Odoo-Chatter hinterlegen
+   - Termin / Event: Kalendereintrag (calendar.event) vorschlagen / eintragen
+3. SICHERHEIT & DATENSCHUTZ:
+   KEINE automatische externe Antwort an den Absender ohne ausdrücklichen Auftrag oder Freigabe von Wolf.
+4. AUDIT & TELEGRAM:
+   Telegram bekommt genau eine kurze Notiz an Wolf: worum es ging und was in Odoo angelegt wurde.
 
 SICHERHEITSREGEL: Shelly 10.4.0.11 (MAC e4:b0:63:d5:66:1c) NIEMALS schalten.
 """
@@ -698,6 +728,12 @@ class WebhookHandler(BaseHTTPRequestHandler):
             log.warning("Unauthorized /klausi-chatter attempt (falsches/fehlendes Secret im Pfad)")
             self.send_response(401)
             self.end_headers()
+        elif self.path == f"/email-hook/{EMAIL_SECRET}":
+            self._handle_email_hook()
+        elif self.path.startswith("/email-hook"):
+            log.warning("Unauthorized /email-hook attempt (falsches/fehlendes Secret im Pfad)")
+            self.send_response(401)
+            self.end_headers()
         else:
             self.send_response(404)
             self.end_headers()
@@ -842,6 +878,40 @@ class WebhookHandler(BaseHTTPRequestHandler):
                 handle_ollama_async(
                     model, res_id, record_name, text, author_id, power=power)
 
+    def _handle_email_hook(self):
+        try:
+            data = self._read_json()
+        except Exception as e:
+            log.error(f"Invalid JSON in email hook: {e}")
+            self.send_response(400)
+            self.end_headers()
+            return
+
+        sender = str(data.get("from") or data.get("sender") or "unbekannt")
+        recipient = str(data.get("to") or "agent@frawo.tech")
+        subject = str(data.get("subject") or "(Kein Betreff)")
+        date = str(data.get("date") or time.strftime("%Y-%m-%d %H:%M:%S"))
+        raw_body = str(data.get("body") or data.get("text") or "")
+        body_clean = _strip_html(raw_body)[:3000].strip()
+
+        message_id = str(data.get("message_id") or "")
+        if message_id:
+            key = f"email:{message_id}"
+        else:
+            key = "email:" + hashlib.sha256(f"{sender}:{subject}:{body_clean[:100]}".encode()).hexdigest()[:16]
+
+        message = EMAIL_PROMPT_TEMPLATE.format(
+            sender=sender, recipient=recipient, subject=subject, date=date, body=body_clean
+        )
+        try:
+            inserted = enqueue_agent_event("email", key, message, f"email from {sender}: {subject[:50]}")
+        except Exception as e:
+            log.exception("E-Mail konnte nicht persistent eingereiht werden: %s", e)
+            self.send_response(503)
+            self.end_headers()
+            return
+
+        self._respond(200, dedup=not inserted)
 
 
 if __name__ == "__main__":
@@ -850,6 +920,6 @@ if __name__ == "__main__":
                      name="persistente-agent-inbox").start()
     server = ThreadingHTTPServer(("0.0.0.0", 19001), WebhookHandler)
     log.info("Webhook handler v3 listening on :19001 "
-             "(/odoo-task, /alertmanager-hook, /klausi-chatter) — "
+             "(/odoo-task, /alertmanager-hook, /klausi-chatter, /email-hook) — "
              "ACK sofort, Dedupe aktiv, @Ollama-Route scharf")
     server.serve_forever()
