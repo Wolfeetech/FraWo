@@ -2,7 +2,7 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-TARGET_IP="192.168.2.154"
+TARGET_IP="10.4.0.38"
 TARGET_HOSTNAME="surface-go-frontend"
 TAILSCALE_HOSTNAME="surface-go-frontend"
 
