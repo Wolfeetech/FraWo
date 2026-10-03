@@ -97,6 +97,11 @@ class RadioController(http.Controller):
             _logger.warning("frawo_auth_check error: %s", str(e))
         return request.make_response('Unauthorized', status=401, headers=[('Content-Type', 'text/plain; charset=utf-8')])
 
+    @http.route(['/terms', '/terms/'], type='http', auth='public', website=True, sitemap=True)
+    def terms_redirect(self, **kw):
+        """Permanent redirect /terms -> /agb (301)"""
+        return request.redirect('/agb', code=301)
+
     def _check_rate_limit(self, action, cooldown):
         """Per-browser-session cooldown for public write endpoints (radio votes/requests,
         lead form). These routes are intentionally auth='public' — anonymous website
