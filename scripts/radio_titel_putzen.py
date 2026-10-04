@@ -142,6 +142,9 @@ def main():
                     continue
                 titel = (f.get('title') or [''])[0]
                 kuenstler = (f.get('artist') or [''])[0]
+                # Mehrere Werte im Tag ("Boom" + "Boom (Original Mix)"): AzuraCast zeigt sie mit
+                # "; " verbunden an. Erster Wert gilt, also immer auf genau einen Wert zurueckschreiben.
+                mehrfach = len(f.get('title') or []) > 1 or len(f.get('artist') or []) > 1
                 # Fehlt Titel oder Kuenstler: eindeutiges "Kuenstler - Titel" im Dateinamen nutzen
                 quelle_k, quelle_t = (aus_dateiname(os.path.splitext(name)[0], kuenstler, titel)
                                       or (kuenstler, titel))
@@ -152,7 +155,7 @@ def main():
                     continue  # steht auf der Nacharbeitsliste, keine Regel raten lassen
                 neu_k = putze_kuenstler(quelle_k)
                 neu_t = putze_titel(quelle_t, neu_k)
-                if (neu_t, neu_k) == (titel, kuenstler) or not neu_t:
+                if ((neu_t, neu_k) == (titel, kuenstler) and not mehrfach) or not neu_t:
                     continue
                 aenderungen.write('%s\t%s\t%s\t%s\t%s\n' % (pfad, kuenstler, titel, neu_k, neu_t))
                 n_geaendert += 1
