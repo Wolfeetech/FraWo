@@ -37,6 +37,18 @@ def _version_gross(m):
 
 
 def putze_titel(titel, kuenstler=''):
+    # Bis zum festen Punkt putzen: eine Regel kann die naechste erst freilegen
+    # ("00 - Kuenstler - Titel": erst Tracknummer weg, dann Kuenstler-Praefix).
+    t = titel
+    for _ in range(4):
+        neu = _putze_einmal(t, kuenstler)
+        if neu == t:
+            break
+        t = neu
+    return t
+
+
+def _putze_einmal(titel, kuenstler=''):
     t = (titel or '').strip()
     if not t:
         return t

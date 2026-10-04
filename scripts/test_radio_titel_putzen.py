@@ -56,6 +56,11 @@ class TestTitel(unittest.TestCase):
         self.t('Nicholas - Now Is The Time', 'Now Is The Time', 'Nicholas')
         self.t('Other Guy - Now Is The Time', 'Other Guy - Now Is The Time', 'Nicholas')
 
+    def test_ein_durchgang_reicht(self):
+        alt = '00 - Faithless Sound System - 27-02-2010'
+        self.t(alt, '27-02-2010', 'Faithless Sound System')
+        self.assertEqual(putze_titel(putze_titel(alt, 'Faithless Sound System'), 'Faithless Sound System'), '27-02-2010')
+
     def test_unterstriche(self):
         self.t('now_is_the_time', 'now is the time')
 
