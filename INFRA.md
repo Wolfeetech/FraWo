@@ -79,7 +79,7 @@
    - **Metriken:** `frawo_musikredaktion_rueckschreiben_erfolg` (1/0, jeder Lauf) sowie `..._letzter_erfolg_timestamp_seconds`/`..._geschrieben`/`..._offen` (nur bei Erfolg). Alarme: `deployments/monitoring/rules/frawo_musikredaktion_rueckschreiben.yml` (26h-Staleness, `absent()`, Fehlschlag) — geprüft mit `promtool`, auf CT155 ausgerollt, geladen (health `ok`).
    - **Probe- und Echtlauf am 01.10.2026 erfolgreich** (Exit 0, Export war zu diesem Zeitpunkt leer: 0 Zeilen/0 geschrieben/0 offen).
 8. **Draw.io Skizzierbrett (`frawo.tech/draw` & `draw.frawo.tech`), Odoo #1861:**
-   - **Container:** `frawotech-drawio-1` (`jgraph/drawio:latest`) auf CT140 (`frawotech-web`), intern Port 8080.
+   - **Container:** `frawotech-drawio-1` (`jgraph/drawio:latest`) on CT140 (`frawotech-web`), intern Port 8080.
    - **Reverse Proxy & Auth:** Nginx auf CT140 schützt alle Routen (`/draw/`, `/Draw/`, Dedicated VHost `draw.frawo.tech`) über `auth_request /_odoo_auth` (`/frawo/auth_check`). Nicht angemeldete Aufrufe leiten automatisch auf `/web/login?redirect=...` um.
    - **Nutzung:** Mobiles Skizzierbrett für Wolf (Handy, Tablet, Desktop) zur Dokumentation von Netzwerk-, Strom- und Werkstattplänen ohne Drittanbieter-Cloud.
 9. **E-Mail-Intake für Jarvis (`agent@frawo.tech`), Odoo #1482:**
@@ -87,6 +87,15 @@
    - **Authentifizierung:** Pfad-Secret `FRAWO_EMAIL_SECRET` (Fallback auf `FRAWO_CHATTER_SECRET`).
    - **Verhalten:** Sofortiges HTTP 200 ACK (`{"ok": true}`), Deduplizierung über 7 Tage (`email:<message_id>`).
    - **Agent-Aufruf:** Jarvis prüft Spam/Priorität, erstellt oder aktualisiert Odoo-Vorgänge (Lead, Ticket, Chatter), versendet KEINE automatischen Antworten an externe Dritte und auditiert Vorgänge via Telegram.
+10. **Radio-Rotation & Hörer-Bewertungen (`frawo-radio-rotation-sync`), Odoo #1647 (seit 04.10.2026):**
+    - **Service & Timer:** `frawo-radio-rotation-sync.service` / `.timer` auf `stock-pve` (ProDesk-Wirt `10.1.0.128`), stündlich um Minute :20 (`OnCalendar=*-*-* *:20:00 Europe/Berlin`), `Persistent=true`. Aktiv und running.
+    - **Skripte:** `/usr/local/bin/frawo-radio-rotation-sync.sh` (Wrapper mit `flock -n`) und `/usr/local/bin/frawo-radio-rotation-server-sync.py` (Repo: `deployments/radio/radio_rotation_server_sync.py`).
+    - **Funktion:** Synchronisiert Hörer-Bewertungen aus Odoo (`/radio/ratings/export`) nach Beets (CT120) und AzuraCast (VM 220).
+    - **Power Rotation:** Playlist 871 (`🔥 FraWo Funk — Power Rotation (Hörer-Favoriten)`), Typ `once_per_x_songs` (`play_per_songs = 6`), spielt alle 6 Titel einen Hörer-Favoriten (>=4.5 Sterne) rund um die Uhr quer über alle Shows.
+    - **Quarantäne:** Titel mit <=2.2 Sternen oder >=3 Hates werden aus allen Playlisten entfernt und auf `is_queued = 0` gesetzt.
+    - **Best of the Week:** Playlist 869 wird für die Sonntag-Primetime (18:00–20:00 Uhr) mit den Top-24-Charttiteln synchronisiert.
+    - **Metriken & Alarme:** Prometheus Textfile-Collector (`frawo_radio_rotation_sync_erfolg`, `..._letzter_erfolg_timestamp_seconds`, `..._power_tracks`, `..._beets_synced`). Alarme auf CT155 geladen und aktiv: `RadioRotationSyncFehlgeschlagen` (15m), `RadioRotationSyncVeraltet` (4h), `RadioRotationSyncMetrikFehlt` (2h).
+
 
 ---
 

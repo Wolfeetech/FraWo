@@ -1,0 +1,57 @@
+# Alarme fuer den stuendlichen Radio-Rotation-Sync (Beets + AzuraCast Power Rotation),
+# Odoo-Aufgabe #1647.
+#
+# Metriken werden durch /usr/local/bin/frawo-radio-rotation-sync.sh auf dem ProDesk-Wirt
+# (stock-pve / 10.1.0.128) in /var/lib/node_exporter/textfile_collector/ geschrieben.
+
+groups:
+  - name: frawo_radio_rotation
+    rules:
+      # Timer laeuft stuendlich. Nach 4 Stunden ohne Erfolg stimmt etwas nicht.
+      - alert: RadioRotationSyncVeraltet
+        expr: >-
+          (time() - frawo_radio_rotation_sync_letzter_erfolg_timestamp_seconds) > 4 * 3600
+        for: 30m
+        labels:
+          severity: warning
+          service: radio
+        annotations:
+          dashboard: "http://100.100.115.80:3000/d/frawo-funk"
+          summary: "Radio-Rotation-Sync seit über 4 Stunden nicht erfolgreich"
+          description: >-
+            Letzter Erfolg vor {{ $value | humanizeDuration }}. Erwartet wird stuendlich
+            um Minute :20. Pruefen auf dem ProDesk-Wirt (10.1.0.128):
+            `journalctl -u frawo-radio-rotation-sync.service` und
+            `systemctl status frawo-radio-rotation-sync.timer`.
+
+      # Fehlt die Metrik ganz, laeuft der Timer nicht oder textfile_collector schreibt nicht.
+      - alert: RadioRotationSyncMetrikFehlt
+        expr: absent(frawo_radio_rotation_sync_letzter_erfolg_timestamp_seconds)
+        for: 2h
+        labels:
+          severity: critical
+          service: radio
+        annotations:
+          dashboard: "http://100.100.115.80:3000/d/frawo-funk"
+          summary: "Keine Radio-Rotation-Sync-Metrik mehr vorhanden"
+          description: >-
+            Der node_exporter auf dem ProDesk-Wirt liefert keinen Zeitstempel mehr.
+            Pruefen, ob der Timer aktiv ist und ob
+            /var/lib/node_exporter/textfile_collector/frawo_radio_rotation_sync_stand.prom
+            existiert.
+
+      # Der letzte Lauf ist fehlgeschlagen (Exit-Code ungleich 0).
+      - alert: RadioRotationSyncFehlgeschlagen
+        expr: frawo_radio_rotation_sync_erfolg == 0
+        for: 15m
+        labels:
+          severity: warning
+          service: radio
+        annotations:
+          dashboard: "http://100.100.115.80:3000/d/frawo-funk"
+          summary: "Letzter Radio-Rotation-Sync-Lauf fehlgeschlagen"
+          description: >-
+            frawo_radio_rotation_sync_erfolg steht auf 0. Log auf ProDesk-Wirt pruefen:
+            `journalctl -u frawo-radio-rotation-sync.service -n 50`.
+            Moegliche Ursachen: Odoo Export-Endpunkt /radio/ratings/export nicht erreichbar,
+            Token in /etc/frawo/odoo.env ungueltig, Beets in CT120 oder AzuraCast MariaDB nicht erreichbar.

@@ -15,7 +15,21 @@ import sys
 from typing import Dict, List, Optional, Tuple
 
 import requests
-from dotenv import load_dotenv
+
+try:
+    from dotenv import load_dotenv
+except ImportError:
+    def load_dotenv(path=None):
+        if path and os.path.exists(path):
+            try:
+                with open(path, encoding="utf-8") as f:
+                    for line in f:
+                        line = line.strip()
+                        if line and not line.startswith("#") and "=" in line:
+                            k, v = line.split("=", 1)
+                            os.environ.setdefault(k.strip(), v.strip().strip("'\""))
+            except Exception:
+                pass
 
 # Load credentials from Rekordbox sync or FraWo root
 load_dotenv(os.path.join(os.path.dirname(__file__), "..", "musikverwaltung", "rekordbox_sync", ".env"))
@@ -23,10 +37,25 @@ if not os.environ.get("FRAWO_AGENT_TOKEN"):
     load_dotenv(os.path.join(os.path.dirname(__file__), "..", "..", ".env"))
 
 ODOO_BASE = os.environ.get("FRAWO_ODOO_URL", "https://frawo.tech").rstrip("/")
-TOKEN = os.environ.get("FRAWO_AGENT_TOKEN", "")
-AZURACAST_HOST = "10.1.0.38"
+
+TOKEN = os.environ.get("FRAWO_AGENT_TOKEN") or os.environ.get("ODOO_EXPORT_TOKEN") or ""
+
+if not TOKEN and os.path.exists("/etc/frawo/odoo.env"):
+    try:
+        with open("/etc/frawo/odoo.env", encoding="utf-8") as f:
+            for line in f:
+                if "=" in line and not line.startswith("#"):
+                    k, v = line.strip().split("=", 1)
+                    if k in ("ODOO_EXPORT_TOKEN", "FRAWO_AGENT_TOKEN"):
+                        TOKEN = v
+                        break
+    except Exception:
+        pass
+
+AZURACAST_HOST = os.environ.get("AZURACAST_HOST", "10.1.0.38")
 PLAYLIST_NAME = "⭐ Best of the Week"
 DEFAULT_PLAYLIST_ID = 869
+
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 log = logging.getLogger("radio_best_of_week")

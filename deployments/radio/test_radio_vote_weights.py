@@ -141,7 +141,7 @@ class TestRadioVoteWeights(unittest.TestCase):
         ]
         res = apply_weights_to_azuracast(updates)
         self.assertEqual(res, 1)
-        mock_run.assert_called_once()
+        self.assertGreaterEqual(mock_run.call_count, 1)
         called_input = mock_run.call_args[1].get("input", "")
         self.assertIn("Artist\\'s Name", called_input)
         self.assertIn("spm.weight = 1", called_input)

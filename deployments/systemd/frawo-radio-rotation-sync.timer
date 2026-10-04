@@ -1,0 +1,12 @@
+[Unit]
+Description=FraWo Funk - Stuendlicher Timer fuer Radio-Rotation & Hoerer-Bewertungen
+Documentation=https://github.com/Wolfeetech/FraWo Odoo-Aufgabe 1647
+
+[Timer]
+OnCalendar=*-*-* *:20:00 Europe/Berlin
+Persistent=true
+RandomizedDelaySec=60
+Unit=frawo-radio-rotation-sync.service
+
+[Install]
+WantedBy=timers.target

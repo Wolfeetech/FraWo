@@ -1,0 +1,13 @@
+[Unit]
+Description=FraWo Funk - Stuendlicher Sync fuer Radio-Rotation & Hoerer-Bewertungen
+Documentation=https://github.com/Wolfeetech/FraWo
+# Odoo-Aufgabe 1647
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/frawo-radio-rotation-sync.sh
+Nice=10
+TimeoutStartSec=300
+StandardOutput=journal
+StandardError=journal
