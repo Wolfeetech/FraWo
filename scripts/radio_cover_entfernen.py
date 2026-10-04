@@ -26,6 +26,8 @@ from mutagen.flac import FLAC
 from mutagen.id3 import ID3
 from mutagen.mp4 import MP4
 
+ENDUNGEN = ('.mp3', '.flac', '.m4a', '.aac', '.ogg', '.wav', '.aiff', '.aif')
+
 
 def audio_md5(pfad):
     r = subprocess.run(['ffmpeg', '-v', 'error', '-i', pfad, '-map', '0:a', '-f', 'md5', '-'],
@@ -78,20 +80,33 @@ def entferne(pfad, ziele, sicherung, ausfuehren):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('--ocr', required=True, help='ocr.json aus cover_ocr.py')
+    quelle = ap.add_mutually_exclusive_group(required=True)
+    quelle.add_argument('--ocr', help='ocr.json aus cover_ocr.py (Dateilisten je Bild)')
+    quelle.add_argument('--root', help='ganze Bibliothek durchsuchen (fuer Gruppen ohne Dateiliste)')
     ap.add_argument('--sha1', required=True, help='Datei mit einer Bild-SHA1 je Zeile')
     ap.add_argument('--sicherung', required=True)
     ap.add_argument('--ausfuehren', action='store_true')
     a = ap.parse_args()
 
     ziele = {z.strip() for z in open(a.sha1) if z.strip() and not z.startswith('#')}
-    d = json.load(open(a.ocr))
-    dateien = set()
-    for gruppe in d['treffer'] + d['kaputt']:
-        if gruppe['sha1'] in ziele:
-            dateien.update(gruppe['dateien'])
-    dateien = sorted(dateien)
-    print('Bildgruppen: %d, Dateien: %d, Modus: %s'
+    if a.ocr:
+        d = json.load(open(a.ocr))
+        kandidaten = set()
+        for gruppe in d['treffer'] + d['kaputt']:
+            if gruppe['sha1'] in ziele:
+                kandidaten.update(gruppe['dateien'])
+    else:
+        kandidaten = [os.path.join(w, n) for w, _, ns in os.walk(a.root) for n in ns
+                      if n.lower().endswith(ENDUNGEN)]
+    # Erst nur lesen: welche Dateien tragen wirklich ein Zielbild?
+    dateien = []
+    for pfad in sorted(kandidaten):
+        try:
+            if entferne(pfad, ziele, a.sicherung, False):
+                dateien.append(pfad)
+        except Exception:
+            pass
+    print('Bildgruppen: %d, Dateien mit Zielbild: %d, Modus: %s'
           % (len(ziele), len(dateien), 'AUSFUEHREN' if a.ausfuehren else 'PROBE'))
     if not a.ausfuehren:
         return 0
