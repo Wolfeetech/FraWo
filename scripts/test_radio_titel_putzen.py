@@ -1,7 +1,7 @@
 """Tests fuer radio_titel_putzen.py - Beispiele echt aus der Bibliothek (04.10.2026)."""
 import unittest
 
-from radio_titel_putzen import putze_titel, putze_kuenstler, braucht_nacharbeit
+from radio_titel_putzen import putze_titel, putze_kuenstler, braucht_nacharbeit, aus_dateiname
 
 
 class TestTitel(unittest.TestCase):
@@ -86,6 +86,30 @@ class TestKuenstler(unittest.TestCase):
 
     def test_doppelung(self):
         self.assertEqual(putze_kuenstler('Toman; Toman'), 'Toman')
+
+
+class TestAusDateiname(unittest.TestCase):
+    def test_titel_fehlt_kuenstler_passt(self):
+        self.assertEqual(aus_dateiname('Kolsch - All Week (Extended Version)', 'Kolsch', ''),
+                         ('Kolsch', 'All Week (Extended Version)'))
+        self.assertEqual(aus_dateiname('Antdot, ARYMÉ - Romance (Extended Mix)', 'Antdot, ARYMÉ', ''),
+                         ('Antdot, ARYMÉ', 'Romance (Extended Mix)'))
+
+    def test_titel_fehlt_kuenstler_passt_nicht(self):
+        self.assertIsNone(aus_dateiname('Cheise - Grant - Malt Brun (Cheise Edit)', 'Somebody', ''))
+
+    def test_kuenstler_fehlt_eindeutiger_name(self):
+        self.assertEqual(aus_dateiname('Maze DJ - Morning Magic (Extended Version)', '', ''),
+                         ('Maze DJ', 'Morning Magic (Extended Version)'))
+        self.assertEqual(aus_dateiname('Low Steppa - Turbo Groover', '', ''), ('Low Steppa', 'Turbo Groover'))
+
+    def test_kuenstler_fehlt_unklar(self):
+        self.assertIsNone(aus_dateiname('01 Better Days', '', ''))
+        self.assertIsNone(aus_dateiname('A - B - C', '', ''))
+        self.assertIsNone(aus_dateiname('03 - Lo', '', ''))
+
+    def test_nichts_zu_tun(self):
+        self.assertIsNone(aus_dateiname('Kolsch - All Week', 'Kolsch', 'All Week'))
 
 
 class TestNacharbeit(unittest.TestCase):

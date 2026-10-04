@@ -92,6 +92,27 @@ def braucht_nacharbeit(titel, kuenstler):
             or ' - ' in putze_titel(t, putze_kuenstler(kuenstler)))
 
 
+def aus_dateiname(name, kuenstler, titel):
+    """Fehlenden Titel/Kuenstler aus "Kuenstler - Titel" im Dateinamen ableiten.
+
+    Nur eindeutige Faelle: genau ein " - ", keine Tracknummer vorne. Fehlt nur
+    der Titel, muss der Kuenstler im Dateinamen dem Kuenstler-Tag entsprechen.
+    Gibt (kuenstler, titel) oder None zurueck.
+    """
+    k, t = (kuenstler or '').strip(), (titel or '').strip()
+    if k and t:
+        return None
+    teile = name.split(' - ')
+    if len(teile) != 2 or TRACKNR.match(name) or re.match(r'^\d', name):
+        return None
+    dk, dt = teile[0].strip(), teile[1].strip()
+    if not dk or len(dt) < 2:
+        return None
+    if k and dk.lower() != k.lower():
+        return None
+    return (k or dk, t or dt)
+
+
 def ist_kauderwelsch(titel):
     return bool(CODE.search((titel or '').strip()))
 
@@ -119,13 +140,16 @@ def main():
                     continue
                 titel = (f.get('title') or [''])[0]
                 kuenstler = (f.get('artist') or [''])[0]
-                if braucht_nacharbeit(titel, kuenstler):
+                # Fehlt Titel oder Kuenstler: eindeutiges "Kuenstler - Titel" im Dateinamen nutzen
+                quelle_k, quelle_t = (aus_dateiname(os.path.splitext(name)[0], kuenstler, titel)
+                                      or (kuenstler, titel))
+                if braucht_nacharbeit(quelle_t, quelle_k):
                     nacharbeit.write('%s\t%s\t%s\n' % (pfad, kuenstler, titel))
                     n_nach += 1
-                if ist_kauderwelsch(titel):
+                if ist_kauderwelsch(quelle_t):
                     continue  # steht auf der Nacharbeitsliste, keine Regel raten lassen
-                neu_k = putze_kuenstler(kuenstler)
-                neu_t = putze_titel(titel, neu_k)
+                neu_k = putze_kuenstler(quelle_k)
+                neu_t = putze_titel(quelle_t, neu_k)
                 if (neu_t, neu_k) == (titel, kuenstler) or not neu_t:
                     continue
                 aenderungen.write('%s\t%s\t%s\t%s\t%s\n' % (pfad, kuenstler, titel, neu_k, neu_t))
