@@ -1,0 +1,258 @@
+# FraWo Vorlagen-Entitäten (VM 210 Anker HQ)
+# Gepflegt nach FraWo Best Practices 2026
+
+- sensor:
+    # ===== Odoo Kennzahlen =====
+    - name: "Offene Aufgaben"
+      unique_id: frawo_offene_aufgaben
+      icon: mdi:clipboard-check-outline
+      state: >-
+        {{ state_attr('sensor.frawo_odoo_kennzahlen','open_tasks_count') | int(0) }}
+      availability: >-
+        {{ states('sensor.frawo_odoo_kennzahlen') not in ['unknown','unavailable'] }}
+
+    - name: "Pfandflaschen offen"
+      unique_id: frawo_pfandflaschen
+      icon: mdi:bottle-soda-outline
+      state: >-
+        {{ state_attr('sensor.frawo_odoo_kennzahlen','unbilled_bottles') | int(0) }}
+      availability: >-
+        {{ states('sensor.frawo_odoo_kennzahlen') not in ['unknown','unavailable'] }}
+
+    - name: "Radio läuft gerade"
+      unique_id: frawo_radio_now_playing
+      icon: mdi:radio
+      state: >-
+        {{ (state_attr('sensor.frawo_odoo_kennzahlen','radio_now_playing') or states('sensor.radio_laeuft_gerade') or '—') | truncate(250, true, '') }}
+
+    - name: "Radio Hörer"
+      unique_id: frawo_radio_listeners
+      icon: mdi:account-group
+      state: >-
+        {{ state_attr('sensor.frawo_odoo_kennzahlen','radio_listeners') | int(states('sensor.radio_hoerer') | int(0)) }}
+
+    - name: "Erkannte Probleme"
+      unique_id: frawo_smart_probleme
+      icon: mdi:alert-circle-outline
+      state: >-
+        {% set kritisch = [
+          'vacuum.wohnzimmer_sirius_black',
+          'switch.shellypstripg4_206ef102e44c_output_2',
+          'switch.wolf_elw_kuhlschrank_kuhlschrank',
+          'switch.shelly_gefrierschrank',
+          'climate.heizung_seeblick',
+          'climate.bad_302'
+        ] %}
+        {{ kritisch | select('is_state','unavailable') | list | count }}
+
+    # ===== Dobby Smarte AktivitÃ¤ts- & Aufenthalts-Auswertung =====
+    - name: "Dobby Status Smart"
+      unique_id: dobby_status_smart
+      icon: mdi:dog
+      state: >-
+        {% if is_state('binary_sensor.tracker_ujyejxlh_ladestatus', 'on') %}
+          In Ladestation ({{ states('sensor.tracker_ujyejxlh_batterie') }}%)
+        {% elif is_state('switch.tracker_ujyejxlh_live_tracking', 'on') %}
+          Live-Tracking aktiv
+        {% elif is_state('binary_sensor.tracker_ujyejxlh_energiesparmodus', 'on') %}
+          {% set loc = states('person.dobby') %}
+          {% if loc in ['Stockenweiler', 'Studio Villa', 'Inselhalle'] %}
+            {{ loc }} (Energiesparzone)
+          {% elif loc == 'home' %}
+            Zuhause (Energiesparzone)
+          {% else %}
+            Energiesparzone
+          {% endif %}
+        {% elif is_state('person.dobby', 'home') %}
+          Zuhause
+        {% elif states('person.dobby') in ['Stockenweiler', 'Studio Villa', 'Inselhalle'] %}
+          {{ states('person.dobby') }}
+        {% elif states('person.dobby') in ['not_home', 'away'] %}
+          Unterwegs
+        {% elif states('person.dobby') in ['unknown', 'unavailable'] %}
+          Zuhause (Tracker im Standby)
+        {% else %}
+          {{ states('person.dobby') }}
+        {% endif %}
+      attributes:
+        standort: "{{ states('person.dobby') }}"
+        batterie: "{{ states('sensor.tracker_ujyejxlh_batterie') | int(100) }} %"
+        laedt: "{{ is_state('binary_sensor.tracker_ujyejxlh_ladestatus', 'on') }}"
+        energiesparmodus: "{{ is_state('binary_sensor.tracker_ujyejxlh_energiesparmodus', 'on') }}"
+        tracker_status: "{{ states('sensor.tracker_ujyejxlh_status') }}"
+
+    # ===== Personen Standorte Smart (Task #1483) =====
+    - name: "Wolf Standort Smart"
+      unique_id: wolf_standort_smart
+      icon: mdi:account-navigation
+      state: >-
+        {% set p = states('person.wolf') %}
+        {% set t = 'device_tracker.pixel_9_pro_3' %}
+        {% set z_stock = distance('zone.stockenweiler', t) * 1000 if state_attr(t, 'latitude') else 999999 %}
+        {% set z_home = distance('zone.home', t) * 1000 if state_attr(t, 'latitude') else 999999 %}
+        {% set z_villa = distance('zone.studio_villa', t) * 1000 if state_attr(t, 'latitude') else 999999 %}
+        {% set z_insel = distance('zone.inselhalle', t) * 1000 if state_attr(t, 'latitude') else 999999 %}
+        {% if p == 'home' or is_state(t, 'home') or z_home <= 100 %}
+          Rothkreuz
+        {% elif p == 'Studio Villa' or is_state(t, 'Studio Villa') or z_villa <= 65 %}
+          Studio Villa
+        {% elif p == 'Stockenweiler' or is_state(t, 'Stockenweiler') or z_stock <= 150 %}
+          Stockenweiler
+        {% elif p == 'Inselhalle' or is_state(t, 'Inselhalle') or z_insel <= 120 %}
+          Inselhalle
+        {% elif p in ['not_home', 'away'] or is_state(t, 'not_home') %}
+          Unterwegs
+        {% elif p not in ['unknown', 'unavailable'] %}
+          {{ p }}
+        {% else %}
+          Standby / Unbekannt
+        {% endif %}
+      attributes:
+        zone: >-
+          {% set p = states('person.wolf') %}
+          {% set t = 'device_tracker.pixel_9_pro_3' %}
+          {% set z_home = distance('zone.home', t) * 1000 if state_attr(t, 'latitude') else 999999 %}
+          {% if p == 'home' or is_state(t, 'home') or z_home <= 100 %}
+            Rothkreuz
+          {% elif p in ['Stockenweiler', 'Studio Villa', 'Inselhalle'] %}
+            {{ p }}
+          {% else %}
+            {{ states('person.wolf') }}
+          {% endif %}
+        device: "Pixel 9 Pro"
+        battery: "{{ states('sensor.pixel_9_pro_battery_level') | default('?', true) }} %"
+        battery_state: "{{ states('sensor.pixel_9_pro_battery_state') }}"
+        charger: "{{ states('sensor.pixel_9_pro_charger_type') }}"
+
+    - name: "Luis Standort Smart"
+      unique_id: luis_standort_smart
+      icon: mdi:account-arrow-right
+      state: >-
+        {% set p = states('person.luis') %}
+        {% set t = 'device_tracker.luis_iphone_15' %}
+        {% set z_stock = distance('zone.stockenweiler', t) * 1000 if state_attr(t, 'latitude') else 999999 %}
+        {% set z_home = distance('zone.home', t) * 1000 if state_attr(t, 'latitude') else 999999 %}
+        {% set z_villa = distance('zone.studio_villa', t) * 1000 if state_attr(t, 'latitude') else 999999 %}
+        {% set z_insel = distance('zone.inselhalle', t) * 1000 if state_attr(t, 'latitude') else 999999 %}
+        {% if z_stock <= 150 or p == 'Stockenweiler' or is_state(t, 'Stockenweiler') %}
+          Stockenweiler
+        {% elif z_home <= 100 or p == 'home' or is_state(t, 'home') %}
+          Rothkreuz
+        {% elif z_villa <= 65 or p == 'Studio Villa' or is_state(t, 'Studio Villa') %}
+          Studio Villa
+        {% elif z_insel <= 120 or p == 'Inselhalle' or is_state(t, 'Inselhalle') %}
+          Inselhalle
+        {% elif p in ['not_home', 'away'] or is_state(t, 'not_home') %}
+          Unterwegs
+        {% elif p not in ['unknown', 'unavailable'] %}
+          {{ p }}
+        {% else %}
+          Standby / Unbekannt
+        {% endif %}
+      attributes:
+        zone: >-
+          {% set t = 'device_tracker.luis_iphone_15' %}
+          {% set z_stock = distance('zone.stockenweiler', t) * 1000 if state_attr(t, 'latitude') else 999999 %}
+          {% if z_stock <= 150 %}
+            Stockenweiler
+          {% else %}
+            {{ states('person.luis') }}
+          {% endif %}
+        device: "Luis-iPhone 15"
+        battery: "{{ states('sensor.luis_iphone_15_battery_level') | default('?', true) }} %"
+        battery_state: "{{ states('sensor.luis_iphone_15_battery_state') }}"
+        distance_stockenweiler_m: >-
+          {% set t = 'device_tracker.luis_iphone_15' %}
+          {{ (distance('zone.stockenweiler', t) * 1000) | round(0) if state_attr(t, 'latitude') else 'n/a' }}
+
+    - name: "Dobby Tagesziel Zielerreichung"
+      unique_id: dobby_tagesziel_zielerreichung
+      icon: mdi:trophy-outline
+      unit_of_measurement: "%"
+      state: >-
+        {% set act = states('sensor.dobby_aktivitatszeit') | float(0) %}
+        {% set goal = states('sensor.dobby_tagliches_ziel') | float(140) %}
+        {% set goal = goal if goal > 0 else 140 %}
+        {{ ((act / goal) * 100) | round(0) }}
+      attributes:
+        aktivitaet_min: "{{ states('sensor.dobby_aktivitatszeit') | int(0) }} min"
+        ziel_min: "{{ states('sensor.dobby_tagliches_ziel') | int(140) }} min"
+
+    # ===== Lastenrad Smarte Fahrleistungs- & Wartungs-Auswertung =====
+    - name: "Lastenrad Status Smart"
+      unique_id: lastenrad_status_smart
+      icon: mdi:bicycle-cargo
+      state: >-
+        {% if is_state('binary_sensor.riese_muller_drive_unit_cargo_line_battery_charging', 'on') %}
+          Akku lädt
+        {% elif states('sensor.riese_muller_drive_unit_cargo_line_battery_level') not in ['unknown', 'unavailable'] %}
+          Bereit ({{ states('sensor.riese_muller_drive_unit_cargo_line_battery_level') }}%)
+        {% else %}
+          Bereit / Standby
+        {% endif %}
+      attributes:
+        gesamtdistanz_km: "{{ states('sensor.riese_muller_drive_unit_cargo_line_total_distance') | float(0) | round(1) }} km"
+        strecke_heute_km: "{{ states('sensor.lastenrad_strecke_heute') | float(0) | round(1) }} km"
+        strecke_woche_km: "{{ states('sensor.lastenrad_strecke_woche') | float(0) | round(1) }} km"
+        ladezyklen: "{{ states('sensor.riese_muller_drive_unit_cargo_line_charge_cycles') | float(0) | round(1) }}"
+        akku_kapazitaet_wh: "{{ states('sensor.riese_muller_drive_unit_cargo_line_battery_capacity') | float(805) | round(0) }} Wh"
+        wartungsprognose: >-
+          {% set dist = states('sensor.riese_muller_drive_unit_cargo_line_total_distance') | float(0) %}
+          {% set remainder = dist % 1000 %}
+          {% if remainder > 850 %}
+            Inspektion demnächst einplanen (in ca. {{ (1000 - remainder) | round(0) }} km) 🔧
+          {% else %}
+            Inspektion OK (nächste in ca. {{ (1000 - remainder) | round(0) }} km) ✅
+          {% endif %}
+
+    # ===== GrowBox Klima (16.09.2026, Odoo #1475) =====
+    # Der Fuehler heisst in Tuya "Thermo_1" und liefert Entitaeten mit dem
+    # irrefuehrenden Namen sensor.tuya_plug_2_* - es ist KEINE Steckdose.
+    # Standort in der GrowBox belegt ueber den Temperaturverlauf vom 13.09.:
+    # 21,3 C nachts, Sprung auf 25,7 C zwischen 04:16 und 04:34, genau wenn
+    # der Shelly-Zeitplan das Pflanzenlicht einschaltet (04:23).
+    #
+    # VPD = Dampfdruckdefizit in kPa. Das ist die Kennzahl, nach der man eine
+    # Box faehrt - Temperatur und Feuchte einzeln sagen wenig, weil warme Luft
+    # mehr Wasser traegt. Richtwerte: Saemling 0,4-0,8 | Wachstum 0,8-1,2 |
+    # Bluete 1,2-1,6 kPa. Deutlich darueber = Pflanze schliesst die Spaltoeffnungen.
+    - name: "GrowBox VPD"
+      unique_id: growbox_vpd
+      unit_of_measurement: "kPa"
+      state_class: measurement
+      icon: mdi:water-thermometer-outline
+      state: >-
+        {% set t = states('sensor.tuya_plug_2_temperatur') | float(none) %}
+        {% set rh = states('sensor.tuya_plug_2_luftfeuchtigkeit') | float(none) %}
+        {% if t is none or rh is none %}
+          unknown
+        {% else %}
+          {% set svp = 0.61078 * e ** (17.27 * t / (t + 237.3)) %}
+          {{ (svp * (1 - rh / 100)) | round(2) }}
+        {% endif %}
+      availability: >-
+        {{ states('sensor.tuya_plug_2_temperatur') not in ['unknown','unavailable']
+           and states('sensor.tuya_plug_2_luftfeuchtigkeit') not in ['unknown','unavailable'] }}
+
+    - name: "GrowBox Klima Bewertung"
+      unique_id: growbox_klima_bewertung
+      icon: mdi:sprout-outline
+      state: >-
+        {% set t = states('sensor.tuya_plug_2_temperatur') | float(-99) %}
+        {% set rh = states('sensor.tuya_plug_2_luftfeuchtigkeit') | float(-1) %}
+        {% set vpd = states('sensor.growbox_vpd') | float(-1) %}
+        {% if t == -99 or rh == -1 %}
+          Kein Messwert
+        {% elif t > 30 %}
+          Zu warm ({{ t }} C)
+        {% elif t < 18 %}
+          Zu kalt ({{ t }} C)
+        {% elif rh > 70 %}
+          Zu feucht ({{ rh }} %) - Schimmelgefahr
+        {% elif vpd > 1.6 %}
+          Luft zu trocken (VPD {{ vpd }} kPa)
+        {% elif vpd >= 0 and vpd < 0.4 %}
+          Luft zu feucht (VPD {{ vpd }} kPa)
+        {% else %}
+          In Ordnung
+        {% endif %}
