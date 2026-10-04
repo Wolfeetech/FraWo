@@ -1,7 +1,7 @@
 """Tests fuer radio_titel_putzen.py - Beispiele echt aus der Bibliothek (04.10.2026)."""
 import unittest
 
-from radio_titel_putzen import putze_titel, putze_kuenstler, braucht_nacharbeit, aus_dateiname
+from radio_titel_putzen import putze_titel, putze_kuenstler, braucht_nacharbeit, aus_dateiname, putze_album
 
 
 class TestTitel(unittest.TestCase):
@@ -114,6 +114,20 @@ class TestAusDateiname(unittest.TestCase):
 
     def test_nichts_zu_tun(self):
         self.assertIsNone(aus_dateiname('Kolsch - All Week', 'Kolsch', 'All Week'))
+
+
+class TestAlbum(unittest.TestCase):
+    def test_haendler_listen_fallen_weg(self):
+        for a in ('Beatport 100 Afro House 2024 August', 'BP Weekend Picks 2025 Week 26',
+                  'Beatport Weekend Picks Week 16 (2025)', 'Beatport New Releases',
+                  'Beatport Top 100 Tech House July 2023 FLAC', 'Beatport Best New Hype Deep House August 2024',
+                  'Exclusives Only', 'Traxsource Top 100'):
+            self.assertEqual(putze_album(a), '', a)
+
+    def test_echte_alben_bleiben(self):
+        for a in ('Grand 12-Inches 13', 'Planet Love', 'Weekends #33', 'Top of the Pops',
+                  'Dekmantel Ten A Decade of Dekmantel Festival', 'Balloonerism'):
+            self.assertEqual(putze_album(a), a, a)
 
 
 class TestNacharbeit(unittest.TestCase):

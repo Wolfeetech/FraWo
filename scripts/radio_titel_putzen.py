@@ -86,6 +86,17 @@ def putze_kuenstler(kuenstler):
     return re.sub(r'\s{2,}', ' ', k)
 
 
+# Haendler-Verkaufslisten statt echter Alben ("Beatport 100 Afro House 2024 August",
+# "BP Weekend Picks 2025 Week 26"). AzuraCast holt dazu per Last.fm das Beatport-Bild nach.
+HAENDLER_ALBUM = re.compile(r'(?i)\b(beatport|bp weekend picks|exclusives only|traxsource|juno download|'
+                            r'promo only|free download|best new hype)\b')
+
+
+def putze_album(album):
+    a = (album or '').strip()
+    return '' if HAENDLER_ALBUM.search(a) else a
+
+
 def braucht_nacharbeit(titel, kuenstler):
     t = (titel or '').strip()
     return ((not t) or (not (kuenstler or '').strip()) or bool(CODE.search(t))
@@ -130,7 +141,8 @@ def main():
 
     aenderungen = open(os.path.join(a.sicherung, 'aenderungen.tsv' if a.ausfuehren else 'probe.tsv'), 'w')
     nacharbeit = open(os.path.join(a.sicherung, 'nacharbeit.tsv'), 'w')
-    n_geaendert = n_nach = n_fehler = 0
+    alben = open(os.path.join(a.sicherung, 'alben.tsv' if a.ausfuehren else 'alben_probe.tsv'), 'w')
+    n_geaendert = n_nach = n_fehler = n_alben = 0
     for wurzel, _, dateien in os.walk(a.root):
         for name in sorted(dateien):
             if not name.lower().endswith(ENDUNGEN):
@@ -151,26 +163,36 @@ def main():
                 if braucht_nacharbeit(quelle_t, quelle_k):
                     nacharbeit.write('%s\t%s\t%s\n' % (pfad, kuenstler, titel))
                     n_nach += 1
-                if ist_kauderwelsch(quelle_t):
-                    continue  # steht auf der Nacharbeitsliste, keine Regel raten lassen
-                neu_k = putze_kuenstler(quelle_k)
-                neu_t = putze_titel(quelle_t, neu_k)
-                if ((neu_t, neu_k) == (titel, kuenstler) and not mehrfach) or not neu_t:
-                    continue
-                aenderungen.write('%s\t%s\t%s\t%s\t%s\n' % (pfad, kuenstler, titel, neu_k, neu_t))
-                n_geaendert += 1
-                if a.ausfuehren:
-                    f['title'] = neu_t
-                    if neu_k:
-                        f['artist'] = neu_k
+                # Haendler-Album ("Beatport Weekend Picks ...") leeren - unabhaengig vom Titel
+                album = (f.get('album') or [''])[0]
+                album_weg = bool(album) and putze_album(album) == ''
+                if album_weg:
+                    alben.write('%s\t%s\n' % (pfad, album))
+                    n_alben += 1
+                titel_neu = False
+                if not ist_kauderwelsch(quelle_t):  # Kauderwelsch: Nacharbeitsliste, nicht raten
+                    neu_k = putze_kuenstler(quelle_k)
+                    neu_t = putze_titel(quelle_t, neu_k)
+                    titel_neu = bool(neu_t) and ((neu_t, neu_k) != (titel, kuenstler) or mehrfach)
+                if titel_neu:
+                    aenderungen.write('%s\t%s\t%s\t%s\t%s\n' % (pfad, kuenstler, titel, neu_k, neu_t))
+                    n_geaendert += 1
+                if a.ausfuehren and (titel_neu or album_weg):
+                    if titel_neu:
+                        f['title'] = neu_t
+                        if neu_k:
+                            f['artist'] = neu_k
+                    if album_weg:
+                        del f['album']
                     f.save()
             except Exception as e:
                 n_fehler += 1
                 nacharbeit.write('%s\tFEHLER\t%s\n' % (pfad, e))
     aenderungen.close()
     nacharbeit.close()
-    print('Modus: %s, geaendert: %d, Nacharbeit: %d, Fehler: %d'
-          % ('AUSFUEHREN' if a.ausfuehren else 'PROBE', n_geaendert, n_nach, n_fehler))
+    alben.close()
+    print('Modus: %s, geaendert: %d, Haendler-Alben geleert: %d, Nacharbeit: %d, Fehler: %d'
+          % ('AUSFUEHREN' if a.ausfuehren else 'PROBE', n_geaendert, n_alben, n_nach, n_fehler))
     return 1 if n_fehler else 0
 
 
