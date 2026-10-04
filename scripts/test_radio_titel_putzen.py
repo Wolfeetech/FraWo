@@ -103,6 +103,10 @@ class TestAusDateiname(unittest.TestCase):
                          ('Maze DJ', 'Morning Magic (Extended Version)'))
         self.assertEqual(aus_dateiname('Low Steppa - Turbo Groover', '', ''), ('Low Steppa', 'Turbo Groover'))
 
+    def test_various_artists_ist_kein_kuenstler(self):
+        self.assertIsNone(aus_dateiname('Various Artists - Sugar Baby Love (DJ Edit)', '', 'Sugar Baby Love (DJ Edit)'))
+        self.assertIsNone(aus_dateiname('VA - Track', '', ''))
+
     def test_kuenstler_fehlt_unklar(self):
         self.assertIsNone(aus_dateiname('01 Better Days', '', ''))
         self.assertIsNone(aus_dateiname('A - B - C', '', ''))

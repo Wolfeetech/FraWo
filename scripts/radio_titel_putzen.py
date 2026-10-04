@@ -108,6 +108,8 @@ def aus_dateiname(name, kuenstler, titel):
     dk, dt = teile[0].strip(), teile[1].strip()
     if not dk or len(dt) < 2:
         return None
+    if dk.lower() in ('various artists', 'various', 'va', 'v.a.', 'unknown artist', 'unknown'):
+        return None  # Sammel-Platzhalter, kein echter Kuenstler (7 Faelle am 04.10.)
     if k and dk.lower() != k.lower():
         return None
     return (k or dk, t or dt)
