@@ -61,6 +61,14 @@ class TestTitel(unittest.TestCase):
         self.t(alt, '27-02-2010', 'Faithless Sound System')
         self.assertEqual(putze_titel(putze_titel(alt, 'Faithless Sound System'), 'Faithless Sound System'), '27-02-2010')
 
+    def test_webadresse_im_titel(self):
+        self.t('Be Strong (Extended Mix) www.djsoundtop.com', 'Be Strong (Extended Mix)')
+        self.t('Lambo (Original Mix) www.electronicfresh.com', 'Lambo')
+        self.t('Helicopter (Extended Mix) heydj.pro', 'Helicopter (Extended Mix)')
+        self.t('Track djsoundtop.com', 'Track')
+        self.t('Mr. Fingers', 'Mr. Fingers')
+        self.t('Version 2.0', 'Version 2.0')
+
     def test_unterstriche(self):
         self.t('now_is_the_time', 'now is the time')
 

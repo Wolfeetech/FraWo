@@ -22,6 +22,8 @@ TRACKNR = re.compile(r'^(?:\d{1,3}\s*[-.]\s+|0\d\s+)')
 ENDUNG = re.compile(r'\.(?:mp3|flac|wav|aiff?|m4a)$', re.I)
 RIP = re.compile(r'\s*\[(?:vinyl[ _-]?rip|free download|320|320kbps|flac|web|qrip|promo|www[^\]]*)\]', re.I)
 FEAT = re.compile(r'\s+(?:feat\.?|ft\.?|featuring)\s+(.+?)(?=\s*\(|$)', re.I)
+# Download-Portale im Titel ("www.djsoundtop.com", "heydj.pro"): nur ganze Domain-Woerter
+WEBADRESSE = re.compile(r'\s*\b(?:https?://)?(?:www\.)?[a-z0-9-]+\.(?:com|net|org|pro|ru|pw|to|cc|info|biz)\b/?', re.I)
 VERSION_WORT = re.compile(r'\b(remix|mix|edit|dub|version|rework|bootleg|instrumental)\b', re.I)
 # Kauderwelsch: Download-Codes ($R8EZCC2, Buchstaben+Ziffern gemischt), "@@"-Reste,
 # lange Ziffernfolgen (Katalog-/Datei-IDs). Reine Woerter wie "ALIVE" sind kein Code.
@@ -56,6 +58,7 @@ def _putze_einmal(titel, kuenstler=''):
     if ';' in t:
         t = t.split(';', 1)[0].strip()
     t = ENDUNG.sub('', t)
+    t = WEBADRESSE.sub('', t)
     if '_' in t and ' ' not in t.strip('_'):
         t = t.replace('_', ' ')
     t = RIP.sub('', t)
@@ -130,6 +133,47 @@ def ist_kauderwelsch(titel):
     return bool(CODE.search((titel or '').strip()))
 
 
+class _AiffTags:
+    """AIFF hat ID3-Tags, aber kein 'easy'-Interface: title/artist/album auf TIT2/TPE1/TALB abbilden.
+
+    Ohne das las das Werkzeug bei AIFF 'kein Titel' und der Schreibversuch kam nicht an
+    (gefunden 04.10.2026 an 'Maze DJ - Morning Magic', 31 AIFF-Dateien in der Bibliothek).
+    """
+    RAHMEN = {'title': 'TIT2', 'artist': 'TPE1', 'album': 'TALB'}
+
+    def __init__(self, f):
+        from mutagen import id3
+        self.f = f
+        self.tags = f.tags
+        self._klassen = {'TIT2': id3.TIT2, 'TPE1': id3.TPE1, 'TALB': id3.TALB}
+
+    def get(self, schluessel, vorgabe=None):
+        rahmen = self.tags.get(self.RAHMEN[schluessel]) if self.tags is not None else None
+        return [str(t) for t in rahmen.text] if rahmen else vorgabe
+
+    def __setitem__(self, schluessel, wert):
+        kennung = self.RAHMEN[schluessel]
+        self.tags.delall(kennung)
+        self.tags.add(self._klassen[kennung](encoding=3, text=[wert]))
+
+    def __delitem__(self, schluessel):
+        self.tags.delall(self.RAHMEN[schluessel])
+
+    def save(self):
+        self.f.save()
+
+
+def lade_tags(pfad):
+    import mutagen
+    from mutagen.aiff import AIFF
+    f = mutagen.File(pfad, easy=True)
+    if isinstance(f, AIFF):
+        if f.tags is None:
+            f.add_tags()
+        return _AiffTags(f)
+    return f
+
+
 def main():
     import mutagen
     ap = argparse.ArgumentParser()
@@ -149,7 +193,7 @@ def main():
                 continue
             pfad = os.path.join(wurzel, name)
             try:
-                f = mutagen.File(pfad, easy=True)
+                f = lade_tags(pfad)
                 if f is None or f.tags is None:
                     continue
                 titel = (f.get('title') or [''])[0]
