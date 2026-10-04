@@ -33,6 +33,7 @@ def fetch_rows():
 
 
 def sync_to_beets(rows):
+    import re, shlex
     if not rows:
         log("Keine bewerteten Tracks zum Synchronisieren vorhanden.")
         return 0
@@ -40,21 +41,43 @@ def sync_to_beets(rows):
     log(f"Synchronisiere {len(rows)} Titel nach Beets (CT120)...")
     updated = 0
     for row in rows:
-        artist = row.get("artist", "").replace("'", "\\'")
-        title = row.get("title", "").replace("'", "\\'")
+        artist = row.get("artist", "").strip()
+        title = row.get("title", "").strip()
         stars = int(row.get("stars", 0))
         count = int(row.get("count", 0))
 
+        arg_artist = shlex.quote(f"artist:{artist}")
+        arg_title = shlex.quote(f"title:{title}")
+
         cmd = [
             "ssh", "-o", "BatchMode=yes", f"root@{PRODESK_HOST}",
-            f"pct exec {CT120_ID} -- beet modify -y -M -W 'artist:{artist}' 'title:{title}' crowd_rating={stars} votes_count={count}"
+            f"pct exec {CT120_ID} -- beet modify -y -M -W {arg_artist} {arg_title} crowd_rating={stars} votes_count={count}"
         ]
         res = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8")
-        if res.returncode == 0:
+        if res.returncode == 0 and "Modifying" in res.stdout:
             log(f"  [OK] {row.get('track_id')} -> crowd_rating={stars}, votes_count={count}")
             updated += 1
+            continue
+
+        # Fallback to regex query for typographical apostrophes or punctuation variations
+        artist_regex = re.escape(artist).replace("'", "['’]")
+        title_regex = re.escape(title).replace("'", "['’]")
+        arg_artist_rx = shlex.quote(f"artist::{artist_regex}")
+        arg_title_rx = shlex.quote(f"title::{title_regex}")
+        cmd_rx = [
+            "ssh", "-o", "BatchMode=yes", f"root@{PRODESK_HOST}",
+            f"pct exec {CT120_ID} -- beet modify -y -M -W {arg_artist_rx} {arg_title_rx} crowd_rating={stars} votes_count={count}"
+        ]
+        res_rx = subprocess.run(cmd_rx, capture_output=True, text=True, encoding="utf-8")
+        if res_rx.returncode == 0 and "Modifying" in res_rx.stdout:
+            log(f"  [OK (Regex)] {row.get('track_id')} -> crowd_rating={stars}, votes_count={count}")
+            updated += 1
+        elif res.returncode == 0:
+            # Query succeeded but 0 items matched
+            log(f"  [NICHT GEFUNDEN] {row.get('track_id')}: Keine passende Datei in Beets gefunden")
         else:
-            log(f"  [FEHLER] {row.get('track_id')}: {res.stderr.strip()}")
+            err = (res_rx.stderr or res.stderr).strip()
+            log(f"  [FEHLER] {row.get('track_id')}: {err}")
 
     return updated
 
