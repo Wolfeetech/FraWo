@@ -1,44 +1,41 @@
-# Tagesbericht an Wolf - Regel 7. Fassung 5 vom 09.09.2026.
+# Tagesbericht an Wolf - Regel 7. Fassung 7.1 vom 04.10.2026.
+# 7.1: Review Jarvis #22850 - Teil 1 erst zusammenfuehren/entdoppeln, dann
+#   insgesamt auf MAX begrenzen; Termine und Franz ebenfalls auf MAX.
 #
-# Wolf: "in der tagesordnung fehlt mir klare anweisung was ich heute wann zu
-# tun habe ... du hast heute frei, also stehen zuhause xyz an oder in der
-# villa xyz oder du faehrst nach stockenweiler fuer xyz"
+# Wolf (04.10.2026): "den taeglichen bericht wuensche ich mir besser...
+# aktuell zuviel blabla". Vereinbart: nur noch drei Teile:
+#   1. Was heute bei dir liegt   2. Termine heute   3. Was kaputt ist
+# Alles, was nur die Agenten betrifft (Ueberfaelliges ohne Wolf, WIP-Grenze,
+# unbewegte Aufgaben, Blockiert ohne Grund, beantwortete Fragen, Meilensteine,
+# Aufgaben ohne Ort), steht nicht mehr in Wolfs Mail, sondern als interne
+# Notiz an #600 - die Agenten lesen es dort.
 #
-# Deshalb steht jetzt ein TAGESPLAN ganz oben: Dienstplan aus dem Kalender,
-# danach je Ort das, was dort machbar ist. Nur Stufen 'Als Naechstes' und
-# 'In Arbeit' - Backlog und Ideen sind kein Tagesplan.
+# Teil 3 "Was kaputt ist": Alarme der Ueberwachung kommen noch nicht in Odoo
+# an (Server-Aktionen koennen kein HTTP). Bis Jarvis sie liefert, steht dort
+# nur, was Odoo selbst sieht: Aufgaben mit dem Schlagwort TAG_STOERUNG.
 #
 # STOLPERSTEINE (haben Laeufe gekostet):
 #   date_deadline ist DATETIME -> .date() vor Vergleichen.
 #   safe_eval kennt KEIN hasattr(). isinstance gibt es.
 #   compile() findet beides nicht.
-#
-# FASSUNG 6 (29.09.2026, #1557): Block 'Blockiert bei dir' mit Grund statt
-#   leerer Aktivitaeten; Warnung bei Blockiert ohne Grund-Zeile.
-#   Peer-Review Jarvis (30.09., Nachricht 21014): Warnung pruefte nur 'Wartet
-#   auf:', jetzt alle drei Pflicht-Marker (Wartet auf / Liegt bei / Wieder pruefen).
-#
-# FASSUNG 5 (09.09.2026):
-#   Ergänzt: TAG_BEANTWORTET (160) - Aufgaben, die Wolf/Kunde beantwortet hat
-#   und die auf Abarbeitung durch den Agenten warten (#1415 Punkt 4).
+#   Keine Closures (Odoo verbietet LOAD_CLOSURE/MAKE_CELL in Server-Aktionen).
+#   Kalenderzeiten sind UTC - Sommer-/Winterzeit selbst rechnen (bis Fassung 6
+#   stand hier fest +2 h, ab 25.10. waere das eine Stunde falsch gewesen).
 
 HEUTE = datetime.date.today()
 ERLEDIGT = [6, 35]
-MACHBAR = [2, 3]           # Als Naechstes, In Arbeit
 IN_ARBEIT = 3
+BLOCKIERT = 5
 WIP_GRENZE = 6
 STILL_TAGE = 14
-VORSCHAU = 7
 TAG_WOLF = 153
 TAG_BEANTWORTET = 160
-BLOCKIERT = 5
-MAX = 8
+TAG_STOERUNG = 0           # 0 = noch kein Schlagwort festgelegt
+MAX = 5
 WOLF_UID = 6
 FRANZ_UID = 10
 FREMDE_PROJEKTE = [106, 107]
-ORTE = [(154, 'Zuhause / RK22a'), (155, 'In der Villa'),
-        (156, 'In Stockenweiler'), (158, 'Unterwegs erledigen'),
-        (157, 'Am Rechner')]
+ORTE = [154, 155, 156, 157, 158]
 EMPFAENGER = 'wolf@frawo.tech'
 WOCHENTAG = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag',
              'Freitag', 'Samstag', 'Sonntag'][HEUTE.weekday()]
@@ -48,83 +45,38 @@ JETZT = datetime.datetime.now()
 OFFEN = [('stage_id', 'not in', ERLEDIGT)]
 EIGEN = OFFEN + [('project_id', 'not in', FREMDE_PROJEKTE)]
 
-# --- Dienstplan aus dem Kalender ------------------------------------------
-von = datetime.datetime.combine(HEUTE, datetime.time(0, 0))
-bis = von + datetime.timedelta(days=1)
-termine = env['calendar.event'].search([('start', '>=', von), ('start', '<', bis)],
-                                       order='start asc')
+
+def letzter_sonntag(jahr, monat):
+    d = datetime.date(jahr, monat, 31)
+    return d - datetime.timedelta(days=(d.weekday() + 1) % 7)
 
 
-def termine_von(uid):
-    zs = []
-    for e in termine:
-        if e.user_id and e.user_id.id == uid:
-            a = (e.start + datetime.timedelta(hours=2)).strftime('%H:%M')
-            b = (e.stop + datetime.timedelta(hours=2)).strftime('%H:%M')
-            zs.append('%s (%s&ndash;%s)' % (e.name[:44], a, b))
-    return zs
-
-
-wolf_heute = termine_von(WOLF_UID)
-franz_heute = termine_von(FRANZ_UID)
-
-teile = ['<h2>%s, %s</h2>' % (WOCHENTAG, HEUTE.strftime('%d.%m.%Y'))]
-
-if wolf_heute:
-    teile.append('<p><b>Du heute:</b> %s</p>' % ' &middot; '.join(wolf_heute))
+# Mitteleuropaeische Sommerzeit: letzter Sonntag Maerz bis letzter Sonntag Oktober.
+if letzter_sonntag(HEUTE.year, 3) <= HEUTE < letzter_sonntag(HEUTE.year, 10):
+    VERSATZ = datetime.timedelta(hours=2)
 else:
-    teile.append('<p><b>Du hast heute frei.</b></p>')
-if franz_heute:
-    teile.append('<p><i>Franz: %s</i></p>' % ' &middot; '.join(franz_heute))
+    VERSATZ = datetime.timedelta(hours=1)
 
-# --- Tagesplan nach Ort ---------------------------------------------------
-plan = ''
-for tag_id, ort in ORTE:
-    a = Task.search(EIGEN + [('tag_ids', 'in', [tag_id]),
-                             ('stage_id', 'in', MACHBAR)],
-                    order='priority desc, date_deadline asc')
-    if not a:
-        continue
-    zeilen = ''
-    for t in a[:3]:
-        ueber = ''
-        if t.date_deadline and t.date_deadline.date() < HEUTE:
-            ueber = ' <b>(&uuml;berf&auml;llig)</b>'
-        elif t.date_deadline:
-            ueber = ' <i>(bis %s)</i>' % t.date_deadline.strftime('%d.%m.')
-        zeilen += '<li>%s%s</li>' % (t.name[:72], ueber)
-    mehr = (' <i>&hellip; und %d weitere</i>' % (len(a) - 3)) if len(a) > 3 else ''
-    plan += '<p><b>%s</b> &mdash; %d%s</p><ul>%s</ul>' % (ort, len(a), mehr, zeilen)
 
-if plan:
-    teile.append('<h3>Was heute wo geht</h3>' + plan)
-else:
-    teile.append('<p><i>Keine Aufgabe hat einen Ort. Schlagwoerter: @rk22, @villa, '
-                 '@stockenweiler, @unterwegs, @remote.</i></p>')
+def zeile(text, rest=''):
+    return '<li>%s%s</li>' % (text, rest)
 
-ohne_ort = Task.search_count(EIGEN + [('stage_id', 'in', MACHBAR),
-                                      ('tag_ids', 'not in', [o[0] for o in ORTE])])
-if ohne_ort:
-    teile.append('<p style="color:#777"><i>%d machbare Aufgaben haben keinen Ort '
-                 '&mdash; deshalb stehen sie oben nicht drin.</i></p>' % ohne_ort)
 
-teile.append('<hr>')
+def liste(zeilen):
+    # Hoechstens MAX Zeilen je Liste, Rest als eine Zaehlzeile (Review Jarvis #22850).
+    mehr = ('<li><i>&hellip; und %d weitere</i></li>' % (len(zeilen) - MAX)
+            if len(zeilen) > MAX else '')
+    return '<ul>%s%s</ul>' % (''.join(zeilen[:MAX]), mehr)
 
-# --- Lage ------------------------------------------------------------------
-ueberfaellig = Task.search(EIGEN + [('date_deadline', '<', HEUTE)],
-                           order='date_deadline asc')
-laufend = Task.search([('stage_id', '=', IN_ARBEIT),
-                       ('project_id', 'not in', FREMDE_PROJEKTE)])
-liegen = laufend.filtered(lambda t: t.write_date and (JETZT - t.write_date).days >= STILL_TAGE)
-braucht_wolf = Task.search(OFFEN + [('tag_ids', 'in', [TAG_WOLF])])
-beantwortet = Task.search(OFFEN + [('tag_ids', 'in', [TAG_BEANTWORTET])])
-meilensteine = env['project.milestone'].search(
-    [('is_reached', '=', False), ('deadline', '<', HEUTE)],
-    order='deadline asc').filtered(lambda m: not m.name.startswith('[FREMD]'))
-# Blockiert (#1557, 29.09.2026): Jede blockierte Aufgabe traegt als erste Zeile
-#   Wartet auf: ... · Liegt bei: ... · Wieder pruefen: TT.MM.
-# Wolf sieht nur, was bei IHM liegt und dessen Pruefdatum erreicht ist - mit Grund.
-# Ersetzt Automatik #4 (leere Aktivitaet "Blocker pruefen - ist er noch echt?").
+
+# --- Teil 1: Was heute bei dir liegt ----------------------------------------
+braucht_wolf = Task.search(OFFEN + [('tag_ids', 'in', [TAG_WOLF])],
+                           order='priority desc, date_deadline asc')
+wolf_ueberfaellig = Task.search(EIGEN + [('date_deadline', '<', HEUTE),
+                                         ('user_ids', 'in', [WOLF_UID])],
+                                order='date_deadline asc')
+wolf_ueberfaellig = wolf_ueberfaellig - braucht_wolf
+
 blockiert = Task.search([('stage_id', '=', BLOCKIERT),
                          ('project_id', 'not in', FREMDE_PROJEKTE)])
 
@@ -151,7 +103,98 @@ def pruef_datum(t):
 
 blockiert_bei_wolf = blockiert.filtered(
     lambda t: 'Liegt bei:</b> Wolf' in str(t.description or '')
-    and pruef_datum(t) is not None and pruef_datum(t) <= HEUTE)
+    and pruef_datum(t) is not None and pruef_datum(t) <= HEUTE) - braucht_wolf
+wolf_ueberfaellig = wolf_ueberfaellig - blockiert_bei_wolf
+
+entwuerfe = env['account.move'].search([('state', '=', 'draft'),
+    ('move_type', 'in', ['out_invoice', 'out_refund', 'in_invoice', 'in_refund'])])
+
+# Erst alle Kandidaten zusammenfuehren (oben entdoppelt), dann einmal insgesamt begrenzen.
+z1 = []
+for t in braucht_wolf:
+    z1.append(zeile(t.name[:80], ' <i>(bis %s)</i>' % t.date_deadline.strftime('%d.%m.')
+                    if t.date_deadline else ''))
+for t in blockiert_bei_wolf:
+    grund = blocker_teil(t, 'Wartet auf:</b> ', ' · <b>Liegt bei')[:100]
+    z1.append(zeile(t.name[:60], ' &mdash; <i>wartet auf %s</i>' % grund if grund else ''))
+for t in wolf_ueberfaellig:
+    z1.append(zeile(t.name[:70], ' <b>(&uuml;berf&auml;llig seit %s)</b>'
+                    % t.date_deadline.strftime('%d.%m.')))
+anzahl_wolf = len(z1)
+if entwuerfe:
+    z1.append(zeile('%d Rechnung(en) im Entwurf, zusammen %.2f EUR'
+                    % (len(entwuerfe), sum(entwuerfe.mapped('amount_total')))))
+
+teile = ['<h2>%s, %s</h2>' % (WOCHENTAG, HEUTE.strftime('%d.%m.%Y'))]
+teile.append('<h3>1. Bei dir heute</h3>')
+if z1:
+    teile.append(liste(z1))
+else:
+    teile.append('<p>Nichts. Heute liegt keine Aufgabe bei dir.</p>')
+
+# --- Teil 2: Termine heute --------------------------------------------------
+von = datetime.datetime.combine(HEUTE, datetime.time(0, 0)) - VERSATZ
+bis = von + datetime.timedelta(days=1)
+termine = env['calendar.event'].search([('start', '<', bis), ('stop', '>', von)],
+                                       order='start asc')
+
+
+def termine_von(uid):
+    zs = []
+    for e in termine:
+        if e.user_id and e.user_id.id == uid:
+            if e.allday:
+                zs.append('%s (ganztags)' % e.name[:60])
+            else:
+                zs.append('%s&ndash;%s %s' % ((e.start + VERSATZ).strftime('%H:%M'),
+                                             (e.stop + VERSATZ).strftime('%H:%M'),
+                                             e.name[:60]))
+    return zs
+
+
+wolf_heute = termine_von(WOLF_UID)
+franz_heute = termine_von(FRANZ_UID)
+teile.append('<h3>2. Termine heute</h3>')
+if wolf_heute:
+    teile.append(liste([zeile(z) for z in wolf_heute]))
+else:
+    teile.append('<p>Keine Termine &ndash; du hast frei.</p>')
+if franz_heute:
+    teile.append('<p><i>Franz: %s%s</i></p>' % (
+        ' &middot; '.join(franz_heute[:MAX]),
+        ' &middot; &hellip; und %d weitere' % (len(franz_heute) - MAX) if len(franz_heute) > MAX else ''))
+
+# --- Teil 3: Was kaputt ist -------------------------------------------------
+teile.append('<h3>3. Kaputt</h3>')
+stoerungen = Task.search(OFFEN + [('tag_ids', 'in', [TAG_STOERUNG])]) if TAG_STOERUNG else Task
+if stoerungen:
+    teile.append(liste([zeile(t.name[:80]) for t in stoerungen]))
+else:
+    teile.append('<p>Nichts bekannt. <i>Alarme der &Uuml;berwachung kommen weiter '
+                 'direkt per Telegram.</i></p>')
+
+betreff = 'FraWo %s %s' % (WOCHENTAG, HEUTE.strftime('%d.%m.'))
+if anzahl_wolf:
+    betreff += ' - %d bei dir' % anzahl_wolf
+else:
+    betreff += ' - nichts bei dir'
+if stoerungen:
+    betreff += ', %d kaputt' % len(stoerungen)
+
+env['mail.mail'].sudo().create({
+    'subject': betreff, 'body_html': ''.join(teile),
+    'email_to': EMPFAENGER, 'auto_delete': False,
+}).send()
+
+# --- Nur fuer die Agenten: interne Notiz an #600, keine Mail ------------------
+ueberfaellig = Task.search(EIGEN + [('date_deadline', '<', HEUTE)])
+laufend = Task.search([('stage_id', '=', IN_ARBEIT),
+                       ('project_id', 'not in', FREMDE_PROJEKTE)])
+liegen = laufend.filtered(lambda t: t.write_date and (JETZT - t.write_date).days >= STILL_TAGE)
+beantwortet = Task.search(OFFEN + [('tag_ids', 'in', [TAG_BEANTWORTET])])
+meilensteine = env['project.milestone'].search(
+    [('is_reached', '=', False), ('deadline', '<', HEUTE)]).filtered(
+    lambda m: not m.name.startswith('[FREMD]'))
 BLOCKER_MARKER = ('Wartet auf:</b>', 'Liegt bei:</b>', 'Wieder prüfen:</b>')
 
 
@@ -164,80 +207,30 @@ def hat_alle_blocker_marker(beschreibung):
 
 blockiert_ohne_grund = blockiert.filtered(
     lambda t: not hat_alle_blocker_marker(str(t.description or '')))
+ohne_ort = Task.search_count(EIGEN + [('stage_id', 'in', [2, 3]),
+                                      ('tag_ids', 'not in', ORTE)])
 
-entwuerfe = env['account.move'].search([('state', '=', 'draft'),
-    ('move_type', 'in', ['out_invoice', 'out_refund', 'in_invoice', 'in_refund'])])
-
-
-def block(titel, records):
-    if not records:
-        return ''
-    zs = ''
-    for t in records[:MAX]:
-        d = t.date_deadline.strftime('%d.%m.') if t.date_deadline else '&ndash;'
-        zs += ('<tr><td><tt>%s</tt>&nbsp;&nbsp;</td><td>%s</td></tr>'
-               % (d, t.name[:80]))
-    rest = ('<p><i>&hellip; und %d weitere</i></p>' % (len(records) - MAX)) if len(records) > MAX else ''
-    return '<p><b>%s (%d)</b></p><table>%s</table>%s' % (titel, len(records), zs, rest)
-
-
-warn = []
+agenten = []
 if ueberfaellig:
-    warn.append('%d ueberfaellig' % len(ueberfaellig))
-if meilensteine:
-    warn.append('%d Meilenstein(e)' % len(meilensteine))
+    agenten.append('%d ueberfaellig (gesamt)' % len(ueberfaellig))
 if len(laufend) > WIP_GRENZE:
-    warn.append('%d in Arbeit (max %d)' % (len(laufend), WIP_GRENZE))
+    agenten.append('%d in Arbeit (max %d)' % (len(laufend), WIP_GRENZE))
 if liegen:
-    warn.append('%d seit %d Tagen unbewegt' % (len(liegen), STILL_TAGE))
+    agenten.append('%d seit %d Tagen unbewegt: %s' % (
+        len(liegen), STILL_TAGE, ', '.join('#%d' % t.id for t in liegen[:10])))
 if blockiert_ohne_grund:
-    warn.append('%d blockiert ohne Grund (Agenten)' % len(blockiert_ohne_grund))
+    agenten.append('%d blockiert ohne Grund-Zeile: %s' % (
+        len(blockiert_ohne_grund), ', '.join('#%d' % t.id for t in blockiert_ohne_grund[:10])))
 if beantwortet:
-    warn.append('%d Antwort(en) warten auf Agent' % len(beantwortet))
-
-if warn:
-    teile.append('<p><b>Achtung:</b> %s</p>' % ' &middot; '.join(warn))
-else:
-    teile.append('<p><b>Nichts Ueberfaelliges.</b> <i>Diese Zeile ist der Zweck des '
-                 'Berichts &mdash; bliebe die Mail aus, waere das selbst die Meldung.</i></p>')
-
-teile.append(block('Ueberfaellig', ueberfaellig))
-teile.append(block('Wartet auf deine Entscheidung', braucht_wolf))
-teile.append(block('Beantwortet (wartet auf Agenten-Verarbeitung)', beantwortet))
-if blockiert_bei_wolf:
-    zs = ''.join('<tr><td valign="top">%s&nbsp;&nbsp;</td><td><i>wartet auf:</i> %s</td></tr>'
-                 % (t.name[:60], blocker_teil(t, 'Wartet auf:</b> ', ' · <b>Liegt bei')[:140])
-                 for t in blockiert_bei_wolf[:MAX])
-    teile.append('<p><b>Blockiert bei dir &ndash; heute pruefen (%d von %d blockierten)</b></p>'
-                 '<table>%s</table>' % (len(blockiert_bei_wolf), len(blockiert), zs))
-teile.append(block('Seit %d Tagen unbewegt' % STILL_TAGE, liegen))
-
+    agenten.append('%d Antwort(en) warten auf Agent: %s' % (
+        len(beantwortet), ', '.join('#%d' % t.id for t in beantwortet[:10])))
 if meilensteine:
-    zs = ''.join('<tr><td><tt>%s</tt>&nbsp;&nbsp;</td><td>%s</td></tr>'
-                 % (m.deadline.strftime('%d.%m.'), m.name[:78]) for m in meilensteine)
-    teile.append('<p><b>Meilensteine ueberfaellig (%d)</b></p><table>%s</table>'
-                 % (len(meilensteine), zs))
+    agenten.append('%d Meilenstein(e) ueberfaellig' % len(meilensteine))
+if ohne_ort:
+    agenten.append('%d machbare Aufgaben ohne Ort' % ohne_ort)
 
-if entwuerfe:
-    teile.append('<p><b>%d Rechnungen im Entwurf</b>, zusammen %.2f EUR</p>'
-                 % (len(entwuerfe), sum(entwuerfe.mapped('amount_total'))))
-
-teile.append('<p style="color:#888;font-size:11px">Sicherungen meldet die Ueberwachung '
-             'getrennt. Odoo-Cron 44, Aktion 828.</p>')
-
-betreff = 'FraWo %s %s' % (WOCHENTAG, HEUTE.strftime('%d.%m.'))
-if wolf_heute:
-    betreff += ' - Arbeit'
-else:
-    betreff += ' - frei'
-if warn:
-    betreff += ' (%s)' % warn[0]
-
-env['mail.mail'].sudo().create({
-    'subject': betreff, 'body_html': ''.join(teile),
-    'email_to': EMPFAENGER, 'auto_delete': False,
-}).send()
-
+notiz = 'Tagesbericht %s verschickt (%d bei Wolf).' % (HEUTE.strftime('%d.%m.%Y'), anzahl_wolf)
+if agenten:
+    notiz += ' Fuer Agenten: ' + ' · '.join(agenten)
 env['project.task'].browse(600).message_post(
-    body='Tagesbericht %s verschickt.' % HEUTE.strftime('%d.%m.%Y'),
-    message_type='comment', subtype_xmlid='mail.mt_note')
+    body=notiz, message_type='comment', subtype_xmlid='mail.mt_note')
