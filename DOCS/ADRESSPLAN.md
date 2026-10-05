@@ -4,7 +4,7 @@
 > Wer eine Adresse ändert, ändert sie **zuerst hier** und arbeitet dann die Spalte
 > „Wer verlässt sich darauf" ab.
 >
-> Stand 21.09.2026 · Grundlage: Messung am Gateway, an allen drei Knoten und von außen.
+> Stand 05.10.2026 (Gäste-Tabellen neu gemessen) · Grundlage: Messung am Gateway, an allen drei Knoten und von außen.
 > Aufgabe M1 aus Vorhaben „Netz professionell betreibbar machen".
 
 ## Warum es diese Datei gibt
@@ -44,7 +44,7 @@ Das gehört auf `.200 – .254` eingekürzt.
 |---|---|---|---|
 | — (ungetaggt) | `192.168.1.0/24` | Werksnetz „Default" | ungenutzt, **darf nichts tragen** |
 | **100** | `10.0.0.0/24` | Anker-LAN — Arbeitsplätze | in Betrieb |
-| **101** | `10.1.0.0/24` | Anker-Server — **Zielnetz aller Dienste** | derzeit fast leer |
+| **101** | `10.1.0.0/24` | Anker-Server — **Zielnetz aller Dienste** | in Betrieb, alle Gäste hier |
 | 102 | `10.2.0.0/24` | DMZ | leer |
 | 103 | `10.3.0.0/24` | DMZ Radio | leer |
 | **104** | `10.4.0.0/24` | IoT | 14 Geräte, in Betrieb |
@@ -104,29 +104,44 @@ Das gehört auf `.200 – .254` eingekürzt.
 
 ### Kerndienste · `.50 – .99`
 
-| Gast | Dienst | Soll (VLAN 101) | Ist (VLAN 100) | Wirt |
-|---|---|---|---|---|
-| CT140 | Odoo + Website + Cloudflare-Tunnel | `10.1.0.112` | `10.0.0.55` | Anker |
-| CT108 | Vaultwarden | `10.1.0.95` | `10.0.0.64` | Anker |
-| CT155 | Monitoring (Prometheus, Grafana) | `10.1.0.35` | `10.0.0.100` | Anker |
-| CT101 | AdGuard (Replica) | `10.1.0.27` | `10.0.0.97` | Anker |
-| CT103 | AdGuard (Master) | `10.1.0.52` | `10.0.0.10` | ProDesk |
-| CT120 | Fileserver + beets | `10.1.0.94` | `10.0.0.157` | ProDesk |
+Alle Gäste beziehen ihre Adresse per DHCP mit **fester Zuteilung am Gateway** (`rest/user`).
+Ausnahme: CT102 hat sie fest im Container eingetragen.
 
-### Weitere Gäste · `.100 – .199`
+| Gast | Dienst | Soll = Ist (VLAN 101) | Wirt |
+|---|---|---|---|
+| CT140 | Odoo + Website + Cloudflare-Tunnel | `10.1.0.112` | Anker |
+| CT108 | Vaultwarden | `10.1.0.95` | Anker |
+| CT155 | Monitoring (Prometheus, Grafana, Alertmanager) | `10.1.0.35` | Anker |
+| CT101 | AdGuard (Replica) | `10.1.0.27` | Anker |
+| CT103 | AdGuard (Master) | `10.1.0.52` | ProDesk |
+| CT102 | AdGuard (OptiPlex) | `10.1.0.53` (fest im CT) | OptiPlex |
+| CT120 | Fileserver + beets | `10.1.0.94` | ProDesk |
 
-| Gast | Dienst | Soll (VLAN 101) | Ist (VLAN 100) | Wirt |
-|---|---|---|---|---|
-| CT110 | n8n + Paperless | `10.1.0.100` | `10.0.0.106` | Anker |
-| CT130 | Radio-Backend | `10.1.0.200` | `10.0.0.233` | Anker |
-| CT150 | OpenClaw (Jarvis) | `10.1.0.31` | `10.0.0.31` | Anker |
-| CT106 | WireGuard nach Stockenweiler | `10.1.0.239` | `10.0.0.152` | Anker |
-| VM210 | Home Assistant Rothkreuz | `10.1.0.40` | `10.0.0.183` | Anker |
-| VM300 | Nextcloud | `10.1.0.21` | `10.0.0.204` | Anker |
-| VM220 | AzuraCast (Radio) | `10.1.0.38` | `10.0.0.186` | ProDesk |
-| VM360 | Home Assistant Eltern | `10.1.0.248` | `10.0.0.215` | ProDesk |
-| VM240 | PBS (Sicherungsserver) | `10.1.0.7` | — | Anker, **defekt** |
-| VM102 | AdGuard OptiPlex | — | läuft | OptiPlex |
+### Weitere Gäste · `.100 – .199` (und Altlasten außerhalb)
+
+| Gast | Dienst | Soll = Ist (VLAN 101) | Wirt |
+|---|---|---|---|
+| CT110 | n8n + Paperless-Router | `10.1.0.100` | OptiPlex |
+| CT150 | OpenClaw (Jarvis) | `10.1.0.31` | Anker |
+| CT106 | WireGuard nach Stockenweiler | `10.1.0.239` | Anker |
+| VM210 | Home Assistant Rothkreuz | `10.1.0.40` | Anker |
+| VM300 | Nextcloud | `10.1.0.21` | OptiPlex |
+| VM241 | PBS (Sicherungsserver) | `10.1.0.8` | OptiPlex |
+| VM220 | AzuraCast (Radio) | `10.1.0.38` | ProDesk |
+| VM360 | Home Assistant Eltern | `10.1.0.248` | ProDesk |
+| CT130 | Radio-Backend | `10.1.0.200` ⚠️ | OptiPlex |
+| VM990 | Surface-Test (gestoppt) | `10.1.0.199` | OptiPlex |
+
+> **Gemessen 05.10.2026 nach dem Neustart aller drei Knoten im Wartungsfenster (#1911):**
+> Jeder Gast kam unter genau dieser Adresse zurück. VM240 (alter PBS) gibt es nicht mehr.
+> Tote Zuteilungen am Gateway (paperless `.145`, npm `.149`, toolbox `.209`, `.30`, pbs `.7`,
+> storage-node `.81`, VM240-MAC auf `.8`) wurden entfernt; `.8` zeigt jetzt auf VM241.
+>
+> ⚠️ Viele Adressen liegen **nicht** im Bereich der Bereichsregel (`.8`, `.21`, `.27`, `.31`,
+> `.35`, `.38`, `.40`, `.239`, `.248`). Umnummerieren lohnt nicht: Jede Änderung trifft die
+> Abnehmerliste unten. Verbindlich ist darum **diese Tabelle**, nicht die Bereichsregel.
+> **CT130 auf `.200`** liegt aber im künftigen DHCP-Bereich. Vor dem Einkürzen den Pool
+> deshalb auf `.201 – .254` legen oder CT130 umziehen.
 
 ### IoT · VLAN 104, `10.4.0.x`
 
@@ -168,8 +183,8 @@ Liste ab — sonst passiert wieder, was am 21.09. passiert ist.
 
 - [ ] Jede Adresse liegt im vorgesehenen Bereich
 - [ ] Der DHCP-Bereich ist auf `.200 – .254` eingekürzt und überschneidet sich mit keiner festen Vergabe
-- [ ] Alle Dienste sind wieder in VLAN 101 und unter ihrer Soll-Adresse erreichbar
-- [ ] Die festen Zuteilungen am Gateway nennen Adresse **und** das richtige Netz
+- [x] Alle Dienste sind wieder in VLAN 101 und unter ihrer Soll-Adresse erreichbar (05.10.)
+- [x] Die festen Zuteilungen am Gateway nennen Adresse **und** das richtige Netz (05.10., tote entfernt)
 - [ ] `funk.` `vault.` `cloud.` `paperless.` `home.frawo.tech` antworten wieder
 - [ ] Der Tunnel nach Stockenweiler trägt echten Verkehr, nicht nur Handschläge
-- [ ] Ein Neustart aller drei Knoten ändert nichts an dieser Tabelle
+- [x] Ein Neustart aller drei Knoten ändert nichts an dieser Tabelle (05.10., #1911)
