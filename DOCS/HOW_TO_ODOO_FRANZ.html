@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How to Odoo — Kurzanleitung für Franz (FraWo GbR)</title>
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 15mm 15mm 15mm 15mm;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: #1e293b;
+      background: #f8fafc;
+      margin: 0;
+      padding: 24px;
+      line-height: 1.5;
+    }
+    .sheet {
+      max-width: 800px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 32px 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      border: 1px solid #e2e8f0;
+    }
+    header {
+      border-bottom: 2px solid #0284c7;
+      padding-bottom: 12px;
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    h1 {
+      margin: 0;
+      font-size: 24px;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .subtitle {
+      font-size: 13px;
+      color: #64748b;
+      font-weight: 500;
+    }
+    .badge-bar {
+      display: inline-block;
+      background: #e0f2fe;
+      color: #0369a1;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .step {
+      margin-bottom: 20px;
+    }
+    .step h2 {
+      font-size: 16px;
+      margin: 0 0 8px 0;
+      color: #0369a1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .step-content {
+      padding-left: 28px;
+      font-size: 14px;
+    }
+    .url-box {
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 14px;
+      font-weight: bold;
+      color: #0f172a;
+      display: inline-block;
+      margin: 4px 0 8px 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 6px;
+      margin-bottom: 10px;
+      font-size: 13px;
+    }
+    th, td {
+      border: 1px solid #cbd5e1;
+      padding: 8px 12px;
+      text-align: left;
+    }
+    th {
+      background: #f8fafc;
+      font-weight: 600;
+      color: #475569;
+    }
+    .col-tag {
+      font-weight: bold;
+      padding: 2px 6px;
+      border-radius: 4px;
+      display: inline-block;
+    }
+    .tag-next { background: #e0f2fe; color: #0284c7; }
+    .tag-wip { background: #fef3c7; color: #d97706; }
+    .tag-block { background: #fee2e2; color: #dc2626; }
+    .tag-done { background: #dcfce7; color: #16a34a; }
+    .callout {
+      background: #eff6ff;
+      border-left: 4px solid #3b82f6;
+      padding: 10px 14px;
+      border-radius: 0 6px 6px 0;
+      font-size: 13px;
+      margin: 12px 0;
+      color: #1e40af;
+    }
+    .footer-note {
+      margin-top: 24px;
+      padding-top: 12px;
+      border-top: 1px solid #e2e8f0;
+      font-size: 12px;
+      color: #64748b;
+      text-align: center;
+    }
+    @media print {
+      body {
+        background: transparent;
+        padding: 0;
+      }
+      .sheet {
+        box-shadow: none;
+        border: none;
+        padding: 0;
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="sheet">
+  <header>
+    <div>
+      <h1>📙 How to Odoo — Kurzanleitung für Franz</h1>
+      <div class="subtitle">FraWo GbR · Werkstatt & Projekte · Version 05.10.2026</div>
+    </div>
+    <div class="badge-bar">Spickzettel Werkstatt</div>
+  </header>
+
+  <div class="step">
+    <h2>1. Was du öffnest</h2>
+    <div class="step-content">
+      Öffne Odoo im Browser: <div class="url-box">https://odoo.frawo.tech</div> (oder auf dem Tablet).<br>
+      Klicke oben auf <b>Projekte</b> → <b>Aufgaben</b>.<br>
+      Klicke oben bei <b>Favoriten</b> auf: &nbsp;<b>👉 <code>🔨 Franz — was ansteht</code></b><br>
+      <em>Ergebnis: Du siehst genau deine eigenen Aufgaben – ohne langes Suchen.</em>
+    </div>
+  </div>
+
+  <div class="step">
+    <h2>2. Die vier Spalten (Karten ziehen)</h2>
+    <div class="step-content">
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 25%;">Spalte</th>
+            <th style="width: 35%;">Bedeutung</th>
+            <th style="width: 40%;">Regel</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="col-tag tag-next">📥 Als Nächstes</span></td>
+            <td>Steht an, ist bereit</td>
+            <td>Hier suchst du dir deine nächste Arbeit aus.</td>
+          </tr>
+          <tr>
+            <td><span class="col-tag tag-wip">🚀 In Arbeit</span></td>
+            <td>Machst du gerade</td>
+            <td><b>Höchstens 1 bis 3 Karten gleichzeitig!</b></td>
+          </tr>
+          <tr>
+            <td><span class="col-tag tag-block">🛑 Blockiert</span></td>
+            <td>Geht gerade nicht weiter</td>
+            <td>Fehlt Material, Schrauben, Werkzeug? Ab hierhin!</td>
+          </tr>
+          <tr>
+            <td><span class="col-tag tag-done">✅ Erledigt</span></td>
+            <td>Fertiggestellt</td>
+            <td>Karte hierhin ziehen, sobald die Arbeit beendet ist.</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="callout">
+        💡 <b>Wichtig:</b> Du kannst nichts kaputt machen! Ziehe die Karte einfach mit der Maus oder dem Finger in die passende Spalte.
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <h2>3. Wenn du fertig bist (✅ Erledigt)</h2>
+    <div class="step-content">
+      Karte nach <b>✅ Erledigt</b> ziehen. Wenn du willst, unten kurz reinschreiben was rauskam (z. B. <i>„Tauchsäge getestet, Schnittkante sauber“</i> oder <i>„30 Min gebraucht“</i>). Muss aber nicht zwingend sein.
+    </div>
+  </div>
+
+  <div class="step">
+    <h2>4. Wenn du eine Frage hast oder Hilfe brauchst</h2>
+    <div class="step-content">
+      Klicke auf die Karte und schreibe unten ins Feld <b>Nachricht senden</b>. Tippst du <b><code>@Wolf</code></b>, bekommt Wolf sofort eine direkte Benachrichtigung auf sein Smartphone.
+    </div>
+  </div>
+
+  <div class="step">
+    <h2>5. Wenn etwas hakt (🛑 Blockiert)</h2>
+    <div class="step-content">
+      Karte nach <b>🛑 Blockiert</b> ziehen und kurz dazuschreiben, <b>woran es liegt</b> (z. B. <i>„Schrauben M6 fehlen“</i>, <i>„Kühlaggregat muss zu Kältefritz transportiert werden“</i>).<br>
+      <b>Merke:</b> <i>Blockiert</i> ist kein Versagen, sondern eine wertvolle Information, damit Wolf weiß, was besorgt werden muss.
+    </div>
+  </div>
+
+  <div class="footer-note">
+    <b>Das ist schon alles!</b> Projekte, Tags, Meilensteine und Datenbanken machen Wolf und die Agenten im Hintergrund. Du brauchst genau <b>eine Ansicht (<code>🔨 Franz — was ansteht</code>)</b> und <b>vier Spalten</b>.
+  </div>
+</div>
+
+</body>
+</html>
