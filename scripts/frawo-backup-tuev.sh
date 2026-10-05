@@ -25,6 +25,17 @@ METRIK="$TEXTFILE_DIR/backup_tuev.prom"
 TELEGRAM_TOKEN_FILE=/root/.telegram-frawo
 TELEGRAM_CHAT_ID=5924907152
 
+# Nur ein Lauf gleichzeitig (Befund Codex 05.10.2026, #1519): Zwei Units
+# (frawo-backup-tuev-run.service vom Timer, frawo-backup-tuev.service fuer Handstarts)
+# starten dieses Skript und schreiben Bericht und Metrik. Parallel ueberschreiben sie
+# sich gegenseitig. Gleiche Sperre wie in der ProDesk-Fassung; ein zweiter Aufruf wird
+# uebersprungen und raeumt den laufenden nicht ab.
+exec 9>/run/lock/frawo-backup-tuev.lock
+if ! flock -n 9; then
+    echo "FraWo Backup-TÜV läuft bereits; zweiter Aufruf wird übersprungen." >&2
+    exit 75
+fi
+
 GEPRUEFT=0
 DURCHGEFALLEN=0
 ZEILEN=""
