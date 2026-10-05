@@ -38,4 +38,4 @@ receivers:
         send_resolved: false
         http_config:
           authorization:
-            credentials: frawo-alertmanager-webhook-2026
+            credentials_file: /etc/prometheus/servassi-hook.token  # Secret nur auf CT155 (0400), rotiert per deployments/openclaw/webhook_secrets_rotieren.sh (Odoo 1917)
