@@ -10,7 +10,7 @@ groups:
     rules:
       # 1. Ollama KI-Dienst nicht erreichbar
       - alert: OllamaDienstAusgefallen
-        expr: probe_success{instance="http://10.0.0.227:11434"} == 0
+        expr: probe_success{instance="http://10.1.0.227:11434"} == 0
         for: 2m
         labels:
           severity: critical
@@ -18,14 +18,14 @@ groups:
         annotations:
           dashboard: "http://100.100.115.80:3000/d/frawo-ueberblick"
           summary: "Ollama KI-Dienst auf OptiPlex ist DOWN"
-          description: "Blackbox-Probe für http://10.0.0.227:11434 schlägt seit 2+ Minuten fehl."
+          description: "Blackbox-Probe für http://10.1.0.227:11434 schlägt seit 2+ Minuten fehl."
           heisst: "Lokale KI-Dienste (Chatter-Assistenz, Alarm-Formulierung) sind nicht verfügbar."
           zu_tun: "systemctl status ollama auf dem Rechner prüfen und neu starten."
           vor_ort: "nein"
 
       # 2. absent()-Regel: Metrik für Ollama ist komplett verschwunden
       - alert: OllamaMetrikFehlt
-        expr: absent(probe_success{instance="http://10.0.0.227:11434"}) == 1
+        expr: absent(probe_success{instance="http://10.1.0.227:11434"}) == 1
         for: 2m
         labels:
           severity: critical
