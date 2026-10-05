@@ -30,7 +30,7 @@ a.webhook_url = \"http://10.1.0.31:19001/klausi-chatter/\" + c
 env.cr.commit()
 print(\"   odoo: param + aktion 647 gesetzt\")
 PY
-rm -f /tmp/rot.txt"'
+rc=\$?; rm -f /tmp/rot.txt; exit \$rc"'
 
 echo "2/4 CT150: Handler-Env"
 # Werte erst in eine 0600-Zwischendatei: ein Heredoc fuer das Python-Skript belegt stdin
