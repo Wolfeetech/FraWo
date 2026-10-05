@@ -15,7 +15,9 @@ LOG=/root/musik-ext4-umstellung.log
 exec > >(tee -a "$LOG") 2>&1
 schritt() { echo; echo "=== $(date '+%F %T') $*"; }
 zaehle() { # Dateien, Links, Verzeichnisse, Bytes (ohne Verzeichnisgroessen) unter $1
-  find "$1" -mindepth 1 \( -type f -printf 'f %s\n' -o -type l -printf 'l 0\n' -o -type d -printf 'd 0\n' \) \
+  # Unlesbare Eintraege (NTFS-Altschaden) ueberspringt find mit Fehlermeldung; sie fehlen dann
+  # auch in der Kopie. Der Fehlercode von find darf hier nicht abbrechen.
+  { find "$1" -mindepth 1 \( -type f -printf 'f %s\n' -o -type l -printf 'l 0\n' -o -type d -printf 'd 0\n' \) 2>/dev/null || true; } \
     | awk '{n[$1]++; if($1=="f") b+=$2} END {printf "f=%d l=%d d=%d bytes=%d\n", n["f"], n["l"], n["d"], b}'
 }
 
@@ -32,7 +34,20 @@ pct shutdown 120 --timeout 120
 sleep 3; ! pgrep -f "rsync .*music_hdd" >/dev/null || { echo "ABBRUCH: rsync auf der Platte laeuft noch"; exit 1; }
 
 schritt "2 letzter Abgleich nach $KOPIE (mit --delete)"
-rsync -rltH --delete --numeric-ids --stats "$MNT/" "$ANKER:$KOPIE/" | tail -15
+# Lesefehler (I/O error 5) betreffen den bekannten NTFS-Altschaden vom 03.08. Diese Dateien sind
+# unlesbar und damit schon verloren. rsync meldet dann Code 23; sie werden protokolliert und
+# fehlen in BEIDEN Zaehlungen (find kann sie ebenfalls nicht lesen). Jeder andere Code bricht ab.
+set +e
+rsync -rltH --delete --numeric-ids --stats "$MNT/" "$ANKER:$KOPIE/" > /root/musik-ext4-abgleich.log 2>&1
+RC=$?
+set -e
+tail -15 /root/musik-ext4-abgleich.log
+grep -E "Input/output error|failed:" /root/musik-ext4-abgleich.log > /root/musik-ext4-unlesbar.txt || true
+echo "rsync-Code $RC, unlesbare Eintraege: $(wc -l < /root/musik-ext4-unlesbar.txt) (Liste /root/musik-ext4-unlesbar.txt)"
+case $RC in 0|23|24) ;; *) echo "ABBRUCH: rsync-Code $RC"; exit 1;; esac
+if grep -v -E "Input/output error|failed: (No such file|Input/output)" /root/musik-ext4-unlesbar.txt | grep -q .; then
+  echo "ABBRUCH: andere Fehler als I/O im Abgleich"; exit 1
+fi
 
 schritt "3 Gegenzaehlung Quelle vs. Kopie"
 Q=$(zaehle "$MNT"); K=$(ssh "$ANKER" "$(declare -f zaehle); zaehle $KOPIE")
@@ -51,6 +66,7 @@ systemctl daemon-reload; mount "$MNT"
 
 schritt "5 Zurueckkopieren vom Anker"
 ssh "$ANKER" "rsync -rltH --numeric-ids --stats $KOPIE/ root@10.1.0.128:$MNT/" | tail -15
+# (Vom Anker gelesen: ZFS, keine Lesefehler erwartet. Jeder Fehler hier bricht wegen pipefail ab.)
 
 schritt "6 Rechte wie unter NTFS (uid/gid 100000 = root im CT120, alles 0777)"
 chown -R 100000:100000 "$MNT"
