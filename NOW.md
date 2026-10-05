@@ -237,20 +237,10 @@ Wer eine davon nicht kennt, sucht stundenlang am falschen Ende.
 | **proxmox-anker** (Lenovo ThinkCentre) | `100.69.179.87` / `10.1.0.92` | PBS, OpenClaw, Radio-Node, Sicherungsziel |
 | **wolfstudiopc** (Windows 11) | `100.98.31.60` / `10.1.0.211` | Arbeitsplatz, Laufwerke `M:` und `R:` |
 
-### ProDesk — Container und VMs
+### Gäste und Adressen
 
-| ID | Name | IP | Dienst |
-|---|---|---|---|
-| CT101 | adguard | `10.1.0.52` | DNS |
-| ~~CT103~~ | ~~npm~~ | ~~`10.1.0.149`~~ | 🗑️ **gelöscht 23.08.2026** — hatte **0 Proxy-Einträge**, einziges Zertifikat für `monitor.yourparty.tech` (Domain tot). Lief 10 Monate ohne Funktion, abgelöst durch die Cloudflare-Tunnel. Rückweg: PBS-Sicherung `pbs-frawo:backup/ct/103/2026-08-23T02:00:29Z`, Konfig unter `/root/ct103.conf.geloescht-20260823` |
-| CT106 | wireguard | `10.1.0.239` | VPN |
-| CT108 | vaultwarden | `10.1.0.95` | Passwortsafe → `vault.frawo.tech` |
-| CT110 | n8n | `10.1.0.100` | Automatisierung + **Paperless-ngx** (Docker `paperless-webserver`, Port 8000, extern `paperless.frawo.tech`) — seit 21.08.2026 die **einzige** Instanz, komplett neu verdrahtet: Google-Drive-Push-Inbox → OCR → Gemini-Klassifikation → Ablage in bestehende Drive-Ordner + Odoo-Aufgabe. Details: `OPERATIONS/PAPERLESS_OPERATIONS.md`, Odoo-Aufgabe #998 |
-| CT120 | fileserver | `10.1.0.94` | Samba **und Musikverwaltung (beets)** |
-| CT140 | frawotech-web | `10.1.0.112` | **Odoo 19** → `frawo.tech` |
-| CT150 | monitoring-stack | `10.1.0.35` · TS `100.100.115.80` | Prometheus, Grafana, Alertmanager |
-| VM210 | azuracast-vm | `10.1.0.38` | **Radio** → `funk.frawo.tech` |
-| VM360 | homeassistant-eltern | `10.1.0.248` | Home Assistant Testkunden (Eltern) — **IP hier korrigiert 04.08.2026, stand fälschlich auf `.40`** |
+> **Verbindlich ist [`DOCS/ADRESSPLAN.md`](DOCS/ADRESSPLAN.md)**: welcher Gast auf welchem Knoten mit welcher Adresse läuft, live gemessen am 05.10.2026 nach dem Neustart aller drei Knoten.
+> Die frühere Tabelle hier war veraltet (falsche Wirte, CT103/VM210 vertauscht, VM240 tot) und wurde am 05.10. entfernt, damit es nicht zwei Wahrheiten gibt. Dienst-Details (Paperless in CT110, npm gelöscht 23.08. usw.) stehen in der Git-Historie dieser Datei.
 
 Zum Vergleich: `10.1.0.40` ist ein **anderes** haos (VM210 **auf proxmox-anker**, nicht ProDesk) — nicht verwechseln, zwei getrennte Home-Assistant-Instanzen.
 
