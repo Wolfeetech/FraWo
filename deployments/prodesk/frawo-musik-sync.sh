@@ -19,15 +19,19 @@ nice -n 19 ionice -c3 rsync -rlt --partial --bwlimit=40000 \
   "$QUELLE" "${ZIEL_HOST}:${ZIEL_PFAD}" >> "$LOG" 2>&1
 RC=$?
 
-if [ "$RC" -eq 0 ]; then
+if [ "$RC" -eq 0 ] || [ "$RC" -eq 24 ]; then
     ssh -o StrictHostKeyChecking=no "$ZIEL_HOST" \
       "date +%s > ${ZIEL_PFAD}.letzter-sync" 2>/dev/null
-    RC=$?
+    SSH_RC=$?
+    if [ "$SSH_RC" -ne 0 ]; then
+        RC=$SSH_RC
+    fi
 fi
 
-if [ "$RC" -eq 0 ]; then
-    echo "=== Ende $(date '+%F %T') - erfolgreich ===" >> "$LOG"
+if [ "$RC" -eq 0 ] || [ "$RC" -eq 24 ]; then
+    echo "=== Ende $(date '+%F %T') - erfolgreich (RC=$RC) ===" >> "$LOG"
+    exit 0
 else
     echo "=== Ende $(date '+%F %T') - FEHLGESCHLAGEN (Code $RC) ===" >> "$LOG"
+    exit "$RC"
 fi
-exit "$RC"
