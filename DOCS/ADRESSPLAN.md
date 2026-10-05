@@ -33,8 +33,7 @@ Infrastruktur.**
 | `.200 – .254` | Adressvergabe für Geräte, die kommen und gehen |
 
 **Harte Regel: Der DHCP-Bereich und feste Vergaben überschneiden sich nie.**
-Heute tun sie das — der Bereich läuft von `.10` bis `.254` und deckt damit alles ab.
-Das gehört auf `.200 – .254` eingekürzt.
+Server-Netz seit 05.10.2026: Bereich `.201 – .254` (`.200` ist CT130 fest). Die anderen Netze laufen noch über den vollen Bereich.
 
 ---
 
@@ -182,7 +181,7 @@ Liste ab — sonst passiert wieder, was am 21.09. passiert ist.
 ## Fertig, wenn
 
 - [ ] Jede Adresse liegt im vorgesehenen Bereich
-- [ ] Der DHCP-Bereich ist auf `.200 – .254` eingekürzt und überschneidet sich mit keiner festen Vergabe
+- [x] Der DHCP-Bereich im Server-Netz ist auf `.201 – .254` eingekürzt (05.10.; `.200` = CT130 fest). Gemessen vorher: kein einziger dynamischer Client in VLAN 101. Test: CT101 erneuert seine feste `.27` außerhalb des Bereichs problemlos (DHCPACK)
 - [x] Alle Dienste sind wieder in VLAN 101 und unter ihrer Soll-Adresse erreichbar (05.10.)
 - [x] Die festen Zuteilungen am Gateway nennen Adresse **und** das richtige Netz (05.10., tote entfernt)
 - [ ] `funk.` `vault.` `cloud.` `paperless.` `home.frawo.tech` antworten wieder
