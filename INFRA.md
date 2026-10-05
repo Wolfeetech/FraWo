@@ -95,6 +95,13 @@
     - **Quarantäne:** Titel mit <=2.2 Sternen oder >=3 Hates werden aus allen Playlisten entfernt und auf `is_queued = 0` gesetzt.
     - **Best of the Week:** Playlist 869 wird für die Sonntag-Primetime (18:00–20:00 Uhr) mit den Top-24-Charttiteln synchronisiert.
     - **Metriken & Alarme:** Prometheus Textfile-Collector (`frawo_radio_rotation_sync_erfolg`, `..._letzter_erfolg_timestamp_seconds`, `..._power_tracks`, `..._beets_synced`). Alarme auf CT155 geladen und aktiv: `RadioRotationSyncFehlgeschlagen` (15m), `RadioRotationSyncVeraltet` (4h), `RadioRotationSyncMetrikFehlt` (2h).
+11. **Alarm-Formulierung & Verständliche 4-Zeilen-Meldungen (`frawo-alert-formatter`), Odoo #1541 (seit 04.10.2026):**
+    - **Service:** `frawo-alert-formatter.service` auf CT155 (`monitoring-stack` `10.1.0.35`), lauscht lokal auf `127.0.0.1:9087`.
+    - **Skripte & Units:** `/usr/local/bin/frawo_alert_formatter.py` (Repo: `deployments/monitoring/frawo_alert_formatter.py`) und Unit `deployments/monitoring/frawo-alert-formatter.service`.
+    - **Routing:** Alertmanager `/etc/prometheus/alertmanager.yml` sendet kritische Alarme an den lokalen Webhook `http://127.0.0.1:9087/alert`.
+    - **Deterministische Fakten:** Alle 29 kritischen Prometheus-Regeln in `/etc/prometheus/rules/` besitzen die Pflicht-Annotationen `summary`, `description`, `heisst`, `zu_tun` und `vor_ort`.
+    - **Ollama-Formulierung & Fallback:** Das Skript fragt primär den StudioPC (`10.0.0.156:11434`, GPU Inferenz < 1s) und sekundär den OptiPlex (`10.1.0.227:11434`) mit Modell `frawo-mitarbeiter-fast:latest` zur lesefreundlichen 4-Zeilen-Formulierung ab. Fällt Ollama aus oder antwortet nicht formatkonform, greift **sofort die deterministische Rohfassung** (Garantie: kein Alarm geht verloren).
+    - **Zustellung:** Direkt via Telegram Bot API (`@Frawo_bot`) an Wolf (`5924907152`).
 
 
 ---

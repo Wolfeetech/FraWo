@@ -30,6 +30,9 @@ groups:
             Hand: `curl -r 0-100000 -o /dev/null -w '%{http_code} %{size_download}'
             http://10.1.0.38:8000/radio.mp3` — erwartet wird 206 und rund
             100000 Bytes.
+          heisst: "Radio-Stream ist verstummt; Hörer und Webseiten bekommen keinen Ton."
+          zu_tun: "VM 210 / AzuraCast Weboberfläche prüfen und Station neu starten."
+          vor_ort: "nein"
 
       # Wenn nur der öffentliche Weg ausfällt, sendet der Sender weiter. Das
       # ist ärgerlich, aber kein Sendeausfall — deshalb eine eigene, mildere

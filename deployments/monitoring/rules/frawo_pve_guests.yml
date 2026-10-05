@@ -43,5 +43,8 @@ groups:
           severity: critical
         annotations:
           dashboard: "http://100.100.115.80:3000/d/frawo-server"
-          summary: "VM/Container {{ $labels.id }} auf {{ $labels.pve_node }} ist AUS"
-          description: "Gast laeuft seit 5+ Minuten nicht (erwartet: running)"
+          summary: "Gast {{ $labels.id }} auf {{ $labels.pve_node }} ist gestoppt"
+          description: "VM oder Container läuft seit 5+ Minuten nicht mehr."
+          heisst: "Dienste dieses Gastes (z.B. Odoo, AzuraCast, Paperless) sind komplett offline."
+          zu_tun: "Gast im Proxmox-Webinterface oder via qm start / pct start hochfahren."
+          vor_ort: "nein"

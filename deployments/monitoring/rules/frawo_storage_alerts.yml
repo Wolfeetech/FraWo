@@ -1,0 +1,122 @@
+groups:
+  - name: frawo_storage_alerts
+    interval: 60s
+    rules:
+
+      # ─── Thin Pool Data Usage Alerts ──────────────────────────────────────
+
+      - alert: ThinPoolUsageCritical
+        expr: lvm_lv_data_percent{lv_attr=~"^t.*"} > 90
+        for: 5m
+        labels:
+          severity: critical
+          team: frawo-infra
+        annotations:
+          summary: "🔴 Thin Pool KRITISCH: {{ $labels.lv_name }} auf {{ $labels.instance }}"
+          description: "LVM Thin Pool '{{ $labels.lv_name }}' Auslastung: {{ $value | printf \"%.1f\" }}% (> 90%). Thin Pool läuft voll!"
+          heisst: "LVM Thin Pool läuft voll; Schreibzugriffe aller betroffenen VMs werden bei 100% blockiert."
+          zu_tun: "Nicht mehr benötigte VM-Disks/Snapshots löschen oder Thin Pool vergrößern."
+          vor_ort: "nein"
+
+      - alert: ThinPoolUsageWarning
+        expr: lvm_lv_data_percent{lv_attr=~"^t.*"} > 87
+        for: 10m
+        labels:
+          severity: warning
+          team: frawo-infra
+        annotations:
+          summary: "⚠️ Thin Pool Warnung: {{ $labels.lv_name }} auf {{ $labels.instance }}"
+          description: "LVM Thin Pool '{{ $labels.lv_name }}' Auslastung: {{ $value | printf \"%.1f\" }}% (> 80%)."
+
+      # ─── Thin Volume Data Usage Alerts ────────────────────────────────────
+
+      - alert: ThinVolumeUsageCritical
+        expr: lvm_lv_data_percent{lv_attr=~"^V.*"} > 90
+        for: 5m
+        labels:
+          severity: critical
+          team: frawo-infra
+        annotations:
+          summary: "🔴 Disk-Volume KRITISCH: {{ $labels.lv_name }} auf {{ $labels.instance }}"
+          description: "Disk-Volume {{ $labels.lv_name }} Auslastung: {{ $value | printf \"%.1f\" }}% (> 90%)."
+          heisst: "Virtuelles Laufwerk ist zu über 90% belegt; Gast-Betriebssystem kann bald nicht mehr schreiben."
+          zu_tun: "Im Gast aufräumen oder Disk in Proxmox vergrößern."
+          vor_ort: "nein"
+
+      - alert: ThinVolumeUsageWarning
+        expr: lvm_lv_data_percent{lv_attr=~"^V.*"} > 80
+        for: 10m
+        labels:
+          severity: warning
+          team: frawo-infra
+        annotations:
+          summary: "⚠️ Disk-Volume Warnung: {{ $labels.lv_name }} auf {{ $labels.instance }}"
+          description: "Disk-Volume {{ $labels.lv_name }} Auslastung: {{ $value | printf \"%.1f\" }}% (> 80%)."
+
+      # ─── Thin Pool Metadata Utilization Alerts ─────────────────────────────
+
+      - alert: ThinPoolMetadataCritical
+        expr: lvm_lv_metadata_percent{lv_attr=~"^t.*"} > 85
+        for: 5m
+        labels:
+          severity: critical
+          team: frawo-infra
+        annotations:
+          summary: "🔴 Thin Pool Metadata KRITISCH: {{ $labels.lv_name }} auf {{ $labels.instance }}"
+          description: "LVM Thin Pool '{{ $labels.lv_name }}' Metadata-Auslastung: {{ $value | printf \"%.1f\" }}% (> 85%)."
+          heisst: "Thin Pool Metadaten voll; drohender Stillstand des gesamten Thin-Pools."
+          zu_tun: "Metadaten-Pool auf dem Host vergrößern (lvextend --poolmetadatasize)."
+          vor_ort: "nein"
+
+      # ─── Standard Filesystem Alerts ───────────────────────────────────────
+
+      - alert: DiskUsageCritical
+        expr: (1 - (node_filesystem_avail_bytes{fstype!~"tmpfs|devtmpfs|squashfs|overlay|fuse.mergerfs",mountpoint!~"/boot.*"} / node_filesystem_size_bytes{fstype!~"tmpfs|devtmpfs|squashfs|overlay|fuse.mergerfs",mountpoint!~"/boot.*"})) * 100 > 90
+        for: 5m
+        labels:
+          severity: critical
+          team: frawo-infra
+        annotations:
+          summary: "🔴 Disk KRITISCH: {{ $labels.mountpoint }} auf {{ $labels.instance }}"
+          description: "Filesystem {{ $labels.mountpoint }} ist zu {{ $value | printf \"%.1f\" }}% belegt."
+          heisst: "Dateisystem des Hosts ist fast voll; Systemdienste stürzen ab."
+          zu_tun: "ncdu starten und alte Logdateien oder Caches bereinigen."
+          vor_ort: "nein"
+
+      - alert: DiskUsageWarning
+        expr: (1 - (node_filesystem_avail_bytes{fstype!~"tmpfs|devtmpfs|squashfs|overlay|fuse.mergerfs",mountpoint!~"/boot.*"} / node_filesystem_size_bytes{fstype!~"tmpfs|devtmpfs|squashfs|overlay|fuse.mergerfs",mountpoint!~"/boot.*"})) * 100 > 80
+        for: 10m
+        labels:
+          severity: warning
+          team: frawo-infra
+        annotations:
+          summary: "⚠️ Disk Warnung: {{ $labels.mountpoint }} auf {{ $labels.instance }}"
+          description: "Filesystem {{ $labels.mountpoint }} ist zu {{ $value | printf \"%.1f\" }}% belegt ({{ $labels.instance }})."
+
+      # ─── Container-Platten über den Proxmox-Exporter (seit 28.09.2026) ─────
+      # CT150 lief am 24.-28.09. unbemerkt voll: Container ohne eigenen
+      # node_exporter fallen durch die Filesystem-Regeln oben. Der pve-exporter
+      # kennt die Belegung aller LXC. Claude, Odoo #1591.
+
+      - alert: ContainerPlatteKritisch
+        expr: (pve_disk_usage_bytes{id=~"lxc/.*"} / pve_disk_size_bytes{id=~"lxc/.*"}) * on(id, instance) group_left(name) pve_guest_info * 100 > 95
+        for: 5m
+        labels:
+          severity: critical
+          team: frawo-infra
+        annotations:
+          summary: "🔴 Container-Platte KRITISCH: {{ $labels.name }} ({{ $labels.id }})"
+          description: "Root-Platte von {{ $labels.name }} ist zu {{ $value | printf \"%.1f\" }}% belegt. Bei 100 % scheitern Dienste lautlos."
+          heisst: "Container-Root-Platte ist fast voll; Dienste im Container scheitern lautlos."
+          zu_tun: "Im Container aufräumen (apt clean, logrotate) oder Root-Disk in Proxmox vergrößern."
+          vor_ort: "nein"
+
+      - alert: ContainerPlatteWarnung
+        expr: (pve_disk_usage_bytes{id=~"lxc/.*"} / pve_disk_size_bytes{id=~"lxc/.*"}) * on(id, instance) group_left(name) pve_guest_info * 100 > 85
+        for: 15m
+        labels:
+          severity: warning
+          team: frawo-infra
+        annotations:
+          summary: "⚠️ Container-Platte Warnung: {{ $labels.name }} ({{ $labels.id }})"
+          description: "Root-Platte von {{ $labels.name }} ist zu {{ $value | printf \"%.1f\" }}% belegt."

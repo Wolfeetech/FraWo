@@ -28,6 +28,9 @@ groups:
             Damit ist die Sicherung im Ernstfall wertlos, egal wie gross und
             aktuell die Datei ist. Einzelheiten in
             /var/log/odoo-restore-test.log auf dem ProDesk.
+          heisst: "Die Odoo-Sicherung ließ sich im Test nicht einspielen; Ernstfall-Wiederherstellung gefährdet."
+          zu_tun: "Nichts sofort. Steht es morgen noch, Log /var/log/odoo-restore-test.log auf ProDesk prüfen."
+          vor_ort: "nein"
 
       # Ein Test, der nicht mehr laeuft, ist so gut wie keiner. Der Lauf ist
       # woechentlich, deshalb 9 Tage Toleranz.

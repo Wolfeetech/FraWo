@@ -39,6 +39,9 @@ groups:
             Pruefen, ob der Timer aktiv ist und ob
             /var/lib/node_exporter/textfile_collector/frawo_radio_rotation_sync_stand.prom
             existiert.
+          heisst: "Hörer-Bewertungen fließen nicht mehr automatisch in die Radio-Rotation ein."
+          zu_tun: "frawo-radio-rotation-sync.timer auf ProDesk (10.1.0.128) prüfen."
+          vor_ort: "nein"
 
       # Der letzte Lauf ist fehlgeschlagen (Exit-Code ungleich 0).
       - alert: RadioRotationSyncFehlgeschlagen

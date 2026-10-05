@@ -75,6 +75,9 @@ groups:
             weg. Damit gibt es KEINE Aufsicht mehr ueber die Ueberwachung.
             Pruefen: laeuft `monitoring-watchdog.sh` auf einem lebenden Wirt?
             Nach dem Tod des ProDesk am 07.09.2026 muss sie umziehen.
+          heisst: "Die externe Wache liefert keine Daten mehr; Ausfälle von Prometheus/Alertmanager bleiben unbemerkt."
+          zu_tun: "Timer oder Cron für monitoring-watchdog.sh auf dem Host prüfen."
+          vor_ort: "nein"
 
       # Falls die Wache läuft und einen Ausfall sieht, Prometheus aber noch
       # lebt: dann ist einer der drei Dienste weg, nicht der ganze Container.
@@ -93,3 +96,6 @@ groups:
             Dienste in CT150 nicht (Prometheus 9090, Alertmanager 9093,
             Grafana 3000). Dass diese Meldung überhaupt ankommt, heisst:
             Prometheus lebt noch — es fehlt also nur ein Teil.
+          heisst: "Teile des Monitoring-Stacks (Alertmanager oder Grafana) antworten nicht."
+          zu_tun: "Dienste in CT155/CT150 prüfen und ggf. neu starten."
+          vor_ort: "nein"

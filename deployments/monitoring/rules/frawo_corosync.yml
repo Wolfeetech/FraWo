@@ -22,6 +22,9 @@ groups:
             Verbund lahmgelegt, waehrend der Dienst sich als gesund meldete.
             Abhilfe: systemctl restart corosync AUF DIESEM Knoten - nicht auf
             dem Knoten, der das Symptom zeigt.
+          heisst: "Proxmox-Cluster verliert den Quorum-Sync; Gefahr von Fehlentscheidungen beim Failover."
+          zu_tun: "systemctl restart corosync auf {{ $labels.instance }} ausführen."
+          vor_ort: "nein"
 
       # ── Speicherleck, das dem Fehler vorausging ──────────────────────────
       # Ueblich sind ~180-200 MB. Beim Vorfall waren es 1.958 MB.
@@ -47,6 +50,9 @@ groups:
           description: >-
             Ab dieser Groessenordnung ist am 20.09.2026 das Senden ausgefallen.
             Jetzt handeln, bevor der Verbund auseinanderfaellt.
+          heisst: "Corosync verbraucht gefährlich viel RAM und droht vom Kernel beendet zu werden."
+          zu_tun: "systemctl restart corosync auf {{ $labels.instance }} ausführen."
+          vor_ort: "nein"
 
       # ── Verbund unvollstaendig ───────────────────────────────────────────
       - alert: VerbundUnvollstaendig
@@ -60,6 +66,9 @@ groups:
             Faellt die Zahl auf 1, bekommt der Knoten kein Quorum mehr - dann
             startet dort KEIN Gast mehr. Das ist am 20.09.2026 passiert:
             Odoo, Home Assistant und die Ueberwachung blieben aus.
+          heisst: "Knoten verliert Quorum; Gäste (VMs/LXC wie Odoo) können nicht mehr starten oder migrieren."
+          zu_tun: "Knoten-Status im Proxmox-Webinterface oder via pvecm status prüfen."
+          vor_ort: "nein"
 
       # ── Flattern: die 170 Abrisse in 24 Stunden ──────────────────────────
       - alert: VerbundFlattert
@@ -105,3 +114,6 @@ groups:
           description: >-
             corosync ist gestoppt. Der Knoten verliert damit sein Quorum und
             kann keine Gaeste mehr starten.
+          heisst: "Knoten nimmt nicht am Cluster-Quorum teil; Hochverfügbarkeit ist blockiert."
+          zu_tun: "systemctl start corosync auf {{ $labels.instance }} ausführen."
+          vor_ort: "nein"

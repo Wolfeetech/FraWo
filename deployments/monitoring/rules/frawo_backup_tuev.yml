@@ -25,6 +25,9 @@ groups:
             Der Backup-TÜV hat Mängel gefunden. Welche genau, steht in
             /var/log/frawo-backup-tuev.log auf dem ProDesk. Die Einzelmetrik
             frawo_backup_tuev{pruefung="..."} zeigt, welche Prüfung auf 0 steht.
+          heisst: "Mindestens eine Pflichtsicherung ist fehlerhaft oder fehlt; bei Serverausfall droht Datenverlust."
+          zu_tun: "Nichts sofort. Steht es morgen noch, Logs in /var/log/frawo-backup-tuev.log prüfen."
+          vor_ort: "nein"
 
       # Einzelne Prüfung benennen, damit man sofort sieht, wo es klemmt.
       - alert: BackupPruefungFehlgeschlagen
@@ -56,3 +59,6 @@ groups:
             Seit über 30 Stunden kein Prüflauf. Damit ist unbemerkt, ob die
             Sicherungen noch etwas produzieren — genau der Zustand, der zu den
             drei kaputten Backups geführt hat.
+          heisst: "Der automatische Prüfstand läuft nicht; wir wissen nicht, ob Backups intakt sind."
+          zu_tun: "frawo-backup-tuev.timer auf dem ProDesk prüfen."
+          vor_ort: "nein"

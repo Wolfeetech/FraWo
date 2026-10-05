@@ -43,6 +43,9 @@ groups:
             Behebung auf CT106 mit dem mitgelieferten
             `reresolve-dns.sh` — ein blosser Neustart des Dienstes hilft nur,
             bis die nächste Zwangstrennung kommt.
+          heisst: "Verbindung nach Stockenweiler unterbrochen; Home Assistant und Backups dorthin stehen still."
+          zu_tun: "reresolve-dns.sh auf CT106 ausführen oder Fritzbox Stockenweiler prüfen."
+          vor_ort: "nein"
 
       # Ohne diese Regel wäre die erste blind: Verschwindet die Metrik ganz
       # (CT106 aus, Skript kaputt, Schnittstelle gelöscht), wird auch nichts

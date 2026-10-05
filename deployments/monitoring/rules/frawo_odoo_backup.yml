@@ -19,12 +19,13 @@ groups:
           service: odoo
         annotations:
           dashboard: "http://100.100.115.80:3000/d/frawo-sicherungen"
-          summary: "Odoo-Backup seit über 26 Stunden nicht erfolgreich"
+          summary: "💼 Odoo-Datenbanksicherung fehlt seit gestern"
           description: >-
-            Letzter Erfolg vor
-            {{ $value | humanizeDuration }}. Log prüfen:
-            /var/log/frawo-odoo-cloud.log auf dem Anker. Häufige Ursache war
-            eine Kollision mit den naechtlichen vzdumps oder rclone-Timeout.
+            Der naechtliche Odoo-SQL-Dump ist seit 26 Stunden nicht durchgelaufen.
+            Log: /var/log/frawo-odoo-cloud.log auf dem Anker.
+          heisst: "Neue Rechnungen, Tasks oder Zeiterfassungen von gestern fehlen im Backup."
+          zu_tun: "Nichts sofort. Steht es morgen noch, startet ein Agent den Dump manuell."
+          vor_ort: "nein"
 
       # Fehlt die Metrik ganz, laeuft das Skript gar nicht mehr (oder der
       # textfile_collector schreibt nicht). Das ist derselbe blinde Fleck wie zuvor.
@@ -36,11 +37,15 @@ groups:
           service: odoo
         annotations:
           dashboard: "http://100.100.115.80:3000/d/frawo-sicherungen"
-          summary: "Keine Odoo-Backup-Metrik mehr vorhanden"
+          summary: "💼 Odoo-Backup-Metrik fehlt"
           description: >-
             Der node_exporter liefert keinen Backup-Zeitstempel mehr. Entweder
-            läuft das Backup-Skript nicht oder es schreibt nicht nach
+            laeuft das Backup-Skript nicht oder es schreibt nicht nach
             /var/lib/node_exporter/textfile_collector/odoo_backup.prom.
+          heisst: "Status der Odoo-Sicherung kann nicht ueberwacht werden."
+          zu_tun: "Timer frawo-odoo-cloud auf Anker pruefen."
+          vor_ort: "nein"
+
 
       # Ein verdaechtig kleiner Dump deutet auf einen Teilabbruch hin.
       - alert: OdooBackupZuKlein

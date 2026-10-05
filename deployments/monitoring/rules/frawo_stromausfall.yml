@@ -26,6 +26,9 @@ groups:
             nach 10 ms wieder ein). Pruefen: HA-Automatiken auf
             switch.outdoor_garage_werkstatt und /rpc/Schedule.List am Geraet -
             NUR LESEN, die Steckdose nie schalten.
+          heisst: "IT-Steckdose hatte Stromausfall oder Schaltimpuls; Server starteten hart neu."
+          zu_tun: "Shelly 10.4.0.11 NIEMALS schalten! Dienste auf ProDesk auf sauberen Wiederanlauf prüfen."
+          vor_ort: "nein"
 
       - alert: GatewayNeugestartet
         expr: resets(frawo_ucg_laufzeit_sekunden[1h]) > 0

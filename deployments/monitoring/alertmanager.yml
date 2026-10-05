@@ -1,0 +1,41 @@
+global:
+  resolve_timeout: 5m
+
+route:
+  receiver: telegram-wolf
+  group_by: ["severity", "service", "instance"]
+  group_wait: 30s
+  group_interval: 2h
+  repeat_interval: 12h
+  routes:
+    # Nur kritische Alarme erreichen Wolfs Handy. Warnungen laufen weiter
+    # an die Agenten (servassi-hook) und in den Tagesbericht — sie sollen
+    # niemanden unterwegs stoeren. Geaendert 14.09.2026 gegen Alarmmuedigkeit.
+    - receiver: telegram-wolf
+      matchers:
+        - severity="critical"
+      continue: true
+    - receiver: servassi-hook
+      group_wait: 2m
+      group_interval: 30m
+      repeat_interval: 12h
+
+inhibit_rules:
+  - source_matchers:
+      - severity = "critical"
+    target_matchers:
+      - severity = "warning"
+    equal: ["instance"]
+
+receivers:
+  - name: telegram-wolf
+    webhook_configs:
+      - url: "http://127.0.0.1:9087/alert"
+        send_resolved: true
+  - name: servassi-hook
+    webhook_configs:
+      - url: "http://10.1.0.31:19001/alertmanager-hook"
+        send_resolved: false
+        http_config:
+          authorization:
+            credentials: frawo-alertmanager-webhook-2026

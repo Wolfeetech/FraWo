@@ -59,6 +59,9 @@ groups:
             Rueckschreiben-Zeitstempel mehr. Entweder laeuft der Timer nicht
             mehr, oder das Skript schreibt nicht nach
             /var/lib/node_exporter/textfile_collector/musikredaktion_rueckschreiben_stand.prom.
+          heisst: "Überwachung des Musikredaktions-Abgleichs ist stumm; unbemerkter Ausfall möglich."
+          zu_tun: "frawo-rueckschreiben.timer auf dem ProDesk prüfen."
+          vor_ort: "nein"
 
       # Der letzte Lauf ist fehlgeschlagen (Exit-Code ungleich 0 oder
       # Ausgabe nicht auswertbar) -- unabhaengig davon, wie lange der letzte

@@ -48,8 +48,11 @@ groups:
           severity: critical
         annotations:
           dashboard: "http://100.100.115.80:3000/d/frawo-server"
-          summary: "Disk > 90% on {{ $labels.instance }}"
-          description: "Disk {{ $labels.mountpoint }} at {{ $value | printf \"%.1f\" }}%"
+          summary: "Festplatte fast voll (> 90%) auf {{ $labels.instance }}"
+          description: "Filesystem {{ $labels.mountpoint }} ist zu {{ $value | printf \"%.1f\" }}% belegt."
+          heisst: "Dienste können bald keine Dateien mehr schreiben und stürzen ab."
+          zu_tun: "ncdu auf der Maschine starten und alte Caches oder Logs bereinigen."
+          vor_ort: "nein"
 
       - alert: NodeDown
         expr: up{job="node_exporter"} == 0
@@ -58,8 +61,11 @@ groups:
           severity: critical
         annotations:
           dashboard: "http://100.100.115.80:3000/d/frawo-server"
-          summary: "Node {{ $labels.instance }} is DOWN"
-          description: "Node exporter unreachable for 2+ minutes"
+          summary: "Server {{ $labels.instance }} nicht erreichbar"
+          description: "Node-Exporter antwortet seit mehr als 2 Minuten nicht."
+          heisst: "Server ist offline oder vom Netzwerk getrennt; darauf laufende Dienste fallen aus."
+          zu_tun: "Netzwerk und Proxmox-Status prüfen; wenn nötig Server per IPMI oder PVE neu starten."
+          vor_ort: "nein"
 
       - alert: HighLoadAverage
         expr: >-
@@ -84,8 +90,11 @@ groups:
           severity: critical
         annotations:
           dashboard: "http://100.100.115.80:3000/d/frawo-server"
-          summary: "Service DOWN: {{ $labels.instance }}"
-          description: "HTTP probe failed for 2+ minutes"
+          summary: "Dienst nicht erreichbar: {{ $labels.instance }}"
+          description: "Blackbox HTTP-Prüfung schlägt seit 2+ Minuten fehl."
+          heisst: "Der Dienst antwortet nicht mehr für Benutzer oder Kioske."
+          zu_tun: "Dienst-Container/VM prüfen und ggf. Prozess oder Container neu starten."
+          vor_ort: "nein"
       # HighSwapUsage wurde am 27.07.2026 entfernt: Die Regel maß die Swap-
       # *Belegung* und stand deshalb dauerhaft an, obwohl der Host gar nicht
       # mehr auslagerte (vmstat si/so = 0). Ersetzt durch SwapThrashing und

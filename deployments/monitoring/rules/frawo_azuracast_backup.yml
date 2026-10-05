@@ -21,12 +21,13 @@ groups:
           service: azuracast
         annotations:
           dashboard: "http://100.100.115.80:3000/d/frawo-sicherungen"
-          summary: "Radio-Backup seit über 26 Stunden nicht erfolgreich"
+          summary: "📻 Radio-Sicherung fehlt seit gestern"
           description: >-
-            Letzter Erfolg vor {{ $value | humanizeDuration }}. Log prüfen:
-            /var/log/azuracast_backup.log auf dem ProDesk. Achtung: Ein "OK" im
-            Log ist nur dann echt, wenn es aus dem neuen Skript stammt — die
-            alte Fassung meldete Erfolg auch im Fehlerfall.
+            Die naechtliche Sicherung ist seit 26 Stunden nicht durchgelaufen.
+            Log pruefen: /var/log/azuracast_backup.log auf dem ProDesk.
+          heisst: "Bei einem Ausfall waere der letzte Stand von vorgestern."
+          zu_tun: "Nichts sofort. Steht es morgen noch, meldet sich Claude/Jarvis."
+          vor_ort: "nein"
 
       # Fehlt die Metrik ganz, läuft das Skript nicht mehr.
       - alert: RadioBackupMetrikFehlt
@@ -37,11 +38,15 @@ groups:
           service: azuracast
         annotations:
           dashboard: "http://100.100.115.80:3000/d/frawo-sicherungen"
-          summary: "Keine Radio-Backup-Metrik mehr vorhanden"
+          summary: "📻 Radio-Backup-Metrik fehlt"
           description: >-
-            Der node_exporter liefert keinen Zeitstempel mehr. Entweder läuft
+            Der node_exporter liefert keinen Zeitstempel mehr. Entweder laeuft
             das Backup-Skript nicht oder es schreibt nicht nach
             /var/lib/node_exporter/textfile_collector/azuracast_backup.prom.
+          heisst: "Status der Radiosicherung kann nicht ueberwacht werden."
+          zu_tun: "Timer azuracast-backup auf ProDesk pruefen."
+          vor_ort: "nein"
+
 
       # Ein deutlich kleineres Archiv deutet auf einen Teilabbruch hin.
       - alert: RadioBackupZuKlein
