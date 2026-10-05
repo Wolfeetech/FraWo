@@ -9,6 +9,8 @@
 #   3. gaeste_cloud     — Google Drive vzdump aller 10 Anker-Gäste (101,106,108,110,130,140,150,155,210,300) von heute/gestern, >50 MB
 #   4. zfs_anker_backup — Lokaler ZFS-Spiegelpool anker-backup ONLINE und fehlerfrei
 #   5. pbs_datastore    — PBS VM241 (10.1.0.8): jeder laufende Gast mit Sicherung <26h (seit 24.09.2026)
+#   6. musik_bibliothek — rsync-Kopie der Musik auf anker-backup, Abgleich <30h
+#   7. optiplex_pbs_konfig — OptiPlex-Host- und PBS-Konfig auf dem Anker <26h, lesbar (seit 05.10.2026)
 
 set -uo pipefail
 export PATH="/usr/sbin:/usr/bin:/sbin:/bin"
@@ -215,6 +217,24 @@ else
         else
             pruefe "musik_bibliothek" 1 "${MUSIK_GB} GB, letzter Abgleich vor ${MUSIK_ALT} h"
         fi
+    fi
+fi
+
+# --- 7. OptiPlex-/PBS-Konfig auf dem Anker (seit 05.10.2026, Odoo #1912) ----
+# Der PBS (VM 241) laeuft auf dem OptiPlex selbst. optiplex-host-backup.sh legt
+# deshalb jede Nacht Host-Konfig + /etc/proxmox-backup zusaetzlich hier ab.
+# Geprueft: juengstes Archiv < 26 h, entpackbar, enthaelt datastore.cfg.
+OPTI_DATEI=$(ls -t /var/backups/optiplex-pbs-config/optiplex-pbs-config-*.tar.gz 2>/dev/null | head -1 || true)
+if [ -z "$OPTI_DATEI" ]; then
+    pruefe "optiplex_pbs_konfig" 0 "keine Kopie in /var/backups/optiplex-pbs-config/"
+else
+    OPTI_ALT=$(( ( $(date +%s) - $(stat -c %Y "$OPTI_DATEI") ) / 3600 ))
+    if [ "$OPTI_ALT" -gt 26 ]; then
+        pruefe "optiplex_pbs_konfig" 0 "juengste Kopie $OPTI_ALT Stunden alt (>26h)"
+    elif ! timeout "$TIMEOUT_LOCAL" sh -c "tar xzOf '$OPTI_DATEI' pbs-config.tar.gz | tar tzf - | grep -q 'etc/proxmox-backup/datastore.cfg'"; then
+        pruefe "optiplex_pbs_konfig" 0 "Archiv unlesbar oder ohne datastore.cfg"
+    else
+        pruefe "optiplex_pbs_konfig" 1 "$OPTI_ALT h alt, PBS-Konfig lesbar"
     fi
 fi
 
