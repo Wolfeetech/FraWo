@@ -1,0 +1,26 @@
+groups:
+  - name: alarmkette
+    rules:
+      - alert: AlarmzustellungScheitert
+        expr: increase(alertmanager_notifications_failed_total[1h]) > 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Alarm-Zustellung scheitert ({{ $labels.integration }})"
+          description: "Alertmanager konnte zuletzt {{ $value | printf \"%.0f\" }} Benachrichtigungen ueber {{ $labels.integration }} nicht zustellen. Alarme erreichen damit moeglicherweise niemanden."
+          heisst: "Der Alertmanager kann Benachrichtigungen über den konfigurierten Kanal (z. B. Telegram/Webhook) nicht ausliefern."
+          zu_tun: "Logs auf CT155 prüfen: journalctl -u frawo-alert-formatter -n 50 bzw. journalctl -u alertmanager. Netzwerk und Token verifizieren."
+          vor_ort: "CT155 (monitoring-stack) auf proxmox-anker (10.1.0.92)"
+
+      - alert: AlertmanagerNichtErreichbar
+        expr: up{job="alertmanager"} == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Alertmanager antwortet nicht"
+          description: "Der Alertmanager ist seit 5 Minuten nicht erreichbar - es koennen keine Alarme zugestellt werden."
+          heisst: "Der Alertmanager-Dienst auf CT155 antwortet nicht auf Scrapes. Keine Alarmweiterleitung an Telegram oder Jarvis möglich."
+          zu_tun: "Auf CT155 einloggen (pct exec 155 auf proxmox-anker): systemctl status alertmanager prüfen und ggf. neustarten."
+          vor_ort: "CT155 (monitoring-stack) auf proxmox-anker (10.1.0.92)"

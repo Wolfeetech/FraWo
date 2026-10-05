@@ -99,7 +99,7 @@ groups:
       # kennt die Belegung aller LXC. Claude, Odoo #1591.
 
       - alert: ContainerPlatteKritisch
-        expr: (pve_disk_usage_bytes{id=~"lxc/.*"} / pve_disk_size_bytes{id=~"lxc/.*"}) * on(id, instance) group_left(name) pve_guest_info * 100 > 95
+        expr: (pve_disk_usage_bytes{id=~"lxc/.*"} / pve_disk_size_bytes{id=~"lxc/.*"}) * on(id, instance, job) group_left(name) pve_guest_info * 100 > 95
         for: 5m
         labels:
           severity: critical
@@ -112,7 +112,7 @@ groups:
           vor_ort: "nein"
 
       - alert: ContainerPlatteWarnung
-        expr: (pve_disk_usage_bytes{id=~"lxc/.*"} / pve_disk_size_bytes{id=~"lxc/.*"}) * on(id, instance) group_left(name) pve_guest_info * 100 > 85
+        expr: (pve_disk_usage_bytes{id=~"lxc/.*"} / pve_disk_size_bytes{id=~"lxc/.*"}) * on(id, instance, job) group_left(name) pve_guest_info * 100 > 85
         for: 15m
         labels:
           severity: warning
