@@ -422,9 +422,55 @@
         <div class="fw-eyebrow">Mietpark &amp; Event-Equipment</div>
         <h1 class="fw-h1">Equipment-Miete &amp; <span>Pakete</span></h1>
         <p class="fw-lead">
-          Vorkonfektionierte Ton-, Licht- und Event-Sets für Konzerte, Clubs, Hochzeiten und Vereinsfeste. Geprüfte Markenhardware, DSP-Limiter und 24h-Bereitstellung ab Lager Weißensberg.
+          Technik mit Betreuung – wir bringen, bauen auf, betreuen und bauen ab. Oder zum Selbstabholen: geprüfte Ton-, Licht- und Event-Sets ab Lager Weißensberg.
         </p>
       </div>
+    </section>
+
+    <!-- Technik mit Betreuung: Pakete S/M/L (Wolf 05.10.2026) -->
+    <style>
+      .fw-svc { padding: 50px 20px 30px; border-bottom: 1px solid var(--fw-border); }
+      .fw-svc-head { text-align:center; margin-bottom: 28px; }
+      .fw-svc-head h2 { font-size: clamp(1.5rem, 3vw, 2.2rem); font-weight: 800; text-transform: uppercase; color: var(--fw-text-bright); margin-bottom: 8px; }
+      .fw-svc-head p { color: var(--fw-text-mid); max-width: 720px; margin: 0 auto; }
+      .fw-svc-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; max-width: 1100px; margin: 0 auto; }
+      .fw-svc-card { background: var(--fw-card); border: 1px solid var(--fw-card-border); padding: 22px; display:flex; flex-direction:column; }
+      .fw-svc-tag { display:inline-block; align-self:flex-start; background: var(--fw-primary); color:#fff; font-size: 0.72rem; font-weight:700; letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 10px; margin-bottom: 12px; }
+      .fw-svc-title { font-size: 1.15rem; font-weight: 800; color: var(--fw-text-bright); margin-bottom: 10px; }
+      .fw-svc-list { color: var(--fw-text-mid); font-size: 0.9rem; padding-left: 18px; margin-bottom: 16px; flex:1; }
+      .fw-svc-list li { margin-bottom: 4px; }
+      .fw-svc-price { font-size: 1.6rem; font-weight: 800; color: var(--fw-text-bright); margin-bottom: 12px; }
+      .fw-svc-note { text-align:center; color: var(--fw-text-muted); font-size: 0.8rem; margin-top: 18px; }
+    </style>
+    <section class="fw-svc">
+      <div class="fw-svc-head">
+        <h2>Technik mit Betreuung</h2>
+        <p>Ihr feiert, wir kümmern uns: Anlieferung, Aufbau, Betreuung während der Veranstaltung und Abbau durch unsere Fachkraft für Veranstaltungstechnik. Anfahrt bis 30 km inklusive.</p>
+      </div>
+      <div class="fw-svc-grid">
+        <div class="fw-svc-card">
+          <div class="fw-svc-tag">bis 100 Personen</div>
+          <h3 class="fw-svc-title">Paket S · Hoffest &amp; Vereinsabend</h3>
+          <ul class="fw-svc-list"><li>2 aktive Lautsprecher, Mischpult, Funkmikrofon</li><li>4 LED-Scheinwerfer</li><li>Techniker: Aufbau, bis 6 h Betreuung, Abbau</li></ul>
+          <div class="fw-svc-price">ab 449 €</div>
+          <button type="button" class="fw-btn-book" style="cursor:pointer; width:100%;" onclick="openRentalModal('PAKET-S', 'Paket S · Hoffest &amp; Vereinsabend')">⚡ Paket anfragen →</button>
+        </div>
+        <div class="fw-svc-card">
+          <div class="fw-svc-tag">bis 250 Personen</div>
+          <h3 class="fw-svc-title">Paket M · Fest &amp; Feier</h3>
+          <ul class="fw-svc-list"><li>PA mit Tops und Doppel-12″-Bass, Mischpult, 2 Funkmikrofone</li><li>Licht: 4 LED-Scheinwerfer, 2 Moving Heads, Lichtsteuerung</li><li>Fachkraft: Aufbau, bis 10 h Betreuung, Abbau</li></ul>
+          <div class="fw-svc-price">ab 890 €</div>
+          <button type="button" class="fw-btn-book" style="cursor:pointer; width:100%;" onclick="openRentalModal('PAKET-M', 'Paket M · Fest &amp; Feier')">⚡ Paket anfragen →</button>
+        </div>
+        <div class="fw-svc-card">
+          <div class="fw-svc-tag">bis 500 Personen</div>
+          <h3 class="fw-svc-title">Paket L · Open Air &amp; Event</h3>
+          <ul class="fw-svc-list"><li>wie Paket M, mit zusätzlichem Bass und erweitertem Licht</li><li>Fachkraft plus Helfer</li><li>genaue Zusammenstellung nach Absprache</li></ul>
+          <div class="fw-svc-price">ab 1490 €</div>
+          <button type="button" class="fw-btn-book" style="cursor:pointer; width:100%;" onclick="openRentalModal('PAKET-L', 'Paket L · Open Air &amp; Event')">⚡ Paket anfragen →</button>
+        </div>
+      </div>
+      <p class="fw-svc-note">Endpreise – gemäß §19 UStG wird keine Umsatzsteuer berechnet. Darunter: Equipment zum Selbstabholen.</p>
     </section>
 
     <!-- Sticky Filter Controls -->
@@ -473,7 +519,7 @@
                   <div class="fw-subprice-info">Kaution: 150 € · Abholung: Rothkreuz 14</div>
                 </div>
                 <div class="fw-btn-stack">
-                  <button type="button" class="fw-btn-book" style="cursor:pointer;" onclick="openRentalModal('RENT-LIGHT-SET', 'Licht-Set »Pro Show«')">⚡ Mietangebot anfordern →</button>
+                  <button type="button" class="fw-btn-book" style="cursor:pointer;" onclick="openRentalModal('RENT-LIGHT-01', 'Licht-Set »Pro Show«')">⚡ Mietangebot anfordern →</button>
                   <a href="https://wa.me/4915155243164?text=Hallo%20FraWo%2C%20ich%20m%C3%B6chte%20das%20Licht-Set%20%C2%BBPro%20Show%C2%AB%20%28140%E2%82%AC%29%20anfragen." target="_blank" class="fw-btn-wa">💬 Per WhatsApp anfragen</a>
                 </div>
               </div>
@@ -485,7 +531,7 @@
             <div class="fw-card-img-col">
               <img src="/web/image/2693/club_sound_system_user_master.jpg?v=8" alt="Sound-System »Club &amp; Open-Air« FraWo Mietpark" loading="lazy"/>
               <div class="fw-card-img-tag">🔊 3.600W DSP</div>
-              <div class="fw-card-status-tag"><span style="font-size: 8px;">●</span> SOFORT VERFÜGBAR</div>
+              <div class="fw-card-status-tag" style="color:#f59e0b;"><span style="font-size: 8px;">●</span> AUF ANFRAGE</div>
             </div>
             <div class="fw-card-body-col">
               <div>
@@ -534,12 +580,12 @@
               </div>
               <div class="fw-card-action-bar">
                 <div class="fw-price-block">
-                  <div class="fw-price-large">180 € <span style="font-size: 0.85rem; font-weight: 500; color: var(--fw-text-mid);">/ Tag</span></div>
-                  <div class="fw-price-term">TAGESSATZ (24H): 180 € · GANZES WOCHENENDE (FR–MO): 270 €</div>
+                  <div class="fw-price-large">250 € <span style="font-size: 0.85rem; font-weight: 500; color: var(--fw-text-mid);">/ Tag</span></div>
+                  <div class="fw-price-term">TAGESSATZ (24H): 250 € · GANZES WOCHENENDE (FR–MO): 375 €</div>
                   <div class="fw-subprice-info">Kaution: 200 € · Abholung: Rothkreuz 14</div>
                 </div>
                 <div class="fw-btn-stack">
-                  <button type="button" class="fw-btn-book" style="cursor:pointer;" onclick="openRentalModal('FW-027', '5m Riesen-Fußballdart Event-Modul')">⚡ Mietangebot anfordern →</button>
+                  <button type="button" class="fw-btn-book" style="cursor:pointer;" onclick="openRentalModal('VER-005', '5m Riesen-Fußballdart Event-Modul')">⚡ Mietangebot anfordern →</button>
                   <a href="https://wa.me/4915155243164?text=Hallo%20FraWo%2C%20ich%20m%C3%B6chte%20das%205m%20Riesen-Fu%C3%9Fballdart%20%28180%E2%82%AC%29%20anfragen." target="_blank" class="fw-btn-wa">💬 Per WhatsApp anfragen</a>
                 </div>
               </div>
@@ -671,7 +717,7 @@
                   <div class="fw-subprice-info">Kaution: 50 € · Abholung: Rothkreuz 14</div>
                 </div>
                 <div class="fw-btn-stack">
-                  <button type="button" class="fw-btn-book" style="cursor:pointer;" onclick="openRentalModal('RENT-PA-COMPACT', 'JBL EON 615 Aktivbox')">⚡ Mietangebot anfordern →</button>
+                  <button type="button" class="fw-btn-book" style="cursor:pointer;" onclick="openRentalModal('VT-TON-01', 'JBL EON 615 Aktivbox')">⚡ Mietangebot anfordern →</button>
                   <a href="https://wa.me/4915155243164?text=Hallo%20FraWo%2C%20ich%20m%C3%B6chte%20die%20JBL%20EON%20615%20%2820%E2%82%AC%29%20anfragen." target="_blank" class="fw-btn-wa">💬 Per WhatsApp anfragen</a>
                 </div>
               </div>
@@ -704,7 +750,7 @@
                   <div class="fw-subprice-info">Kaution: 50 € · Abholung: Rothkreuz 14</div>
                 </div>
                 <div class="fw-btn-stack">
-                  <button type="button" class="fw-btn-book" style="cursor:pointer;" onclick="openRentalModal('RENT-LIGHT-SET', 'Showtec Shark Spot Moving Head')">⚡ Mietangebot anfordern →</button>
+                  <button type="button" class="fw-btn-book" style="cursor:pointer;" onclick="openRentalModal('VT-LIC-02', 'Showtec Shark Spot Moving Head')">⚡ Mietangebot anfordern →</button>
                   <a href="https://wa.me/4915155243164?text=Hallo%20FraWo%2C%20ich%20m%C3%B6chte%20den%20Showtec%20Shark%20Moving%20Head%20%2820%E2%82%AC%29%20anfragen." target="_blank" class="fw-btn-wa">💬 Per WhatsApp anfragen</a>
                 </div>
               </div>
@@ -770,7 +816,7 @@
                   <div class="fw-subprice-info">Kaution: 50 € · Abholung: Rothkreuz 14</div>
                 </div>
                 <div class="fw-btn-stack">
-                  <button type="button" class="fw-btn-book" style="cursor:pointer;" onclick="openRentalModal('SRV-ANFAHRT', 'PKW-Anhänger 750kg Transport')">⚡ Mietangebot anfordern →</button>
+                  <button type="button" class="fw-btn-book" style="cursor:pointer;" onclick="openRentalModal('VT-TRP-01', 'PKW-Anhänger 750kg Transport')">⚡ Mietangebot anfordern →</button>
                   <a href="https://wa.me/4915155243164?text=Hallo%20FraWo%2C%20ich%20m%C3%B6chte%20den%20PKW-Anh%C3%A4nger%20%2815%E2%82%AC%29%20anfragen." target="_blank" class="fw-btn-wa">💬 Per WhatsApp anfragen</a>
                 </div>
               </div>
@@ -882,7 +928,7 @@
           </label>
           <label style="display:flex; align-items:center; gap:8px; font-size:0.85rem; cursor:pointer;">
             <input type="checkbox" id="fwOptSetup" style="accent-color:#06b6d4;"/>
-            <span>Aufbau &amp; Soundcheck durch FraWo-Techniker <strong>(+110 €)</strong></span>
+            <span>Techniker vor Ort gewünscht – Aufbau, Betreuung, Abbau <strong>(Preis nach Aufwand, siehe Pakete S/M/L)</strong></span>
           </label>
         </div>
 
