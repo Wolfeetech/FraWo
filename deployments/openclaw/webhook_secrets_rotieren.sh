@@ -18,14 +18,32 @@ CT150=root@10.1.0.31
 neu() { python3 -c 'import secrets; print(secrets.token_urlsafe(24))' 2>/dev/null || python -c 'import secrets; print(secrets.token_urlsafe(24))'; }
 A=$(neu); T=$(neu); C=$(neu)
 
-echo "1/4 CT150: Handler-Env"
+echo "1/4 Odoo: Parameter + Aktion 647"
+# DB-Verbindung aus der Container-Umgebung (HOST/USER/PASSWORD) - ohne sie sucht odoo shell
+# einen lokalen Socket (1. Lauf 05.10.: "connection to server on socket ... failed").
+printf '%s\n%s\n' "$T" "$C" | ssh -o BatchMode=yes "$ANKER" 'pct exec 140 -- docker exec -i frawotech-odoo-1 sh -c "umask 077; cat > /tmp/rot.txt; odoo shell -d FraWo_GbR --no-http --log-level=warn --db_host \"\$HOST\" --db_user \"\$USER\" --db_password \"\$PASSWORD\" <<\"PY\"
+t, c = open(\"/tmp/rot.txt\").read().split()
+icp = env[\"ir.config_parameter\"].sudo()
+icp.set_param(\"frawo_agent.servassi_webhook_secret\", t)
+a = env[\"ir.actions.server\"].sudo().browse(647)
+a.webhook_url = \"http://10.1.0.31:19001/klausi-chatter/\" + c
+env.cr.commit()
+print(\"   odoo: param + aktion 647 gesetzt\")
+PY
+rm -f /tmp/rot.txt"'
+
+echo "2/4 CT150: Handler-Env"
+# Werte erst in eine 0600-Zwischendatei: ein Heredoc fuer das Python-Skript belegt stdin
+# (1. Lauf 05.10.: "gesetzt: []" - die Werte kamen nie an).
 printf 'FRAWO_ALERT_SECRET=%s\nFRAWO_TASK_SECRET=%s\nFRAWO_CHATTER_SECRET=%s\n' "$A" "$T" "$C" | ssh -o BatchMode=yes "$CT150" '
 set -e
+umask 077
+cat > /root/.rotation.tmp
 f=/etc/frawo/ollama-chatter.env
-cp -p "$f" "$f.bak-20261005-rotation"
+cp -pn "$f" "$f.bak-20261005-rotation"
 python3 - "$f" <<"PY"
 import sys
-neu = dict(l.rstrip("\n").split("=", 1) for l in sys.stdin if "=" in l)
+neu = dict(l.rstrip("\n").split("=", 1) for l in open("/root/.rotation.tmp") if "=" in l)
 pfad = sys.argv[1]
 zeilen = open(pfad).read().splitlines()
 gesetzt = set()
@@ -38,33 +56,24 @@ for k in neu:
         zeilen.append("%s=%s" % (k, neu[k]))
 open(pfad, "w").write("\n".join(zeilen) + "\n")
 print("   gesetzt:", sorted(neu))
+if len(neu) != 3:
+    sys.exit("FEHLER: nicht alle drei Secrets gesetzt")
 PY
+shred -u /root/.rotation.tmp 2>/dev/null || rm -f /root/.rotation.tmp
 chmod 600 "$f"'
 
-echo "2/4 CT155: Alertmanager auf credentials_file"
+echo "3/4 CT155: Alertmanager auf credentials_file"
 printf '%s' "$A" | ssh -o BatchMode=yes "$ANKER" 'pct exec 155 -- sh -c "
 set -e
 umask 077
 cat > /etc/prometheus/servassi-hook.token
 chown prometheus:prometheus /etc/prometheus/servassi-hook.token
 chmod 0400 /etc/prometheus/servassi-hook.token
-cp -p /etc/prometheus/alertmanager.yml /etc/prometheus/alertmanager.yml.bak-20261005-rotation
+cp -pn /etc/prometheus/alertmanager.yml /etc/prometheus/alertmanager.yml.bak-20261005-rotation
 sed -i -E \"s#^(\s*)credentials: .*#\1credentials_file: /etc/prometheus/servassi-hook.token#\" /etc/prometheus/alertmanager.yml
 amtool check-config /etc/prometheus/alertmanager.yml >/dev/null
 systemctl reload prometheus-alertmanager
 echo \"   alertmanager neu geladen\""'
-
-echo "3/4 Odoo: Parameter + Aktion 647"
-printf '%s\n%s\n' "$T" "$C" | ssh -o BatchMode=yes "$ANKER" 'pct exec 140 -- docker exec -i frawotech-odoo-1 sh -c "cat > /tmp/rot.txt; odoo shell -d FraWo_GbR --no-http --log-level=warn <<\"PY\"
-t, c = open(\"/tmp/rot.txt\").read().split()
-icp = env[\"ir.config_parameter\"].sudo()
-icp.set_param(\"frawo_agent.servassi_webhook_secret\", t)
-a = env[\"ir.actions.server\"].sudo().browse(647)
-a.webhook_url = \"http://10.1.0.31:19001/klausi-chatter/\" + c
-env.cr.commit()
-print(\"   odoo: param + aktion 647 gesetzt\")
-PY
-rm -f /tmp/rot.txt"'
 
 echo "4/4 CT150: Handler neu starten"
 ssh -o BatchMode=yes "$CT150" 'systemctl restart odoo-webhook && sleep 2 && systemctl is-active odoo-webhook'
