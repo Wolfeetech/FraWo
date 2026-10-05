@@ -88,6 +88,52 @@ def check_file(rel_path: Path) -> list[str]:
     return problems
 
 
+# Zweite Lücke (Odoo #1917, 05.10.2026): Die drei Webhook-Secrets des Jarvis-Handlers
+# standen seit 12.09. in alertmanager.yml, Odoo-XML und Handler-Code — gitleaks schlug
+# nicht an. Diese Muster prüfen Konfigurations- und Skriptdateien auf feste Werte.
+import re
+
+CONFIG_ENDUNGEN = (".yml", ".yaml", ".xml", ".py", ".sh", ".service", ".json", ".toml", ".conf", ".env")
+CONFIG_MUSTER = [
+    # Alertmanager/Prometheus: credentials: <Wert> statt credentials_file
+    (re.compile(r"^\s*credentials:\s*['\"]?([^\s'\"#$]{12,})", re.M), "credentials: mit Klartextwert"),
+    # fester Bearer-Token im Code/Config (Variablen wie ${X}, {x}, %s sind erlaubt)
+    (re.compile(r"Bearer\s+([A-Za-z0-9_\-\.]{16,})"), "fester Bearer-Token"),
+    # Secret im Pfad einer Webhook-Adresse
+    (re.compile(r"/(?:klausi-chatter|email-hook)/([A-Za-z0-9_\-]{8,})"), "Secret im Webhook-Pfad"),
+    # fester Wert fuer X-Webhook-Secret
+    (re.compile(r"X-Webhook-Secret['\"]?\s*[:=,]\s*['\"]([A-Za-z0-9_\-]{12,})['\"]"), "fester X-Webhook-Secret"),
+]
+CONFIG_AUSNAHMEN = ("SETZE_", "<", "EXAMPLE", "example")
+
+
+def check_configs(dateien: list[Path]) -> list[str]:
+    problems: list[str] = []
+    for rel_path in dateien:
+        path = rel_path if rel_path.is_absolute() else REPO_ROOT / rel_path
+        if path.suffix not in CONFIG_ENDUNGEN or not path.is_file():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8")
+        except (UnicodeDecodeError, OSError):
+            continue
+        for muster, art in CONFIG_MUSTER:
+            for m in muster.finditer(text):
+                wert = m.group(1)
+                if any(a in wert for a in CONFIG_AUSNAHMEN):
+                    continue
+                zeile = text.count("\n", 0, m.start()) + 1
+                problems.append(f"{rel_path}:{zeile}: {art} (Wert beginnt mit '{wert[:3]}…')")
+    return problems
+
+
+def repo_dateien() -> list[Path]:
+    import subprocess
+    out = subprocess.run(["git", "ls-files"], cwd=REPO_ROOT, capture_output=True, text=True).stdout
+    return [Path(p) for p in out.splitlines()
+            if p.startswith(("deployments/", "infra/", "addons/", "scripts/")) and "/.venv" not in p]
+
+
 def main() -> int:
     # Ohne Argumente werden die fest hinterlegten Datendateien geprüft;
     # explizite Pfade erlauben Tests gegen Beispieldateien.
@@ -95,7 +141,13 @@ def main() -> int:
 
     all_problems: list[str] = []
     for rel_path in targets:
-        all_problems.extend(check_file(rel_path))
+        if rel_path.suffix == ".xml" and rel_path in DATA_FILES:
+            all_problems.extend(check_file(rel_path))
+    all_problems.extend(check_configs([Path(a) for a in sys.argv[1:]] or repo_dateien()))
+    if not sys.argv[1:]:
+        for rel_path in DATA_FILES:
+            if rel_path not in targets:
+                all_problems.extend(check_file(rel_path))
 
     if all_problems:
         print("FEHLER: Klartext-Secrets im Repo gefunden\n")
