@@ -1,0 +1,40 @@
+# promtool test rules deployments/monitoring/rules/tests/frawo_platten_smart_test.yml
+# Probealarm ohne echte Benachrichtigung (Odoo #1909).
+rule_files:
+  - ../frawo_platten_smart.yml
+evaluation_interval: 1m
+tests:
+  - interval: 1m
+    input_series:
+      - series: 'smartmon_device_smart_healthy{instance="pve",disk="/dev/sdb"}'
+        values: '1 1 0x30'
+      - series: 'smartmon_device_smart_healthy{instance="pve",disk="/dev/sdd"}'
+        values: '1x32'
+      - series: 'smartmon_current_pending_sector_raw_value{instance="pve",disk="/dev/sdd"}'
+        values: '0 0 3x40'
+    alert_rule_test:
+      - eval_time: 25m
+        alertname: PlatteSmartDefekt
+        exp_alerts:
+          - exp_labels: {severity: critical, instance: pve, disk: /dev/sdb}
+            exp_annotations:
+              dashboard: "http://100.100.115.80:3000/d/frawo-server"
+              summary: "Platte /dev/sdb auf pve meldet SMART-Fehler"
+              description: "Die Platte bewertet sich selbst als nicht mehr gesund (smartctl -H = FAILED)."
+              heisst: "Ausfall der Platte steht bevor. Alles darauf kann verloren gehen."
+              zu_tun: "Sofort pruefen, ob eine aktuelle Sicherung existiert; smartctl -a /dev/sdb; Platte tauschen."
+              vor_ort: "ja"
+      - eval_time: 10m
+        alertname: PlatteSmartDefekt
+        exp_alerts: []
+      - eval_time: 40m
+        alertname: PlatteSektorenAuffaellig
+        exp_alerts:
+          - exp_labels: {severity: warning, instance: pve, disk: /dev/sdd}
+            exp_annotations:
+              dashboard: "http://100.100.115.80:3000/d/frawo-server"
+              summary: "Platte /dev/sdd auf pve: 3 defekte Sektoren"
+              description: "Umgelagerte oder schwebende Sektoren > 0. Gesunde Platten haben hier 0."
+              heisst: "Die Platte beginnt zu verschleissen. Steigt der Wert weiter, faellt sie bald aus."
+              zu_tun: "Wert beobachten (smartctl -A); Ersatz beschaffen; Sicherung pruefen."
+              vor_ort: "nein"

@@ -1,0 +1,46 @@
+# Plattengesundheit (SMART) aller drei PVE-Knoten - Odoo #1909, Claude 05.10.2026.
+# Quelle: Debian-Paket prometheus-node-exporter-collectors (Timer prometheus-node-exporter-smartmon,
+# alle 15 min) -> /var/lib/prometheus/node-exporter/smartmon.prom. Diesen Ordner liest node_exporter
+# seit 05.10. als zweites textfile-Verzeichnis; vorher wurden die Werte erhoben, aber nie abgeholt.
+# Fuellstand der USB-NTFS-Platten (fuseblk) deckt DiskUsageWarning/-Critical in frawo_storage_alerts.yml ab.
+groups:
+  - name: frawo_platten_smart
+    rules:
+      - alert: PlatteSmartDefekt
+        expr: smartmon_device_smart_healthy == 0
+        for: 15m
+        labels:
+          severity: critical
+        annotations:
+          dashboard: "http://100.100.115.80:3000/d/frawo-server"
+          summary: "Platte {{ $labels.disk }} auf {{ $labels.instance }} meldet SMART-Fehler"
+          description: "Die Platte bewertet sich selbst als nicht mehr gesund (smartctl -H = FAILED)."
+          heisst: "Ausfall der Platte steht bevor. Alles darauf kann verloren gehen."
+          zu_tun: "Sofort pruefen, ob eine aktuelle Sicherung existiert; smartctl -a {{ $labels.disk }}; Platte tauschen."
+          vor_ort: "ja"
+
+      - alert: PlatteSektorenAuffaellig
+        expr: smartmon_current_pending_sector_raw_value > 0 or smartmon_reallocated_sector_ct_raw_value > 0
+        for: 30m
+        labels:
+          severity: warning
+        annotations:
+          dashboard: "http://100.100.115.80:3000/d/frawo-server"
+          summary: "Platte {{ $labels.disk }} auf {{ $labels.instance }}: {{ $value | printf \"%.0f\" }} defekte Sektoren"
+          description: "Umgelagerte oder schwebende Sektoren > 0. Gesunde Platten haben hier 0."
+          heisst: "Die Platte beginnt zu verschleissen. Steigt der Wert weiter, faellt sie bald aus."
+          zu_tun: "Wert beobachten (smartctl -A); Ersatz beschaffen; Sicherung pruefen."
+          vor_ort: "nein"
+
+      - alert: PlattenMessungVeraltet
+        expr: time() - node_textfile_mtime_seconds{file=~".*smartmon.prom"} > 7200
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          dashboard: "http://100.100.115.80:3000/d/frawo-server"
+          summary: "SMART-Messung auf {{ $labels.instance }} seit ueber 2 h nicht erneuert"
+          description: "Der Timer prometheus-node-exporter-smartmon liefert nicht mehr. Ohne ihn bleiben Plattenfehler unbemerkt."
+          heisst: "Die Plattenueberwachung ist blind, nicht die Platte kaputt."
+          zu_tun: "systemctl status prometheus-node-exporter-smartmon.timer prometheus-node-exporter-smartmon.service"
+          vor_ort: "nein"
