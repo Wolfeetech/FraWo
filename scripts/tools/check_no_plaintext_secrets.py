@@ -103,8 +103,15 @@ CONFIG_MUSTER = [
     (re.compile(r"/(?:klausi-chatter|email-hook)/([A-Za-z0-9_\-]{8,})"), "Secret im Webhook-Pfad"),
     # fester Wert fuer X-Webhook-Secret
     (re.compile(r"X-Webhook-Secret['\"]?\s*[:=,]\s*['\"]([A-Za-z0-9_\-]{12,})['\"]"), "fester X-Webhook-Secret"),
+    # Python/JS-Konstante mit Geheimnis-Namen und festem Wert (so stand es bis 12.09. im Handler:
+    # ALERT_SECRET = "..."). Lesen aus der Umgebung (_need(...), os.environ...) faellt nicht darunter.
+    (re.compile(r"^\s*[A-Za-z_]*(?:SECRET|TOKEN|PASSWORD|PASSWORT|API_KEY)\s*[:=]\s*['\"](?!\$)([^'\"\s]{12,})['\"]", re.M),
+     "Geheimnis-Konstante mit festem Wert"),
+    # .env-/Shell-Zuweisung ohne Anfuehrungszeichen (FRAWO_X_SECRET=wert); Variablen ($X) sind erlaubt
+    (re.compile(r"^\s*(?:export\s+)?[A-Z_]*(?:SECRET|TOKEN|PASSWORD|API_KEY)=([^\s'\"$]{12,})", re.M),
+     "Geheimnis-Zuweisung mit festem Wert"),
 ]
-CONFIG_AUSNAHMEN = ("SETZE_", "<", "EXAMPLE", "example")
+CONFIG_AUSNAHMEN = ("SETZE_", "<", "EXAMPLE", "example", "REPLACE", "PLACEHOLDER", "CHANGEME")
 
 
 def check_configs(dateien: list[Path]) -> list[str]:
