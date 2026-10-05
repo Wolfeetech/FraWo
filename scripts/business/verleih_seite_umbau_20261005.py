@@ -68,7 +68,7 @@ bereich = '''    <!-- Technik mit Betreuung: Pakete S/M/L (Wolf 05.10.2026) -->
             ['2 aktive Lautsprecher, Mischpult, Funkmikrofon', '4 LED-Scheinwerfer', 'Techniker: Aufbau, bis 6 h Betreuung, Abbau']) \
     + karte('PAKET-M', 'Paket M · Fest &amp; Feier', 'bis 250 Personen', 890,
             ['PA mit Tops und Doppel-12″-Bass, Mischpult, 2 Funkmikrofone', 'Licht: 4 LED-Scheinwerfer, 2 Moving Heads, Lichtsteuerung', 'Fachkraft: Aufbau, bis 10 h Betreuung, Abbau']) \
-    + karte('PAKET-L', 'Paket L · Open Air &amp; Event', 'bis 500 Personen', 1490,
+    + karte('PAKET-L', 'Paket L · Open Air &amp; Event', 'bis 500 Personen', '1.490',
             ['wie Paket M, mit zusätzlichem Bass und erweitertem Licht', 'Fachkraft plus Helfer', 'genaue Zusammenstellung nach Absprache']) + '''      </div>
       <p class="fw-svc-note">Endpreise – gemäß §19 UStG wird keine Umsatzsteuer berechnet. Darunter: Equipment zum Selbstabholen.</p>
     </section>
