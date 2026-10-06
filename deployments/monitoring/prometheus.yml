@@ -23,7 +23,7 @@ scrape_configs:
           - localhost:9100
           - 10.1.0.128:9100
           - 10.1.0.92:9100
-          - 10.0.0.227:9100
+          - 10.1.0.227:9100
         labels:
           env: frawo
     relabel_configs:
@@ -40,7 +40,7 @@ scrape_configs:
         replacement: anker-pve
         target_label: instance
       - source_labels: [__address__]
-        regex: "10.0.0.227:.*"
+        regex: "10.1.0.227:.*"
         replacement: optiplex-pve
         target_label: instance
 
@@ -58,8 +58,7 @@ scrape_configs:
       - targets:
           - http://10.1.0.112:8069/web/health   # Odoo (ERP)
           - http://10.1.0.40:8123               # Home Assistant Rothkreuz
-          - http://10.0.0.156:11434             # Ollama KI-Dienst (StudioPC, Grafikkarte)
-          - http://10.0.0.227:11434             # Ollama KI-Dienst (OptiPlex)
+          - http://10.1.0.227:11434             # Ollama KI-Dienst (OptiPlex)
           - https://funk.frawo.tech             # Radio
           - http://10.1.0.94:4533               # Navidrome (Musik)
           - http://10.1.0.100:8000              # Paperless (CT110)
@@ -83,7 +82,7 @@ scrape_configs:
       module: [http_2xx_insecure]
     static_configs:
       - targets:
-          - https://10.1.0.7:8007               # PBS
+          - https://10.1.0.8:8007               # PBS VM241 OptiPlex (seit 24.09.2026)
           - https://10.1.0.38                   # AzuraCast (ProDesk)
     relabel_configs:
       - source_labels: [__address__]
@@ -144,7 +143,8 @@ scrape_configs:
       - targets:
           - 10.1.0.52:53   # AdGuard primaer (ProDesk)
           - 10.1.0.27:53   # AdGuard sekundaer (Anker, CT101)
-          - 10.0.0.53:53   # AdGuard Redundanz (OptiPlex, CT102)
+          # entfernt 20.09.2026: DNS-Server bedient nur das Standard-LAN, aus dem Server-VLAN bewusst nicht erreichbar (Segmentierung)
+          # - 10.1.0.53:53   # AdGuard Redundanz (OptiPlex, CT102)
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target
