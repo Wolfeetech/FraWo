@@ -3,10 +3,14 @@
 import os, sys, json, hashlib, subprocess, pickle
 from mutagen.apev2 import APEv2, APENoHeaderError, delete
 AUS = '--ausfuehren' in sys.argv
-SICH = '/var/lib/beets/ape-entfernt-20261005'
+def _arg(name, std):
+    return sys.argv[sys.argv.index(name) + 1] if name in sys.argv else std
+# Seit 06.10.2026 auch fuer Neuzugaenge nutzbar (#1928): --root <ordner> --sicherung <ordner>
+ROOT = _arg('--root', '/mnt/music/Master_Library')
+SICH = _arg('--sicherung', '/var/lib/beets/ape-entfernt-20261005')
 def md5(p): return subprocess.run(['ffmpeg','-v','error','-i',p,'-map','0:a','-f','md5','-'],capture_output=True,text=True).stdout.strip()
 ziele=[]
-for w,_,fs in os.walk('/mnt/music/Master_Library'):
+for w,_,fs in os.walk(ROOT):
     for f in fs:
         if f.lower().endswith('.mp3'):
             p=os.path.join(w,f)
