@@ -82,3 +82,17 @@ def test_http_antwort(monkeypatch, ok, code):
         status = e.code
     srv.server_close()
     assert status == code
+
+
+@pytest.mark.parametrize("token,code", [("x", 200), ("", 503)])
+def test_health(monkeypatch, token, code):
+    monkeypatch.setattr(fmt, "TELEGRAM_BOT_TOKEN", token)
+    srv = HTTPServer(("127.0.0.1", 0), fmt.AlertHandler)
+    threading.Thread(target=srv.handle_request, daemon=True).start()
+    try:
+        with urllib.request.urlopen(f"http://127.0.0.1:{srv.server_port}/health", timeout=5) as r:
+            status = r.status
+    except urllib.error.HTTPError as e:
+        status = e.code
+    srv.server_close()
+    assert status == code

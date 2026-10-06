@@ -68,6 +68,7 @@ scrape_configs:
           - https://frawo.tech                  # Firmen-Webseite
           - http://10.1.0.248:8123              # HA Eltern (VM 360 auf ProDesk)
           - http://10.1.0.112:8069/anker_tracker/health # Getraenke-Tracker
+          - http://127.0.0.1:9087/health        # Alarm-Uebersetzer Telegram (CT155, #1541)
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target

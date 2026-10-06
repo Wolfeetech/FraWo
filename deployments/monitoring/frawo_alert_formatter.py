@@ -245,6 +245,20 @@ def process_alertmanager_payload(data: dict) -> bool:
 
 
 class AlertHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        # Gesundheits-Check fuer die Blackbox-Probe (Hinweis Codex 05.10.2026, #1541).
+        # 200 nur, wenn der Dienst laeuft UND Telegram konfiguriert ist; schickt selbst nichts.
+        if self.path == "/health":
+            ok = bool(TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID)
+            self.send_response(200 if ok else 503)
+            self.send_header("Content-Type", "application/json")
+            self.end_headers()
+            self.wfile.write(json.dumps({"status": "ok" if ok else "telegram_nicht_konfiguriert",
+                                         "zugestellt_gemerkt": len(_zugestellt)}).encode())
+        else:
+            self.send_response(404)
+            self.end_headers()
+
     def do_POST(self):
         if self.path == "/alert":
             content_len = int(self.headers.get("Content-Length", 0))
