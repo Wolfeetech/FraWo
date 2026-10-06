@@ -190,12 +190,44 @@ def send_telegram(text: str) -> bool:
     return False
 
 
-def process_alertmanager_payload(data: dict):
-    """Verarbeitet eingehende Alertmanager-Meldungen."""
+# Erfolgreich zugestellte Alarme (Odoo #1541, Befund Codex 06.10.2026): Scheitert die
+# Telegram-Zustellung, antwortet der Webhook mit 502 und Alertmanager wiederholt die ganze
+# Gruppe. Damit dabei nichts doppelt ankommt, merken wir uns, was schon zugestellt ist.
+ZUGESTELLT_TTL = int(os.environ.get("ALERT_FORMATTER_DEDUP_TTL", str(6 * 3600)))
+_zugestellt: dict = {}
+
+
+def _alarm_schluessel(alert: dict) -> str:
+    return "|".join([
+        alert.get("fingerprint") or json.dumps(alert.get("labels", {}), sort_keys=True),
+        alert.get("status", ""),
+        alert.get("startsAt", ""),
+    ])
+
+
+def _schon_zugestellt(schluessel: str) -> bool:
+    jetzt = time.time()
+    for k in [k for k, t in _zugestellt.items() if jetzt - t > ZUGESTELLT_TTL]:
+        del _zugestellt[k]
+    return schluessel in _zugestellt
+
+
+def process_alertmanager_payload(data: dict) -> bool:
+    """Verarbeitet eingehende Alertmanager-Meldungen.
+
+    Rueckgabe True nur, wenn jeder Alarm zugestellt ist (oder schon zugestellt war).
+    Bei False antwortet der Webhook mit 502, damit Alertmanager erneut zustellt:
+    kein Alarm darf verloren gehen.
+    """
     alerts = data.get("alerts", [])
     log.info("Verarbeite %d Alarm(e) von Alertmanager", len(alerts))
 
+    alles_zugestellt = True
     for alert in alerts:
+        schluessel = _alarm_schluessel(alert)
+        if _schon_zugestellt(schluessel):
+            log.info("Bereits zugestellt, uebersprungen: %s", alert.get("labels", {}).get("alertname"))
+            continue
         # 1. Versuche Ollama Formulierung
         formatted = formulate_with_ollama(alert)
         if not formatted:
@@ -203,7 +235,13 @@ def process_alertmanager_payload(data: dict):
             formatted = build_raw_message(alert)
             log.info("Verwende deterministische Rohmeldung für %s", alert.get("labels", {}).get("alertname"))
 
-        send_telegram(formatted)
+        if send_telegram(formatted):
+            _zugestellt[schluessel] = time.time()
+        else:
+            alles_zugestellt = False
+            log.error("Alarm NICHT zugestellt, Alertmanager soll wiederholen: %s",
+                      alert.get("labels", {}).get("alertname"))
+    return alles_zugestellt
 
 
 class AlertHandler(BaseHTTPRequestHandler):
@@ -213,11 +251,17 @@ class AlertHandler(BaseHTTPRequestHandler):
             post_body = self.rfile.read(content_len)
             try:
                 data = json.loads(post_body.decode("utf-8"))
-                process_alertmanager_payload(data)
-                self.send_response(200)
-                self.send_header("Content-Type", "application/json")
-                self.end_headers()
-                self.wfile.write(b'{"status":"ok"}')
+                if process_alertmanager_payload(data):
+                    self.send_response(200)
+                    self.send_header("Content-Type", "application/json")
+                    self.end_headers()
+                    self.wfile.write(b'{"status":"ok"}')
+                else:
+                    # Nicht-2xx: Alertmanager versucht die Zustellung erneut.
+                    self.send_response(502)
+                    self.send_header("Content-Type", "application/json")
+                    self.end_headers()
+                    self.wfile.write(b'{"status":"telegram_failed"}')
             except Exception as e:
                 log.error("Fehler beim Verarbeiten des Alertmanager-Payloads: %s", e)
                 self.send_response(500)
