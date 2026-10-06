@@ -18,7 +18,7 @@ nice -n 19 ionice -c3 rsync -rlt --partial --bwlimit=40000 \
   --exclude 'Quarantine/' \
   --exclude 'Inbox/' \
   --exclude '_STAGING_RAW/' \
-  --exclude 'Curated_Playlists/' \
+  --exclude 'Curated_Playlists*/' \
   --stats \
   "$QUELLE" "${ZIEL_HOST}:${ZIEL_PFAD}" >> "$LOG" 2>&1
 RC=$?
