@@ -38,7 +38,7 @@ schritt "2 letzter Abgleich nach $KOPIE (mit --delete)"
 # unlesbar und damit schon verloren. rsync meldet dann Code 23; sie werden protokolliert und
 # fehlen in BEIDEN Zaehlungen (find kann sie ebenfalls nicht lesen). Jeder andere Code bricht ab.
 set +e
-rsync -rltH --delete --numeric-ids --stats "$MNT/" "$ANKER:$KOPIE/" > /root/musik-ext4-abgleich.log 2>&1
+rsync -rltH --delete --ignore-errors --numeric-ids --stats "$MNT/" "$ANKER:$KOPIE/" > /root/musik-ext4-abgleich.log 2>&1
 RC=$?
 set -e
 tail -15 /root/musik-ext4-abgleich.log
