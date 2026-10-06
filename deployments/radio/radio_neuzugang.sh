@@ -20,7 +20,8 @@ schritt() { echo; echo "=== $(date '+%T') $*"; }
 
 schritt "1 Drive -> $LIVE/Inbox/$NAME (nur Audio)"
 ssh -o BatchMode=yes root@10.1.0.92 "rclone copy 'gdrive:$QUELLE' '$LIVE/Inbox/$NAME' --ignore-case \
-  --include '*.{mp3,flac,wav,aiff,aif,m4a,ogg}' --exclude '/Sampler/**' --exclude '/Recording/**' --exclude '**/Sampler/**' \
+  --filter '- /Sampler/**' --filter '- /Recording/**' --filter '- **/Sampler/**' \
+  --filter '+ *.{mp3,flac,wav,aiff,aif,m4a,ogg}' --filter '- *' \
   --transfers 4 --stats-one-line -v 2>&1 | tail -2; find '$LIVE/Inbox/$NAME' -type f | wc -l"
 
 ct() { pct exec 120 -- "$@"; }
