@@ -1,0 +1,21 @@
+# Musik-Quelle des ProDesk – Odoo #1263, Claude 06.10.2026.
+# Seit 06.10. laeuft die Musik uebergangsweise per sshfs von der Anker-Kopie
+# (ZFS anker-backup/musik-umzug-20261005 -> ProDesk /mnt/music_anker, Bind nach /mnt/music_hdd).
+# Reisst die Verbindung ab, sehen Fileserver (CT120), Radio (VM220) und Scan-Eingang nichts mehr.
+# Die Regel prueft den Mount selbst (fehlt er, ist die Kennzahl weg -> absent()).
+# Nach Einbau der SSD (#1919) mountpoint auf den neuen Pfad anpassen bzw. Regel entfernen.
+groups:
+  - name: frawo_musik_quelle
+    rules:
+      - alert: MusikQuelleWeg
+        expr: absent(node_filesystem_size_bytes{instance="prodesk-pve", mountpoint="/mnt/music_hdd"})
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          dashboard: "http://100.100.115.80:3000/d/frawo-server"
+          summary: "Musik-Quelle auf dem ProDesk nicht eingehängt"
+          description: "/mnt/music_hdd fehlt seit 5 Minuten. Radio, Netzlaufwerke und Scan-Eingang sehen keine Dateien."
+          heisst: "Das Radio verstummt bald, Netzlaufwerk M: ist leer."
+          zu_tun: "ProDesk: mount /mnt/music_anker && mount /mnt/music_hdd; dann in VM220 umount -l /mnt/library && mount /mnt/library"
+          vor_ort: "nein"
