@@ -676,3 +676,5 @@ Jeder Schritt macht den nächsten erst möglich oder wirtschaftlicher:
 - **In beide Richtungen prüfen.** Ein Alarm, der nie ausgelöst hat, ist kein Beweis.
 - **Verschieben statt löschen.** Quarantäne-Ordner, Sicherungskopien, Rückwege.
 - **Roadmap:** 1) WP-Stockenweiler-3 2) Website & Verleih professionell 3) selbstverwaltetes Odoo via Agent.
+
+> **06.10.2026 · Musik läuft übergangsweise von der Anker-Kopie (#1263).** Die USB-Musikplatte am ProDesk (WD20SDRW, SMR) schreibt nach dem Umformatieren nur noch <1 MB/s und ist unbrauchbar. Live-Quelle: ZFS `anker-backup/musik-umzug-20261005` (Schnappschuss `@vor-live-20261006`), per `sshfs` auf dem ProDesk unter `/mnt/music_anker`, CT120 `mp0` zeigt darauf, Bind-Mount nach `/mnt/music_hdd` für die Host-Skripte. fstab ist neustartfest, die USB-Zeile ist auskommentiert. **Nicht** die USB-Platte wieder einhängen, sie ist nur halb befüllt. Ersatz geplant: interne SATA-SSD im ProDesk.
