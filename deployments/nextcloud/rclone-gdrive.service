@@ -1,0 +1,18 @@
+[Unit]
+Description=Google Drive fuer Nextcloud einhaengen (rclone, Odoo #1930)
+After=network-online.target
+Wants=network-online.target
+Before=docker.service
+
+[Service]
+Type=notify
+ExecStartPre=/bin/mkdir -p /mnt/extern/gdrive
+ExecStart=/usr/bin/rclone mount gdrive: /mnt/extern/gdrive --config /root/.config/rclone/rclone.conf \
+  --allow-other --uid 33 --gid 33 --umask 007 --vfs-cache-mode writes --vfs-cache-max-size 20G \
+  --dir-cache-time 10m --poll-interval 1m --tpslimit 8 --log-level NOTICE
+ExecStop=/bin/fusermount3 -u /mnt/extern/gdrive
+Restart=on-failure
+RestartSec=20
+
+[Install]
+WantedBy=multi-user.target
