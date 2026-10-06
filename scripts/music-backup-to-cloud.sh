@@ -49,6 +49,10 @@ RCLONE_OPTS=(
     # Cloud zu schieben waere sinnlos — sie bleiben nur lokal zur Ansicht.
     --exclude "_RETTUNG_BESCHAEDIGT_*/**"
     --exclude "_QUARANTAENE_*/**"
+    # 06.10.2026 (#1263) Uebergang bis zur SSD (#1919): Quelle ist per sshfs+follow_symlinks
+    # die Anker-Kopie; die Sendungs-Symlinks erscheinen als Dateien und wuerden doppelt
+    # hochgeladen (rclone ueberspringt echte Symlinks sonst ohnehin).
+    --exclude "Curated_Playlists/**"
     --stats 30m
     --stats-one-line
 )
