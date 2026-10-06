@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FixtureDefinition>
+<FixtureDefinition xmlns="http://www.qlcplus.org/FixtureDefinition">
+ <Creator>
+  <Name>Q Light Controller Plus</Name>
+  <Version>4.13.1</Version>
+  <Author>FraWo (Claude) nach Handbuch 43571 V2</Author>
+ </Creator>
+ <Manufacturer>Showtec</Manufacturer>
+ <Model>Spectral M800 Q4 IP65</Model>
+ <Type>Color Changer</Type>
+ <Channel Name="Master Dimmer" Preset="IntensityMasterDimmer"/>
+ <Channel Name="Dimmer fine" Preset="IntensityMasterDimmerFine"/>
+ <Channel Name="Red" Preset="IntensityRed"/>
+ <Channel Name="Red fine" Preset="IntensityRedFine"/>
+ <Channel Name="Green" Preset="IntensityGreen"/>
+ <Channel Name="Green fine" Preset="IntensityGreenFine"/>
+ <Channel Name="Blue" Preset="IntensityBlue"/>
+ <Channel Name="Blue fine" Preset="IntensityBlueFine"/>
+ <Channel Name="White" Preset="IntensityWhite"/>
+ <Channel Name="White fine" Preset="IntensityWhiteFine"/>
+ <Channel Name="Color Macros">
+  <Group Byte="0">Colour</Group>
+  <Capability Min="0" Max="10">Keine Funktion</Capability>
+  <Capability Min="11" Max="30">Rot 100 % / Grün auf / Blau 0 %</Capability>
+  <Capability Min="31" Max="50">Rot ab / Grün 100 % / Blau 0 %</Capability>
+  <Capability Min="51" Max="70">Rot 0 % / Grün 100 % / Blau auf</Capability>
+  <Capability Min="71" Max="90">Rot 0 % / Grün ab / Blau 100 %</Capability>
+  <Capability Min="91" Max="110">Rot auf / Grün 0 % / Blau 100 %</Capability>
+  <Capability Min="111" Max="130">Rot 100 % / Grün 0 % / Blau ab</Capability>
+  <Capability Min="131" Max="150">Rot 100 % / Grün auf / Blau auf</Capability>
+  <Capability Min="151" Max="170">Rot ab / Grün ab / Blau 100 %</Capability>
+  <Capability Min="171" Max="200">RGBW 100 %</Capability>
+  <Capability Min="201" Max="205">Weiß 1: 3200 K</Capability>
+  <Capability Min="206" Max="210">Weiß 2: 3400 K</Capability>
+  <Capability Min="211" Max="215">Weiß 3: 4200 K</Capability>
+  <Capability Min="216" Max="220">Weiß 4: 4900 K</Capability>
+  <Capability Min="221" Max="225">Weiß 5: 5600 K</Capability>
+  <Capability Min="226" Max="230">Weiß 6: 5900 K</Capability>
+  <Capability Min="231" Max="235">Weiß 7: 6500 K</Capability>
+  <Capability Min="236" Max="240">Weiß 8: 7200 K</Capability>
+  <Capability Min="241" Max="245">Weiß 9: 8000 K</Capability>
+  <Capability Min="246" Max="250">Weiß 10: 8500 K</Capability>
+  <Capability Min="251" Max="255">Weiß 11: 10000 K</Capability>
+ </Channel>
+ <Channel Name="Strobe">
+  <Group Byte="0">Shutter</Group>
+  <Capability Min="0" Max="9" Preset="ShutterOpen">Offen</Capability>
+  <Capability Min="10" Max="99" Preset="StrobeSlowToFast">Strobe 0-20 Hz</Capability>
+  <Capability Min="100" Max="109" Preset="ShutterOpen">Offen (bei Classic Strobe: Strobe)</Capability>
+  <Capability Min="110" Max="179" Preset="PulseSlowToFast">Pulse-Strobe langsam-schnell (Special Strobe)</Capability>
+  <Capability Min="180" Max="189" Preset="ShutterOpen">Offen (bei Classic Strobe: Strobe)</Capability>
+  <Capability Min="190" Max="255" Preset="StrobeRandomSlowToFast">Zufalls-Strobe langsam-schnell (Special Strobe)</Capability>
+ </Channel>
+ <Channel Name="Programs">
+  <Group Byte="0">Effect</Group>
+  <Capability Min="0" Max="20">Keine Funktion</Capability>
+  <Capability Min="21" Max="30">AUTO01</Capability>
+  <Capability Min="31" Max="40">AUTO02</Capability>
+  <Capability Min="41" Max="50">AUTO03</Capability>
+  <Capability Min="51" Max="60">AUTO04</Capability>
+  <Capability Min="61" Max="70">AUTO05</Capability>
+  <Capability Min="71" Max="80">AUTO06</Capability>
+  <Capability Min="81" Max="90">AUTO07</Capability>
+  <Capability Min="91" Max="100">AUTO08</Capability>
+  <Capability Min="101" Max="110">AUTO09</Capability>
+  <Capability Min="111" Max="120">AUTO10</Capability>
+  <Capability Min="121" Max="130">PR.01 (Time/Fade Time auf Rot/Grün)</Capability>
+  <Capability Min="131" Max="140">PR.02 (Time/Fade Time auf Rot/Grün)</Capability>
+  <Capability Min="141" Max="150">PR.03 (Time/Fade Time auf Rot/Grün)</Capability>
+  <Capability Min="151" Max="160">PR.04 (Time/Fade Time auf Rot/Grün)</Capability>
+  <Capability Min="161" Max="170">PR.05 (Time/Fade Time auf Rot/Grün)</Capability>
+  <Capability Min="171" Max="180">PR.06 (Time/Fade Time auf Rot/Grün)</Capability>
+  <Capability Min="181" Max="190">PR.07 (Time/Fade Time auf Rot/Grün)</Capability>
+  <Capability Min="191" Max="200">PR.08 (Time/Fade Time auf Rot/Grün)</Capability>
+  <Capability Min="201" Max="210">PR.09 (Time/Fade Time auf Rot/Grün)</Capability>
+  <Capability Min="211" Max="220">PR.10 (Time/Fade Time auf Rot/Grün)</Capability>
+  <Capability Min="221" Max="255">Keine Funktion</Capability>
+ </Channel>
+ <Channel Name="Program Speed">
+  <Group Byte="0">Speed</Group>
+  <Capability Min="0" Max="255" Preset="SlowToFast">Programmgeschwindigkeit langsam-schnell</Capability>
+ </Channel>
+ <Channel Name="Dimmer Speed">
+  <Group Byte="0">Speed</Group>
+  <Capability Min="0" Max="9">Voreinstellung aus dem Gerätemenü</Capability>
+  <Capability Min="10" Max="29">Linear</Capability>
+  <Capability Min="30" Max="69">Nicht-linear 1 (schnellste)</Capability>
+  <Capability Min="70" Max="129">Nicht-linear 2</Capability>
+  <Capability Min="130" Max="189">Nicht-linear 3</Capability>
+  <Capability Min="190" Max="255">Nicht-linear 4 (langsamste)</Capability>
+ </Channel>
+ <Mode Name="AR1.D (RGB 4 Kanäle)">
+  <Channel Number="0">Master Dimmer</Channel>
+  <Channel Number="1">Red</Channel>
+  <Channel Number="2">Green</Channel>
+  <Channel Number="3">Blue</Channel>
+ </Mode>
+ <Mode Name="TOUR (RGB 9 Kanäle)">
+  <Channel Number="0">Master Dimmer</Channel>
+  <Channel Number="1">Red</Channel>
+  <Channel Number="2">Green</Channel>
+  <Channel Number="3">Blue</Channel>
+  <Channel Number="4">Color Macros</Channel>
+  <Channel Number="5">Strobe</Channel>
+  <Channel Number="6">Programs</Channel>
+  <Channel Number="7">Program Speed</Channel>
+  <Channel Number="8">Dimmer Speed</Channel>
+ </Mode>
+ <Mode Name="TR16 (RGB 13 Kanäle)">
+  <Channel Number="0">Master Dimmer</Channel>
+  <Channel Number="1">Dimmer fine</Channel>
+  <Channel Number="2">Red</Channel>
+  <Channel Number="3">Red fine</Channel>
+  <Channel Number="4">Green</Channel>
+  <Channel Number="5">Green fine</Channel>
+  <Channel Number="6">Blue</Channel>
+  <Channel Number="7">Blue fine</Channel>
+  <Channel Number="8">Color Macros</Channel>
+  <Channel Number="9">Strobe</Channel>
+  <Channel Number="10">Programs</Channel>
+  <Channel Number="11">Program Speed</Channel>
+  <Channel Number="12">Dimmer Speed</Channel>
+ </Mode>
+ <Mode Name="ARC.2 (RGBW 4 Kanäle)">
+  <Channel Number="0">Red</Channel>
+  <Channel Number="1">Green</Channel>
+  <Channel Number="2">Blue</Channel>
+  <Channel Number="3">White</Channel>
+ </Mode>
+ <Mode Name="AR2.D (RGBW 5 Kanäle)">
+  <Channel Number="0">Master Dimmer</Channel>
+  <Channel Number="1">Red</Channel>
+  <Channel Number="2">Green</Channel>
+  <Channel Number="3">Blue</Channel>
+  <Channel Number="4">White</Channel>
+ </Mode>
+ <Mode Name="AR2.S (RGBW 6 Kanäle)">
+  <Channel Number="0">Master Dimmer</Channel>
+  <Channel Number="1">Red</Channel>
+  <Channel Number="2">Green</Channel>
+  <Channel Number="3">Blue</Channel>
+  <Channel Number="4">White</Channel>
+  <Channel Number="5">Strobe</Channel>
+ </Mode>
+ <Mode Name="SSP (RGBW 7 Kanäle)">
+  <Channel Number="0">Master Dimmer</Channel>
+  <Channel Number="1">Red</Channel>
+  <Channel Number="2">Green</Channel>
+  <Channel Number="3">Blue</Channel>
+  <Channel Number="4">White</Channel>
+  <Channel Number="5">Strobe</Channel>
+  <Channel Number="6">Programs</Channel>
+ </Mode>
+ <Mode Name="8BIT (RGBW 10 Kanäle)">
+  <Channel Number="0">Master Dimmer</Channel>
+  <Channel Number="1">Red</Channel>
+  <Channel Number="2">Green</Channel>
+  <Channel Number="3">Blue</Channel>
+  <Channel Number="4">White</Channel>
+  <Channel Number="5">Color Macros</Channel>
+  <Channel Number="6">Strobe</Channel>
+  <Channel Number="7">Programs</Channel>
+  <Channel Number="8">Program Speed</Channel>
+  <Channel Number="9">Dimmer Speed</Channel>
+ </Mode>
+ <Mode Name="16BI (RGBW 15 Kanäle)">
+  <Channel Number="0">Master Dimmer</Channel>
+  <Channel Number="1">Dimmer fine</Channel>
+  <Channel Number="2">Red</Channel>
+  <Channel Number="3">Red fine</Channel>
+  <Channel Number="4">Green</Channel>
+  <Channel Number="5">Green fine</Channel>
+  <Channel Number="6">Blue</Channel>
+  <Channel Number="7">Blue fine</Channel>
+  <Channel Number="8">White</Channel>
+  <Channel Number="9">White fine</Channel>
+  <Channel Number="10">Color Macros</Channel>
+  <Channel Number="11">Strobe</Channel>
+  <Channel Number="12">Programs</Channel>
+  <Channel Number="13">Program Speed</Channel>
+  <Channel Number="14">Dimmer Speed</Channel>
+ </Mode>
+ <Physical>
+  <Bulb Type="LED" Lumens="1452" ColourTemperature="0"/>
+  <Dimensions Weight="4.3" Width="235" Height="323" Depth="180"/>
+  <Lens Name="Other" DegreesMin="16" DegreesMax="16"/>
+  <Focus Type="Fixed" PanMax="0" TiltMax="0"/>
+  <Technical PowerConsumption="65" DmxConnector="3-pin"/>
+ </Physical>
+</FixtureDefinition>
