@@ -1,50 +1,60 @@
-#!/bin/bash
-# deployments/paperless/frawo-gdrive-inbox-pull.sh
+#!/usr/bin/env bash
+# frawo-gdrive-inbox-pull.sh
+# Holt neue Dateien aus Google Drive (00_INBOX/_Dokumente-zur-Pruefung) und
+# verschiebt sie direkt in den Paperless-Consume-Ordner auf CT110.
+# Laeuft per systemd-Timer (frawo-paperless-ingest.timer) alle 10 Minuten auf CT110.
+# Teil der Paperless-GDrive-Pipeline (siehe OPERATIONS/PAPERLESS_OPERATIONS.md).
+# Ersetzt den alten ProDesk-Webhook und Google-Watch-Erneuerungszyklus.
+
 set -euo pipefail
 
-STAGING="/opt/frawo-gdrive-bridge/staging"
-LOG="/var/log/frawo-gdrive-inbox.log"
-mkdir -p "$STAGING"
+CONSUME_DIR="/opt/paperless/consume"
+GDRIVE_DIR="gdrive:00_INBOX/_Dokumente-zur-Pruefung"
+LOCK_FILE="/var/lock/frawo-paperless-ingest.lock"
+LOG_FILE="/var/log/frawo-paperless-ingest.log"
 
-# Holen von neuen Dateien (mindestens 30s alt, um unfertige Uploads zu vermeiden)
-rclone move "gdrive:00_INBOX/_Dokumente-zur-Pruefung" "$STAGING" \
-  --drive-chunk-size 64M --drive-upload-cutoff 64M \
-  --min-age 30s -q --create-empty-src-dirs
+# Mutex gegen ueberlappende Laeufe
+exec 200>"$LOCK_FILE"
+flock -n 200 || {
+    echo "$(date -Is) [SKIP] Ein anderer Ingest-Lauf ist noch aktiv."
+    exit 0
+}
 
-shopt -s nullglob
-for f in "$STAGING"/*; do
-  [ -f "$f" ] || continue
-  raw_name=$(basename "$f")
-  # Sanitize special unicode characters (like fullwidth solidus U+FF0F)
-  clean_name=$(echo "$raw_name" | tr '／' '_')
-  if [ "$raw_name" != "$clean_name" ]; then
-    mv "$f" "$STAGING/$clean_name"
-    f="$STAGING/$clean_name"
-  fi
-  
-  # Seit 29.09.2026 (Claude): Handy-Uploads kommen teils ohne ".pdf" an (z. B. "...Pixel9pdf").
-  # Paperless ignoriert Dateien ohne bekannte Endung STILLSCHWEIGEND - so lagen Belege
-  # wochenlang im Eingang. Erkennung am Inhalt (PDF/PNG/JPEG), nicht am Namen.
-  kopf="$(head -c 4 "$f" | od -An -tx1 | tr -d ' \n')"
-  case "$kopf" in
-    25504446) endung=pdf ;;              # %PDF
-    89504e47) endung=png ;;              # PNG
-    ffd8ff*)  endung=jpg ;;              # JPEG
-    *)        endung="" ;;
-  esac
-  if [ -n "$endung" ] && [[ ! "${clean_name,,}" =~ \.(pdf|png|jpe?g)$ ]]; then
-    basis="${clean_name%[Pp][Dd][Ff]}"; basis="${basis%[Pp][Nn][Gg]}"; basis="${basis%[Jj][Pp][Gg]}"; basis="${basis%.}"
-    basis="$(printf '%s' "$basis" | sed 's/[[:space:]]*$//')"
-    echo "$(date -Is) UMBENANNT $clean_name -> ${basis}.${endung}" >> "$LOG"
-    clean_name="${basis}.${endung}"
-    mv "$f" "$STAGING/$clean_name"
-    f="$STAGING/$clean_name"
-  fi
+if [ ! -d "$CONSUME_DIR" ]; then
+    echo "$(date -Is) [ERROR] Consume-Verzeichnis $CONSUME_DIR existiert nicht!" | tee -a "$LOG_FILE" >&2
+    exit 1
+fi
 
-  if pct push 110 "$f" "/opt/paperless/consume/$clean_name"; then
-    rm -f "$f"
-    echo "$(date -Is) OK $clean_name" >> "$LOG"
-  else
-    echo "$(date -Is) FEHLER beim Kopieren nach CT110: $clean_name" >> "$LOG"
-  fi
-done
+TMP_OUT=$(mktemp /tmp/rclone-ingest.XXXXXX)
+trap 'rm -f "$TMP_OUT"' EXIT
+
+# Nur echte Dokumente, nur direkt im Ordner (06.10.2026, #1927): Am 06.10. hat das Skript
+# Programme, Firmware, Lampen-Profile und ganze Projektordner aus Unterordnern nach Paperless
+# verschoben, die Paperless nicht verarbeiten kann. Alles andere bleibt in Drive fuer die
+# Technik-Ablage (Nextcloud).
+if rclone move "$GDRIVE_DIR" "$CONSUME_DIR" \
+    --max-depth 1 \
+    --ignore-case \
+    --include "*.{pdf,png,jpg,jpeg,tif,tiff,webp,heic,txt,docx,doc,odt,xlsx,xls,ods,pptx,eml,csv}" \
+    --drive-chunk-size 64M \
+    --drive-upload-cutoff 64M \
+    --min-age 30s \
+    -v --stats-one-line > "$TMP_OUT" 2>&1; then
+    
+    # Berechtigungen fuer Paperless Consumer (UID 1000) sicherstellen
+    chown -R 1000:1000 "$CONSUME_DIR"
+    find "$CONSUME_DIR" -mindepth 1 -type f -exec chmod 664 {} + 2>/dev/null || true
+    find "$CONSUME_DIR" -mindepth 1 -type d -exec chmod 775 {} + 2>/dev/null || true
+
+    # Wenn Dateien uebertragen wurden, ins Log schreiben
+    if grep -q "Transferred:" "$TMP_OUT" && ! grep -q "Transferred: *0 B / 0 B" "$TMP_OUT"; then
+        echo "$(date -Is) [PULL] Neue Dokumente nach $CONSUME_DIR uebernommen:" | tee -a "$LOG_FILE"
+        cat "$TMP_OUT" | tee -a "$LOG_FILE"
+    fi
+else
+    echo "$(date -Is) [ERROR] rclone move fehlgeschlagen:" | tee -a "$LOG_FILE" >&2
+    cat "$TMP_OUT" | tee -a "$LOG_FILE" >&2
+    exit 1
+fi
+
+exit 0
