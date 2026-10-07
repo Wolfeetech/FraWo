@@ -49,9 +49,17 @@ for ziel, alte in ZUSAMMEN.items():
                 setze(d, ziel)
             C[a].delete()
 
+# 5) Entscheidungen Wolf 07.10.: "Gehalt zahlt LTK", Gesellschaftsvertrag "01.04.", Aenderungsvertrag 2024
+#    "war ich bei der LTK", Shelly-CSV ist kein Beleg (Kopie liegt in Nextcloud 80_Technik/IT/Messdaten).
+import datetime
+LTK = "Lindau Tourismus und Kongress GmbH"
+for i, titel in [(20, "Gehaltsabrechnung Lindau Tourismus und Kongress 2026-03-27"),
+                 (276, "Gehaltsabrechnung Lindau Tourismus und Kongress 2026-07-29")]:
+    setze(Document.objects.get(id=i), LTK, "Gehaltsabrechnung", titel)
+d = Document.objects.get(id=104); merke(d); vorher[104]["created"] = str(d.created)
+d.created = datetime.date(2026, 4, 1); d.title = "Gesellschaftsvertrag FraWo GbR 2026-04-01"; d.save()
+setze(Document.objects.get(id=109), LTK, "Vertrag", "Änderungsvertrag Lindau Tourismus und Kongress 2024-07-31")
+d = Document.objects.get(id=275); merke(d); d.delete()   # Papierkorb, 30 Tage wiederherstellbar
+
 json.dump(vorher, open("/usr/src/paperless/data/korrektur_20261007_vorher.json", "w"), indent=1)
-print("geaendert:", len(vorher), "Dokumente")
-print("NICHT geaendert, Wolf fragen:")
-for i in (20, 104, 109, 275):
-    d = Document.objects.get(id=i)
-    print(" ", i, d.created, "|", d.correspondent.name if d.correspondent else "-", "|", d.title, "|", d.original_filename)
+print("geaendert:", len(vorher), "Dokumente (275 in den Papierkorb)")
