@@ -9,8 +9,7 @@ $alt = @{ USERPROFILE = $env:USERPROFILE; HOME = $env:HOME }
 $env:USERPROFILE = $tmp; $env:HOME = $tmp
 Write-Host "Gleich oeffnet sich der Browser: mit dem Google-Konto (AI-Abo) anmelden und zulassen." -ForegroundColor Yellow
 Write-Host "Wenn Gemini danach bereit ist (Eingabefeld unten): /quit eintippen." -ForegroundColor Yellow
-& (Join-Path $alt.USERPROFILE "AppDataRoaming
-pmgemini.cmd")
+& (Join-Path $env:APPDATA "npm\gemini.cmd")
 $env:USERPROFILE = $alt.USERPROFILE; $env:HOME = $alt.HOME
 $cred = Join-Path $tmp ".gemini\oauth_creds.json"
 if (Test-Path $cred) {
