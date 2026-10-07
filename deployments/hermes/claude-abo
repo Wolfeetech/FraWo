@@ -1,0 +1,5 @@
+#!/bin/sh
+# Claude Code mit Wolfs Abo (#1966). Schluessel nur aus ~/.hermes/.env, nie als Argument.
+CLAUDE_CODE_OAUTH_TOKEN=$(sed -n "s/^CLAUDE_CODE_OAUTH_TOKEN=//p" $HOME/.hermes/.env)
+export CLAUDE_CODE_OAUTH_TOKEN
+exec $HOME/.local/bin/claude "$@"
