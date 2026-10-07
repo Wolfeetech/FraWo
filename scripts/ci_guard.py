@@ -6,8 +6,14 @@ weil jede Welle eine neue Doku und neue Hex-Werte mitbrachte, ohne die alte
 abzuräumen. Vorsätze haben das nicht verhindert — eine Dauerprüfung tut es.
 
 Geprüft wird gegen die EINZIGE Farbquelle SSOT/ci_tokens.json:
-  1. Live-Odoo: alle ir.ui.view sowie website.custom_code_head/footer
+  1. Live-Odoo: alle ir.ui.view in ALLEN aktiven Sprachen sowie
+     website.custom_code_head/footer
   2. Repo: Web-Quelldateien (ohne die in ci_tokens.json genannten Ausnahmen)
+
+WICHTIG (teuer gelernt am 07.10.2026): `arch_db` ist ein ÜBERSETZTES Feld.
+Wer es ohne Sprachkontext liest, sieht nur en_US — die Website läuft aber auf
+de_DE. Eine Prüfung ohne Sprachen meldet „sauber", während live noch Altfarben
+stehen. Darum wird hier jede aktive Sprache einzeln geprüft.
 
 Benutzung:
   python3 scripts/ci_guard.py              # beides prüfen
@@ -96,23 +102,28 @@ def scan_repo() -> list[dict]:
 
 def scan_odoo() -> list[dict]:
     results = []
+    langs = [l["code"] for l in _api("res.lang", "search_read", {
+        "domain": [["active", "=", True]], "fields": ["code"], "limit": 20,
+    })] or ["en_US"]
     ids = [v["id"] for v in _api("ir.ui.view", "search_read", {
         "domain": [[VIEW_FIELD, "!=", False]], "fields": ["id"], "limit": 10000,
     })]
-    for start in range(0, len(ids), 300):
-        for rec in _api("ir.ui.view", "search_read", {
-            "domain": [["id", "in", ids[start:start + 300]]],
-            "fields": ["id", "name", "key", VIEW_FIELD], "limit": 300,
-        }):
-            found = find_deprecated(rec.get(VIEW_FIELD) or "")
-            if found:
-                results.append({
-                    "ort": "odoo:ir.ui.view",
-                    "name": f"{rec['id']} {rec.get('key') or rec.get('name') or ''}",
-                    "treffer": sum(found.values()),
-                    "farben": found,
-                    "behebbar": all(DEPRECATED[c].get("auto") for c in found),
-                })
+    for lang in langs:
+        for start in range(0, len(ids), 300):
+            for rec in _api("ir.ui.view", "search_read", {
+                "domain": [["id", "in", ids[start:start + 300]]],
+                "fields": ["id", "name", "key", VIEW_FIELD], "limit": 300,
+                "context": {"lang": lang},
+            }):
+                found = find_deprecated(rec.get(VIEW_FIELD) or "")
+                if found:
+                    results.append({
+                        "ort": f"odoo:ir.ui.view[{lang}]",
+                        "name": f"{rec['id']} {rec.get('key') or rec.get('name') or ''}",
+                        "treffer": sum(found.values()),
+                        "farben": found,
+                        "behebbar": all(DEPRECATED[c].get("auto") for c in found),
+                    })
     for rec in _api("website", "search_read", {
         "domain": [], "fields": ["id", "name", *WEBSITE_FIELDS], "limit": 50,
     }):
