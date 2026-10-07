@@ -1,6 +1,6 @@
 # FraWo Agenten-Protokoll (AGENTS.md)
 
-**Version 1.4 — 2026-09-30 | Gilt für ALLE Agenten: Jarvis (OpenClaw), Claude Code, Antigravity**
+**Version 1.5 — 2026-10-07 | Gilt für ALLE Agenten: Hermes (Pilot), Jarvis (OpenClaw), Claude Code, Antigravity**
 **Master = diese Datei im Git-Repo** `github.com/Wolfeetech/FraWo`, Zweig `main`. Alle anderen Fundorte sind automatisch befüllte Kopien — **dort nie bearbeiten** (siehe *Eine Wahrheit*).
 
 ---
@@ -12,6 +12,7 @@
 | **Jarvis** (OpenClaw) | CT150 Anker (10.1.0.31) | Telegram ↔ Wolf (Pixel 9) | Koordinator, Monitoring/Alarme, Odoo-Chatter (@Jarvis/Klausi), Infra-Ops via SSH, 24/7 persistent |
 | **Claude Code** | StudioPC, Terminal | Wolf startet Session | Code, Skripte, größere Implementierungen — zustandslos: liest dieses File + Odoo-Task VOR der Arbeit |
 | **Antigravity** | StudioPC, IDE | Wolf startet Session | IDE-Arbeiten, UCG/UniFi-API, Windows-lokale Aufgaben |
+| **Hermes** (Pilot ab 07.10.2026, #1965/#1966) | CT160 OptiPlex (10.1.0.160) | Telegram @FraWo_Hermes_bot ↔ Wolf | **Der eine Eingang für Wolfs Aufträge.** Denkt mit Codex → Ausweich Claude über Copilot → Sparbetrieb (fester Text, führt nie etwas aus). Große Ausarbeitungen gibt er an Claude Code (Claude-Abo, nur lesen/planen) ab. Odoo per MCP (eigener Schlüssel). **Ändert keine Server.** Signatur `🤖 [Hermes]` |
 
 ## Single Source of Truth
 
@@ -30,10 +31,12 @@
 
 ## Kommunikationswege (die EINZIGEN erlaubten)
 
-- **Wolf ↔ Jarvis:** Telegram (oder Odoo-Chatter @Jarvis)
+- **Wolf ↔ Hermes:** Telegram @FraWo_Hermes_bot. Aufträge rein, Rückfragen raus (Pilot bis 14.10., danach Entscheidung Hermes statt Jarvis, #1965)
+- **Wolf ↔ Jarvis:** Telegram @Frawo_bot (oder Odoo-Chatter @Jarvis). @Frawo_bot ist **nur** noch Jarvis, keine Maschinenmeldungen mehr
 - **Wolf ↔ Claude/Antigravity:** direkt am StudioPC
 - **Agent → Agent:** Odoo-Chatter-Mention am betreffenden Task (Jarvis wird via Webhook getriggert; Claude/Antigravity lesen beim nächsten Start)
 - **Alarme:** Prometheus/Alertmanager läuft seit 07.09.2026 als **CT155 auf dem Anker** (IP unverändert 10.1.0.35) — der ProDesk ist tot. Genau ZWEI Receiver: `telegram-wolf` (Info an Wolf) + `servassi-hook` (Bearbeitung durch Jarvis via 10.1.0.31:19001). **Keine weiteren Alert-Kanäle bauen.**
+- **Telegram-Kanäle (seit 07.10.2026, #1965):** 🔴 Bot **FraWo Alerts** (@frawoalarm_bot) im Direktchat = nur Handlungsbedarf, laut (Alarm-Formatter, Wächter, Backup-TÜV bei Fehler). 📋 Kanal **FraWo Info** (stumm) = Morgenbriefing, Radio-Titelliste, Odoo-Tagesbericht, Backup-TÜV grün. Jede Maschinenmeldung beginnt mit ihrem Absender in `[…]`. Tokens/IDs in Vaultwarden (agent@).
 - **Alarmtexte für Wolf:** erst alle sicheren automatischen Lösungen versuchen,
   dann genau eine kurze Abschlussmeldung in Alltagssprache: **Problem · Ursache ·
   Automatisch getan · Ergebnis · Du musst**. Keine Fachbegriffe, Kürzel,
