@@ -1,3 +1,5 @@
+> ⚠️ **Veraltet (Stand 07.10.2026, #1524):** Adressen und Topologie in diesem Dokument sind überholt. Verbindlich ist [`DOCS/ADRESSPLAN.md`](ADRESSPLAN.md).
+
 # Surface Control Architecture - KORRIGIERT
 
 **Last Updated**: 2026-04-27

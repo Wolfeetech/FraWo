@@ -47,7 +47,7 @@ Die **Telefonlampe** ist aussagekräftiger als die Internetlampe. Das Telefon me
 ## Schritt 2 — was sagt das Gateway?
 
 ```bash
-ssh root@10.0.0.227
+ssh root@10.1.0.227
 curl -s -k -H 'X-API-KEY: <Schlüssel aus Vaultwarden>' \
   'https://10.1.0.1/proxy/network/api/s/default/stat/health' | python3 -m json.tool | head -40
 ```
@@ -60,7 +60,7 @@ Achte auf den Abschnitt `wan`:
 ## Schritt 3 — wie weit kommen die Pakete?
 
 ```bash
-ssh root@10.0.0.227 'traceroute -n -w 2 -q 1 -m 8 1.1.1.1'
+ssh root@10.1.0.227 'traceroute -n -w 2 -q 1 -m 8 1.1.1.1'
 ```
 
 - Stoppt nach **Sprung 1** (`10.0.0.1`) → hinter dem Gateway ist Schluss
@@ -69,7 +69,7 @@ ssh root@10.0.0.227 'traceroute -n -w 2 -q 1 -m 8 1.1.1.1'
 ## Geschafft, wenn
 
 ```bash
-ssh root@10.0.0.227 '
+ssh root@10.1.0.227 '
   timeout 6 bash -c "echo > /dev/tcp/1.1.1.1/443" && echo "TCP: ok"
   getent hosts heise.de >/dev/null && echo "Namen: ok"
   curl -s -o /dev/null -m 10 -w "Web: HTTP %{http_code}\n" http://heise.de'

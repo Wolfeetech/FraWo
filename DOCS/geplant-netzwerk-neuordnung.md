@@ -1,3 +1,5 @@
+> ⚠️ **Veraltet (Stand 07.10.2026, #1524):** Adressen und Topologie in diesem Dokument sind überholt. Verbindlich ist [`DOCS/ADRESSPLAN.md`](ADRESSPLAN.md).
+
 # Geplant: Netzwerk neu ordnen — Adressen, Bereiche, VLANs
 
 > **Status:** Noch nicht in Odoo angelegt — das Netz war beim Erfassen ausgefallen.

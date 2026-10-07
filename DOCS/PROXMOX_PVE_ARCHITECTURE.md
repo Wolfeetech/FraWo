@@ -1,3 +1,5 @@
+> ⚠️ **Veraltet (Stand 07.10.2026, #1524):** Adressen und Topologie in diesem Dokument sind überholt. Verbindlich ist [`DOCS/ADRESSPLAN.md`](ADRESSPLAN.md).
+
 # Proxmox VE (PVE) Architecture - Anker-PVE
 
 **Stand:** Mai 2026
