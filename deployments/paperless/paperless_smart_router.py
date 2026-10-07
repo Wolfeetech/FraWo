@@ -73,7 +73,13 @@ VALID_DOCUMENT_TYPES = {
     "Rechnung", "Quittung", "Mahnung", "Vertrag", "Bescheid", "Kontoauszug",
     "Versicherungspolice", "Zeugnis", "Bewerbung", "Kündigung",
     "Antrag", "Angebot", "Sonstiges",
+    # 07.10.2026 (#1927): in Paperless vorhanden, fehlten hier -> Lohnzettel landeten als "Sonstiges"
+    "Gehaltsabrechnung", "Bescheinigung", "Schulungsunterlage", "Formular",
 }
+# Gruendung der FraWo GbR (Gesellschaftsvertrag, NOW.md). Aeltere Dokumente betreffen nie die GbR -
+# 07.10.2026: Noerpel-Unterlagen von 2017 kamen als "Arbeitsvertrag FraWo_GbR" an.
+GBR_GRUENDUNG = "2026-04-01"
+LOHN_MUSTER = re.compile(r"(?i)(gehalts|lohn|entgelt|bezüge)[- ]?(abrechnung|nachweis|zettel)|verdienstabrechnung")
 BELEG_TYPEN = ("Rechnung", "Quittung", "Kassenbeleg")
 
 # Probelauf: ROUTER_PROBE=1 klassifiziert und zeigt die geplante Entscheidung, schreibt aber
@@ -213,8 +219,14 @@ if len(content.strip()) < 20:
 
 
 def build_classification_prompt(text, title_str):
-    return f"""Du bist der digitale Assistent der FraWo GbR.
-Analysiere das folgende eingescannte Dokument aufmerksam. Erkenne selbstständig neue oder bestehende Absender, erfasse den Sachverhalt und den richtigen Empfänger (Wolf_Prinz, Franz_Bienert, FraWo_GbR, Alois_Prinz, Heidi_Prinz).
+    return f"""Du ordnest eingescannte Dokumente fuer Wolf Prinz, seine Familie und die FraWo GbR (gegruendet {GBR_GRUENDUNG}).
+Analysiere das folgende Dokument aufmerksam. Erkenne den Absender und den richtigen Empfaenger (Wolf_Prinz, Franz_Bienert, FraWo_GbR, Alois_Prinz, Heidi_Prinz).
+Regeln:
+- "vendor" ist, wer das Dokument AUSGESTELLT oder GESCHICKT hat (Firma, Arbeitgeber, Behoerde, Bank) - nie der Empfaenger.
+- "FraWo GbR" ist nur vendor, wenn die GbR selbst das Dokument ausgestellt hat (eigene Rechnung, eigenes Angebot).
+- Dokumente mit Datum vor {GBR_GRUENDUNG} betreffen NIE die FraWo GbR: entity ist dann eine Person (meist Wolf_Prinz).
+- Lohn-, Gehalts- und Entgeltabrechnungen sind document_type "Gehaltsabrechnung", vendor ist der Arbeitgeber.
+- Ist der Absender nicht erkennbar, schreibe "Unbekannt" - erfinde keinen.
 
 Titel: {title_str}
 Text (OCR, ggf. unvollständig):
@@ -226,7 +238,7 @@ Antworte NUR mit einem gültigen JSON-Objekt im folgenden Format:
 {{
   "entity": "Wolf_Prinz" | "Franz_Bienert" | "Alois_Prinz" | "Heidi_Prinz" | "FraWo_GbR",
   "category": "finanzen" | "vertraege" | "amt_behoerden" | "gesundheit" | "wohnen" | "arbeit" | "projekte" | "sonstiges",
-  "document_type": "Rechnung" | "Quittung" | "Mahnung" | "Vertrag" | "Bescheid" | "Kontoauszug" | "Versicherungspolice" | "Zeugnis" | "Bewerbung" | "Kündigung" | "Antrag" | "Angebot" | "Sonstiges",
+  "document_type": "Rechnung" | "Quittung" | "Mahnung" | "Vertrag" | "Bescheid" | "Kontoauszug" | "Versicherungspolice" | "Zeugnis" | "Bewerbung" | "Kündigung" | "Antrag" | "Angebot" | "Gehaltsabrechnung" | "Bescheinigung" | "Schulungsunterlage" | "Formular" | "Sonstiges",
   "vendor": "<Absender/Firma/Behörde, präzise und vollständig>",
   "document_date": "<Datum AUF dem Dokument selbst, YYYY-MM-DD, oder null wenn nicht erkennbar>",
   "clean_title": "<kurzer, sauberer Titel nach dem Muster 'Dokumenttyp Absender Datum', z.B. 'Rechnung Thomann GmbH 2026-08-15', OHNE Dateiendung. Ist kein Datum erkennbar: Datum im Titel weglassen>",
@@ -328,8 +340,18 @@ def sanitize_classification(result, title_str):
             result["due_date"] = None
     if "requires_action" not in result:
         result["requires_action"] = False
-    if not result.get("vendor"):
+    if not result.get("vendor") or str(result["vendor"]).strip().lower() in ("null", "none", "unknown"):
         result["vendor"] = "Unbekannt"
+    # Vor der GbR-Gruendung gibt es keine GbR-Dokumente (07.10.2026, #1927).
+    datum = str(result.get("document_date") or "")
+    if datum and datum < GBR_GRUENDUNG:
+        if result["entity"] == "FraWo_GbR":
+            result["entity"] = "Wolf_Prinz"
+        if re.search(r"(?i)frawo", str(result["vendor"])):
+            result["vendor"] = "Unbekannt"
+            result["clean_title"] = re.sub(r"(?i)\s*frawo[ _]?gbr", "", result["clean_title"]).strip() or title_str
+    if LOHN_MUSTER.search(f"{title_str} {result.get('clean_title', '')}") and result["document_type"] in ("Sonstiges", "Bescheinigung"):
+        result["document_type"] = "Gehaltsabrechnung"
     if not result.get("summary"):
         result["summary"] = f"Dokument: {title_str}"
     if result.get("kostenart") not in KOSTENART_KONTO:
@@ -605,7 +627,11 @@ def file_to_drive(doc, classification, doc_id):
     return True
 
 
-if file_to_drive(doc_data, classification, DOC_ID):
+# Drive-Ablage abschaltbar (DOCS/ABLAGEORDNUNG.md, #1927): Drive ist nur noch Sicherung, die Ansicht der
+# Dokumente kommt ueber Nextcloud "/Dokumente (Paperless)". ROUTER_DRIVE_ABLAGE=0 in .env schaltet sie ab.
+if os.environ.get("ROUTER_DRIVE_ABLAGE", "1") != "1":
+    print("Drive-Ablage abgeschaltet (ROUTER_DRIVE_ABLAGE=0)")
+elif file_to_drive(doc_data, classification, DOC_ID):
     done_tag_id = get_or_create("tags", "gdrive-abgelegt")
     if done_tag_id:
         existing_tags = patch_body.get("tags", [])
