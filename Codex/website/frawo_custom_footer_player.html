@@ -173,6 +173,18 @@
     50% { height: 18px; }
   }
 
+  /* Laufen die Balken auf echtem Ton, muss die CSS-Animation schweigen --
+     sonst zerren beide gleichzeitig an der Hoehe und es ruckelt. */
+  .fw-bar-eq.live span {
+    animation: none !important;
+    transition: height 70ms linear;
+  }
+  /* Der Punkt am Cover pulsiert mit dem Bass. */
+  .fw-bar-pulse {
+    transform: scale(calc(1 + var(--ff-bass, 0) * 0.9));
+    transition: transform 90ms linear;
+  }
+
   .fw-player-right {
     display: flex;
     align-items: center;
@@ -447,6 +459,68 @@
 
   fetchNowPlaying();
   setInterval(fetchNowPlaying, 8000);
+
+  /* ===== Leiste unten: Balken laufen auf echtem Ton =====
+     Vorher liefen die acht Balken nur auf einer CSS-Animation mit festen
+     Zeiten -- das sah gleichmaessig aus und hatte mit der Musik nichts zu tun.
+     Jetzt holen sie sich dieselben Pegel wie das Visual auf /radio.
+     Ohne Tonanalyse bleibt die CSS-Animation als Rueckfall aktiv. */
+  var barBalken = null;
+  var barLaufAktiv = false;
+
+  function barBalkenHolen() {
+    if (!barBalken || !barBalken.length) {
+      var eq = document.getElementById('fwBarEq');
+      barBalken = eq ? eq.querySelectorAll('span') : null;
+    }
+    return barBalken;
+  }
+
+  function barFrame() {
+    var balken = barBalkenHolen();
+    var eq = document.getElementById('fwBarEq');
+
+    /* Pegel auch fuer die CSS-Variablen setzen, damit die Leiste auf JEDER
+       Seite mitatmet -- nicht nur auf /radio. Die Radioseite ueberschreibt
+       dieselben Variablen mit ihrer eigenen Glaettung. */
+    var pegel = window.fwAudio.getLevels();
+    document.documentElement.style.setProperty('--ff-bass', pegel.bass.toFixed(3));
+
+    if (balken && balken.length && state.isPlaying) {
+      var daten = window.fwAudio.getFrequencyData();
+      if (daten) {
+        /* Echte Daten: CSS-Animation abschalten, sonst zerren beide an der Hoehe. */
+        if (eq) eq.classList.add('live');
+        var nutzbar = Math.floor(daten.length * 0.6);
+        for (var i = 0; i < balken.length; i++) {
+          var von = Math.floor(i * nutzbar / balken.length);
+          var bis = Math.max(von + 1, Math.floor((i + 1) * nutzbar / balken.length));
+          var summe = 0;
+          for (var j = von; j < bis; j++) summe += daten[j];
+          var wert = (summe / (bis - von)) / 255;
+          balken[i].style.height = Math.max(3, Math.min(18, 3 + wert * 17)) + 'px';
+        }
+      } else if (eq) {
+        /* Keine Analyse: zurueck auf die CSS-Animation. */
+        eq.classList.remove('live');
+        for (var k = 0; k < balken.length; k++) {
+          balken[k].style.height = '';
+        }
+      }
+    } else if (balken && balken.length) {
+      if (eq) eq.classList.remove('live');
+      for (var m = 0; m < balken.length; m++) {
+        balken[m].style.height = '';
+      }
+    }
+
+    requestAnimationFrame(barFrame);
+  }
+
+  if (!barLaufAktiv) {
+    barLaufAktiv = true;
+    requestAnimationFrame(barFrame);
+  }
 
   /* ===== Weiterspielen beim Navigieren =====
      Odoo ist eine klassische Mehrseiten-Website (kein SPA). Echtes,
