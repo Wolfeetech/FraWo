@@ -20,6 +20,24 @@
 2. **Doku:** `AGENTS.md`, `NOW.md`, `INFRA.md` — **nur im Git-Repo** (`main`). IPs/Hosts/Services/Fundorte der Zugangsdaten stehen in `INFRA.md`. Änderung an Infra → `INFRA.md` im Repo nachziehen, im selben Arbeitsgang pushen.
 3. **Secrets:** Nur Vaultwarden (vault.frawo-tech.de). Nie in Files, Commits oder Chats.
 
+## Wo liegt was (Fundorte, Stand 07.10.2026)
+
+Live ist maßgeblich, das Repo ist die Quelle für Änderungen. **Vor jeder Änderung: Live-Fassung mit dem Repo vergleichen**; weicht sie ab, erst das Repo auf den Live-Stand ziehen, dann ändern (mehrfach vorgekommen: Prometheus, Paperless, Wächter).
+
+| Was | Live | Im Repo | Wie ändern |
+|---|---|---|---|
+| **Website frawo.tech** (Seiten, Mietpark, Startseite) | Odoo-Website auf CT140 (`frawotech-odoo-1`), Seiten = `ir.ui.view`/`website.page` in der DB (z. B. Verleih = View 3445). Nginx `frawotech-web-1`, Cloudflare-Tunnel `frawotech-cloudflared-1`, Konfig `/opt/frawotech/{docker-compose.yml,nginx.conf}` | `Codex/website/*.html` (z. B. `frawo_verleih_ci3.html` = View 3445), CSS `frawo_custom_css_v3.4.css`, Umbau-Skripte `scripts/business/` | **Nur per ORM** (`odoo shell`), danach `env.registry.clear_cache(); env.registry.signal_changes()`. Roh-SQL kommt nicht live an. Preise ohne „netto“ (§ 19), Übersetzungen de_DE/en_US beide pflegen |
+| **Odoo-Eigenmodule** | CT140 `/opt/frawotech/extra-addons/` (`frawo_agent`, `frawo_theme`, `mcp_server`) | `addons/` | Modul aktualisieren über `odoo -u <modul>` im Container, vorher DB-Sicherung |
+| **Paperless + Router** | CT110 `/opt/paperless/` (`.env`, `paperless_smart_router.py`, `frawo-gdrive-inbox-pull.sh`) | `deployments/paperless/` | Sicherung `.bak-JJJJMMTT`, Router wirkt sofort (Post-Consume), `.env` braucht `docker compose up -d` |
+| **Nextcloud** | VM300 `/opt/homeserver2027/stacks/nextcloud`, Daten `…/volumes/nextcloud_nextcloud/_data/data` | `deployments/nextcloud/` | `docker exec -u www-data nextcloud_app_1 php occ …`, nach Dateiänderungen `occ files:scan` |
+| **Monitoring** | CT155 `/etc/prometheus/` (Regeln `rules/`), Alarm-Formatter `/usr/local/bin/frawo_alert_formatter.py` | `deployments/monitoring/` (Tests `rules/tests/`) | `promtool test rules`, dann **immer** `prometheus-neu-laden.sh` |
+| **Radio/Musik** | Bibliothek Anker `anker-backup/musik-umzug-20261005` (Übergang bis SSD #1919), beets/Werkzeuge CT120 `/var/lib/beets/`, AzuraCast VM220 | `scripts/radio_*.py`, `deployments/radio/` | Pipeline `radio_neuzugang.sh` (Putzen → Ablegen); AzuraCast-DB direkt angleichen (behält Altwerte) |
+| **Sicherungen** | PBS VM241, Cloud: `gcrypt:Odoo`, `gcrypt:pve/dump`, `nc-crypt:` | `scripts/frawo-backup-tuev.sh`, `DOCS/VERSCHLUESSELUNG.md` | Backup-TÜV muss danach 7/7 zeigen |
+| **Hermes** | CT160 `~hermes/.hermes/` (`config.yaml`, `SOUL.md`, `skills/`), Relais `/usr/local/bin/frawo-odoo-relais.py` | `deployments/hermes/` | Nach Änderung `systemctl restart hermes-gateway` |
+| **Netz/Adressen** | UCG 10.1.0.1 (Werkzeug `/root/ucg.py` auf dem OptiPlex) | `DOCS/ADRESSPLAN.md` (verbindlich), `deployments/network/ucg.py` | erst Adressplan, dann Gerät |
+| **Zugangsdaten** | Vaultwarden, Agenten-Zugriff über `frawo-secret` auf dem OptiPlex (Sammlung Automations-Secrets) | – | `frawo-secret liste/holen/ablegen`, Werte nie ausgeben |
+| **Ablage von Dateien** | Paperless (Belege), Nextcloud (Arbeitsdateien, Technik, Medien), Radio-Bibliothek (Musik), Drive nur Sicherung | `DOCS/ABLAGEORDNUNG.md` | – |
+
 ## Arbeits-Workflow (für jeden Task)
 
 1. **VORHER:** Odoo-Task lesen, im Chatter ankündigen was du tust (mit Agent-Name!)
