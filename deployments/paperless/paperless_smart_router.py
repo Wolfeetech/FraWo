@@ -523,6 +523,11 @@ def aufgabe_pruefen(info):
         return False, "Beleg ist bezahlt — wird gebucht, keine Aufgabe"
     if info.get("umrechnung_fehlt"):
         return True, "Fremdwährung ohne Kurs — Mensch muss buchen"
+    # 07.10.2026 (#1927): Der Drive-Altbestand (Lohnzettel 2017, Rechnungen 2025 ...) erzeugte 32 Aufgaben.
+    # Belege, die aelter als 60 Tage sind, sind abgelegt und nicht mehr zu bearbeiten.
+    datum = str(info.get("document_date") or "")
+    if datum and datum < (datetime.now() - timedelta(days=60)).strftime("%Y-%m-%d"):
+        return False, f"Altbeleg vom {datum} — wird nur abgelegt"
     if not (info.get("requires_action") or info.get("action_required")):
         return False, "kein Handlungsbedarf"
     if not info.get("vendor") or info["vendor"] == "Unbekannt":
