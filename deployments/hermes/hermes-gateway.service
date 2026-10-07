@@ -1,0 +1,17 @@
+[Unit]
+Description=Hermes Gateway (FraWo Pilot, Odoo #1965)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=hermes
+WorkingDirectory=/home/hermes/FraWo
+Environment=HOME=/home/hermes
+Environment=HERMES_DISABLE_TELEMETRY=1
+Environment=PATH=/home/hermes/.local/bin:/usr/local/bin:/usr/bin:/bin
+ExecStart=/home/hermes/.local/bin/hermes gateway run
+Restart=on-failure
+RestartSec=15
+
+[Install]
+WantedBy=multi-user.target
