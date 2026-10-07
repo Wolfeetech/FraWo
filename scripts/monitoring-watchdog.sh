@@ -28,7 +28,7 @@ export PATH="/usr/sbin:/usr/bin:/sbin:/bin"
 #   TOKEN_DATEI=/nicht/vorhanden /usr/local/bin/monitoring-watchdog.sh
 ZIEL="${ZIEL:-10.1.0.35}"
 CHAT_ID="${CHAT_ID:-5924907152}"
-TOKEN_DATEI="${TOKEN_DATEI:-/root/.telegram-frawo}"
+TOKEN_DATEI="${TOKEN_DATEI:-/root/.telegram-alarm}"   # #1965 Alarm-Bot
 ZUSTAND="${ZUSTAND:-/var/lib/frawo-watchdog}"
 METRIK="${METRIK:-/var/lib/node_exporter/textfile_collector/monitoring_watchdog.prom}"
 
@@ -43,7 +43,7 @@ melde_telegram() {
     token=$(tr -d "'\"" < "$TOKEN_DATEI" | tr -d '[:space:]')
     curl -s --max-time 20 \
          -d "chat_id=${CHAT_ID}" \
-         --data-urlencode "text=$1" \
+         --data-urlencode "text=[Wächter $(hostname)] $1" \
          "https://api.telegram.org/bot${token}/sendMessage" >/dev/null 2>&1
 }
 
@@ -71,7 +71,7 @@ if [ -n "$FEHLER" ]; then
             melde_telegram "🔴 ÜBERWACHUNG AUSGEFALLEN
 
 Nicht erreichbar: ${FEHLER}
-Betroffen ist CT150 (monitoring-stack, ${ZIEL}) auf dem ProDesk.
+Betroffen ist CT155 (monitoring-stack, ${ZIEL}) im Cluster.
 
 Das heisst: Ab jetzt kommen KEINE Alarme mehr — auch nicht, wenn etwas anderes ausfällt. Diese Nachricht kommt von einer getrennten Wache auf dem Wirtssystem.
 

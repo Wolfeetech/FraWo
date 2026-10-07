@@ -99,10 +99,10 @@ cat "$ERG"
 echo
 echo "($ANZAHL Titel)"
 
-if [ "$TELEGRAM" -eq 1 ] && [ -r /root/.telegram-frawo ]; then
-    T=$(tr -d "'\"" < /root/.telegram-frawo | tr -d '[:space:]')
-    curl -s --max-time 25 -d "chat_id=5924907152" \
-         --data-urlencode "text=$(cat "$ERG")" \
+if [ "$TELEGRAM" -eq 1 ] && [ -r /root/.telegram-alarm ]; then
+    T=$(tr -d "'\"" < /root/.telegram-alarm | tr -d '[:space:]')
+    curl -s --max-time 25 -d "chat_id=-1003382562014" -d "disable_notification=true" \
+         --data-urlencode "text=[Radio-Titelliste] $(cat "$ERG")" \
          "https://api.telegram.org/bot${T}/sendMessage" >/dev/null 2>&1 \
       && echo "per Telegram verschickt"
 fi

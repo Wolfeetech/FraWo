@@ -22,7 +22,8 @@ TIMEOUT_REMOTE=180
 BERICHT=/var/log/frawo-backup-tuev.log
 TEXTFILE_DIR=/var/lib/node_exporter/textfile_collector
 METRIK="$TEXTFILE_DIR/backup_tuev.prom"
-TELEGRAM_TOKEN_FILE=/root/.telegram-frawo
+TELEGRAM_TOKEN_FILE=/root/.telegram-alarm   # #1965 Alarm-Bot
+TELEGRAM_INFO_ID=-1003382562014
 TELEGRAM_CHAT_ID=5924907152
 
 # Nur ein Lauf gleichzeitig (Befund Codex 05.10.2026, #1519): Zwei Units
@@ -277,19 +278,21 @@ if [ -r "$TELEGRAM_TOKEN_FILE" ]; then
     if [ -n "$BOT_TOKEN" ]; then
         POOL_PCT=$(timeout "$TIMEOUT_LOCAL" lvs --noheadings -o data_percent pve/data 2>/dev/null | tr -d ' %' || echo "?")
         if [ "$DURCHGEFALLEN" -eq 0 ]; then
+            TG_ZIEL="$TELEGRAM_INFO_ID"; TG_STUMM=true   # gruen: stumm in FraWo Info
             TG_TEXT="🛡️ [FraWo Morgen-Lage] $(date '+%d.%m.%Y %H:%M')
 ✅ Backups: ${GEPRUEFT}/${GEPRUEFT} BESTANDEN
 $DETAILS
 🖥️ Anker-Server: Thin-Pool ${POOL_PCT}%, alle 14 Dienste UP.
 Status: GRÜN — Kein Handlungsbedarf."
         else
+            TG_ZIEL="$TELEGRAM_CHAT_ID"; TG_STUMM=false   # Fehler: laut an Wolf
             TG_TEXT="🚨 [FraWo Backup-TÜV WARNUNG] $(date '+%d.%m.%Y %H:%M')
 ❌ $DURCHGEFALLEN von $GEPRUEFT Prüfungen FEHLGESCHLAGEN!
 $DETAILS
 Bitte prüfen: /var/log/frawo-backup-tuev.log"
         fi
         curl -s --max-time 15 \
-             -d "chat_id=${TELEGRAM_CHAT_ID}" \
+             -d "chat_id=${TG_ZIEL:-$TELEGRAM_CHAT_ID}" -d "disable_notification=${TG_STUMM:-false}" \
              --data-urlencode "text=${TG_TEXT}" \
              "https://api.telegram.org/bot${BOT_TOKEN}/sendMessage" >/dev/null 2>&1 || true
     fi
