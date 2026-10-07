@@ -8,13 +8,13 @@
   /* ═══════════════════════════════════════════════════════════
      BRAND COLORS (Modern Vibrant)
      ═══════════════════════════════════════════════════════════ */
-  --color-primary: #10B981;           /* Emerald 500 - Vibrant */
+  --color-primary: #2ECC71;           /* Emerald 500 - Vibrant */
   --color-primary-light: #34D399;
   --color-primary-dark: #059669;
   
   --color-secondary: #8B5CF6;         /* Violet 500 - Modern Accent */
   --color-secondary-light: #A78BFA;
-  --color-secondary-dark: #7C3AED;
+  --color-secondary-dark: #9D4EDD;
   
   --color-accent: #F59E0B;            /* Amber 500 - Warmth */
   --color-accent-light: #FBBF24;
@@ -117,7 +117,7 @@
   --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
   --shadow-xl: 0 20px 48px -12px rgba(0, 0, 0, 0.6);
   
-  --shadow-glow-primary: 0 0 30px rgba(16, 185, 129, 0.3);
+  --shadow-glow-primary: 0 0 30px rgba(46, 204, 113, 0.3);
   --shadow-glow-secondary: 0 0 30px rgba(139, 92, 246, 0.3);
 
   /* ═══════════════════════════════════════════════════════════

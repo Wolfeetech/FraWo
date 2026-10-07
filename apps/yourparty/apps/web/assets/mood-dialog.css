@@ -11,7 +11,7 @@
   --vibe-text: #e8e8ec;
   --vibe-text-dim: #6a6a78;
   --vibe-accent: #7c5cff;
-  --vibe-success: #22c55e;
+  --vibe-success: #2ecc71;
   --vibe-error: #ef4444;
 }
 
@@ -212,7 +212,7 @@
 
 /* Selected/Success state */
 .vibe-btn.selected {
-  background: rgba(34, 197, 94, 0.15);
+  background: rgba(46, 204, 113, 0.15);
   border-color: var(--vibe-success);
   color: var(--vibe-success);
 }

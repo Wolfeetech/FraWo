@@ -51,9 +51,9 @@ global_css = """<style>
   --fw-forest: #064e3b;
   --fw-forest-dark: #052e16;
   --fw-forest-light: #14532d;
-  --fw-uv: #a855f7;
+  --fw-uv: #a050f0;
   --fw-uv-light: #c084fc;
-  --fw-uv-glow: rgba(168, 85, 247, 0.35);
+  --fw-uv-glow: rgba(160, 80, 240, 0.35);
   --fw-bg: #0a0a0a;
   --fw-surface: #141414;
   --fw-text: #f0f0ee;

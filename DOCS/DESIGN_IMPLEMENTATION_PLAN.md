@@ -50,7 +50,7 @@ Komplettes Redesign der frawo-tech.de Website mit:
   --frawo-gray-dark: #1a1a1a;
   --frawo-gray-mid: #555555;
   --frawo-gray-light: #888888;
-  --frawo-purple: #a855f7;
+  --frawo-purple: #a050f0;
   --frawo-orange: #ff6b35;
   --frawo-blue: #0066cc;
 

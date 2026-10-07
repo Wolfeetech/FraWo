@@ -1,5 +1,5 @@
 /* FraWo GbR — Custom CSS v3.3 — NTS-Inspired Editorial Style */
-/* CI Colors: Forest Green (#064e3b) + UV Purple (#a855f7) */
+/* CI Colors: Forest Green (#064e3b) + UV Purple (#a050f0) */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
@@ -7,8 +7,8 @@
   /* CI Colors */
   --fw-forest: #064e3b;
   --fw-forest-dark: #052e16;
-  --fw-uv: #a855f7;
-  --fw-uv-dim: rgba(168, 85, 247, 0.6);
+  --fw-uv: #a050f0;
+  --fw-uv-dim: rgba(160, 80, 240, 0.6);
 
   /* Neutrals - Minimal Contrast */
   --fw-bg: #0a0a0a;

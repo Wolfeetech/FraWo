@@ -25,8 +25,8 @@ All emails are managed via Strato.
 - **Claim:** Smart Media & Event
 - **Brand Kit (Finalized 07.04.2026):**
   - **Deep Forest:** `#064e3b` (Trust & Craft)
-  - **Accent UV Power:** `#a855f7` (Technic & Event Light)
-  - **Tech Mint:** `#4ade80` (Accents)
+  - **Accent UV Power:** `#a050f0` (Technic & Event Light)
+  - **Tech Mint:** `#2ecc71` (Accents)
   - **Typography:** Poppins (Black/Medium/Regular)
 
 ---

@@ -393,9 +393,9 @@
     pointer-events: none;
 }
 .mood-dialog__feedback.success {
-    background: rgba(16, 185, 129, 0.15);
-    border: 1px solid rgba(16, 185, 129, 0.3);
-    color: #10b981;
+    background: rgba(46, 204, 113, 0.15);
+    border: 1px solid rgba(46, 204, 113, 0.3);
+    color: #2ecc71;
     transform: translateY(0);
     opacity: 1;
 }

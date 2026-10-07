@@ -56,7 +56,7 @@
         </mxCell>
 
         <!-- PA LAUTSPRECHER (SUBS CENTER) -->
-        <mxCell id="pa_subs" value="🔊 SUBWOOFER CLUSTER (18&quot; Bässe)&#xa;Mono Summe / Cardioid Setup vor der Bühne" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#10b981;strokeColor=#047857;fontColor=#ffffff;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+        <mxCell id="pa_subs" value="🔊 SUBWOOFER CLUSTER (18&quot; Bässe)&#xa;Mono Summe / Cardioid Setup vor der Bühne" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2ecc71;strokeColor=#047857;fontColor=#ffffff;fontSize=11;fontStyle=1;" vertex="1" parent="1">
           <mxGeometry x="460" y="300" width="240" height="45" as="geometry"/>
         </mxCell>
 

@@ -12,7 +12,7 @@
     --card-hover: #273549;
     --primary: #38bdf8;
     --primary-glow: rgba(56, 189, 248, 0.15);
-    --accent: #10b981;
+    --accent: #2ecc71;
     --warning: #f59e0b;
     --danger: #ef4444;
     --text: #f8fafc;
@@ -76,7 +76,7 @@
     gap: 6px;
     font-weight: 600;
   }
-  .dot-green { width: 8px; height: 8px; background: #10b981; border-radius: 50%; box-shadow: 0 0 6px #10b981; }
+  .dot-green { width: 8px; height: 8px; background: #2ecc71; border-radius: 50%; box-shadow: 0 0 6px #2ecc71; }
   .dot-yellow { width: 8px; height: 8px; background: #f59e0b; border-radius: 50%; box-shadow: 0 0 6px #f59e0b; }
   .dot-blue { width: 8px; height: 8px; background: #38bdf8; border-radius: 50%; box-shadow: 0 0 6px #38bdf8; }
   
@@ -206,7 +206,7 @@
     text-transform: uppercase;
   }
   .badge-blue { background: rgba(56,189,248,0.2); color: var(--primary); }
-  .badge-green { background: rgba(16,185,129,0.2); color: var(--accent); }
+  .badge-green { background: rgba(46, 204, 113,0.2); color: var(--accent); }
   .badge-yellow { background: rgba(245,158,11,0.2); color: var(--warning); }
   .badge-red { background: rgba(239,68,68,0.2); color: var(--danger); }
 
@@ -239,7 +239,7 @@
   }
   .btn-touch:active { filter: brightness(1.2); }
   .btn-green { background: #059669; }
-  .btn-green:active { background: #10b981; }
+  .btn-green:active { background: #2ecc71; }
   .btn-dark { background: #334155; }
   .btn-danger { background: #dc2626; }
 
@@ -280,7 +280,7 @@
   }
   .btn-play {
     flex: 2;
-    background: #10b981;
+    background: #2ecc71;
     font-size: 19px;
     padding: 16px;
     border-radius: 16px;
@@ -426,7 +426,7 @@
     gap: 8px;
   }
   .title-franz { color: #38bdf8; }
-  .title-wolf { color: #10b981; }
+  .title-wolf { color: #2ecc71; }
   .amb-task-list {
     list-style: none;
     display: flex;
@@ -612,7 +612,7 @@
   
   /* ADMIN SECTION IN APPS */
   .admin-banner {
-    background: linear-gradient(90deg, rgba(56, 189, 248, 0.12), rgba(16, 185, 129, 0.12));
+    background: linear-gradient(90deg, rgba(56, 189, 248, 0.12), rgba(46, 204, 113, 0.12));
     border: 1px solid #38bdf8;
     border-radius: 12px;
     padding: 12px 16px;
@@ -897,7 +897,7 @@
     50% { box-shadow: 0 0 14px rgba(239, 68, 68, 0.8); }
   }
   .q-submit-btn {
-    background: #10b981;
+    background: #2ecc71;
     border: none;
     color: #fff;
     padding: 12px 20px;
@@ -1239,8 +1239,8 @@
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: #10b981;
-    box-shadow: 0 0 8px #10b981;
+    background: #2ecc71;
+    box-shadow: 0 0 8px #2ecc71;
   }
   .hud-pill .dot-blue { background: #38bdf8; box-shadow: 0 0 8px #38bdf8; }
   .hud-pill .dot-amber { background: #f59e0b; box-shadow: 0 0 8px #f59e0b; }
@@ -1405,7 +1405,7 @@
   .timeline-bar-fill {
     height: 100%;
     width: 0%;
-    background: linear-gradient(90deg, #0284c7, #38bdf8, #10b981);
+    background: linear-gradient(90deg, #0284c7, #38bdf8, #2ecc71);
     border-radius: 6px;
     transition: width 0.8s linear;
     box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
@@ -1457,7 +1457,7 @@
   .vu-bar-active {
     height: 100%;
     width: 60%;
-    background: linear-gradient(90deg, #10b981 0%, #10b981 65%, #f59e0b 85%, #ef4444 100%);
+    background: linear-gradient(90deg, #2ecc71 0%, #2ecc71 65%, #f59e0b 85%, #ef4444 100%);
     border-radius: 3px;
     transition: width 0.1s ease-out;
   }
@@ -1500,9 +1500,9 @@
     box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
   }
   .btn-hero-jingle {
-    background: #7c3aed;
+    background: #9d4edd;
     color: #fff;
-    box-shadow: 0 4px 14px rgba(124, 58, 237, 0.35);
+    box-shadow: 0 4px 14px rgba(157, 78, 221, 0.35);
   }
   .btn-hero-vote {
     background: #1e293b;
@@ -1704,7 +1704,7 @@
   }
   .btn-jingle {
     background: linear-gradient(135deg, #1e293b, #0f172a);
-    border: 1px solid #7c3aed;
+    border: 1px solid #9d4edd;
     color: #e2e8f0;
     padding: 12px;
     border-radius: 12px;
@@ -1718,7 +1718,7 @@
     transition: all 0.15s ease;
   }
   .btn-jingle:active {
-    background: #7c3aed;
+    background: #9d4edd;
     color: #fff;
     transform: scale(0.96);
   }
@@ -1836,8 +1836,8 @@
       <div class="amb-telemetry">
         <div>⚡ Anker IT: <b style="color:#fff;" id="amb-pwr-server">-- W</b></div>
         <div>🖥️ TV-Screen: <b style="color:#fff;" id="amb-pwr-screen">-- W</b></div>
-        <div>🏠 Home Assistant: <b style="color:#10b981;" id="amb-ha-status">Online</b></div>
-        <div>🌐 UCG-Netz: <b style="color:#10b981;">Verbunden</b></div>
+        <div>🏠 Home Assistant: <b style="color:#2ecc71;" id="amb-ha-status">Online</b></div>
+        <div>🌐 UCG-Netz: <b style="color:#2ecc71;">Verbunden</b></div>
       </div>
       <div class="amb-hint">
         <span>👆 Bildschirm berühren, um das Cockpit zu öffnen</span>
@@ -1978,7 +1978,7 @@
         <!-- 1. Telemetry HUD Bar -->
         <div class="radio-hud-bar">
           <div class="hud-vitals">
-            <div class="hud-pill"><span class="dot"></span> LiquidSoap AutoDJ: <b style="color:#10b981;">Aktiv</b></div>
+            <div class="hud-pill"><span class="dot"></span> LiquidSoap AutoDJ: <b style="color:#2ecc71;">Aktiv</b></div>
             <div class="hud-pill"><span class="dot-blue"></span> Icecast Core: <b style="color:#38bdf8;">320k MP3</b></div>
             <div class="hud-pill"><span class="dot-amber"></span> Hörer: <b id="hud-listeners" style="color:#f59e0b;">0</b></div>
             <div class="hud-pill">Mount: <code style="color:#94a3b8;">/frawo_funk/radio.mp3</code></div>
@@ -2091,7 +2091,7 @@
         <div class="director-card">
           <div class="flow-header">
             <span>🎚️ Program Director & Sende-Presets</span>
-            <span style="font-size:12px; color:#10b981; font-weight:700;" id="preset-status-label">⚖️ Balanced</span>
+            <span style="font-size:12px; color:#2ecc71; font-weight:700;" id="preset-status-label">⚖️ Balanced</span>
           </div>
 
           <!-- Quick Presets -->
@@ -2117,7 +2117,7 @@
           <div class="flow-card">
             <div class="flow-header">
               <span>🎙️ Jingle Soundboard & Drops</span>
-              <span style="font-size:11.5px; color:#7c3aed; font-weight:700;">Live Dropper</span>
+              <span style="font-size:11.5px; color:#9d4edd; font-weight:700;">Live Dropper</span>
             </div>
             <div class="soundboard-grid">
               <button class="btn-jingle" onclick="radioDropStationID()">
@@ -2283,7 +2283,7 @@
         audio.pause();
         isPlaying = false;
         btn.textContent = '▶️ RADIO STARTEN';
-        btn.style.background = '#10b981';
+        btn.style.background = '#2ecc71';
       }
     }
 
@@ -2398,7 +2398,7 @@
             const ambHa = document.getElementById('amb-ha-status');
             if (ambHa) {
               ambHa.textContent = s.ha_online ? 'Online' : 'Standby';
-              ambHa.style.color = s.ha_online ? '#10b981' : '#f59e0b';
+              ambHa.style.color = s.ha_online ? '#2ecc71' : '#f59e0b';
             }
           }
 
@@ -2785,7 +2785,7 @@
         if (res.success && res.refined) {
           document.getElementById('q-modal-answer').value = res.refined;
           statusEl.textContent = '✅ Antwort erfolgreich mit KI formuliert.';
-          statusEl.style.color = '#10b981';
+          statusEl.style.color = '#2ecc71';
         } else {
           statusEl.textContent = '⚠️ KI-Antwort nicht verfügbar, Originaltext beibehalten.';
           statusEl.style.color = '#f59e0b';
@@ -2852,7 +2852,7 @@
 
           container.style.display = 'block';
           statusEl.textContent = '✅ Web-Recherche abgeschlossen! Klicke auf "In Antwort einfügen".';
-          statusEl.style.color = '#10b981';
+          statusEl.style.color = '#2ecc71';
         } else {
           statusEl.textContent = '⚠️ ' + (res.error || 'Keine relevanten Web-Ergebnisse gefunden.');
           statusEl.style.color = '#f59e0b';
@@ -2876,7 +2876,7 @@
       }
       const statusEl = document.getElementById('q-modal-status');
       statusEl.textContent = '📋 Recherche-Ergebnis in Antwortfeld eingefügt.';
-      statusEl.style.color = '#10b981';
+      statusEl.style.color = '#2ecc71';
       answerArea.focus();
     }
 
@@ -2917,7 +2917,7 @@
           submitBtn.innerHTML = '✅ <span>Gespeichert!</span>';
           submitBtn.style.background = '#059669';
           statusEl.textContent = '✅ Antwort & Ollama KI-Zusammenfassung im Odoo-Chatter erfasst!';
-          statusEl.style.color = '#10b981';
+          statusEl.style.color = '#2ecc71';
           
           setTimeout(() => {
             closeAnswerModal();
@@ -3201,7 +3201,7 @@
         const istLive = !!(data.live && data.live.is_live);
         const name = (data.live && data.live.streamer_name) ? data.live.streamer_name : '';
         factS.textContent = istLive ? (name || 'Live-DJ') : 'AutoDJ';
-        factS.style.color = istLive ? '#10b981' : '#e2e8f0';
+        factS.style.color = istLive ? '#2ecc71' : '#e2e8f0';
       }
 
       radioDurationSeconds = parseInt(np.duration || song.duration || 0);

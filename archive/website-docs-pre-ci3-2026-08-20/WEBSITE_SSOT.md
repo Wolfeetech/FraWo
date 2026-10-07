@@ -12,7 +12,7 @@
 - **Frontend-Stil**: NTS-inspired, High-Contrast, Editorial.
 - **Design-Elemente**:
   - Dark Mode (`#0a0a0a`)
-  - Accent Colors: Forest Green (`#064e3b`) & UV Purple (`#a855f7`)
+  - Accent Colors: Forest Green (`#064e3b`) & UV Purple (`#a050f0`)
   - Font: **Inter**
   - Layout: Grid-basiert, 1px Borders, native Scroll-Animationen (Fade-In).
 - **Ingress**: Cloudflare Proxy -> Toolbox (Caddy Proxy/Redirect) -> Odoo.

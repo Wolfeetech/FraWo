@@ -15,9 +15,9 @@
   --ff-surface-elevated: #111714;
   --ff-border: rgba(255, 255, 255, 0.07);
   --ff-border-light: rgba(255, 255, 255, 0.12);
-  --ff-accent-#0099CC: #00BFFF;
-  --ff-accent-#00BFFF: #0099CC;
-  --ff-accent-green: #00e599;
+  --ff-accent: #A050F0;
+  --ff-accent-hover: #9D4EDD;
+  --ff-accent-green: #2ecc71;
   --ff-accent-amber: #f59e0b;
   --ff-accent-red: #ef4444;
   --ff-text: #f8fafc;
@@ -48,7 +48,7 @@ body {
   transform: translateX(-50%);
   width: 850px;
   height: 550px;
-  background: radial-gradient(circle at 50% 40%, rgba(147, 51, 234, 0.15) 0%, rgba(0, 229, 153, 0.07) 45%, transparent 70%);
+  background: radial-gradient(circle at 50% 40%, rgba(147, 51, 234, 0.15) 0%, rgba(46, 204, 113, 0.07) 45%, transparent 70%);
   filter: blur(90px);
   pointer-events: none;
   z-index: 0;
@@ -101,7 +101,7 @@ body {
   transition: color 0.2s;
 }
 .ff-back-link:hover {
-  color: var(--ff-accent-#0099CC);
+  color: var(--ff-accent);
 }
 
 /* Live Marquee Ticker */
@@ -124,7 +124,7 @@ body {
   font-family: var(--ff-font-mono);
   font-size: 0.74rem;
   font-weight: 700;
-  color: var(--ff-accent-#0099CC);
+  color: var(--ff-accent);
   letter-spacing: 0.08em;
 }
 .ff-ticker-content span {
@@ -148,6 +148,32 @@ body {
   position: relative;
   z-index: 2;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  perspective: 1200px;
+  transform-style: preserve-3d;
+  transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 220ms ease, border-color 220ms ease;
+}
+.ff-deck::after {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  border-radius: 17px;
+  pointer-events: none;
+  background: linear-gradient(115deg, rgba(255,255,255,0.08), transparent 28%, transparent 72%, rgba(46, 204, 113,0.05));
+  transform: translateZ(1px);
+}
+@media (hover: hover) and (pointer: fine) {
+  .ff-deck:hover {
+    transform: translateY(-3px) rotateX(0.45deg);
+    border-color: rgba(255,255,255,0.17);
+    box-shadow: 0 28px 70px rgba(0,0,0,0.58), 0 10px 28px rgba(157, 78, 221,0.10), inset 0 1px 0 rgba(255,255,255,0.12);
+  }
+  .ff-deck:hover .ff-deck-art {
+    transform: rotateY(-5deg) rotateX(2deg) translateZ(16px) scale(1.015);
+  }
+  .ff-card:hover {
+    transform: translateY(-3px) rotateX(0.7deg);
+    box-shadow: 0 16px 32px rgba(0,0,0,0.34), 0 0 0 1px rgba(255,255,255,0.035);
+  }
 }
 @media (max-width: 768px) {
   .ff-deck { padding: 24px 20px; }
@@ -171,8 +197,8 @@ body {
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--ff-accent-green);
-  background: rgba(0, 229, 153, 0.08);
-  border: 1px solid rgba(0, 229, 153, 0.25);
+  background: rgba(46, 204, 113, 0.08);
+  border: 1px solid rgba(46, 204, 113, 0.25);
   padding: 5px 12px;
   border-radius: 20px;
 }
@@ -231,7 +257,7 @@ body {
   font-family: var(--ff-font-mono);
   font-size: 1.05rem;
   font-weight: 700;
-  color: var(--ff-accent-#0099CC);
+  color: var(--ff-accent);
   letter-spacing: 0.02em;
   margin-bottom: 4px;
 }
@@ -273,7 +299,7 @@ body {
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .ff-play-btn:hover {
-  background: var(--ff-accent-#0099CC);
+  background: var(--ff-accent);
   color: #ffffff;
   transform: translateY(-2px);
   box-shadow: 0 6px 24px rgba(192, 132, 252, 0.35);
@@ -305,7 +331,7 @@ body {
   transition: height 0.08s ease, background-color 0.15s;
 }
 .ff-vis-bar.active {
-  background: linear-gradient(180deg, #00BFFF, #0099CC);
+  background: linear-gradient(180deg, #A050F0, #9D4EDD);
   box-shadow: 0 0 6px rgba(192, 132, 252, 0.3);
 }
 
@@ -354,7 +380,7 @@ body {
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background: var(--ff-accent-#0099CC);
+  background: var(--ff-accent);
   cursor: pointer;
   box-shadow: 0 0 6px rgba(192, 132, 252, 0.5);
 }
@@ -380,7 +406,7 @@ body {
 .ff-prog-fill {
   height: 100%;
   width: 0%;
-  background: linear-gradient(90deg, #0099CC, #00e599);
+  background: linear-gradient(90deg, #9D4EDD, #2ecc71);
   border-radius: 2px;
   transition: width 1s linear;
 }
@@ -410,7 +436,7 @@ body {
 .ff-mood-header span:last-child {
   font-size: 0.64rem;
   font-weight: 600;
-  color: var(--ff-accent-#0099CC);
+  color: var(--ff-accent);
   text-transform: none;
   letter-spacing: 0;
 }
@@ -490,14 +516,14 @@ body {
   border-color: rgba(255, 255, 255, 0.15);
 }
 .ff-btn-banger:hover {
-  border-color: #00e599;
-  box-shadow: 0 4px 18px rgba(0, 229, 153, 0.25);
+  border-color: #2ecc71;
+  box-shadow: 0 4px 18px rgba(46, 204, 113, 0.25);
 }
 .ff-btn-banger.active {
-  background: rgba(0, 229, 153, 0.18) !important;
-  border-color: rgba(0, 229, 153, 0.8) !important;
-  color: #00e599 !important;
-  box-shadow: 0 0 20px rgba(0, 229, 153, 0.35);
+  background: rgba(46, 204, 113, 0.18) !important;
+  border-color: rgba(46, 204, 113, 0.8) !important;
+  color: #2ecc71 !important;
+  box-shadow: 0 0 20px rgba(46, 204, 113, 0.35);
 }
 .ff-banger-badge {
   background: rgba(0, 0, 0, 0.45);
@@ -509,19 +535,19 @@ body {
   margin-left: 4px;
 }
 .ff-btn-banger.active .ff-banger-badge {
-  background: rgba(0, 229, 153, 0.3);
-  border-color: rgba(0, 229, 153, 0.6);
+  background: rgba(46, 204, 113, 0.3);
+  border-color: rgba(46, 204, 113, 0.6);
   color: #ffffff;
 }
 
 .ff-btn-chill:hover {
-  border-color: #00BFFF;
+  border-color: #A050F0;
   box-shadow: 0 4px 16px rgba(192, 132, 252, 0.2);
 }
 .ff-btn-chill.active {
   background: rgba(192, 132, 252, 0.18) !important;
   border-color: rgba(192, 132, 252, 0.8) !important;
-  color: #00BFFF !important;
+  color: #A050F0 !important;
   box-shadow: 0 0 16px rgba(192, 132, 252, 0.3);
 }
 
@@ -532,10 +558,10 @@ body {
   margin-bottom: 10px;
 }
 .ff-redaktion-btn.active {
-  background: rgba(0, 191, 255, 0.18) !important;
-  border-color: rgba(0, 191, 255, 0.8) !important;
-  color: #00BFFF !important;
-  box-shadow: 0 0 16px rgba(0, 191, 255, 0.3);
+  background: rgba(160, 80, 240, 0.18) !important;
+  border-color: rgba(160, 80, 240, 0.8) !important;
+  color: #A050F0 !important;
+  box-shadow: 0 0 16px rgba(160, 80, 240, 0.3);
 }
 
 /* Deck Sub-Footer */
@@ -574,7 +600,7 @@ body {
 }
 .ff-jukebox-input:focus {
   outline: none;
-  border-color: var(--ff-accent-#0099CC);
+  border-color: var(--ff-accent);
   box-shadow: 0 0 0 2px rgba(192, 132, 252, 0.2);
 }
 .ff-jukebox-results {
@@ -611,8 +637,8 @@ body {
   transition: all 0.2s;
   white-space: nowrap;
 }
-.ff-req-btn:hover { background: var(--ff-accent-#0099CC); border-color: var(--ff-accent-#0099CC); }
-.ff-req-btn.done { background: rgba(0, 229, 153, 0.15); border-color: rgba(0, 229, 153, 0.5); color: #00e599; pointer-events: none; }
+.ff-req-btn:hover { background: var(--ff-accent); border-color: var(--ff-accent); }
+.ff-req-btn.done { background: rgba(46, 204, 113, 0.15); border-color: rgba(46, 204, 113, 0.5); color: #2ecc71; pointer-events: none; }
 
 /* Section Headers */
 .ff-section-head {
@@ -694,8 +720,8 @@ body {
 }
 .ff-week-tab.today.active {
   color: #ffffff;
-  background: linear-gradient(145deg, rgba(0, 229, 153, 0.15), var(--ff-surface-elevated));
-  border-color: rgba(0, 229, 153, 0.3);
+  background: linear-gradient(145deg, rgba(46, 204, 113, 0.15), var(--ff-surface-elevated));
+  border-color: rgba(46, 204, 113, 0.3);
 }
 .ff-week-tab .ff-tab-day { display: block; }
 .ff-week-tab .ff-tab-sub {
@@ -726,8 +752,8 @@ body {
   box-shadow: 0 0 6px var(--ff-accent-green);
 }
 .ff-quality-btn:hover {
-  background: rgba(0, 229, 153, 0.18) !important;
-  border-color: #00e599 !important;
+  background: rgba(46, 204, 113, 0.18) !important;
+  border-color: #2ecc71 !important;
   transform: translateY(-1px);
 }
 
@@ -806,8 +832,9 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  transition: all 0.2s ease;
+  transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 180ms ease, border-color 180ms ease, background 180ms ease;
   position: relative;
+  transform-style: preserve-3d;
 }
 .ff-card:hover {
   background: var(--ff-surface-elevated);
@@ -816,14 +843,14 @@ body {
 }
 .ff-card.active-slot {
   background: linear-gradient(145deg, rgba(147, 51, 234, 0.12), rgba(10, 14, 12, 0.95));
-  border-color: var(--ff-accent-#0099CC);
+  border-color: var(--ff-accent);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 25px rgba(147, 51, 234, 0.18);
 }
 .ff-card-time {
   font-family: var(--ff-font-mono);
   font-size: 0.74rem;
   font-weight: 700;
-  color: var(--ff-accent-#0099CC);
+  color: var(--ff-accent);
   margin-bottom: 8px;
 }
 .ff-card.active-slot .ff-card-time { color: var(--ff-accent-green); }
@@ -847,6 +874,18 @@ body {
   overflow-x: auto;
   padding-bottom: 8px;
   scrollbar-width: thin;
+}
+
+/* Radio-spezifischer Footer: Desktop in Spalten, mobil ohne Seitenüberlauf. */
+.fw-footer-grid {
+  max-width: 1140px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1.2fr;
+  gap: 36px;
+}
+@media (max-width: 760px) {
+  .fw-footer-grid { grid-template-columns: 1fr; gap: 28px; }
 }
 .ff-hist-item {
   flex-shrink: 0;
@@ -965,7 +1004,7 @@ body {
 }
 .ff-link-row:last-child { border-bottom: none; }
 .ff-link-row a {
-  color: var(--ff-accent-#0099CC);
+  color: var(--ff-accent);
   text-decoration: none;
   font-weight: 700;
 }
@@ -1001,7 +1040,7 @@ body {
   gap: 14px;
   background: rgba(0, 0, 0, 0.45);
   border: 1px solid var(--ff-border);
-  border-left: 3px solid var(--ff-accent-#0099CC);
+  border-left: 3px solid var(--ff-accent);
   border-radius: 10px;
   padding: 10px 16px;
   margin-bottom: 20px;
@@ -1022,7 +1061,7 @@ body {
   font-family: var(--ff-font-mono);
   font-size: 0.65rem;
   font-weight: 800;
-  color: var(--ff-accent-#0099CC);
+  color: var(--ff-accent);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   flex-shrink: 0;
@@ -1053,6 +1092,7 @@ body {
   align-items: center;
   gap: 24px;
   margin-bottom: 24px;
+  transform-style: preserve-3d;
 }
 .ff-deck-art {
   width: 130px;
@@ -1060,9 +1100,12 @@ body {
   border-radius: 12px;
   object-fit: cover;
   border: 1px solid var(--ff-border-light);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 18px 34px rgba(0,0,0,0.46), 12px 8px 28px rgba(157, 78, 221,0.08);
   flex-shrink: 0;
   background: #000;
+  transform: rotateY(-2deg) translateZ(8px);
+  transform-origin: center center;
+  transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 220ms ease;
 }
 .ff-track-info {
   flex-grow: 1;
@@ -1089,6 +1132,22 @@ body {
   .ff-next-card { padding: 8px 12px !important; }
   .ff-next-title { font-size: 0.76rem !important; }
   .ff-next-sub { font-size: 0.64rem !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ff-deck,
+  .ff-deck-art,
+  .ff-card,
+  .ff-play-btn,
+  .ff-mood-btn {
+    transition: none !important;
+    transform: none !important;
+  }
+  .ff-ticker-content,
+  .ff-live-dot,
+  .ff-floating-emoji {
+    animation: none !important;
+  }
 }
 
 </style>
@@ -1121,8 +1180,8 @@ body {
         <span class="ff-live-dot"/> <span id="ff-live-badge">ON AIR JETZT</span>
       </div>
       <div class="ff-specs">
-        <span class="ff-spec-tag" id="ff-show-tag" style="color: #00BFFF; border-color: rgba(0, 191, 255, 0.4); background: rgba(0, 191, 255, 0.08);">📻 SHOW: LIVE</span>
-        <button type="button" class="ff-spec-tag ff-quality-btn" id="ff-quality-btn" onclick="if(window.ffToggleQuality) window.ffToggleQuality()" title="Klicken: Umschalten zwischen 320k HD und 192k ECO" style="cursor: pointer; background: rgba(0, 229, 153, 0.08); border-color: rgba(0, 229, 153, 0.4); color: #00e599; font-family: inherit; font-size: inherit; font-weight: inherit; transition: all 0.2s;">
+        <span class="ff-spec-tag" id="ff-show-tag" style="color: #A050F0; border-color: rgba(160, 80, 240, 0.4); background: rgba(160, 80, 240, 0.08);">📻 SHOW: LIVE</span>
+        <button type="button" class="ff-spec-tag ff-quality-btn" id="ff-quality-btn" disabled="disabled" aria-label="Beta-Stream: 320 kbit/s" title="Beta-Stream: 320 kbit/s" style="cursor: default; background: rgba(46, 204, 113, 0.08); border-color: rgba(46, 204, 113, 0.4); color: #2ecc71; font-family: inherit; font-size: inherit; font-weight: inherit; transition: all 0.2s;">
           <span id="ff-quality-label">⚡ 320K HD</span>
         </button>
         <span class="ff-spec-tag">44.1 KHZ</span>
@@ -1143,7 +1202,7 @@ body {
     <!-- Audio Controls & Slender Visualizer -->
     <div class="ff-controls">
       <!-- Play / Pause Button -->
-      <button class="ff-play-btn" id="ff-play-btn" type="button" onclick="if(window.ffTogglePlay) window.ffTogglePlay()">
+      <button class="ff-play-btn" id="ff-play-btn" type="button" aria-label="FraWo Funk abspielen oder pausieren" onclick="if(window.ffTogglePlay) window.ffTogglePlay()">
         <span id="ff-play-ico">▶</span> <span id="ff-play-txt">LISTEN LIVE</span>
       </button>
 
@@ -1158,7 +1217,7 @@ body {
       <!-- Volume Slider -->
       <div class="ff-volume-wrap">
         <span>VOL</span>
-        <input type="range" min="0" max="1" step="0.05" value="0.9" class="ff-vol-slider" id="ff-vol-slider" oninput="if(window.ffSetVolume) window.ffSetVolume(this.value)"/>
+        <input type="range" min="0" max="1" step="0.05" value="0.9" class="ff-vol-slider" id="ff-vol-slider" aria-label="Lautstärke" oninput="if(window.ffSetVolume) window.ffSetVolume(this.value)"/>
       </div>
     </div>
 
@@ -1478,6 +1537,11 @@ body {
         };
 
         window.ffRate = function (stars) {
+          if (!ffIsLoggedIn()) {
+            if (ratingSub) ratingSub.textContent = 'Zum Bewerten bitte im Portal anmelden';
+            if (starsEl) starsEl.classList.add('locked');
+            return;
+          }
           var key = window.currentTrackKey || '';
           if (!key) return;
           fetch('/radio/rate', {
@@ -1519,7 +1583,7 @@ body {
     <!-- Deck Sub-Footer -->
     <div class="ff-deck-footer">
       <div>
-        <span style="color: #00e599;">●</span> <span id="ff-listeners">1</span> Hörer:in live verbunden
+        <span style="color: #2ecc71;">●</span> <span id="ff-listeners">1</span> Hörer:in live verbunden
       </div>
     </div>
   </div>
@@ -1706,9 +1770,9 @@ body {
     }
     if (btn) {
       if (currentQuality === '320') {
-        btn.style.borderColor = 'rgba(0, 229, 153, 0.4)';
-        btn.style.color = '#00e599';
-        btn.style.background = 'rgba(0, 229, 153, 0.08)';
+        btn.style.borderColor = 'rgba(46, 204, 113, 0.4)';
+        btn.style.color = '#2ecc71';
+        btn.style.background = 'rgba(46, 204, 113, 0.08)';
       } else {
         btn.style.borderColor = 'rgba(245, 158, 11, 0.4)';
         btn.style.color = '#f59e0b';
@@ -1728,58 +1792,34 @@ body {
   };
 
   window.ffTogglePlay = function() {
-    if (!audio) {
-      audio = new Audio();
-      audio.preload = 'none';
-
-      audio.addEventListener('play', function() {
-        reconnectAttempts = 0;
-        startAnimation();
-      });
-      audio.addEventListener('pause', function() {
-        if (!isPlaying) stopAnimation();
-      });
-      audio.addEventListener('ended', function() {
-        if (isPlaying) scheduleReconnect();
-        else stopAnimation();
-      });
-      audio.addEventListener('error', function(e) {
-        console.log('Stream playback interrupted/error:', e);
-        if (isPlaying) {
-          scheduleReconnect();
-        } else {
-          stopAnimation();
-        }
-      });
-
-      var volSlider = document.getElementById('ff-vol-slider');
-      if (volSlider) audio.volume = parseFloat(volSlider.value);
+    /* Der globale Dauerplayer ist die einzige Audioinstanz. Während der
+       Seitenfuß noch initialisiert, kurz warten statt einen zweiten Stream
+       als lokalen Fallback zu erzeugen. */
+    if (window.fwAudio &amp;&amp; typeof window.fwAudio.togglePlay === 'function') {
+      window.fwAudio.togglePlay();
+      return;
     }
-
-    if (isPlaying) {
-      if (reconnectTimer) {
-        clearTimeout(reconnectTimer);
-        reconnectTimer = null;
+    var txt = document.getElementById('ff-play-txt');
+    if (txt) txt.textContent = 'PLAYER LÄDT...';
+    setTimeout(function() {
+      if (window.fwAudio &amp;&amp; typeof window.fwAudio.togglePlay === 'function') {
+        window.fwAudio.togglePlay();
+      } else if (txt) {
+        txt.textContent = 'BITTE NEU LADEN';
       }
-      reconnectAttempts = 0;
-      audio.pause();
-      audio.src = '';
-      stopAnimation();
-    } else {
-      reconnectAttempts = 0;
-      audio.src = streamUrl + '?t=' + Date.now();
-      audio.load();
-      audio.play().then(function() {
-        startAnimation();
-      }).catch(function(e) {
-        console.log('Playback error:', e);
-        stopAnimation();
-      });
-    }
+    }, 350);
   };
 
   window.ffSetVolume = function(val) {
-    if (audio) audio.volume = parseFloat(val);
+    if (window.fwAudio &amp;&amp; typeof window.fwAudio.setVolume === 'function') {
+      window.fwAudio.setVolume(val);
+      return;
+    }
+    setTimeout(function() {
+      if (window.fwAudio &amp;&amp; typeof window.fwAudio.setVolume === 'function') {
+        window.fwAudio.setVolume(val);
+      }
+    }, 350);
   };
 
   function loadVotes() {
@@ -2084,7 +2124,7 @@ body {
       var safeArtist = artist.replace(/"/g, '');
 
       div.innerHTML =
-        '&lt;img class="ff-hist-art" src="' + art + '" alt="" loading="lazy"/&gt;' +
+        '&lt;img class="ff-hist-art" src="' + art + '" alt="Cover: ' + safeArtist + ' – ' + safeTitle + '" loading="lazy"/&gt;' +
         '&lt;div class="ff-hist-title" title="' + safeTitle + '"&gt;' + title + '&lt;/div&gt;' +
         '&lt;div class="ff-hist-artist" title="' + safeArtist + '"&gt;' + artist + '&lt;/div&gt;' +
         '&lt;div class="ff-hist-rating"&gt;' +
@@ -2517,7 +2557,7 @@ body {
 
     <!-- CANONICAL FRAWO FOOTER -->
     <footer class="fw-footer" style="background: #141816; border-top: 1px solid #2a2e2c; padding: 60px 20px 30px; margin-top: 80px;">
-      <div style="max-width: 1140px; margin: 0 auto; display: grid; grid-template-columns: 1.5fr 1fr 1fr 1.2fr; gap: 36px;">
+      <div class="fw-footer-grid">
         <div>
           <div style="font-size: 1rem; font-weight: 800; text-transform: uppercase; color: #ffffff; margin-bottom: 12px;">
             FraWo GbR

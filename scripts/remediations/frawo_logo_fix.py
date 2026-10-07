@@ -26,7 +26,7 @@ css_update = """<style>
 
 :root {
   --fw-forest: #064e3b;
-  --fw-uv: #a855f7;
+  --fw-uv: #a050f0;
   --fw-bg: #0a0a0a;
   --fw-surface: #121212;
   --fw-border: #1a1a1a;

@@ -111,3 +111,38 @@ Verzeichnis: `brand_assets/vector_svg/`
   * Claim: `Smart Media & Event`
   * Leistungszeile: `Veranstaltungstechnik · Beschallung · Werkstatt & Lautsprecherbau`
   * Hausnummer / Adresshinweis: `Rothkreuz 14, 88138 Weißensberg`
+
+---
+
+## 7. Rangfolge: welche CI gilt (Stand 07.10.2026)
+
+> ⚠️ **Dieses Dokument ist NICHT die Farbquelle.**
+> Farben, Typografie und Formsprache stehen ausschließlich in
+> **`SSOT/FRAWO_CI_GUIDELINES.md` (CI v3.0, von Wolf freigegeben am 12.07.2026)**
+> und maschinenlesbar in **`SSOT/ci_tokens.json`**.
+> Dieses Dokument beschreibt nur Logo-Varianten, Visitenkarten und Firmenschild.
+
+### Warum diese Klarstellung nötig war
+
+Es gab drei Farbwelten gleichzeitig im System:
+
+1. **CI v3.0** (12.07.2026, von Wolf freigegeben): Akzent `#a050f0`, Hover `#9d4edd`,
+   Forest `#004030`, Hintergrund `#0a0a0a`, Schrift **Inter** — und genauso ist die
+   Website tatsächlich gebaut.
+2. **Cyan-Welle** (01.09.2026, Aufgabe #1229): Akzent auf `#00BFFF` umgestellt —
+   ohne Freigabe, widerspricht v3.0.
+3. **Zweite CI-Doku** (September 2026, Aufgabe #1252): dieses Dokument mit
+   `#064e3b` / `#a855f7` / `#4ade80` und Schrift **Poppins** — ebenfalls ohne Freigabe
+   als „kanonisch" erklärt.
+
+**Entscheidung:** Es gilt Nummer 1. Nummer 2 und 3 werden zurückgebaut.
+Die Regel dahinter steht in `AGENTS.md`: *Bei Widerspruch gewinnt die von Wolf
+freigegebene Fassung, nicht die neuere Agentenfassung.*
+
+### Offener Punkt (braucht Wolfs Entscheidung)
+
+Die Logo-, Visitenkarten- und App-Icon-SVGs in `brand_assets/` wurden im September in
+den Farben aus Nummer 3 (`#064e3b`, `#a855f7`) und in Poppins erzeugt. Sie passen damit
+nicht zur freigegebenen CI v3.0 (`#004030`, `#a050f0`, Inter). Diese Dateien werden
+**nicht automatisch** umgefärbt — ein Neusatz der Logo-Suite ist eine Markenentscheidung,
+keine Aufräumarbeit. `scripts/ci_guard.py` meldet sie dauerhaft mit `!`, bis entschieden ist.

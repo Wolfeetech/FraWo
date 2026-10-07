@@ -33,7 +33,7 @@
   - `--fw-text: #e0e0e0` (Text)
   - `--fw-text-dim: #888888` (Dimmed text)
   - `--fw-border: #1a1a1a` (Borders)
-  - `--fw-uv: #a855f7` (Accent)
+  - `--fw-uv: #a050f0` (Accent)
 
 ### Bereinigung
 - ❌ **Test-CSS entfernt**: View ID 1983 ("FraWo Enforcer TEST") deaktiviert

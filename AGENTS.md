@@ -19,6 +19,25 @@
 1. **Aufgaben:** Odoo (10.1.0.112:8069, DB FraWo_GbR). Ein Task = ein Auftrag. **Das Sperr-Schlagwort ist der Lock** (`🔒 Claude` 168 · `🔒 Jarvis` 169 · `🔒 Antigravity` 170) — die Zuweisung allein sperrt nichts, weil alle Agenten derselbe Odoo-User 7 sind.
 2. **Doku:** `AGENTS.md`, `NOW.md`, `INFRA.md` — **nur im Git-Repo** (`main`). IPs/Hosts/Services/Fundorte der Zugangsdaten stehen in `INFRA.md`. Änderung an Infra → `INFRA.md` im Repo nachziehen, im selben Arbeitsgang pushen.
 3. **Secrets:** Nur Vaultwarden (vault.frawo-tech.de). Nie in Files, Commits oder Chats.
+4. **CI / Gestaltung:** `SSOT/FRAWO_CI_GUIDELINES.md` (v3.0, von Wolf freigegeben 12.07.2026) + maschinenlesbar `SSOT/ci_tokens.json`. **Keine zweite Farbliste anlegen** — auch nicht „Master", „final" oder „v4".
+
+### Vorfahrtsregel bei Widerspruch (gilt für jede Doku, nicht nur CI)
+
+Entstanden aus dem CI-Chaos vom Oktober 2026: Cyan-Welle (#1229), zweite CI-Doku (#1252)
+und die freigegebene v3.0 standen gleichzeitig im System, drei Monate lang.
+
+1. **Die von Wolf freigegebene Fassung gewinnt** — nicht die neuere Agentenfassung.
+   Agenten dürfen nichts zur „kanonischen" Quelle erklären. Das kann nur Wolf.
+2. **Eine Wahrheit pro Thema.** Wer eine Abweichung braucht, ändert die bestehende Quelle
+   oder lässt es. Ein zweites Dokument zum gleichen Thema ist ein Fehler, kein Fortschritt.
+3. **Werte maschinenlesbar.** Alles, was in Code landet (Farben, Adressen, Grenzwerte),
+   gehört zusätzlich als Datei neben die Doku, damit eine Prüfung es vergleichen kann.
+4. **Jede Änderung endet sauber oder gar nicht.** Sicherung → Änderung → Nachprüfung.
+   Schlägt die Nachprüfung fehl, wird zurückgerollt (`scripts/ci_color_restore.py` als Vorbild).
+   Kein „Quick Win", der die Hälfte umstellt und den Rest liegen lässt.
+5. **Eine Dauerprüfung statt guter Vorsätze.** Für die CI: `scripts/ci_guard.py`
+   (läuft täglich per Cron, prüft Repo **und** Live-Odoo, Rückgabewert 1 bei Abweichung).
+   Wer eine neue verbindliche Regel einführt, baut die Prüfung dazu — sonst verfällt sie.
 
 ## Wo liegt was (Fundorte, Stand 07.10.2026)
 

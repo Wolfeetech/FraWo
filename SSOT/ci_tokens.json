@@ -1,0 +1,73 @@
+{
+  "_zweck": "Maschinenlesbare, einzige Wahrheit für FraWo-Farben am Bildschirm. Wird von scripts/ci_guard.py und scripts/ci_color_consolidate.py gelesen. Keine zweite Farbliste anlegen - stattdessen diese Datei ändern.",
+  "quelle": "SSOT/FRAWO_CI_GUIDELINES.md Abschnitt 2 und 6 (CI v3.0)",
+  "status": "VERBINDLICH",
+  "freigegeben_von": "Wolf",
+  "freigegeben_am": "2026-07-12",
+  "bestaetigt_am": "2026-10-07",
+  "regel": "Bei Widerspruch gewinnt die von Wolf freigegebene Fassung, nicht die neuere Agentenfassung.",
+
+  "tokens": {
+    "--fw-bg": "#0a0a0a",
+    "--fw-surface": "#141816",
+    "--fw-primary": "#004030",
+    "--fw-accent": "#a050f0",
+    "--fw-accent-hover": "#9d4edd",
+    "--fw-text-main": "#e8e8e8",
+    "--fw-text-muted": "#98a29e",
+    "--fw-border": "#2a2e2c",
+    "--fw-status-online": "#2ecc71",
+    "--fw-status-alert": "#e63946",
+    "--fw-status-warn": "#f39c12",
+    "--fw-paper": "#f9fbfb",
+    "--fw-ink": "#0d1110",
+    "--fw-white": "#ffffff"
+  },
+
+  "schrift": "Inter",
+  "radius": "0px",
+
+  "abgeloest": {
+    "_erklaerung": "Farben, die im September 2026 ohne Freigabe von Wolf ins System kamen (Cyan-Welle Aufgabe #1229, zweite CI-Doku Aufgabe #1252) oder aus der Zeit vor v3.0 stammen. 'auto' = darf vom Konsolidierungsskript ersetzt werden.",
+    "#00bfff": {"neu": "#a050f0", "auto": true, "grund": "Cyan-Akzent 01.09.2026 ohne Freigabe"},
+    "#0099cc": {"neu": "#9d4edd", "auto": true, "grund": "Cyan-Hover/Rand"},
+    "#00a8e8": {"neu": "#9d4edd", "auto": true, "grund": "Cyan-Hover"},
+    "#06b6d4": {"neu": "#a050f0", "auto": true, "grund": "Teal-Akzent"},
+    "#00d4ff": {"neu": "#a050f0", "auto": true, "grund": "Cyan-Variante"},
+    "#22d3ee": {"neu": "#a050f0", "auto": true, "grund": "Cyan-Variante"},
+    "#a855f7": {"neu": "#a050f0", "auto": true, "grund": "Violett aus zweiter CI-Doku (September), nicht freigegeben"},
+    "#7c3aed": {"neu": "#9d4edd", "auto": true, "grund": "Violett-Hover aus zweiter CI-Doku"},
+    "#00e599": {"neu": "#2ecc71", "auto": true, "grund": "Fremd-Mint -> System Online"},
+    "#10b981": {"neu": "#2ecc71", "auto": true, "grund": "Fremd-Mint dunkel -> System Online"},
+    "#4ade80": {"neu": "#2ecc71", "auto": true, "grund": "Tech Mint aus zweiter CI-Doku -> System Online"},
+    "#22c55e": {"neu": "#2ecc71", "auto": true, "grund": "Mint-Variante -> System Online"},
+    "#064e3b": {"neu": "#004030", "auto": false, "grund": "Gruenton der zweiten CI-Doku. Steckt in Logo- und Visitenkarten-SVGs - nur mit Wolfs Entscheidung aendern."},
+    "#080c0e": {"neu": "#0a0a0a", "auto": false, "grund": "Dunkler Hintergrund der zweiten CI-Doku. Steckt in Logo-SVGs."},
+    "#f0fdf4": {"neu": "#f9fbfb", "auto": false, "grund": "Heller Hintergrund der zweiten CI-Doku. Steckt in Logo-SVGs."}
+  },
+
+  "pruefung_ausnahmen": {
+    "_erklaerung": "Pfade, in denen abgeloeste Farben vorkommen duerfen, ohne dass die Dauerpruefung Alarm schlaegt.",
+    "pfade": [
+      "backups/",
+      "scratch/",
+      "artifacts/",
+      "DOCS/CORPORATE_IDENTITY.md",
+      "SSOT/ci_tokens.json",
+      "SSOT/FRAWO_CI_GUIDELINES.md",
+      "scripts/ci_color_consolidate.py",
+      "scripts/ci_guard.py",
+      "scripts/ci_fix_broken_varnames.py",
+      "scripts/test_radio_beta_view.py"
+    ]
+  },
+
+  "nur_mit_entscheidung_pfade": {
+    "_erklaerung": "Diese Pfade werden vom Konsolidierungsskript NICHT automatisch geaendert, weil eine halbe Umfaerbung schlimmer waere als der Ist-Stand. Der Waechter meldet sie weiter mit '!', bis Wolf entschieden hat.",
+    "pfade": [
+      "brand_assets/",
+      "scripts/archive/",
+      "Codex/website/archive_v3/"
+    ]
+  }
+}

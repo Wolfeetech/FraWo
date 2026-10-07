@@ -178,7 +178,7 @@ export default class RatingModule {
         el.style.position = 'absolute';
         el.style.top = '-20px'; // Pop up
         el.style.right = '0';
-        el.style.color = type === 'success' ? '#10b981' : '#ef4444';
+        el.style.color = type === 'success' ? '#2ecc71' : '#ef4444';
         el.style.fontWeight = 'bold';
         el.style.fontSize = '0.8rem';
 

@@ -16,8 +16,8 @@ Use personal identities for people, role identities for shared functions, and ne
 
 ### 2. Brand Kit (Visuals)
 - **Primary Deep Forest:** `#064e3b` (Vertrauen & Handwerk)
-- **Accent UV Power:** `#a855f7` (Technik, Innovation, Event-Licht)
-- **Tech Mint Details:** `#4ade80` (Status-Anzeigen, Akzente)
+- **Accent UV Power:** `#a050f0` (Technik, Innovation, Event-Licht)
+- **Tech Mint Details:** `#2ecc71` (Status-Anzeigen, Akzente)
 - **Background Moss Light:** `#f0fdf4` (Lesbarkeit)
 - **Typografie:** Poppins (Black für Überschriften, Medium für Sub, Regular für Text)
 

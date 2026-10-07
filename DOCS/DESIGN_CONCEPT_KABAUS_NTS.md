@@ -20,7 +20,7 @@
 
 **FraWo CI (v2.0) = Ultra Minimal Dark:**
 - Fast-schwarzer Background (#0a0a0a)
-- Purple (#a855f7) + Dunkelgrün (#0d4d4d) aus Logo
+- Purple (#a050f0) + Dunkelgrün (#0d4d4d) aus Logo
 - Sharp Corners (NO border-radius)
 - 1px Borders überall (#1a1a1a)
 - Inter Font, klare Hierarchie
@@ -43,7 +43,7 @@
 
 ### Accent Colors (Logo-basiert)
 ```css
---fw-uv: #a855f7;             /* Purple - Aus Logo! (Radio, Live) */
+--fw-uv: #a050f0;             /* Purple - Aus Logo! (Radio, Live) */
 --fw-forest: #0d4d4d;         /* Dunkelgrün - Logo-Hauptfarbe */
 ```
 
@@ -60,7 +60,7 @@ Ghost Button Text: #888888;   /* Mittel-grau */
 - **Header/Footer:** Transparent auf #0a0a0a
 - **Text:** Hell-grau (#e0e0e0) für Headlines, Mittel-grau (#888888) für Body
 - **Borders:** Subtil (#1a1a1a), nur 1px
-- **Akzente:** Purple (#a855f7) für Radio/Highlights, Green (#0d4d4d) für Branding
+- **Akzente:** Purple (#a050f0) für Radio/Highlights, Green (#0d4d4d) für Branding
 - **Buttons:** Primary = Hell auf Dunkel, Ghost = Outline subtle
 - **NO:** Bunter Farben, Gradients, Shadows
 
@@ -146,7 +146,7 @@ Ghost Button Text: #888888;   /* Mittel-grau */
 **Specs:**
 - Background: `#000`
 - Border-top: `1px solid #1a1a1a`
-- Text: `#888`, Accent: `#a855f7` (Live)
+- Text: `#888`, Accent: `#a050f0` (Live)
 - Controls: Minimalistisch, outline-buttons
 - Height: `64px` (Desktop), `auto` (Mobile)
 
@@ -468,7 +468,7 @@ transition: color 0.2s ease;
   --frawo-gray-dark: #1a1a1a;
   --frawo-gray-mid: #555555;
   --frawo-gray-light: #888888;
-  --frawo-purple: #a855f7;
+  --frawo-purple: #a050f0;
   --frawo-orange: #ff6b35;
 
   /* Typography */

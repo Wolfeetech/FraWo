@@ -52,10 +52,10 @@
         <mxCell id="grp_amps" value="AMPING (Endstufen-Rack)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#cbd5e1;fontColor=#475569;fontSize=11;fontStyle=1;" vertex="1" parent="1">
           <mxGeometry x="840" y="110" width="280" height="160" as="geometry"/>
         </mxCell>
-        <mxCell id="amp_tops" value="⚡ 2-Kanal Endstufe (Tops)&#xa;Class-H / Class-D | 2x 800W @ 8Ω&#xa;Kanal A: Top L | Kanal B: Top R" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#10b981;strokeColor=#047857;fontColor=#ffffff;fontStyle=1;fontSize=10;" vertex="1" parent="grp_amps">
+        <mxCell id="amp_tops" value="⚡ 2-Kanal Endstufe (Tops)&#xa;Class-H / Class-D | 2x 800W @ 8Ω&#xa;Kanal A: Top L | Kanal B: Top R" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2ecc71;strokeColor=#047857;fontColor=#ffffff;fontStyle=1;fontSize=10;" vertex="1" parent="grp_amps">
           <mxGeometry x="15" y="35" width="250" height="45" as="geometry"/>
         </mxCell>
-        <mxCell id="amp_subs" value="⚡ Sub-Endstufe (High Power)&#xa;Class-D | 2x 1800W @ 4Ω / Brücke&#xa;Speakon Out 4-Pol" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#10b981;strokeColor=#047857;fontColor=#ffffff;fontStyle=1;fontSize=10;" vertex="1" parent="grp_amps">
+        <mxCell id="amp_subs" value="⚡ Sub-Endstufe (High Power)&#xa;Class-D | 2x 1800W @ 4Ω / Brücke&#xa;Speakon Out 4-Pol" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2ecc71;strokeColor=#047857;fontColor=#ffffff;fontStyle=1;fontSize=10;" vertex="1" parent="grp_amps">
           <mxGeometry x="15" y="95" width="250" height="45" as="geometry"/>
         </mxCell>
 
@@ -66,7 +66,7 @@
         <mxCell id="spk_top_r" value="🔊 Martin Audio CX2 (Right)&#xa;Mid/High Coaxial 12&quot; + 1.4&quot;&#xa;Speakon NL4 (+1/-1)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#3b82f6;fontColor=#1e293b;fontStyle=1;fontSize=10;" vertex="1" parent="1">
           <mxGeometry x="840" y="360" width="180" height="50" as="geometry"/>
         </mxCell>
-        <mxCell id="spk_subs" value="🔊 18&quot; Subwoofer Array&#xa;Bassreflex / Cardioid Setup&#xa;Speakon NL4 (+1/-1)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#10b981;fontColor=#1e293b;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+        <mxCell id="spk_subs" value="🔊 18&quot; Subwoofer Array&#xa;Bassreflex / Cardioid Setup&#xa;Speakon NL4 (+1/-1)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#2ecc71;fontColor=#1e293b;fontStyle=1;fontSize=10;" vertex="1" parent="1">
           <mxGeometry x="840" y="420" width="180" height="50" as="geometry"/>
         </mxCell>
 
@@ -96,20 +96,20 @@
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
         <!-- DSP to Amps -->
-        <mxCell id="e_dsp_tops" value="High/Mid L/R" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#10b981;strokeWidth=2;fontColor=#047857;fontSize=9;" edge="1" parent="1" source="dsp" target="amp_tops">
+        <mxCell id="e_dsp_tops" value="High/Mid L/R" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2ecc71;strokeWidth=2;fontColor=#047857;fontSize=9;" edge="1" parent="1" source="dsp" target="amp_tops">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
-        <mxCell id="e_dsp_subs" value="Sub Out" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#10b981;strokeWidth=2;fontColor=#047857;fontSize=9;" edge="1" parent="1" source="dsp" target="amp_subs">
+        <mxCell id="e_dsp_subs" value="Sub Out" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2ecc71;strokeWidth=2;fontColor=#047857;fontSize=9;" edge="1" parent="1" source="dsp" target="amp_subs">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
         <!-- Amps to Speakers -->
-        <mxCell id="e_amp_topl" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#10b981;strokeWidth=2;" edge="1" parent="1" source="amp_tops" target="spk_top_l">
+        <mxCell id="e_amp_topl" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2ecc71;strokeWidth=2;" edge="1" parent="1" source="amp_tops" target="spk_top_l">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
-        <mxCell id="e_amp_topr" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#10b981;strokeWidth=2;" edge="1" parent="1" source="amp_tops" target="spk_top_r">
+        <mxCell id="e_amp_topr" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2ecc71;strokeWidth=2;" edge="1" parent="1" source="amp_tops" target="spk_top_r">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
-        <mxCell id="e_amp_subs" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#10b981;strokeWidth=2;" edge="1" parent="1" source="amp_subs" target="spk_subs">
+        <mxCell id="e_amp_subs" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2ecc71;strokeWidth=2;" edge="1" parent="1" source="amp_subs" target="spk_subs">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 

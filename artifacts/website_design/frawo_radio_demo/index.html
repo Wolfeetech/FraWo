@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FraWo Funk – Sound Reactive 3D Demo</title>
+<style>
+:root{
+  --bg:#050706;--surface:#0b100d;--surface2:#111814;--line:rgba(255,255,255,.09);
+  --text:#f7f8f8;--muted:#8b9691;--cyan:#00bfff;--green:#00e599;
+  --bass:0;--mid:0;--high:0;--beat:0;--intensity:.72;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+body{overflow-x:hidden}
+
+/* Nur diese feste Bühne reagiert auf Musik. Der Inhalt bleibt völlig ruhig. */
+.visual-stage{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0;perspective:1100px;background:#050706}
+#spectrum{position:absolute;inset:0;width:100%;height:100%;opacity:calc(.34 + var(--intensity)*.2)}
+.visual-grid{position:absolute;inset:-12%;opacity:calc(.12 + var(--beat)*.12);transform-style:preserve-3d;transform:rotateX(67deg) translateY(28%) translateZ(calc(var(--bass)*32px)) scale(calc(1 + var(--beat)*.025));transform-origin:50% 72%;background-image:linear-gradient(rgba(0,191,255,.13) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,153,.09) 1px,transparent 1px);background-size:64px 64px;mask-image:linear-gradient(to top,rgba(0,0,0,.85),transparent 72%);transition:opacity 90ms linear}
+.orb{position:absolute;border-radius:50%;filter:blur(48px);mix-blend-mode:screen;opacity:calc(.11 + var(--beat)*.2);transform:translate3d(0,0,0) scale(calc(.92 + var(--bass)*.2));transition:opacity 80ms linear}
+.orb-a{width:46vw;height:46vw;left:-10vw;top:8vh;background:radial-gradient(circle,rgba(0,191,255,.62),rgba(0,191,255,0) 68%)}
+.orb-b{width:42vw;height:42vw;right:-8vw;bottom:-10vh;background:radial-gradient(circle,rgba(0,229,153,.45),rgba(0,229,153,0) 70%);transform:scale(calc(.9 + var(--mid)*.18))}
+.vignette{position:absolute;inset:0;background:radial-gradient(circle at 50% 35%,transparent 10%,rgba(5,7,6,.35) 58%,rgba(5,7,6,.93) 100%)}
+
+.page{position:relative;z-index:2;min-height:100vh;padding:24px 20px 100px}
+.shell{max-width:1080px;margin:auto}
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:8px 0 22px;border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:12px}.mark{width:38px;height:38px;border-radius:10px;background:linear-gradient(145deg,#0d1d19,#07100d);border:1px solid rgba(255,255,255,.12);box-shadow:0 8px 24px rgba(0,0,0,.45),inset 0 1px rgba(255,255,255,.08);display:grid;place-items:center;color:var(--green);font-weight:900}.brand strong{display:block;letter-spacing:.08em}.brand small,.back{font:600 11px/1.4 ui-monospace,monospace;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}.back{text-decoration:none}
+
+.player-wrap{perspective:1200px;margin-top:34px}
+.player{position:relative;isolation:isolate;padding:32px;border-radius:20px;background:linear-gradient(145deg,rgba(17,24,20,.93),rgba(7,10,8,.9));border:1px solid rgba(255,255,255,.12);box-shadow:0 28px 80px rgba(0,0,0,.55),inset 0 1px rgba(255,255,255,.08);overflow:hidden;transform-style:preserve-3d}
+.player::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(115deg,rgba(255,255,255,.075),transparent 28%,transparent 72%,rgba(0,229,153,.055));opacity:calc(.65 + var(--beat)*.35)}
+.status-row{display:flex;justify-content:space-between;gap:12px;align-items:center}.live,.quality{font:800 11px ui-monospace,monospace;letter-spacing:.1em;border:1px solid rgba(0,229,153,.3);background:rgba(0,229,153,.07);color:var(--green);padding:6px 11px;border-radius:999px}.quality{color:var(--muted);border-color:var(--line);background:rgba(255,255,255,.025)}
+.track{display:grid;grid-template-columns:152px 1fr;gap:28px;align-items:center;margin:28px 0}.cover-shell{perspective:800px}.cover{width:152px;aspect-ratio:1;border-radius:14px;background:radial-gradient(circle at 34% 28%,rgba(0,229,153,.7),transparent 18%),radial-gradient(circle at 62% 62%,rgba(0,191,255,.8),transparent 26%),linear-gradient(145deg,#17231e,#050706);border:1px solid rgba(255,255,255,.14);box-shadow:18px 18px 45px rgba(0,0,0,.55),-8px -6px 24px rgba(0,191,255,.09);transform:rotateY(-6deg) rotateX(2deg) translateZ(16px) scale(calc(1 + var(--beat)*.012));display:grid;place-items:center;transition:transform 70ms linear}.cover::after{content:"F";font-size:58px;font-weight:900;color:rgba(255,255,255,.9);text-shadow:0 8px 32px rgba(0,0,0,.5)}
+h1{font-size:clamp(32px,6vw,64px);letter-spacing:-.055em;line-height:.96;margin:0 0 10px;font-weight:760}.artist{color:var(--cyan);font:700 15px ui-monospace,monospace}.meta{color:var(--muted);font-size:13px;margin-top:7px}
+.controls{display:grid;grid-template-columns:auto 1fr auto;gap:20px;align-items:center}.play{min-height:50px;border:0;border-radius:999px;padding:0 26px;font:900 12px ui-monospace,monospace;letter-spacing:.12em;background:#f7f8f8;color:#060806;cursor:pointer;box-shadow:0 9px 24px rgba(255,255,255,.13);transition:transform 150ms ease,background 150ms}.play:hover{background:var(--green);transform:translateY(-2px)}.play:active{transform:scale(.98)}
+.meter{height:46px;display:flex;align-items:flex-end;gap:3px;padding:8px 12px;border-radius:10px;background:rgba(0,0,0,.3);border:1px solid var(--line);overflow:hidden}.bar{flex:1;min-width:2px;height:12%;border-radius:2px 2px 0 0;background:linear-gradient(to top,var(--cyan),var(--green));opacity:.35;transform-origin:bottom;transition:height 55ms linear,opacity 55ms linear}.volume{display:flex;align-items:center;gap:8px;color:var(--muted);font:700 11px ui-monospace,monospace}.volume input,.tweaks input{accent-color:var(--green)}
+
+.explainer{display:grid;grid-template-columns:1.15fr .85fr;gap:18px;margin-top:24px}.panel{border:1px solid var(--line);background:rgba(10,14,12,.72);border-radius:14px;padding:20px;box-shadow:0 14px 34px rgba(0,0,0,.3)}.panel h2{font-size:16px;margin:0 0 10px}.panel p,.panel li{font-size:13px;line-height:1.65;color:#b8c0bc}.panel ul{margin:0;padding-left:18px}.tweaks{display:grid;gap:13px}.tweak{display:grid;grid-template-columns:120px 1fr auto;align-items:center;gap:10px;font:700 11px ui-monospace,monospace;color:var(--muted)}.tweak output{width:36px;color:var(--green)}
+.notice{margin-top:16px;color:var(--muted);font:600 11px ui-monospace,monospace;text-align:center}
+
+@media(max-width:700px){.page{padding:14px 12px 80px}.player{padding:20px 16px}.track{grid-template-columns:90px 1fr;gap:16px}.cover{width:90px}.cover::after{font-size:36px}.controls{grid-template-columns:1fr}.volume{display:none}.explainer{grid-template-columns:1fr}.visual-grid{background-size:44px 44px}.orb{filter:blur(38px)}}
+@media(prefers-reduced-motion:reduce){.visual-grid,.orb,.cover,.play{transform:none!important;transition:none!important}#spectrum{display:none}.visual-stage{background:radial-gradient(circle at 50% 30%,#0b1713,#050706 65%)}}
+</style>
+</head>
+<body>
+<div class="visual-stage" aria-hidden="true"><canvas id="spectrum"></canvas><div class="visual-grid"></div><div class="orb orb-a"></div><div class="orb orb-b"></div><div class="vignette"></div></div>
+<main class="page"><div class="shell">
+<header class="topbar"><div class="brand"><div class="mark">F</div><div><strong>FRAWO FUNK</strong><small>Sound-reactive 3D demo</small></div></div><span class="back">Demo · nicht live</span></header>
+<section class="player-wrap"><article class="player">
+<div class="status-row"><span class="live">● ON AIR</span><span class="quality">320K · 44.1 KHZ</span></div>
+<div class="track"><div class="cover-shell"><div class="cover"></div></div><div><h1>FraWo Funk</h1><div class="artist">Bodensee Studio Stream</div><div class="meta">House · Disco · Deep · Club</div></div></div>
+<div class="controls"><button class="play" id="play" type="button">▶ DEMO STARTEN</button><div class="meter" id="meter" aria-hidden="true"></div><label class="volume">VOL <input id="volume" type="range" min="0" max="1" step=".05" value=".75" aria-label="Lautstärke"></label></div>
+</article></section>
+<section class="explainer"><div class="panel"><h2>Wirkung</h2><ul><li>Bass pulsiert als räumlicher Druck durch Hintergrund, Licht und Cover.</li><li>Mitten bewegen die beiden Farbräume; Höhen zeichnen feine Spektrallinien.</li><li>Text, Bedienelemente und Layout bleiben stabil und gut lesbar.</li><li>Kein WebGL, keine 3D-Bibliothek und keine dauerhaft rechnende Partikel-Engine.</li></ul></div><div class="panel tweaks"><h2>Demo-Regler</h2><label class="tweak">INTENSITÄT <input id="intensity" type="range" min="0" max="1" step=".05" value=".72"><output id="intensityOut">72%</output></label><label class="tweak">REAKTION <input id="reaction" type="range" min=".5" max="2" step=".1" value="1.15"><output id="reactionOut">1.2×</output></label></div></section>
+<p class="notice">Lokaler Demo-Ausschnitt. Erst nach Freigabe wird das Konzept in die echte Radioseite übernommen.</p>
+</div></main>
+<audio id="audio" preload="metadata" loop src="frawo_radio_demo_sample.mp3"></audio>
+<script>
+const audio=document.querySelector('#audio'),play=document.querySelector('#play'),volume=document.querySelector('#volume');
+const intensity=document.querySelector('#intensity'),reaction=document.querySelector('#reaction'),root=document.documentElement;
+const meter=document.querySelector('#meter'),canvas=document.querySelector('#spectrum'),ctx=canvas.getContext('2d',{alpha:true});
+for(let i=0;i<34;i++){const b=document.createElement('i');b.className='bar';meter.appendChild(b)}
+const bars=[...meter.children];let ac,analyser,source,data,raf,beatBase=.13,displayBeat=0;
+function setup(){if(ac)return;ac=new (window.AudioContext||window.webkitAudioContext)();analyser=ac.createAnalyser();analyser.fftSize=256;analyser.smoothingTimeConstant=.76;source=ac.createMediaElementSource(audio);source.connect(analyser);analyser.connect(ac.destination);data=new Uint8Array(analyser.frequencyBinCount)}
+function resize(){const d=Math.min(devicePixelRatio||1,1.5);canvas.width=Math.round(innerWidth*d);canvas.height=Math.round(innerHeight*d);ctx.setTransform(d,0,0,d,0,0)}addEventListener('resize',resize,{passive:true});resize();
+function avg(a,b){let n=0;for(let i=a;i<b;i++)n+=data[i];return n/Math.max(1,b-a)/255}
+function draw(){analyser.getByteFrequencyData(data);const bass=avg(1,12),mid=avg(12,45),high=avg(45,100),gain=+reaction.value;beatBase=beatBase*.965+bass*.035;const impulse=Math.max(0,(bass-beatBase)*6.5*gain);displayBeat+=(impulse-displayBeat)*.28;root.style.setProperty('--bass',Math.min(1,bass*gain).toFixed(3));root.style.setProperty('--mid',Math.min(1,mid*gain).toFixed(3));root.style.setProperty('--high',Math.min(1,high*gain).toFixed(3));root.style.setProperty('--beat',Math.min(1,displayBeat).toFixed(3));
+const w=innerWidth,h=innerHeight;ctx.clearRect(0,0,w,h);ctx.save();ctx.globalCompositeOperation='lighter';ctx.lineWidth=1;for(let ring=0;ring<3;ring++){ctx.beginPath();const points=72,base=Math.min(w,h)*(.19+ring*.105);for(let i=0;i<=points;i++){const a=i/points*Math.PI*2-Math.PI/2,bin=Math.floor(i/points*(data.length-1)),v=data[bin]/255;const r=base+v*(18+ring*10)*(+.7+ +intensity.value);const x=w*.5+Math.cos(a)*r,y=h*.36+Math.sin(a)*r;if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y)}ctx.closePath();ctx.strokeStyle=ring===0?`rgba(0,229,153,${.09+high*.2})`:`rgba(0,191,255,${.055+mid*.12})`;ctx.stroke()}ctx.restore();bars.forEach((b,i)=>{const v=data[Math.floor(i/bars.length*80)]/255;b.style.height=(12+v*88)+'%';b.style.opacity=(.28+v*.72)});raf=requestAnimationFrame(draw)}
+play.addEventListener('click',async()=>{setup();if(ac.state==='suspended')await ac.resume();if(audio.paused){await audio.play();play.textContent='❚❚ PAUSE';cancelAnimationFrame(raf);draw()}else{audio.pause();play.textContent='▶ DEMO STARTEN';cancelAnimationFrame(raf)}});volume.addEventListener('input',()=>audio.volume=volume.value);audio.volume=volume.value;
+intensity.addEventListener('input',()=>{root.style.setProperty('--intensity',intensity.value);document.querySelector('#intensityOut').value=Math.round(intensity.value*100)+'%'});reaction.addEventListener('input',()=>document.querySelector('#reactionOut').value=(+reaction.value).toFixed(1)+'×');
+document.addEventListener('visibilitychange',()=>{if(document.hidden)cancelAnimationFrame(raf);else if(!audio.paused)draw()});
+</script>
+</body>
+</html>

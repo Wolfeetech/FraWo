@@ -669,7 +669,7 @@ body.visualizer-active {
     width: 300px;
     height: 300px;
     border-radius: 50%;
-    box-shadow: 0 0 50px rgba(16, 185, 129, 0.3);
+    box-shadow: 0 0 50px rgba(46, 204, 113, 0.3);
     animation: spin-slow 20s linear infinite;
     margin-bottom: 30px;
 }
@@ -711,7 +711,7 @@ body.visualizer-active {
 }
 .radio-card.focused {
     transform: scale(1.05);
-    box-shadow: 0 40px 80px rgba(16, 185, 129, 0.15);
+    box-shadow: 0 40px 80px rgba(46, 204, 113, 0.15);
     z-index: 5;
 }
 
@@ -1569,13 +1569,13 @@ body.visualizer-active {
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 0 30px rgba(16, 185, 129, 0.4);
+    box-shadow: 0 0 30px rgba(46, 204, 113, 0.4);
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .immersive-play-btn:hover {
     transform: scale(1.1);
-    box-shadow: 0 0 50px rgba(16, 185, 129, 0.6);
+    box-shadow: 0 0 50px rgba(46, 204, 113, 0.6);
 }
 
 /* Mobile Adjustments for Immersive Mode */
@@ -1642,7 +1642,7 @@ body.visualizer-active {
 .immersive-rating .rating-star.active,
 .immersive-rating .rating-star.hover {
     color: var(--emerald);
-    text-shadow: 0 0 25px rgba(16, 185, 129, 0.8);
+    text-shadow: 0 0 25px rgba(46, 204, 113, 0.8);
     transform: scale(1.1);
 }
 

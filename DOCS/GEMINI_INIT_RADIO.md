@@ -55,7 +55,7 @@ Status: OFFLINE
 ```css
 --fw-bg: #0a0a0a;        /* Background */
 --fw-text: #e0e0e0;      /* Text */
---fw-uv: #a855f7;        /* Purple Accent */
+--fw-uv: #a050f0;        /* Purple Accent */
 --fw-border: #1a1a1a;    /* Borders */
 ```
 

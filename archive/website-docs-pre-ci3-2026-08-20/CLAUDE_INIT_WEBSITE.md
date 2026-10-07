@@ -92,7 +92,7 @@ scripts/upload_images_to_odoo.py     # Bilder (IDs 993-1000)
   --fw-text-dim: #888888;
   --fw-text-dimmer: #555555;
   --fw-border: #1a1a1a;
-  --fw-uv: #a855f7;
+  --fw-uv: #a050f0;
   --fw-forest: #0d4d4d;
 }
 ```

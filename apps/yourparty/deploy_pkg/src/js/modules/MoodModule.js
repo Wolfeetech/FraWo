@@ -5,7 +5,7 @@
 
 export const MOODS = {
     'energetic': { label: 'Energetic', emoji: '⚡', color: '#f59e0b' },
-    'chill': { label: 'Chill', emoji: '🌴', color: '#10b981' },
+    'chill': { label: 'Chill', emoji: '🌴', color: '#2ecc71' },
     'euphoric': { label: 'Euphoric', emoji: '🤩', color: '#fbbf24' },
     'dark': { label: 'Dark', emoji: '🌑', color: '#6b7280' },
     'groovy': { label: 'Groovy', emoji: '💃', color: '#ec4899' },

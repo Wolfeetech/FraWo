@@ -33,7 +33,7 @@ This is the shared coordination board for all active AI agents (Antigravity/Gemi
 - **Kanonische Quelle:** [`SSOT/FRAWO_CI_GUIDELINES.md`](../SSOT/FRAWO_CI_GUIDELINES.md) (auf v3.0 neugefasst) + Odoo **Task 97** (Beschreibung neugefasst). `DOCS/FRAWO_CI_GUIDELINES.md` ist jetzt nur noch ein Redirect-Stub. `AGENTS.md` hat einen neuen verbindlichen Abschnitt **§4 Corporate Identity**.
 - **Für ALLE Agenten bindend:** vor jeder Gestaltung/öffentlichem Text gegen die Guidelines prüfen. Kern: Forest `#004030` + Violet `#a050f0` · strikt flach/0px · keine Schatten/Gradients/Glas · Font Inter · DU · KCanG-Wording (öffentlich keine Cannabis-Begriffe).
 - **Odoo gestempelt:** CI-Banner steht jetzt oben in der Beschreibung jedes Projekts (Masterplan 1, Website 46, Business 39, Radio 33, Infra 35, GrowBox 19).
-- **⚠️ Task 489 wieder geöffnet** (war „Erledigt", stimmte aber nur gegen v2.0): Live-Website erfüllt v3.0 NICHT (noch 12px/Glas/Gradients/Grün #4ade80). Welle 1 (frawo.tech + funk.frawo.tech flach/kantig migrieren) ist damit offene Arbeit. Task 197 = Wellen 2–3 (Print/Backoffice/HA/physisch).
+- **⚠️ Task 489 wieder geöffnet** (war „Erledigt", stimmte aber nur gegen v2.0): Live-Website erfüllt v3.0 NICHT (noch 12px/Glas/Gradients/Grün #2ecc71). Welle 1 (frawo.tech + funk.frawo.tech flach/kantig migrieren) ist damit offene Arbeit. Task 197 = Wellen 2–3 (Print/Backoffice/HA/physisch).
 - **Kein Commit/Push** durch mich — Working Tree geändert, wartet auf Wolfs Freigabe zum Committen.
 
 ### Nächste Handoffs hier eintragen...

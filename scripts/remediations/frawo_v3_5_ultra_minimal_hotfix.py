@@ -32,7 +32,7 @@ css_update = """<style>
   --fw-text-dim: #888888;
   --fw-text-dimmer: #555555;
   --fw-border: #1a1a1a;
-  --fw-uv: #a855f7;
+  --fw-uv: #a050f0;
 }
 
 /* Global */

@@ -340,7 +340,7 @@ async function init(){
 
 function setStatus(ok){
   const el=document.getElementById('db-status');
-  if(ok)el.innerHTML='<span style="width:6px;height:6px;border-radius:50%;background:#10b981;animation:pulse 2s infinite;display:inline-block"></span> Odoo aktiv';
+  if(ok)el.innerHTML='<span style="width:6px;height:6px;border-radius:50%;background:#2ecc71;animation:pulse 2s infinite;display:inline-block"></span> Odoo aktiv';
   else{el.innerHTML='<span style="width:6px;height:6px;border-radius:50%;background:#ef4444;display:inline-block"></span> Offline';el.style.color='#ef4444';el.style.borderColor='rgba(239,68,68,.3)'}
 }
 
@@ -431,7 +431,7 @@ async function book(pid,pname,unitType='bottle'){
       ST.consumptions.unshift({id:r.id,consumerId:ST.pid,productId:pid,timestamp:Date.now(),unitType,quantity:r.quantity||qty});
       if(prod){prod.consumed_bottles=(prod.consumed_bottles||0)+(r.quantity||qty);if(unitType==='crate')prod.consumed_crates=(prod.consumed_crates||0)+1}
       renderStats();renderHist();renderProds();
-      toast(`${lbl} ${pname} fuer ${p?.name}`,'ph-check-circle','#10b981');
+      toast(`${lbl} ${pname} fuer ${p?.name}`,'ph-check-circle','#2ecc71');
     }
   }catch(e){toast('Buchungsfehler: '+e.message,'ph-x-circle','#ef4444')}
 }
@@ -528,7 +528,7 @@ document.getElementById('form-product').addEventListener('submit',async e=>{
   if(!name||!manufacturer||!volume)return;
   try{
     const r=await rpc('/anker_tracker/add_product',{name,emoji,manufacturer,volume,is_alcoholic,crate_size,price_per_bottle});
-    if(r.status==='success'){ST.products.push({id:r.id,name,emoji,manufacturer,volume,is_alcoholic,crate_size,price_per_bottle});renderProds();renderMProds();e.target.reset();toast(emoji+' '+name+' hinzugefuegt!','ph-check-circle','#10b981')}
+    if(r.status==='success'){ST.products.push({id:r.id,name,emoji,manufacturer,volume,is_alcoholic,crate_size,price_per_bottle});renderProds();renderMProds();e.target.reset();toast(emoji+' '+name+' hinzugefuegt!','ph-check-circle','#2ecc71')}
   }catch(ex){toast('Fehler: '+ex.message,'ph-x-circle','#ef4444')}
 });
 
@@ -536,7 +536,7 @@ document.getElementById('form-person').addEventListener('submit',async e=>{
   e.preventDefault();const name=document.getElementById('newpname').value.trim();if(!name)return;
   try{
     const r=await rpc('/anker_tracker/add_consumer',{name});
-    if(r.status==='success'){ST.consumers.push({id:r.id,name});renderP();renderMPersons();e.target.reset();toast(name+' hinzugefuegt!','ph-user-plus','#10b981')}
+    if(r.status==='success'){ST.consumers.push({id:r.id,name});renderP();renderMPersons();e.target.reset();toast(name+' hinzugefuegt!','ph-user-plus','#2ecc71')}
   }catch(ex){toast('Fehler: '+ex.message,'ph-x-circle','#ef4444')}
 });
 
@@ -550,7 +550,7 @@ function doDel(type,id){
         if(type==='consumers'){ST.consumers=ST.consumers.filter(c=>c.id!==nid);if(ST.pid===nid)ST.pid=ST.consumers[0]?.id||null}
         else if(type==='products')ST.products=ST.products.filter(p=>p.id!==nid);
         else ST.consumptions=ST.consumptions.filter(c=>c.id!==nid);
-        renderAll();toast('Geloescht!','ph-check','#10b981');
+        renderAll();toast('Geloescht!','ph-check','#2ecc71');
       }
     }
   );
@@ -562,7 +562,7 @@ window.triggerBilling=function(){
     'Druckansicht geoeffnet. Jetzt alle Buchungen als "abgerechnet" archivieren und Kiosk auf 0 zuruecksetzen?',
     async()=>{
       const r=await rpc('/anker_tracker/bill_now');
-      if(r.status==='success'){toast('Abgerechnet! '+r.count+' Buchungen archiviert.','ph-check-circle','#10b981');await init()}
+      if(r.status==='success'){toast('Abgerechnet! '+r.count+' Buchungen archiviert.','ph-check-circle','#2ecc71');await init()}
     }
   );
 };

@@ -8,7 +8,7 @@ const MoodModule = (function () {
   const MOODS = {
     'euphoric': { label: 'Euphoric', emoji: '🤩', color: '#fbbf24' },
     'energetic': { label: 'Energetic', emoji: '⚡', color: '#f59e0b' },
-    'chill': { label: 'Chill', emoji: '🌴', color: '#10b981' },
+    'chill': { label: 'Chill', emoji: '🌴', color: '#2ecc71' },
     'startuppy': { label: 'Startuppy', emoji: '🚀', color: '#6366f1' },
     'dark': { label: 'Dark', emoji: '🌑', color: '#6b7280' },
     'melodic': { label: 'Melodic', emoji: '🎹', color: '#8b5cf6' },

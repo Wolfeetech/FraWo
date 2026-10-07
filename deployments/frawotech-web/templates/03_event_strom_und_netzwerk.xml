@@ -36,7 +36,7 @@
         </mxCell>
 
         <!-- L2: LICHT -->
-        <mxCell id="l2_box" value="💡 PHASE 2 (L2) — LICHTTECHNIK&#xa;Max. 3.6 kW | Scheinwerfer &amp; Dimmer" style="swimlane;whiteSpace=wrap;html=1;fillColor=#ecfdf5;strokeColor=#10b981;fontColor=#065f46;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+        <mxCell id="l2_box" value="💡 PHASE 2 (L2) — LICHTTECHNIK&#xa;Max. 3.6 kW | Scheinwerfer &amp; Dimmer" style="swimlane;whiteSpace=wrap;html=1;fillColor=#ecfdf5;strokeColor=#2ecc71;fontColor=#065f46;fontSize=11;fontStyle=1;" vertex="1" parent="1">
           <mxGeometry x="470" y="230" width="310" height="110" as="geometry"/>
         </mxCell>
         <mxCell id="l2_loads" value="• Moving Heads Truss Left/Right (PowerCON)&#xa;• LED PAR Kannen Front-/Gegenlicht&#xa;• Wolfmix DMX Regie &amp; DMX Booster&#xa;• Deko- &amp; Ambiente-Beleuchtung" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#064e3b;" vertex="1" parent="l2_box">
@@ -55,7 +55,7 @@
         <mxCell id="e_dist_l1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#3b82f6;strokeWidth=2;" edge="1" parent="1" source="pwr_dist" target="l1_box">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
-        <mxCell id="e_dist_l2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#10b981;strokeWidth=2;" edge="1" parent="1" source="pwr_dist" target="l2_box">
+        <mxCell id="e_dist_l2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2ecc71;strokeWidth=2;" edge="1" parent="1" source="pwr_dist" target="l2_box">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
         <mxCell id="e_dist_l3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#f59e0b;strokeWidth=2;" edge="1" parent="1" source="pwr_dist" target="l3_box">
@@ -72,7 +72,7 @@
         <mxCell id="net_sw" value="🔌 PoE Switch (UniFi USW-Lite)&#xa;Port 1-4: PoE+ | Port 5-8: Gigabit&#xa;VLAN 10: Prod/Show | VLAN 20: Kasse | VLAN 30: Guest" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0284c7;strokeColor=#0369a1;fontColor=#ffffff;fontStyle=1;fontSize=10;" vertex="1" parent="net_grp">
           <mxGeometry x="20" y="105" width="270" height="50" as="geometry"/>
         </mxCell>
-        <mxCell id="net_ap" value="📡 Access Point (UniFi U6+)&#xa;SSID: FraWo-Show (Hidden)&#xa;SSID: FraWo-Crew (WPA3)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#10b981;strokeColor=#047857;fontColor=#ffffff;fontStyle=1;fontSize=10;" vertex="1" parent="net_grp">
+        <mxCell id="net_ap" value="📡 Access Point (UniFi U6+)&#xa;SSID: FraWo-Show (Hidden)&#xa;SSID: FraWo-Crew (WPA3)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2ecc71;strokeColor=#047857;fontColor=#ffffff;fontStyle=1;fontSize=10;" vertex="1" parent="net_grp">
           <mxGeometry x="20" y="175" width="270" height="45" as="geometry"/>
         </mxCell>
         <mxCell id="net_clients" value="💻 Endgeräte / Steuerungen:&#xa;• Tablet FoH Mixer Remote (iPad)&#xa;• ArtNet / DMX Node (falls LAN)&#xa;• Odoo POS / SumUp Kartenterminal&#xa;• Jarvis Telemetrie &amp; Sound-Logging" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f1f5f9;strokeColor=#cbd5e1;fontColor=#334155;fontSize=9;align=left;" vertex="1" parent="net_grp">
@@ -82,7 +82,7 @@
         <mxCell id="e_gw_sw" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284c7;strokeWidth=2;" edge="1" parent="net_grp" source="net_gw" target="net_sw">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
-        <mxCell id="e_sw_ap" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#10b981;strokeWidth=2;" edge="1" parent="net_grp" source="net_sw" target="net_ap">
+        <mxCell id="e_sw_ap" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2ecc71;strokeWidth=2;" edge="1" parent="net_grp" source="net_sw" target="net_ap">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
         <mxCell id="e_sw_clients" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#64748b;strokeWidth=2;" edge="1" parent="net_grp" source="net_sw" target="net_clients">

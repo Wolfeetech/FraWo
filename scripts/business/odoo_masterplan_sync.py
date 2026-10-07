@@ -129,7 +129,7 @@ NEW_TASK_SPECS = [
         "owners": [WOLF_LOGIN, AGENT_LOGIN],
         "description": (
             "<ul>"
-            "<li>[ ] Odoo: Deep Forest (#064e3b) & UV Power (#a855f7) setzen</li>"
+            "<li>[ ] Odoo: Deep Forest (#064e3b) & UV Power (#a050f0) setzen</li>"
             "<li>[ ] Odoo: brand_assets/1.png als Logo hochladen</li>"
             "<li>[ ] Nextcloud: Theming-App via occ konfigurieren</li>"
             "<li>[ ] Home Assistant: Themes.yaml (frawo_hybrid) injizieren</li>"

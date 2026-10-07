@@ -13,12 +13,12 @@
       --bg-dark: #090c15;
       --card-bg: rgba(22, 27, 46, 0.65);
       --card-border: rgba(255, 255, 255, 0.12);
-      --accent-purple: #7c3aed;
+      --accent-purple: #9d4edd;
       --accent-pink: #ec4899;
-      --accent-cyan: #06b6d4;
+      --accent-cyan: #a050f0;
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
-      --online-green: #10b981;
+      --online-green: #2ecc71;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -42,7 +42,7 @@
       transform: translateX(-50%);
       width: 600px;
       height: 600px;
-      background: radial-gradient(circle, rgba(124, 58, 237, 0.25) 0%, rgba(236, 72, 153, 0.15) 50%, transparent 70%);
+      background: radial-gradient(circle, rgba(157, 78, 221, 0.25) 0%, rgba(236, 72, 153, 0.15) 50%, transparent 70%);
       filter: blur(80px);
       z-index: 0;
       pointer-events: none;
@@ -66,8 +66,8 @@
       align-items: center;
       gap: 8px;
       padding: 6px 16px;
-      background: rgba(124, 58, 237, 0.15);
-      border: 1px solid rgba(124, 58, 237, 0.3);
+      background: rgba(157, 78, 221, 0.15);
+      border: 1px solid rgba(157, 78, 221, 0.3);
       border-radius: 30px;
       font-size: 13px;
       font-weight: 600;
@@ -118,13 +118,13 @@
     .station-card:hover {
       transform: translateY(-4px);
       border-color: rgba(167, 139, 250, 0.4);
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(124, 58, 237, 0.2);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(157, 78, 221, 0.2);
     }
 
     .station-card.active {
-      background: rgba(124, 58, 237, 0.2);
+      background: rgba(157, 78, 221, 0.2);
       border-color: var(--accent-purple);
-      box-shadow: 0 12px 40px rgba(124, 58, 237, 0.3);
+      box-shadow: 0 12px 40px rgba(157, 78, 221, 0.3);
     }
 
     .status-pill {
@@ -137,7 +137,7 @@
       font-size: 12px;
       font-weight: 600;
       color: var(--online-green);
-      background: rgba(16, 185, 129, 0.15);
+      background: rgba(46, 204, 113, 0.15);
       padding: 4px 10px;
       border-radius: 20px;
     }
@@ -176,7 +176,7 @@
       justify-content: center;
       font-size: 28px;
       margin-bottom: 16px;
-      box-shadow: 0 8px 20px rgba(124, 58, 237, 0.3);
+      box-shadow: 0 8px 20px rgba(157, 78, 221, 0.3);
     }
 
     .station-title {
@@ -294,14 +294,14 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 10px 30px rgba(124, 58, 237, 0.4);
+      box-shadow: 0 10px 30px rgba(157, 78, 221, 0.4);
       transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
       flex-shrink: 0;
     }
 
     .play-btn:hover {
       transform: scale(1.08);
-      box-shadow: 0 14px 40px rgba(124, 58, 237, 0.6);
+      box-shadow: 0 14px 40px rgba(157, 78, 221, 0.6);
     }
 
     .play-btn:active {
@@ -354,7 +354,7 @@
       height: 18px;
       border-radius: 50%;
       background: #ffffff;
-      box-shadow: 0 0 10px rgba(124, 58, 237, 0.5);
+      box-shadow: 0 0 10px rgba(157, 78, 221, 0.5);
       cursor: pointer;
       transition: transform 0.2s;
     }

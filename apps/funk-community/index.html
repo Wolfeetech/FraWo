@@ -12,7 +12,7 @@
   --surface: rgba(20, 20, 20, 0.4);
   --border: rgba(255, 255, 255, 0.05);
   --border-active: rgba(255, 255, 255, 0.15);
-  --emerald: #10B981;
+  --emerald: #2ECC71;
   --violet: #8B5CF6;
   --dark-violet: #4c1d95;
   --text: #ffffff;
@@ -21,9 +21,9 @@
   --font: 'Outfit', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
   /* Theme vars — overridden per show */
-  --theme-accent: #10B981;
+  --theme-accent: #2ECC71;
   --theme-accent2: #8B5CF6;
-  --theme-glow1: rgba(16, 185, 129, 0.015);
+  --theme-glow1: rgba(46, 204, 113, 0.015);
   --theme-glow2: rgba(139, 92, 246, 0.015);
   --theme-bg-tint: rgba(0,0,0,0);
 }
@@ -98,7 +98,7 @@ header {
 }
 .logo:hover {
   color: var(--emerald);
-  text-shadow: 0 0 15px rgba(16, 185, 129, 0.6);
+  text-shadow: 0 0 15px rgba(46, 204, 113, 0.6);
 }
 .logo span { 
   color: var(--text); 
@@ -128,7 +128,7 @@ header {
   font-family: var(--font-mono);
   font-size: 10px;
   color: var(--emerald);
-  border: 1px solid rgba(16, 185, 129, 0.2);
+  border: 1px solid rgba(46, 204, 113, 0.2);
   padding: 4px 10px;
   letter-spacing: 1px;
 }
@@ -373,8 +373,8 @@ main {
   text-transform: uppercase;
   letter-spacing: 2px;
   color: var(--emerald);
-  background: rgba(16,185,129,0.08);
-  border: 1px solid rgba(16,185,129,0.25);
+  background: rgba(46, 204, 113,0.08);
+  border: 1px solid rgba(46, 204, 113,0.25);
   padding: 3px 8px;
 }
 .show-next {
@@ -409,7 +409,7 @@ main {
 .play-btn:hover {
   background: var(--emerald);
   color: #000;
-  box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+  box-shadow: 0 0 20px rgba(46, 204, 113, 0.4);
 }
 .play-btn.loading {
   border-color: var(--muted);
@@ -470,7 +470,7 @@ input[type=range]::-webkit-slider-thumb {
   margin-top: -8px; /* center on 4px track */
   background: var(--emerald);
   border: 2px solid #000;
-  box-shadow: 0 0 8px rgba(16,185,129,0.5);
+  box-shadow: 0 0 8px rgba(46, 204, 113,0.5);
   cursor: pointer;
   border-radius: 0; /* brutalist square thumb */
 }
@@ -485,7 +485,7 @@ input[type=range]::-moz-range-thumb {
   height: 18px;
   background: var(--emerald);
   border: 2px solid #000;
-  box-shadow: 0 0 8px rgba(16,185,129,0.5);
+  box-shadow: 0 0 8px rgba(46, 204, 113,0.5);
   cursor: pointer;
   border-radius: 0;
 }
@@ -542,7 +542,7 @@ input[type=range]::-moz-range-thumb {
 .rating-btn.active-up {
   border-color: var(--emerald);
   color: var(--emerald);
-  background: rgba(16, 185, 129, 0.05);
+  background: rgba(46, 204, 113, 0.05);
 }
 .rating-btn.active-down {
   border-color: var(--violet);
@@ -810,7 +810,7 @@ input[type=range]::-moz-range-thumb {
 }
 .sponsor-tier-card:hover {
   border-color: var(--emerald);
-  background: rgba(16, 185, 129, 0.03);
+  background: rgba(46, 204, 113, 0.03);
 }
 .sponsor-tier-card:nth-child(2):hover {
   border-color: var(--violet);
@@ -858,7 +858,7 @@ input[type=range]::-moz-range-thumb {
   padding: 10px 0; border-bottom: 1px solid var(--border);
 }
 .schedule-item:last-child { border-bottom: none; }
-.schedule-item.now { background: rgba(16,185,129,0.04); margin: 0 -8px; padding: 10px 8px; }
+.schedule-item.now { background: rgba(46, 204, 113,0.04); margin: 0 -8px; padding: 10px 8px; }
 .schedule-time {
   font-family: var(--font-mono); font-size: 10px;
   color: var(--muted); min-width: 80px; letter-spacing: 0.5px;
@@ -870,7 +870,7 @@ input[type=range]::-moz-range-thumb {
 .schedule-item.now .schedule-name { color: var(--emerald); }
 .schedule-now-tag {
   font-family: var(--font-mono); font-size: 9px;
-  color: var(--emerald); border: 1px solid rgba(16,185,129,0.3);
+  color: var(--emerald); border: 1px solid rgba(46, 204, 113,0.3);
   padding: 1px 5px; margin-left: auto; flex-shrink: 0;
 }
 
@@ -905,7 +905,7 @@ input[type=range]::-moz-range-thumb {
   border-radius: 2px;
   letter-spacing: 0.5px;
 }
-.history-badge.hot  { color: var(--emerald); border: 1px solid rgba(16,185,129,0.25); }
+.history-badge.hot  { color: var(--emerald); border: 1px solid rgba(46, 204, 113,0.25); }
 .history-badge.cold { color: #EF4444;         border: 1px solid rgba(239,68,68,0.25); }
 .history-badge.none { display: none; }
 .history-title {
@@ -1035,7 +1035,7 @@ input[type=range]::-moz-range-thumb {
 .modal-submit-btn:hover {
   background: var(--emerald);
   color: #000;
-  box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+  box-shadow: 0 0 20px rgba(46, 204, 113, 0.4);
 }
 .modal-skip-btn {
   width: 100%;
@@ -1547,7 +1547,7 @@ input:focus:not(:focus-visible) {
         FraWo Funk wird unabhängig und werbefrei betrieben. Ihre Unterstützung fließt direkt in den Erhalt und Ausbau unserer audiophilen Stream-Infrastruktur.
       </div>
       
-      <div class="progress-card" style="border: 1px solid var(--border); text-align: center; padding: 20px 10px; background: rgba(16, 185, 129, 0.02); border-color: rgba(16, 185, 129, 0.2);">
+      <div class="progress-card" style="border: 1px solid var(--border); text-align: center; padding: 20px 10px; background: rgba(46, 204, 113, 0.02); border-color: rgba(46, 204, 113, 0.2);">
         <span class="live-dot on" style="display:inline-block; margin-right: 8px; vertical-align: middle; background: var(--emerald); box-shadow: 0 0 8px var(--emerald);"></span>
         <span style="font-family:var(--font-mono); font-size:11px; letter-spacing: 1px; text-transform:uppercase; color: var(--emerald);">SUPPORT CHANNEL AKTIV // HI-FI OK</span>
       </div>
@@ -1568,7 +1568,7 @@ input:focus:not(:focus-visible) {
         </button>
       </div>
 
-      <div id="donationPendingNote" style="display:none; font-family:var(--font-mono); font-size:11px; color:var(--emerald); text-align:center; padding:12px; border:1px solid rgba(16,185,129,0.3); margin-top:12px;">
+      <div id="donationPendingNote" style="display:none; font-family:var(--font-mono); font-size:11px; color:var(--emerald); text-align:center; padding:12px; border:1px solid rgba(46, 204, 113,0.3); margin-top:12px;">
         ✦ ZAHLUNG AUSSTEHEND — Du erhältst eine Quittung per Email sobald dein Beitrag eingeht.
       </div>
     </div>
@@ -1627,16 +1627,16 @@ const API = '/api/v1/community';
 const SHOW_THEMES = {
   // Bodensee Sunrise: soft teal-blue, coastal morning, beach photo
   'Bodensee Sunrise': {
-    accent:  '#06B6D4', accent2: '#0EA5E9',
-    glow1:   'rgba(6,182,212,0.025)',  glow2: 'rgba(14,165,233,0.018)',
-    emerald: '#06B6D4', violet: '#38BDF8',
+    accent:  '#A050F0', accent2: '#0EA5E9',
+    glow1:   'rgba(160, 80, 240,0.025)',  glow2: 'rgba(14,165,233,0.018)',
+    emerald: '#A050F0', violet: '#38BDF8',
     bg: 'url(/bodensee.jpg)', bgOpacity: 0.08,
   },
   // FraWo Club Peaktime: hot violet-pink, strobes
   'FraWo Club': {
-    accent:  '#D946EF', accent2: '#A855F7',
-    glow1:   'rgba(217,70,239,0.035)', glow2: 'rgba(168,85,247,0.025)',
-    emerald: '#D946EF', violet: '#A855F7',
+    accent:  '#D946EF', accent2: '#A050F0',
+    glow1:   'rgba(217,70,239,0.035)', glow2: 'rgba(160, 80, 240,0.025)',
+    emerald: '#D946EF', violet: '#A050F0',
   },
   // Underground Currents: deep red-rust, dystopian
   'Underground Currents': {
@@ -1652,9 +1652,9 @@ const SHOW_THEMES = {
   },
 };
 const DEFAULT_THEME = {
-  accent: '#10B981', accent2: '#8B5CF6',
-  glow1: 'rgba(16,185,129,0.015)', glow2: 'rgba(139,92,246,0.015)',
-  emerald: '#10B981', violet: '#8B5CF6',
+  accent: '#2ECC71', accent2: '#8B5CF6',
+  glow1: 'rgba(46, 204, 113,0.015)', glow2: 'rgba(139,92,246,0.015)',
+  emerald: '#2ECC71', violet: '#8B5CF6',
 };
 
 let _currentTheme = null;
@@ -1892,7 +1892,7 @@ function render() {
   // Dynamic, beat-reactive ambient glow matching HIFI / Guest state colors
   const glowRadius = smoothedBass * 30;
   const isVipUser = localStorage.getItem('radio_user_registered') === 'true';
-  const glowColor = isVipUser ? 'rgba(16, 185, 129, 0.2)' : 'rgba(139, 92, 246, 0.15)';
+  const glowColor = isVipUser ? 'rgba(46, 204, 113, 0.2)' : 'rgba(139, 92, 246, 0.15)';
   
   if (currentRotationSpeed > 0.1) {
     vinyl.style.transform = `rotate(${vinylRotation}deg)`;
@@ -1926,8 +1926,8 @@ function render() {
   // Draw primary Emerald Welle
   ctx.lineWidth = 1.8;
   ctx.shadowBlur = isPlaying ? 6 : 0;
-  ctx.shadowColor = '#10B981';
-  ctx.strokeStyle = '#10B981';
+  ctx.shadowColor = '#2ECC71';
+  ctx.strokeStyle = '#2ECC71';
   ctx.beginPath();
   
   let sliceWidth = canvas.width * 1.0 / bufferLength;
@@ -1990,7 +1990,7 @@ function _drawStaticScope() {
   }
   ctx.shadowBlur = 0;
   ctx.lineWidth = 1.8;
-  ctx.strokeStyle = '#10B981';
+  ctx.strokeStyle = '#2ECC71';
   ctx.beginPath();
   ctx.moveTo(0, canvas.height / 2);
   ctx.lineTo(canvas.width, canvas.height / 2);
@@ -2082,7 +2082,7 @@ async function updateNowPlaying() {
     if (badge) {
       if (isVip) {
         badge.textContent = '320 KBPS MP3 // HI-FI';
-        badge.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+        badge.style.borderColor = 'rgba(46, 204, 113, 0.4)';
         badge.style.color = 'var(--emerald)';
       } else {
         badge.textContent = '192 KBPS MP3 // GUEST';
