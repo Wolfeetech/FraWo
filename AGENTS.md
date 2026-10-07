@@ -12,7 +12,7 @@
 | **Jarvis** (OpenClaw) | CT150 Anker (10.1.0.31) | Telegram ↔ Wolf (Pixel 9) | Koordinator, Monitoring/Alarme, Odoo-Chatter (@Jarvis/Klausi), Infra-Ops via SSH, 24/7 persistent |
 | **Claude Code** | StudioPC, Terminal | Wolf startet Session | Code, Skripte, größere Implementierungen — zustandslos: liest dieses File + Odoo-Task VOR der Arbeit |
 | **Antigravity** | StudioPC, IDE | Wolf startet Session | IDE-Arbeiten, UCG/UniFi-API, Windows-lokale Aufgaben |
-| **Hermes** (Pilot ab 07.10.2026, #1965/#1966) | CT160 OptiPlex (10.1.0.160) | Telegram @FraWo_Hermes_bot ↔ Wolf | **Der eine Eingang für Wolfs Aufträge.** Denkt mit Codex → Ausweich Claude über Copilot → Sparbetrieb (fester Text, führt nie etwas aus). Große Ausarbeitungen gibt er an Claude Code (Claude-Abo, nur lesen/planen) ab. Odoo per MCP (eigener Schlüssel). **Ändert keine Server.** Signatur `🤖 [Hermes]` |
+| **Hermes** (Pilot ab 07.10.2026, #1965/#1966) | CT160 OptiPlex (10.1.0.160) | Telegram @FraWo_Hermes_bot ↔ Wolf | **Der eine Eingang für Wolfs Aufträge.** Denkt mit Codex → Ausweich Claude über Copilot → Sparbetrieb (fester Text, führt nie etwas aus). Große Ausarbeitungen gibt er an Claude Code (Claude-Abo, nur lesen/planen) ab. Odoo per MCP (eigener Schlüssel). **Darf seit 07.10.2026 (Wolf-Freigabe, #1644) Website-Inhaltsdateien im Repo bearbeiten** (z. B. `Codex/website/*.html`, Preis-/Pakettexte) — nur Inhalt, kein Deploy, keine Server-/Dienst-/Konfig-Änderung; Commit + Backup-Datei Pflicht, Review durch Claude Code vor Live-Übernahme. **Ändert sonst keine Server.** Signatur `🤖 [Hermes]` |
 
 ## Single Source of Truth
 
