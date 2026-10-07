@@ -1150,11 +1150,86 @@ body {
   }
 }
 
+/* ============================================================
+   BEAT-VISUAL — die ganze Seite atmet im Takt der Musik.
+   Grundsatz: NUR Licht, Glanz und Balken reagieren. Text, Buttons und
+   Kacheln bewegen sich NICHT (kein Layout-Versatz, nichts verrutscht
+   unter dem Finger). Werte kommen als CSS-Variablen aus der Tonanalyse
+   des globalen Dauerplayers (window.fwAudio.getLevels).
+   Farben strikt CI v3.0: Akzent #a050f0, Hover #9d4edd, Status #2ecc71.
+   ============================================================ */
+:root {
+  --ff-beat: 0;   /* Gesamtpegel, geglaettet */
+  --ff-bass: 0;   /* Kick / Bassline */
+  --ff-mid: 0;    /* Koerper */
+  --ff-hi: 0;     /* Hi-Hats */
+}
+
+/* Vollflaechige Lichtebene hinter dem gesamten Inhalt */
+.ff-beat-stage {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(60% 55% at 50% 0%,
+      rgba(160, 80, 240, calc(0.04 + var(--ff-bass) * 0.30)) 0%, transparent 72%),
+    radial-gradient(48% 42% at 12% 88%,
+      rgba(46, 204, 113, calc(0.015 + var(--ff-mid) * 0.15)) 0%, transparent 70%),
+    radial-gradient(48% 42% at 88% 82%,
+      rgba(157, 78, 221, calc(0.015 + var(--ff-hi) * 0.15)) 0%, transparent 70%);
+  opacity: calc(0.5 + var(--ff-beat) * 0.5);
+  transition: opacity 90ms linear;
+}
+/* Rahmenpuls: der Bildschirmrand leuchtet auf dem Kick auf */
+.ff-beat-stage::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  box-shadow: inset 0 0 calc(50px + var(--ff-bass) * 170px)
+              rgba(160, 80, 240, calc(var(--ff-bass) * 0.30));
+  transition: box-shadow 90ms linear;
+}
+
+/* Das vorhandene Studio-Licht pulsiert mit dem Bass (nur Licht, kein Inhalt) */
+.ff-ambient-light {
+  transform: translateX(-50%) scale(calc(1 + var(--ff-bass) * 0.16));
+  opacity: calc(0.65 + var(--ff-beat) * 0.35);
+  transition: transform 110ms ease-out, opacity 90ms linear;
+}
+
+/* Das Deck bekommt Glanz statt Bewegung: Rand und Schein atmen mit */
+.ff-deck {
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.5),
+    0 0 calc(var(--ff-beat) * 60px) rgba(160, 80, 240, calc(var(--ff-beat) * 0.22)),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  border-color: rgba(160, 80, 240, calc(0.12 + var(--ff-beat) * 0.35));
+  transition: box-shadow 90ms linear, border-color 90ms linear;
+}
+
+/* Live-Punkt und Fortschrittsbalken als feine Taktgeber */
+.ff-live-dot {
+  box-shadow: 0 0 calc(8px + var(--ff-bass) * 20px) var(--ff-accent-green);
+}
+.ff-prog-fill {
+  box-shadow: 0 0 calc(var(--ff-beat) * 14px) rgba(160, 80, 240, 0.6);
+}
+
+/* Wer Bewegung reduziert haben will, bekommt eine ruhige Seite. */
+@media (prefers-reduced-motion: reduce) {
+  .ff-beat-stage { display: none; }
+  .ff-ambient-light { transform: translateX(-50%); opacity: 1; }
+  .ff-deck { border-color: rgba(255, 255, 255, 0.12); }
+}
+
 </style>
 
 <div class="ff-container">
   <!-- Radial Studio Aurora Background -->
   <div class="ff-ambient-light"/>
+  <!-- Beat-Visual: vollflaechige Lichtebene, reagiert auf die Tonanalyse -->
+  <div class="ff-beat-stage" id="ff-beat-stage"/>
 
   <!-- Header -->
   <div class="ff-header">
@@ -1715,6 +1790,123 @@ body {
     });
   }
 
+  /* ===== Beat-Visual =====
+     Liest die echten Pegel aus dem globalen Dauerplayer und schreibt sie als
+     CSS-Variablen. Dadurch reagiert die ganze Seite (Licht, Rahmen, Glanz) im
+     Takt, ohne dass Text oder Kacheln ihre Position veraendern.
+     Liefert die Analyse nichts (alter Browser, Ton nicht gestartet), bleibt
+     alles ruhig und die Balken laufen wie bisher im Zufallsmuster weiter. */
+  var ffWurzel = document.documentElement;
+  var ffBeatGlatt = 0;
+  var ffAnalyseLaeuft = false;
+  var ffBewegungReduziert = false;
+  var ffOffenerWunsch = null;   /* Klick/Schieber, der auf den Dauerplayer wartet */
+  var ffLetzterStatus = null;   /* damit die Oberflaeche nur bei Wechsel nachzieht */
+  try {
+    ffBewegungReduziert = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  } catch (e) {}
+
+  /* Holt den Wahrheitsstand vom globalen Dauerplayer und zieht die Oberflaeche
+     der Radioseite nach. Nur hier wird Play/Pause-Optik entschieden -- so kann
+     die Seite nicht behaupten, es laufe etwas, wenn der Player pausiert ist. */
+  function syncPersistentPlayerState() {
+    if (!window.fwAudio) return;
+    if (typeof window.fwAudio.getState !== 'function') return;
+    var zustand = window.fwAudio.getState();
+    if (zustand.isPlaying === ffLetzterStatus) return;
+    ffLetzterStatus = zustand.isPlaying;
+    if (zustand.isPlaying) {
+      startAnimation();
+    } else {
+      stopAnimation();
+    }
+  }
+
+  /* Vorgemerkten Wunsch ausfuehren, sobald der Seitenfuss geladen ist. */
+  function ffOffenenWunschAusfuehren() {
+    if (!ffOffenerWunsch || !window.fwAudio) return;
+    var wunsch = ffOffenerWunsch;
+    if (wunsch.art === 'umschalten') {
+      if (typeof window.fwAudio.togglePlay === 'function') {
+        ffOffenerWunsch = null;
+        window.fwAudio.togglePlay();
+      }
+    } else if (wunsch.art === 'lautstaerke') {
+      if (typeof window.fwAudio.setVolume === 'function') {
+        ffOffenerWunsch = null;
+        window.fwAudio.setVolume(wunsch.wert);
+      }
+    }
+  }
+
+  function ffBalkenAusTon(daten) {
+    if (!visBox) return;
+    var bars = visBox.querySelectorAll('.ff-vis-bar');
+    var anzahl = bars.length;
+    if (!anzahl) return;
+    /* Nur das musikalisch interessante untere Drittel des Spektrums nutzen,
+       darueber ist bei 320 kbps kaum noch Pegel. */
+    var nutzbar = Math.floor(daten.length * 0.62);
+    for (var i = 0; i &lt; anzahl; i++) {
+      var von = Math.floor(i * nutzbar / anzahl);
+      var bis = Math.max(von + 1, Math.floor((i + 1) * nutzbar / anzahl));
+      var summe = 0;
+      for (var j = von; j &lt; bis; j++) summe += daten[j];
+      var wert = (summe / (bis - von)) / 255;
+      bars[i].style.height = Math.max(18, Math.min(100, 18 + wert * 95)) + '%';
+      bars[i].classList.add('active');
+    }
+  }
+
+  function ffVisualFrame() {
+    ffOffenenWunschAusfuehren();
+    syncPersistentPlayerState();
+
+    if (ffBewegungReduziert) {
+      /* Ruhige Seite: nur Steuerung und Statusabgleich, kein Puls. */
+      requestAnimationFrame(ffVisualFrame);
+      return;
+    }
+
+    var pegel = null;
+    if (window.fwAudio) {
+      if (typeof window.fwAudio.getLevels === 'function') {
+        pegel = window.fwAudio.getLevels();
+      }
+    }
+
+    if (pegel) {
+      ffBeatGlatt = ffBeatGlatt * 0.70 + pegel.gesamt * 0.30;
+      ffWurzel.style.setProperty('--ff-bass', pegel.bass.toFixed(3));
+      ffWurzel.style.setProperty('--ff-mid', pegel.mitte.toFixed(3));
+      ffWurzel.style.setProperty('--ff-hi', pegel.hoehen.toFixed(3));
+      ffWurzel.style.setProperty('--ff-beat', ffBeatGlatt.toFixed(3));
+
+      var daten = window.fwAudio.getFrequencyData();
+      if (daten) {
+        if (pegel.gesamt &gt; 0) {
+          /* Echte Tonanalyse vorhanden: der Zufallstakt wird abgeschaltet,
+             damit nicht beides gleichzeitig an den Balken zieht. */
+          if (!ffAnalyseLaeuft) {
+            ffAnalyseLaeuft = true;
+            if (animTimer) {
+              clearInterval(animTimer);
+              animTimer = null;
+            }
+          }
+          ffBalkenAusTon(daten);
+        }
+      }
+    } else {
+      ffWurzel.style.setProperty('--ff-beat', '0');
+      ffWurzel.style.setProperty('--ff-bass', '0');
+      ffWurzel.style.setProperty('--ff-mid', '0');
+      ffWurzel.style.setProperty('--ff-hi', '0');
+    }
+
+    requestAnimationFrame(ffVisualFrame);
+  }
+
   function startAnimation() {
     isPlaying = true;
     var ico = document.getElementById('ff-play-ico');
@@ -1797,17 +1989,15 @@ body {
        als lokalen Fallback zu erzeugen. */
     if (window.fwAudio &amp;&amp; typeof window.fwAudio.togglePlay === 'function') {
       window.fwAudio.togglePlay();
+      syncPersistentPlayerState();
       return;
     }
     var txt = document.getElementById('ff-play-txt');
     if (txt) txt.textContent = 'PLAYER LÄDT...';
-    setTimeout(function() {
-      if (window.fwAudio &amp;&amp; typeof window.fwAudio.togglePlay === 'function') {
-        window.fwAudio.togglePlay();
-      } else if (txt) {
-        txt.textContent = 'BITTE NEU LADEN';
-      }
-    }, 350);
+    /* Kein Timer: der Wunsch wird vorgemerkt und im naechsten Bildlauf
+       ausgefuehrt, sobald der Dauerplayer da ist. Der Klick geht nie
+       verloren und wird auch nicht kuenstlich verzoegert. */
+    ffOffenerWunsch = { art: 'umschalten' };
   };
 
   window.ffSetVolume = function(val) {
@@ -1815,11 +2005,7 @@ body {
       window.fwAudio.setVolume(val);
       return;
     }
-    setTimeout(function() {
-      if (window.fwAudio &amp;&amp; typeof window.fwAudio.setVolume === 'function') {
-        window.fwAudio.setVolume(val);
-      }
-    }, 350);
+    ffOffenerWunsch = { art: 'lautstaerke', wert: val };
   };
 
   function loadVotes() {
@@ -2551,6 +2737,11 @@ body {
   loadVotes();
   setInterval(loadNowPlaying, 5000);
   setInterval(ffLoadSchedule, 60000);
+
+  /* Bildlauf immer starten: er fuehrt vorgemerkte Klicks aus und haelt die
+     Oberflaeche am Dauerplayer. Der Puls selbst bleibt aus, wenn der Besucher
+     reduzierte Bewegung eingestellt hat. */
+  requestAnimationFrame(ffVisualFrame);
 })();
 //
 </script>

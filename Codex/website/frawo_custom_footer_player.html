@@ -1,0 +1,449 @@
+
+<div id="fwPersistentPlayerBar" class="fw-persistent-player" style="display: none;">
+  <div class="fw-player-inner">
+    <div class="fw-player-left">
+      <div class="fw-player-cover-box">
+        <img id="fwBarCover" src="/logo.png?company=1" alt="Cover" class="fw-bar-cover-img"/>
+        <span class="fw-bar-pulse"></span>
+      </div>
+      <div class="fw-player-meta">
+        <div id="fwBarTitle" class="fw-bar-title">FraWo Funk Live</div>
+        <div id="fwBarArtist" class="fw-bar-artist">320kbps HD Broadcast</div>
+      </div>
+    </div>
+
+    <div class="fw-player-center">
+      <button id="fwBarPlayBtn" class="fw-bar-btn" onclick="window.fwAudio.togglePlay()" title="Play / Pause">
+        ▶
+      </button>
+      <div class="fw-bar-eq" id="fwBarEq">
+        <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+      </div>
+    </div>
+
+    <div class="fw-player-right">
+      <div class="fw-bar-badge">● LIVE 320 KBPS</div>
+      <div class="fw-bar-vol-box">
+        <span style="font-size: 0.8rem; color: #98a29e;">🔊</span>
+        <input type="range" min="0" max="1" step="0.05" value="0.8" id="fwBarVol" oninput="window.fwAudio.setVolume(this.value)" class="fw-bar-slider"/>
+      </div>
+      <a href="/radio" class="fw-bar-open-btn">Radio-Zentrale &#8599;</a>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Persistent Bottom Audio Player Bar */
+  .fw-persistent-player {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 64px;
+    background: rgba(12, 16, 14, 0.96);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-top: 1px solid #2a2e2c;
+    z-index: 99999;
+    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.6);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .fw-player-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    height: 100%;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .fw-player-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 220px;
+  }
+
+  .fw-player-cover-box {
+    width: 40px;
+    height: 40px;
+    background: #000;
+    border: 1px solid #2a2e2c;
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .fw-bar-cover-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .fw-bar-pulse {
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    width: 6px;
+    height: 6px;
+    background: #2ecc71;
+    border-radius: 50%;
+  }
+
+  .fw-player-meta {
+    overflow: hidden;
+  }
+
+  .fw-bar-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #ffffff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+  }
+
+  .fw-bar-artist {
+    font-size: 0.75rem;
+    color: #98a29e;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+  }
+
+  .fw-player-center {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .fw-bar-btn {
+    width: 42px;
+    height: 42px;
+    background: #a050f0;
+    color: #ffffff;
+    border: none;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 0px;
+    transition: background 0.2s ease, transform 0.1s ease;
+  }
+
+  .fw-bar-btn:hover {
+    background: #9d4edd;
+    transform: scale(1.05);
+  }
+
+  .fw-bar-eq {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    height: 20px;
+    padding: 2px 4px;
+    background: #090c0a;
+    border: 1px solid #2a2e2c;
+  }
+
+  .fw-bar-eq span {
+    width: 3px;
+    height: 4px;
+    background: #a050f0;
+    transition: height 0.1s ease;
+  }
+
+  .fw-bar-eq.playing span:nth-child(1) { animation: fwEq 0.8s infinite ease-in-out; }
+  .fw-bar-eq.playing span:nth-child(2) { animation: fwEq 0.5s infinite ease-in-out 0.1s; }
+  .fw-bar-eq.playing span:nth-child(3) { animation: fwEq 0.9s infinite ease-in-out 0.2s; }
+  .fw-bar-eq.playing span:nth-child(4) { animation: fwEq 0.6s infinite ease-in-out 0.15s; }
+  .fw-bar-eq.playing span:nth-child(5) { animation: fwEq 0.7s infinite ease-in-out 0.05s; }
+  .fw-bar-eq.playing span:nth-child(6) { animation: fwEq 1.1s infinite ease-in-out 0.25s; }
+  .fw-bar-eq.playing span:nth-child(7) { animation: fwEq 0.4s infinite ease-in-out 0.3s; }
+  .fw-bar-eq.playing span:nth-child(8) { animation: fwEq 0.85s infinite ease-in-out 0.1s; }
+
+  @keyframes fwEq {
+    0%, 100% { height: 4px; }
+    50% { height: 18px; }
+  }
+
+  .fw-player-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  @media (max-width: 768px) {
+    .fw-player-right { display: none; }
+    .fw-player-left { min-width: auto; max-width: 180px; }
+  }
+
+  .fw-bar-badge {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #2ecc71;
+    background: #004030;
+    border: 1px solid #006048;
+    padding: 4px 8px;
+    letter-spacing: 0.08em;
+  }
+
+  .fw-bar-vol-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .fw-bar-slider {
+    width: 80px;
+    accent-color: #a050f0;
+    cursor: pointer;
+  }
+
+  .fw-bar-open-btn {
+    background: transparent;
+    color: #ffffff;
+    border: 1px solid #2a2e2c;
+    padding: 6px 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .fw-bar-open-btn:hover {
+    background: #a050f0;
+    border-color: #a050f0;
+  }
+</style>
+
+<script type="text/javascript">
+(function() {
+  if (window.fwAudio) return; // already initialized
+
+  var streamUrl = 'https://funk.frawo.tech/listen/frawo_funk/radio.mp3';
+  var azuraApi = 'https://funk.frawo.tech/api/nowplaying/frawo_funk';
+  var audio = new Audio();
+  audio.preload = 'none';
+  /* Fuer die Tonanalyse (Beat-Visual auf /radio) muss der Stream per CORS
+     gelesen werden. funk.frawo.tech sendet dafuer
+     access-control-allow-origin: https://frawo.tech (geprueft 07.10.2026).
+     Ohne diese Zeile liefert die Analyse nur Nullen. */
+  audio.crossOrigin = 'anonymous';
+
+  /* ---- Tonanalyse: liefert Pegel fuer das Beat-Visual ----
+     Alles in try/catch: wenn der Browser kein Web Audio kann oder CORS
+     scheitert, laeuft die Wiedergabe normal weiter und das Visual bleibt
+     einfach ruhig. Der Ton darf NIE am Visual scheitern. */
+  var audioCtx = null;
+  var analyser = null;
+  var freqData = null;
+  var analyseAktiv = false;
+
+  function analyseStarten() {
+    if (analyseAktiv) return;
+    try {
+      var Ctx = window.AudioContext || window.webkitAudioContext;
+      if (!Ctx) return;
+      if (!audioCtx) audioCtx = new Ctx();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      if (!analyser) {
+        analyser = audioCtx.createAnalyser();
+        analyser.fftSize = 512;
+        analyser.smoothingTimeConstant = 0.75;
+        freqData = new Uint8Array(analyser.frequencyBinCount);
+        var quelle = audioCtx.createMediaElementSource(audio);
+        quelle.connect(analyser);
+        analyser.connect(audioCtx.destination);
+      }
+      analyseAktiv = true;
+    } catch (e) {
+      console.log('Tonanalyse nicht verfuegbar, Wiedergabe laeuft weiter:', e);
+      analyser = null;
+      analyseAktiv = false;
+    }
+  }
+
+  var state = {
+    isPlaying: false,
+    title: 'FraWo Funk Live',
+    artist: '320kbps HD Stream',
+    art: '/logo.png?company=1',
+    volume: 0.8
+  };
+
+  audio.volume = state.volume;
+
+  audio.addEventListener('play', function() {
+    state.isPlaying = true;
+    try { localStorage.setItem('fwRadioWasPlaying', '1'); } catch (e) {}
+    updateUI();
+  });
+
+  audio.addEventListener('pause', function() {
+    state.isPlaying = false;
+    try { localStorage.setItem('fwRadioWasPlaying', '0'); } catch (e) {}
+    updateUI();
+  });
+
+  audio.addEventListener('error', function(e) {
+    console.log('Stream reconnecting...', e);
+    state.isPlaying = false;
+    updateUI();
+  });
+
+  function updateUI() {
+    var bar = document.getElementById('fwPersistentPlayerBar');
+    if (bar) {
+      if (state.isPlaying || audio.src) {
+        bar.style.display = 'block';
+      }
+    }
+
+    var playBtns = document.querySelectorAll('#fwBarPlayBtn, #fwRadioPlayBtn, #fwHeroRadioPlayBtn, #ff-play-btn');
+    playBtns.forEach(function(b) {
+      if (b.id === 'ff-play-btn') {
+        var ico = document.getElementById('ff-play-ico');
+        var txt = document.getElementById('ff-play-txt');
+        if (ico) ico.textContent = state.isPlaying ? '❚❚' : '▶';
+        if (txt) txt.textContent = state.isPlaying ? 'PAUSE' : 'LISTEN LIVE';
+      } else {
+        b.textContent = state.isPlaying ? '❚❚' : '▶';
+      }
+    });
+
+    var eqBoxes = document.querySelectorAll('#fwBarEq, #fwEqBars, #ff-vis-box');
+    eqBoxes.forEach(function(eq) {
+      if (state.isPlaying) {
+        eq.classList.add('playing');
+      } else {
+        eq.classList.remove('playing');
+      }
+    });
+
+    // Update Meta
+    var tEls = document.querySelectorAll('#fwBarTitle, #fwHeroRadioTitle, #ff-title');
+    tEls.forEach(function(el) { el.textContent = state.title; });
+
+    var aEls = document.querySelectorAll('#fwBarArtist, #fwHeroRadioArtist, #ff-artist');
+    aEls.forEach(function(el) { el.textContent = state.artist; });
+
+    var cEls = document.querySelectorAll('#fwBarCover, #fwHeroRadioCover, #ff-deck-art');
+    cEls.forEach(function(el) { if (state.art) el.src = state.art; });
+  }
+
+  function fetchNowPlaying() {
+    fetch(azuraApi)
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        if (d && d.now_playing && d.now_playing.song) {
+          var s = d.now_playing.song;
+          state.title = s.title || 'FraWo Funk Live';
+          state.artist = s.artist || 'Club & Studio Sound';
+          if (s.art) state.art = s.art;
+          updateUI();
+        }
+      })
+      .catch(function() {});
+  }
+
+  function startPlayback() {
+    audio.src = streamUrl;
+    audio.load();
+    audio.play().then(function() {
+      state.isPlaying = true;
+      analyseStarten();
+      updateUI();
+    }).catch(function(e) {
+      console.log('Play err:', e);
+    });
+  }
+
+  window.fwAudio = {
+    togglePlay: function() {
+      if (state.isPlaying) {
+        audio.pause();
+        audio.src = '';
+      } else {
+        startPlayback();
+      }
+    },
+    setVolume: function(v) {
+      state.volume = parseFloat(v);
+      audio.volume = state.volume;
+    },
+    getState: function() {
+      return state;
+    },
+
+    /* Rohdaten des Frequenzspektrums (0..255 je Band) oder null. */
+    getFrequencyData: function() {
+      if (!analyser || !freqData) return null;
+      try {
+        analyser.getByteFrequencyData(freqData);
+        return freqData;
+      } catch (e) {
+        return null;
+      }
+    },
+
+    /* Fertig aufbereitete Pegel 0..1 fuer das Visual.
+       bass = Wumms (Kick/Bassline), mitte = Koerper, hoehen = Hi-Hats.
+       Ohne Analyse kommen Nullen zurueck -- die Seite bleibt dann ruhig. */
+    getLevels: function() {
+      var daten = window.fwAudio.getFrequencyData();
+      if (!daten || !state.isPlaying) {
+        return { bass: 0, mitte: 0, hoehen: 0, gesamt: 0 };
+      }
+      function mittel(von, bis) {
+        var summe = 0;
+        var anzahl = 0;
+        for (var i = von; i < bis && i < daten.length; i++) {
+          summe += daten[i];
+          anzahl++;
+        }
+        return anzahl ? (summe / anzahl) / 255 : 0;
+      }
+      var bass = mittel(1, 8);
+      var mitte = mittel(8, 40);
+      var hoehen = mittel(40, 110);
+      return {
+        bass: bass,
+        mitte: mitte,
+        hoehen: hoehen,
+        gesamt: (bass * 0.6 + mitte * 0.3 + hoehen * 0.1)
+      };
+    }
+  };
+
+  // Aliases for compatibility with /radio
+  window.ffTogglePlay = window.fwAudio.togglePlay;
+  window.toggleRadioPlay = window.fwAudio.togglePlay;
+
+  fetchNowPlaying();
+  setInterval(fetchNowPlaying, 8000);
+
+  /* ===== Weiterspielen beim Navigieren =====
+     Odoo ist eine klassische Mehrseiten-Website (kein SPA). Echtes,
+     lueckenloses Weiterspielen ueber einen vollen Seitenwechsel hinweg
+     ist technisch nicht moeglich, ohne die Navigation selbst zu kapern -
+     das hatte hier vorher gesteckt und dabei jeden internen Link lahmgelegt
+     (der Fetch-basierte Router ist nie fertig gelaufen). Stattdessen: der
+     Wiedergabe-Status wird gemerkt und auf der naechsten Seite in Sekunden-
+     bruchteilen automatisch fortgesetzt - der Standardansatz, den auch
+     grosse Radiosender-Seiten nutzen. */
+  var wasPlaying = false;
+  try { wasPlaying = localStorage.getItem('fwRadioWasPlaying') === '1'; } catch (e) {}
+  if (wasPlaying) {
+    startPlayback();
+  }
+})();
+</script>
