@@ -25,18 +25,20 @@ if (-not $NurGemini) {
     Write-Host "=== 1/2 Claude-Abo ===" -ForegroundColor Cyan
     Write-Host "Gleich oeffnet sich der Browser: dort 'Autorisieren' klicken."
     Write-Host "Danach erscheint hier ein langer Schluessel (sk-ant-oat01-...)."
-    Write-Host "Markieren: Doppelklick reicht NICHT - mit der Maus vom 's' bis zum letzten Zeichen ziehen, dann Rechtsklick (kopiert)." -ForegroundColor Yellow
+    Write-Host "Den Schluessel mit der Maus markieren (auch ueber den Zeilenumbruch) und Rechtsklick = kopieren. Einfuegen muessen Sie nicht." -ForegroundColor Yellow
     Write-Host "NICHT in den Chat einfuegen." -ForegroundColor Yellow
     claude setup-token
     $ok = $false
     for ($v = 1; $v -le 3 -and -not $ok; $v++) {
-        $s = Read-Host "Schluessel einfuegen (Rechtsklick) und Enter" -AsSecureString
-        $t = [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($s)).Trim()
+        Read-Host "Schluessel markieren + Rechtsklick (kopiert), dann hier nur Enter druecken" | Out-Null
+        $t = ((Get-Clipboard -Raw) -replace '\s','')
+        if ($t -match '(sk-ant-oat01-[A-Za-z0-9_-]+)') { $t = $Matches[1] }
         Write-Host "Pruefe ... (Laenge $($t.Length) Zeichen)"
         $ok = Teste-Und-Speichere $t
-        if (-not $ok) { Write-Host "Claude lehnt den Schluessel ab - vermutlich unvollstaendig kopiert. Bitte nochmal." -ForegroundColor Red }
+        if (-not $ok) { Write-Host "Claude lehnt den Schluessel ab - vermutlich nicht ganz markiert. Bitte nochmal markieren + Rechtsklick." -ForegroundColor Red }
         $t = $null
     }
+    Set-Clipboard -Value " "
     if ($ok) { Write-Host "Claude-Abo: OK, Hermes kann Claude Code nutzen." -ForegroundColor Green }
 }
 
