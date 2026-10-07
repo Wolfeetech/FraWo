@@ -7,14 +7,16 @@ $OPTI = "root@10.1.0.227"
 
 function Teste-Und-Speichere([string]$t) {
     # 1) zu Hermes (Testdatei), 2) Test mit Claude Code auf CT160, 3) nur bei OK: .env + Tresor
-    $erg = $t | ssh -o BatchMode=yes $OPTI "cat > /root/.ct && pct push 160 /root/.ct /tmp/ct --user 1000 --group 1000 --perms 600 && shred -u /root/.ct && pct exec 160 -- su - hermes -c 'CLAUDE_CODE_OAUTH_TOKEN=`$(cat /tmp/ct) ~/.local/bin/claude -p ""Antworte nur mit OK"" 2>&1 | tail -1'"
+    $erg = $t | ssh -o BatchMode=yes $OPTI "tr -d '
+' > /root/.ct && pct push 160 /root/.ct /tmp/ct --user 1000 --group 1000 --perms 600 && shred -u /root/.ct && pct exec 160 -- su - hermes -c 'CLAUDE_CODE_OAUTH_TOKEN=`$(cat /tmp/ct) ~/.local/bin/claude -p ""Antworte nur mit OK"" 2>&1 | tail -1'"
     if ($erg -notmatch 'OK') {
         ssh -o BatchMode=yes $OPTI "pct exec 160 -- shred -u /tmp/ct" | Out-Null
         return $false
     }
     ssh -o BatchMode=yes $OPTI "pct exec 160 -- su - hermes -c 'E=~/.hermes/.env; grep -v ^CLAUDE_CODE_OAUTH_TOKEN= `$E > `$E.neu; printf ""CLAUDE_CODE_OAUTH_TOKEN=%s\n"" ""`$(cat /tmp/ct)"" >> `$E.neu; mv `$E.neu `$E; chmod 600 `$E; shred -u /tmp/ct'" | Out-Null
     for ($i = 0; $i -lt 3; $i++) {
-        $r = $t | ssh -o BatchMode=yes $OPTI "frawo-secret ablegen 'Claude Code Abo-Token (Hermes)' claude-setup-token 2>&1"
+        $r = $t | ssh -o BatchMode=yes $OPTI "tr -d '
+' | frawo-secret ablegen 'Claude Code Abo-Token (Hermes)' claude-setup-token 2>&1"
         if ($r -match 'abgelegt|aktualisiert') { break }
         Start-Sleep 3
     }
@@ -27,10 +29,11 @@ if (-not $NurGemini) {
     Write-Host "Danach erscheint hier ein langer Schluessel (sk-ant-oat01-...)."
     Write-Host "Den Schluessel mit der Maus markieren (auch ueber den Zeilenumbruch) und Rechtsklick = kopieren. Einfuegen muessen Sie nicht." -ForegroundColor Yellow
     Write-Host "NICHT in den Chat einfuegen." -ForegroundColor Yellow
-    claude setup-token
+    $vorhanden = (Get-Clipboard -Raw) -match 'sk-ant-oat01-'
+    if (-not $vorhanden) { claude setup-token } else { Write-Host "Schluessel aus der Zwischenablage wird verwendet (kein neuer noetig)." -ForegroundColor Green }
     $ok = $false
     for ($v = 1; $v -le 3 -and -not $ok; $v++) {
-        Read-Host "Schluessel markieren + Rechtsklick (kopiert), dann hier nur Enter druecken" | Out-Null
+        if (-not $vorhanden -or $v -gt 1) { Read-Host "Schluessel markieren + Rechtsklick (kopiert), dann hier nur Enter druecken" | Out-Null }
         $t = ((Get-Clipboard -Raw) -replace '\s','')
         if ($t -match '(sk-ant-oat01-[A-Za-z0-9_-]+)') { $t = $Matches[1] }
         Write-Host "Pruefe ... (Laenge $($t.Length) Zeichen)"
