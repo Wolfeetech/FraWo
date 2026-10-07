@@ -87,5 +87,36 @@ class RadioBetaViewTests(unittest.TestCase):
         self.assertIn('id="ff-vol-slider" aria-label="Lautstärke"', self.xml)
 
 
+class RadioMobileLayoutTests(unittest.TestCase):
+    """Am 07.10.2026 war die Seite auf dem Handy nach rechts verschoben, mit
+    schwarzem Rand und abgeschnittenem Inhalt: Die 850px breite Aurora ragte
+    aus dem Bildschirm. Diese Tests halten die Seite schmal."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.xml = VIEW.read_text(encoding="utf-8")
+
+    def test_seite_kann_nicht_querscrollen(self):
+        self.assertIn("overflow-x: hidden", self.xml)
+        self.assertIn(".ff-container {\n  overflow-x: clip;", self.xml)
+
+    def test_aurora_ist_nie_breiter_als_die_seite(self):
+        start = self.xml.index(".ff-ambient-light {")
+        block = self.xml[start : start + 400]
+        self.assertIn("width: min(850px, 100%)", block)
+        self.assertIn("max-width: 100%", block)
+
+    def test_keine_festen_breiten_ueber_400px_ausser_begrenzter_aurora(self):
+        import re
+        treffer = [
+            m.group(0)
+            for m in re.finditer(r"(?:^|[;{\s])width:\s*(\d{3,5})px", self.xml)
+            if int(m.group(1)) > 400
+        ]
+        self.assertEqual(treffer, [], f"feste Breiten ueber 400px: {treffer}")
+
+
 if __name__ == "__main__":
     unittest.main()
+
+

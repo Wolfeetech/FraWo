@@ -46,7 +46,10 @@ body {
   top: -100px;
   left: 50%;
   transform: translateX(-50%);
-  width: 850px;
+  /* Nie breiter als die Seite: 850px ragten auf dem Handy heraus und haben
+     die ganze Seite nach rechts verschoben (gemeldet 07.10.2026). */
+  width: min(850px, 100%);
+  max-width: 100%;
   height: 550px;
   background: radial-gradient(circle at 50% 40%, rgba(147, 51, 234, 0.15) 0%, rgba(46, 204, 113, 0.07) 45%, transparent 70%);
   filter: blur(90px);
@@ -1189,6 +1192,19 @@ body {
   box-shadow: inset 0 0 calc(50px + var(--ff-bass) * 170px)
               rgba(160, 80, 240, calc(var(--ff-bass) * 0.30));
   transition: box-shadow 90ms linear;
+}
+
+/* KEIN Querscrollen: Die Lichtebenen duerfen die Seite nie breiter machen als
+   den Bildschirm. Die Aurora ist 850px breit und ragte auf dem Handy links und
+   rechts heraus -- dadurch wurde die ganze Seite horizontal verschoben und am
+   rechten Rand erschien eine schwarze Flaeche (gemeldet 07.10.2026). */
+html,
+body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+.ff-container {
+  overflow-x: clip;
 }
 
 /* Das vorhandene Studio-Licht pulsiert mit dem Bass (nur Licht, kein Inhalt) */
