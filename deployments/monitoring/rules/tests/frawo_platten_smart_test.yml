@@ -38,3 +38,41 @@ tests:
               heisst: "Die Platte beginnt zu verschleissen. Steigt der Wert weiter, faellt sie bald aus."
               zu_tun: "Wert beobachten (smartctl -A); Ersatz beschaffen; Sicherung pruefen."
               vor_ort: "nein"
+
+  # Review Hermes 07.10.2026: veraltete und fehlende Messung
+  - interval: 1m
+    input_series:
+      - series: 'node_textfile_mtime_seconds{instance="anker-pve",file="/var/lib/prometheus/node-exporter/smartmon.prom"}'
+        values: '0x200'
+      - series: 'up{job="node_exporter",instance="anker-pve"}'
+        values: '1x200'
+      - series: 'up{job="node_exporter",instance="prodesk-pve"}'
+        values: '1x200'
+      - series: 'up{job="node_exporter",instance="monitoring-stack"}'
+        values: '1x200'
+    alert_rule_test:
+      - eval_time: 100m
+        alertname: PlattenMessungVeraltet
+        exp_alerts: []
+      - eval_time: 140m
+        alertname: PlattenMessungVeraltet
+        exp_alerts:
+          - exp_labels: {severity: warning, instance: anker-pve, file: /var/lib/prometheus/node-exporter/smartmon.prom}
+            exp_annotations:
+              dashboard: "http://100.100.115.80:3000/d/frawo-server"
+              summary: "SMART-Messung auf anker-pve seit ueber 2 h nicht erneuert"
+              description: "Der Timer prometheus-node-exporter-smartmon liefert nicht mehr. Ohne ihn bleiben Plattenfehler unbemerkt."
+              heisst: "Die Plattenueberwachung ist blind, nicht die Platte kaputt."
+              zu_tun: "systemctl status prometheus-node-exporter-smartmon.timer prometheus-node-exporter-smartmon.service"
+              vor_ort: "nein"
+      - eval_time: 40m
+        alertname: PlattenMessungFehlt
+        exp_alerts:
+          - exp_labels: {severity: warning, job: node_exporter, instance: prodesk-pve}
+            exp_annotations:
+              dashboard: "http://100.100.115.80:3000/d/frawo-server"
+              summary: "Keine SMART-Messung von prodesk-pve"
+              description: "node_exporter laeuft, liefert aber keine Datei smartmon.prom (Datei weg oder Verzeichnis nicht eingelesen)."
+              heisst: "Die Plattenueberwachung dieses Servers ist blind, nicht die Platte kaputt."
+              zu_tun: "ls -l /var/lib/prometheus/node-exporter/smartmon.prom; systemctl status prometheus-node-exporter-smartmon.timer; ARGS von node_exporter pruefen (zweites textfile-Verzeichnis)."
+              vor_ort: "nein"

@@ -44,3 +44,19 @@ groups:
           heisst: "Die Plattenueberwachung ist blind, nicht die Platte kaputt."
           zu_tun: "systemctl status prometheus-node-exporter-smartmon.timer prometheus-node-exporter-smartmon.service"
           vor_ort: "nein"
+
+      # 07.10.2026 (Review Hermes #1909): Verschwindet die Messdatei ganz, gibt es keine mtime-Reihe mehr und
+      # PlattenMessungVeraltet bleibt still. Diese Regel meldet Knoten, deren node_exporter laeuft, aber keine
+      # SMART-Datei liefert. Nur die drei PVE-Knoten (CT155 hat keine eigenen Platten).
+      - alert: PlattenMessungFehlt
+        expr: up{job="node_exporter",instance=~".*-pve"} == 1 unless on(instance) node_textfile_mtime_seconds{file=~".*smartmon.prom"}
+        for: 30m
+        labels:
+          severity: warning
+        annotations:
+          dashboard: "http://100.100.115.80:3000/d/frawo-server"
+          summary: "Keine SMART-Messung von {{ $labels.instance }}"
+          description: "node_exporter laeuft, liefert aber keine Datei smartmon.prom (Datei weg oder Verzeichnis nicht eingelesen)."
+          heisst: "Die Plattenueberwachung dieses Servers ist blind, nicht die Platte kaputt."
+          zu_tun: "ls -l /var/lib/prometheus/node-exporter/smartmon.prom; systemctl status prometheus-node-exporter-smartmon.timer; ARGS von node_exporter pruefen (zweites textfile-Verzeichnis)."
+          vor_ort: "nein"
