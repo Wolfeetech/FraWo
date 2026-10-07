@@ -128,6 +128,7 @@ Ausnahme: CT102 hat sie fest im Container eingetragen.
 | VM241 | PBS (Sicherungsserver) | `10.1.0.8` | OptiPlex |
 | VM220 | AzuraCast (Radio) | `10.1.0.38` | ProDesk |
 | VM360 | Home Assistant Eltern | `10.1.0.248` | ProDesk |
+| CT160 | Hermes-Agent Pilot (#1965), seit 07.10.2026 | `10.1.0.160` | OptiPlex |
 | CT130 | Radio-Backend | `10.1.0.200` ⚠️ | OptiPlex |
 | VM990 | Surface-Test (gestoppt) | `10.1.0.199` | OptiPlex |
 
