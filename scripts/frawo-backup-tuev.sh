@@ -6,7 +6,7 @@
 # Prüfungen:
 #   1. odoo_lokal       — CT140 Datenbank-Dump: vorhanden, jung (<26h), >20 MB, gzip -t lesbar
 #   2. odoo_cloud       — gcrypt:Odoo verschlüsselte Kopie: entschlüsselbar, jung (<26h), >20 MB, Größe identisch
-#   3. gaeste_cloud     — Google Drive vzdump aller 10 Anker-Gäste (101,106,108,110,130,140,150,155,210,300) von heute/gestern, >50 MB
+#   3. gaeste_cloud     — Google Drive vzdump aller 9 Anker-Gäste (101,106,108,110,130,140,150,155,210; VM300 seit 07.10. raus, #1957) von heute/gestern, >50 MB
 #   4. zfs_anker_backup — Lokaler ZFS-Spiegelpool anker-backup ONLINE und fehlerfrei
 #   5. pbs_datastore    — PBS VM241 (10.1.0.8): jeder laufende Gast mit Sicherung <26h (seit 24.09.2026)
 #   6. musik_bibliothek — rsync-Kopie der Musik auf anker-backup, Abgleich <30h
@@ -108,7 +108,8 @@ else
 fi
 
 # --- 3. Alle 10 aktiven Anker-Gäste in Google Drive (vzdump) ----------------
-ANKER_GAESTE="101 106 108 110 130 140 150 155 210 300"
+# 07.10.2026 (#1957): VM300 (Nextcloud, 500-GB-Datenplatte) ist nicht mehr im Wochen-Dump; Aussen-Kopie per verschluesseltem Datei-Abgleich.
+ANKER_GAESTE="101 106 108 110 130 140 150 155 210"
 GDRIVE_LISTE=$(timeout "$TIMEOUT_REMOTE" pvesm list google-drive 2>/dev/null || true)
 # Seit 29.09.2026 (Odoo #1594): Das Laufwerk /mnt/google-drive ist ein rclone-Mount mit
 # Schreib-Zwischenspeicher. vzdump meldet "Finished Backup", sobald die Datei im
@@ -151,7 +152,7 @@ else
     if [ -n "$FEHLEND" ]; then
         pruefe "gaeste_cloud" 0 "Fehlende/zu kleine Gäste-Sicherungen:$FEHLEND"
     else
-        pruefe "gaeste_cloud" 1 "$OK_COUNT/10 Gäste in Google Drive (direkt geprüft, Größe gleich), jüngste höchstens 8 Tage alt"
+        pruefe "gaeste_cloud" 1 "$OK_COUNT/9 Gäste in Google Drive (direkt geprüft, Größe gleich), jüngste höchstens 8 Tage alt"
     fi
 fi
 
@@ -215,7 +216,9 @@ if [ "$MUSIK_POOL_ZUSTAND" != "ONLINE" ]; then
 elif ! timeout 10 ls -d "$MUSIK_PFAD" >/dev/null 2>&1; then
     pruefe "musik_bibliothek" 0 "Pfad $MUSIK_PFAD nicht lesbar"
 else
-    MUSIK_GB=$(timeout 300 du -s --block-size=1G "$MUSIK_PFAD" 2>/dev/null | awk '{print $1}')
+    # 07.10.2026: du ueber 58.000 Dateien lief bei ausgelastetem Pool in den 300-s-Timeout -> "0 GB"-Fehlalarm.
+    # ZFS kennt die Belegung sofort.
+    MUSIK_GB=$(( $(zfs list -Hp -o used anker-backup/musik 2>/dev/null || echo 0) / 1073741824 ))
     MUSIK_GB=${MUSIK_GB:-0}
     if [ ! -f "$MUSIK_MARKE" ]; then
         pruefe "musik_bibliothek" 0 "noch kein erfolgreicher Abgleich (${MUSIK_GB} GB vorhanden)"
