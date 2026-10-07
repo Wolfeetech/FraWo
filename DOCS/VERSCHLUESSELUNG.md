@@ -32,6 +32,16 @@ Es sind zwei Dateien, Passwort und Salt. Beide werden gebraucht.
 
 Beide Dateien haben Rechte `600` — nur root kann sie lesen.
 
+**Seit 07.10.2026 zusätzlich in Vaultwarden** (agent@, Sammlung „Allgemein/Automations-Secrets“): „Cloud-Sicherung gcrypt Passwort (Odoo + Proxmox-Dumps)“ und „… Salt …“, per Hash gegen die Serverdateien geprüft (#1957). Damit ist die Lücke aus dem Abschnitt unten geschlossen.
+
+| Verschlüsselter Speicher | Inhalt | Schlüssel |
+|---|---|---|
+| `gcrypt:Odoo` | tägliche Odoo-Sicherung | gcrypt (oben) |
+| `gcrypt:pve/dump` | wöchentliche Proxmox-Dumps (Jobs `cloud-woche-*`, Speicher `google-drive-crypt`, Mount `rclone-gcrypt-pve.service` auf dem Anker) | gcrypt (oben) |
+| `nc-crypt:` = `gdrive:FraWo-Verschluesselt/nextcloud` | wöchentliche Nextcloud-Sicherung (VM300, So 03:00 UTC) | eigene: Vaultwarden „Nextcloud Cloud-Sicherung rclone-crypt Passwort/Salt“ |
+
+Wiederherstellen von irgendwo: rclone installieren, `rclone config create <name> crypt remote=gdrive:FraWo-Verschluesselt[/nextcloud] password=<Passwort> password2=<Salt> --obscure`, dann `rclone copy <name>:… /ziel`.
+
 ### ⚠️ Was noch fehlt
 
 Der Schlüssel liegt bisher **nur auf den beiden Servern**. Brennt das Haus,
