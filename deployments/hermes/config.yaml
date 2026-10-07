@@ -2081,8 +2081,11 @@ mcp_servers:
     connect_timeout: 120.0
     enabled: true
 
-# 07.10.2026 (#1965): lokales Ausweichmodell, wenn Codex nicht verfuegbar ist
+# 07.10.2026 (#1966, Wolf): Codex -> Claude (Copilot) -> Sparbetrieb. Sparbetrieb = fester Text, fuehrt nie etwas aus.
 fallback_providers:
   - provider: custom
-    model: frawo-mitarbeiter:latest
-    base_url: http://10.1.0.227:11434/v1
+    model: frawo-sparbetrieb
+    base_url: http://127.0.0.1:8099/v1
+onboarding:
+  seen:
+    busy_input_prompt: true
