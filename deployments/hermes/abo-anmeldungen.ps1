@@ -52,7 +52,7 @@ Write-Host "=== 2/2 Google/Gemini-Abo ===" -ForegroundColor Cyan
 Write-Host "Im Menue 'Login with Google' waehlen. Den Link im Browser oeffnen, mit dem Google-Konto"
 Write-Host "anmelden (das mit dem AI-Abo) und den angezeigten Code hier einfuegen."
 Write-Host "Wenn Gemini bereit ist: /quit eintippen." -ForegroundColor Yellow
-ssh -t $OPTI "pct exec 160 -- su - hermes -c 'NO_BROWSER=true ~/.local/bin/gemini'"
+ssh -t $OPTI "pct exec 160 -- su - hermes -c 'NODE_OPTIONS=--dns-result-order=ipv4first NO_BROWSER=true ~/.local/bin/gemini'"
 
 Write-Host ""
 Write-Host "Fertig. Bitte Claude im Chat Bescheid geben." -ForegroundColor Green

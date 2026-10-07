@@ -1,0 +1,4 @@
+#!/bin/sh
+# Gemini CLI mit Google-Abo (#1966); IPv4 zuerst, da kein IPv6 im Netz
+export NODE_OPTIONS=--dns-result-order=ipv4first
+exec "$HOME/.local/bin/gemini" "$@"
