@@ -111,14 +111,16 @@ fi
 # --- 3. Alle 10 aktiven Anker-Gäste in Google Drive (vzdump) ----------------
 # 07.10.2026 (#1957): VM300 (Nextcloud, 500-GB-Datenplatte) ist nicht mehr im Wochen-Dump; Aussen-Kopie per verschluesseltem Datei-Abgleich.
 ANKER_GAESTE="101 106 108 110 130 140 150 155 210"
-GDRIVE_LISTE=$(timeout "$TIMEOUT_REMOTE" pvesm list google-drive 2>/dev/null || true)
+# 07.10.2026 (#1957): Wochen-Dumps gehen jetzt verschluesselt nach google-drive-crypt (gcrypt:pve). Uebergangsweise
+# zaehlen beide Orte; die alten Klartext-Dumps in gdrive:dump werden nach dem ersten vollen Crypt-Durchlauf geloescht.
+GDRIVE_LISTE=$( { timeout "$TIMEOUT_REMOTE" pvesm list google-drive 2>/dev/null; timeout "$TIMEOUT_REMOTE" pvesm list google-drive-crypt 2>/dev/null; } || true)
 # Seit 29.09.2026 (Odoo #1594): Das Laufwerk /mnt/google-drive ist ein rclone-Mount mit
 # Schreib-Zwischenspeicher. vzdump meldet "Finished Backup", sobald die Datei im
 # Zwischenspeicher liegt - der eigentliche Upload kommt danach und kann scheitern
 # (28.09.: Input/output error bei VM 300). Laufwerksliste und vzdump-Log sehen davon
 # nichts. Deshalb zaehlt eine Sicherung nur, wenn sie DIREKT in Google Drive liegt,
 # in derselben Groesse.
-GDRIVE_ECHT=$(timeout "$TIMEOUT_REMOTE" rclone lsl gdrive:dump --max-depth 1 2>/dev/null || true)
+GDRIVE_ECHT=$( { timeout "$TIMEOUT_REMOTE" rclone lsl gdrive:dump --max-depth 1 2>/dev/null; timeout "$TIMEOUT_REMOTE" rclone lsl gcrypt:pve/dump --max-depth 1 2>/dev/null; } || true)
 
 if [ -z "$GDRIVE_LISTE" ]; then
     pruefe "gaeste_cloud" 0 "Google Drive Backup-Speicher nicht abrufbar"
