@@ -2083,6 +2083,8 @@ mcp_servers:
 
 # 07.10.2026 (#1966, Wolf): Codex -> Claude (Copilot) -> Sparbetrieb. Sparbetrieb = fester Text, fuehrt nie etwas aus.
 fallback_providers:
+  - provider: copilot
+    model: claude-sonnet-5
   - provider: custom
     model: frawo-sparbetrieb
     base_url: http://127.0.0.1:8099/v1
