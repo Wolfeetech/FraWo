@@ -28,6 +28,8 @@ VERSION_WORT = re.compile(r'\b(remix|mix|edit|dub|version|rework|bootleg|instrum
 # Kauderwelsch: Download-Codes ($R8EZCC2, Buchstaben+Ziffern gemischt), "@@"-Reste,
 # lange Ziffernfolgen (Katalog-/Datei-IDs). Reine Woerter wie "ALIVE" sind kein Code.
 CODE = re.compile(r'^\$[A-Z0-9]{5,}$|^(?=.*\d)(?=.*[A-Z])[A-Z0-9]{6,}$|@@|\d{6,}')
+# Reine Zahl im Kuenstlerfeld = Tracknummer aus einem Sampler-Rip.
+NUR_ZAHL = re.compile(r'^\d{1,3}$')
 
 
 def _version_gross(m):
@@ -102,8 +104,76 @@ def putze_album(album):
 
 def braucht_nacharbeit(titel, kuenstler):
     t = (titel or '').strip()
-    return ((not t) or (not (kuenstler or '').strip()) or bool(CODE.search(t))
-            or ' - ' in putze_titel(t, putze_kuenstler(kuenstler)))
+    k = (kuenstler or '').strip()
+    # Eine reine Zahl ist kein Kuenstler, sondern eine Tracknummer, die beim
+    # Import ins falsche Feld gelaufen ist (Beatport-Sampler, 07.10.2026).
+    # Ohne diese Pruefung galten 44 Titel als sendertauglich und gingen so
+    # auf Sendung.
+    return ((not t) or (not k) or bool(NUR_ZAHL.match(k)) or bool(CODE.search(t))
+            or ' - ' in putze_titel(t, putze_kuenstler(k)))
+
+
+KOMMA_OHNE_LUECKE = re.compile(r',(?=\S)')
+# Letztes Feld ist nur eine Versionsangabe ("Extended", "Radio Edit", "Dub Mix")
+# und gehoert damit an den Titel, nicht in ein eigenes Feld.
+VERSION_ANHANG = re.compile(
+    r'^(?:extended|radio\s+edit|original|instrumental|dub|club\s+mix|'
+    r'[\w\s().\'&,]*\b(?:remix|mix|edit|dub|version|rework|bootleg)\b[\w\s().\'&,]*)$',
+    re.I)
+
+
+def entwirre_sampler(kuenstler, titel):
+    """Sampler-Rips entwirren, bei denen die Tracknummer im Kuenstlerfeld landete.
+
+    Beim Beatport-Import am 07.10.2026 kamen 44 Titel gleichzeitig so auf
+    Sendung: Kuenstler = "37", Titel = "Beatport 100 Afro House 2024 August -
+    Sterio T,NkOstA LED,TomyV - Uwrongo". Der einmalige Putz-Lauf hat das
+    korrekt als Nacharbeit gemeldet, konnte es aber nicht aufloesen.
+
+    Greift nur, wenn das Kuenstlerfeld eine reine Zahl ist UND der Titel
+    mindestens zwei " - " enthaelt. Dann gilt: letztes Feld = Titel,
+    vorletztes = Kuenstler, alles davor = Album (Sampler).
+    Eine abschliessende Version ("- Extended", "- Radio Edit") bleibt am Titel.
+
+    Gibt (kuenstler, titel, album) zurueck oder None, wenn das Muster nicht
+    sicher passt -- dann bleibt der Fall Nacharbeit und wird nicht geraten.
+    """
+    k = (kuenstler or '').strip()
+    t = (titel or '').strip()
+    if not NUR_ZAHL.match(k) or not t:
+        return None
+
+    teile = [x.strip() for x in t.split(' - ')]
+    # Fuehrender Bindestrich ("- Pierre Johnson,... - Ukuphila") ist ein Rest aus
+    # dem Rip, kein Trenner: das erste Feld faengt dann mit "-" an.
+    if teile and teile[0].startswith('-'):
+        teile[0] = teile[0].lstrip('- ').strip()
+    # Ein leeres erstes Feld ist ebenfalls nur ein Rest, kein Sampler-Name.
+    if teile and teile[0] == '':
+        teile = teile[1:]
+    sampler = ''
+    if len(teile) < 2:
+        return None
+
+    # Eine abschliessende Versionsangabe gehoert zum Titel, nicht als Feld.
+    if len(teile) > 2 and VERSION_ANHANG.match(teile[-1]):
+        teile = teile[:-2] + [teile[-2] + ' - ' + teile[-1]]
+    if len(teile) < 2:
+        return None
+
+    neuer_titel = teile[-1]
+    neuer_kuenstler = teile[-2]
+    if len(teile) > 2:
+        sampler = ' - '.join(teile[:-2])
+
+    if not neuer_titel or not neuer_kuenstler:
+        return None
+    if NUR_ZAHL.match(neuer_kuenstler):
+        return None
+
+    return (putze_kuenstler(KOMMA_OHNE_LUECKE.sub(', ', neuer_kuenstler)),
+            putze_titel(neuer_titel, neuer_kuenstler),
+            sampler)
 
 
 def aus_dateiname(name, kuenstler, titel):

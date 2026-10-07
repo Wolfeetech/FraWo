@@ -1,7 +1,8 @@
 """Tests fuer radio_titel_putzen.py - Beispiele echt aus der Bibliothek (04.10.2026)."""
 import unittest
 
-from radio_titel_putzen import putze_titel, putze_kuenstler, braucht_nacharbeit, aus_dateiname, putze_album
+from radio_titel_putzen import (putze_titel, putze_kuenstler, braucht_nacharbeit,
+                                 aus_dateiname, putze_album, entwirre_sampler)
 
 
 class TestTitel(unittest.TestCase):
@@ -157,3 +158,43 @@ class TestNacharbeit(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class TestSamplerImport(unittest.TestCase):
+    """Beatport-Sampler vom 07.10.2026: Tracknummer landete im Kuenstlerfeld,
+    der Sampler-Name im Titel. 44 Faelle gleichzeitig auf Sendung.
+    Muster: '<Sampler> - <Kuenstler> - <Titel>' bei Kuenstler = reine Zahl."""
+
+    def test_sampler_wird_entwirrt(self):
+        self.assertEqual(
+            entwirre_sampler('37', 'Beatport 100 Afro House 2024 August - Sterio T,NkOstA LED,TomyV - Uwrongo'),
+            ('Sterio T, NkOstA LED, TomyV', 'Uwrongo', 'Beatport 100 Afro House 2024 August'),
+        )
+        self.assertEqual(
+            entwirre_sampler('28', 'Beatport 100 Afro House 2024 August - Hypaphonik - Funa Wena'),
+            ('Hypaphonik', 'Funa Wena', 'Beatport 100 Afro House 2024 August'),
+        )
+
+    def test_fuehrender_bindestrich_ohne_sampler(self):
+        self.assertEqual(
+            entwirre_sampler('36', '- Pierre Johnson,Oscar Mbo - Ukuphila'),
+            ('Pierre Johnson, Oscar Mbo', 'Ukuphila', ''),
+        )
+
+    def test_version_am_ende_bleibt_am_titel(self):
+        self.assertEqual(
+            entwirre_sampler('45', 'Beatport 100 Afro House 2024 August - Eli Fola,Canetis - Calma - Extended'),
+            ('Eli Fola, Canetis', 'Calma - Extended', 'Beatport 100 Afro House 2024 August'),
+        )
+
+    def test_echter_kuenstler_wird_nicht_angetastet(self):
+        self.assertIsNone(entwirre_sampler('Hypaphonik', 'Funa Wena'))
+        self.assertIsNone(entwirre_sampler('Daft Punk', 'Around the World - Radio Edit'))
+
+    def test_zahl_als_kuenstler_ohne_muster_bleibt_nacharbeit(self):
+        self.assertIsNone(entwirre_sampler('37', 'Uwrongo'))
+        self.assertTrue(braucht_nacharbeit('Uwrongo', '37'))
+
+    def test_nach_dem_entwirren_ist_es_sendertauglich(self):
+        k, t, _ = entwirre_sampler('37', 'Beatport 100 Afro House 2024 August - Sterio T,NkOstA LED,TomyV - Uwrongo')
+        self.assertFalse(braucht_nacharbeit(t, k))

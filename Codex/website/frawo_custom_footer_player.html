@@ -248,13 +248,25 @@
   var freqData = null;
   var analyseAktiv = false;
 
+  /* WICHTIG: Diese Funktion MUSS direkt im Klick laufen, nicht erst im
+     .then() von play(). Im Promise-Callback gilt die Nutzergeste nicht mehr,
+     der Audio-Kontext bleibt dann auf 'suspended' -- die Analyse liefert nur
+     Nullen UND der Ton wird stumm, weil das Audio-Element dann durch einen
+     schlafenden Kontext geleitet wird. */
   function analyseStarten() {
     if (analyseAktiv) return;
     try {
       var Ctx = window.AudioContext || window.webkitAudioContext;
       if (!Ctx) return;
       if (!audioCtx) audioCtx = new Ctx();
-      if (audioCtx.state === 'suspended') audioCtx.resume();
+      if (audioCtx.state === 'suspended' && audioCtx.resume) {
+        audioCtx.resume();
+      }
+      /* Erst verdrahten, wenn der Kontext wirklich laeuft. Sonst lieber keine
+         Analyse als ein stummer Stream. */
+      if (audioCtx.state !== 'running') {
+        return;
+      }
       if (!analyser) {
         analyser = audioCtx.createAnalyser();
         analyser.fftSize = 512;
@@ -265,6 +277,7 @@
         analyser.connect(audioCtx.destination);
       }
       analyseAktiv = true;
+      console.log('FraWo Funk: Tonanalyse aktiv');
     } catch (e) {
       console.log('Tonanalyse nicht verfuegbar, Wiedergabe laeuft weiter:', e);
       analyser = null;
@@ -356,10 +369,14 @@
   }
 
   function startPlayback() {
+    /* Zuerst die Analyse: hier sind wir noch in der Nutzergeste. */
+    analyseStarten();
     audio.src = streamUrl;
     audio.load();
     audio.play().then(function() {
       state.isPlaying = true;
+      /* Zweiter Versuch, falls der Kontext beim Klick noch nicht lief
+         (manche Browser erlauben resume erst nach dem ersten Abspielen). */
       analyseStarten();
       updateUI();
     }).catch(function(e) {

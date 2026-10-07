@@ -1802,6 +1802,7 @@ body {
   var ffBewegungReduziert = false;
   var ffOffenerWunsch = null;   /* Klick/Schieber, der auf den Dauerplayer wartet */
   var ffLetzterStatus = null;   /* damit die Oberflaeche nur bei Wechsel nachzieht */
+  var ffOhneDatenSeit = 0;      /* Bildlaeufe ohne Tonanalyse trotz laufender Musik */
   try {
     ffBewegungReduziert = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   } catch (e) {}
@@ -1875,7 +1876,17 @@ body {
       }
     }
 
-    if (pegel) {
+    var laeuft = false;
+    if (window.fwAudio) {
+      if (typeof window.fwAudio.getState === 'function') {
+        laeuft = window.fwAudio.getState().isPlaying === true;
+      }
+    }
+
+    var echteDaten = Boolean(pegel &amp;&amp; pegel.gesamt &gt; 0);
+
+    if (echteDaten) {
+      ffOhneDatenSeit = 0;
       ffBeatGlatt = ffBeatGlatt * 0.70 + pegel.gesamt * 0.30;
       ffWurzel.style.setProperty('--ff-bass', pegel.bass.toFixed(3));
       ffWurzel.style.setProperty('--ff-mid', pegel.mitte.toFixed(3));
@@ -1884,20 +1895,33 @@ body {
 
       var daten = window.fwAudio.getFrequencyData();
       if (daten) {
-        if (pegel.gesamt &gt; 0) {
-          /* Echte Tonanalyse vorhanden: der Zufallstakt wird abgeschaltet,
-             damit nicht beides gleichzeitig an den Balken zieht. */
-          if (!ffAnalyseLaeuft) {
-            ffAnalyseLaeuft = true;
-            if (animTimer) {
-              clearInterval(animTimer);
-              animTimer = null;
-            }
+        /* Echte Tonanalyse vorhanden: der Zufallstakt wird abgeschaltet,
+           damit nicht beides gleichzeitig an den Balken zieht. */
+        if (!ffAnalyseLaeuft) {
+          ffAnalyseLaeuft = true;
+          console.log('FraWo Funk: Visual laeuft auf echten Frequenzdaten');
+          if (animTimer) {
+            clearInterval(animTimer);
+            animTimer = null;
           }
-          ffBalkenAusTon(daten);
         }
+        ffBalkenAusTon(daten);
       }
+    } else if (laeuft) {
+      /* Es laeuft Musik, aber die Tonanalyse liefert nichts (Browser blockt
+         den Audio-Kontext oder kann kein Web Audio). Dann atmet die Seite
+         wenigstens ruhig weiter, statt totzuwirken. Kein Beat, bewusst langsam. */
+      ffOhneDatenSeit++;
+      if (ffOhneDatenSeit === 90) {
+        console.log('FraWo Funk: keine Tonanalyse -- Visual atmet im Ersatzmodus');
+      }
+      var welle = 0.18 + 0.14 * (0.5 + 0.5 * Math.sin(Date.now() / 900));
+      ffWurzel.style.setProperty('--ff-beat', welle.toFixed(3));
+      ffWurzel.style.setProperty('--ff-bass', (welle * 0.8).toFixed(3));
+      ffWurzel.style.setProperty('--ff-mid', (welle * 0.5).toFixed(3));
+      ffWurzel.style.setProperty('--ff-hi', (welle * 0.3).toFixed(3));
     } else {
+      ffOhneDatenSeit = 0;
       ffWurzel.style.setProperty('--ff-beat', '0');
       ffWurzel.style.setProperty('--ff-bass', '0');
       ffWurzel.style.setProperty('--ff-mid', '0');
