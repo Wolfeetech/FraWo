@@ -49,12 +49,14 @@ class RadioBetaViewTests(unittest.TestCase):
         self.assertIn('id="ff-quality-btn" disabled="disabled"', self.xml)
         self.assertIn("Beta-Stream: 320 kbit/s", self.xml)
 
-    def test_anonymous_rating_gets_immediate_login_feedback(self):
+    def test_rating_delegates_auth_decision_to_server(self):
         marker = "window.ffRate = function (stars) {"
         start = self.xml.index(marker)
-        block = self.xml[start : start + 500]
-        self.assertIn("if (!ffIsLoggedIn())", block)
-        self.assertIn("Zum Bewerten bitte im Portal anmelden", block)
+        block = self.xml[start : start + 900]
+        self.assertIn("fetch('/radio/rate'", block)
+        self.assertIn("Bewertung wird gespeichert", block)
+        self.assertNotIn("if (!ffIsLoggedIn())", block)
+        self.assertIn("ffShowRatingLoginHint", self.xml)
 
     def test_mobile_footer_uses_responsive_grid_class(self):
         self.assertIn('class="fw-footer-grid"', self.xml)

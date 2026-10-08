@@ -1685,14 +1685,9 @@ body {
         };
 
         window.ffRate = function (stars) {
-          if (!ffIsLoggedIn()) {
-            if (ratingSub) ratingSub.textContent = 'Zum Bewerten bitte im Portal anmelden';
-            ffShowRatingLoginHint();
-            if (starsEl) starsEl.classList.add('locked');
-            return;
-          }
           var key = window.currentTrackKey || '';
           if (!key) return;
+          if (ratingSub) ratingSub.textContent = 'Bewertung wird gespeichert …';
           fetch('/radio/rate', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -1714,15 +1709,13 @@ body {
                 ffShowRatingLoginHint();
                 if (starsEl) starsEl.classList.add('locked');
               }
-            }).catch(function () {});
+            }).catch(function () {
+              if (ratingSub) ratingSub.textContent = 'Bewertung konnte gerade nicht gespeichert werden';
+            });
         };
 
         if (starsEl) {
-          if (!ffIsLoggedIn()) {
-            starsEl.classList.add('locked');
-          } else {
-            starsEl.classList.remove('locked');
-          }
+          starsEl.classList.remove('locked');
         }
         window.ffLoadRating();
         if (window.ffLoadRedaktion) window.ffLoadRedaktion();
