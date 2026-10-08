@@ -38,7 +38,47 @@ body {
   margin: 0 auto;
   padding: 0 24px 100px 24px;
   position: relative;
+  perspective: 1800px;
+  perspective-origin: 50% 12%;
+  transform-style: preserve-3d;
+  --ff-page-x: 0;
+  --ff-page-y: 0;
 }
+
+/* Page-wide 3D stage: depth is visible even without hovering a single card. */
+.ff-container::before {
+  content: '';
+  position: fixed;
+  inset: 34vh -18vw -22vh;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.24;
+  background:
+    linear-gradient(rgba(160, 80, 240, 0.20) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(46, 204, 113, 0.14) 1px, transparent 1px);
+  background-size: 58px 58px;
+  transform: perspective(760px) rotateX(calc(64deg + var(--ff-page-y) * 0.7deg)) rotateZ(calc(var(--ff-page-x) * 0.15deg)) translateZ(-100px) scale(1.22);
+  transform-origin: center bottom;
+  mask-image: linear-gradient(to top, rgba(0,0,0,0.92), transparent 84%);
+  -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,0.92), transparent 84%);
+}
+.ff-container > .ff-header,
+.ff-container > .ff-ticker,
+.ff-container > .ff-live-program,
+.ff-container > .ff-deck,
+.ff-container > .ff-jukebox-box,
+.ff-container > .ff-mvp-proof,
+.ff-container > .ff-history-strip {
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
+.ff-container > .ff-header { transform: translateZ(18px) rotateX(calc(var(--ff-page-y) * -0.05deg)) rotateY(calc(var(--ff-page-x) * 0.08deg)); }
+.ff-container > .ff-ticker { transform: translateZ(12px) rotateX(calc(var(--ff-page-y) * -0.08deg)) rotateY(calc(var(--ff-page-x) * 0.12deg)); }
+.ff-container > .ff-live-program { transform: translateZ(20px) rotateX(calc(var(--ff-page-y) * -0.10deg)) rotateY(calc(var(--ff-page-x) * 0.15deg)); }
+.ff-container > .ff-deck { transform: translateZ(34px); }
+.ff-container > .ff-jukebox-box,
+.ff-container > .ff-mvp-proof,
+.ff-container > .ff-history-strip { transform: translateZ(16px); }
 
 /* Ambient Radial Studio Glow */
 .ff-ambient-light {
@@ -1185,6 +1225,15 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .ff-container { perspective: none; transform-style: flat; }
+  .ff-container::before { display: none; }
+  .ff-container > .ff-header,
+  .ff-container > .ff-ticker,
+  .ff-container > .ff-live-program,
+  .ff-container > .ff-deck,
+  .ff-container > .ff-jukebox-box,
+  .ff-container > .ff-mvp-proof,
+  .ff-container > .ff-history-strip { transform: none !important; }
   .ff-deck,
   .ff-deck-art,
   .ff-card,
@@ -1827,6 +1876,23 @@ body {
   var elProgFill = document.getElementById('ff-prog-fill');
   var elListeners = document.getElementById('ff-listeners');
   var elHistory = document.getElementById('ff-history');
+
+  /* Subtle page-wide parallax: pointer devices get depth, touch stays stable. */
+  var ffPage = document.querySelector('.ff-container');
+  var ffPageMotion = window.matchMedia &amp;&amp; window.matchMedia('(hover: hover) and (pointer: fine)').matches &amp;&amp; !(window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  if (ffPage &amp;&amp; ffPageMotion) {
+    ffPage.addEventListener('pointermove', function (event) {
+      var rect = ffPage.getBoundingClientRect();
+      var x = ((event.clientX - rect.left) / rect.width - 0.5) * 2;
+      var y = ((event.clientY - rect.top) / rect.height - 0.5) * 2;
+      ffPage.style.setProperty('--ff-page-x', Math.max(-1, Math.min(1, x)).toFixed(3));
+      ffPage.style.setProperty('--ff-page-y', Math.max(-1, Math.min(1, y)).toFixed(3));
+    });
+    ffPage.addEventListener('pointerleave', function () {
+      ffPage.style.setProperty('--ff-page-x', '0');
+      ffPage.style.setProperty('--ff-page-y', '0');
+    });
+  }
 
   var elNextCard = document.getElementById('ff-next-card');
   var elNextBadge = document.getElementById('ff-next-badge');
