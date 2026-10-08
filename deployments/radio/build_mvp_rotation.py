@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Build the FraWo Funk MVP rotation in AzuraCast.
+"""Build the FraWo Funk weekly rotation in AzuraCast.
 
 Run inside the AzuraCast VM. Default mode is a read-only plan. ``--apply``:
 - creates a dated MariaDB dump before changing anything;
-- creates/rebuilds only playlists named ``MVP <day> · <daypart>``;
+- creates/rebuilds the 28 editorially named daypart playlists;
 - fills each with 100 deterministic tracks from existing curated source lists;
 - creates three best-of playlists, preserving the existing two;
 - creates a 7-day, four-daypart schedule.
@@ -33,7 +33,18 @@ SOURCE_POOLS = {
     "Abend": [863, 865, 866],
 }
 DAY_NAMES = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"]
-DAYPARTS = [("Nacht", 0, 360), ("Morgen", 360, 660), ("Tag", 660, 1020), ("Abend", 1020, 1440)]
+SHOW_NAMES = {
+    "Montag": ["Night Drive", "Morning Flow", "Afro-Noon", "Sunset Pulse"],
+    "Dienstag": ["Moonlight Motion", "Morning Bloom", "Tropical Noon", "Golden Hour"],
+    "Mittwoch": ["Deep Night", "Midweek Rise", "City Lunch", "Afterwork Club"],
+    "Donnerstag": ["Night Shift", "Sunrise Ritual", "Afro-Noon Thursday", "Thursday Heat"],
+    "Freitag": ["Late Night Society", "Friday Flow", "Afro-Noon Friday", "Friday Peak"],
+    "Samstag": ["Night Owls", "Weekend Rise", "Saturday Soul", "Saturday Club"],
+    "Sonntag": ["Sunday Deep", "Sunday Sunrise", "Sunday Soul", "Sunday Sunset"],
+}
+# AzuraCast speichert Sendezeiten als HHMM, nicht als Minuten seit Mitternacht.
+# 00:00–06:00, 06:00–11:00, 11:00–17:00, 17:00–24:00.
+DAYPARTS = [("Nacht", 0, 600), ("Morgen", 600, 1100), ("Tag", 1100, 1700), ("Abend", 1700, 0)]
 
 
 def db(sql: str) -> list[list[str]]:
@@ -106,10 +117,17 @@ def plan() -> tuple[list[dict], list[dict], dict[str, int]]:
     playlists = []
     schedules = []
     for day_index, day in enumerate(DAY_NAMES, start=1):
-        for daypart, start, end in DAYPARTS:
-            name = f"MVP {day} · {daypart}"
+        for daypart_index, (daypart, start, end) in enumerate(DAYPARTS):
+            name = SHOW_NAMES[day][daypart_index]
             tracks = make_tracks(day_index, daypart, media, memberships)
-            playlists.append({"name": name, "day": day, "day_index": day_index, "daypart": daypart, "tracks": tracks})
+            playlists.append({
+                "name": name,
+                "legacy_name": f"MVP {day} · {daypart}",
+                "day": day,
+                "day_index": day_index,
+                "daypart": daypart,
+                "tracks": tracks,
+            })
             schedules.append({"name": name, "day_index": day_index, "start": start, "end": end})
 
     existing = db("SELECT id,name FROM station_playlists WHERE station_id=1;")
@@ -124,9 +142,14 @@ def plan() -> tuple[list[dict], list[dict], dict[str, int]]:
     playlists.extend([
         {"name": "⭐ Best of the Week", "existing_id": existing_by_name.get("⭐ Best of the Week"), "tracks": memberships.get(869, [])},
         {"name": "🔥 Power Rotation", "existing_id": existing_by_name.get("🔥 FraWo Funk — Power Rotation (Hörer-Favoriten)"), "tracks": memberships.get(871, [])},
-        {"name": "⭐ Best of the MVP", "existing_id": existing_by_name.get("⭐ Best of the MVP"), "tracks": best_source[:50]},
+        {
+            "name": "FraWo Selects",
+            "legacy_name": "⭐ Best of the MVP",
+            "existing_id": existing_by_name.get("⭐ Best of the MVP"),
+            "tracks": best_source[:50],
+        },
     ])
-    schedules.append({"name": "⭐ Best of the MVP", "day_index": 7, "start": 1200, "end": 1320})
+    schedules.append({"name": "FraWo Selects", "day_index": 7, "start": 1200, "end": 1320})
     return playlists, schedules, existing_by_name
 
 
@@ -136,8 +159,12 @@ def apply(playlists: list[dict], schedules: list[dict], existing_by_name: dict[s
     ids_by_name = dict(existing_by_name)
     for pl in playlists:
         name = pl["name"]
+        if name not in ids_by_name and pl.get("legacy_name") in ids_by_name:
+            target = str(ids_by_name[pl["legacy_name"]])
+            sql.append(f"UPDATE station_playlists SET name='{esc(name)}' WHERE id={target};")
+            ids_by_name[name] = int(target)
         if name not in ids_by_name:
-            description = "FraWo Funk MVP – kuratiert, 7-Tage-Daypart-Betrieb."
+            description = "FraWo Funk – kuratierter 7-Tage-Daypart-Betrieb."
             sql.append(
                 "INSERT INTO station_playlists "
                 "(station_id,name,description,type,is_enabled,play_per_songs,play_per_minutes,weight,source,include_in_requests,playback_order,remote_url,remote_type,is_jingle,play_per_hour_minute,remote_timeout,backend_options,include_in_on_demand,avoid_duplicates) "
@@ -148,15 +175,19 @@ def apply(playlists: list[dict], schedules: list[dict], existing_by_name: dict[s
         else:
             target = str(ids_by_name[name])
         pl["sql_id"] = target
-        if name.startswith("MVP ") or name == "⭐ Best of the MVP":
+        if "legacy_name" in pl:
+            sql.append(
+                f"UPDATE station_playlists SET description='FraWo Funk – kuratierter 7-Tage-Daypart-Betrieb.' WHERE id={target};"
+            )
             sql.append(f"DELETE FROM station_playlist_media WHERE playlist_id={target};")
             for rank, media_id in enumerate(pl["tracks"], start=1):
                 sql.append(
                     "INSERT INTO station_playlist_media (playlist_id,media_id,weight,last_played,is_queued) "
                     f"VALUES ({target},{media_id},{rank},0,1);"
                 )
-    mvp_names = [p["name"] for p in playlists if p["name"].startswith("MVP ")]
-    quoted = ",".join("'" + esc(n) + "'" for n in mvp_names + ["⭐ Best of the MVP"])
+    editorial_names = [p["name"] for p in playlists if "legacy_name" in p]
+    legacy_names = [p["legacy_name"] for p in playlists if "legacy_name" in p]
+    quoted = ",".join("'" + esc(n) + "'" for n in editorial_names + legacy_names)
     # Replace the old 7-day schedule entries, but preserve the existing
     # Best-of-the-Week Sunday slot (playlist 869) and the power rotation.
     sql.append("DELETE FROM station_schedules WHERE playlist_id IN (859,860,861,862,863,864,865,866,867,868);")

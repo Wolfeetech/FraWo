@@ -677,6 +677,35 @@ body {
   margin-bottom: 10px;
   letter-spacing: 0.02em;
 }
+.ff-mvp-proof {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin: -4px 0 22px;
+  padding: 16px;
+  border: 1px solid rgba(160, 80, 240, 0.28);
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(160, 80, 240, 0.12), rgba(46, 204, 113, 0.06));
+}
+.ff-mvp-proof-item { min-width: 0; }
+.ff-mvp-proof-value {
+  display: block;
+  color: #ffffff;
+  font-family: var(--ff-font-mono);
+  font-size: 1rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+.ff-mvp-proof-label {
+  display: block;
+  margin-top: 4px;
+  color: var(--ff-text-muted);
+  font-size: 0.72rem;
+  line-height: 1.35;
+}
+@media (max-width: 600px) {
+  .ff-mvp-proof { grid-template-columns: 1fr 1fr; }
+}
 
 /* Weekday Tab Navigation */
 .ff-week-tabs {
@@ -1592,6 +1621,11 @@ body {
           return Boolean(s.uid &amp;&amp; !s.is_public);
         }
 
+        function ffShowRatingLoginHint() {
+          if (!ratingSub) return;
+          ratingSub.innerHTML = 'Zum Bewerten bitte <a href="/web/login?redirect=%2Fradio" style="color:#ffffff; text-decoration:underline;">im Portal anmelden</a>';
+        }
+
         function paintStars(avg, own, count) {
           if (!starsEl) return;
           var fill = own ? own : Math.round(avg || 0);
@@ -1630,6 +1664,7 @@ body {
         window.ffRate = function (stars) {
           if (!ffIsLoggedIn()) {
             if (ratingSub) ratingSub.textContent = 'Zum Bewerten bitte im Portal anmelden';
+            ffShowRatingLoginHint();
             if (starsEl) starsEl.classList.add('locked');
             return;
           }
@@ -1642,7 +1677,7 @@ body {
           }).then(function (r) { return r.json(); })
             .then(function (d) {
               if (d.error) {
-                if (ratingSub) ratingSub.textContent = 'Zum Bewerten bitte im Portal anmelden';
+                ffShowRatingLoginHint();
                 if (starsEl) starsEl.classList.add('locked');
                 return;
               }
@@ -1653,7 +1688,7 @@ body {
                 paintStars(s.average || 0, s.own || 0, s.count || 0);
                 if (window.spawnReaction) window.spawnReaction('⭐');
               } else if (res.reason === 'forbidden') {
-                if (ratingSub) ratingSub.textContent = 'Zum Bewerten bitte im Portal anmelden';
+                ffShowRatingLoginHint();
                 if (starsEl) starsEl.classList.add('locked');
               }
             }).catch(function () {});
@@ -1699,6 +1734,13 @@ body {
   <div class="ff-section-head">
     <span>Wochenprogramm &amp; Sendeplan</span>
     <span>Bodensee-Zeit (CET)</span>
+  </div>
+
+  <div class="ff-mvp-proof" aria-label="Aktueller FraWo-Funk-Betriebsstand">
+    <div class="ff-mvp-proof-item"><span class="ff-mvp-proof-value">28</span><span class="ff-mvp-proof-label">kuratierte Shows pro Woche</span></div>
+    <div class="ff-mvp-proof-item"><span class="ff-mvp-proof-value">100</span><span class="ff-mvp-proof-label">Titel je Daypart-Rotation</span></div>
+    <div class="ff-mvp-proof-item"><span class="ff-mvp-proof-value">4</span><span class="ff-mvp-proof-label">Nacht · Morgen · Tag · Abend</span></div>
+    <div class="ff-mvp-proof-item"><span class="ff-mvp-proof-value">3</span><span class="ff-mvp-proof-label">Best-of- und Power-Shows</span></div>
   </div>
 
   <!-- Sendeplan live: Wochenreiter + Tagesplan werden per JS aus /radio/schedule gebaut -->
