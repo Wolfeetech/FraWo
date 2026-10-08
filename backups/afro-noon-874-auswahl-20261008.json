@@ -1,0 +1,908 @@
+{
+  "playlist_id": 874,
+  "source_playlist_id": 867,
+  "selection_rule": "genre Afro House +5; Beatport Afro House filename +4; Afro path +1; Rock/Indie -5; missing genre -1; stable source order",
+  "selected_count": 100,
+  "selected": [
+    {
+      "media_id": 217395,
+      "artist": "Faul & Wad, 4rain, Anlly Marin",
+      "title": "Flores Blancas (Extended Mix)",
+      "path": "Curated_Playlists/09_Afro_World/Faul & Wad, 4rain, Anlly Marin - Flores Blancas (Extended Mix).mp3",
+      "genre": "Afro House",
+      "score": 6,
+      "source_position": 0
+    },
+    {
+      "media_id": 217412,
+      "artist": "DJ Tomer, Ricardo, Emmanuel Jal, Joezi",
+      "title": "Suo",
+      "path": "Curated_Playlists/09_Afro_World/DJ Tomer, Ricardo, Emmanuel Jal, Joezi - Suo (Original Mix).mp3",
+      "genre": "Afro House",
+      "score": 6,
+      "source_position": 24
+    },
+    {
+      "media_id": 217425,
+      "artist": "Ricardo Trueba, Alberto Hernandez (MX)",
+      "title": "Overdrive Extended Mix",
+      "path": "Curated_Playlists/09_Afro_World/Ricardo Trueba, Alberto Hernandez (MX) - Overdrive Extended Mix.mp3",
+      "genre": "Afro House",
+      "score": 6,
+      "source_position": 28
+    },
+    {
+      "media_id": 217434,
+      "artist": "Emmanuel Jal, MoBlack, Zamna Soundsystem",
+      "title": "Asalam Alaikum",
+      "path": "Curated_Playlists/09_Afro_World/Emmanuel Jal, MoBlack, Zamna Soundsystem - Asalam Alaikum (Original Mix).mp3",
+      "genre": "Afro House",
+      "score": 6,
+      "source_position": 30
+    },
+    {
+      "media_id": 217420,
+      "artist": "Andrea Oliva & Moeaike",
+      "title": "I Love You So (Shimza Extended Remix)",
+      "path": "Curated_Playlists/09_Afro_World/Andrea Oliva & Moeaike - I Love You So (Shimza Extended Remix).mp3",
+      "genre": "Afro House",
+      "score": 6,
+      "source_position": 31
+    },
+    {
+      "media_id": 217450,
+      "artist": "Lyrik Shoxen, Candy Man",
+      "title": "Be Strong (Extended Mix); Be Strong (Extended Mix) www.djsoundtop.com",
+      "path": "Curated_Playlists/09_Afro_World/Lyrik Shoxen, Candy Man - Be Strong (Extended Mix) www.djsoundtop.com.aif",
+      "genre": "Afro House",
+      "score": 6,
+      "source_position": 32
+    },
+    {
+      "media_id": 217409,
+      "artist": "Roy Rosenfeld",
+      "title": "Da Vision Extended",
+      "path": "Curated_Playlists/09_Afro_World/Roy Rosenfeld - Da Vision Extended.mp3",
+      "genre": "Afro House",
+      "score": 6,
+      "source_position": 33
+    },
+    {
+      "media_id": 217405,
+      "artist": "Chemical Surf",
+      "title": "Hey Hey Hey (Said Extended Remix)",
+      "path": "Curated_Playlists/09_Afro_World/Chemical Surf - Hey Hey Hey (Said Extended Remix).flac",
+      "genre": "Afro House",
+      "score": 6,
+      "source_position": 34
+    },
+    {
+      "media_id": 217511,
+      "artist": "Steal Vybe, Chris Forman, Damon Bennett",
+      "title": "6 Mins Of Time (Steal Vybe's 909 Bang Mix)",
+      "path": "Curated_Playlists/09_Afro_World/Steal Vybe, Chris Forman, Damon Bennett - 6 Mins Of Time (Steal Vybe's 909 Bang Mix).mp3",
+      "genre": "Afro House",
+      "score": 6,
+      "source_position": 35
+    },
+    {
+      "media_id": 217421,
+      "artist": "Ghostheart Nebula",
+      "title": "Sunya",
+      "path": "Curated_Playlists/09_Afro_World/02 - Sun.mp3",
+      "genre": "Afro House",
+      "score": 6,
+      "source_position": 43
+    },
+    {
+      "media_id": 217441,
+      "artist": "Havoc & Lawn",
+      "title": "Chupala",
+      "path": "Curated_Playlists/09_Afro_World/Havoc & Lawn - Chupala (Original Mix).flac",
+      "genre": "Afro House",
+      "score": 6,
+      "source_position": 46
+    },
+    {
+      "media_id": 217496,
+      "artist": "Alpha Rowen",
+      "title": "No Chaka Chaka",
+      "path": "Curated_Playlists/09_Afro_World/Alpha Rowen - No Chaka Chaka.flac",
+      "genre": "Afro House",
+      "score": 6,
+      "source_position": 50
+    },
+    {
+      "media_id": 217414,
+      "artist": "Sky White",
+      "title": "Vamo LÃ¡ Extended Mix",
+      "path": "Curated_Playlists/09_Afro_World/Sky White - Vamo Lá Extended Mix.mp3",
+      "genre": "Afro House",
+      "score": 6,
+      "source_position": 55
+    },
+    {
+      "media_id": 217442,
+      "artist": "Nico de Andrea, Vanetty",
+      "title": "Ethnica (Extended Mix)",
+      "path": "Curated_Playlists/09_Afro_World/Nico de Andrea, Vanetty - Ethnica (Extended Mix).mp3",
+      "genre": "Afro House",
+      "score": 6,
+      "source_position": 61
+    },
+    {
+      "media_id": 217504,
+      "artist": "Djembe Monks, Thandeka Masayi",
+      "title": "Sabela Extended Mix",
+      "path": "Curated_Playlists/09_Afro_World/Djembe Monks, Thandeka Masayi - Sabela Extended Mix.mp3",
+      "genre": "Afro House",
+      "score": 6,
+      "source_position": 63
+    },
+    {
+      "media_id": 217436,
+      "artist": "Yamil",
+      "title": "Iku Lele (Cee ElAssaad Voodoo Mix)",
+      "path": "Curated_Playlists/09_Afro_World/Yamil - Iku Lele (Cee ElAssaad Voodoo Mix).mp3",
+      "genre": "Afro House",
+      "score": 6,
+      "source_position": 65
+    },
+    {
+      "media_id": 217451,
+      "artist": "Stylo, Space Motion & Saulo Duarte",
+      "title": "Freedom",
+      "path": "Curated_Playlists/09_Afro_World/Stylo, Space Motion & Saulo Duarte - Freedom (Original Mix).mp3",
+      "genre": "Afro House",
+      "score": 6,
+      "source_position": 70
+    },
+    {
+      "media_id": 217497,
+      "artist": "Doctor Dru & CIOZ",
+      "title": "Dunes",
+      "path": "Curated_Playlists/09_Afro_World/Doctor Dru & CIOZ - Dunes (Original Mix).mp3",
+      "genre": "Afro House",
+      "score": 6,
+      "source_position": 73
+    },
+    {
+      "media_id": 217514,
+      "artist": "Chemical Surf",
+      "title": "Mercy (Malive Remix)",
+      "path": "Curated_Playlists/09_Afro_World/Chemical Surf - Mercy (Malive Remix).mp3",
+      "genre": "Afro House",
+      "score": 6,
+      "source_position": 79
+    },
+    {
+      "media_id": 217432,
+      "artist": "Branko, Studio Bros",
+      "title": "Impulso (Studio Bros Remix)",
+      "path": "Curated_Playlists/09_Afro_World/Branko, Studio Bros - Impulso (Studio Bros Remix).flac",
+      "genre": "Afro House",
+      "score": 6,
+      "source_position": 81
+    },
+    {
+      "media_id": 217510,
+      "artist": "MentMusik, Demzabeatz",
+      "title": "Maita Maita",
+      "path": "Curated_Playlists/09_Afro_World/MentMusik, Demzabeatz - Maita Maita (Original Mix).mp3",
+      "genre": "Afro House",
+      "score": 6,
+      "source_position": 84
+    },
+    {
+      "media_id": 217428,
+      "artist": "Rancido, Bun Xapa",
+      "title": "Ina Original Mix",
+      "path": "Curated_Playlists/09_Afro_World/Rancido, Bun Xapa - Ina Original Mix.mp3",
+      "genre": "Afro House",
+      "score": 6,
+      "source_position": 85
+    },
+    {
+      "media_id": 217430,
+      "artist": "L.B. One, Idir",
+      "title": "A Vava Inouva Extended Mix",
+      "path": "Curated_Playlists/09_Afro_World/L.B. One, Idir - A Vava Inouva Extended Mix.mp3",
+      "genre": "Afro House",
+      "score": 6,
+      "source_position": 87
+    },
+    {
+      "media_id": 217486,
+      "artist": "SOLIDMIND, Zenma",
+      "title": "Oyowa",
+      "path": "Curated_Playlists/09_Afro_World/SOLIDMIND, Zenma - Oyowa (Original Mix).mp3",
+      "genre": "Afro House",
+      "score": 6,
+      "source_position": 88
+    },
+    {
+      "media_id": 217435,
+      "artist": "DJ Chus, Amira, NenaHalena",
+      "title": "Prado's Revenge Aaron Sevilla Remix",
+      "path": "Curated_Playlists/09_Afro_World/DJ Chus, Amira, NenaHalena - Prado's Revenge Aaron Sevilla Remix.mp3",
+      "genre": "Afro House",
+      "score": 6,
+      "source_position": 91
+    },
+    {
+      "media_id": 217463,
+      "artist": "Eran Hersh, TEDDY-O",
+      "title": "Ligado (Extended Mix)",
+      "path": "Curated_Playlists/09_Afro_World/Eran Hersh, TEDDY-O - Ligado (Extended Mix).mp3",
+      "genre": "Afro House",
+      "score": 6,
+      "source_position": 95
+    },
+    {
+      "media_id": 217489,
+      "artist": "Cem Seckin & Siina",
+      "title": "Blessed",
+      "path": "Curated_Playlists/09_Afro_World/Cem Seckin & Siina - Blessed (Original Mix).mp3",
+      "genre": "Afro House",
+      "score": 6,
+      "source_position": 98
+    },
+    {
+      "media_id": 217455,
+      "artist": "Modjo, Sparrow & Barbossa, Koshi, Daymaan",
+      "title": "Lady (Hear Me Tonight) - Remix (Extended)",
+      "path": "Curated_Playlists/09_Afro_World/Modjo, Sparrow & Barbossa, Koshi, Daymaan - Lady (Hear Me Tonight) - Remix (Extended).mp3",
+      "genre": "Afro House",
+      "score": 6,
+      "source_position": 99
+    },
+    {
+      "media_id": 217452,
+      "artist": "Kopoy Zukar, Malumz on Decks, Khanya De Vocalist",
+      "title": "iThemba (feat. Khanya De Vocalist) (feat. Khanya De Vocalist)",
+      "path": "Curated_Playlists/09_Afro_World/Kopoy Zukar, Malumz on Decks, Khanya De Vocalist - iThemba (feat. Khanya De Vocalist) (feat. Khanya De Vocalist).flac",
+      "genre": "Afro House",
+      "score": 6,
+      "source_position": 100
+    },
+    {
+      "media_id": 217429,
+      "artist": "Rony Seikaly & Infinem",
+      "title": "Temperatura",
+      "path": "Curated_Playlists/09_Afro_World/Rony Seikaly & Infinem - Temperatura (Original Mix).mp3",
+      "genre": "Afro House",
+      "score": 6,
+      "source_position": 101
+    },
+    {
+      "media_id": 217487,
+      "artist": "Mi Casa",
+      "title": "Turn You On",
+      "path": "Curated_Playlists/09_Afro_World/Mi Casa - Turn You On.mp3",
+      "genre": "Afro House",
+      "score": 6,
+      "source_position": 103
+    },
+    {
+      "media_id": 217477,
+      "artist": "Jnr SA,Darque,Kabza De Small",
+      "title": "Yebo",
+      "path": "Curated_Playlists/09_Afro_World/03 - Beatport 100 Afro House 2024 August - Jnr SA,Darque,Kabza De Small - Yebo.mp3",
+      "genre": null,
+      "score": 4,
+      "source_position": 2
+    },
+    {
+      "media_id": 217413,
+      "artist": "Mr Raoul K, Lady Parul",
+      "title": "Urure",
+      "path": "Curated_Playlists/09_Afro_World/96 - Beatport 100 Afro House 2024 August - Mr Raoul K,Lady Parul - Urure.mp3",
+      "genre": null,
+      "score": 4,
+      "source_position": 3
+    },
+    {
+      "media_id": 217457,
+      "artist": "Citizen Deep,Maline Aura,DR Thulz",
+      "title": "Ubala",
+      "path": "Curated_Playlists/09_Afro_World/01 - Beatport 100 Afro House 2024 August - Citizen Deep,Maline Aura,DR Thulz - Ubala (feat. Maline Aura & DR Thulz).mp3",
+      "genre": null,
+      "score": 4,
+      "source_position": 4
+    },
+    {
+      "media_id": 217488,
+      "artist": "Darque, Papany",
+      "title": "Humelela",
+      "path": "Curated_Playlists/09_Afro_World/86 - Beatport 100 Afro House 2024 August - Darque,Papany - Humelela.mp3",
+      "genre": null,
+      "score": 4,
+      "source_position": 5
+    },
+    {
+      "media_id": 217443,
+      "artist": "Niiomi, Idd Aziz",
+      "title": "Gemini - Extended Mix",
+      "path": "Curated_Playlists/09_Afro_World/22 - Beatport 100 Afro House 2024 August - Niiomi,Idd Aziz - Gemini - Extended Mix.mp3",
+      "genre": null,
+      "score": 4,
+      "source_position": 6
+    },
+    {
+      "media_id": 217506,
+      "artist": "Boohle, Woza Sabza",
+      "title": "Sinikiwe",
+      "path": "Curated_Playlists/09_Afro_World/15 - Beatport 100 Afro House 2024 August - Boohle,Woza Sabza - Sinikiwe.mp3",
+      "genre": null,
+      "score": 4,
+      "source_position": 7
+    },
+    {
+      "media_id": 217439,
+      "artist": "Cato Anaya, Eran Hersh",
+      "title": "Somos Libres",
+      "path": "Curated_Playlists/09_Afro_World/82 - Beatport 100 Afro House 2024 August - Cato Anaya,Eran Hersh - Somos Libres.mp3",
+      "genre": null,
+      "score": 4,
+      "source_position": 8
+    },
+    {
+      "media_id": 217392,
+      "artist": "Choujaa",
+      "title": "Nyu Bi Woni",
+      "path": "Curated_Playlists/09_Afro_World/80 - Beatport 100 Afro House 2024 August - Choujaa - Nyu Bi Woni.mp3",
+      "genre": null,
+      "score": 4,
+      "source_position": 9
+    },
+    {
+      "media_id": 217481,
+      "artist": "Buddynice",
+      "title": "Keep Moving",
+      "path": "Curated_Playlists/09_Afro_World/39 - Beatport 100 Afro House 2024 August - Buddynice - Keep Moving.mp3",
+      "genre": null,
+      "score": 4,
+      "source_position": 11
+    },
+    {
+      "media_id": 217398,
+      "artist": "Afro Wav, Mandisa",
+      "title": "Out Of Love (Afro Wav Rework)",
+      "path": "Curated_Playlists/09_Afro_World/94 - Beatport 100 Afro House 2024 August - Afro Wav,Mandisa - Out Of Love - Afro Wav Rework.mp3",
+      "genre": null,
+      "score": 4,
+      "source_position": 12
+    },
+    {
+      "media_id": 217502,
+      "artist": "Aimo",
+      "title": "Badlands",
+      "path": "Curated_Playlists/09_Afro_World/13 - Beatport 100 Afro House 2024 August - Aimo - Badlands.mp3",
+      "genre": null,
+      "score": 4,
+      "source_position": 13
+    },
+    {
+      "media_id": 217401,
+      "artist": "Megatronic, Wandile Mbambeni, Dr Feel",
+      "title": "Rumours (Dr Feel Remix)",
+      "path": "Curated_Playlists/09_Afro_World/99 - Beatport 100 Afro House 2024 August - Megatronic,Wandile Mbambeni,Dr Feel - Rumours - Dr Feel Remix.mp3",
+      "genre": null,
+      "score": 4,
+      "source_position": 14
+    },
+    {
+      "media_id": 217418,
+      "artist": "Korie Minors, Lizwi, DJ 84, Shona SA, Native P",
+      "title": "Usemindawonye (Native P. Remix)",
+      "path": "Curated_Playlists/09_Afro_World/71 - Beatport 100 Afro House 2024 August - Korie Minors,Lizwi,DJ 84,Shona SA,Native P - Usemindawonye - Native P. Remix.mp3",
+      "genre": null,
+      "score": 4,
+      "source_position": 15
+    },
+    {
+      "media_id": 217464,
+      "artist": "Voodoochild",
+      "title": "If U Need It",
+      "path": "Curated_Playlists/09_Afro_World/63 - Beatport 100 Afro House 2024 August - Voodoochild - If U Need It.mp3",
+      "genre": null,
+      "score": 4,
+      "source_position": 17
+    },
+    {
+      "media_id": 217424,
+      "artist": "HUGEL, GROSSOMODDO",
+      "title": "Andalucia",
+      "path": "Curated_Playlists/09_Afro_World/57 - Beatport 100 Afro House 2024 August - HUGEL,GROSSOMODDO - Andalucia.mp3",
+      "genre": null,
+      "score": 4,
+      "source_position": 18
+    },
+    {
+      "media_id": 217393,
+      "artist": "Adore (Fr), Marine Abtan",
+      "title": "SING IT BACK",
+      "path": "Curated_Playlists/09_Afro_World/81 - Beatport 100 Afro House 2024 August - Adore (Fr),Marine Abtan - SING IT BACK.mp3",
+      "genre": null,
+      "score": 4,
+      "source_position": 19
+    },
+    {
+      "media_id": 217433,
+      "artist": "PAGEZ, C-Mart, Herve Pagez",
+      "title": "Workah",
+      "path": "Curated_Playlists/09_Afro_World/84 - Beatport 100 Afro House 2024 August - PAGEZ,C-Mart,Herve Pagez - Workah.mp3",
+      "genre": null,
+      "score": 4,
+      "source_position": 20
+    },
+    {
+      "media_id": 217454,
+      "artist": "Dylan-S, Digolo Philip, Foozak, Candy Man",
+      "title": "Dana (Foozak And Candy Man Remix)",
+      "path": "Curated_Playlists/09_Afro_World/35 - Beatport 100 Afro House 2024 August - Dylan-S,Digolo Philip,Foozak,Candy Man - Dana - Foozak & Candy Man Remix.mp3",
+      "genre": null,
+      "score": 4,
+      "source_position": 21
+    },
+    {
+      "media_id": 217399,
+      "artist": "Sebastien Dutch, El Mukuka, Layth Sidiq, Aggeliki",
+      "title": "Matia Mou",
+      "path": "Curated_Playlists/09_Afro_World/87 - Beatport 100 Afro House 2024 August - Sebastien Dutch,El Mukuka,Layth Sidiq,Aggeliki - Matia Mou.mp3",
+      "genre": null,
+      "score": 4,
+      "source_position": 22
+    },
+    {
+      "media_id": 217448,
+      "artist": "beatsbyhand",
+      "title": "SARS",
+      "path": "Curated_Playlists/09_Afro_World/07 - Beatport 100 Afro House 2024 August - beatsbyhand - SARS.mp3",
+      "genre": null,
+      "score": 4,
+      "source_position": 23
+    },
+    {
+      "media_id": 217467,
+      "artist": "Leo Leonski, Abel Ray",
+      "title": "Fela",
+      "path": "Curated_Playlists/09_Afro_World/51 - Beatport 100 Afro House 2024 August - Leo Leonski,Abel Ray - Fela.mp3",
+      "genre": null,
+      "score": 4,
+      "source_position": 25
+    },
+    {
+      "media_id": 217482,
+      "artist": "Trekkah, HARDIHOOD",
+      "title": "Karma Nights",
+      "path": "Curated_Playlists/09_Afro_World/18 - Beatport 100 Afro House 2024 August - Trekkah,HARDIHOOD - Karma Nights.mp3",
+      "genre": null,
+      "score": 4,
+      "source_position": 26
+    },
+    {
+      "media_id": 217408,
+      "artist": "KingDonna, Philasande",
+      "title": "Bawo Wethu",
+      "path": "Curated_Playlists/09_Afro_World/92 - Beatport 100 Afro House 2024 August - KingDonna,Philasande - Bawo Wethu.mp3",
+      "genre": null,
+      "score": 4,
+      "source_position": 29
+    },
+    {
+      "media_id": 217400,
+      "artist": "Djuma Soundsystem, Yann Coppier, King Ayisoba",
+      "title": "Esigia",
+      "path": "Curated_Playlists/09_Afro_World/33 - Beatport 100 Afro House 2024 August - Djuma Soundsystem,Yann Coppier,King Ayisoba - Esigia - Original mix.mp3",
+      "genre": null,
+      "score": 4,
+      "source_position": 36
+    },
+    {
+      "media_id": 217453,
+      "artist": "Voodoochild, Joezi",
+      "title": "Tunapewa",
+      "path": "Curated_Playlists/09_Afro_World/40 - Beatport 100 Afro House 2024 August - Voodoochild,Joezi - Tunapewa.mp3",
+      "genre": null,
+      "score": 4,
+      "source_position": 38
+    },
+    {
+      "media_id": 217493,
+      "artist": "Octavez,Aero Manyelo",
+      "title": "Black Pen",
+      "path": "Curated_Playlists/09_Afro_World/10 - Beatport 100 Afro House 2024 August - Octavez,Aero Manyelo - Black Pen.mp3",
+      "genre": null,
+      "score": 4,
+      "source_position": 40
+    },
+    {
+      "media_id": 217465,
+      "artist": "Boddhi Satva, Erin Kimberly, Manoo",
+      "title": "Now Or Never (Manoo Spicy Remix)",
+      "path": "Curated_Playlists/09_Afro_World/23 - Beatport 100 Afro House 2024 August - Boddhi Satva,Erin Kimberly,Manoo - Now Or Never - Manoo Spicy Remix.mp3",
+      "genre": null,
+      "score": 4,
+      "source_position": 42
+    },
+    {
+      "media_id": 217479,
+      "artist": "Claude Monnet",
+      "title": "From The G",
+      "path": "Curated_Playlists/09_Afro_World/50 - Beatport 100 Afro House 2024 August - Claude Monnet - From The G.mp3",
+      "genre": null,
+      "score": 4,
+      "source_position": 44
+    },
+    {
+      "media_id": 217459,
+      "artist": "Leo Guardo, Leo Gira, Tony P., Tabia",
+      "title": "Thonga",
+      "path": "Curated_Playlists/09_Afro_World/12 - Beatport 100 Afro House 2024 August - Leo Guardo,Leo Gira,Tony P.,Tabia - Thonga.mp3",
+      "genre": null,
+      "score": 4,
+      "source_position": 45
+    },
+    {
+      "media_id": 217427,
+      "artist": "Loup Musa",
+      "title": "Waza",
+      "path": "Curated_Playlists/09_Afro_World/46 - Beatport 100 Afro House 2024 August - Loup Musa - Waza.mp3",
+      "genre": null,
+      "score": 4,
+      "source_position": 47
+    },
+    {
+      "media_id": 217492,
+      "artist": "Hector J Rodriguez",
+      "title": "Madre",
+      "path": "Curated_Playlists/09_Afro_World/72 - Beatport 100 Afro House 2024 August - Hector J Rodriguez - Madre.mp3",
+      "genre": null,
+      "score": 4,
+      "source_position": 51
+    },
+    {
+      "media_id": 217462,
+      "artist": "Oscar P",
+      "title": "I Was There",
+      "path": "Curated_Playlists/09_Afro_World/73 - Beatport 100 Afro House 2024 August - Oscar P - I Was There.mp3",
+      "genre": null,
+      "score": 4,
+      "source_position": 52
+    },
+    {
+      "media_id": 217503,
+      "artist": "NAAK,Atmos Blaq",
+      "title": "FIND A WAY",
+      "path": "Curated_Playlists/09_Afro_World/11 - Beatport 100 Afro House 2024 August - NAAK,Atmos Blaq - FIND A WAY.mp3",
+      "genre": null,
+      "score": 4,
+      "source_position": 53
+    },
+    {
+      "media_id": 217431,
+      "artist": "Batida, Mayra Andrade, Thakzin",
+      "title": "Bom Bom (Thakzin Vocal Remix)",
+      "path": "Curated_Playlists/09_Afro_World/54 - Beatport 100 Afro House 2024 August - Batida,Mayra Andrade,Thakzin - Bom Bom - Thakzin Vocal Remix.mp3",
+      "genre": null,
+      "score": 4,
+      "source_position": 54
+    },
+    {
+      "media_id": 217513,
+      "artist": "Arcade Saiyans, RAPHV, Dr Feel",
+      "title": "Sangre Latina",
+      "path": "Curated_Playlists/09_Afro_World/32 - Beatport 100 Afro House 2024 August - Arcade Saiyans,RAPHV,Dr Feel - Sangre Latina.mp3",
+      "genre": null,
+      "score": 4,
+      "source_position": 56
+    },
+    {
+      "media_id": 217471,
+      "artist": "Emmanuel Jal,Enzo Siffredi",
+      "title": "Shake Your Belly",
+      "path": "Curated_Playlists/09_Afro_World/05 - Beatport 100 Afro House 2024 August - Emmanuel Jal,Enzo Siffredi - Shake Your Belly.mp3",
+      "genre": null,
+      "score": 4,
+      "source_position": 57
+    },
+    {
+      "media_id": 217445,
+      "artist": "Khenya",
+      "title": "Jarana (Radio Edit)",
+      "path": "Curated_Playlists/09_Afro_World/61 - Beatport 100 Afro House 2024 August - Khenya - Jarana - Radio Edit.mp3",
+      "genre": null,
+      "score": 4,
+      "source_position": 58
+    },
+    {
+      "media_id": 217438,
+      "artist": "Jalal Ramdani, Augusto Yepes, Daniel Rateuke",
+      "title": "Mauri (Daniel Rateuke Remix)",
+      "path": "Curated_Playlists/09_Afro_World/16 - Beatport 100 Afro House 2024 August - Jalal Ramdani,Augusto Yepes,Daniel Rateuke - Mauri - Daniel Rateuke Remix.mp3",
+      "genre": null,
+      "score": 4,
+      "source_position": 59
+    },
+    {
+      "media_id": 217484,
+      "artist": "Eli Fola, Canetis",
+      "title": "Calma - Extended",
+      "path": "Curated_Playlists/09_Afro_World/45 - Beatport 100 Afro House 2024 August - Eli Fola,Canetis - Calma - Extended.mp3",
+      "genre": null,
+      "score": 4,
+      "source_position": 60
+    },
+    {
+      "media_id": 217485,
+      "artist": "Flush",
+      "title": "Bateau Blanc",
+      "path": "Curated_Playlists/09_Afro_World/66 - Beatport 100 Afro House 2024 August - Flush - Bateau Blanc.mp3",
+      "genre": null,
+      "score": 4,
+      "source_position": 62
+    },
+    {
+      "media_id": 217495,
+      "artist": "The Siege DJ",
+      "title": "Around",
+      "path": "Curated_Playlists/09_Afro_World/30 - Beatport 100 Afro House 2024 August - The Siege DJ - Around.mp3",
+      "genre": null,
+      "score": 4,
+      "source_position": 64
+    },
+    {
+      "media_id": 217490,
+      "artist": "Da Le (Havana)",
+      "title": "Land of Spirits",
+      "path": "Curated_Playlists/09_Afro_World/44 - Beatport 100 Afro House 2024 August - Da Le (Havana) - Land of Spirits.mp3",
+      "genre": null,
+      "score": 4,
+      "source_position": 67
+    },
+    {
+      "media_id": 217498,
+      "artist": "Aberton",
+      "title": "Souk",
+      "path": "Curated_Playlists/09_Afro_World/20 - Beatport 100 Afro House 2024 August - Aberton - Souk.mp3",
+      "genre": null,
+      "score": 4,
+      "source_position": 68
+    },
+    {
+      "media_id": 217466,
+      "artist": "Suffocate SA",
+      "title": "Mementos Of Spirit",
+      "path": "Curated_Playlists/09_Afro_World/91 - Beatport 100 Afro House 2024 August - Suffocate SA - Mementos Of Spirit.mp3",
+      "genre": null,
+      "score": 4,
+      "source_position": 69
+    },
+    {
+      "media_id": 217456,
+      "artist": "Hypaphonik",
+      "title": "Funa Wena",
+      "path": "Curated_Playlists/09_Afro_World/28 - Beatport 100 Afro House 2024 August - Hypaphonik - Funa Wena.mp3",
+      "genre": null,
+      "score": 4,
+      "source_position": 71
+    },
+    {
+      "media_id": 217512,
+      "artist": "G-Wash10, Mpumi",
+      "title": "VULANI",
+      "path": "Curated_Playlists/09_Afro_World/89 - Beatport 100 Afro House 2024 August - G-Wash10,Mpumi - VULANI.mp3",
+      "genre": null,
+      "score": 4,
+      "source_position": 72
+    },
+    {
+      "media_id": 217470,
+      "artist": "Oscar Sulley, The Uhuru Dance Band, JKriv, Domenica Fossati",
+      "title": "Bukom Mashie (JKriv Extended Acid Dub)",
+      "path": "Curated_Playlists/09_Afro_World/42 - Beatport 100 Afro House 2024 August - Oscar Sulley,The Uhuru Dance Band,JKriv,Domenica Fossati - Bukom Mashie - JKriv Extended Acid Dub.mp3",
+      "genre": null,
+      "score": 4,
+      "source_position": 74
+    },
+    {
+      "media_id": 217478,
+      "artist": "DJ Tomer, Ricardo Gi, Mayan DeLion",
+      "title": "No Other Way (VooDoo Tribe Extended Mix)",
+      "path": "Curated_Playlists/09_Afro_World/90 - Beatport 100 Afro House 2024 August - DJ Tomer,Ricardo Gi,Mayan DeLion - No Other Way - VooDoo Tribe Extended Mix.mp3",
+      "genre": null,
+      "score": 4,
+      "source_position": 75
+    },
+    {
+      "media_id": 217447,
+      "artist": "Badbox",
+      "title": "Fake the Move",
+      "path": "Curated_Playlists/09_Afro_World/43 - Beatport 100 Afro House 2024 August - Badbox - Fake the Move.mp3",
+      "genre": null,
+      "score": 4,
+      "source_position": 76
+    },
+    {
+      "media_id": 217458,
+      "artist": "Natema",
+      "title": "BMW (Afro Latin Mix)",
+      "path": "Curated_Playlists/09_Afro_World/58 - Beatport 100 Afro House 2024 August - Natema - BMW - Afro Latin Mix.mp3",
+      "genre": null,
+      "score": 4,
+      "source_position": 77
+    },
+    {
+      "media_id": 217426,
+      "artist": "FabYo Gomez, Dr Feel, RedRo8se",
+      "title": "We Are One (Extended Mix)",
+      "path": "Curated_Playlists/09_Afro_World/60 - Beatport 100 Afro House 2024 August - FabYo Gomez,Dr Feel,RedRo8se - We Are One - Extended Mix.mp3",
+      "genre": null,
+      "score": 4,
+      "source_position": 78
+    },
+    {
+      "media_id": 217449,
+      "artist": "Stones & Bones",
+      "title": "Dedication to the DJ",
+      "path": "Curated_Playlists/09_Afro_World/62 - Beatport 100 Afro House 2024 August - Stones & Bones - Dedication to the DJ.mp3",
+      "genre": null,
+      "score": 4,
+      "source_position": 80
+    },
+    {
+      "media_id": 217472,
+      "artist": "Moeaike, Alan Dixon",
+      "title": "Bo Bom (Alan Dixon Remix)",
+      "path": "Curated_Playlists/09_Afro_World/79 - Beatport 100 Afro House 2024 August - Moeaike,Alan Dixon - Bo Bom - Alan Dixon Remix.mp3",
+      "genre": null,
+      "score": 4,
+      "source_position": 82
+    },
+    {
+      "media_id": 217460,
+      "artist": "TechTonic'Tay, Bongani Mehlomakhulu",
+      "title": "Immortal",
+      "path": "Curated_Playlists/09_Afro_World/69 - Beatport 100 Afro House 2024 August - TechTonic'Tay,Bongani Mehlomakhulu - Immortal.mp3",
+      "genre": null,
+      "score": 4,
+      "source_position": 86
+    },
+    {
+      "media_id": 217404,
+      "artist": "Adam Port & Stryv",
+      "title": "Move",
+      "path": "Curated_Playlists/09_Afro_World/Adam Port & Stryv - Move.mp3",
+      "genre": "Electronic",
+      "score": 1,
+      "source_position": 16
+    },
+    {
+      "media_id": 217381,
+      "artist": "CLEIDO, Dillan Desai",
+      "title": "Hard To Love",
+      "path": "Curated_Playlists/09_Afro_World/CLEIDO, Dillan Desai - Hard To Love (Original Mix).flac",
+      "genre": "Electronic; Electro",
+      "score": 1,
+      "source_position": 27
+    },
+    {
+      "media_id": 217508,
+      "artist": "African Children's Choir, Francis Mercier & Faul & Wad",
+      "title": "Sauti",
+      "path": "Curated_Playlists/09_Afro_World/African Children's Choir, Francis Mercier & Faul & Wad - Sauti.mp3",
+      "genre": "Electronic",
+      "score": 1,
+      "source_position": 41
+    },
+    {
+      "media_id": 217473,
+      "artist": "Re.you, Paige, Biishop",
+      "title": "Innocent",
+      "path": "Curated_Playlists/09_Afro_World/Re.you, Paige, Biishop - Innocent (Original Mix).mp3",
+      "genre": "House",
+      "score": 1,
+      "source_position": 49
+    },
+    {
+      "media_id": 217491,
+      "artist": "Dj Osvaldo Mauro, Silvio Costa",
+      "title": "Zwaida",
+      "path": "Curated_Playlists/09_Afro_World/Dj Osvaldo Mauro, Silvio Costa - Zwaida (Original Mix).flac",
+      "genre": "Ambient; Electronic",
+      "score": 1,
+      "source_position": 90
+    },
+    {
+      "media_id": 217446,
+      "artist": "Charisse C",
+      "title": "Siren's Interlude",
+      "path": "Curated_Playlists/09_Afro_World/Charisse C - Siren's Interlude (Original Mix).flac",
+      "genre": "Electronic; Electro",
+      "score": 1,
+      "source_position": 92
+    },
+    {
+      "media_id": 217437,
+      "artist": "Culoe de Song",
+      "title": "Y.O.U.D.",
+      "path": "Curated_Playlists/09_Afro_World/Culoe de Song - Y.O.U.D..flac",
+      "genre": "House",
+      "score": 1,
+      "source_position": 94
+    },
+    {
+      "media_id": 217480,
+      "artist": "Kryder",
+      "title": "The Eye Of Ra (Extended Mix)",
+      "path": "Curated_Playlists/09_Afro_World/Kryder - The Eye Of Ra (Extended Mix).flac",
+      "genre": "House",
+      "score": 1,
+      "source_position": 96
+    },
+    {
+      "media_id": 217500,
+      "artist": "Dj Vitoto, Bun Xapa, ZIDDO",
+      "title": "Saharian Girl",
+      "path": "Curated_Playlists/09_Afro_World/Dj Vitoto, Bun Xapa, ZIDDO - Saharian Girl (Original Mix).flac",
+      "genre": "Ambient; Electronic",
+      "score": 1,
+      "source_position": 97
+    },
+    {
+      "media_id": 217403,
+      "artist": "Yamil",
+      "title": "Nimbe",
+      "path": "Curated_Playlists/09_Afro_World/65 - - Yamil - Nimbe.mp3",
+      "genre": null,
+      "score": 0,
+      "source_position": 1
+    },
+    {
+      "media_id": 217415,
+      "artist": "Ladour, David Hopperman, Kahari, Idd Aziz, Bassfinder, Faceoff",
+      "title": "Kula - Bassfinder & Faceoff Remix",
+      "path": "Curated_Playlists/09_Afro_World/68 - - Ladour,David Hopperman,Kahari,Idd Aziz,Bassfinder,Faceoff - Kula - Bassfinder & Faceoff Remix.mp3",
+      "genre": null,
+      "score": 0,
+      "source_position": 10
+    },
+    {
+      "media_id": 217423,
+      "artist": "UKAI NDAME",
+      "title": "Sulula",
+      "path": "Curated_Playlists/09_Afro_World/UKAI NDAME - Sulula (Original Mix).mp3",
+      "genre": null,
+      "score": 0,
+      "source_position": 37
+    },
+    {
+      "media_id": 217384,
+      "artist": "TitoM, Major_Keys, Ohp Sage, Yuppe",
+      "title": "CAROLINA (feat. TitoM & Yuppe) feat. TitoM & Yuppe",
+      "path": "Curated_Playlists/09_Afro_World/TitoM, Major_Keys, Ohp Sage, Yuppe - CAROLINA (feat. TitoM & Yuppe) feat. TitoM & Yuppe.mp3",
+      "genre": null,
+      "score": 0,
+      "source_position": 48
+    },
+    {
+      "media_id": 217468,
+      "artist": "Young Stunna, Shaunmusiq, Myztro",
+      "title": "Safa iPiano Original Mix",
+      "path": "Curated_Playlists/09_Afro_World/Young Stunna, Shaunmusiq, Myztro - Safa iPiano Original Mix.mp3",
+      "genre": null,
+      "score": 0,
+      "source_position": 66
+    },
+    {
+      "media_id": 217461,
+      "artist": "Lil'Owl, Jo Choneca",
+      "title": "Sembe",
+      "path": "Curated_Playlists/09_Afro_World/75 - - Lil'Owl,Jo Choneca - Sembe.mp3",
+      "genre": null,
+      "score": 0,
+      "source_position": 89
+    }
+  ]
+}

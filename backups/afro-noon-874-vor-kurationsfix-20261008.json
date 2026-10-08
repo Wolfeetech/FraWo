@@ -1,0 +1,707 @@
+{
+  "playlist_id": 874,
+  "source_playlist_id": 867,
+  "old_count": 100,
+  "old": [
+    {
+      "media_id": 206757,
+      "artist": "Itoa",
+      "title": "Girlboss Microplastix",
+      "path": "Curated_Playlists/03_Lunch_Groove/Itoa - Girlboss Microplastix.flac",
+      "genre": "Dub; Reggae"
+    },
+    {
+      "media_id": 206816,
+      "artist": "Midnight City",
+      "title": "Get It Up",
+      "path": "Curated_Playlists/03_Lunch_Groove/Midnight City - Get It Up.mp3",
+      "genre": "Disco; Electronic"
+    },
+    {
+      "media_id": 210866,
+      "artist": "Sax Drive",
+      "title": "Dancing On My Own (Mark Maxwell Remix Extended Remix)",
+      "path": "Curated_Playlists/04_Afternoon_Flow/Sax Drive - Dancing On My Own (Mark Maxwell Remix Extended Remix).mp3",
+      "genre": "Deep House"
+    },
+    {
+      "media_id": 207198,
+      "artist": "Cerrone",
+      "title": "Supernature",
+      "path": "Curated_Playlists/03_Lunch_Groove/Cerrone - Supernature.flac",
+      "genre": "Electronica, Electronic"
+    },
+    {
+      "media_id": 210813,
+      "artist": "The Organism",
+      "title": "Reflection",
+      "path": "Curated_Playlists/04_Afternoon_Flow/The Organism - Reflection.flac",
+      "genre": "Ukraine"
+    },
+    {
+      "media_id": 206972,
+      "artist": "Talk Talk",
+      "title": "Such a Shame (12″ Mix)",
+      "path": "Curated_Playlists/03_Lunch_Groove/Talk Talk - Such a Shame (12 Inch mix).flac",
+      "genre": "Italo-Disco, Soul, Disco, House, Synth-pop, Funk"
+    },
+    {
+      "media_id": 206887,
+      "artist": "People's Choice",
+      "title": "Do It Anyway You Wanna (Alternate Version)",
+      "path": "Curated_Playlists/03_Lunch_Groove/People's Choice - Do It Anyway You Wanna (alternate version).flac",
+      "genre": "Disco, Electronic"
+    },
+    {
+      "media_id": 206671,
+      "artist": "Laid Back",
+      "title": "White Horse (12″ Version)",
+      "path": "Curated_Playlists/03_Lunch_Groove/Laid Back - White Horse (12 Inch version).flac",
+      "genre": "Disco, Electronic"
+    },
+    {
+      "media_id": 211075,
+      "artist": "Fraser Canobie",
+      "title": "I Won't Leave You",
+      "path": "Curated_Playlists/04_Afternoon_Flow/Fraser Canobie - I Won't Leave You (Original Mix).flac",
+      "genre": "House"
+    },
+    {
+      "media_id": 207183,
+      "artist": "Mr. Flagio",
+      "title": "Take a Chance (Vocal Version)",
+      "path": "Curated_Playlists/03_Lunch_Groove/Mr. Flagio - Take a Chance (vocal version).flac",
+      "genre": "Italo Disco"
+    },
+    {
+      "media_id": 206737,
+      "artist": "The Jacksons",
+      "title": "Shake Your Body (Down to the Ground) (John Luongo Disco Mix)",
+      "path": "Curated_Playlists/03_Lunch_Groove/The Jacksons - Shake Your Body (Down to the Ground) (John Luongo disco mix).flac",
+      "genre": "Soul, Disco"
+    },
+    {
+      "media_id": 207125,
+      "artist": "Barry White",
+      "title": "Never, Never Gonna Give Ya Up (Album Version)",
+      "path": "Curated_Playlists/03_Lunch_Groove/Barry White - Never, Never Gonna Give Ya Up (album version).flac",
+      "genre": "Disco, Electronic"
+    },
+    {
+      "media_id": 206902,
+      "artist": "Rick James",
+      "title": "Glow / Glow Reprise (Album Mix)",
+      "path": "Curated_Playlists/03_Lunch_Groove/Rick James - Glow Glow Reprise (album mix).flac",
+      "genre": "Disco, Electronic"
+    },
+    {
+      "media_id": 207143,
+      "artist": "Hot Chocolate",
+      "title": "You Sexy Thing (Extended Replay Mix)",
+      "path": "Curated_Playlists/03_Lunch_Groove/Hot Chocolate - You Sexy Thing (extended replay mix).flac",
+      "genre": "Disco, Electronic"
+    },
+    {
+      "media_id": 207053,
+      "artist": "Liza Minnelli",
+      "title": "Losing My Mind (Extended Remix)",
+      "path": "Curated_Playlists/03_Lunch_Groove/Liza Minnelli - Losing My Mind (extended remix).flac",
+      "genre": "Jazz"
+    },
+    {
+      "media_id": 211088,
+      "artist": "Chris Stussy",
+      "title": "All Night Long",
+      "path": "Curated_Playlists/04_Afternoon_Flow/Chris Stussy - All Night Long (Original Mix).flac",
+      "genre": "Deep House, House"
+    },
+    {
+      "media_id": 207048,
+      "artist": "Fox the Fox",
+      "title": "Precious Little Diamond (Ben Liebrand 12″ Mix)",
+      "path": "Curated_Playlists/03_Lunch_Groove/Fox the Fox - Precious Little Diamond (Ben Liebrand 12 Inch mix).flac",
+      "genre": "Disco, Electronic"
+    },
+    {
+      "media_id": 206748,
+      "artist": "La Bionda",
+      "title": "One for You, One for Me (Long Version)",
+      "path": "Curated_Playlists/03_Lunch_Groove/La Bionda - One for You, One for Me (long version).flac",
+      "genre": "Pop/Disco"
+    },
+    {
+      "media_id": 206965,
+      "artist": "Loose Ends",
+      "title": "Mr. Bachelor (Extended Remix Version)",
+      "path": "Curated_Playlists/03_Lunch_Groove/Loose Ends - Mr. Bachelor (extended remix version).flac",
+      "genre": "Disco, Electronic"
+    },
+    {
+      "media_id": 206954,
+      "artist": "Jocelyn Brown",
+      "title": "Ain't No Mountain High Enough",
+      "path": "Curated_Playlists/03_Lunch_Groove/Jocelyn Brown - Ain't No Mountain High Enough.flac",
+      "genre": "Soul, Funk"
+    },
+    {
+      "media_id": 206893,
+      "artist": "Earth, Wind & Fire",
+      "title": "Thinking of You (12″ Version)",
+      "path": "Curated_Playlists/03_Lunch_Groove/Earth, Wind & Fire - Thinking of You (12 Inch version).flac",
+      "genre": "Disco, Electronic"
+    },
+    {
+      "media_id": 207140,
+      "artist": "The Supremes",
+      "title": "Let Yourself Go",
+      "path": "Curated_Playlists/03_Lunch_Groove/The Supremes - Let Yourself Go.flac",
+      "genre": "Soul, Disco"
+    },
+    {
+      "media_id": 206840,
+      "artist": "Indeep",
+      "title": "Last Night a DJ Saved My Life (a cappella)",
+      "path": "Curated_Playlists/03_Lunch_Groove/Indeep - Last Night a DJ Saved My Life (a cappella).flac",
+      "genre": "House, Disco"
+    },
+    {
+      "media_id": 211139,
+      "artist": "Tuccillo feat. Kindbud",
+      "title": "On the Floor (Original Vocal Mix)",
+      "path": "Curated_Playlists/04_Afternoon_Flow/Tuccillo feat. Kindbud - On the Floor (original vocal mix).mp3",
+      "genre": "Deep House, House"
+    },
+    {
+      "media_id": 206683,
+      "artist": "Marcos Calegari",
+      "title": "Grooveland",
+      "path": "Curated_Playlists/03_Lunch_Groove/Marcos Calegari - Grooveland.mp3",
+      "genre": "Disco; Electronic"
+    },
+    {
+      "media_id": 211042,
+      "artist": "Club Heroes",
+      "title": "Da Lost Piano (Mellow Trax Short Edit)",
+      "path": "Curated_Playlists/04_Afternoon_Flow/Club Heroes - Da Lost Piano (Mellow Trax short edit).flac",
+      "genre": "Trance"
+    },
+    {
+      "media_id": 206752,
+      "artist": "Slightly Stoopid",
+      "title": "Ever Really Wanted",
+      "path": "Curated_Playlists/03_Lunch_Groove/Slightly Stoopid - Ever Really Wanted.flac",
+      "genre": "Reggae"
+    },
+    {
+      "media_id": 207055,
+      "artist": "Kool & the Gang",
+      "title": "Get Down on It (12″ Extended Version)",
+      "path": "Curated_Playlists/03_Lunch_Groove/Kool & the Gang - Get Down on It (12 Inch extended version).flac",
+      "genre": "Disco, Electronic"
+    },
+    {
+      "media_id": 211033,
+      "artist": "Speckman",
+      "title": "Always OK (Devi G Remix)",
+      "path": "Curated_Playlists/04_Afternoon_Flow/Speckman - Always OK (Devi G Remix).mp3",
+      "genre": "Deep House, House"
+    },
+    {
+      "media_id": 207031,
+      "artist": "Peter Brown",
+      "title": "They Only Come Out at Night (12″ Version)",
+      "path": "Curated_Playlists/03_Lunch_Groove/Peter Brown - They Only Come Out at Night (12 Inch version).flac",
+      "genre": "Disco, Electronic"
+    },
+    {
+      "media_id": 207224,
+      "artist": "Phyllis Hyman",
+      "title": "You Know How to Love Me (Album Version)",
+      "path": "Curated_Playlists/03_Lunch_Groove/Phyllis Hyman - You Know How to Love Me (album version).flac",
+      "genre": "Disco, Electronic"
+    },
+    {
+      "media_id": 210834,
+      "artist": "Sakro",
+      "title": "Lusyd",
+      "path": "Curated_Playlists/04_Afternoon_Flow/Sakro - Lusyd (Original Mix).mp3",
+      "genre": "House/Electronic"
+    },
+    {
+      "media_id": 207028,
+      "artist": "Bomb the Bass",
+      "title": "Beat Dis (extended dis)",
+      "path": "Curated_Playlists/03_Lunch_Groove/Bomb the Bass - Beat Dis (extended dis).flac",
+      "genre": "Electronic, House"
+    },
+    {
+      "media_id": 211066,
+      "artist": "Tayllor",
+      "title": "Rollyat Original Mix",
+      "path": "Curated_Playlists/04_Afternoon_Flow/Tayllor - Rollyat Original Mix.mp3",
+      "genre": null
+    },
+    {
+      "media_id": 207232,
+      "artist": "Paul Sharada",
+      "title": "Florida (Move Your Feet)",
+      "path": "Curated_Playlists/03_Lunch_Groove/Paul Sharada - Florida (Move Your Feet).flac",
+      "genre": "Italo Disco, Disco"
+    },
+    {
+      "media_id": 207072,
+      "artist": "Nightlife Unlimited",
+      "title": "Dance, Freak and Boogie (Special 12″ Disco Mix)",
+      "path": "Curated_Playlists/03_Lunch_Groove/Nightlife Unlimited - Dance, Freak and Boogie (special 12 Inch disco mix).flac",
+      "genre": "Disco, Electronic"
+    },
+    {
+      "media_id": 207166,
+      "artist": "Rosario Cristofaro",
+      "title": "Bossy Girl",
+      "path": "Curated_Playlists/03_Lunch_Groove/Rosario Cristofaro - Bossy Girl (Original Mix).flac",
+      "genre": "Disco; Electronic"
+    },
+    {
+      "media_id": 207054,
+      "artist": "George Duke",
+      "title": "Reach Out (12″ Version)",
+      "path": "Curated_Playlists/03_Lunch_Groove/George Duke - Reach Out (12 Inch version).flac",
+      "genre": "Disco, Electronic"
+    },
+    {
+      "media_id": 210933,
+      "artist": "Stelios Vassiloudis, Steven Weston",
+      "title": "Two Faces (Extended Mix)",
+      "path": "Curated_Playlists/04_Afternoon_Flow/Stelios Vassiloudis, Steven Weston - Two Faces (Extended Mix).mp3",
+      "genre": "Progressive House"
+    },
+    {
+      "media_id": 211112,
+      "artist": "Monodeluxe, Diviniti",
+      "title": "Find Your Light (Luther Sole Essential Dancing Shoes Touch Black Light Mix) (2+) 01.57",
+      "path": "Curated_Playlists/04_Afternoon_Flow/Monodeluxe, Diviniti - Find Your Light (Luther Sole Essential Dancing Shoes Touch Black Light Mix) (2+) 01.57.mp3",
+      "genre": null
+    },
+    {
+      "media_id": 206772,
+      "artist": "Sparks",
+      "title": "Beat the Clock (Extended Version)",
+      "path": "Curated_Playlists/03_Lunch_Groove/Sparks - Beat the Clock (extended version).flac",
+      "genre": "Disco, Electronic"
+    },
+    {
+      "media_id": 207002,
+      "artist": "Suzy Lane",
+      "title": "Harmony (12″ Version)",
+      "path": "Curated_Playlists/03_Lunch_Groove/Suzy Lane - Harmony (12 Inch version).flac",
+      "genre": "Disco, Electronic"
+    },
+    {
+      "media_id": 210825,
+      "artist": "Mateo Dufour",
+      "title": "Reconnected",
+      "path": "Curated_Playlists/04_Afternoon_Flow/Various Artists - Reconnected (Original Mix).mp3",
+      "genre": "Minimal; Deep Tech"
+    },
+    {
+      "media_id": 206750,
+      "artist": "Yvonne Elliman",
+      "title": "Love Pains (12″ Mix)",
+      "path": "Curated_Playlists/03_Lunch_Groove/Yvonne Elliman - Love Pains (12 Inch mix).flac",
+      "genre": "Disco, Electronic"
+    },
+    {
+      "media_id": 207006,
+      "artist": "Brick",
+      "title": "Aspect",
+      "path": "Curated_Playlists/03_Lunch_Groove/Brick - Aspect.flac",
+      "genre": "Funk, Disco"
+    },
+    {
+      "media_id": 210845,
+      "artist": "Juan Deminicis",
+      "title": "Deep Rock Galactic",
+      "path": "Curated_Playlists/04_Afternoon_Flow/Juan Deminicis - Deep Rock Galactic (Original Mix).mp3",
+      "genre": "House"
+    },
+    {
+      "media_id": 211057,
+      "artist": "Modeplex",
+      "title": "Beyond Horizon (Baime Remix)",
+      "path": "Curated_Playlists/04_Afternoon_Flow/Modeplex - Beyond Horizon (Baime Remix) 122.mp3",
+      "genre": "Melodic House & Techno"
+    },
+    {
+      "media_id": 211069,
+      "artist": "Bedouin, Marieme",
+      "title": "Reason",
+      "path": "Curated_Playlists/04_Afternoon_Flow/Bedouin, Marieme - Reason (Original Mix).mp3",
+      "genre": "Melodic House & Techno"
+    },
+    {
+      "media_id": 206809,
+      "artist": "ORS",
+      "title": "Moonboots (U.S. Special 12″ Disco Mix)",
+      "path": "Curated_Playlists/03_Lunch_Groove/ORS - Moonboots (U.S. special 12 Inch disco mix).flac",
+      "genre": "Disco, Electronic"
+    },
+    {
+      "media_id": 206657,
+      "artist": "Skyy",
+      "title": "Call Me (Album Version)",
+      "path": "Curated_Playlists/03_Lunch_Groove/Skyy - Call Me (album version).flac",
+      "genre": "Disco, Electronic"
+    },
+    {
+      "media_id": 206823,
+      "artist": "The Ritchie Family",
+      "title": "The Best Disco in Town (Album Version)",
+      "path": "Curated_Playlists/03_Lunch_Groove/The Ritchie Family - The Best Disco in Town (album version).flac",
+      "genre": "Disco, Electronic"
+    },
+    {
+      "media_id": 210879,
+      "artist": "Ruben Karapetyan",
+      "title": "Nostalgic Moments Original Mix",
+      "path": "Curated_Playlists/04_Afternoon_Flow/Ruben Karapetyan - Nostalgic Moments Original Mix.mp3",
+      "genre": "Progressive House"
+    },
+    {
+      "media_id": 206867,
+      "artist": "Melba Moore",
+      "title": "You Stepped Into My Life (Special Disco Version)",
+      "path": "Curated_Playlists/03_Lunch_Groove/Melba Moore - You Stepped Into My Life (special disco version).flac",
+      "genre": "Disco, Electronic"
+    },
+    {
+      "media_id": 206871,
+      "artist": "Chic",
+      "title": "Le Freak (Album Version)",
+      "path": "Curated_Playlists/03_Lunch_Groove/Chic - Le Freak (album version).flac",
+      "genre": "Disco, Electronic"
+    },
+    {
+      "media_id": 210953,
+      "artist": "Vivran, Mina de Oro",
+      "title": "And I Know It Feels Like (feat. Mina de Oro) (feat. Mina de Oro)",
+      "path": "Curated_Playlists/04_Afternoon_Flow/Vivran, Mina de Oro - And I Know It Feels Like (feat. Mina de Oro) (feat. Mina de Oro).flac",
+      "genre": "Melodic House & Techno"
+    },
+    {
+      "media_id": 210870,
+      "artist": "Reducs",
+      "title": "Astral",
+      "path": "Curated_Playlists/04_Afternoon_Flow/Reducs - Astral.mp3",
+      "genre": "Melodic House & Techno"
+    },
+    {
+      "media_id": 207034,
+      "artist": "The Reddings",
+      "title": "The Awakening (Part 1 & Part 2)",
+      "path": "Curated_Playlists/03_Lunch_Groove/The Reddings - The Awakening (Part 1 & Part 2).flac",
+      "genre": "Disco, Electronic"
+    },
+    {
+      "media_id": 207156,
+      "artist": "Shalamar",
+      "title": "Take That to the Bank (Album Version)",
+      "path": "Curated_Playlists/03_Lunch_Groove/Shalamar - Take That to the Bank (album version).flac",
+      "genre": "Disco, Electronic"
+    },
+    {
+      "media_id": 206739,
+      "artist": "\"Q\"",
+      "title": "The Voice of \"Q\"",
+      "path": "Curated_Playlists/03_Lunch_Groove/Q - The Voice of Q.flac",
+      "genre": "Disco, Electronic"
+    },
+    {
+      "media_id": 207067,
+      "artist": "Ashford & Simpson",
+      "title": "Solid (Special Club Mix)",
+      "path": "Curated_Playlists/03_Lunch_Groove/Ashford & Simpson - Solid (Special club mix).flac",
+      "genre": "Disco, Electronic"
+    },
+    {
+      "media_id": 210872,
+      "artist": "Juan Deminicis",
+      "title": "Voidborn",
+      "path": "Curated_Playlists/04_Afternoon_Flow/Juan Deminicis - Voidborn (Original Mix).mp3",
+      "genre": "Progressive House"
+    },
+    {
+      "media_id": 206837,
+      "artist": "Beggar & Co",
+      "title": "(Somebody) Help Me Out (12″ Version)",
+      "path": "Curated_Playlists/03_Lunch_Groove/Beggar & Co - (Somebody) Help Me Out (12 Inch version).flac",
+      "genre": "Disco, Electronic"
+    },
+    {
+      "media_id": 207081,
+      "artist": "Tom Tom Club",
+      "title": "Wordy Rappinghood (Special 12″ Version)",
+      "path": "Curated_Playlists/03_Lunch_Groove/Tom Tom Club - Wordy Rappinghood (special 12 Inch version).flac",
+      "genre": "Disco, Electronic"
+    },
+    {
+      "media_id": 207015,
+      "artist": "Heatwave",
+      "title": "Gangsters of the Groove (12\" Version)",
+      "path": "Curated_Playlists/03_Lunch_Groove/Heatwave - Gangsters of the Groove (12_ version).flac",
+      "genre": "Pop/Disco"
+    },
+    {
+      "media_id": 207128,
+      "artist": "Boney M.",
+      "title": "Baby, Do You Wanna Bump (Album Version)",
+      "path": "Curated_Playlists/03_Lunch_Groove/Boney M. - Baby, Do You Wanna Bump (album version).flac",
+      "genre": "Disco, Electronic"
+    },
+    {
+      "media_id": 210991,
+      "artist": "Korablove",
+      "title": "Forgotten Disco",
+      "path": "Curated_Playlists/04_Afternoon_Flow/Korablove - Forgotten Disco (Original Mix).mp3",
+      "genre": "Deep House"
+    },
+    {
+      "media_id": 207216,
+      "artist": "Stargard",
+      "title": "Theme From ″Which Way Is Up″ (12″ Version)",
+      "path": "Curated_Playlists/03_Lunch_Groove/Stargard - Theme From InchWhich Way Is Up Inch (12 Inch version).flac",
+      "genre": "Disco, Electronic"
+    },
+    {
+      "media_id": 206928,
+      "artist": "Kashif",
+      "title": "Stone Love (Long Version)",
+      "path": "Curated_Playlists/03_Lunch_Groove/Kashif - Stone Love (long version).flac",
+      "genre": "Disco, Electronic"
+    },
+    {
+      "media_id": 207122,
+      "artist": "Earth, Wind & Fire",
+      "title": "Serpentine Fire (12″ Promo Version)",
+      "path": "Curated_Playlists/03_Lunch_Groove/Earth, Wind & Fire - Serpentine Fire (12 Inch promo version).flac",
+      "genre": "Disco, Electronic"
+    },
+    {
+      "media_id": 207124,
+      "artist": "Finzy Kontini",
+      "title": "Cha Cha Cha",
+      "path": "Curated_Playlists/03_Lunch_Groove/Finzy Kontini - Cha Cha Cha.mp3",
+      "genre": "Italo Disco, Disco"
+    },
+    {
+      "media_id": 211132,
+      "artist": "DJ W!ld",
+      "title": "La Petite Faveur",
+      "path": "Curated_Playlists/04_Afternoon_Flow/DJ W!ld - La Petite Faveur (Original Mix).mp3",
+      "genre": "Deep House, House"
+    },
+    {
+      "media_id": 206677,
+      "artist": "Harold Faltermeyer",
+      "title": "Axel F (12″ Disco Version)",
+      "path": "Curated_Playlists/03_Lunch_Groove/Harold Faltermeyer - Axel F (12 Inch disco version).flac",
+      "genre": "Disco, Electronic"
+    },
+    {
+      "media_id": 207046,
+      "artist": "Slightly Stoopid feat. Don Carlos",
+      "title": "Marijuana",
+      "path": "Curated_Playlists/03_Lunch_Groove/Slightly Stoopid feat. Don Carlos;Slightly Stoopid;Don Carlos - Marijuana.flac",
+      "genre": "Reggae"
+    },
+    {
+      "media_id": 206770,
+      "artist": "Patrick Cowley",
+      "title": "Menergy (Original 12″ Version)",
+      "path": "Curated_Playlists/03_Lunch_Groove/Patrick Cowley - Menergy (original 12 Inch version).flac",
+      "genre": "Disco, Electronic"
+    },
+    {
+      "media_id": 206637,
+      "artist": "Sylvester",
+      "title": "You Make Me Feel (Mighty Real) A Cappella (Bonus Acappella Version)",
+      "path": "Curated_Playlists/03_Lunch_Groove/Sylvester - You Make Me Feel (Mighty Real) A Cappella (bonus Acappella version).flac",
+      "genre": "Disco, Electronic"
+    },
+    {
+      "media_id": 206914,
+      "artist": "Ragged Life",
+      "title": "My Friend Is Taking Drugs (DJ Freud Vision)",
+      "path": "Curated_Playlists/03_Lunch_Groove/Ragged Life - My Friend Is Taking Drugs (DJ Freud Vision).flac",
+      "genre": "Disco, Electronic"
+    },
+    {
+      "media_id": 207209,
+      "artist": "Sun",
+      "title": "Sun Is Here (12″ Version)",
+      "path": "Curated_Playlists/03_Lunch_Groove/Sun - Sun Is Here (12 Inch version).flac",
+      "genre": "Disco, Electronic"
+    },
+    {
+      "media_id": 206921,
+      "artist": "Tyrone Brunson",
+      "title": "The Smurf",
+      "path": "Curated_Playlists/03_Lunch_Groove/Tyrone Brunson - The Smurf.flac",
+      "genre": "Pop/Disco"
+    },
+    {
+      "media_id": 206660,
+      "artist": "Yazoo",
+      "title": "Situation (The U.S. 12 Inch Version)",
+      "path": "Curated_Playlists/03_Lunch_Groove/Yazoo - Situation (The U.S. 12 Inch version).flac",
+      "genre": "Disco, Electronic"
+    },
+    {
+      "media_id": 211077,
+      "artist": "Sakro",
+      "title": "Supersymmetry",
+      "path": "Curated_Playlists/04_Afternoon_Flow/Sakro - Supersymmetry (Original Mix).mp3",
+      "genre": "Deep House/House"
+    },
+    {
+      "media_id": 207009,
+      "artist": "Itoa",
+      "title": "We Want",
+      "path": "Curated_Playlists/03_Lunch_Groove/Itoa - We Want.flac",
+      "genre": "Dub; Reggae"
+    },
+    {
+      "media_id": 207227,
+      "artist": "Cerrone",
+      "title": "I Want Love (Ben Liebrand 12″ Remix)",
+      "path": "Curated_Playlists/03_Lunch_Groove/Cerrone - I Want Love (Ben Liebrand 12 Inch remix).flac",
+      "genre": "Disco, Electronic"
+    },
+    {
+      "media_id": 207205,
+      "artist": "Rinder & Lewis",
+      "title": "Willy and the Hand Jive (Album Version)",
+      "path": "Curated_Playlists/03_Lunch_Groove/Rinder & Lewis - Willy and the Hand Jive (album version).flac",
+      "genre": "Disco, Electronic"
+    },
+    {
+      "media_id": 207199,
+      "artist": "Lipps, Inc.",
+      "title": "Funky Town (Original 12″ Version)",
+      "path": "Curated_Playlists/03_Lunch_Groove/Lipps, Inc. - Funky Town (original 12 Inch version).flac",
+      "genre": "Disco, Electronic"
+    },
+    {
+      "media_id": 207033,
+      "artist": "Eddie Murphy",
+      "title": "Party All the Time (Album Version)",
+      "path": "Curated_Playlists/03_Lunch_Groove/Eddie Murphy - Party All the Time (album version).flac",
+      "genre": "Disco, Electronic"
+    },
+    {
+      "media_id": 207089,
+      "artist": "Loleatta Holloway",
+      "title": "Crash Goes Love (12″ Blaster Mix)",
+      "path": "Curated_Playlists/03_Lunch_Groove/Loleatta Holloway - Crash Goes Love (12 Inch Blaster mix).flac",
+      "genre": "Disco, Electronic"
+    },
+    {
+      "media_id": 206919,
+      "artist": "Company B",
+      "title": "Fascinated (Club Mix)",
+      "path": "Curated_Playlists/03_Lunch_Groove/Company B - Fascinated (club mix).flac",
+      "genre": "Pop"
+    },
+    {
+      "media_id": 206958,
+      "artist": "Carl Carlton",
+      "title": "She's A Bad Mama Jama (She's Built, She's Stacked)",
+      "path": "Curated_Playlists/03_Lunch_Groove/Carl Carlton - She's A Bad Mama Jama (She's Built, She's Stacked).flac",
+      "genre": "Soul, Funk"
+    },
+    {
+      "media_id": 210917,
+      "artist": "Joyce (ARG)",
+      "title": "Love Me",
+      "path": "Curated_Playlists/04_Afternoon_Flow/Joyce (ARG) - Love Me (Original Mix).mp3",
+      "genre": "Melodic House & Techno"
+    },
+    {
+      "media_id": 206866,
+      "artist": "Roy Ayers Ubiquity",
+      "title": "Running Away (Long Version)",
+      "path": "Curated_Playlists/03_Lunch_Groove/Roy Ayers Ubiquity - Running Away (long version).flac",
+      "genre": "Disco, Electronic"
+    },
+    {
+      "media_id": 210877,
+      "artist": "Dukwa",
+      "title": "Give Me A Reason Original Mix",
+      "path": "Curated_Playlists/04_Afternoon_Flow/Dukwa - Give Me A Reason Original Mix.mp3",
+      "genre": "Deep House"
+    },
+    {
+      "media_id": 210976,
+      "artist": "iiO",
+      "title": "Rapture (Tastes So Sweet)",
+      "path": "Curated_Playlists/04_Afternoon_Flow/iiO - Rapture (Tastes So Sweet) (original mix).mp3",
+      "genre": "Trance, Electronic"
+    },
+    {
+      "media_id": 211051,
+      "artist": "Valer den Bit",
+      "title": "Keep On Making Club Mix",
+      "path": "Curated_Playlists/04_Afternoon_Flow/Valer den Bit - Keep On Making Club Mix.mp3",
+      "genre": "Organic House"
+    },
+    {
+      "media_id": 210960,
+      "artist": "Hyperlogic",
+      "title": "Only Me (Original Red Vinyl Edit)",
+      "path": "Curated_Playlists/04_Afternoon_Flow/Hyperlogic - Only Me (original Red Vinyl edit).mp3",
+      "genre": "House"
+    },
+    {
+      "media_id": 210907,
+      "artist": "Seven Grand Housing Authority",
+      "title": "I Wanna Go Higher (Proper 2016 Remix)",
+      "path": "Curated_Playlists/04_Afternoon_Flow/Seven Grand Housing Authority - I Wanna Go Higher (Proper 2016 remix).flac",
+      "genre": "Deep House, House"
+    },
+    {
+      "media_id": 211048,
+      "artist": "Aves Volare, Amir Telem",
+      "title": "Believer",
+      "path": "Curated_Playlists/04_Afternoon_Flow/Aves Volare, Amir Telem - Believer (Original Mix).mp3",
+      "genre": null
+    },
+    {
+      "media_id": 206843,
+      "artist": "Madleen Kane",
+      "title": "Forbidden Love (Special Disco Version)",
+      "path": "Curated_Playlists/03_Lunch_Groove/Madleen Kane - Forbidden Love (Special disco version).flac",
+      "genre": "Disco, Electronic"
+    },
+    {
+      "media_id": 206912,
+      "artist": "Chic",
+      "title": "I Want Your Love (Remix)",
+      "path": "Curated_Playlists/03_Lunch_Groove/Chic - I Want Your Love (remix).flac",
+      "genre": "Disco, Electronic"
+    },
+    {
+      "media_id": 207058,
+      "artist": "Deadly Weapons, Chinaski",
+      "title": "Trip to Madrid (Chinaski Remix)",
+      "path": "Curated_Playlists/03_Lunch_Groove/Deadly Weapons, Chinaski - Trip to Madrid (Chinaski Remix).mp3",
+      "genre": "Disco; Electronic"
+    },
+    {
+      "media_id": 207144,
+      "artist": "Barry White",
+      "title": "Let the Music Play (Album Version)",
+      "path": "Curated_Playlists/03_Lunch_Groove/Barry White - Let the Music Play (album version).flac",
+      "genre": "Disco, Electronic"
+    }
+  ]
+}
