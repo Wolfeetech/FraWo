@@ -156,10 +156,6 @@ class TestNacharbeit(unittest.TestCase):
         self.assertFalse(braucht_nacharbeit('ALIVE', 'X'))
 
 
-if __name__ == '__main__':
-    unittest.main()
-
-
 class TestSamplerImport(unittest.TestCase):
     """Beatport-Sampler vom 07.10.2026: Tracknummer landete im Kuenstlerfeld,
     der Sampler-Name im Titel. 44 Faelle gleichzeitig auf Sendung.
@@ -198,3 +194,7 @@ class TestSamplerImport(unittest.TestCase):
     def test_nach_dem_entwirren_ist_es_sendertauglich(self):
         k, t, _ = entwirre_sampler('37', 'Beatport 100 Afro House 2024 August - Sterio T,NkOstA LED,TomyV - Uwrongo')
         self.assertFalse(braucht_nacharbeit(t, k))
+
+
+if __name__ == '__main__':
+    unittest.main()

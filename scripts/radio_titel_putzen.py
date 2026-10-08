@@ -274,6 +274,12 @@ def main():
                 # Fehlt Titel oder Kuenstler: eindeutiges "Kuenstler - Titel" im Dateinamen nutzen
                 quelle_k, quelle_t = (aus_dateiname(os.path.splitext(name)[0], kuenstler, titel)
                                       or (kuenstler, titel))
+                # Beatport-/Sampler-Rips: Wenn die Tracknummer im Kuenstlerfeld
+                # steht, entwirren wir nur das sichere Muster. Alles andere bleibt
+                # Nacharbeit und wird nicht geraten.
+                sampler = entwirre_sampler(quelle_k, quelle_t)
+                if sampler:
+                    quelle_k, quelle_t, _sampler_album = sampler
                 if braucht_nacharbeit(quelle_t, quelle_k):
                     nacharbeit.write('%s\t%s\t%s\n' % (pfad, kuenstler, titel))
                     n_nach += 1
