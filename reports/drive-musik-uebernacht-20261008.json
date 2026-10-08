@@ -1,0 +1,258 @@
+{
+  "manifest": "/home/hermes/FraWo/backups/drive-musik-uebernacht-20261008.json",
+  "source_audio_files": 60,
+  "verification": {
+    "ok": true,
+    "validation": {
+      "rows": [
+        {
+          "kind": "new",
+          "source": "/mnt/music/Inbox/neuzugang-20261008/4 My Babe (Feat. Raz)/Unknown/Raz, Di Saronno (Feat. Raz) 125.mp3",
+          "target": "/mnt/music/Master_Library/Unsortiert/4 My Babe (Feat. Raz)/Single/4 My Babe (Feat. Raz) - Raz, Di Saronno (Feat. Raz).mp3"
+        },
+        {
+          "kind": "new",
+          "source": "/mnt/music/Inbox/neuzugang-20261008/ARQLYTE/Unknown/Chrusciki (Extended Mix).mp3",
+          "target": "/mnt/music/Master_Library/Trance (Main Floor)/ARQLYTE/Single/ARQLYTE - Chrusciki (Extended Mix).mp3"
+        },
+        {
+          "kind": "new",
+          "source": "/mnt/music/Inbox/neuzugang-20261008/ACA (YU)/Whateva EP/Whateva.flac",
+          "target": "/mnt/music/Master_Library/Electro/ACA (YU)/Whateva EP/ACA (YU) - Whateva.flac"
+        },
+        {
+          "kind": "new",
+          "source": "/mnt/music/Inbox/neuzugang-20261008/Adam Sellouk, Braev/Beatport Top 100 Melodic House & Techno August 2025/Solaris (Extended Mix).flac",
+          "target": "/mnt/music/Master_Library/Unsortiert/Adam Sellouk, Braev/Single/Adam Sellouk, Braev - Solaris (Extended Mix).flac"
+        },
+        {
+          "kind": "new",
+          "source": "/mnt/music/Inbox/neuzugang-20261008/Afterlife/Unknown/Rhythm Of Paradise (Original Mix) 123.mp3",
+          "target": "/mnt/music/Master_Library/Unsortiert/Afterlife/Single/Afterlife - Rhythm Of Paradise.mp3"
+        },
+        {
+          "kind": "new",
+          "source": "/mnt/music/Inbox/neuzugang-20261008/ARVØW/Unknown/Subliminal.mp3",
+          "target": "/mnt/music/Master_Library/Electronica/ARVØW/Single/ARVØW - Subliminal.mp3"
+        },
+        {
+          "kind": "new",
+          "source": "/mnt/music/Inbox/neuzugang-20261008/ARVØW/Unknown/Terminal Lucidity.mp3",
+          "target": "/mnt/music/Master_Library/Electronica/ARVØW/Single/ARVØW - Terminal Lucidity.mp3"
+        },
+        {
+          "kind": "new",
+          "source": "/mnt/music/Inbox/neuzugang-20261008/10AM/Jam On The Cake EP/Space Cadet (Original Mix).flac",
+          "target": "/mnt/music/Master_Library/Minimal/10AM/Jam On The Cake EP/10AM - Space Cadet.flac"
+        },
+        {
+          "kind": "new",
+          "source": "/mnt/music/Inbox/neuzugang-20261008/ANF/TV Science/ANF Dub (D.Tiffany's Milano Mix).flac",
+          "target": "/mnt/music/Master_Library/Unsortiert/ANF/TV Science/ANF - ANF Dub (D.Tiffany's Milano Mix).flac"
+        },
+        {
+          "kind": "new",
+          "source": "/mnt/music/Inbox/neuzugang-20261008/ANF/TV Science/ANF Dub.flac",
+          "target": "/mnt/music/Master_Library/Unsortiert/ANF/TV Science/ANF - ANF Dub.flac"
+        },
+        {
+          "kind": "new",
+          "source": "/mnt/music/Inbox/neuzugang-20261008/ANF/TV Science/Distance (Pillock Mix).flac",
+          "target": "/mnt/music/Master_Library/Unsortiert/ANF/TV Science/ANF - Distance (Pillock Mix).flac"
+        },
+        {
+          "kind": "new",
+          "source": "/mnt/music/Inbox/neuzugang-20261008/ANF/TV Science/TV Science.flac",
+          "target": "/mnt/music/Master_Library/Unsortiert/ANF/TV Science/ANF - TV Science.flac"
+        },
+        {
+          "kind": "new",
+          "source": "/mnt/music/Inbox/neuzugang-20261008/Adam Pits/Element X/Element X (Priori remix).flac",
+          "target": "/mnt/music/Master_Library/Breakbeat/Adam Pits/Element X/Adam Pits - Element X (Priori Remix).flac"
+        },
+        {
+          "kind": "new",
+          "source": "/mnt/music/Inbox/neuzugang-20261008/Adam Pits/Element X/Element X (Priori’s Corroded version).flac",
+          "target": "/mnt/music/Master_Library/Breakbeat/Adam Pits/Element X/Adam Pits - Element X (Priori’s Corroded Version).flac"
+        },
+        {
+          "kind": "new",
+          "source": "/mnt/music/Inbox/neuzugang-20261008/Adam Pits/Element X/Element X.flac",
+          "target": "/mnt/music/Master_Library/Unsortiert/Adam Pits/Element X/Adam Pits - Element X.flac"
+        },
+        {
+          "kind": "new",
+          "source": "/mnt/music/Inbox/neuzugang-20261008/Adam Pits/Element X/Solar Wave (DJ Central remix).flac",
+          "target": "/mnt/music/Master_Library/Unsortiert/Adam Pits/Element X/Adam Pits - Solar Wave (DJ Central Remix).flac"
+        },
+        {
+          "kind": "new",
+          "source": "/mnt/music/Inbox/neuzugang-20261008/Adam Pits/Element X/Solar Wave.flac",
+          "target": "/mnt/music/Master_Library/Unsortiert/Adam Pits/Element X/Adam Pits - Solar Wave.flac"
+        },
+        {
+          "kind": "new",
+          "source": "/mnt/music/Inbox/neuzugang-20261008/2 Taboo/Latina/Alex's Porno Party.flac",
+          "target": "/mnt/music/Master_Library/Uk Garage/2 Taboo/Latina/2 Taboo - Alex's Porno Party.flac"
+        },
+        {
+          "kind": "new",
+          "source": "/mnt/music/Inbox/neuzugang-20261008/Afro Medusa/Pasilda/Pasilda (Knee Deep club mix).flac",
+          "target": "/mnt/music/Master_Library/House/Afro Medusa/Pasilda/Afro Medusa - Pasilda (Knee Deep Club Mix).flac"
+        },
+        {
+          "kind": "new",
+          "source": "/mnt/music/Inbox/neuzugang-20261008/Adeva/Respect (93) - The Remixes/Respect (93) (Miltons Slutty mix).flac",
+          "target": "/mnt/music/Master_Library/Electronic/Adeva/Respect (93) - The Remixes/Adeva - Respect (93) (Miltons Slutty Mix).flac"
+        },
+        {
+          "kind": "new",
+          "source": "/mnt/music/Inbox/neuzugang-20261008/Addison Groove/Changa/Changa.flac",
+          "target": "/mnt/music/Master_Library/House/Addison Groove/Changa/Addison Groove - Changa.flac"
+        },
+        {
+          "kind": "new",
+          "source": "/mnt/music/Inbox/neuzugang-20261008/ARVØW & Gleezy/Unknown/Compelled To Hope.mp3",
+          "target": "/mnt/music/Master_Library/Electronica/ARVØW & Gleezy/Single/ARVØW & Gleezy - Compelled To Hope.mp3"
+        },
+        {
+          "kind": "new",
+          "source": "/mnt/music/Inbox/neuzugang-20261008/A Calling/Unknown/Kennedy (Original Mix) 124.mp3",
+          "target": "/mnt/music/Master_Library/Unsortiert/A Calling/Single/A Calling - Kennedy.mp3"
+        },
+        {
+          "kind": "new",
+          "source": "/mnt/music/Inbox/neuzugang-20261008/2nClubbers, Terry De Jeff/Unknown/Hola Piano (Extended Mix).mp3",
+          "target": "/mnt/music/Master_Library/House/2nClubbers, Terry De Jeff/Single/2nClubbers, Terry De Jeff - Hola Piano (Extended Mix).mp3"
+        },
+        {
+          "kind": "new",
+          "source": "/mnt/music/Inbox/neuzugang-20261008/2 Full Minds feat. E.Q./No Smoke Remixes/No Smoke (Housey Doings remix).mp3",
+          "target": "/mnt/music/Master_Library/Electronica/2 Full Minds feat. E.Q/No Smoke Remixes/2 Full Minds feat. E.Q. - No Smoke (Housey Doings Remix).mp3"
+        },
+        {
+          "kind": "new",
+          "source": "/mnt/music/Inbox/neuzugang-20261008/99 Souls feat. Destiny’s Child & Brandy/The Girl Is Mine (Remixes)/The Girl Is Mine (club mix).flac",
+          "target": "/mnt/music/Master_Library/Funky House/99 Souls feat. Destiny’s Child & Brandy/The Girl Is Mine (Remixes)/99 Souls feat. Destiny’s Child & Brandy - The Girl Is Mine (Club Mix).flac"
+        },
+        {
+          "kind": "new",
+          "source": "/mnt/music/Inbox/neuzugang-20261008/1130/Unknown/Jesse Maas (Original Mix) 134.mp3",
+          "target": "/mnt/music/Master_Library/Unsortiert/1130/Single/1130 - Jesse Maas.mp3"
+        },
+        {
+          "kind": "new",
+          "source": "/mnt/music/Inbox/neuzugang-20261008/Adam Bennett/HOUSE COULD BE ANYTHING EP/HOUSE COULD BE ANYTHING - Adam Bennett.mp3",
+          "target": "/mnt/music/Master_Library/Unsortiert/Adam Bennett/HOUSE COULD BE ANYTHING EP/Adam Bennett - HOUSE COULD BE ANYTHING - Adam Bennett.mp3"
+        },
+        {
+          "kind": "duplicate",
+          "source": "/mnt/music/Inbox/neuzugang-20261008/ANOTR, Leven Kali & Erik Bandt/How You Feel/How You Feel (Original Mix).mp3",
+          "target": "/mnt/music/Master_Library/House/ANOTR, Leven Kali & Erik Bandt/How You Feel (2024)/ANOTR, Leven Kali & Erik Bandt - How You Feel (original mix).flac"
+        },
+        {
+          "kind": "duplicate",
+          "source": "/mnt/music/Inbox/neuzugang-20261008/95 North/Let Yourself Go (Nautica's Make It Count Remix)/Let Yourself Go.flac",
+          "target": "/mnt/music/Master_Library/Electronic/95 North/Let Yourself Go (Nautica's Make It Count Remix) (2023)/95 North - Let Yourself Go.flac"
+        },
+        {
+          "kind": "duplicate",
+          "source": "/mnt/music/Inbox/neuzugang-20261008/AVCI/No Hope Left EP/End of an Era.mp3",
+          "target": "/mnt/music/Master_Library/Electronic/AVCI/No Hope Left EP (2024)/AVCI - End of an Era.mp3"
+        },
+        {
+          "kind": "duplicate",
+          "source": "/mnt/music/Inbox/neuzugang-20261008/$uicideboy$;Shakewell/SHAMELESS $UICIDE/Big Shot Cream Soda.flac",
+          "target": "/mnt/music/Master_Library/Uk Garage/$uicideboy$/SHAMELESS $UICIDE (2023)/$uicideboy$ - Big Shot Cream Soda.flac"
+        },
+        {
+          "kind": "duplicate",
+          "source": "/mnt/music/Inbox/neuzugang-20261008/A.S.H.A./JJ Tribute - RX 1995/J.J. Tribute - EuroClub Mix.flac",
+          "target": "/mnt/music/Master_Library/Electronic/A.S.H.A./JJ Tribute - RX 1995 (2023)/A.S.H.A. - J.J. Tribute - EuroClub Mix.flac"
+        },
+        {
+          "kind": "duplicate",
+          "source": "/mnt/music/Inbox/neuzugang-20261008/Abdul Raeva/Passion de la Passion/The Caballero Thrust Programme (Original Mix).mp3",
+          "target": "/mnt/music/Master_Library/Trance/Abdul Raeva/Passion de la Passion (2023)/Abdul Raeva - The Caballero Thrust Programme.mp3"
+        },
+        {
+          "kind": "duplicate",
+          "source": "/mnt/music/Inbox/neuzugang-20261008/A Million Things/Never Tear Us Apart (Disco)/Never Tear Us Apart (Disco) (Disco).mp3",
+          "target": "/mnt/music/Master_Library/Electronic/A Million Things/Never Tear Us Apart (Disco) (2025)/A Million Things - Never Tear Us Apart (Disco) (Disco).mp3"
+        },
+        {
+          "kind": "duplicate",
+          "source": "/mnt/music/Inbox/neuzugang-20261008/Adam Pits/Element X/Gazza.flac",
+          "target": "/mnt/music/Master_Library/Idm;Techno/Adam Pits/Element X/Adam Pits - Gazza.flac"
+        },
+        {
+          "kind": "duplicate",
+          "source": "/mnt/music/Inbox/neuzugang-20261008/Adventures of Stevie V/Adventures of Stevie V/Dirty Cash (Sold Out mix).mp3",
+          "target": "/mnt/music/Master_Library/House/Adventures of Stevie V/Adventures of Stevie V (1990)/Adventures of Stevie V - Dirty Cash (Sold Out mix).mp3"
+        },
+        {
+          "kind": "duplicate",
+          "source": "/mnt/music/Inbox/neuzugang-20261008/ACID HARRY/Unknown/Latina Flex (Original Mix).mp3",
+          "target": "/mnt/music/Master_Library/Electronic/ACID HARRY/Single (0000)/ACID HARRY - Latina Flex (Original Mix).mp3"
+        },
+        {
+          "kind": "duplicate",
+          "source": "/mnt/music/Inbox/neuzugang-20261008/A Virgo On The Moon & Paolo Mosca/THREADS006/Mattherhorn.flac",
+          "target": "/mnt/music/Master_Library/Electronic/A Virgo On The Moon & Paolo Mosca/THREADS006/A Virgo On The Moon & Paolo Mosca - Mattherhorn.flac"
+        },
+        {
+          "kind": "duplicate",
+          "source": "/mnt/music/Inbox/neuzugang-20261008/Adam Ten, Mita Gami/The Queen (303 Retouch)/The Queen (303 Retouch).mp3",
+          "target": "/mnt/music/Master_Library/Electronic/Adam Ten, Mita Gami/The Queen (303 Retouch) (2025)/Adam Ten, Mita Gami - The Queen (303 Retouch).mp3"
+        },
+        {
+          "kind": "duplicate",
+          "source": "/mnt/music/Inbox/neuzugang-20261008/82J6/The Shallow Man/Lug (Original Mix).flac",
+          "target": "/mnt/music/Master_Library/Techno/82J6/The Shallow Man (2025)/82J6 - Lug (Original Mix).flac"
+        },
+        {
+          "kind": "duplicate",
+          "source": "/mnt/music/Inbox/neuzugang-20261008/ALADAG/Awake EP/Awake (Original Mix).mp3",
+          "target": "/mnt/music/Master_Library/Electronic/ALADAG/Awake EP (2025)/ALADAG - Awake (Original Mix).mp3"
+        },
+        {
+          "kind": "duplicate",
+          "source": "/mnt/music/Inbox/neuzugang-20261008/49° South/Love Somebody's Trigger Finger/Love Somebody's Trigger Finger.flac",
+          "target": "/mnt/music/Master_Library/Electronic/49° South/Love Somebody's Trigger Finger/49° South - Love Somebody's Trigger Finger.flac"
+        },
+        {
+          "kind": "duplicate",
+          "source": "/mnt/music/Inbox/neuzugang-20261008/AISENMA Beatz/Unknown/Side To Side (Original Mix).mp3",
+          "target": "/mnt/music/Master_Library/House/AISENMA Beatz/Single (2023)/AISENMA Beatz - Side To Side (Original Mix).mp3"
+        },
+        {
+          "kind": "duplicate",
+          "source": "/mnt/music/Inbox/neuzugang-20261008/ANOTR/The Reset/Amplia.mp3",
+          "target": "/mnt/music/Master_Library/House/ANOTR/The Reset (2022)/ANOTR - Amplia.mp3"
+        },
+        {
+          "kind": "duplicate",
+          "source": "/mnt/music/Inbox/neuzugang-20261008/9A - 129 - Fred Nasen/Remixes/Sunday Visitor (A Visit From The Mingers).flac",
+          "target": "/mnt/music/Master_Library/Electronic/9A - 129 - Fred Nasen/Remixes (2001)/9A - 129 - Fred Nasen - Sunday Visitor (A Visit From The Mingers).flac"
+        },
+        {
+          "kind": "duplicate",
+          "source": "/mnt/music/Inbox/neuzugang-20261008/AFFKT/No Signal/No Signal (Pavel Petrov Mindiemal Remix).mp3",
+          "target": "/mnt/music/Master_Library/Tech House/AFFKT/No Signal (2025)/AFFKT - No Signal (Pavel Petrov Mindiemal Remix).mp3"
+        },
+        {
+          "kind": "duplicate",
+          "source": "/mnt/music/Inbox/neuzugang-20261008/Adam Ten & Maori/Spring Girl (Extended)/Spring Girl (Extended).mp3",
+          "target": "/mnt/music/Master_Library/Electronic/Adam Ten & Maori/Spring Girl (Extended) (2023)/Adam Ten & Maori - Spring Girl (Extended).mp3"
+        }
+      ],
+      "missing": [],
+      "bad": [],
+      "inbox_audio": 28,
+      "master_audio": 8803
+    },
+    "log_tail": "\n=== 22:45:33 1 Drive -> /anker-backup/musik-umzug-20261005/Inbox/neuzugang-20261008 (nur Audio)\n2026/10/08 22:46:43 ERROR : Attempt 2/3 succeeded\n2026/10/08 22:46:43 INFO  :    59.980 MiB / 59.980 MiB, 100%, 1.989 MiB/s, ETA 0s\n56\n\n=== 22:46:44 2a APE-Altbloecke\nDateien mit APE-Block: 5\nentfernt: 5 | Fehler: 0\n\n=== 22:47:01 2b Titel/Kuenstler/Haendler-Alben\nModus: AUSFUEHREN, geaendert: 20, Haendler-Alben geleert: 1, Nacharbeit: 2, Fehler: 7\n"
+  },
+  "trashed": 0,
+  "trash_readback": []
+}
