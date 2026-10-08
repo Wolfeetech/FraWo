@@ -1297,9 +1297,9 @@ body {
   <!-- Header -->
   <div class="ff-header">
     <a href="/" class="ff-brand">
-      <img src="/web/image/2195" alt="FraWo Funk" class="ff-logo-img"/>
+      <img src="/web/image/2195" width="38" height="38" alt="FraWo Funk" class="ff-logo-img"/>
       <div>
-        <div class="ff-brand-name">FraWo Funk</div>
+        <h1 class="ff-brand-name" style="margin: 0;">FraWo Funk</h1>
         <div class="ff-brand-sub">24/7 Studio Stream · Bodensee</div>
       </div>
     </a>
@@ -1334,7 +1334,7 @@ body {
 
     <!-- Track Row with Live Album Artwork & Info -->
     <div class="ff-track-row">
-      <img id="ff-deck-art" src="/web/image/2195" alt="Cover Art" class="ff-deck-art" loading="eager"/>
+      <img id="ff-deck-art" src="/web/image/2195" width="130" height="130" alt="Cover Art" class="ff-deck-art" loading="eager"/>
       <div class="ff-track-info">
         <div class="ff-title" id="ff-title">FraWo Funk</div>
         <div class="ff-artist" id="ff-artist">Studio Stream · Live Auswahl</div>
