@@ -54,9 +54,12 @@ ODOO_USER = _clean_val(os.environ.get("ODOO_RPC_USER")) or _clean_val(os.environ
 ODOO_PASS = (_clean_val(os.environ.get("ODOO_RPC_PASSWORD"))
              or _clean_val(os.environ.get("ODOO_PASSWORD")) or "JarvisAgent2026!FraWo")
 
-# Ollama-Endpunkte
-OLLAMA_GPU_URL = "http://127.0.0.1:11434"      # StudioPC RTX GPU (schnell, 50-100 tok/s)
-OLLAMA_CPU_URL = "http://10.1.0.227:11434"     # OptiPlex 7050 CPU (24/7 Dauerläufer)
+# Ollama-Endpunkte Kaskade (StudioPC GPU lokal & LAN, Fallback OptiPlex 24/7 CPU)
+OLLAMA_ENDPOINTS = [
+    ("http://127.0.0.1:11434", "frawo-mitarbeiter:latest", "StudioPC GPU (lokal)"),
+    ("http://10.0.0.156:11434", "frawo-mitarbeiter:latest", "StudioPC GPU (LAN 10.0.0.156)"),
+    ("http://10.1.0.227:11434", "frawo-mitarbeiter-fast:latest", "OptiPlex 7050 CPU 24/7"),
+]
 
 PROJECT_MAP = {
     160: {"name": "🔧 20 · Werkstatt & Lautsprecherbau", "icon": "🔧", "keywords": ["werkstatt", "lautsprecher", "gehäuse", "holz", "leimen", "lackieren", "löten", "fräsen", "chassis", "subwoofer"]},
@@ -126,12 +129,7 @@ class OdooClient:
 
 # ── Ollama Orchestrierung ────────────────────────────────────────────────────
 def call_ollama(prompt: str, system_prompt: str) -> dict:
-    endpoints = [
-        (OLLAMA_GPU_URL, "frawo-mitarbeiter:latest", "StudioPC GPU"),
-        (OLLAMA_GPU_URL, "qwen2.5:7b", "StudioPC GPU Fallback"),
-        (OLLAMA_CPU_URL, "frawo-mitarbeiter-fast:latest", "OptiPlex 7050 CPU 24/7"),
-    ]
-    
+    endpoints = OLLAMA_ENDPOINTS
     last_err = None
     for url, model, desc in endpoints:
         try:
