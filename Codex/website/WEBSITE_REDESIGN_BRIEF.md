@@ -1,4 +1,4 @@
-﻿# FraWo Website â€” Redesign Brief v3
+# FraWo Website â€” Redesign Brief v3
 Stand: 2026-04-23 | FÃ¼r den nÃ¤chsten Agenten
 
 ---
@@ -88,9 +88,9 @@ MÃ¶gliche Ursache:
 Proxmox:    root@100.69.179.87 (Tailscale)
 VM 220:     qm guest exec 220 bash -- -c "..."
 Container:  docker exec odoo-web-1 bash -c "..."
-Odoo Shell: odoo shell -d FraWo_GbR --db_host=db --db_user=odoo --db_password=odoo_db_pass_final_v1 --no-http
+Odoo Shell: odoo shell -d FraWo_GbR --db_host=db --db_user=odoo --db_password=<VAULT_ODOO_DB_PASS> --no-http
 DB:         FraWo_GbR
-Admin PW:   frawo_temp_2026
+Admin PW:   <VAULT_ODOO_ADMIN_PASS> (siehe Vaultwarden / Bitwarden)
 ```
 
 ### Bilder:

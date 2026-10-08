@@ -1,9 +1,11 @@
 import xmlrpc.client
 
-url = "http://10.1.0.22:8069"
-db = "FraWo_GbR"
-username = "admin" # I'll try admin again
-password = "frawo_temp_2026"
+import os
+
+url = os.environ.get("ODOO_URL", "http://10.1.0.112:8069")
+db = os.environ.get("ODOO_DB", "FraWo_GbR")
+username = os.environ.get("ODOO_USER", "admin")
+password = os.environ.get("ODOO_PASSWORD", "")
 
 try:
     common = xmlrpc.client.ServerProxy(f"{url}/xmlrpc/2/common")

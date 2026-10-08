@@ -10,12 +10,13 @@ sys.path.append(str(SCRIPT_DIR))
 try:
     from odoo_env import resolve_connection
 except ImportError:
+    import os
     class DummySettings:
         def __init__(self):
-            self.url = "http://10.1.0.22:8069"
-            self.db = "FraWo_GbR"
-            self.user = "admin"
-            self.secret = "frawo_temp_2026"
+            self.url = os.environ.get("ODOO_URL", "http://10.1.0.112:8069")
+            self.db = os.environ.get("ODOO_DB", "FraWo_GbR")
+            self.user = os.environ.get("ODOO_USER", "admin")
+            self.secret = os.environ.get("ODOO_PASSWORD", "")
     def resolve_connection(url, db, user):
         return DummySettings()
 
@@ -403,8 +404,9 @@ PLAYER_SKELETON = """
 
 def deploy():
     settings = DummySettings()
-    settings.secret = "frawo_temp_2026"
-    settings.user = "agent@frawo-tech.de"
+    import os
+    settings.secret = os.environ.get("ODOO_PASSWORD", "")
+    settings.user = os.environ.get("ODOO_USER", "agent@frawo.tech")
     print(f"Connecting to Odoo at {settings.url}...")
     try:
         common = xmlrpc.client.ServerProxy(f"{settings.url}/xmlrpc/2/common")
