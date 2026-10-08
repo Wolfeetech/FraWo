@@ -538,3 +538,124 @@
   }
 })();
 </script>
+
+<style>
+  /* FraWo Professional 3D Surface System — global, crisp, restrained */
+  :root {
+    --fw-global-radius-sm: 10px;
+    --fw-global-radius-md: 16px;
+    --fw-global-radius-lg: 22px;
+    --fw-global-shadow: 0 14px 34px rgba(0, 0, 0, 0.26), 0 1px 0 rgba(255, 255, 255, 0.05) inset;
+    --fw-global-shadow-hover: 0 22px 48px rgba(0, 0, 0, 0.34), 0 0 0 1px rgba(160, 80, 240, 0.12);
+  }
+
+  html {
+    overflow-x: hidden;
+    background: #0a0a0a;
+  }
+
+  body {
+    isolation: isolate;
+    overflow-x: hidden;
+    background:
+      radial-gradient(900px 420px at 50% -12%, rgba(160, 80, 240, 0.09), transparent 72%),
+      #0a0a0a !important;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 42vh -12vw -18vh;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.16;
+    background:
+      linear-gradient(rgba(160, 80, 240, 0.14) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(6, 78, 59, 0.16) 1px, transparent 1px);
+    background-size: 76px 76px;
+    transform: perspective(920px) rotateX(62deg) scale(1.14);
+    transform-origin: center bottom;
+    mask-image: linear-gradient(to top, #000 0%, transparent 82%);
+    -webkit-mask-image: linear-gradient(to top, #000 0%, transparent 82%);
+  }
+
+  .fw-persistent-player {
+    background: rgba(12, 16, 14, 0.97) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.12) !important;
+    box-shadow: 0 -12px 30px rgba(0, 0, 0, 0.34) !important;
+  }
+
+  .fw-hero,
+  .fw-section,
+  .fw-section-tight,
+  .fw-card,
+  .fw-feature-card,
+  .fw-service-card,
+  .fw-price-card,
+  .fw-grid-item,
+  .fw-img-wrapper {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--fw-global-radius-md) !important;
+    border: 1px solid rgba(255, 255, 255, 0.10) !important;
+    box-shadow: var(--fw-global-shadow) !important;
+    transform: translateZ(0);
+    transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+  }
+
+  .fw-hero::after,
+  .fw-section::after,
+  .fw-section-tight::after,
+  .fw-card::after,
+  .fw-feature-card::after,
+  .fw-service-card::after,
+  .fw-price-card::after,
+  .fw-grid-item::after,
+  .fw-img-wrapper::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    border-radius: inherit;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), transparent 28%, transparent 72%, rgba(160, 80, 240, 0.045));
+  }
+
+  .fw-card:hover,
+  .fw-feature-card:hover,
+  .fw-service-card:hover,
+  .fw-price-card:hover,
+  .fw-grid-item:hover,
+  .fw-img-wrapper:hover {
+    transform: translateY(-3px) !important;
+    border-color: rgba(160, 80, 240, 0.34) !important;
+    box-shadow: var(--fw-global-shadow-hover) !important;
+  }
+
+  .fw-btn-primary,
+  .fw-btn-ghost,
+  .btn,
+  button {
+    border-radius: var(--fw-global-radius-sm) !important;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fw-card,
+    .fw-feature-card,
+    .fw-service-card,
+    .fw-price-card,
+    .fw-grid-item,
+    .fw-img-wrapper {
+      transition: none !important;
+    }
+    .fw-card:hover,
+    .fw-feature-card:hover,
+    .fw-service-card:hover,
+    .fw-price-card:hover,
+    .fw-grid-item:hover,
+    .fw-img-wrapper:hover {
+      transform: none !important;
+    }
+  }
+</style>
