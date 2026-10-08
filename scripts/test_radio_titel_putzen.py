@@ -171,6 +171,16 @@ class TestSamplerImport(unittest.TestCase):
             ('Hypaphonik', 'Funa Wena', 'Beatport 100 Afro House 2024 August'),
         )
 
+    def test_beatport_sampler_im_artistfeld_wird_entwirrt(self):
+        self.assertEqual(
+            entwirre_sampler('Beatport Best New Hype Deep House August 2024', 'You Got Me - Karter (Original Mix)'),
+            ('Karter', 'You Got Me', 'Beatport Best New Hype Deep House August 2024'),
+        )
+        self.assertEqual(
+            entwirre_sampler('Beatport Best New Hype Deep House August 2024', 'Capi Scuri - DJ Rocca (Manuel Costela Remix)'),
+            ('DJ Rocca', 'Capi Scuri (Manuel Costela Remix)', 'Beatport Best New Hype Deep House August 2024'),
+        )
+
     def test_fuehrender_bindestrich_ohne_sampler(self):
         self.assertEqual(
             entwirre_sampler('36', '- Pierre Johnson,Oscar Mbo - Ukuphila'),

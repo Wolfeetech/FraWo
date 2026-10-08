@@ -140,6 +140,20 @@ def entwirre_sampler(kuenstler, titel):
     """
     k = (kuenstler or '').strip()
     t = (titel or '').strip()
+    haendler_kuenstler = bool(HAENDLER_ALBUM.search(k))
+    if haendler_kuenstler:
+        # Einige Beatport-Imports setzten den Sampler-Namen direkt in ARTIST,
+        # während der echte Künstler am Ende des TIT2-Feldes steht:
+        # "You Got Me - Karter (Original Mix)".
+        teile = [x.strip() for x in t.rsplit(' - ', 1)]
+        if len(teile) != 2 or not teile[0] or not teile[1]:
+            return None
+        m = re.match(r'^(.*?)\s*(\([^)]*\))$', teile[1])
+        neuer_kuenstler = (m.group(1) if m else teile[1]).strip()
+        neuer_titel = teile[0] + (f' {m.group(2)}' if m else '')
+        if not neuer_kuenstler or neuer_kuenstler.lower() == k.lower():
+            return None
+        return (putze_kuenstler(neuer_kuenstler), putze_titel(neuer_titel, neuer_kuenstler), k)
     if not NUR_ZAHL.match(k) or not t:
         return None
 
