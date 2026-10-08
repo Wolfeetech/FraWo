@@ -51,7 +51,7 @@ body {
   width: min(850px, 100%);
   max-width: 100%;
   height: 550px;
-  background: radial-gradient(circle at 50% 40%, rgba(147, 51, 234, 0.15) 0%, rgba(46, 204, 113, 0.07) 45%, transparent 70%);
+  background: var(--fw-surface);
   filter: blur(90px);
   pointer-events: none;
   z-index: 0;
@@ -77,7 +77,7 @@ body {
 .ff-logo-img {
   width: 38px;
   height: 38px;
-  border-radius: 8px;
+  border-radius: 0px;
   border: 1px solid var(--ff-border-light);
   object-fit: cover;
 }
@@ -112,9 +112,8 @@ body {
   overflow: hidden;
   white-space: nowrap;
   background: rgba(10, 14, 12, 0.6);
-  backdrop-filter: blur(10px);
   border: 1px solid var(--ff-border);
-  border-radius: 8px;
+  border-radius: 0px;
   padding: 8px 0;
   margin-bottom: 32px;
   position: relative;
@@ -142,31 +141,34 @@ body {
 /* Master Player Deck */
 .ff-deck {
   background: rgba(10, 14, 12, 0.75);
-  backdrop-filter: blur(20px) saturate(160%);
-  -webkit-backdrop-filter: blur(20px) saturate(160%);
   border: 1px solid var(--ff-border-light);
-  border-radius: 18px;
+  border-radius: 0px;
   padding: 32px 36px;
   margin-bottom: 40px;
   position: relative;
   z-index: 2;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  perspective: 1200px;
-  transform-style: preserve-3d;
+  box-shadow: none;
   transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 220ms ease, border-color 220ms ease;
+}
+.ff-deck::after {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  border-radius: 0px;
+  pointer-events: none;
+  background: var(--fw-surface);
 }
 @media (hover: hover) and (pointer: fine) {
   .ff-deck:hover {
     transform: translateY(-3px) rotateX(0.45deg);
     border-color: rgba(255,255,255,0.17);
-    box-shadow: 0 28px 70px rgba(0,0,0,0.58), 0 10px 28px rgba(157, 78, 221,0.10), inset 0 1px 0 rgba(255,255,255,0.12);
+    box-shadow: none;
   }
   .ff-deck:hover .ff-deck-art {
-    transform: rotateY(-5deg) rotateX(2deg) translateZ(16px) scale(1.015);
   }
   .ff-card:hover {
     transform: translateY(-3px) rotateX(0.7deg);
-    box-shadow: 0 16px 32px rgba(0,0,0,0.34), 0 0 0 1px rgba(255,255,255,0.035);
+    box-shadow: none;
   }
 }
 @media (max-width: 768px) {
@@ -194,29 +196,29 @@ body {
   background: rgba(46, 204, 113, 0.08);
   border: 1px solid rgba(46, 204, 113, 0.25);
   padding: 5px 12px;
-  border-radius: 20px;
+  border-radius: 0px;
 }
 .ff-badge-live.dj-takeover {
   color: #ff3366;
   background: rgba(255, 51, 102, 0.12);
   border-color: rgba(255, 51, 102, 0.4);
-  box-shadow: 0 0 15px rgba(255, 51, 102, 0.3);
+  box-shadow: none;
 }
 .ff-live-dot {
   width: 6px;
   height: 6px;
   background: var(--ff-accent-green);
-  border-radius: 50%;
-  box-shadow: 0 0 8px var(--ff-accent-green);
+  border-radius: 0px;
+  box-shadow: none;
   animation: ffPulse 1.6s infinite ease-in-out;
 }
 .ff-badge-live.dj-takeover .ff-live-dot {
   background: #ff3366;
-  box-shadow: 0 0 10px #ff3366;
+  box-shadow: none;
 }
 @keyframes ffPulse {
   0%,100%{ transform: scale(0.9); opacity: 0.7; }
-  50%{ transform: scale(1.3); opacity: 1; box-shadow: 0 0 12px currentColor; }
+  50%{ transform: scale(1.3); opacity: 1; box-shadow: none;
 }
 
 .ff-specs {
@@ -232,7 +234,7 @@ body {
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid var(--ff-border);
   padding: 3px 8px;
-  border-radius: 4px;
+  border-radius: 0px;
 }
 
 /* Track Metadata */
@@ -278,7 +280,7 @@ body {
   background: #ffffff;
   color: #000000;
   border: none;
-  border-radius: 40px;
+  border-radius: 0px;
   padding: 16px 32px;
   font-family: var(--ff-font-mono);
   font-size: 0.85rem;
@@ -289,14 +291,14 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  box-shadow: 0 4px 18px rgba(255, 255, 255, 0.2);
+  box-shadow: none;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .ff-play-btn:hover {
   background: var(--ff-accent);
   color: #ffffff;
   transform: translateY(-2px);
-  box-shadow: 0 6px 24px rgba(192, 132, 252, 0.35);
+  box-shadow: none;
 }
 .ff-play-btn:active {
   transform: translateY(0) scale(0.97);
@@ -314,19 +316,19 @@ body {
   gap: 3px;
   background: rgba(0, 0, 0, 0.35);
   border: 1px solid var(--ff-border);
-  border-radius: 10px;
+  border-radius: 0px;
   padding: 8px 12px;
 }
 .ff-vis-bar {
   flex: 1;
   background: #1c2620;
   height: 18%;
-  border-radius: 1px;
+  border-radius: 0px;
   transition: height 0.08s ease, background-color 0.15s;
 }
 .ff-vis-bar.active {
-  background: linear-gradient(180deg, #A050F0, #9D4EDD);
-  box-shadow: 0 0 6px rgba(192, 132, 252, 0.3);
+  background: var(--fw-surface);
+  box-shadow: none;
 }
 
 /* Floating Reaction Particles */
@@ -364,7 +366,7 @@ body {
   width: 80px;
   height: 4px;
   background: rgba(255, 255, 255, 0.12);
-  border-radius: 2px;
+  border-radius: 0px;
   outline: none;
   cursor: pointer;
 }
@@ -373,10 +375,10 @@ body {
   appearance: none;
   width: 12px;
   height: 12px;
-  border-radius: 50%;
+  border-radius: 0px;
   background: var(--ff-accent);
   cursor: pointer;
-  box-shadow: 0 0 6px rgba(192, 132, 252, 0.5);
+  box-shadow: none;
 }
 
 /* Progress Track */
@@ -394,14 +396,14 @@ body {
   flex-grow: 1;
   height: 4px;
   background: rgba(255, 255, 255, 0.08);
-  border-radius: 2px;
+  border-radius: 0px;
   overflow: hidden;
 }
 .ff-prog-fill {
   height: 100%;
   width: 0%;
-  background: linear-gradient(90deg, #9D4EDD, #2ecc71);
-  border-radius: 2px;
+  background: var(--fw-surface);
+  border-radius: 0px;
   transition: width 1s linear;
 }
 
@@ -411,7 +413,7 @@ body {
 .ff-mood-box {
   background: rgba(0, 0, 0, 0.35);
   border: 1px solid var(--ff-border);
-  border-radius: 14px;
+  border-radius: 0px;
   padding: 18px 20px;
   margin-bottom: 20px;
 }
@@ -447,7 +449,7 @@ body {
 .ff-mood-btn {
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid var(--ff-border);
-  border-radius: 10px;
+  border-radius: 0px;
   padding: 12px 14px;
   color: var(--ff-text);
   cursor: pointer;
@@ -496,13 +498,13 @@ body {
 /* Specific Button Styles */
 .ff-btn-energy:hover {
   border-color: #f59e0b;
-  box-shadow: 0 4px 16px rgba(245, 158, 11, 0.2);
+  box-shadow: none;
 }
 .ff-btn-energy.active {
   background: rgba(245, 158, 11, 0.18) !important;
   border-color: rgba(245, 158, 11, 0.8) !important;
   color: #f59e0b !important;
-  box-shadow: 0 0 16px rgba(245, 158, 11, 0.3);
+  box-shadow: none;
 }
 
 .ff-btn-banger {
@@ -511,18 +513,18 @@ body {
 }
 .ff-btn-banger:hover {
   border-color: #2ecc71;
-  box-shadow: 0 4px 18px rgba(46, 204, 113, 0.25);
+  box-shadow: none;
 }
 .ff-btn-banger.active {
   background: rgba(46, 204, 113, 0.18) !important;
   border-color: rgba(46, 204, 113, 0.8) !important;
   color: #2ecc71 !important;
-  box-shadow: 0 0 20px rgba(46, 204, 113, 0.35);
+  box-shadow: none;
 }
 .ff-banger-badge {
   background: rgba(0, 0, 0, 0.45);
   border: 1px solid var(--ff-border);
-  border-radius: 6px;
+  border-radius: 0px;
   padding: 1px 7px;
   font-size: 0.72rem;
   font-weight: 800;
@@ -536,13 +538,13 @@ body {
 
 .ff-btn-chill:hover {
   border-color: #A050F0;
-  box-shadow: 0 4px 16px rgba(192, 132, 252, 0.2);
+  box-shadow: none;
 }
 .ff-btn-chill.active {
   background: rgba(192, 132, 252, 0.18) !important;
   border-color: rgba(192, 132, 252, 0.8) !important;
   color: #A050F0 !important;
-  box-shadow: 0 0 16px rgba(192, 132, 252, 0.3);
+  box-shadow: none;
 }
 
 /* Redaktions-Bereich */
@@ -555,7 +557,7 @@ body {
   background: rgba(160, 80, 240, 0.18) !important;
   border-color: rgba(160, 80, 240, 0.8) !important;
   color: #A050F0 !important;
-  box-shadow: 0 0 16px rgba(160, 80, 240, 0.3);
+  box-shadow: none;
 }
 
 /* Deck Sub-Footer */
@@ -572,10 +574,10 @@ body {
 .ff-jukebox-box {
   background: var(--ff-surface);
   border: 1px solid var(--ff-border);
-  border-radius: 14px;
+  border-radius: 0px;
   padding: 24px;
   margin-bottom: 40px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  box-shadow: none;
 }
 .ff-jukebox-form {
   display: flex;
@@ -586,7 +588,7 @@ body {
   flex-grow: 1;
   background: #050806;
   border: 1px solid var(--ff-border);
-  border-radius: 8px;
+  border-radius: 0px;
   color: var(--ff-text);
   padding: 12px 16px;
   font-family: inherit;
@@ -595,7 +597,7 @@ body {
 .ff-jukebox-input:focus {
   outline: none;
   border-color: var(--ff-accent);
-  box-shadow: 0 0 0 2px rgba(192, 132, 252, 0.2);
+  box-shadow: none;
 }
 .ff-jukebox-results {
   display: flex;
@@ -611,7 +613,7 @@ body {
   padding: 10px 14px;
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid var(--ff-border);
-  border-radius: 8px;
+  border-radius: 0px;
   transition: background 0.15s;
 }
 .ff-req-item:hover { background: rgba(255, 255, 255, 0.05); }
@@ -626,7 +628,7 @@ body {
   font-size: 0.7rem;
   font-weight: 700;
   padding: 6px 14px;
-  border-radius: 20px;
+  border-radius: 0px;
   cursor: pointer;
   transition: all 0.2s;
   white-space: nowrap;
@@ -654,7 +656,7 @@ body {
 .ff-schedule-hint {
   padding: 18px 20px;
   border: 1px dashed var(--ff-border-light);
-  border-radius: 10px;
+  border-radius: 0px;
   color: var(--ff-text-dim);
   font-family: var(--ff-font-mono);
   font-size: 0.78rem;
@@ -676,7 +678,7 @@ body {
   margin: 0 0 24px;
   padding: 13px 16px;
   border: 1px solid rgba(46, 204, 113, 0.28);
-  border-radius: 10px;
+  border-radius: 0px;
   background: rgba(46, 204, 113, 0.07);
   font-family: var(--ff-font-mono);
 }
@@ -693,8 +695,8 @@ body {
   margin: -4px 0 22px;
   padding: 16px;
   border: 1px solid rgba(160, 80, 240, 0.28);
-  border-radius: 12px;
-  background: linear-gradient(135deg, rgba(160, 80, 240, 0.12), rgba(46, 204, 113, 0.06));
+  border-radius: 0px;
+  background: var(--fw-surface);
 }
 .ff-mvp-proof-item { min-width: 0; }
 .ff-mvp-proof-value {
@@ -723,7 +725,7 @@ body {
   margin-bottom: 20px;
   background: rgba(0, 0, 0, 0.25);
   border: 1px solid var(--ff-border);
-  border-radius: 10px;
+  border-radius: 0px;
   padding: 4px;
   overflow-x: auto;
 }
@@ -740,7 +742,7 @@ body {
   color: var(--ff-text-dim);
   background: transparent;
   border: 1px solid transparent;
-  border-radius: 7px;
+  border-radius: 0px;
   cursor: pointer;
   transition: all 0.2s ease;
   user-select: none;
@@ -754,14 +756,14 @@ body {
   color: #ffffff;
   background: var(--ff-surface-elevated);
   border-color: var(--ff-border-light);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  box-shadow: none;
 }
 .ff-week-tab.today {
   color: var(--ff-accent-green);
 }
 .ff-week-tab.today.active {
   color: #ffffff;
-  background: linear-gradient(145deg, rgba(46, 204, 113, 0.15), var(--ff-surface-elevated));
+  background: var(--fw-surface);
   border-color: rgba(46, 204, 113, 0.3);
 }
 .ff-week-tab .ff-tab-day { display: block; }
@@ -788,9 +790,9 @@ body {
   right: 6px;
   width: 5px;
   height: 5px;
-  border-radius: 50%;
+  border-radius: 0px;
   background: var(--ff-accent-green);
-  box-shadow: 0 0 6px var(--ff-accent-green);
+  box-shadow: none;
 }
 .ff-quality-btn:hover {
   background: rgba(46, 204, 113, 0.18) !important;
@@ -868,14 +870,13 @@ body {
 .ff-card {
   background: var(--ff-surface);
   border: 1px solid var(--ff-border);
-  border-radius: 12px;
+  border-radius: 0px;
   padding: 20px 22px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 180ms ease, border-color 180ms ease, background 180ms ease;
   position: relative;
-  transform-style: preserve-3d;
 }
 .ff-card:hover {
   background: var(--ff-surface-elevated);
@@ -883,9 +884,9 @@ body {
   transform: translateY(-2px);
 }
 .ff-card.active-slot {
-  background: linear-gradient(145deg, rgba(147, 51, 234, 0.12), rgba(10, 14, 12, 0.95));
+  background: var(--fw-surface);
   border-color: var(--ff-accent);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 25px rgba(147, 51, 234, 0.18);
+  box-shadow: none;
 }
 .ff-card-time {
   font-family: var(--ff-font-mono);
@@ -935,7 +936,7 @@ body {
 .ff-hist-art {
   width: 140px;
   height: 140px;
-  border-radius: 10px;
+  border-radius: 0px;
   object-fit: cover;
   border: 1px solid var(--ff-border);
   margin-bottom: 6px;
@@ -958,12 +959,12 @@ body {
     font-size: 0.65rem;
     font-weight: 800;
     padding: 2px 6px;
-    border-radius: 4px;
+    border-radius: 0px;
     letter-spacing: 0.5px;
     display: inline-flex;
     align-items: center;
     gap: 3px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+    box-shadow: none;
   }
   .ff-hist-badge.banger {
     background: rgba(255, 0, 122, 0.9);
@@ -985,7 +986,7 @@ body {
     color: #CBD5E1;
     font-size: 0.7rem;
     padding: 2px 6px;
-    border-radius: 4px;
+    border-radius: 0px;
     cursor: pointer;
     transition: 0.15s;
   }
@@ -1031,7 +1032,7 @@ body {
 .ff-links-box {
   background: var(--ff-surface);
   border: 1px solid var(--ff-border);
-  border-radius: 12px;
+  border-radius: 0px;
   padding: 16px 24px;
   font-family: var(--ff-font-mono);
   font-size: 0.78rem;
@@ -1082,7 +1083,7 @@ body {
   background: rgba(0, 0, 0, 0.45);
   border: 1px solid var(--ff-border);
   border-left: 3px solid var(--ff-accent);
-  border-radius: 10px;
+  border-radius: 0px;
   padding: 10px 16px;
   margin-bottom: 20px;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -1090,7 +1091,7 @@ body {
 .ff-next-card.active-vote {
   border-left-color: var(--ff-accent-amber);
   background: rgba(245, 158, 11, 0.12);
-  box-shadow: 0 0 20px rgba(245, 158, 11, 0.15);
+  box-shadow: none;
 }
 .ff-next-left {
   display: flex;
@@ -1133,18 +1134,16 @@ body {
   align-items: center;
   gap: 24px;
   margin-bottom: 24px;
-  transform-style: preserve-3d;
 }
 .ff-deck-art {
   width: 130px;
   height: 130px;
-  border-radius: 12px;
+  border-radius: 0px;
   object-fit: cover;
   border: 1px solid var(--ff-border-light);
-  box-shadow: 0 18px 34px rgba(0,0,0,0.46), 12px 8px 28px rgba(157, 78, 221,0.08);
+  box-shadow: none;
   flex-shrink: 0;
   background: #000;
-  transform: rotateY(-2deg) translateZ(8px);
   transform-origin: center center;
   transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 220ms ease;
 }
@@ -1156,9 +1155,9 @@ body {
 
 @media (max-width: 650px) {
   .ff-container { padding: 0 12px 60px 12px !important; }
-  .ff-deck { padding: 18px 16px !important; border-radius: 14px !important; }
+  .ff-deck { padding: 18px 16px !important; border-radius: 0px;
   .ff-track-row { gap: 16px; margin-bottom: 18px; }
-  .ff-deck-art { width: 90px; height: 90px; border-radius: 8px; }
+  .ff-deck-art { width: 90px; height: 90px; border-radius: 0px;
   .ff-title { font-size: 1.4rem !important; line-height: 1.15 !important; }
   .ff-artist { font-size: 0.92rem !important; }
   .ff-meta-line { font-size: 0.65rem !important; }
@@ -1213,11 +1212,11 @@ body {
   pointer-events: none;
   z-index: 0;
   background:
-    radial-gradient(60% 55% at 50% 0%,
+    background: var(--fw-surface);
       rgba(160, 80, 240, calc(0.04 + var(--ff-bass) * 0.30)) 0%, transparent 72%),
-    radial-gradient(48% 42% at 12% 88%,
+    background: var(--fw-surface);
       rgba(46, 204, 113, calc(0.015 + var(--ff-mid) * 0.15)) 0%, transparent 70%),
-    radial-gradient(48% 42% at 88% 82%,
+    background: var(--fw-surface);
       rgba(157, 78, 221, calc(0.015 + var(--ff-hi) * 0.15)) 0%, transparent 70%);
   opacity: calc(0.5 + var(--ff-beat) * 0.5);
   transition: opacity 90ms linear;
@@ -1227,7 +1226,7 @@ body {
   content: '';
   position: absolute;
   inset: 0;
-  box-shadow: inset 0 0 calc(50px + var(--ff-bass) * 170px)
+  box-shadow: none;
               rgba(160, 80, 240, calc(var(--ff-bass) * 0.30));
   transition: box-shadow 90ms linear;
 }
@@ -1254,7 +1253,7 @@ body {
 
 /* Das Deck bekommt Glanz statt Bewegung: Rand und Schein atmen mit */
 .ff-deck {
-  box-shadow:
+  box-shadow: none;
     0 20px 50px rgba(0, 0, 0, 0.5),
     0 0 calc(var(--ff-beat) * 60px) rgba(160, 80, 240, calc(var(--ff-beat) * 0.22)),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
@@ -1264,10 +1263,10 @@ body {
 
 /* Live-Punkt und Fortschrittsbalken als feine Taktgeber */
 .ff-live-dot {
-  box-shadow: 0 0 calc(8px + var(--ff-bass) * 20px) var(--ff-accent-green);
+  box-shadow: none;
 }
 .ff-prog-fill {
-  box-shadow: 0 0 calc(var(--ff-beat) * 14px) rgba(160, 80, 240, 0.6);
+  box-shadow: none;
 }
 
 /* Wer Bewegung reduziert haben will, bekommt eine ruhige Seite. */
@@ -1431,7 +1430,7 @@ body {
     <div class="ff-mood-box" id="ff-redaktion" style="display:none;" data-track="" data-sendung="">
       <div class="ff-mood-header">
         <span>🎚️ Redaktion</span>
-        <span id="ff-redaktion-feedback"></span>
+        <span id="ff-redaktion-feedback"/>
       </div>
 
       <div class="ff-redaktion-label" style="text-align:center; margin-bottom: 8px;">Energie</div>
