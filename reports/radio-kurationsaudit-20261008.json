@@ -1,0 +1,1408 @@
+{
+  "observed_at": "2026-10-08",
+  "scope": "28 live editorial playlists with 100-song target",
+  "method": "AzuraCast playlist queue + live media metadata; no playlist writes",
+  "external_reference": "Beatport Afro House category: https://www.beatport.com/genre/afro-house/89",
+  "playlists": [
+    {
+      "id": 874,
+      "name": "Afro-Noon",
+      "queue_count": 100,
+      "top_genres": [
+        [
+          "Disco",
+          61
+        ],
+        [
+          "House",
+          14
+        ],
+        [
+          "Deep House",
+          9
+        ],
+        [
+          "Reggae/Dub",
+          4
+        ],
+        [
+          "Soul/Funk/Jazz",
+          3
+        ],
+        [
+          "(kein Genre)",
+          3
+        ],
+        [
+          "Trance",
+          2
+        ],
+        [
+          "Electronica",
+          1
+        ]
+      ],
+      "source_roots": [
+        [
+          "03_Lunch_Groove",
+          71
+        ],
+        [
+          "04_Afternoon_Flow",
+          29
+        ]
+      ]
+    },
+    {
+      "id": 890,
+      "name": "Afro-Noon Friday",
+      "queue_count": 100,
+      "top_genres": [
+        [
+          "Disco",
+          57
+        ],
+        [
+          "Deep House",
+          16
+        ],
+        [
+          "House",
+          8
+        ],
+        [
+          "Reggae/Dub",
+          7
+        ],
+        [
+          "(kein Genre)",
+          5
+        ],
+        [
+          "Soul/Funk/Jazz",
+          4
+        ],
+        [
+          "Minimal",
+          1
+        ],
+        [
+          "Electronic",
+          1
+        ]
+      ],
+      "source_roots": [
+        [
+          "03_Lunch_Groove",
+          69
+        ],
+        [
+          "04_Afternoon_Flow",
+          31
+        ]
+      ]
+    },
+    {
+      "id": 886,
+      "name": "Afro-Noon Thursday",
+      "queue_count": 80,
+      "top_genres": [
+        [
+          "Disco",
+          44
+        ],
+        [
+          "Deep House",
+          12
+        ],
+        [
+          "House",
+          9
+        ],
+        [
+          "Reggae/Dub",
+          5
+        ],
+        [
+          "Techno",
+          3
+        ],
+        [
+          "Soul/Funk/Jazz",
+          3
+        ],
+        [
+          "Electronic",
+          1
+        ],
+        [
+          "Ukraine",
+          1
+        ]
+      ],
+      "source_roots": [
+        [
+          "03_Lunch_Groove",
+          55
+        ],
+        [
+          "04_Afternoon_Flow",
+          25
+        ]
+      ]
+    },
+    {
+      "id": 883,
+      "name": "Afterwork Club",
+      "queue_count": 100,
+      "top_genres": [
+        [
+          "Disco",
+          44
+        ],
+        [
+          "House",
+          27
+        ],
+        [
+          "Techno",
+          17
+        ],
+        [
+          "Trance",
+          4
+        ],
+        [
+          "(kein Genre)",
+          3
+        ],
+        [
+          "Deep House",
+          2
+        ],
+        [
+          "Electro",
+          1
+        ],
+        [
+          "Reggae/Dub",
+          1
+        ]
+      ],
+      "source_roots": [
+        [
+          "08_Sunday_Roadtrip",
+          48
+        ],
+        [
+          "05_Evening_Warmup",
+          27
+        ],
+        [
+          "07_Peak_Time_Club",
+          25
+        ]
+      ]
+    },
+    {
+      "id": 882,
+      "name": "City Lunch",
+      "queue_count": 100,
+      "top_genres": [
+        [
+          "Disco",
+          49
+        ],
+        [
+          "Deep House",
+          18
+        ],
+        [
+          "House",
+          11
+        ],
+        [
+          "Reggae/Dub",
+          9
+        ],
+        [
+          "(kein Genre)",
+          5
+        ],
+        [
+          "Soul/Funk/Jazz",
+          5
+        ],
+        [
+          "Alternative Rock",
+          1
+        ],
+        [
+          "Electronic",
+          1
+        ]
+      ],
+      "source_roots": [
+        [
+          "03_Lunch_Groove",
+          63
+        ],
+        [
+          "04_Afternoon_Flow",
+          37
+        ]
+      ]
+    },
+    {
+      "id": 880,
+      "name": "Deep Night",
+      "queue_count": 100,
+      "top_genres": [
+        [
+          "Techno",
+          26
+        ],
+        [
+          "Minimal",
+          22
+        ],
+        [
+          "Ambient",
+          13
+        ],
+        [
+          "Downtempo",
+          7
+        ],
+        [
+          "House",
+          5
+        ],
+        [
+          "(kein Genre)",
+          4
+        ],
+        [
+          "Electronic",
+          3
+        ],
+        [
+          "Reggae/Dub",
+          2
+        ]
+      ],
+      "source_roots": [
+        [
+          "06_Deep_Night",
+          52
+        ],
+        [
+          "01_Sunrise",
+          48
+        ]
+      ]
+    },
+    {
+      "id": 889,
+      "name": "Friday Flow",
+      "queue_count": 100,
+      "top_genres": [
+        [
+          "House",
+          31
+        ],
+        [
+          "Indie Dance",
+          14
+        ],
+        [
+          "Electro",
+          13
+        ],
+        [
+          "Disco",
+          12
+        ],
+        [
+          "Electronic",
+          10
+        ],
+        [
+          "Ambient",
+          6
+        ],
+        [
+          "Indie & Wave",
+          2
+        ],
+        [
+          "Electronica",
+          2
+        ]
+      ],
+      "source_roots": [
+        [
+          "02_Morning_Drive",
+          87
+        ],
+        [
+          "01_Sunrise",
+          13
+        ]
+      ]
+    },
+    {
+      "id": 891,
+      "name": "Friday Peak",
+      "queue_count": 100,
+      "top_genres": [
+        [
+          "Disco",
+          36
+        ],
+        [
+          "House",
+          36
+        ],
+        [
+          "Techno",
+          15
+        ],
+        [
+          "Rock",
+          2
+        ],
+        [
+          "Breakbeat",
+          1
+        ],
+        [
+          "Rock/Electronic",
+          1
+        ],
+        [
+          "Post-Punk/Rock",
+          1
+        ],
+        [
+          "Trance (Raw",
+          1
+        ]
+      ],
+      "source_roots": [
+        [
+          "08_Sunday_Roadtrip",
+          47
+        ],
+        [
+          "05_Evening_Warmup",
+          32
+        ],
+        [
+          "07_Peak_Time_Club",
+          21
+        ]
+      ]
+    },
+    {
+      "id": 879,
+      "name": "Golden Hour",
+      "queue_count": 100,
+      "top_genres": [
+        [
+          "Disco",
+          48
+        ],
+        [
+          "House",
+          25
+        ],
+        [
+          "Techno",
+          9
+        ],
+        [
+          "Alternative Rock",
+          4
+        ],
+        [
+          "Rock",
+          2
+        ],
+        [
+          "(kein Genre)",
+          2
+        ],
+        [
+          "Trance",
+          2
+        ],
+        [
+          "Soul/Funk/Jazz",
+          2
+        ]
+      ],
+      "source_roots": [
+        [
+          "08_Sunday_Roadtrip",
+          61
+        ],
+        [
+          "05_Evening_Warmup",
+          21
+        ],
+        [
+          "07_Peak_Time_Club",
+          18
+        ]
+      ]
+    },
+    {
+      "id": 888,
+      "name": "Late Night Society",
+      "queue_count": 100,
+      "top_genres": [
+        [
+          "Techno",
+          34
+        ],
+        [
+          "Minimal",
+          23
+        ],
+        [
+          "Ambient",
+          8
+        ],
+        [
+          "(kein Genre)",
+          6
+        ],
+        [
+          "House",
+          6
+        ],
+        [
+          "Downtempo",
+          6
+        ],
+        [
+          "Chillout",
+          3
+        ],
+        [
+          "Reggae/Dub",
+          2
+        ]
+      ],
+      "source_roots": [
+        [
+          "06_Deep_Night",
+          62
+        ],
+        [
+          "01_Sunrise",
+          38
+        ]
+      ]
+    },
+    {
+      "id": 881,
+      "name": "Midweek Rise",
+      "queue_count": 100,
+      "top_genres": [
+        [
+          "House",
+          26
+        ],
+        [
+          "Electronic",
+          15
+        ],
+        [
+          "Indie Dance",
+          13
+        ],
+        [
+          "Electro",
+          11
+        ],
+        [
+          "Disco",
+          9
+        ],
+        [
+          "Downtempo",
+          5
+        ],
+        [
+          "Techno",
+          4
+        ],
+        [
+          "Ambient",
+          4
+        ]
+      ],
+      "source_roots": [
+        [
+          "02_Morning_Drive",
+          80
+        ],
+        [
+          "01_Sunrise",
+          20
+        ]
+      ]
+    },
+    {
+      "id": 876,
+      "name": "Moonlight Motion",
+      "queue_count": 100,
+      "top_genres": [
+        [
+          "Techno",
+          33
+        ],
+        [
+          "Minimal",
+          22
+        ],
+        [
+          "Downtempo",
+          10
+        ],
+        [
+          "Ambient",
+          9
+        ],
+        [
+          "(kein Genre)",
+          6
+        ],
+        [
+          "House",
+          4
+        ],
+        [
+          "Chillout",
+          3
+        ],
+        [
+          "Trance (Raw",
+          3
+        ]
+      ],
+      "source_roots": [
+        [
+          "06_Deep_Night",
+          60
+        ],
+        [
+          "01_Sunrise",
+          40
+        ]
+      ]
+    },
+    {
+      "id": 877,
+      "name": "Morning Bloom",
+      "queue_count": 100,
+      "top_genres": [
+        [
+          "House",
+          20
+        ],
+        [
+          "Electronic",
+          15
+        ],
+        [
+          "Indie Dance",
+          14
+        ],
+        [
+          "Disco",
+          12
+        ],
+        [
+          "Electro",
+          11
+        ],
+        [
+          "Ambient",
+          6
+        ],
+        [
+          "Downtempo",
+          4
+        ],
+        [
+          "(kein Genre)",
+          4
+        ]
+      ],
+      "source_roots": [
+        [
+          "02_Morning_Drive",
+          79
+        ],
+        [
+          "01_Sunrise",
+          21
+        ]
+      ]
+    },
+    {
+      "id": 873,
+      "name": "Morning Flow",
+      "queue_count": 100,
+      "top_genres": [
+        [
+          "House",
+          25
+        ],
+        [
+          "Electro",
+          13
+        ],
+        [
+          "Electronic",
+          13
+        ],
+        [
+          "Disco",
+          9
+        ],
+        [
+          "Indie Dance",
+          9
+        ],
+        [
+          "Ambient",
+          5
+        ],
+        [
+          "Downtempo",
+          5
+        ],
+        [
+          "Techno",
+          5
+        ]
+      ],
+      "source_roots": [
+        [
+          "02_Morning_Drive",
+          78
+        ],
+        [
+          "01_Sunrise",
+          22
+        ]
+      ]
+    },
+    {
+      "id": 872,
+      "name": "Night Drive",
+      "queue_count": 100,
+      "top_genres": [
+        [
+          "Techno",
+          34
+        ],
+        [
+          "Minimal",
+          17
+        ],
+        [
+          "Downtempo",
+          10
+        ],
+        [
+          "Ambient",
+          9
+        ],
+        [
+          "House",
+          8
+        ],
+        [
+          "(kein Genre)",
+          4
+        ],
+        [
+          "Electronic",
+          2
+        ],
+        [
+          "Trance (Raw",
+          2
+        ]
+      ],
+      "source_roots": [
+        [
+          "06_Deep_Night",
+          56
+        ],
+        [
+          "01_Sunrise",
+          44
+        ]
+      ]
+    },
+    {
+      "id": 892,
+      "name": "Night Owls",
+      "queue_count": 100,
+      "top_genres": [
+        [
+          "Techno",
+          35
+        ],
+        [
+          "Minimal",
+          20
+        ],
+        [
+          "Ambient",
+          10
+        ],
+        [
+          "Downtempo",
+          6
+        ],
+        [
+          "House",
+          5
+        ],
+        [
+          "Chillout",
+          4
+        ],
+        [
+          "(kein Genre)",
+          3
+        ],
+        [
+          "Drum And Bass",
+          2
+        ]
+      ],
+      "source_roots": [
+        [
+          "06_Deep_Night",
+          58
+        ],
+        [
+          "01_Sunrise",
+          42
+        ]
+      ]
+    },
+    {
+      "id": 884,
+      "name": "Night Shift",
+      "queue_count": 100,
+      "top_genres": [
+        [
+          "Minimal",
+          33
+        ],
+        [
+          "Techno",
+          24
+        ],
+        [
+          "Ambient",
+          12
+        ],
+        [
+          "Downtempo",
+          6
+        ],
+        [
+          "House",
+          6
+        ],
+        [
+          "(kein Genre)",
+          5
+        ],
+        [
+          "Electronica",
+          3
+        ],
+        [
+          "Chillout",
+          2
+        ]
+      ],
+      "source_roots": [
+        [
+          "06_Deep_Night",
+          63
+        ],
+        [
+          "01_Sunrise",
+          37
+        ]
+      ]
+    },
+    {
+      "id": 895,
+      "name": "Saturday Club",
+      "queue_count": 100,
+      "top_genres": [
+        [
+          "Disco",
+          43
+        ],
+        [
+          "House",
+          30
+        ],
+        [
+          "Techno",
+          12
+        ],
+        [
+          "(kein Genre)",
+          3
+        ],
+        [
+          "Trance (Main Floor)",
+          3
+        ],
+        [
+          "Dance",
+          3
+        ],
+        [
+          "Electronic",
+          2
+        ],
+        [
+          "Trip-Hop",
+          1
+        ]
+      ],
+      "source_roots": [
+        [
+          "08_Sunday_Roadtrip",
+          49
+        ],
+        [
+          "07_Peak_Time_Club",
+          29
+        ],
+        [
+          "05_Evening_Warmup",
+          22
+        ]
+      ]
+    },
+    {
+      "id": 894,
+      "name": "Saturday Soul",
+      "queue_count": 100,
+      "top_genres": [
+        [
+          "Disco",
+          48
+        ],
+        [
+          "Deep House",
+          20
+        ],
+        [
+          "House",
+          14
+        ],
+        [
+          "(kein Genre)",
+          6
+        ],
+        [
+          "Reggae/Dub",
+          5
+        ],
+        [
+          "Soul/Funk/Jazz",
+          3
+        ],
+        [
+          "Techno",
+          2
+        ],
+        [
+          "Pop",
+          1
+        ]
+      ],
+      "source_roots": [
+        [
+          "03_Lunch_Groove",
+          57
+        ],
+        [
+          "04_Afternoon_Flow",
+          43
+        ]
+      ]
+    },
+    {
+      "id": 896,
+      "name": "Sunday Deep",
+      "queue_count": 100,
+      "top_genres": [
+        [
+          "Techno",
+          36
+        ],
+        [
+          "Minimal",
+          19
+        ],
+        [
+          "Downtempo",
+          9
+        ],
+        [
+          "House",
+          5
+        ],
+        [
+          "Ambient",
+          5
+        ],
+        [
+          "Electronica",
+          4
+        ],
+        [
+          "Electro",
+          2
+        ],
+        [
+          "Vienna Electronic Music Scene",
+          2
+        ]
+      ],
+      "source_roots": [
+        [
+          "06_Deep_Night",
+          58
+        ],
+        [
+          "01_Sunrise",
+          42
+        ]
+      ]
+    },
+    {
+      "id": 898,
+      "name": "Sunday Soul",
+      "queue_count": 100,
+      "top_genres": [
+        [
+          "Disco",
+          52
+        ],
+        [
+          "House",
+          19
+        ],
+        [
+          "Deep House",
+          17
+        ],
+        [
+          "Reggae/Dub",
+          5
+        ],
+        [
+          "Techno",
+          2
+        ],
+        [
+          "Minimal",
+          1
+        ],
+        [
+          "Electronica",
+          1
+        ],
+        [
+          "Ukraine",
+          1
+        ]
+      ],
+      "source_roots": [
+        [
+          "03_Lunch_Groove",
+          63
+        ],
+        [
+          "04_Afternoon_Flow",
+          37
+        ]
+      ]
+    },
+    {
+      "id": 897,
+      "name": "Sunday Sunrise",
+      "queue_count": 100,
+      "top_genres": [
+        [
+          "House",
+          30
+        ],
+        [
+          "Disco",
+          12
+        ],
+        [
+          "Electronic",
+          8
+        ],
+        [
+          "Indie Dance",
+          8
+        ],
+        [
+          "Electro",
+          6
+        ],
+        [
+          "(kein Genre)",
+          5
+        ],
+        [
+          "Electronica",
+          5
+        ],
+        [
+          "Techno",
+          5
+        ]
+      ],
+      "source_roots": [
+        [
+          "02_Morning_Drive",
+          78
+        ],
+        [
+          "01_Sunrise",
+          22
+        ]
+      ]
+    },
+    {
+      "id": 899,
+      "name": "Sunday Sunset",
+      "queue_count": 100,
+      "top_genres": [
+        [
+          "Disco",
+          39
+        ],
+        [
+          "House",
+          27
+        ],
+        [
+          "Techno",
+          13
+        ],
+        [
+          "Trance",
+          4
+        ],
+        [
+          "Trance (Main Floor)",
+          3
+        ],
+        [
+          "Alternative Rock",
+          2
+        ],
+        [
+          "Electronic",
+          2
+        ],
+        [
+          "Soul/Funk/Jazz",
+          2
+        ]
+      ],
+      "source_roots": [
+        [
+          "08_Sunday_Roadtrip",
+          47
+        ],
+        [
+          "07_Peak_Time_Club",
+          30
+        ],
+        [
+          "05_Evening_Warmup",
+          23
+        ]
+      ]
+    },
+    {
+      "id": 885,
+      "name": "Sunrise Ritual",
+      "queue_count": 100,
+      "top_genres": [
+        [
+          "Indie Dance",
+          19
+        ],
+        [
+          "House",
+          17
+        ],
+        [
+          "Electro",
+          13
+        ],
+        [
+          "Electronic",
+          12
+        ],
+        [
+          "Ambient",
+          8
+        ],
+        [
+          "Techno",
+          7
+        ],
+        [
+          "Disco",
+          4
+        ],
+        [
+          "(kein Genre)",
+          4
+        ]
+      ],
+      "source_roots": [
+        [
+          "02_Morning_Drive",
+          79
+        ],
+        [
+          "01_Sunrise",
+          21
+        ]
+      ]
+    },
+    {
+      "id": 875,
+      "name": "Sunset Pulse",
+      "queue_count": 100,
+      "top_genres": [
+        [
+          "Disco",
+          45
+        ],
+        [
+          "House",
+          26
+        ],
+        [
+          "Techno",
+          14
+        ],
+        [
+          "(kein Genre)",
+          5
+        ],
+        [
+          "Trance (Main Floor)",
+          2
+        ],
+        [
+          "Electronic",
+          1
+        ],
+        [
+          "Dance",
+          1
+        ],
+        [
+          "Alternative Rock",
+          1
+        ]
+      ],
+      "source_roots": [
+        [
+          "08_Sunday_Roadtrip",
+          52
+        ],
+        [
+          "07_Peak_Time_Club",
+          31
+        ],
+        [
+          "05_Evening_Warmup",
+          17
+        ]
+      ]
+    },
+    {
+      "id": 887,
+      "name": "Thursday Heat",
+      "queue_count": 100,
+      "top_genres": [
+        [
+          "Disco",
+          36
+        ],
+        [
+          "House",
+          34
+        ],
+        [
+          "Techno",
+          15
+        ],
+        [
+          "Trance",
+          4
+        ],
+        [
+          "(kein Genre)",
+          2
+        ],
+        [
+          "Dance",
+          2
+        ],
+        [
+          "Deep House",
+          1
+        ],
+        [
+          "Hip Hop/Pop",
+          1
+        ]
+      ],
+      "source_roots": [
+        [
+          "08_Sunday_Roadtrip",
+          42
+        ],
+        [
+          "07_Peak_Time_Club",
+          32
+        ],
+        [
+          "05_Evening_Warmup",
+          26
+        ]
+      ]
+    },
+    {
+      "id": 878,
+      "name": "Tropical Noon",
+      "queue_count": 100,
+      "top_genres": [
+        [
+          "Disco",
+          54
+        ],
+        [
+          "Deep House",
+          14
+        ],
+        [
+          "House",
+          11
+        ],
+        [
+          "Reggae/Dub",
+          7
+        ],
+        [
+          "Soul/Funk/Jazz",
+          4
+        ],
+        [
+          "(kein Genre)",
+          3
+        ],
+        [
+          "Electronic",
+          2
+        ],
+        [
+          "Techno",
+          1
+        ]
+      ],
+      "source_roots": [
+        [
+          "03_Lunch_Groove",
+          72
+        ],
+        [
+          "04_Afternoon_Flow",
+          28
+        ]
+      ]
+    },
+    {
+      "id": 893,
+      "name": "Weekend Rise",
+      "queue_count": 100,
+      "top_genres": [
+        [
+          "House",
+          21
+        ],
+        [
+          "Electro",
+          17
+        ],
+        [
+          "Electronic",
+          12
+        ],
+        [
+          "Indie Dance",
+          11
+        ],
+        [
+          "Disco",
+          9
+        ],
+        [
+          "Techno",
+          6
+        ],
+        [
+          "Ambient",
+          6
+        ],
+        [
+          "Downtempo",
+          4
+        ]
+      ],
+      "source_roots": [
+        [
+          "02_Morning_Drive",
+          79
+        ],
+        [
+          "01_Sunrise",
+          21
+        ]
+      ]
+    }
+  ]
+}
