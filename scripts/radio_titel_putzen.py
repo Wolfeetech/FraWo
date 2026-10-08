@@ -109,8 +109,16 @@ def braucht_nacharbeit(titel, kuenstler):
     # Import ins falsche Feld gelaufen ist (Beatport-Sampler, 07.10.2026).
     # Ohne diese Pruefung galten 44 Titel als sendertauglich und gingen so
     # auf Sendung.
+    bereinigt = putze_titel(titel, kuenstler)
+    # Ein Bindestrich im Titel ist zulässig, wenn danach nur eine übliche
+    # Versionsangabe folgt (z. B. "Calma - Extended" oder "Kula - Remix").
+    rest_ist_version = bool(re.search(
+        r'\s-\s[^-]*(?:extended|radio\s+edit|club\s+mix|deep\s+mix|remix|edit|dub|version|rework|bootleg)\b$',
+        bereinigt,
+        re.I,
+    ))
     return ((not t) or (not k) or bool(NUR_ZAHL.match(k)) or bool(CODE.search(t))
-            or ' - ' in putze_titel(t, putze_kuenstler(k)))
+            or (' - ' in bereinigt and not rest_ist_version))
 
 
 KOMMA_OHNE_LUECKE = re.compile(r',(?=\S)')

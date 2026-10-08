@@ -146,6 +146,10 @@ class TestNacharbeit(unittest.TestCase):
         self.assertTrue(braucht_nacharbeit('Song', ''))
         self.assertFalse(braucht_nacharbeit('Song', 'Artist'))
 
+    def test_version_bindestrich_ist_erlaubt(self):
+        self.assertFalse(braucht_nacharbeit('Calma - Extended', 'Eli Fola, Canetis'))
+        self.assertFalse(braucht_nacharbeit('Kula - Bassfinder & Faceoff Remix', 'Ladour, David Hopperman'))
+
     def test_kuenstler_noch_im_titel(self):
         self.assertTrue(braucht_nacharbeit('HUGEL,GROSSOMODDO - Andalucia', 'X'))
 
