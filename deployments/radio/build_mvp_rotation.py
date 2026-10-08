@@ -117,7 +117,7 @@ def load_media() -> tuple[dict[int, dict], dict[int, list[int]]]:
             continue
         media[int(row[0])] = {"id": int(row[0]), "artist": row[1], "title": row[2], "length": float(row[3] or 0)}
     memberships = defaultdict(list)
-    ids = ",".join(str(i) for i in sorted({*{i for ids in SOURCE_POOLS.values() for i in ids}, 869, 871}))
+    ids = ",".join(str(i) for i in sorted({*{i for ids in SOURCE_POOLS.values() for i in ids}, 867, 869, 871}))
     for row in db(
         "SELECT playlist_id,media_id FROM station_playlist_media "
         f"WHERE playlist_id IN ({ids}) AND is_queued=1 ORDER BY playlist_id,weight,id;"
@@ -127,10 +127,17 @@ def load_media() -> tuple[dict[int, dict], dict[int, list[int]]]:
     return media, memberships
 
 
-def make_tracks(day_index: int, daypart: str, media: dict[int, dict], memberships: dict[int, list[int]]) -> list[int]:
+def make_tracks(
+    day_index: int,
+    daypart: str,
+    media: dict[int, dict],
+    memberships: dict[int, list[int]],
+    playlist_name: str = "",
+) -> list[int]:
     pool = []
     seen = set()
-    for source_id in SOURCE_POOLS[daypart]:
+    source_ids = [867] if playlist_name.startswith("Afro-Noon") else SOURCE_POOLS[daypart]
+    for source_id in source_ids:
         for media_id in memberships.get(source_id, []):
             if media_id not in seen and 90 <= media[media_id]["length"] <= 600:
                 seen.add(media_id)
@@ -149,7 +156,7 @@ def plan() -> tuple[list[dict], list[dict], dict[str, int]]:
     for day_index, day in enumerate(DAY_NAMES, start=1):
         for daypart_index, (daypart, start, end) in enumerate(DAYPARTS):
             name = SHOW_NAMES[day][daypart_index]
-            tracks = make_tracks(day_index, daypart, media, memberships)
+            tracks = make_tracks(day_index, daypart, media, memberships, name)
             playlists.append({
                 "name": name,
                 "legacy_name": f"MVP {day} · {daypart}",
