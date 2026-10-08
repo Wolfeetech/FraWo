@@ -24,6 +24,11 @@
       font-family: var(--fw-font-sans) !important;
     }
 
+    /* Der globale Radio-Balken darf den Mietkatalog nicht überdecken. */
+    body:has(.fw-verleih-wrap) .fw-radio-bar {
+      display: none !important;
+    }
+
     .fw-verleih-wrap {
       background: var(--fw-bg);
       color: var(--fw-text-bright);
@@ -79,12 +84,8 @@
 
     /* Filter Bar */
     .fw-control-bar {
-      position: sticky;
-      top: 0;
-      z-index: 99;
-      background: rgba(10, 10, 10, 0.95);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      position: relative;
+      background: var(--fw-bg);
       border-bottom: 1px solid var(--fw-border);
       padding: 14px 20px;
     }
@@ -139,7 +140,7 @@
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 24px;
-      align-items: stretch;
+      align-items: start;
     }
 
     @media (max-width: 980px) {
@@ -152,7 +153,8 @@
 
     .fw-stack-card {
       min-width: 0;
-      height: 100%;
+      height: auto;
+      align-self: start;
       background: var(--fw-surface);
       border: 1px solid var(--fw-border);
       border-radius: 0px;
@@ -711,7 +713,7 @@
   </script>
 
   <!-- Interactive Rental Inquiry Modal (CI v3.0 Flat) -->
-  <div id="fwRentalModal" style="display:none; position:fixed; z-index:99999; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); backdrop-filter:blur(4px); justify-content:center; align-items:center; padding:15px; box-sizing:border-box;">
+  <div id="fwRentalModal" style="display:none; position:fixed; z-index:99999; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); justify-content:center; align-items:center; padding:15px; box-sizing:border-box;">
     <div style="background:#141816; border:1px solid #2a2e2c; width:100%; max-width:560px; max-height:92vh; overflow-y:auto; padding:28px; position:relative; box-shadow:0 25px 50px rgba(0,0,0,0.8); color:#e8e8e8; font-family:'Inter', sans-serif; box-sizing:border-box;">
       
       <button type="button" onclick="closeRentalModal()" style="position:absolute; top:18px; right:18px; background:none; border:none; color:#98a29e; font-size:24px; cursor:pointer; line-height:1;">×</button>
