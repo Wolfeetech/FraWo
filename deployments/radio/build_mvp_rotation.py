@@ -42,6 +42,36 @@ SHOW_NAMES = {
     "Samstag": ["Night Owls", "Weekend Rise", "Saturday Soul", "Saturday Club"],
     "Sonntag": ["Sunday Deep", "Sunday Sunrise", "Sunday Soul", "Sunday Sunset"],
 }
+PLAYLIST_DESCRIPTIONS = {
+    "Night Drive": "Ruhige Nachtfahrt mit tiefen Grooves, warmen Flächen und wenig Hektik.",
+    "Morning Flow": "Klarer Morgen-Flow mit federnden House-Grooves für einen leichten Start.",
+    "Afro-Noon": "Afro House mit warmen Percussions und organischem Druck für die Mittagszeit.",
+    "Sunset Pulse": "Melodischer Abend-Puls zwischen Disco, House und sanftem Clubgefühl.",
+    "Moonlight Motion": "Dunkler, gleitender Nachtmix mit Minimal, Deepness und langen Spannungsbögen.",
+    "Morning Bloom": "Heller Wochenstart mit melodischem House, Soul-Farben und positiver Energie.",
+    "Tropical Noon": "Leichter Mittagsmix mit organischen Grooves, House und sommerlicher Wärme.",
+    "Golden Hour": "Warme Übergänge aus Disco, House und melodischen Tracks für den Feierabend.",
+    "Deep Night": "Tiefe Nachtfarben mit Minimal, Techno und atmosphärischen, langsamen Entwicklungen.",
+    "Midweek Rise": "Mittwochs-Auftrieb mit klaren Beats, House und elektronischen Zwischenfarben.",
+    "City Lunch": "Urbaner Mittagsgroove mit Disco, House und entspanntem Vorwärtsdrang.",
+    "Afterwork Club": "Direkter Feierabend-Clubmix mit House, Disco und steigender Energie.",
+    "Night Shift": "Späte Schicht für konzentrierte Nächte: reduziert, tief und elektronisch.",
+    "Sunrise Ritual": "Sanfter Tagesbeginn mit melodischen Flächen, Indie Dance und ruhigem House.",
+    "Afro-Noon Thursday": "Donnerstags-Afro-House mit organischem Groove und warmer Clubenergie.",
+    "Thursday Heat": "Donnerstagabend zwischen House, Disco und treibender Clubspannung.",
+    "Late Night Society": "Eleganter Spätabendmix mit dunklem House, Minimal und langen Grooves.",
+    "Friday Flow": "Freitag startet fließend mit House, Indie Dance und elektronischem Vorwärtsdrang.",
+    "Afro-Noon Friday": "Freitags-Afro-House mit Percussion, Wärme und kontrolliertem Wochenendaufbau.",
+    "Friday Peak": "Freitagabend auf dem Höhepunkt: House, Disco und treibende Clubmomente.",
+    "Night Owls": "Wochenendnacht für Nachtschwärmer mit tiefem House und dunkler Clubenergie.",
+    "Weekend Rise": "Heller Samstagmorgen mit melodischem House, Bewegung und guter Grundstimmung.",
+    "Saturday Soul": "Samstagsmix mit Soul, Disco und House für einen warmen, offenen Nachmittag.",
+    "Saturday Club": "Samstagabend mit klarer Clubkurve von Disco über House bis Techno.",
+    "Sunday Deep": "Ruhiger Sonntagabend mit tiefen Flächen, Minimal und entschleunigtem Techno.",
+    "Sunday Sunrise": "Sanfter Sonntagmorgen mit melodischen Grooves und einem entspannten Start.",
+    "Sunday Soul": "Sonntagsauswahl mit Soul, Disco und warmem House für den späten Tag.",
+    "Sunday Sunset": "Sonntagssonnenuntergang zwischen melodischem House, Disco und ruhiger Clubwärme.",
+}
 # AzuraCast speichert Sendezeiten als HHMM, nicht als Minuten seit Mitternacht.
 # 00:00–06:00, 06:00–11:00, 11:00–17:00, 17:00–24:00.
 DAYPARTS = [("Nacht", 0, 600), ("Morgen", 600, 1100), ("Tag", 1100, 1700), ("Abend", 1700, 0)]
@@ -164,7 +194,10 @@ def apply(playlists: list[dict], schedules: list[dict], existing_by_name: dict[s
             sql.append(f"UPDATE station_playlists SET name='{esc(name)}' WHERE id={target};")
             ids_by_name[name] = int(target)
         if name not in ids_by_name:
-            description = "FraWo Funk – kuratierter 7-Tage-Daypart-Betrieb."
+            description = PLAYLIST_DESCRIPTIONS.get(
+                name,
+                "Redaktionelle FraWo-Auswahl mit klarer Stimmung und passender Tageszeit.",
+            )
             sql.append(
                 "INSERT INTO station_playlists "
                 "(station_id,name,description,type,is_enabled,play_per_songs,play_per_minutes,weight,source,include_in_requests,playback_order,remote_url,remote_type,is_jingle,play_per_hour_minute,remote_timeout,backend_options,include_in_on_demand,avoid_duplicates) "
@@ -176,8 +209,12 @@ def apply(playlists: list[dict], schedules: list[dict], existing_by_name: dict[s
             target = str(ids_by_name[name])
         pl["sql_id"] = target
         if "legacy_name" in pl:
+            description = PLAYLIST_DESCRIPTIONS.get(
+                name,
+                "Redaktionelle FraWo-Auswahl mit klarer Stimmung und passender Tageszeit.",
+            )
             sql.append(
-                f"UPDATE station_playlists SET description='FraWo Funk – kuratierter 7-Tage-Daypart-Betrieb.' WHERE id={target};"
+                f"UPDATE station_playlists SET description='{esc(description)}' WHERE id={target};"
             )
             sql.append(f"DELETE FROM station_playlist_media WHERE playlist_id={target};")
             for rank, media_id in enumerate(pl["tracks"], start=1):
