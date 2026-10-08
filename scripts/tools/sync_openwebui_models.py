@@ -307,6 +307,28 @@ def sync(db_path=DB_PATH):
         (json.dumps(ollama_api_configs),)
     )
 
+    # Web Search & Locale
+    cur.execute(
+        "UPDATE config SET value = ? WHERE key = 'web.search.enable'",
+        (json.dumps(True),)
+    )
+    cur.execute(
+        "UPDATE config SET value = ? WHERE key = 'web.search.engine'",
+        (json.dumps("searxng"),)
+    )
+    cur.execute(
+        "UPDATE config SET value = ? WHERE key = 'web.search.searxng_query_url'",
+        (json.dumps("http://10.1.0.227:8081/search?q=<query>&format=json"),)
+    )
+    cur.execute(
+        "UPDATE config SET value = ? WHERE key = 'web.search.result_count'",
+        (json.dumps(3),)
+    )
+    cur.execute(
+        "UPDATE config SET value = ? WHERE key = 'ui.default_locale'",
+        (json.dumps("de-DE"),)
+    )
+
     conn.commit()
     conn.close()
     print("Sync complete.")
