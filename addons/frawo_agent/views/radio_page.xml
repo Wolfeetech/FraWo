@@ -677,6 +677,24 @@ body {
   margin-bottom: 10px;
   letter-spacing: 0.02em;
 }
+.ff-live-program {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin: 0 0 24px;
+  padding: 13px 16px;
+  border: 1px solid rgba(46, 204, 113, 0.28);
+  border-radius: 10px;
+  background: rgba(46, 204, 113, 0.07);
+  font-family: var(--ff-font-mono);
+}
+.ff-live-program-label { color: var(--ff-accent-green); font-size: 0.68rem; font-weight: 800; letter-spacing: 0.08em; }
+.ff-live-program-show { color: #ffffff; font-size: 0.82rem; font-weight: 800; text-align: right; }
+@media (max-width: 600px) {
+  .ff-live-program { align-items: flex-start; flex-direction: column; gap: 6px; }
+  .ff-live-program-show { text-align: left; }
+}
 .ff-mvp-proof {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -1291,6 +1309,11 @@ body {
   <!-- Ticker -->
   <div class="ff-ticker">
     <div class="ff-ticker-content" id="ff-ticker">● LÄDT LIVE-STREAM...</div>
+  </div>
+
+  <div class="ff-live-program" aria-live="polite">
+    <span class="ff-live-program-label">● LIVE-ROTATION AKTIV</span>
+    <span class="ff-live-program-show" id="ff-live-program-show">Aktuelles Programm wird geladen …</span>
   </div>
 
   <!-- Master Player Deck -->
@@ -2688,6 +2711,10 @@ body {
       if (e.jetzt) jetztEintrag = e;
     });
     if (jetztEintrag) {
+      var liveProgram = document.getElementById('ff-live-program-show');
+      if (liveProgram) {
+        liveProgram.textContent = 'Jetzt: ' + jetztEintrag.name + ' · ' + ffZeit(jetztEintrag.start) + '–' + ffZeit(jetztEintrag.ende) + ' Uhr';
+      }
       var idx = ffScheduleData.indexOf(jetztEintrag);
       var danach = ffScheduleData[idx + 1];
       if (danach) {
@@ -2696,6 +2723,9 @@ body {
         danachZeile.textContent = 'Danach: ' + danach.name + ' ab ' + ffZeit(danach.start) + ' Uhr';
         box.appendChild(danachZeile);
       }
+    } else {
+      var keinLiveProgram = document.getElementById('ff-live-program-show');
+      if (keinLiveProgram) keinLiveProgram.textContent = 'Live-Sendeplan wird aktualisiert …';
     }
 
     var tabs = document.createElement('div');
