@@ -141,6 +141,7 @@
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 24px;
       align-items: start;
+      perspective: 1200px;
     }
 
     @media (max-width: 980px) {
@@ -161,12 +162,21 @@
       overflow: hidden;
       display: flex;
       flex-direction: column;
+      transform-style: preserve-3d;
       transition: border-color 0.25s ease, transform 0.25s ease;
     }
 
-    .fw-stack-card:hover {
-      border-color: var(--fw-accent);
-      transform: translateY(-2px);
+    @media (hover: hover) and (pointer: fine) {
+      .fw-stack-card:hover {
+        border-color: var(--fw-accent);
+        transform: translateY(-4px) rotateX(1deg) rotateY(-1deg);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .fw-stack-card,
+      .fw-stack-card:hover,
+      .fw-stack-card:hover .fw-card-img-col img { transition: none; transform: none; }
     }
 
     @media (max-width: 880px) {

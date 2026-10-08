@@ -1,0 +1,698 @@
+[
+  {
+    "id": 874,
+    "name": "Afro-Noon",
+    "count": 100,
+    "genres": [
+      [
+        "(kein Genre)",
+        60
+      ],
+      [
+        "Afro House",
+        31
+      ],
+      [
+        "House",
+        3
+      ],
+      [
+        "Electronic",
+        2
+      ],
+      [
+        "Electronic; Electro",
+        2
+      ],
+      [
+        "Ambient; Electronic",
+        2
+      ]
+    ],
+    "roots": [
+      [
+        "09_Afro_World",
+        100
+      ]
+    ],
+    "sample": [
+      {
+        "id": 217395,
+        "artist": "Faul & Wad, 4rain, Anlly Marin",
+        "title": "Flores Blancas (Extended Mix)",
+        "genre": "Afro House",
+        "path": "Curated_Playlists/09_Afro_World/Faul & Wad, 4rain, Anlly Marin - Flores Blancas (Extended Mix).mp3"
+      },
+      {
+        "id": 217398,
+        "artist": "Afro Wav, Mandisa",
+        "title": "Out Of Love (Afro Wav Rework)",
+        "genre": "(kein Genre)",
+        "path": "Curated_Playlists/09_Afro_World/94 - Beatport 100 Afro House 2024 August - Afro Wav,Mandisa - Out Of Love - Afro Wav Rework.mp3"
+      },
+      {
+        "id": 217412,
+        "artist": "DJ Tomer, Ricardo, Emmanuel Jal, Joezi",
+        "title": "Suo",
+        "genre": "Afro House",
+        "path": "Curated_Playlists/09_Afro_World/DJ Tomer, Ricardo, Emmanuel Jal, Joezi - Suo (Original Mix).mp3"
+      }
+    ]
+  },
+  {
+    "id": 890,
+    "name": "Afro-Noon Friday",
+    "count": 100,
+    "genres": [
+      [
+        "(kein Genre)",
+        60
+      ],
+      [
+        "Afro House",
+        31
+      ],
+      [
+        "House",
+        3
+      ],
+      [
+        "Ambient; Electronic",
+        2
+      ],
+      [
+        "Electronic",
+        2
+      ],
+      [
+        "Electronic; Electro",
+        2
+      ]
+    ],
+    "roots": [
+      [
+        "09_Afro_World",
+        100
+      ]
+    ],
+    "sample": [
+      {
+        "id": 217395,
+        "artist": "Faul & Wad, 4rain, Anlly Marin",
+        "title": "Flores Blancas (Extended Mix)",
+        "genre": "Afro House",
+        "path": "Curated_Playlists/09_Afro_World/Faul & Wad, 4rain, Anlly Marin - Flores Blancas (Extended Mix).mp3"
+      },
+      {
+        "id": 217450,
+        "artist": "Lyrik Shoxen, Candy Man",
+        "title": "Be Strong (Extended Mix); Be Strong (Extended Mix) www.djsoundtop.com",
+        "genre": "Afro House",
+        "path": "Curated_Playlists/09_Afro_World/Lyrik Shoxen, Candy Man - Be Strong (Extended Mix) www.djsoundtop.com.aif"
+      },
+      {
+        "id": 217403,
+        "artist": "Yamil",
+        "title": "Nimbe",
+        "genre": "(kein Genre)",
+        "path": "Curated_Playlists/09_Afro_World/65 - - Yamil - Nimbe.mp3"
+      }
+    ]
+  },
+  {
+    "id": 886,
+    "name": "Afro-Noon Thursday",
+    "count": 98,
+    "genres": [
+      [
+        "(kein Genre)",
+        59
+      ],
+      [
+        "Afro House",
+        30
+      ],
+      [
+        "House",
+        3
+      ],
+      [
+        "Electronic",
+        2
+      ],
+      [
+        "Electronic; Electro",
+        2
+      ],
+      [
+        "Ambient; Electronic",
+        2
+      ]
+    ],
+    "roots": [
+      [
+        "09_Afro_World",
+        98
+      ]
+    ],
+    "sample": [
+      {
+        "id": 217395,
+        "artist": "Faul & Wad, 4rain, Anlly Marin",
+        "title": "Flores Blancas (Extended Mix)",
+        "genre": "Afro House",
+        "path": "Curated_Playlists/09_Afro_World/Faul & Wad, 4rain, Anlly Marin - Flores Blancas (Extended Mix).mp3"
+      },
+      {
+        "id": 217414,
+        "artist": "Sky White",
+        "title": "Vamo LÃ¡ Extended Mix",
+        "genre": "Afro House",
+        "path": "Curated_Playlists/09_Afro_World/Sky White - Vamo Lá Extended Mix.mp3"
+      },
+      {
+        "id": 217441,
+        "artist": "Havoc & Lawn",
+        "title": "Chupala",
+        "genre": "Afro House",
+        "path": "Curated_Playlists/09_Afro_World/Havoc & Lawn - Chupala (Original Mix).flac"
+      }
+    ]
+  },
+  {
+    "id": 882,
+    "name": "City Lunch",
+    "count": 100,
+    "genres": [
+      [
+        "Disco, Electronic",
+        36
+      ],
+      [
+        "Deep House",
+        8
+      ],
+      [
+        "Reggae",
+        8
+      ],
+      [
+        "Soul, Disco",
+        5
+      ],
+      [
+        "Deep House; House",
+        5
+      ],
+      [
+        "Deep House, House",
+        5
+      ],
+      [
+        "(kein Genre)",
+        5
+      ],
+      [
+        "Melodic House & Techno",
+        5
+      ]
+    ],
+    "roots": [
+      [
+        "03_Lunch_Groove",
+        63
+      ],
+      [
+        "04_Afternoon_Flow",
+        37
+      ]
+    ],
+    "sample": [
+      {
+        "id": 206907,
+        "artist": "Mike Mareen",
+        "title": "Dancing in the Dark (Galactica Remix)",
+        "genre": "Italo Disco, Disco",
+        "path": "Curated_Playlists/03_Lunch_Groove/Mike Mareen - Dancing in the Dark (Galactica remix).flac"
+      },
+      {
+        "id": 206796,
+        "artist": "Midnight Star",
+        "title": "Operator (Vocal LP Version)",
+        "genre": "Disco, Electronic",
+        "path": "Curated_Playlists/03_Lunch_Groove/Midnight Star - Operator (vocal LP version).flac"
+      },
+      {
+        "id": 210998,
+        "artist": "N'Pot, G-Falex",
+        "title": "Inception (Legit Trip Remix)",
+        "genre": "Deep House",
+        "path": "Curated_Playlists/04_Afternoon_Flow/N'Pot, G-Falex - Inception (Legit Trip Remix).flac"
+      }
+    ]
+  },
+  {
+    "id": 891,
+    "name": "Friday Peak",
+    "count": 100,
+    "genres": [
+      [
+        "Disco, Electronic",
+        35
+      ],
+      [
+        "Tech House",
+        21
+      ],
+      [
+        "House",
+        11
+      ],
+      [
+        "Techno",
+        5
+      ],
+      [
+        "Techno (Raw; Deep; Hypnotic)",
+        5
+      ],
+      [
+        "Techno (Peak Time; Driving)",
+        3
+      ],
+      [
+        "Rock",
+        2
+      ],
+      [
+        "House; Electronic",
+        2
+      ]
+    ],
+    "roots": [
+      [
+        "08_Sunday_Roadtrip",
+        47
+      ],
+      [
+        "05_Evening_Warmup",
+        32
+      ],
+      [
+        "07_Peak_Time_Club",
+        21
+      ]
+    ],
+    "sample": [
+      {
+        "id": 217899,
+        "artist": "Adam Pits",
+        "title": "Gazza",
+        "genre": "Idm; Techno",
+        "path": "Curated_Playlists/08_Sunday_Roadtrip/01 - Gazza (1).flac"
+      },
+      {
+        "id": 218092,
+        "artist": "Debbie Jacobs",
+        "title": "Undercover Lover (Special Disco Version)",
+        "genre": "Disco, Electronic",
+        "path": "Curated_Playlists/08_Sunday_Roadtrip/Debbie Jacobs - Undercover Lover (special disco version).flac"
+      },
+      {
+        "id": 217778,
+        "artist": "Jellybean ft. Madonna",
+        "title": "Sidewalk Talk (Dance Mix)",
+        "genre": "Disco, Electronic",
+        "path": "Curated_Playlists/08_Sunday_Roadtrip/Jellybean ft. Madonna - Sidewalk Talk (dance mix).flac"
+      }
+    ]
+  },
+  {
+    "id": 879,
+    "name": "Golden Hour",
+    "count": 100,
+    "genres": [
+      [
+        "Disco, Electronic",
+        41
+      ],
+      [
+        "House",
+        11
+      ],
+      [
+        "Tech House",
+        8
+      ],
+      [
+        "Techno (Raw; Deep; Hypnotic)",
+        6
+      ],
+      [
+        "Alternative Rock, Rock",
+        3
+      ],
+      [
+        "Rock",
+        2
+      ],
+      [
+        "Soul, Disco",
+        2
+      ],
+      [
+        "(kein Genre)",
+        2
+      ]
+    ],
+    "roots": [
+      [
+        "08_Sunday_Roadtrip",
+        61
+      ],
+      [
+        "05_Evening_Warmup",
+        21
+      ],
+      [
+        "07_Peak_Time_Club",
+        18
+      ]
+    ],
+    "sample": [
+      {
+        "id": 217600,
+        "artist": "Fun Fun",
+        "title": "Happy Station (Original 12″ Version)",
+        "genre": "Disco, Electronic",
+        "path": "Curated_Playlists/08_Sunday_Roadtrip/Fun Fun - Happy Station (original 12 Inch version).flac"
+      },
+      {
+        "id": 217654,
+        "artist": "Feist",
+        "title": "My Moon My Man (Boys Noize Classic Remix)",
+        "genre": "Indie; Female Vocalists",
+        "path": "Curated_Playlists/08_Sunday_Roadtrip/03 - My Moon My Man (Boys Noize Classic remix) (2).flac"
+      },
+      {
+        "id": 217958,
+        "artist": "Gino Soccio",
+        "title": "Dancer (Original 12″ Version)",
+        "genre": "Disco, Electronic",
+        "path": "Curated_Playlists/08_Sunday_Roadtrip/Gino Soccio - Dancer (original 12 Inch version).flac"
+      }
+    ]
+  },
+  {
+    "id": 894,
+    "name": "Saturday Soul",
+    "count": 100,
+    "genres": [
+      [
+        "Disco, Electronic",
+        38
+      ],
+      [
+        "Deep House",
+        10
+      ],
+      [
+        "(kein Genre)",
+        6
+      ],
+      [
+        "Deep House, House",
+        5
+      ],
+      [
+        "House",
+        4
+      ],
+      [
+        "Soul, Disco",
+        3
+      ],
+      [
+        "House; Electronic",
+        3
+      ],
+      [
+        "Deep House; House",
+        3
+      ]
+    ],
+    "roots": [
+      [
+        "03_Lunch_Groove",
+        57
+      ],
+      [
+        "04_Afternoon_Flow",
+        43
+      ]
+    ],
+    "sample": [
+      {
+        "id": 211009,
+        "artist": "Nick Curly",
+        "title": "Satellite",
+        "genre": "Deep House",
+        "path": "Curated_Playlists/04_Afternoon_Flow/Nick Curly - Satellite.flac"
+      },
+      {
+        "id": 206799,
+        "artist": "Motown Sounds",
+        "title": "Bad Mouthin'",
+        "genre": "Soul, Disco",
+        "path": "Curated_Playlists/03_Lunch_Groove/Motown Sounds - Bad Mouthin'.flac"
+      },
+      {
+        "id": 211026,
+        "artist": "Soul of Hex",
+        "title": "B-Low",
+        "genre": "House; Electronic",
+        "path": "Curated_Playlists/04_Afternoon_Flow/Soul of Hex - B-Low (Original Mix).flac"
+      }
+    ]
+  },
+  {
+    "id": 898,
+    "name": "Sunday Soul",
+    "count": 100,
+    "genres": [
+      [
+        "Disco, Electronic",
+        43
+      ],
+      [
+        "Deep House",
+        9
+      ],
+      [
+        "Melodic House & Techno",
+        6
+      ],
+      [
+        "House",
+        5
+      ],
+      [
+        "Progressive House",
+        4
+      ],
+      [
+        "Reggae",
+        4
+      ],
+      [
+        "Deep House, House",
+        4
+      ],
+      [
+        "Deep House; House",
+        4
+      ]
+    ],
+    "roots": [
+      [
+        "03_Lunch_Groove",
+        63
+      ],
+      [
+        "04_Afternoon_Flow",
+        37
+      ]
+    ],
+    "sample": [
+      {
+        "id": 207204,
+        "artist": "Natalie Cole",
+        "title": "This Will Be (an Everlasting Love) (Ben Liebrand Original Multi Track Mix)",
+        "genre": "Disco, Electronic",
+        "path": "Curated_Playlists/03_Lunch_Groove/Natalie Cole - This Will Be (an Everlasting Love) (Ben Liebrand original multi track mix).flac"
+      },
+      {
+        "id": 210984,
+        "artist": "Pryda",
+        "title": "Armed",
+        "genre": "House",
+        "path": "Curated_Playlists/04_Afternoon_Flow/Pryda - Armed.flac"
+      },
+      {
+        "id": 206946,
+        "artist": "Evelyn \"champagne\" King",
+        "title": "I'm in Love (12\" Version Remastered)",
+        "genre": "Disco, Electronic",
+        "path": "Curated_Playlists/03_Lunch_Groove/Evelyn champagne King - I'm in Love (12 version remastered).mp3"
+      }
+    ]
+  },
+  {
+    "id": 887,
+    "name": "Thursday Heat",
+    "count": 97,
+    "genres": [
+      [
+        "Disco, Electronic",
+        31
+      ],
+      [
+        "Tech House",
+        25
+      ],
+      [
+        "Techno (Raw; Deep; Hypnotic)",
+        6
+      ],
+      [
+        "Trance",
+        4
+      ],
+      [
+        "House",
+        3
+      ],
+      [
+        "House; Electronic",
+        3
+      ],
+      [
+        "Techno",
+        3
+      ],
+      [
+        "Techno (Peak Time; Driving)",
+        2
+      ]
+    ],
+    "roots": [
+      [
+        "08_Sunday_Roadtrip",
+        41
+      ],
+      [
+        "07_Peak_Time_Club",
+        30
+      ],
+      [
+        "05_Evening_Warmup",
+        26
+      ]
+    ],
+    "sample": [
+      {
+        "id": 217516,
+        "artist": "Armand Van Helden",
+        "title": "Witch Doctor (Original 12\" Mix)",
+        "genre": "Disco, Electronic",
+        "path": "Curated_Playlists/08_Sunday_Roadtrip/Armand Van Helden - Witch Doctor (Original 12 Mix).flac"
+      },
+      {
+        "id": 217855,
+        "artist": "Robin S.",
+        "title": "Show Me Love (Original 12″ Version)",
+        "genre": "House, Disco",
+        "path": "Curated_Playlists/08_Sunday_Roadtrip/Robin S. - Show Me Love (original 12 Inch version).flac"
+      },
+      {
+        "id": 206244,
+        "artist": "Schmoov!",
+        "title": "Monkey Nut",
+        "genre": "Deep House; House",
+        "path": "Curated_Playlists/05_Evening_Warmup/Schmoov! - Monkey Nut (Original Mix).mp3"
+      }
+    ]
+  },
+  {
+    "id": 878,
+    "name": "Tropical Noon",
+    "count": 100,
+    "genres": [
+      [
+        "Disco, Electronic",
+        43
+      ],
+      [
+        "Reggae",
+        6
+      ],
+      [
+        "Deep House",
+        5
+      ],
+      [
+        "Melodic House & Techno",
+        4
+      ],
+      [
+        "Deep House; House",
+        4
+      ],
+      [
+        "Deep House, House",
+        4
+      ],
+      [
+        "(kein Genre)",
+        3
+      ],
+      [
+        "Soul",
+        3
+      ]
+    ],
+    "roots": [
+      [
+        "03_Lunch_Groove",
+        72
+      ],
+      [
+        "04_Afternoon_Flow",
+        28
+      ]
+    ],
+    "sample": [
+      {
+        "id": 206902,
+        "artist": "Rick James",
+        "title": "Glow / Glow Reprise (Album Mix)",
+        "genre": "Disco, Electronic",
+        "path": "Curated_Playlists/03_Lunch_Groove/Rick James - Glow Glow Reprise (album mix).flac"
+      },
+      {
+        "id": 206796,
+        "artist": "Midnight Star",
+        "title": "Operator (Vocal LP Version)",
+        "genre": "Disco, Electronic",
+        "path": "Curated_Playlists/03_Lunch_Groove/Midnight Star - Operator (vocal LP version).flac"
+      },
+      {
+        "id": 207131,
+        "artist": "Shalamar",
+        "title": "The Second Time Around (12 Inch Disco Version)",
+        "genre": "Disco, Electronic",
+        "path": "Curated_Playlists/03_Lunch_Groove/Shalamar - The Second Time Around (12 Inch disco version).flac"
+      }
+    ]
+  }
+]
