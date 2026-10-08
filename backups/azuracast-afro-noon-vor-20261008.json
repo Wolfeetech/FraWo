@@ -1,0 +1,3450 @@
+{
+  "867": {
+    "playlist": {
+      "station_id": 1,
+      "name": "09 Afro World",
+      "description": "Afro House, Latin und organische Percussion.",
+      "type": "default",
+      "source": "songs",
+      "order": "shuffle",
+      "remote_url": null,
+      "remote_type": null,
+      "remote_buffer": 0,
+      "is_enabled": true,
+      "is_jingle": false,
+      "play_per_songs": 0,
+      "play_per_minutes": 0,
+      "play_per_hour_minute": 0,
+      "weight": 3,
+      "include_in_requests": true,
+      "include_in_on_demand": false,
+      "backend_options": [
+        ""
+      ],
+      "avoid_duplicates": true,
+      "played_at": "2026-10-07T18:59:56.267707Z",
+      "queue_reset_at": "2026-10-06T06:43:17.535518Z",
+      "schedule_items": [],
+      "podcasts": [],
+      "id": 867,
+      "short_name": "09_afro_world",
+      "num_songs": 137,
+      "total_length": 48108,
+      "links": {
+        "self": "https://10.1.0.38/api/station/1/playlist/867",
+        "toggle": "https://10.1.0.38/api/station/1/playlist/867/toggle",
+        "clone": "https://10.1.0.38/api/station/1/playlist/867/clone",
+        "queue": "https://10.1.0.38/api/station/1/playlist/867/queue",
+        "import": "https://10.1.0.38/api/station/1/playlist/867/import",
+        "reshuffle": "https://10.1.0.38/api/station/1/playlist/867/reshuffle",
+        "applyto": "https://10.1.0.38/api/station/1/playlist/867/apply-to",
+        "empty": "https://10.1.0.38/api/station/1/playlist/867/empty",
+        "export": {
+          "pls": "https://10.1.0.38/api/station/1/playlist/867/export/pls",
+          "m3u": "https://10.1.0.38/api/station/1/playlist/867/export/m3u"
+        }
+      }
+    },
+    "queue": [
+      {
+        "spm_id": 218754,
+        "media_id": 217395,
+        "song_id": "1fad5362f1d8fadd46bdef2f54d4c0a4",
+        "artist": "Faul & Wad, 4rain, Anlly Marin",
+        "title": "Flores Blancas (Extended Mix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218734,
+        "media_id": 217403,
+        "song_id": "a4be51caa178987dcc1ab25f3afb8b41",
+        "artist": "Yamil",
+        "title": "Nimbe",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218773,
+        "media_id": 217477,
+        "song_id": "43e13d9c7e581c7d74e60a472b24b223",
+        "artist": "Jnr SA,Darque,Kabza De Small",
+        "title": "Yebo",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218745,
+        "media_id": 217413,
+        "song_id": "44984151f2d34c0f9ef2465adc29f6eb",
+        "artist": "Mr Raoul K, Lady Parul",
+        "title": "Urure",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218771,
+        "media_id": 217457,
+        "song_id": "faf1e8abb217299e6095e8c2d365fb93",
+        "artist": "Citizen Deep,Maline Aura,DR Thulz",
+        "title": "Ubala",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218820,
+        "media_id": 217488,
+        "song_id": "9fcd8f8da32eebe96562b616a5ee4931",
+        "artist": "Darque, Papany",
+        "title": "Humelela",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218787,
+        "media_id": 217443,
+        "song_id": "4650cac21ba644a5fd6a6d982dd2e816",
+        "artist": "Niiomi, Idd Aziz",
+        "title": "Gemini - Extended Mix",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218781,
+        "media_id": 217506,
+        "song_id": "f775751d466ce93c6c8a515784b8ad8c",
+        "artist": "Boohle, Woza Sabza",
+        "title": "Sinikiwe",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218817,
+        "media_id": 217439,
+        "song_id": "1a93da6665a9eb31dfbc34c28444f235",
+        "artist": "Cato Anaya, Eran Hersh",
+        "title": "Somos Libres",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218739,
+        "media_id": 217392,
+        "song_id": "025c3f5d2b7ee075cbc3913c692e2ffa",
+        "artist": "Choujaa",
+        "title": "Nyu Bi Woni",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218735,
+        "media_id": 217415,
+        "song_id": "9bc2abdb3a1ac099e1d79d8715a1a714",
+        "artist": "Ladour, David Hopperman, Kahari, Idd Aziz, Bassfinder, Faceoff",
+        "title": "Kula - Bassfinder & Faceoff Remix",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218793,
+        "media_id": 217481,
+        "song_id": "a0cd8e2939b9b288c82630e307bbd6f2",
+        "artist": "Buddynice",
+        "title": "Keep Moving",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218743,
+        "media_id": 217398,
+        "song_id": "a6b27c34a088fafb0a0f6ead95c356dd",
+        "artist": "Afro Wav, Mandisa",
+        "title": "Out Of Love (Afro Wav Rework)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218780,
+        "media_id": 217502,
+        "song_id": "5afd4f06988437d7825e21e9c5cff7ee",
+        "artist": "Aimo",
+        "title": "Badlands",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218747,
+        "media_id": 217401,
+        "song_id": "f4c2605d3c8b8b348a74c0d855493dff",
+        "artist": "Megatronic, Wandile Mbambeni, Dr Feel",
+        "title": "Rumours (Dr Feel Remix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218737,
+        "media_id": 217418,
+        "song_id": "61ddb3bc074286e316494ecc7200286b",
+        "artist": "Korie Minors, Lizwi, DJ 84, Shona SA, Native P",
+        "title": "Usemindawonye (Native P. Remix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218748,
+        "media_id": 217404,
+        "song_id": "8ef2e43d5908753fe9cda3f3ecbfc060",
+        "artist": "Adam Port & Stryv",
+        "title": "Move",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218809,
+        "media_id": 217464,
+        "song_id": "dad69d61b9fa4e1a45e52e498c193f46",
+        "artist": "Voodoochild",
+        "title": "If U Need It",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218804,
+        "media_id": 217424,
+        "song_id": "c7e4a646da02e37b1981fb3cea9d791f",
+        "artist": "HUGEL, GROSSOMODDO",
+        "title": "Andalucia",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218740,
+        "media_id": 217393,
+        "song_id": "0e341dfc105905b9e899a95802393e78",
+        "artist": "Adore (Fr), Marine Abtan",
+        "title": "SING IT BACK",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218819,
+        "media_id": 217433,
+        "song_id": "3c59202323c585cda1506a3cfe43fb08",
+        "artist": "PAGEZ, C-Mart, Herve Pagez",
+        "title": "Workah",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218792,
+        "media_id": 217454,
+        "song_id": "f30612ff319da9ea529110710a6a116a",
+        "artist": "Dylan-S, Digolo Philip, Foozak, Candy Man",
+        "title": "Dana (Foozak And Candy Man Remix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218741,
+        "media_id": 217399,
+        "song_id": "aa95cd15a71cfd77712366cd74187766",
+        "artist": "Sebastien Dutch, El Mukuka, Layth Sidiq, Aggeliki",
+        "title": "Matia Mou",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218776,
+        "media_id": 217448,
+        "song_id": "8ced38c877426e26cfa5df7172e77c76",
+        "artist": "beatsbyhand",
+        "title": "SARS",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218753,
+        "media_id": 217412,
+        "song_id": "8194f9eac047ac0376c38f43a878cad7",
+        "artist": "DJ Tomer, Ricardo, Emmanuel Jal, Joezi",
+        "title": "Suo",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218801,
+        "media_id": 217467,
+        "song_id": "e0cf1c46d063b76c66afd590344ed2e6",
+        "artist": "Leo Leonski, Abel Ray",
+        "title": "Fela",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218784,
+        "media_id": 217482,
+        "song_id": "31f874bb0aacf570b92d63c52b4eaf18",
+        "artist": "Trekkah, HARDIHOOD",
+        "title": "Karma Nights",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218752,
+        "media_id": 217381,
+        "song_id": "8e24691815b5650f9d3febc2d714d7eb",
+        "artist": "CLEIDO, Dillan Desai",
+        "title": "Hard To Love",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218856,
+        "media_id": 217425,
+        "song_id": "b15b4bca38b50e79e90ba38765b07c84",
+        "artist": "Ricardo Trueba, Alberto Hernandez (MX)",
+        "title": "Overdrive Extended Mix",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218742,
+        "media_id": 217408,
+        "song_id": "1aa4fb9e5ba37e13fe4eea1937318996",
+        "artist": "KingDonna, Philasande",
+        "title": "Bawo Wethu",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218840,
+        "media_id": 217434,
+        "song_id": "1227accde8fe779dd39b5f08c65197be",
+        "artist": "Emmanuel Jal, MoBlack, Zamna Soundsystem",
+        "title": "Asalam Alaikum",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218749,
+        "media_id": 217420,
+        "song_id": "7dcbdc66e0d807d213f4c73502d20cf8",
+        "artist": "Andrea Oliva & Moeaike",
+        "title": "I Love You So (Shimza Extended Remix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218848,
+        "media_id": 217450,
+        "song_id": "4c5b232f15f8481ab959bfed760bbd19",
+        "artist": "Lyrik Shoxen, Candy Man",
+        "title": "Be Strong (Extended Mix); Be Strong (Extended Mix) www.djsoundtop.com",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218758,
+        "media_id": 217409,
+        "song_id": "bb8d57df82aa6fdf9a843caca81ba2d2",
+        "artist": "Roy Rosenfeld",
+        "title": "Da Vision Extended",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218750,
+        "media_id": 217405,
+        "song_id": "7309a2b2f47258f2d28d624d45e91b33",
+        "artist": "Chemical Surf",
+        "title": "Hey Hey Hey (Said Extended Remix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218860,
+        "media_id": 217511,
+        "song_id": "11e4889a4c1c35904eb7ee6bceb83b11",
+        "artist": "Steal Vybe, Chris Forman, Damon Bennett",
+        "title": "6 Mins Of Time (Steal Vybe's 909 Bang Mix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218726,
+        "media_id": 217400,
+        "song_id": "ef08f3d7884dd94864a2d3533d7c4a1b",
+        "artist": "Djuma Soundsystem, Yann Coppier, King Ayisoba",
+        "title": "Esigia",
+        "last_played": 1791392834
+      },
+      {
+        "spm_id": 218862,
+        "media_id": 217423,
+        "song_id": "83d93e4b4c9b5c93581ce0b70d7254f6",
+        "artist": "UKAI NDAME",
+        "title": "Sulula",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218794,
+        "media_id": 217453,
+        "song_id": "d6ae242d0b94883682b2495db497baf6",
+        "artist": "Voodoochild, Joezi",
+        "title": "Tunapewa",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218757,
+        "media_id": 217387,
+        "song_id": "5995e4d9167afcbb6387e2c2bb1de8a8",
+        "artist": "Jack David",
+        "title": "Blacklight",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218777,
+        "media_id": 217493,
+        "song_id": "6e8d15e2d9294efd7e2f147ec5d234a3",
+        "artist": "Octavez,Aero Manyelo",
+        "title": "Black Pen",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218827,
+        "media_id": 217508,
+        "song_id": "7e85e4b59da9a3cc341de4c951bca10e",
+        "artist": "African Children's Choir, Francis Mercier & Faul & Wad",
+        "title": "Sauti",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218788,
+        "media_id": 217465,
+        "song_id": "cedd0de9f0d5197af0ddd65119c2a5f3",
+        "artist": "Boddhi Satva, Erin Kimberly, Manoo",
+        "title": "Now Or Never (Manoo Spicy Remix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218772,
+        "media_id": 217421,
+        "song_id": "11bb0982833d36dc830df8a4ee322331",
+        "artist": "Ghostheart Nebula",
+        "title": "Sunya",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218800,
+        "media_id": 217479,
+        "song_id": "4104ffe95c3e274a1b48bd799dccdb4c",
+        "artist": "Claude Monnet",
+        "title": "From The G",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218779,
+        "media_id": 217459,
+        "song_id": "385d015e49386d6a9eb07ba5934dcf80",
+        "artist": "Leo Guardo, Leo Gira, Tony P., Tabia",
+        "title": "Thonga",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218842,
+        "media_id": 217441,
+        "song_id": "c6f4ccf8f68dd75bc68c67c0129887db",
+        "artist": "Havoc & Lawn",
+        "title": "Chupala",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218799,
+        "media_id": 217427,
+        "song_id": "ddeb6bca96b801b56ae122312f456cde",
+        "artist": "Loup Musa",
+        "title": "Waza",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218760,
+        "media_id": 217384,
+        "song_id": "1d3b3856595447cba1d5ab444016f7e6",
+        "artist": "TitoM, Major_Keys, Ohp Sage, Yuppe",
+        "title": "CAROLINA (feat. TitoM & Yuppe) feat. TitoM & Yuppe",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218855,
+        "media_id": 217473,
+        "song_id": "88b174be92d5a8c8e55716181c84ba03",
+        "artist": "Re.you, Paige, Biishop",
+        "title": "Innocent",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218828,
+        "media_id": 217496,
+        "song_id": "aa345fcba68f58ef992db4fe31e2fb9f",
+        "artist": "Alpha Rowen",
+        "title": "No Chaka Chaka",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218812,
+        "media_id": 217492,
+        "song_id": "392e2ed3ce5d89a80d181d47bd962624",
+        "artist": "Hector J Rodriguez",
+        "title": "Madre",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218813,
+        "media_id": 217462,
+        "song_id": "0351313a12468dca0e42392f0b411446",
+        "artist": "Oscar P",
+        "title": "I Was There",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218778,
+        "media_id": 217503,
+        "song_id": "42fdfc8cd7ec4fba9f21cedf49a0a874",
+        "artist": "NAAK,Atmos Blaq",
+        "title": "FIND A WAY",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218803,
+        "media_id": 217431,
+        "song_id": "7996cc654a10cf46c0907e5330f74e55",
+        "artist": "Batida, Mayra Andrade, Thakzin",
+        "title": "Bom Bom (Thakzin Vocal Remix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218759,
+        "media_id": 217414,
+        "song_id": "056b732f327c9ebcf1464791644e698f",
+        "artist": "Sky White",
+        "title": "Vamo LÃ¡ Extended Mix",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218791,
+        "media_id": 217513,
+        "song_id": "476e41b84f408b6b8213c204f92b6767",
+        "artist": "Arcade Saiyans, RAPHV, Dr Feel",
+        "title": "Sangre Latina",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218775,
+        "media_id": 217471,
+        "song_id": "18de2637866fb1f8de99acb9b412b4b2",
+        "artist": "Emmanuel Jal,Enzo Siffredi",
+        "title": "Shake Your Belly",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218807,
+        "media_id": 217445,
+        "song_id": "a3f67a8e74d593d3e28cdef9152c901a",
+        "artist": "Khenya",
+        "title": "Jarana (Radio Edit)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218782,
+        "media_id": 217438,
+        "song_id": "e04e8c6ba354ab2c3601884e2a266586",
+        "artist": "Jalal Ramdani, Augusto Yepes, Daniel Rateuke",
+        "title": "Mauri (Daniel Rateuke Remix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218798,
+        "media_id": 217484,
+        "song_id": "4057ce33f725d5a868be54876979424d",
+        "artist": "Eli Fola, Canetis",
+        "title": "Calma - Extended",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218853,
+        "media_id": 217442,
+        "song_id": "72637291561a94119891c5351b35a055",
+        "artist": "Nico de Andrea, Vanetty",
+        "title": "Ethnica (Extended Mix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218810,
+        "media_id": 217485,
+        "song_id": "00d73fd977ff1ce96b26cf5dfd4a0c5a",
+        "artist": "Flush",
+        "title": "Bateau Blanc",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218838,
+        "media_id": 217504,
+        "song_id": "a271146e4407abaeb69bee0c816929fe",
+        "artist": "Djembe Monks, Thandeka Masayi",
+        "title": "Sabela Extended Mix",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218790,
+        "media_id": 217495,
+        "song_id": "5371a1ac7ad77cb590c7bd76cebc4a3d",
+        "artist": "The Siege DJ",
+        "title": "Around",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218864,
+        "media_id": 217436,
+        "song_id": "723c43b11a6a51bc0992bb7a058a8f93",
+        "artist": "Yamil",
+        "title": "Iku Lele (Cee ElAssaad Voodoo Mix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218865,
+        "media_id": 217468,
+        "song_id": "a527d9b696ffe0265e5165359c61743f",
+        "artist": "Young Stunna, Shaunmusiq, Myztro",
+        "title": "Safa iPiano Original Mix",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218797,
+        "media_id": 217490,
+        "song_id": "c4ae46f178bd77ac8e98b101f88a969f",
+        "artist": "Da Le (Havana)",
+        "title": "Land of Spirits",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218785,
+        "media_id": 217498,
+        "song_id": "889868da66d5d9883f918475de848f30",
+        "artist": "Aberton",
+        "title": "Souk",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218823,
+        "media_id": 217466,
+        "song_id": "a3efd0aeaa6f64fc3252727737dfee45",
+        "artist": "Suffocate SA",
+        "title": "Mementos Of Spirit",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218861,
+        "media_id": 217451,
+        "song_id": "4166847fe22ba14075ed1933c7f62400",
+        "artist": "Stylo, Space Motion & Saulo Duarte",
+        "title": "Freedom",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218789,
+        "media_id": 217456,
+        "song_id": "e5c247471716c5ef1ce1d9c043a4854f",
+        "artist": "Hypaphonik",
+        "title": "Funa Wena",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218821,
+        "media_id": 217512,
+        "song_id": "4653819cdeb7003c4a7b190e80f963c5",
+        "artist": "G-Wash10, Mpumi",
+        "title": "VULANI",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218839,
+        "media_id": 217497,
+        "song_id": "f3275a16daff0465749bc40c13de6e85",
+        "artist": "Doctor Dru & CIOZ",
+        "title": "Dunes",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218795,
+        "media_id": 217470,
+        "song_id": "fa285f400057bacec14397542e9a2a89",
+        "artist": "Oscar Sulley, The Uhuru Dance Band, JKriv, Domenica Fossati",
+        "title": "Bukom Mashie (JKriv Extended Acid Dub)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218822,
+        "media_id": 217478,
+        "song_id": "8212232687595aec28c1a90cfd19df53",
+        "artist": "DJ Tomer, Ricardo Gi, Mayan DeLion",
+        "title": "No Other Way (VooDoo Tribe Extended Mix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218796,
+        "media_id": 217447,
+        "song_id": "46889bba5d1376f5e776fedc7d401e5d",
+        "artist": "Badbox",
+        "title": "Fake the Move",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218805,
+        "media_id": 217458,
+        "song_id": "84942cec1be2efc924651e8fcb3d9b2a",
+        "artist": "Natema",
+        "title": "BMW (Afro Latin Mix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218806,
+        "media_id": 217426,
+        "song_id": "4cef16d1b5efcd1b417863b9f15462a4",
+        "artist": "FabYo Gomez, Dr Feel, RedRo8se",
+        "title": "We Are One (Extended Mix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218833,
+        "media_id": 217514,
+        "song_id": "b4b712cbc0363a1bc7c5a90ff14e50c0",
+        "artist": "Chemical Surf",
+        "title": "Mercy (Malive Remix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218808,
+        "media_id": 217449,
+        "song_id": "0c05add8e4f3438b6f0a9457f11c4da6",
+        "artist": "Stones & Bones",
+        "title": "Dedication to the DJ",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218830,
+        "media_id": 217432,
+        "song_id": "41ccd3d5aab03721d9d05ef6f4c70f21",
+        "artist": "Branko, Studio Bros",
+        "title": "Impulso (Studio Bros Remix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218816,
+        "media_id": 217472,
+        "song_id": "b3e0e5a6d96fb3e8f7e7dec7bba7665f",
+        "artist": "Moeaike, Alan Dixon",
+        "title": "Bo Bom (Alan Dixon Remix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218826,
+        "media_id": 217483,
+        "song_id": "77b649edd4574791b73b4d5ead9b6f06",
+        "artist": "Abstract Truth",
+        "title": "Get Another Plan (Extended Mix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218849,
+        "media_id": 217510,
+        "song_id": "cd88a750ef0a946337a9fa14eb93e979",
+        "artist": "MentMusik, Demzabeatz",
+        "title": "Maita Maita",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218854,
+        "media_id": 217428,
+        "song_id": "b07c9081d2323ee94aabd74faecd2573",
+        "artist": "Rancido, Bun Xapa",
+        "title": "Ina Original Mix",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218811,
+        "media_id": 217460,
+        "song_id": "ecd5c16b9ce44d6ad5165b15ca7c14f3",
+        "artist": "TechTonic'Tay, Bongani Mehlomakhulu",
+        "title": "Immortal",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218847,
+        "media_id": 217430,
+        "song_id": "caa2c5d3cf30cc999d44b14ad3f05f51",
+        "artist": "L.B. One, Idir",
+        "title": "A Vava Inouva Extended Mix",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218859,
+        "media_id": 217486,
+        "song_id": "9321fe652b47df28d7874c370b64216e",
+        "artist": "SOLIDMIND, Zenma",
+        "title": "Oyowa",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218814,
+        "media_id": 217461,
+        "song_id": "b40f381925ed8190bbfbf31a514fb4fa",
+        "artist": "Lil'Owl, Jo Choneca",
+        "title": "Sembe",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218836,
+        "media_id": 217491,
+        "song_id": "efbdf34f6cd0ca59b2e9612b9bc65ca6",
+        "artist": "Dj Osvaldo Mauro, Silvio Costa",
+        "title": "Zwaida",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218835,
+        "media_id": 217435,
+        "song_id": "a4bd6656f91a41596da1c24cc988c536",
+        "artist": "DJ Chus, Amira, NenaHalena",
+        "title": "Prado's Revenge Aaron Sevilla Remix",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218832,
+        "media_id": 217446,
+        "song_id": "df40949f318043d85319eb13c1f2a4d8",
+        "artist": "Charisse C",
+        "title": "Siren's Interlude",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218858,
+        "media_id": 217422,
+        "song_id": "c296f7b3bd687790c443c1f22db8c45d",
+        "artist": "Simone Vitullo, Tayllor, Nes Mburu",
+        "title": "Kila Wakati (Feat. Nes Mburu Extended Mix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218834,
+        "media_id": 217437,
+        "song_id": "a17c4f24472ee6394a457571dcdc7947",
+        "artist": "Culoe de Song",
+        "title": "Y.O.U.D.",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218841,
+        "media_id": 217463,
+        "song_id": "75059b67a078c233e21f874d8f42d2a8",
+        "artist": "Eran Hersh, TEDDY-O",
+        "title": "Ligado (Extended Mix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218846,
+        "media_id": 217480,
+        "song_id": "421e0074511c93c5f22f9ac7303e1307",
+        "artist": "Kryder",
+        "title": "The Eye Of Ra (Extended Mix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218837,
+        "media_id": 217500,
+        "song_id": "b037f295c49a5804e9fa72fc16610e36",
+        "artist": "Dj Vitoto, Bun Xapa, ZIDDO",
+        "title": "Saharian Girl",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218831,
+        "media_id": 217489,
+        "song_id": "5667c8351d77b5a85132422655babeb8",
+        "artist": "Cem Seckin & Siina",
+        "title": "Blessed",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218852,
+        "media_id": 217455,
+        "song_id": "ec626eec104faa70c5c7284c2c54bc6b",
+        "artist": "Modjo, Sparrow & Barbossa, Koshi, Daymaan",
+        "title": "Lady (Hear Me Tonight) - Remix (Extended)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218845,
+        "media_id": 217452,
+        "song_id": "a8b73569720ec7f905e3d6ed3fa34df7",
+        "artist": "Kopoy Zukar, Malumz on Decks, Khanya De Vocalist",
+        "title": "iThemba (feat. Khanya De Vocalist) (feat. Khanya De Vocalist)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218857,
+        "media_id": 217429,
+        "song_id": "364734f156d164a7200836f5fd771967",
+        "artist": "Rony Seikaly & Infinem",
+        "title": "Temperatura",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218863,
+        "media_id": 217444,
+        "song_id": "11acde8df1028166d31011da3ad3bf29",
+        "artist": "Umgido",
+        "title": "Take me to the Moon",
+        "last_played": 0
+      },
+      {
+        "spm_id": 218850,
+        "media_id": 217487,
+        "song_id": "079f58d2e5dc8beb66a2fe5a468efd44",
+        "artist": "Mi Casa",
+        "title": "Turn You On",
+        "last_played": 0
+      }
+    ]
+  },
+  "874": {
+    "playlist": {
+      "station_id": 1,
+      "name": "Afro-Noon",
+      "description": "Afro House mit warmen Percussions und organischem Druck für die Mittagszeit.",
+      "type": "default",
+      "source": "songs",
+      "order": "shuffle",
+      "remote_url": null,
+      "remote_type": null,
+      "remote_buffer": 0,
+      "is_enabled": true,
+      "is_jingle": false,
+      "play_per_songs": 0,
+      "play_per_minutes": 0,
+      "play_per_hour_minute": 0,
+      "weight": 10,
+      "include_in_requests": false,
+      "include_in_on_demand": false,
+      "backend_options": [
+        ""
+      ],
+      "avoid_duplicates": true,
+      "played_at": null,
+      "queue_reset_at": null,
+      "schedule_items": [
+        {
+          "start_time": 1100,
+          "end_time": 1700,
+          "start_date": null,
+          "end_date": null,
+          "days": [
+            1
+          ],
+          "loop_once": false,
+          "id": 747
+        }
+      ],
+      "podcasts": [],
+      "id": 874,
+      "short_name": "afro-noon",
+      "num_songs": 100,
+      "total_length": 35215,
+      "links": {
+        "self": "https://10.1.0.38/api/station/1/playlist/874",
+        "toggle": "https://10.1.0.38/api/station/1/playlist/874/toggle",
+        "clone": "https://10.1.0.38/api/station/1/playlist/874/clone",
+        "queue": "https://10.1.0.38/api/station/1/playlist/874/queue",
+        "import": "https://10.1.0.38/api/station/1/playlist/874/import",
+        "reshuffle": "https://10.1.0.38/api/station/1/playlist/874/reshuffle",
+        "applyto": "https://10.1.0.38/api/station/1/playlist/874/apply-to",
+        "empty": "https://10.1.0.38/api/station/1/playlist/874/empty",
+        "export": {
+          "pls": "https://10.1.0.38/api/station/1/playlist/874/export/pls",
+          "m3u": "https://10.1.0.38/api/station/1/playlist/874/export/m3u"
+        }
+      }
+    },
+    "queue": [
+      {
+        "spm_id": 239792,
+        "media_id": 217395,
+        "song_id": "1fad5362f1d8fadd46bdef2f54d4c0a4",
+        "artist": "Faul & Wad, 4rain, Anlly Marin",
+        "title": "Flores Blancas (Extended Mix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239832,
+        "media_id": 217398,
+        "song_id": "a6b27c34a088fafb0a0f6ead95c356dd",
+        "artist": "Afro Wav, Mandisa",
+        "title": "Out Of Love (Afro Wav Rework)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239793,
+        "media_id": 217412,
+        "song_id": "8194f9eac047ac0376c38f43a878cad7",
+        "artist": "DJ Tomer, Ricardo, Emmanuel Jal, Joezi",
+        "title": "Suo",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239794,
+        "media_id": 217425,
+        "song_id": "b15b4bca38b50e79e90ba38765b07c84",
+        "artist": "Ricardo Trueba, Alberto Hernandez (MX)",
+        "title": "Overdrive Extended Mix",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239842,
+        "media_id": 217448,
+        "song_id": "8ced38c877426e26cfa5df7172e77c76",
+        "artist": "beatsbyhand",
+        "title": "SARS",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239879,
+        "media_id": 217508,
+        "song_id": "7e85e4b59da9a3cc341de4c951bca10e",
+        "artist": "African Children's Choir, Francis Mercier & Faul & Wad",
+        "title": "Sauti",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239810,
+        "media_id": 217514,
+        "song_id": "b4b712cbc0363a1bc7c5a90ff14e50c0",
+        "artist": "Chemical Surf",
+        "title": "Mercy (Malive Remix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239795,
+        "media_id": 217434,
+        "song_id": "1227accde8fe779dd39b5f08c65197be",
+        "artist": "Emmanuel Jal, MoBlack, Zamna Soundsystem",
+        "title": "Asalam Alaikum",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239797,
+        "media_id": 217450,
+        "song_id": "4c5b232f15f8481ab959bfed760bbd19",
+        "artist": "Lyrik Shoxen, Candy Man",
+        "title": "Be Strong (Extended Mix); Be Strong (Extended Mix) www.djsoundtop.com",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239877,
+        "media_id": 217404,
+        "song_id": "8ef2e43d5908753fe9cda3f3ecbfc060",
+        "artist": "Adam Port & Stryv",
+        "title": "Move",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239806,
+        "media_id": 217504,
+        "song_id": "a271146e4407abaeb69bee0c816929fe",
+        "artist": "Djembe Monks, Thandeka Masayi",
+        "title": "Sabela Extended Mix",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239796,
+        "media_id": 217420,
+        "song_id": "7dcbdc66e0d807d213f4c73502d20cf8",
+        "artist": "Andrea Oliva & Moeaike",
+        "title": "I Love You So (Shimza Extended Remix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239803,
+        "media_id": 217496,
+        "song_id": "aa345fcba68f58ef992db4fe31e2fb9f",
+        "artist": "Alpha Rowen",
+        "title": "No Chaka Chaka",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239800,
+        "media_id": 217511,
+        "song_id": "11e4889a4c1c35904eb7ee6bceb83b11",
+        "artist": "Steal Vybe, Chris Forman, Damon Bennett",
+        "title": "6 Mins Of Time (Steal Vybe's 909 Bang Mix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239798,
+        "media_id": 217409,
+        "song_id": "bb8d57df82aa6fdf9a843caca81ba2d2",
+        "artist": "Roy Rosenfeld",
+        "title": "Da Vision Extended",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239838,
+        "media_id": 217393,
+        "song_id": "0e341dfc105905b9e899a95802393e78",
+        "artist": "Adore (Fr), Marine Abtan",
+        "title": "SING IT BACK",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239805,
+        "media_id": 217442,
+        "song_id": "72637291561a94119891c5351b35a055",
+        "artist": "Nico de Andrea, Vanetty",
+        "title": "Ethnica (Extended Mix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239884,
+        "media_id": 217480,
+        "song_id": "421e0074511c93c5f22f9ac7303e1307",
+        "artist": "Kryder",
+        "title": "The Eye Of Ra (Extended Mix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239799,
+        "media_id": 217405,
+        "song_id": "7309a2b2f47258f2d28d624d45e91b33",
+        "artist": "Chemical Surf",
+        "title": "Hey Hey Hey (Said Extended Remix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239866,
+        "media_id": 217466,
+        "song_id": "a3efd0aeaa6f64fc3252727737dfee45",
+        "artist": "Suffocate SA",
+        "title": "Mementos Of Spirit",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239804,
+        "media_id": 217414,
+        "song_id": "056b732f327c9ebcf1464791644e698f",
+        "artist": "Sky White",
+        "title": "Vamo LÃ¡ Extended Mix",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239801,
+        "media_id": 217421,
+        "song_id": "11bb0982833d36dc830df8a4ee322331",
+        "artist": "Ghostheart Nebula",
+        "title": "Sunya",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239820,
+        "media_id": 217452,
+        "song_id": "a8b73569720ec7f905e3d6ed3fa34df7",
+        "artist": "Kopoy Zukar, Malumz on Decks, Khanya De Vocalist",
+        "title": "iThemba (feat. Khanya De Vocalist) (feat. Khanya De Vocalist)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239802,
+        "media_id": 217441,
+        "song_id": "c6f4ccf8f68dd75bc68c67c0129887db",
+        "artist": "Havoc & Lawn",
+        "title": "Chupala",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239837,
+        "media_id": 217424,
+        "song_id": "c7e4a646da02e37b1981fb3cea9d791f",
+        "artist": "HUGEL, GROSSOMODDO",
+        "title": "Andalucia",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239807,
+        "media_id": 217436,
+        "song_id": "723c43b11a6a51bc0992bb7a058a8f93",
+        "artist": "Yamil",
+        "title": "Iku Lele (Cee ElAssaad Voodoo Mix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239816,
+        "media_id": 217435,
+        "song_id": "a4bd6656f91a41596da1c24cc988c536",
+        "artist": "DJ Chus, Amira, NenaHalena",
+        "title": "Prado's Revenge Aaron Sevilla Remix",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239819,
+        "media_id": 217455,
+        "song_id": "ec626eec104faa70c5c7284c2c54bc6b",
+        "artist": "Modjo, Sparrow & Barbossa, Koshi, Daymaan",
+        "title": "Lady (Hear Me Tonight) - Remix (Extended)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239856,
+        "media_id": 217431,
+        "song_id": "7996cc654a10cf46c0907e5330f74e55",
+        "artist": "Batida, Mayra Andrade, Thakzin",
+        "title": "Bom Bom (Thakzin Vocal Remix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239808,
+        "media_id": 217451,
+        "song_id": "4166847fe22ba14075ed1933c7f62400",
+        "artist": "Stylo, Space Motion & Saulo Duarte",
+        "title": "Freedom",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239809,
+        "media_id": 217497,
+        "song_id": "f3275a16daff0465749bc40c13de6e85",
+        "artist": "Doctor Dru & CIOZ",
+        "title": "Dunes",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239872,
+        "media_id": 217458,
+        "song_id": "84942cec1be2efc924651e8fcb3d9b2a",
+        "artist": "Natema",
+        "title": "BMW (Afro Latin Mix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239876,
+        "media_id": 217460,
+        "song_id": "ecd5c16b9ce44d6ad5165b15ca7c14f3",
+        "artist": "TechTonic'Tay, Bongani Mehlomakhulu",
+        "title": "Immortal",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239834,
+        "media_id": 217401,
+        "song_id": "f4c2605d3c8b8b348a74c0d855493dff",
+        "artist": "Megatronic, Wandile Mbambeni, Dr Feel",
+        "title": "Rumours (Dr Feel Remix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239812,
+        "media_id": 217510,
+        "song_id": "cd88a750ef0a946337a9fa14eb93e979",
+        "artist": "MentMusik, Demzabeatz",
+        "title": "Maita Maita",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239817,
+        "media_id": 217463,
+        "song_id": "75059b67a078c233e21f874d8f42d2a8",
+        "artist": "Eran Hersh, TEDDY-O",
+        "title": "Ligado (Extended Mix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239882,
+        "media_id": 217446,
+        "song_id": "df40949f318043d85319eb13c1f2a4d8",
+        "artist": "Charisse C",
+        "title": "Siren's Interlude",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239811,
+        "media_id": 217432,
+        "song_id": "41ccd3d5aab03721d9d05ef6f4c70f21",
+        "artist": "Branko, Studio Bros",
+        "title": "Impulso (Studio Bros Remix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239825,
+        "media_id": 217457,
+        "song_id": "faf1e8abb217299e6095e8c2d365fb93",
+        "artist": "Citizen Deep,Maline Aura,DR Thulz",
+        "title": "Ubala",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239818,
+        "media_id": 217489,
+        "song_id": "5667c8351d77b5a85132422655babeb8",
+        "artist": "Cem Seckin & Siina",
+        "title": "Blessed",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239857,
+        "media_id": 217513,
+        "song_id": "476e41b84f408b6b8213c204f92b6767",
+        "artist": "Arcade Saiyans, RAPHV, Dr Feel",
+        "title": "Sangre Latina",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239889,
+        "media_id": 217384,
+        "song_id": "1d3b3856595447cba1d5ab444016f7e6",
+        "artist": "TitoM, Major_Keys, Ohp Sage, Yuppe",
+        "title": "CAROLINA (feat. TitoM & Yuppe) feat. TitoM & Yuppe",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239871,
+        "media_id": 217447,
+        "song_id": "46889bba5d1376f5e776fedc7d401e5d",
+        "artist": "Badbox",
+        "title": "Fake the Move",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239827,
+        "media_id": 217443,
+        "song_id": "4650cac21ba644a5fd6a6d982dd2e816",
+        "artist": "Niiomi, Idd Aziz",
+        "title": "Gemini - Extended Mix",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239839,
+        "media_id": 217433,
+        "song_id": "3c59202323c585cda1506a3cfe43fb08",
+        "artist": "PAGEZ, C-Mart, Herve Pagez",
+        "title": "Workah",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239814,
+        "media_id": 217430,
+        "song_id": "caa2c5d3cf30cc999d44b14ad3f05f51",
+        "artist": "L.B. One, Idir",
+        "title": "A Vava Inouva Extended Mix",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239880,
+        "media_id": 217473,
+        "song_id": "88b174be92d5a8c8e55716181c84ba03",
+        "artist": "Re.you, Paige, Biishop",
+        "title": "Innocent",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239821,
+        "media_id": 217429,
+        "song_id": "364734f156d164a7200836f5fd771967",
+        "artist": "Rony Seikaly & Infinem",
+        "title": "Temperatura",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239831,
+        "media_id": 217481,
+        "song_id": "a0cd8e2939b9b288c82630e307bbd6f2",
+        "artist": "Buddynice",
+        "title": "Keep Moving",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239849,
+        "media_id": 217465,
+        "song_id": "cedd0de9f0d5197af0ddd65119c2a5f3",
+        "artist": "Boddhi Satva, Erin Kimberly, Manoo",
+        "title": "Now Or Never (Manoo Spicy Remix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239822,
+        "media_id": 217487,
+        "song_id": "079f58d2e5dc8beb66a2fe5a468efd44",
+        "artist": "Mi Casa",
+        "title": "Turn You On",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239815,
+        "media_id": 217486,
+        "song_id": "9321fe652b47df28d7874c370b64216e",
+        "artist": "SOLIDMIND, Zenma",
+        "title": "Oyowa",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239813,
+        "media_id": 217428,
+        "song_id": "b07c9081d2323ee94aabd74faecd2573",
+        "artist": "Rancido, Bun Xapa",
+        "title": "Ina Original Mix",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239851,
+        "media_id": 217459,
+        "song_id": "385d015e49386d6a9eb07ba5934dcf80",
+        "artist": "Leo Guardo, Leo Gira, Tony P., Tabia",
+        "title": "Thonga",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239823,
+        "media_id": 217477,
+        "song_id": "43e13d9c7e581c7d74e60a472b24b223",
+        "artist": "Jnr SA,Darque,Kabza De Small",
+        "title": "Yebo",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239854,
+        "media_id": 217462,
+        "song_id": "0351313a12468dca0e42392f0b411446",
+        "artist": "Oscar P",
+        "title": "I Was There",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239846,
+        "media_id": 217400,
+        "song_id": "ef08f3d7884dd94864a2d3533d7c4a1b",
+        "artist": "Djuma Soundsystem, Yann Coppier, King Ayisoba",
+        "title": "Esigia",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239860,
+        "media_id": 217438,
+        "song_id": "e04e8c6ba354ab2c3601884e2a266586",
+        "artist": "Jalal Ramdani, Augusto Yepes, Daniel Rateuke",
+        "title": "Mauri (Daniel Rateuke Remix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239881,
+        "media_id": 217491,
+        "song_id": "efbdf34f6cd0ca59b2e9612b9bc65ca6",
+        "artist": "Dj Osvaldo Mauro, Silvio Costa",
+        "title": "Zwaida",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239836,
+        "media_id": 217464,
+        "song_id": "dad69d61b9fa4e1a45e52e498c193f46",
+        "artist": "Voodoochild",
+        "title": "If U Need It",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239826,
+        "media_id": 217488,
+        "song_id": "9fcd8f8da32eebe96562b616a5ee4931",
+        "artist": "Darque, Papany",
+        "title": "Humelela",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239870,
+        "media_id": 217478,
+        "song_id": "8212232687595aec28c1a90cfd19df53",
+        "artist": "DJ Tomer, Ricardo Gi, Mayan DeLion",
+        "title": "No Other Way (VooDoo Tribe Extended Mix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239852,
+        "media_id": 217427,
+        "song_id": "ddeb6bca96b801b56ae122312f456cde",
+        "artist": "Loup Musa",
+        "title": "Waza",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239828,
+        "media_id": 217506,
+        "song_id": "f775751d466ce93c6c8a515784b8ad8c",
+        "artist": "Boohle, Woza Sabza",
+        "title": "Sinikiwe",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239867,
+        "media_id": 217456,
+        "song_id": "e5c247471716c5ef1ce1d9c043a4854f",
+        "artist": "Hypaphonik",
+        "title": "Funa Wena",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239835,
+        "media_id": 217418,
+        "song_id": "61ddb3bc074286e316494ecc7200286b",
+        "artist": "Korie Minors, Lizwi, DJ 84, Shona SA, Native P",
+        "title": "Usemindawonye (Native P. Remix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239875,
+        "media_id": 217472,
+        "song_id": "b3e0e5a6d96fb3e8f7e7dec7bba7665f",
+        "artist": "Moeaike, Alan Dixon",
+        "title": "Bo Bom (Alan Dixon Remix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239824,
+        "media_id": 217413,
+        "song_id": "44984151f2d34c0f9ef2465adc29f6eb",
+        "artist": "Mr Raoul K, Lady Parul",
+        "title": "Urure",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239829,
+        "media_id": 217439,
+        "song_id": "1a93da6665a9eb31dfbc34c28444f235",
+        "artist": "Cato Anaya, Eran Hersh",
+        "title": "Somos Libres",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239830,
+        "media_id": 217392,
+        "song_id": "025c3f5d2b7ee075cbc3913c692e2ffa",
+        "artist": "Choujaa",
+        "title": "Nyu Bi Woni",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239874,
+        "media_id": 217449,
+        "song_id": "0c05add8e4f3438b6f0a9457f11c4da6",
+        "artist": "Stones & Bones",
+        "title": "Dedication to the DJ",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239847,
+        "media_id": 217453,
+        "song_id": "d6ae242d0b94883682b2495db497baf6",
+        "artist": "Voodoochild, Joezi",
+        "title": "Tunapewa",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239868,
+        "media_id": 217512,
+        "song_id": "4653819cdeb7003c4a7b190e80f963c5",
+        "artist": "G-Wash10, Mpumi",
+        "title": "VULANI",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239844,
+        "media_id": 217482,
+        "song_id": "31f874bb0aacf570b92d63c52b4eaf18",
+        "artist": "Trekkah, HARDIHOOD",
+        "title": "Karma Nights",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239848,
+        "media_id": 217493,
+        "song_id": "6e8d15e2d9294efd7e2f147ec5d234a3",
+        "artist": "Octavez,Aero Manyelo",
+        "title": "Black Pen",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239859,
+        "media_id": 217445,
+        "song_id": "a3f67a8e74d593d3e28cdef9152c901a",
+        "artist": "Khenya",
+        "title": "Jarana (Radio Edit)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239863,
+        "media_id": 217495,
+        "song_id": "5371a1ac7ad77cb590c7bd76cebc4a3d",
+        "artist": "The Siege DJ",
+        "title": "Around",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239840,
+        "media_id": 217454,
+        "song_id": "f30612ff319da9ea529110710a6a116a",
+        "artist": "Dylan-S, Digolo Philip, Foozak, Candy Man",
+        "title": "Dana (Foozak And Candy Man Remix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239833,
+        "media_id": 217502,
+        "song_id": "5afd4f06988437d7825e21e9c5cff7ee",
+        "artist": "Aimo",
+        "title": "Badlands",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239841,
+        "media_id": 217399,
+        "song_id": "aa95cd15a71cfd77712366cd74187766",
+        "artist": "Sebastien Dutch, El Mukuka, Layth Sidiq, Aggeliki",
+        "title": "Matia Mou",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239845,
+        "media_id": 217408,
+        "song_id": "1aa4fb9e5ba37e13fe4eea1937318996",
+        "artist": "KingDonna, Philasande",
+        "title": "Bawo Wethu",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239886,
+        "media_id": 217403,
+        "song_id": "a4be51caa178987dcc1ab25f3afb8b41",
+        "artist": "Yamil",
+        "title": "Nimbe",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239862,
+        "media_id": 217485,
+        "song_id": "00d73fd977ff1ce96b26cf5dfd4a0c5a",
+        "artist": "Flush",
+        "title": "Bateau Blanc",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239873,
+        "media_id": 217426,
+        "song_id": "4cef16d1b5efcd1b417863b9f15462a4",
+        "artist": "FabYo Gomez, Dr Feel, RedRo8se",
+        "title": "We Are One (Extended Mix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239850,
+        "media_id": 217479,
+        "song_id": "4104ffe95c3e274a1b48bd799dccdb4c",
+        "artist": "Claude Monnet",
+        "title": "From The G",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239843,
+        "media_id": 217467,
+        "song_id": "e0cf1c46d063b76c66afd590344ed2e6",
+        "artist": "Leo Leonski, Abel Ray",
+        "title": "Fela",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239858,
+        "media_id": 217471,
+        "song_id": "18de2637866fb1f8de99acb9b412b4b2",
+        "artist": "Emmanuel Jal,Enzo Siffredi",
+        "title": "Shake Your Belly",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239865,
+        "media_id": 217498,
+        "song_id": "889868da66d5d9883f918475de848f30",
+        "artist": "Aberton",
+        "title": "Souk",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239855,
+        "media_id": 217503,
+        "song_id": "42fdfc8cd7ec4fba9f21cedf49a0a874",
+        "artist": "NAAK,Atmos Blaq",
+        "title": "FIND A WAY",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239883,
+        "media_id": 217437,
+        "song_id": "a17c4f24472ee6394a457571dcdc7947",
+        "artist": "Culoe de Song",
+        "title": "Y.O.U.D.",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239853,
+        "media_id": 217492,
+        "song_id": "392e2ed3ce5d89a80d181d47bd962624",
+        "artist": "Hector J Rodriguez",
+        "title": "Madre",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239861,
+        "media_id": 217484,
+        "song_id": "4057ce33f725d5a868be54876979424d",
+        "artist": "Eli Fola, Canetis",
+        "title": "Calma - Extended",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239869,
+        "media_id": 217470,
+        "song_id": "fa285f400057bacec14397542e9a2a89",
+        "artist": "Oscar Sulley, The Uhuru Dance Band, JKriv, Domenica Fossati",
+        "title": "Bukom Mashie (JKriv Extended Acid Dub)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239885,
+        "media_id": 217500,
+        "song_id": "b037f295c49a5804e9fa72fc16610e36",
+        "artist": "Dj Vitoto, Bun Xapa, ZIDDO",
+        "title": "Saharian Girl",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239864,
+        "media_id": 217490,
+        "song_id": "c4ae46f178bd77ac8e98b101f88a969f",
+        "artist": "Da Le (Havana)",
+        "title": "Land of Spirits",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239878,
+        "media_id": 217381,
+        "song_id": "8e24691815b5650f9d3febc2d714d7eb",
+        "artist": "CLEIDO, Dillan Desai",
+        "title": "Hard To Love",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239891,
+        "media_id": 217461,
+        "song_id": "b40f381925ed8190bbfbf31a514fb4fa",
+        "artist": "Lil'Owl, Jo Choneca",
+        "title": "Sembe",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239887,
+        "media_id": 217415,
+        "song_id": "9bc2abdb3a1ac099e1d79d8715a1a714",
+        "artist": "Ladour, David Hopperman, Kahari, Idd Aziz, Bassfinder, Faceoff",
+        "title": "Kula - Bassfinder & Faceoff Remix",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239888,
+        "media_id": 217423,
+        "song_id": "83d93e4b4c9b5c93581ce0b70d7254f6",
+        "artist": "UKAI NDAME",
+        "title": "Sulula",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239890,
+        "media_id": 217468,
+        "song_id": "a527d9b696ffe0265e5165359c61743f",
+        "artist": "Young Stunna, Shaunmusiq, Myztro",
+        "title": "Safa iPiano Original Mix",
+        "last_played": 0
+      }
+    ]
+  },
+  "886": {
+    "playlist": {
+      "station_id": 1,
+      "name": "Afro-Noon Thursday",
+      "description": "Donnerstags-Afro-House mit organischem Groove und warmer Clubenergie.",
+      "type": "default",
+      "source": "songs",
+      "order": "shuffle",
+      "remote_url": null,
+      "remote_type": null,
+      "remote_buffer": 0,
+      "is_enabled": true,
+      "is_jingle": false,
+      "play_per_songs": 0,
+      "play_per_minutes": 0,
+      "play_per_hour_minute": 0,
+      "weight": 10,
+      "include_in_requests": false,
+      "include_in_on_demand": false,
+      "backend_options": [
+        ""
+      ],
+      "avoid_duplicates": true,
+      "played_at": "2026-10-08T14:59:50.938935Z",
+      "queue_reset_at": null,
+      "schedule_items": [
+        {
+          "start_time": 1100,
+          "end_time": 1700,
+          "start_date": null,
+          "end_date": null,
+          "days": [
+            4
+          ],
+          "loop_once": false,
+          "id": 759
+        }
+      ],
+      "podcasts": [],
+      "id": 886,
+      "short_name": "afro-noon_thursday",
+      "num_songs": 100,
+      "total_length": 35215,
+      "links": {
+        "self": "https://10.1.0.38/api/station/1/playlist/886",
+        "toggle": "https://10.1.0.38/api/station/1/playlist/886/toggle",
+        "clone": "https://10.1.0.38/api/station/1/playlist/886/clone",
+        "queue": "https://10.1.0.38/api/station/1/playlist/886/queue",
+        "import": "https://10.1.0.38/api/station/1/playlist/886/import",
+        "reshuffle": "https://10.1.0.38/api/station/1/playlist/886/reshuffle",
+        "applyto": "https://10.1.0.38/api/station/1/playlist/886/apply-to",
+        "empty": "https://10.1.0.38/api/station/1/playlist/886/empty",
+        "export": {
+          "pls": "https://10.1.0.38/api/station/1/playlist/886/export/pls",
+          "m3u": "https://10.1.0.38/api/station/1/playlist/886/export/m3u"
+        }
+      }
+    },
+    "queue": [
+      {
+        "spm_id": 239932,
+        "media_id": 217395,
+        "song_id": "1fad5362f1d8fadd46bdef2f54d4c0a4",
+        "artist": "Faul & Wad, 4rain, Anlly Marin",
+        "title": "Flores Blancas (Extended Mix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239944,
+        "media_id": 217414,
+        "song_id": "056b732f327c9ebcf1464791644e698f",
+        "artist": "Sky White",
+        "title": "Vamo LÃ¡ Extended Mix",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239942,
+        "media_id": 217441,
+        "song_id": "c6f4ccf8f68dd75bc68c67c0129887db",
+        "artist": "Havoc & Lawn",
+        "title": "Chupala",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239976,
+        "media_id": 217464,
+        "song_id": "dad69d61b9fa4e1a45e52e498c193f46",
+        "artist": "Voodoochild",
+        "title": "If U Need It",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239936,
+        "media_id": 217420,
+        "song_id": "7dcbdc66e0d807d213f4c73502d20cf8",
+        "artist": "Andrea Oliva & Moeaike",
+        "title": "I Love You So (Shimza Extended Remix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239953,
+        "media_id": 217428,
+        "song_id": "b07c9081d2323ee94aabd74faecd2573",
+        "artist": "Rancido, Bun Xapa",
+        "title": "Ina Original Mix",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239952,
+        "media_id": 217510,
+        "song_id": "cd88a750ef0a946337a9fa14eb93e979",
+        "artist": "MentMusik, Demzabeatz",
+        "title": "Maita Maita",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239933,
+        "media_id": 217412,
+        "song_id": "8194f9eac047ac0376c38f43a878cad7",
+        "artist": "DJ Tomer, Ricardo, Emmanuel Jal, Joezi",
+        "title": "Suo",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239980,
+        "media_id": 217454,
+        "song_id": "f30612ff319da9ea529110710a6a116a",
+        "artist": "Dylan-S, Digolo Philip, Foozak, Candy Man",
+        "title": "Dana (Foozak And Candy Man Remix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239950,
+        "media_id": 217514,
+        "song_id": "b4b712cbc0363a1bc7c5a90ff14e50c0",
+        "artist": "Chemical Surf",
+        "title": "Mercy (Malive Remix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239934,
+        "media_id": 217425,
+        "song_id": "b15b4bca38b50e79e90ba38765b07c84",
+        "artist": "Ricardo Trueba, Alberto Hernandez (MX)",
+        "title": "Overdrive Extended Mix",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239968,
+        "media_id": 217506,
+        "song_id": "f775751d466ce93c6c8a515784b8ad8c",
+        "artist": "Boohle, Woza Sabza",
+        "title": "Sinikiwe",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239935,
+        "media_id": 217434,
+        "song_id": "1227accde8fe779dd39b5f08c65197be",
+        "artist": "Emmanuel Jal, MoBlack, Zamna Soundsystem",
+        "title": "Asalam Alaikum",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239977,
+        "media_id": 217424,
+        "song_id": "c7e4a646da02e37b1981fb3cea9d791f",
+        "artist": "HUGEL, GROSSOMODDO",
+        "title": "Andalucia",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239938,
+        "media_id": 217409,
+        "song_id": "bb8d57df82aa6fdf9a843caca81ba2d2",
+        "artist": "Roy Rosenfeld",
+        "title": "Da Vision Extended",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239964,
+        "media_id": 217413,
+        "song_id": "44984151f2d34c0f9ef2465adc29f6eb",
+        "artist": "Mr Raoul K, Lady Parul",
+        "title": "Urure",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239937,
+        "media_id": 217450,
+        "song_id": "4c5b232f15f8481ab959bfed760bbd19",
+        "artist": "Lyrik Shoxen, Candy Man",
+        "title": "Be Strong (Extended Mix); Be Strong (Extended Mix) www.djsoundtop.com",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239939,
+        "media_id": 217405,
+        "song_id": "7309a2b2f47258f2d28d624d45e91b33",
+        "artist": "Chemical Surf",
+        "title": "Hey Hey Hey (Said Extended Remix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239967,
+        "media_id": 217443,
+        "song_id": "4650cac21ba644a5fd6a6d982dd2e816",
+        "artist": "Niiomi, Idd Aziz",
+        "title": "Gemini - Extended Mix",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239973,
+        "media_id": 217502,
+        "song_id": "5afd4f06988437d7825e21e9c5cff7ee",
+        "artist": "Aimo",
+        "title": "Badlands",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239946,
+        "media_id": 217504,
+        "song_id": "a271146e4407abaeb69bee0c816929fe",
+        "artist": "Djembe Monks, Thandeka Masayi",
+        "title": "Sabela Extended Mix",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240016,
+        "media_id": 217460,
+        "song_id": "ecd5c16b9ce44d6ad5165b15ca7c14f3",
+        "artist": "TechTonic'Tay, Bongani Mehlomakhulu",
+        "title": "Immortal",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239940,
+        "media_id": 217511,
+        "song_id": "11e4889a4c1c35904eb7ee6bceb83b11",
+        "artist": "Steal Vybe, Chris Forman, Damon Bennett",
+        "title": "6 Mins Of Time (Steal Vybe's 909 Bang Mix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239995,
+        "media_id": 217503,
+        "song_id": "42fdfc8cd7ec4fba9f21cedf49a0a874",
+        "artist": "NAAK,Atmos Blaq",
+        "title": "FIND A WAY",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240017,
+        "media_id": 217404,
+        "song_id": "8ef2e43d5908753fe9cda3f3ecbfc060",
+        "artist": "Adam Port & Stryv",
+        "title": "Move",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239941,
+        "media_id": 217421,
+        "song_id": "11bb0982833d36dc830df8a4ee322331",
+        "artist": "Ghostheart Nebula",
+        "title": "Sunya",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239947,
+        "media_id": 217436,
+        "song_id": "723c43b11a6a51bc0992bb7a058a8f93",
+        "artist": "Yamil",
+        "title": "Iku Lele (Cee ElAssaad Voodoo Mix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239955,
+        "media_id": 217486,
+        "song_id": "9321fe652b47df28d7874c370b64216e",
+        "artist": "SOLIDMIND, Zenma",
+        "title": "Oyowa",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239945,
+        "media_id": 217442,
+        "song_id": "72637291561a94119891c5351b35a055",
+        "artist": "Nico de Andrea, Vanetty",
+        "title": "Ethnica (Extended Mix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239959,
+        "media_id": 217455,
+        "song_id": "ec626eec104faa70c5c7284c2c54bc6b",
+        "artist": "Modjo, Sparrow & Barbossa, Koshi, Daymaan",
+        "title": "Lady (Hear Me Tonight) - Remix (Extended)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239981,
+        "media_id": 217399,
+        "song_id": "aa95cd15a71cfd77712366cd74187766",
+        "artist": "Sebastien Dutch, El Mukuka, Layth Sidiq, Aggeliki",
+        "title": "Matia Mou",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239966,
+        "media_id": 217488,
+        "song_id": "9fcd8f8da32eebe96562b616a5ee4931",
+        "artist": "Darque, Papany",
+        "title": "Humelela",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239948,
+        "media_id": 217451,
+        "song_id": "4166847fe22ba14075ed1933c7f62400",
+        "artist": "Stylo, Space Motion & Saulo Duarte",
+        "title": "Freedom",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239987,
+        "media_id": 217453,
+        "song_id": "d6ae242d0b94883682b2495db497baf6",
+        "artist": "Voodoochild, Joezi",
+        "title": "Tunapewa",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239961,
+        "media_id": 217429,
+        "song_id": "364734f156d164a7200836f5fd771967",
+        "artist": "Rony Seikaly & Infinem",
+        "title": "Temperatura",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239951,
+        "media_id": 217432,
+        "song_id": "41ccd3d5aab03721d9d05ef6f4c70f21",
+        "artist": "Branko, Studio Bros",
+        "title": "Impulso (Studio Bros Remix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239949,
+        "media_id": 217497,
+        "song_id": "f3275a16daff0465749bc40c13de6e85",
+        "artist": "Doctor Dru & CIOZ",
+        "title": "Dunes",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239954,
+        "media_id": 217430,
+        "song_id": "caa2c5d3cf30cc999d44b14ad3f05f51",
+        "artist": "L.B. One, Idir",
+        "title": "A Vava Inouva Extended Mix",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239960,
+        "media_id": 217452,
+        "song_id": "a8b73569720ec7f905e3d6ed3fa34df7",
+        "artist": "Kopoy Zukar, Malumz on Decks, Khanya De Vocalist",
+        "title": "iThemba (feat. Khanya De Vocalist) (feat. Khanya De Vocalist)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239972,
+        "media_id": 217398,
+        "song_id": "a6b27c34a088fafb0a0f6ead95c356dd",
+        "artist": "Afro Wav, Mandisa",
+        "title": "Out Of Love (Afro Wav Rework)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239956,
+        "media_id": 217435,
+        "song_id": "a4bd6656f91a41596da1c24cc988c536",
+        "artist": "DJ Chus, Amira, NenaHalena",
+        "title": "Prado's Revenge Aaron Sevilla Remix",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239962,
+        "media_id": 217487,
+        "song_id": "079f58d2e5dc8beb66a2fe5a468efd44",
+        "artist": "Mi Casa",
+        "title": "Turn You On",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240030,
+        "media_id": 217468,
+        "song_id": "a527d9b696ffe0265e5165359c61743f",
+        "artist": "Young Stunna, Shaunmusiq, Myztro",
+        "title": "Safa iPiano Original Mix",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239969,
+        "media_id": 217439,
+        "song_id": "1a93da6665a9eb31dfbc34c28444f235",
+        "artist": "Cato Anaya, Eran Hersh",
+        "title": "Somos Libres",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239979,
+        "media_id": 217433,
+        "song_id": "3c59202323c585cda1506a3cfe43fb08",
+        "artist": "PAGEZ, C-Mart, Herve Pagez",
+        "title": "Workah",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240014,
+        "media_id": 217449,
+        "song_id": "0c05add8e4f3438b6f0a9457f11c4da6",
+        "artist": "Stones & Bones",
+        "title": "Dedication to the DJ",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240018,
+        "media_id": 217381,
+        "song_id": "8e24691815b5650f9d3febc2d714d7eb",
+        "artist": "CLEIDO, Dillan Desai",
+        "title": "Hard To Love",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239957,
+        "media_id": 217463,
+        "song_id": "75059b67a078c233e21f874d8f42d2a8",
+        "artist": "Eran Hersh, TEDDY-O",
+        "title": "Ligado (Extended Mix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240010,
+        "media_id": 217478,
+        "song_id": "8212232687595aec28c1a90cfd19df53",
+        "artist": "DJ Tomer, Ricardo Gi, Mayan DeLion",
+        "title": "No Other Way (VooDoo Tribe Extended Mix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239997,
+        "media_id": 217513,
+        "song_id": "476e41b84f408b6b8213c204f92b6767",
+        "artist": "Arcade Saiyans, RAPHV, Dr Feel",
+        "title": "Sangre Latina",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240021,
+        "media_id": 217491,
+        "song_id": "efbdf34f6cd0ca59b2e9612b9bc65ca6",
+        "artist": "Dj Osvaldo Mauro, Silvio Costa",
+        "title": "Zwaida",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239986,
+        "media_id": 217400,
+        "song_id": "ef08f3d7884dd94864a2d3533d7c4a1b",
+        "artist": "Djuma Soundsystem, Yann Coppier, King Ayisoba",
+        "title": "Esigia",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239965,
+        "media_id": 217457,
+        "song_id": "faf1e8abb217299e6095e8c2d365fb93",
+        "artist": "Citizen Deep,Maline Aura,DR Thulz",
+        "title": "Ubala",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239958,
+        "media_id": 217489,
+        "song_id": "5667c8351d77b5a85132422655babeb8",
+        "artist": "Cem Seckin & Siina",
+        "title": "Blessed",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240024,
+        "media_id": 217480,
+        "song_id": "421e0074511c93c5f22f9ac7303e1307",
+        "artist": "Kryder",
+        "title": "The Eye Of Ra (Extended Mix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239993,
+        "media_id": 217492,
+        "song_id": "392e2ed3ce5d89a80d181d47bd962624",
+        "artist": "Hector J Rodriguez",
+        "title": "Madre",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239989,
+        "media_id": 217465,
+        "song_id": "cedd0de9f0d5197af0ddd65119c2a5f3",
+        "artist": "Boddhi Satva, Erin Kimberly, Manoo",
+        "title": "Now Or Never (Manoo Spicy Remix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240023,
+        "media_id": 217437,
+        "song_id": "a17c4f24472ee6394a457571dcdc7947",
+        "artist": "Culoe de Song",
+        "title": "Y.O.U.D.",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239984,
+        "media_id": 217482,
+        "song_id": "31f874bb0aacf570b92d63c52b4eaf18",
+        "artist": "Trekkah, HARDIHOOD",
+        "title": "Karma Nights",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240003,
+        "media_id": 217495,
+        "song_id": "5371a1ac7ad77cb590c7bd76cebc4a3d",
+        "artist": "The Siege DJ",
+        "title": "Around",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240029,
+        "media_id": 217384,
+        "song_id": "1d3b3856595447cba1d5ab444016f7e6",
+        "artist": "TitoM, Major_Keys, Ohp Sage, Yuppe",
+        "title": "CAROLINA (feat. TitoM & Yuppe) feat. TitoM & Yuppe",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239970,
+        "media_id": 217392,
+        "song_id": "025c3f5d2b7ee075cbc3913c692e2ffa",
+        "artist": "Choujaa",
+        "title": "Nyu Bi Woni",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239990,
+        "media_id": 217479,
+        "song_id": "4104ffe95c3e274a1b48bd799dccdb4c",
+        "artist": "Claude Monnet",
+        "title": "From The G",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239982,
+        "media_id": 217448,
+        "song_id": "8ced38c877426e26cfa5df7172e77c76",
+        "artist": "beatsbyhand",
+        "title": "SARS",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239975,
+        "media_id": 217418,
+        "song_id": "61ddb3bc074286e316494ecc7200286b",
+        "artist": "Korie Minors, Lizwi, DJ 84, Shona SA, Native P",
+        "title": "Usemindawonye (Native P. Remix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239998,
+        "media_id": 217471,
+        "song_id": "18de2637866fb1f8de99acb9b412b4b2",
+        "artist": "Emmanuel Jal,Enzo Siffredi",
+        "title": "Shake Your Belly",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240004,
+        "media_id": 217490,
+        "song_id": "c4ae46f178bd77ac8e98b101f88a969f",
+        "artist": "Da Le (Havana)",
+        "title": "Land of Spirits",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239996,
+        "media_id": 217431,
+        "song_id": "7996cc654a10cf46c0907e5330f74e55",
+        "artist": "Batida, Mayra Andrade, Thakzin",
+        "title": "Bom Bom (Thakzin Vocal Remix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239971,
+        "media_id": 217481,
+        "song_id": "a0cd8e2939b9b288c82630e307bbd6f2",
+        "artist": "Buddynice",
+        "title": "Keep Moving",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239974,
+        "media_id": 217401,
+        "song_id": "f4c2605d3c8b8b348a74c0d855493dff",
+        "artist": "Megatronic, Wandile Mbambeni, Dr Feel",
+        "title": "Rumours (Dr Feel Remix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240006,
+        "media_id": 217466,
+        "song_id": "a3efd0aeaa6f64fc3252727737dfee45",
+        "artist": "Suffocate SA",
+        "title": "Mementos Of Spirit",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239988,
+        "media_id": 217493,
+        "song_id": "6e8d15e2d9294efd7e2f147ec5d234a3",
+        "artist": "Octavez,Aero Manyelo",
+        "title": "Black Pen",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239992,
+        "media_id": 217427,
+        "song_id": "ddeb6bca96b801b56ae122312f456cde",
+        "artist": "Loup Musa",
+        "title": "Waza",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239999,
+        "media_id": 217445,
+        "song_id": "a3f67a8e74d593d3e28cdef9152c901a",
+        "artist": "Khenya",
+        "title": "Jarana (Radio Edit)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239985,
+        "media_id": 217408,
+        "song_id": "1aa4fb9e5ba37e13fe4eea1937318996",
+        "artist": "KingDonna, Philasande",
+        "title": "Bawo Wethu",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239983,
+        "media_id": 217467,
+        "song_id": "e0cf1c46d063b76c66afd590344ed2e6",
+        "artist": "Leo Leonski, Abel Ray",
+        "title": "Fela",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239978,
+        "media_id": 217393,
+        "song_id": "0e341dfc105905b9e899a95802393e78",
+        "artist": "Adore (Fr), Marine Abtan",
+        "title": "SING IT BACK",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240001,
+        "media_id": 217484,
+        "song_id": "4057ce33f725d5a868be54876979424d",
+        "artist": "Eli Fola, Canetis",
+        "title": "Calma - Extended",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240002,
+        "media_id": 217485,
+        "song_id": "00d73fd977ff1ce96b26cf5dfd4a0c5a",
+        "artist": "Flush",
+        "title": "Bateau Blanc",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240012,
+        "media_id": 217458,
+        "song_id": "84942cec1be2efc924651e8fcb3d9b2a",
+        "artist": "Natema",
+        "title": "BMW (Afro Latin Mix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240005,
+        "media_id": 217498,
+        "song_id": "889868da66d5d9883f918475de848f30",
+        "artist": "Aberton",
+        "title": "Souk",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240008,
+        "media_id": 217512,
+        "song_id": "4653819cdeb7003c4a7b190e80f963c5",
+        "artist": "G-Wash10, Mpumi",
+        "title": "VULANI",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240019,
+        "media_id": 217508,
+        "song_id": "7e85e4b59da9a3cc341de4c951bca10e",
+        "artist": "African Children's Choir, Francis Mercier & Faul & Wad",
+        "title": "Sauti",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240000,
+        "media_id": 217438,
+        "song_id": "e04e8c6ba354ab2c3601884e2a266586",
+        "artist": "Jalal Ramdani, Augusto Yepes, Daniel Rateuke",
+        "title": "Mauri (Daniel Rateuke Remix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240013,
+        "media_id": 217426,
+        "song_id": "4cef16d1b5efcd1b417863b9f15462a4",
+        "artist": "FabYo Gomez, Dr Feel, RedRo8se",
+        "title": "We Are One (Extended Mix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240007,
+        "media_id": 217456,
+        "song_id": "e5c247471716c5ef1ce1d9c043a4854f",
+        "artist": "Hypaphonik",
+        "title": "Funa Wena",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239991,
+        "media_id": 217459,
+        "song_id": "385d015e49386d6a9eb07ba5934dcf80",
+        "artist": "Leo Guardo, Leo Gira, Tony P., Tabia",
+        "title": "Thonga",
+        "last_played": 0
+      },
+      {
+        "spm_id": 239994,
+        "media_id": 217462,
+        "song_id": "0351313a12468dca0e42392f0b411446",
+        "artist": "Oscar P",
+        "title": "I Was There",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240011,
+        "media_id": 217447,
+        "song_id": "46889bba5d1376f5e776fedc7d401e5d",
+        "artist": "Badbox",
+        "title": "Fake the Move",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240022,
+        "media_id": 217446,
+        "song_id": "df40949f318043d85319eb13c1f2a4d8",
+        "artist": "Charisse C",
+        "title": "Siren's Interlude",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240009,
+        "media_id": 217470,
+        "song_id": "fa285f400057bacec14397542e9a2a89",
+        "artist": "Oscar Sulley, The Uhuru Dance Band, JKriv, Domenica Fossati",
+        "title": "Bukom Mashie (JKriv Extended Acid Dub)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240015,
+        "media_id": 217472,
+        "song_id": "b3e0e5a6d96fb3e8f7e7dec7bba7665f",
+        "artist": "Moeaike, Alan Dixon",
+        "title": "Bo Bom (Alan Dixon Remix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240025,
+        "media_id": 217500,
+        "song_id": "b037f295c49a5804e9fa72fc16610e36",
+        "artist": "Dj Vitoto, Bun Xapa, ZIDDO",
+        "title": "Saharian Girl",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240020,
+        "media_id": 217473,
+        "song_id": "88b174be92d5a8c8e55716181c84ba03",
+        "artist": "Re.you, Paige, Biishop",
+        "title": "Innocent",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240031,
+        "media_id": 217461,
+        "song_id": "b40f381925ed8190bbfbf31a514fb4fa",
+        "artist": "Lil'Owl, Jo Choneca",
+        "title": "Sembe",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240027,
+        "media_id": 217415,
+        "song_id": "9bc2abdb3a1ac099e1d79d8715a1a714",
+        "artist": "Ladour, David Hopperman, Kahari, Idd Aziz, Bassfinder, Faceoff",
+        "title": "Kula - Bassfinder & Faceoff Remix",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240028,
+        "media_id": 217423,
+        "song_id": "83d93e4b4c9b5c93581ce0b70d7254f6",
+        "artist": "UKAI NDAME",
+        "title": "Sulula",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240026,
+        "media_id": 217403,
+        "song_id": "a4be51caa178987dcc1ab25f3afb8b41",
+        "artist": "Yamil",
+        "title": "Nimbe",
+        "last_played": 0
+      }
+    ]
+  },
+  "890": {
+    "playlist": {
+      "station_id": 1,
+      "name": "Afro-Noon Friday",
+      "description": "Freitags-Afro-House mit Percussion, Wärme und kontrolliertem Wochenendaufbau.",
+      "type": "default",
+      "source": "songs",
+      "order": "shuffle",
+      "remote_url": null,
+      "remote_type": null,
+      "remote_buffer": 0,
+      "is_enabled": true,
+      "is_jingle": false,
+      "play_per_songs": 0,
+      "play_per_minutes": 0,
+      "play_per_hour_minute": 0,
+      "weight": 10,
+      "include_in_requests": false,
+      "include_in_on_demand": false,
+      "backend_options": [
+        ""
+      ],
+      "avoid_duplicates": true,
+      "played_at": null,
+      "queue_reset_at": null,
+      "schedule_items": [
+        {
+          "start_time": 1100,
+          "end_time": 1700,
+          "start_date": null,
+          "end_date": null,
+          "days": [
+            5
+          ],
+          "loop_once": false,
+          "id": 763
+        }
+      ],
+      "podcasts": [],
+      "id": 890,
+      "short_name": "afro-noon_friday",
+      "num_songs": 100,
+      "total_length": 35215,
+      "links": {
+        "self": "https://10.1.0.38/api/station/1/playlist/890",
+        "toggle": "https://10.1.0.38/api/station/1/playlist/890/toggle",
+        "clone": "https://10.1.0.38/api/station/1/playlist/890/clone",
+        "queue": "https://10.1.0.38/api/station/1/playlist/890/queue",
+        "import": "https://10.1.0.38/api/station/1/playlist/890/import",
+        "reshuffle": "https://10.1.0.38/api/station/1/playlist/890/reshuffle",
+        "applyto": "https://10.1.0.38/api/station/1/playlist/890/apply-to",
+        "empty": "https://10.1.0.38/api/station/1/playlist/890/empty",
+        "export": {
+          "pls": "https://10.1.0.38/api/station/1/playlist/890/export/pls",
+          "m3u": "https://10.1.0.38/api/station/1/playlist/890/export/m3u"
+        }
+      }
+    },
+    "queue": [
+      {
+        "spm_id": 240032,
+        "media_id": 217395,
+        "song_id": "1fad5362f1d8fadd46bdef2f54d4c0a4",
+        "artist": "Faul & Wad, 4rain, Anlly Marin",
+        "title": "Flores Blancas (Extended Mix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240037,
+        "media_id": 217450,
+        "song_id": "4c5b232f15f8481ab959bfed760bbd19",
+        "artist": "Lyrik Shoxen, Candy Man",
+        "title": "Be Strong (Extended Mix); Be Strong (Extended Mix) www.djsoundtop.com",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240126,
+        "media_id": 217403,
+        "song_id": "a4be51caa178987dcc1ab25f3afb8b41",
+        "artist": "Yamil",
+        "title": "Nimbe",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240034,
+        "media_id": 217425,
+        "song_id": "b15b4bca38b50e79e90ba38765b07c84",
+        "artist": "Ricardo Trueba, Alberto Hernandez (MX)",
+        "title": "Overdrive Extended Mix",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240033,
+        "media_id": 217412,
+        "song_id": "8194f9eac047ac0376c38f43a878cad7",
+        "artist": "DJ Tomer, Ricardo, Emmanuel Jal, Joezi",
+        "title": "Suo",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240093,
+        "media_id": 217492,
+        "song_id": "392e2ed3ce5d89a80d181d47bd962624",
+        "artist": "Hector J Rodriguez",
+        "title": "Madre",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240036,
+        "media_id": 217420,
+        "song_id": "7dcbdc66e0d807d213f4c73502d20cf8",
+        "artist": "Andrea Oliva & Moeaike",
+        "title": "I Love You So (Shimza Extended Remix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240053,
+        "media_id": 217428,
+        "song_id": "b07c9081d2323ee94aabd74faecd2573",
+        "artist": "Rancido, Bun Xapa",
+        "title": "Ina Original Mix",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240043,
+        "media_id": 217496,
+        "song_id": "aa345fcba68f58ef992db4fe31e2fb9f",
+        "artist": "Alpha Rowen",
+        "title": "No Chaka Chaka",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240046,
+        "media_id": 217504,
+        "song_id": "a271146e4407abaeb69bee0c816929fe",
+        "artist": "Djembe Monks, Thandeka Masayi",
+        "title": "Sabela Extended Mix",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240052,
+        "media_id": 217510,
+        "song_id": "cd88a750ef0a946337a9fa14eb93e979",
+        "artist": "MentMusik, Demzabeatz",
+        "title": "Maita Maita",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240041,
+        "media_id": 217421,
+        "song_id": "11bb0982833d36dc830df8a4ee322331",
+        "artist": "Ghostheart Nebula",
+        "title": "Sunya",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240035,
+        "media_id": 217434,
+        "song_id": "1227accde8fe779dd39b5f08c65197be",
+        "artist": "Emmanuel Jal, MoBlack, Zamna Soundsystem",
+        "title": "Asalam Alaikum",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240039,
+        "media_id": 217405,
+        "song_id": "7309a2b2f47258f2d28d624d45e91b33",
+        "artist": "Chemical Surf",
+        "title": "Hey Hey Hey (Said Extended Remix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240054,
+        "media_id": 217430,
+        "song_id": "caa2c5d3cf30cc999d44b14ad3f05f51",
+        "artist": "L.B. One, Idir",
+        "title": "A Vava Inouva Extended Mix",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240038,
+        "media_id": 217409,
+        "song_id": "bb8d57df82aa6fdf9a843caca81ba2d2",
+        "artist": "Roy Rosenfeld",
+        "title": "Da Vision Extended",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240040,
+        "media_id": 217511,
+        "song_id": "11e4889a4c1c35904eb7ee6bceb83b11",
+        "artist": "Steal Vybe, Chris Forman, Damon Bennett",
+        "title": "6 Mins Of Time (Steal Vybe's 909 Bang Mix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240044,
+        "media_id": 217414,
+        "song_id": "056b732f327c9ebcf1464791644e698f",
+        "artist": "Sky White",
+        "title": "Vamo LÃ¡ Extended Mix",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240121,
+        "media_id": 217491,
+        "song_id": "efbdf34f6cd0ca59b2e9612b9bc65ca6",
+        "artist": "Dj Osvaldo Mauro, Silvio Costa",
+        "title": "Zwaida",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240069,
+        "media_id": 217439,
+        "song_id": "1a93da6665a9eb31dfbc34c28444f235",
+        "artist": "Cato Anaya, Eran Hersh",
+        "title": "Somos Libres",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240106,
+        "media_id": 217466,
+        "song_id": "a3efd0aeaa6f64fc3252727737dfee45",
+        "artist": "Suffocate SA",
+        "title": "Mementos Of Spirit",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240051,
+        "media_id": 217432,
+        "song_id": "41ccd3d5aab03721d9d05ef6f4c70f21",
+        "artist": "Branko, Studio Bros",
+        "title": "Impulso (Studio Bros Remix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240094,
+        "media_id": 217462,
+        "song_id": "0351313a12468dca0e42392f0b411446",
+        "artist": "Oscar P",
+        "title": "I Was There",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240102,
+        "media_id": 217485,
+        "song_id": "00d73fd977ff1ce96b26cf5dfd4a0c5a",
+        "artist": "Flush",
+        "title": "Bateau Blanc",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240083,
+        "media_id": 217467,
+        "song_id": "e0cf1c46d063b76c66afd590344ed2e6",
+        "artist": "Leo Leonski, Abel Ray",
+        "title": "Fela",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240072,
+        "media_id": 217398,
+        "song_id": "a6b27c34a088fafb0a0f6ead95c356dd",
+        "artist": "Afro Wav, Mandisa",
+        "title": "Out Of Love (Afro Wav Rework)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240075,
+        "media_id": 217418,
+        "song_id": "61ddb3bc074286e316494ecc7200286b",
+        "artist": "Korie Minors, Lizwi, DJ 84, Shona SA, Native P",
+        "title": "Usemindawonye (Native P. Remix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240067,
+        "media_id": 217443,
+        "song_id": "4650cac21ba644a5fd6a6d982dd2e816",
+        "artist": "Niiomi, Idd Aziz",
+        "title": "Gemini - Extended Mix",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240068,
+        "media_id": 217506,
+        "song_id": "f775751d466ce93c6c8a515784b8ad8c",
+        "artist": "Boohle, Woza Sabza",
+        "title": "Sinikiwe",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240114,
+        "media_id": 217449,
+        "song_id": "0c05add8e4f3438b6f0a9457f11c4da6",
+        "artist": "Stones & Bones",
+        "title": "Dedication to the DJ",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240047,
+        "media_id": 217436,
+        "song_id": "723c43b11a6a51bc0992bb7a058a8f93",
+        "artist": "Yamil",
+        "title": "Iku Lele (Cee ElAssaad Voodoo Mix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240042,
+        "media_id": 217441,
+        "song_id": "c6f4ccf8f68dd75bc68c67c0129887db",
+        "artist": "Havoc & Lawn",
+        "title": "Chupala",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240066,
+        "media_id": 217488,
+        "song_id": "9fcd8f8da32eebe96562b616a5ee4931",
+        "artist": "Darque, Papany",
+        "title": "Humelela",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240076,
+        "media_id": 217464,
+        "song_id": "dad69d61b9fa4e1a45e52e498c193f46",
+        "artist": "Voodoochild",
+        "title": "If U Need It",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240079,
+        "media_id": 217433,
+        "song_id": "3c59202323c585cda1506a3cfe43fb08",
+        "artist": "PAGEZ, C-Mart, Herve Pagez",
+        "title": "Workah",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240045,
+        "media_id": 217442,
+        "song_id": "72637291561a94119891c5351b35a055",
+        "artist": "Nico de Andrea, Vanetty",
+        "title": "Ethnica (Extended Mix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240107,
+        "media_id": 217456,
+        "song_id": "e5c247471716c5ef1ce1d9c043a4854f",
+        "artist": "Hypaphonik",
+        "title": "Funa Wena",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240130,
+        "media_id": 217468,
+        "song_id": "a527d9b696ffe0265e5165359c61743f",
+        "artist": "Young Stunna, Shaunmusiq, Myztro",
+        "title": "Safa iPiano Original Mix",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240074,
+        "media_id": 217401,
+        "song_id": "f4c2605d3c8b8b348a74c0d855493dff",
+        "artist": "Megatronic, Wandile Mbambeni, Dr Feel",
+        "title": "Rumours (Dr Feel Remix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240113,
+        "media_id": 217426,
+        "song_id": "4cef16d1b5efcd1b417863b9f15462a4",
+        "artist": "FabYo Gomez, Dr Feel, RedRo8se",
+        "title": "We Are One (Extended Mix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240088,
+        "media_id": 217493,
+        "song_id": "6e8d15e2d9294efd7e2f147ec5d234a3",
+        "artist": "Octavez,Aero Manyelo",
+        "title": "Black Pen",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240070,
+        "media_id": 217392,
+        "song_id": "025c3f5d2b7ee075cbc3913c692e2ffa",
+        "artist": "Choujaa",
+        "title": "Nyu Bi Woni",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240060,
+        "media_id": 217452,
+        "song_id": "a8b73569720ec7f905e3d6ed3fa34df7",
+        "artist": "Kopoy Zukar, Malumz on Decks, Khanya De Vocalist",
+        "title": "iThemba (feat. Khanya De Vocalist) (feat. Khanya De Vocalist)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240050,
+        "media_id": 217514,
+        "song_id": "b4b712cbc0363a1bc7c5a90ff14e50c0",
+        "artist": "Chemical Surf",
+        "title": "Mercy (Malive Remix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240058,
+        "media_id": 217489,
+        "song_id": "5667c8351d77b5a85132422655babeb8",
+        "artist": "Cem Seckin & Siina",
+        "title": "Blessed",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240059,
+        "media_id": 217455,
+        "song_id": "ec626eec104faa70c5c7284c2c54bc6b",
+        "artist": "Modjo, Sparrow & Barbossa, Koshi, Daymaan",
+        "title": "Lady (Hear Me Tonight) - Remix (Extended)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240055,
+        "media_id": 217486,
+        "song_id": "9321fe652b47df28d7874c370b64216e",
+        "artist": "SOLIDMIND, Zenma",
+        "title": "Oyowa",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240048,
+        "media_id": 217451,
+        "song_id": "4166847fe22ba14075ed1933c7f62400",
+        "artist": "Stylo, Space Motion & Saulo Duarte",
+        "title": "Freedom",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240063,
+        "media_id": 217477,
+        "song_id": "43e13d9c7e581c7d74e60a472b24b223",
+        "artist": "Jnr SA,Darque,Kabza De Small",
+        "title": "Yebo",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240065,
+        "media_id": 217457,
+        "song_id": "faf1e8abb217299e6095e8c2d365fb93",
+        "artist": "Citizen Deep,Maline Aura,DR Thulz",
+        "title": "Ubala",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240081,
+        "media_id": 217399,
+        "song_id": "aa95cd15a71cfd77712366cd74187766",
+        "artist": "Sebastien Dutch, El Mukuka, Layth Sidiq, Aggeliki",
+        "title": "Matia Mou",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240049,
+        "media_id": 217497,
+        "song_id": "f3275a16daff0465749bc40c13de6e85",
+        "artist": "Doctor Dru & CIOZ",
+        "title": "Dunes",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240115,
+        "media_id": 217472,
+        "song_id": "b3e0e5a6d96fb3e8f7e7dec7bba7665f",
+        "artist": "Moeaike, Alan Dixon",
+        "title": "Bo Bom (Alan Dixon Remix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240116,
+        "media_id": 217460,
+        "song_id": "ecd5c16b9ce44d6ad5165b15ca7c14f3",
+        "artist": "TechTonic'Tay, Bongani Mehlomakhulu",
+        "title": "Immortal",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240087,
+        "media_id": 217453,
+        "song_id": "d6ae242d0b94883682b2495db497baf6",
+        "artist": "Voodoochild, Joezi",
+        "title": "Tunapewa",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240082,
+        "media_id": 217448,
+        "song_id": "8ced38c877426e26cfa5df7172e77c76",
+        "artist": "beatsbyhand",
+        "title": "SARS",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240125,
+        "media_id": 217500,
+        "song_id": "b037f295c49a5804e9fa72fc16610e36",
+        "artist": "Dj Vitoto, Bun Xapa, ZIDDO",
+        "title": "Saharian Girl",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240056,
+        "media_id": 217435,
+        "song_id": "a4bd6656f91a41596da1c24cc988c536",
+        "artist": "DJ Chus, Amira, NenaHalena",
+        "title": "Prado's Revenge Aaron Sevilla Remix",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240064,
+        "media_id": 217413,
+        "song_id": "44984151f2d34c0f9ef2465adc29f6eb",
+        "artist": "Mr Raoul K, Lady Parul",
+        "title": "Urure",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240086,
+        "media_id": 217400,
+        "song_id": "ef08f3d7884dd94864a2d3533d7c4a1b",
+        "artist": "Djuma Soundsystem, Yann Coppier, King Ayisoba",
+        "title": "Esigia",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240071,
+        "media_id": 217481,
+        "song_id": "a0cd8e2939b9b288c82630e307bbd6f2",
+        "artist": "Buddynice",
+        "title": "Keep Moving",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240078,
+        "media_id": 217393,
+        "song_id": "0e341dfc105905b9e899a95802393e78",
+        "artist": "Adore (Fr), Marine Abtan",
+        "title": "SING IT BACK",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240062,
+        "media_id": 217487,
+        "song_id": "079f58d2e5dc8beb66a2fe5a468efd44",
+        "artist": "Mi Casa",
+        "title": "Turn You On",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240057,
+        "media_id": 217463,
+        "song_id": "75059b67a078c233e21f874d8f42d2a8",
+        "artist": "Eran Hersh, TEDDY-O",
+        "title": "Ligado (Extended Mix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240061,
+        "media_id": 217429,
+        "song_id": "364734f156d164a7200836f5fd771967",
+        "artist": "Rony Seikaly & Infinem",
+        "title": "Temperatura",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240117,
+        "media_id": 217404,
+        "song_id": "8ef2e43d5908753fe9cda3f3ecbfc060",
+        "artist": "Adam Port & Stryv",
+        "title": "Move",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240080,
+        "media_id": 217454,
+        "song_id": "f30612ff319da9ea529110710a6a116a",
+        "artist": "Dylan-S, Digolo Philip, Foozak, Candy Man",
+        "title": "Dana (Foozak And Candy Man Remix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240073,
+        "media_id": 217502,
+        "song_id": "5afd4f06988437d7825e21e9c5cff7ee",
+        "artist": "Aimo",
+        "title": "Badlands",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240085,
+        "media_id": 217408,
+        "song_id": "1aa4fb9e5ba37e13fe4eea1937318996",
+        "artist": "KingDonna, Philasande",
+        "title": "Bawo Wethu",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240077,
+        "media_id": 217424,
+        "song_id": "c7e4a646da02e37b1981fb3cea9d791f",
+        "artist": "HUGEL, GROSSOMODDO",
+        "title": "Andalucia",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240098,
+        "media_id": 217471,
+        "song_id": "18de2637866fb1f8de99acb9b412b4b2",
+        "artist": "Emmanuel Jal,Enzo Siffredi",
+        "title": "Shake Your Belly",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240103,
+        "media_id": 217495,
+        "song_id": "5371a1ac7ad77cb590c7bd76cebc4a3d",
+        "artist": "The Siege DJ",
+        "title": "Around",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240099,
+        "media_id": 217445,
+        "song_id": "a3f67a8e74d593d3e28cdef9152c901a",
+        "artist": "Khenya",
+        "title": "Jarana (Radio Edit)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240118,
+        "media_id": 217381,
+        "song_id": "8e24691815b5650f9d3febc2d714d7eb",
+        "artist": "CLEIDO, Dillan Desai",
+        "title": "Hard To Love",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240089,
+        "media_id": 217465,
+        "song_id": "cedd0de9f0d5197af0ddd65119c2a5f3",
+        "artist": "Boddhi Satva, Erin Kimberly, Manoo",
+        "title": "Now Or Never (Manoo Spicy Remix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240095,
+        "media_id": 217503,
+        "song_id": "42fdfc8cd7ec4fba9f21cedf49a0a874",
+        "artist": "NAAK,Atmos Blaq",
+        "title": "FIND A WAY",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240091,
+        "media_id": 217459,
+        "song_id": "385d015e49386d6a9eb07ba5934dcf80",
+        "artist": "Leo Guardo, Leo Gira, Tony P., Tabia",
+        "title": "Thonga",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240110,
+        "media_id": 217478,
+        "song_id": "8212232687595aec28c1a90cfd19df53",
+        "artist": "DJ Tomer, Ricardo Gi, Mayan DeLion",
+        "title": "No Other Way (VooDoo Tribe Extended Mix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240122,
+        "media_id": 217446,
+        "song_id": "df40949f318043d85319eb13c1f2a4d8",
+        "artist": "Charisse C",
+        "title": "Siren's Interlude",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240084,
+        "media_id": 217482,
+        "song_id": "31f874bb0aacf570b92d63c52b4eaf18",
+        "artist": "Trekkah, HARDIHOOD",
+        "title": "Karma Nights",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240128,
+        "media_id": 217423,
+        "song_id": "83d93e4b4c9b5c93581ce0b70d7254f6",
+        "artist": "UKAI NDAME",
+        "title": "Sulula",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240101,
+        "media_id": 217484,
+        "song_id": "4057ce33f725d5a868be54876979424d",
+        "artist": "Eli Fola, Canetis",
+        "title": "Calma - Extended",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240097,
+        "media_id": 217513,
+        "song_id": "476e41b84f408b6b8213c204f92b6767",
+        "artist": "Arcade Saiyans, RAPHV, Dr Feel",
+        "title": "Sangre Latina",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240090,
+        "media_id": 217479,
+        "song_id": "4104ffe95c3e274a1b48bd799dccdb4c",
+        "artist": "Claude Monnet",
+        "title": "From The G",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240108,
+        "media_id": 217512,
+        "song_id": "4653819cdeb7003c4a7b190e80f963c5",
+        "artist": "G-Wash10, Mpumi",
+        "title": "VULANI",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240092,
+        "media_id": 217427,
+        "song_id": "ddeb6bca96b801b56ae122312f456cde",
+        "artist": "Loup Musa",
+        "title": "Waza",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240124,
+        "media_id": 217480,
+        "song_id": "421e0074511c93c5f22f9ac7303e1307",
+        "artist": "Kryder",
+        "title": "The Eye Of Ra (Extended Mix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240123,
+        "media_id": 217437,
+        "song_id": "a17c4f24472ee6394a457571dcdc7947",
+        "artist": "Culoe de Song",
+        "title": "Y.O.U.D.",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240111,
+        "media_id": 217447,
+        "song_id": "46889bba5d1376f5e776fedc7d401e5d",
+        "artist": "Badbox",
+        "title": "Fake the Move",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240109,
+        "media_id": 217470,
+        "song_id": "fa285f400057bacec14397542e9a2a89",
+        "artist": "Oscar Sulley, The Uhuru Dance Band, JKriv, Domenica Fossati",
+        "title": "Bukom Mashie (JKriv Extended Acid Dub)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240100,
+        "media_id": 217438,
+        "song_id": "e04e8c6ba354ab2c3601884e2a266586",
+        "artist": "Jalal Ramdani, Augusto Yepes, Daniel Rateuke",
+        "title": "Mauri (Daniel Rateuke Remix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240096,
+        "media_id": 217431,
+        "song_id": "7996cc654a10cf46c0907e5330f74e55",
+        "artist": "Batida, Mayra Andrade, Thakzin",
+        "title": "Bom Bom (Thakzin Vocal Remix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240131,
+        "media_id": 217461,
+        "song_id": "b40f381925ed8190bbfbf31a514fb4fa",
+        "artist": "Lil'Owl, Jo Choneca",
+        "title": "Sembe",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240104,
+        "media_id": 217490,
+        "song_id": "c4ae46f178bd77ac8e98b101f88a969f",
+        "artist": "Da Le (Havana)",
+        "title": "Land of Spirits",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240105,
+        "media_id": 217498,
+        "song_id": "889868da66d5d9883f918475de848f30",
+        "artist": "Aberton",
+        "title": "Souk",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240127,
+        "media_id": 217415,
+        "song_id": "9bc2abdb3a1ac099e1d79d8715a1a714",
+        "artist": "Ladour, David Hopperman, Kahari, Idd Aziz, Bassfinder, Faceoff",
+        "title": "Kula - Bassfinder & Faceoff Remix",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240112,
+        "media_id": 217458,
+        "song_id": "84942cec1be2efc924651e8fcb3d9b2a",
+        "artist": "Natema",
+        "title": "BMW (Afro Latin Mix)",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240119,
+        "media_id": 217508,
+        "song_id": "7e85e4b59da9a3cc341de4c951bca10e",
+        "artist": "African Children's Choir, Francis Mercier & Faul & Wad",
+        "title": "Sauti",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240120,
+        "media_id": 217473,
+        "song_id": "88b174be92d5a8c8e55716181c84ba03",
+        "artist": "Re.you, Paige, Biishop",
+        "title": "Innocent",
+        "last_played": 0
+      },
+      {
+        "spm_id": 240129,
+        "media_id": 217384,
+        "song_id": "1d3b3856595447cba1d5ab444016f7e6",
+        "artist": "TitoM, Major_Keys, Ohp Sage, Yuppe",
+        "title": "CAROLINA (feat. TitoM & Yuppe) feat. TitoM & Yuppe",
+        "last_played": 0
+      }
+    ]
+  }
+}
