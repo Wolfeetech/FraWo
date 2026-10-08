@@ -62,7 +62,7 @@ Live ist maßgeblich, das Repo ist die Quelle für Änderungen. **Vor jeder Änd
 1. **VORHER:** Odoo-Task lesen, im Chatter ankündigen was du tust (mit Agent-Name!)
 2. **MACHEN:** Arbeit ausführen, bei Blockern → Task auf 🛑 Blockiert + Blocker dokumentieren
 3. **NACHHER:** Ergebnis im Chatter loggen (was, wo, wie verifiziert), erst DANN Stage ändern
-4. **ZEITERFASSUNG:** Bei spürbarem Aufwand (>15 Min) eine Timesheet-Zeile auf dem Task eintragen (`account.analytic.line`, Feld `unit_amount` in Stunden, `name` mit Agent-Präfix, z.B. „🤖 [Claude] Bugfix + Deploy"). Zusätzlich `employee_id` explizit setzen — eigener `hr.employee`-Datensatz je Agent (alle drei teilen sich `user_id` 7, daher reicht das Login nicht zur Zuordnung): Antigravity = 9, Claude Code = 11, Jarvis = 12. Agenten arbeiten wie Teammitglieder im Team — ehrlich geschätzt, nicht aufgerundet, gleiche Sorgfalt wie beim Erledigt-Setzen.
+4. **ZEITERFASSUNG:** Bei spürbarem Aufwand (>15 Min) eine Timesheet-Zeile auf dem Task eintragen (`account.analytic.line`, Feld `unit_amount` in Stunden, `name` mit Agent-Präfix, z.B. „🤖 [Claude] Bugfix + Deploy"). Zusätzlich `employee_id` explizit setzen — eigener `hr.employee`-Datensatz je Agent (alle teilen sich `user_id` 7, daher reicht das Login nicht zur Zuordnung): Antigravity = 9, Claude Code = 11, Jarvis = 12, Hermes = 14. Agenten arbeiten wie Teammitglieder im Team — ehrlich geschätzt, nicht aufgerundet, gleiche Sorgfalt wie beim Erledigt-Setzen.
 
 **NIEMALS einen Task auf Erledigt setzen ohne echte, verifizierte Arbeit.** (Historie: odoo-agent-poll-Desaster mit Fake-Erledigungen.)
 
