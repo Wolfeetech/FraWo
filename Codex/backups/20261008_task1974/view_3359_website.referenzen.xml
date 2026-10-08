@@ -1,0 +1,461 @@
+<t name="Referenzen" t-name="website.referenzen">
+<t t-call="website.layout">
+<div id="wrap" class="oe_structure">
+  <style>
+    :root {
+      --fw-bg: #0a0a0a;
+      --fw-surface: #141816;
+      --fw-card: #141816;
+      --fw-card-border: #2a2e2c;
+      --fw-primary: #004030;
+      --fw-accent: #a050f0;
+      --fw-accent-hover: #0891b2;
+      --fw-text-bright: #e8e8e8;
+      --fw-text-mid: #98a29e;
+      --fw-text-muted: #6b7571;
+      --fw-border: #2a2e2c;
+      --fw-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body, #wrapwrap, #wrap, main {
+      background-color: var(--fw-bg) !important;
+      color: var(--fw-text-bright) !important;
+      font-family: var(--fw-font-sans) !important;
+    }
+
+    .fw-ref-page {
+      background: var(--fw-bg);
+      color: var(--fw-text-bright);
+      min-height: 100vh;
+      padding-bottom: 90px;
+    }
+
+    .fw-ref-hero {
+      padding: 90px 20px 60px;
+      text-align: center;
+      background: var(--fw-bg);
+      border-bottom: 1px solid var(--fw-border);
+    }
+
+    .fw-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--fw-primary);
+      border: 1px solid var(--fw-border);
+      color: #ffffff;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      padding: 6px 14px;
+      border-radius: 0px;
+      margin-bottom: 24px;
+    }
+
+    .fw-ref-title {
+      font-size: clamp(2.2rem, 5vw, 3.8rem);
+      font-weight: 800;
+      color: var(--fw-text-bright);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .fw-ref-title span {
+      color: var(--fw-accent);
+    }
+
+    .fw-ref-lead {
+      font-size: 1.1rem;
+      color: var(--fw-text-mid);
+      max-width: 720px;
+      margin: 0 auto;
+      line-height: 1.6;
+      font-weight: 400;
+    }
+
+    /* 2x2 Showcase Grid */
+    .fw-showcase-container {
+      max-width: 1150px;
+      margin: 60px auto 0;
+      padding: 0 20px;
+    }
+
+    .fw-ref-grid-2x2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 32px;
+    }
+
+    @media (max-width: 860px) {
+      .fw-ref-grid-2x2 { grid-template-columns: 1fr; gap: 24px; }
+    }
+
+    .fw-ref-card {
+      background: var(--fw-surface);
+      border: 1px solid var(--fw-border);
+      border-radius: 0px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: border-color 0.25s ease, transform 0.25s ease;
+    }
+
+    .fw-ref-card:hover {
+      border-color: var(--fw-accent);
+      transform: translateY(-4px);
+    }
+
+    .fw-ref-img-header {
+      width: 100%;
+      height: 220px;
+      background: #000000;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid var(--fw-border);
+    }
+
+    .fw-ref-img-header img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.4s ease;
+    }
+
+    .fw-ref-badge-top {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: rgba(10,10,10,0.85);
+      border: 1px solid var(--fw-border);
+      color: #ffffff;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 4px 10px;
+      z-index: 2;
+    }
+
+    .fw-ref-loc {
+      position: absolute;
+      bottom: 12px;
+      right: 12px;
+      background: rgba(10,10,10,0.85);
+      border: 1px solid var(--fw-border);
+      color: var(--fw-accent);
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 4px 10px;
+      z-index: 2;
+    }
+
+    .fw-ref-body {
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      flex-grow: 1;
+      gap: 20px;
+    }
+
+    .fw-ref-tag-sub {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--fw-accent);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 6px;
+    }
+
+    .fw-ref-h3 {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--fw-text-bright);
+      text-transform: uppercase;
+      line-height: 1.25;
+      margin-bottom: 12px;
+    }
+
+    .fw-ref-desc {
+      font-size: 0.92rem;
+      color: var(--fw-text-mid);
+      line-height: 1.6;
+      margin-bottom: 18px;
+    }
+
+    .fw-ref-specs-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .fw-ref-spec-pill {
+      background: var(--fw-bg);
+      border: 1px solid var(--fw-border);
+      color: #cbd5e1;
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 0px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Partner Network Strip */
+    .fw-network-sec {
+      background: var(--fw-surface);
+      border-top: 1px solid var(--fw-border);
+      border-bottom: 1px solid var(--fw-border);
+      padding: 70px 20px;
+      margin-top: 80px;
+    }
+
+    .fw-network-inner {
+      max-width: 1150px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .fw-network-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+      margin-top: 36px;
+    }
+
+    @media (max-width: 860px) {
+      .fw-network-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 500px) {
+      .fw-network-grid { grid-template-columns: 1fr; }
+    }
+
+    .fw-partner-card-min {
+      background: var(--fw-bg);
+      border: 1px solid var(--fw-border);
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .fw-partner-card-min strong {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--fw-text-bright);
+      text-transform: uppercase;
+    }
+
+    .fw-partner-card-min span {
+      font-size: 0.8rem;
+      color: var(--fw-text-mid);
+    }
+
+    /* CTA Box */
+    .fw-ref-cta-box {
+      max-width: 1150px;
+      margin: 80px auto 0;
+      padding: 50px 30px;
+      background: var(--fw-surface);
+      border: 1px solid var(--fw-border);
+      text-align: center;
+    }
+
+    .fw-btn-primary {
+      background: var(--fw-accent) !important;
+      color: #ffffff !important;
+      border: 1px solid var(--fw-accent) !important;
+      font-size: 0.92rem !important;
+      font-weight: 700 !important;
+      text-transform: uppercase !important;
+      letter-spacing: 0.06em !important;
+      padding: 14px 28px !important;
+      border-radius: 0px !important;
+      text-decoration: none !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 8px !important;
+      transition: background-color 0.2s ease !important;
+    }
+
+    .fw-btn-primary:hover {
+      background: var(--fw-accent-hover) !important;
+      border-color: var(--fw-accent-hover) !important;
+    }
+  </style>
+
+  <div class="fw-ref-page">
+
+    <!-- Hero Section -->
+    <section class="fw-ref-hero">
+      <div class="container">
+        <div class="fw-eyebrow">Praxis &amp; Kooperationen</div>
+        <h1 class="fw-ref-title">Partner &amp; <span>Referenzen</span></h1>
+        <p class="fw-ref-lead">
+          Echte Partnerschaften, erprobte Festival- und Club-Infrastruktur und fundiertes Handwerk in der Bodenseeregion. Qualität und Zuverlässigkeit statt oberflächlicher Massenauflistung.
+        </p>
+      </div>
+    </section>
+
+    <!-- Curated 2x2 Showcase Grid -->
+    <div class="fw-showcase-container">
+      <div class="fw-ref-grid-2x2">
+
+        <!-- Case 1: Club Vaudeville Lindau -->
+        <div class="fw-ref-card">
+          <div class="fw-ref-img-header">
+            <img src="/web/image/2189/club_vaudeville_lindau.webp" alt="Club Vaudeville Lindau Live Konzert FOH Betreuung" loading="lazy"/>
+            <div class="fw-ref-badge-top">🎪 LIVE-BETRIEB</div>
+            <div class="fw-ref-loc">Lindau (Bodensee)</div>
+          </div>
+          <div class="fw-ref-body">
+            <div>
+              <div class="fw-ref-tag-sub">Live-Club &amp; Kulturzentrum</div>
+              <h3 class="fw-ref-h3">Club Vaudeville Lindau e.V.</h3>
+              <p class="fw-ref-desc">
+                Technische Unterstützung, FOH-Mischung und Betreuung der Audio- &amp; Lichtinfrastruktur bei Live-Konzerten und Clubshows im soziokulturellen Zentrum Club Vaudeville. Zuverlässiger Bühnen- und Monitorsound für Tour-Bands und lokale Acts.
+              </p>
+            </div>
+            <div class="fw-ref-specs-wrap">
+              <div class="fw-ref-spec-pill">🎛️ FOH-Mischung (Midas M32)</div>
+              <div class="fw-ref-spec-pill">🔊 Monitor-Sound</div>
+              <div class="fw-ref-spec-pill">💡 DMX-Lichtregie</div>
+              <div class="fw-ref-spec-pill">🎸 Live-Stage Crew</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Case 2: L.H. Veranstaltungstechnik -->
+        <div class="fw-ref-card">
+          <div class="fw-ref-img-header">
+            <img src="/web/image/2182/lh_veranstaltungstechnik_flightcases.jpg" alt="L.H. Veranstaltungstechnik Kooperation Traversenbau" loading="lazy"/>
+            <div class="fw-ref-badge-top">🏗️ KOOPERATION</div>
+            <div class="fw-ref-loc">Bodensee &amp; Allgäu</div>
+          </div>
+          <div class="fw-ref-body">
+            <div>
+              <div class="fw-ref-tag-sub">Fester Kooperationspartner</div>
+              <h3 class="fw-ref-h3">L.H. Veranstaltungstechnik</h3>
+              <p class="fw-ref-desc">
+                Operative Zusammenarbeit bei Großevents, Festivalbühnen und Open-Airs. Gegenseitige Ergänzung des Materialpools, Aufbau von Ground-Support-Traversen und Bereitstellung erfahrener Stage-Crews vor Ort.
+              </p>
+            </div>
+            <div class="fw-ref-specs-wrap">
+              <div class="fw-ref-spec-pill">🏗️ Ground-Support Traversen</div>
+              <div class="fw-ref-spec-pill">📦 Geteilter Rental-Pool</div>
+              <div class="fw-ref-spec-pill">🤝 B2B Sub-Support</div>
+              <div class="fw-ref-spec-pill">⚡ Großbeschallung</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Case 3: Konstruktiver Holzbau & Zimmerei-Handwerk -->
+        <div class="fw-ref-card">
+          <div class="fw-ref-img-header">
+            <img src="/web/image/2666/franz_forster_handwerk_crop.jpg" alt="Franz Bienert Zimmerergeselle Veranstaltungstechnik" loading="lazy"/>
+            <div class="fw-ref-badge-top">🪵 HANDWERKLICHE PRAXIS</div>
+            <div class="fw-ref-loc">Zimmerei-Handwerk</div>
+          </div>
+          <div class="fw-ref-body">
+            <div>
+              <div class="fw-ref-tag-sub">Handwerkliche Ausbildung &amp; Praxis</div>
+              <h3 class="fw-ref-h3">Konstruktiver Holzbau &amp; Zimmerei-Handwerk</h3>
+              <p class="fw-ref-desc">
+                Franz Bienert ist ausgebildeter Zimmerergeselle (HWK) mit fundierter Praxis im konstruktiven Holzbau. Diese Ausbildung und tägliche handwerkliche Erfahrung fließen direkt in alle Traversenkonstruktionen, Bühnenpodeste und maßgefertigten Akustiklösungen von FraWo ein.
+              </p>
+            </div>
+            <div class="fw-ref-specs-wrap">
+              <div class="fw-ref-spec-pill">🪵 Zimmerergeselle (HWK)</div>
+              <div class="fw-ref-spec-pill">🏗️ Bühnenpodeste &amp; Traversen</div>
+              <div class="fw-ref-spec-pill">📐 Konstruktiver Holzbau</div>
+              <div class="fw-ref-spec-pill">🛠️ Akustik- &amp; Regiemöbel</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Case 4: Inselhalle Lindau -->
+        <div class="fw-ref-card">
+          <div class="fw-ref-img-header">
+            <img src="/web/image/2188/inselhalle_lindau_buehne.jpg" alt="Inselhalle Lindau Tagungstechnik und Medienregie" loading="lazy"/>
+            <div class="fw-ref-badge-top">🎙️ KONGRESS &amp; TAGUNG</div>
+            <div class="fw-ref-loc">Inselhalle Lindau</div>
+          </div>
+          <div class="fw-ref-body">
+            <div>
+              <div class="fw-ref-tag-sub">Tagungs- &amp; Kongress-Support</div>
+              <h3 class="fw-ref-h3">Inselhalle Lindau (LTK)</h3>
+              <p class="fw-ref-desc">
+                Technische Unterstützung bei Tagungen, Konferenzen und Kulturveranstaltungen. Betreuung digitaler Mischpulte, Mediensteuerungen und präzise Audio-Einmessung für glasklare Sprachverständlichkeit.
+              </p>
+            </div>
+            <div class="fw-ref-specs-wrap">
+              <div class="fw-ref-spec-pill">🎙️ Sprachbeschallung</div>
+              <div class="fw-ref-spec-pill">📊 System-EQ &amp; DSP</div>
+              <div class="fw-ref-spec-pill">💻 Medien-Infrastruktur</div>
+              <div class="fw-ref-spec-pill">🎛️ Digitalregie</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Partner & Vertrauensnetzwerk -->
+    <section class="fw-network-sec">
+      <div class="fw-network-inner">
+        <div class="fw-eyebrow">Netzwerk</div>
+        <h2 style="font-size: 1.8rem; font-weight: 800; text-transform: uppercase; color: var(--fw-text-bright); margin-bottom: 8px;">
+          Vertrauenspartner in der Region
+        </h2>
+        <p style="font-size: 0.95rem; color: var(--fw-text-mid); max-width: 600px; margin: 0 auto 36px;">
+          Wir schätzen den partnerschaftlichen Austausch mit Veranstaltern, Venues und befreundeten Handwerksbetrieben.
+        </p>
+
+        <div class="fw-network-grid">
+          <div class="fw-partner-card-min">
+            <strong>Club Vaudeville e.V.</strong>
+            <span>Live-Club &amp; Kulturzentrum</span>
+          </div>
+          <div class="fw-partner-card-min">
+            <strong>L.H. Veranstaltungstechnik</strong>
+            <span>Kooperationspartner &amp; Rental-Pool</span>
+          </div>
+          <div class="fw-partner-card-min">
+            <strong>Zimmerei &amp; Holzbau</strong>
+            <span>Handwerkliche Holzbau-Kompetenz im Team</span>
+          </div>
+          <div class="fw-partner-card-min">
+            <strong>Inselhalle Lindau (LTK)</strong>
+            <span>Tagungs- &amp; Event-Location</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Call to Action -->
+    <div class="container">
+      <div class="fw-ref-cta-box">
+        <h2 style="font-size: 1.8rem; font-weight: 800; text-transform: uppercase; color: var(--fw-text-bright); margin-bottom: 12px;">
+          Planst du ein Event oder suchst du einen Partner?
+        </h2>
+        <p style="font-size: 0.95rem; color: var(--fw-text-mid); max-width: 650px; margin: 0 auto 28px;">
+          Ob Club-Show, Festival-Stage, Ground-Support oder Material-Miete — wir unterstützen dich mit verlässlicher Technik und handfester Praxiserfahrung.
+        </p>
+        <a href="/contactus" class="fw-btn-primary">Jetzt Projekt anfragen →</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+</t>
+</t>

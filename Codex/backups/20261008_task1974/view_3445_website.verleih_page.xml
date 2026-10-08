@@ -1,0 +1,1039 @@
+<t name="Mietpark &amp; Verleih" t-name="website.verleih_page">
+<t t-call="website.layout">
+<div id="wrap" class="oe_structure">
+  <style>
+    :root {
+      --fw-bg: #0a0a0a;
+      --fw-surface: #141816;
+      --fw-card: #141816;
+      --fw-card-border: #2a2e2c;
+      --fw-primary: #004030;
+      --fw-accent: #a050f0;
+      --fw-accent-hover: #0891b2;
+      --fw-text-bright: #e8e8e8;
+      --fw-text-mid: #98a29e;
+      --fw-text-muted: #6b7571;
+      --fw-border: #2a2e2c;
+      --fw-whatsapp: #25d366;
+      --fw-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body, #wrapwrap, #wrap, main {
+      background-color: var(--fw-bg) !important;
+      color: var(--fw-text-bright) !important;
+      font-family: var(--fw-font-sans) !important;
+    }
+
+    .fw-verleih-wrap {
+      background: var(--fw-bg);
+      color: var(--fw-text-bright);
+      min-height: 100vh;
+      padding-bottom: 100px;
+    }
+
+    .fw-verleih-hero {
+      padding: 90px 20px 60px;
+      text-align: center;
+      background: var(--fw-bg);
+      border-bottom: 1px solid var(--fw-border);
+    }
+
+    .fw-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--fw-primary);
+      border: 1px solid var(--fw-border);
+      color: #ffffff;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      padding: 6px 14px;
+      border-radius: 0px;
+      margin-bottom: 24px;
+    }
+
+    .fw-h1 {
+      font-size: clamp(2.2rem, 5vw, 3.8rem);
+      font-weight: 800;
+      color: var(--fw-text-bright);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .fw-h1 span {
+      color: var(--fw-accent);
+    }
+
+    .fw-lead {
+      font-size: 1.1rem;
+      color: var(--fw-text-mid);
+      max-width: 720px;
+      margin: 0 auto;
+      line-height: 1.6;
+      font-weight: 400;
+    }
+
+    /* Filter Bar */
+    .fw-control-bar {
+      position: sticky;
+      top: 0;
+      z-index: 99;
+      background: rgba(10, 10, 10, 0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--fw-border);
+      padding: 14px 20px;
+    }
+
+    .fw-control-inner {
+      max-width: 1150px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .fw-cat-scroll {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+    }
+
+    .fw-cat-scroll::-webkit-scrollbar {
+      display: none;
+    }
+
+    .fw-filter-btn {
+      background: var(--fw-surface);
+      border: 1px solid var(--fw-border);
+      color: var(--fw-text-mid);
+      padding: 8px 16px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-radius: 0px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+
+    .fw-filter-btn:hover, .fw-filter-btn.active {
+      background: var(--fw-primary);
+      border-color: var(--fw-accent);
+      color: #ffffff;
+    }
+
+    /* Cards Stack */
+    .fw-stack-wrapper {
+      max-width: 1150px;
+      margin: 50px auto 0;
+      padding: 0 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 36px;
+    }
+
+    .fw-stack-card {
+      background: var(--fw-surface);
+      border: 1px solid var(--fw-border);
+      border-radius: 0px;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      transition: border-color 0.25s ease, transform 0.25s ease;
+    }
+
+    .fw-stack-card:hover {
+      border-color: var(--fw-accent);
+      transform: translateY(-2px);
+    }
+
+    @media (max-width: 880px) {
+      .fw-stack-card {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .fw-card-img-col {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      min-height: 260px;
+      background: #090c0a;
+      border-right: 1px solid var(--fw-border);
+      overflow: hidden;
+    }
+
+    @media (max-width: 880px) {
+      .fw-card-img-col {
+        border-right: none;
+        border-bottom: 1px solid var(--fw-border);
+        height: 240px;
+        min-height: auto;
+      }
+    }
+
+    .fw-card-img-col img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.4s ease;
+    }
+
+    .fw-stack-card:hover .fw-card-img-col img {
+      transform: scale(1.05);
+    }
+
+    .fw-card-img-tag {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: rgba(10, 10, 10, 0.88);
+      border: 1px solid var(--fw-border);
+      color: #ffffff;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 4px 10px;
+      z-index: 2;
+    }
+
+    .fw-card-status-tag {
+      position: absolute;
+      bottom: 12px;
+      left: 12px;
+      background: rgba(10, 10, 10, 0.88);
+      border: 1px solid var(--fw-border);
+      color: #2ecc71;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 4px 10px;
+      z-index: 2;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .fw-card-body-col {
+      padding: 32px 36px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    @media (max-width: 600px) {
+      .fw-card-body-col { padding: 24px 20px; }
+    }
+
+    .fw-card-top-tag {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--fw-accent);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 8px;
+    }
+
+    .fw-item-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--fw-text-bright);
+      line-height: 1.25;
+      margin-bottom: 12px;
+      letter-spacing: -0.01em;
+      text-transform: uppercase;
+    }
+
+    .fw-item-desc {
+      font-size: 0.93rem;
+      color: var(--fw-text-mid);
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .fw-specs-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 600px) {
+      .fw-specs-grid { grid-template-columns: 1fr; }
+    }
+
+    .fw-spec-chip {
+      background: var(--fw-bg);
+      border: 1px solid var(--fw-border);
+      border-radius: 0px;
+      padding: 8px 12px;
+      font-size: 0.8rem;
+      color: #cbd5e1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .fw-spec-chip span {
+      color: var(--fw-accent);
+      font-weight: 700;
+    }
+
+    .fw-included-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .fw-included-item {
+      font-size: 0.82rem;
+      color: var(--fw-text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .fw-check {
+      color: #2ecc71;
+      font-weight: 700;
+    }
+
+    /* Action Bar */
+    .fw-card-action-bar {
+      border-top: 1px solid var(--fw-border);
+      padding-top: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .fw-price-large {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--fw-text-bright);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .fw-price-term {
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--fw-accent);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 4px;
+    }
+
+    .fw-subprice-info {
+      font-size: 0.78rem;
+      color: var(--fw-text-muted);
+    }
+
+    .fw-btn-stack {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .fw-btn-book {
+      background: var(--fw-accent) !important;
+      color: #ffffff !important;
+      border: 1px solid var(--fw-accent) !important;
+      font-size: 0.88rem !important;
+      font-weight: 700 !important;
+      text-transform: uppercase !important;
+      letter-spacing: 0.06em !important;
+      padding: 12px 22px !important;
+      border-radius: 0px !important;
+      text-decoration: none !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 8px !important;
+      transition: background 0.2s ease !important;
+    }
+
+    .fw-btn-book:hover {
+      background: var(--fw-accent-hover) !important;
+      border-color: var(--fw-accent-hover) !important;
+    }
+
+    .fw-btn-wa {
+      background: transparent !important;
+      color: var(--fw-whatsapp) !important;
+      border: 1px solid var(--fw-whatsapp) !important;
+      font-size: 0.88rem !important;
+      font-weight: 700 !important;
+      text-transform: uppercase !important;
+      letter-spacing: 0.06em !important;
+      padding: 12px 20px !important;
+      border-radius: 0px !important;
+      text-decoration: none !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 8px !important;
+    }
+
+    .fw-btn-wa:hover {
+      background: var(--fw-whatsapp) !important;
+      color: #000000 !important;
+    }
+
+    /* Bottom Portal Hub */
+    .fw-bottom-portal-hub {
+      max-width: 1150px;
+      margin: 80px auto 0;
+      padding: 0 20px;
+    }
+
+    .fw-portal-card-box {
+      background: var(--fw-surface);
+      border: 1px solid var(--fw-border);
+      padding: 50px 40px;
+      text-align: center;
+    }
+  </style>
+
+  <div class="fw-verleih-wrap">
+
+    <!-- Hero Header -->
+    <section class="fw-verleih-hero">
+      <div class="container">
+        <div class="fw-eyebrow">Mietpark &amp; Event-Equipment</div>
+        <h1 class="fw-h1">Equipment-Miete &amp; <span>Pakete</span></h1>
+        <p class="fw-lead">
+          Technik mit Betreuung – wir bringen, bauen auf, betreuen und bauen ab. Oder zum Selbstabholen: geprüfte Ton-, Licht- und Event-Sets ab Lager Weißensberg.
+        </p>
+      </div>
+    </section>
+
+    <!-- Technik mit Betreuung: Pakete S/M/L (Wolf 05.10.2026) -->
+    <style>
+      .fw-svc { padding: 50px 20px 30px; border-bottom: 1px solid var(--fw-border); }
+      .fw-svc-head { text-align:center; margin-bottom: 28px; }
+      .fw-svc-head h2 { font-size: clamp(1.5rem, 3vw, 2.2rem); font-weight: 800; text-transform: uppercase; color: var(--fw-text-bright); margin-bottom: 8px; }
+      .fw-svc-head p { color: var(--fw-text-mid); max-width: 720px; margin: 0 auto; }
+      .fw-svc-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; max-width: 1100px; margin: 0 auto; }
+      .fw-svc-card { background: var(--fw-card); border: 1px solid var(--fw-card-border); padding: 22px; display:flex; flex-direction:column; }
+      .fw-svc-tag { display:inline-block; align-self:flex-start; background: var(--fw-primary); color:#fff; font-size: 0.72rem; font-weight:700; letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 10px; margin-bottom: 12px; }
+      .fw-svc-title { font-size: 1.15rem; font-weight: 800; color: var(--fw-text-bright); margin-bottom: 10px; }
+      .fw-svc-list { color: var(--fw-text-mid); font-size: 0.9rem; padding-left: 18px; margin-bottom: 16px; flex:1; }
+      .fw-svc-list li { margin-bottom: 4px; }
+      .fw-svc-price { font-size: 1.6rem; font-weight: 800; color: var(--fw-text-bright); margin-bottom: 12px; }
+      .fw-svc-note { text-align:center; color: var(--fw-text-muted); font-size: 0.8rem; margin-top: 18px; }
+    </style>
+    <section class="fw-svc">
+      <div class="fw-svc-head">
+        <h2>Technik mit Betreuung</h2>
+        <p>Ihr feiert, wir kümmern uns: Anlieferung, Aufbau, Betreuung während der Veranstaltung und Abbau durch unsere Fachkraft für Veranstaltungstechnik. Anfahrt bis 30 km inklusive.</p>
+      </div>
+      <div class="fw-svc-grid">
+        <div class="fw-svc-card">
+          <div class="fw-svc-tag">bis 100 Personen</div>
+          <h3 class="fw-svc-title">Paket S · Hoffest &amp; Vereinsabend</h3>
+          <ul class="fw-svc-list"><li>2 aktive Lautsprecher, Mischpult, Funkmikrofon</li><li>4 LED-Scheinwerfer</li><li>Techniker: Aufbau, bis 6 h Betreuung, Abbau</li></ul>
+          <div class="fw-svc-price">ab 449 €</div>
+          <button type="button" class="fw-btn-book" style="cursor:pointer; width:100%;" onclick="openRentalModal('PAKET-S', 'Paket S · Hoffest &amp; Vereinsabend')">⚡ Paket anfragen →</button>
+        </div>
+        <div class="fw-svc-card">
+          <div class="fw-svc-tag">bis 250 Personen</div>
+          <h3 class="fw-svc-title">Paket M · Fest &amp; Feier</h3>
+          <ul class="fw-svc-list"><li>PA mit Tops und Doppel-12″-Bass, Mischpult, 2 Funkmikrofone</li><li>Licht: 4 LED-Scheinwerfer, 2 Moving Heads, Lichtsteuerung</li><li>Fachkraft: Aufbau, bis 10 h Betreuung, Abbau</li></ul>
+          <div class="fw-svc-price">ab 890 €</div>
+          <button type="button" class="fw-btn-book" style="cursor:pointer; width:100%;" onclick="openRentalModal('PAKET-M', 'Paket M · Fest &amp; Feier')">⚡ Paket anfragen →</button>
+        </div>
+        <div class="fw-svc-card">
+          <div class="fw-svc-tag">bis 500 Personen</div>
+          <h3 class="fw-svc-title">Paket L · Open Air &amp; Event</h3>
+          <ul class="fw-svc-list"><li>wie Paket M, mit zusätzlichem Bass und erweitertem Licht</li><li>Fachkraft plus Helfer</li><li>genaue Zusammenstellung nach Absprache</li></ul>
+          <div class="fw-svc-price">ab 1490 €</div>
+          <button type="button" class="fw-btn-book" style="cursor:pointer; width:100%;" onclick="openRentalModal('PAKET-L', 'Paket L · Open Air &amp; Event')">⚡ Paket anfragen →</button>
+        </div>
+      </div>
+      <p class="fw-svc-note">Endpreise – gemäß §19 UStG wird keine Umsatzsteuer berechnet. Darunter: Equipment zum Selbstabholen.</p>
+    </section>
+
+    <!-- Sticky Filter Controls -->
+    <div class="fw-control-bar">
+      <div class="fw-control-inner">
+        <div class="fw-cat-scroll" id="fwCatFilter">
+          <button class="fw-filter-btn active" onclick="filterCategory('all', this)">Alle Angebote (10)</button>
+          <button class="fw-filter-btn" onclick="filterCategory('pakete', this)">📦 Pakete (6)</button>
+          <button class="fw-filter-btn" onclick="filterCategory('ton', this)">🔊 Ton &amp; PA (5)</button>
+          <button class="fw-filter-btn" onclick="filterCategory('licht', this)">💡 Licht (4)</button>
+          <button class="fw-filter-btn" onclick="filterCategory('regie', this)">🎧 DJ &amp; Regie (2)</button>
+          <button class="fw-filter-btn" onclick="filterCategory('fun', this)">🎯 Fun &amp; Events (2)</button>
+          <button class="fw-filter-btn" onclick="filterCategory('transport', this)">🚗 Transport (1)</button>
+        </div>
+        <a href="https://wa.me/4915155243164?text=Hallo%20FraWo,%20ich%20habe%20eine%20Mietanfrage%20f%C3%BCr%20Equipment." target="_blank" class="fw-btn-wa" style="padding: 8px 16px; font-size: 0.8rem;">
+          💬 WhatsApp Direkt
+        </a>
+      </div>
+    </div>
+
+    <!-- Rental Items Stack -->
+    <div class="fw-stack-wrapper">
+          <!-- Item 01: Licht-Set »Pro Show« -->
+          <div class="fw-stack-card" data-cat="pakete licht">
+            <div class="fw-card-img-col">
+              <img src="/web/image/2680/rental_pro_licht_wolfmix_paket.jpg?v=8" alt="Licht-Set »Pro Show« FraWo Mietpark" loading="lazy"/>
+              <div class="fw-card-img-tag">💡 DMX SHOW</div>
+              <div class="fw-card-status-tag"><span style="font-size: 8px;">●</span> SOFORT VERFÜGBAR</div>
+            </div>
+            <div class="fw-card-body-col">
+              <div>
+                <div class="fw-card-top-tag">PAKET 01 · LICHT-REGIE</div>
+                <h3 class="fw-item-title">Licht-Set »Pro Show«</h3>
+                <p class="fw-item-desc">Komplettes DMX-Lichtsetup für Bands, Club-Gigs und DJs. Inklusive Standalone Wolfmix W1 Controller mit vorprogrammierten Farb- und FX-Szenen.</p>
+                <div class="fw-specs-grid">
+                  <div class="fw-spec-chip"><span>Steuerung:</span> Wolfmix W1 Standalone</div><div class="fw-spec-chip"><span>Moving Heads:</span> 2x Spot / Beam</div><div class="fw-spec-chip"><span>Wash:</span> 4x Outdoor PAR RGB</div><div class="fw-spec-chip"><span>Effekt:</span> 1x DMX-Dunst-Hazer</div>
+                </div>
+                <ul class="fw-included-list">
+                  <li class="fw-included-item"><span class="fw-check">✓</span> 2x Lichtstativ mit T-Bar + alle DMX- &amp; Stromkabel</li><li class="fw-included-item"><span class="fw-check">✓</span> Plug &amp; Play vorkonfiguriert – keine PC-Software nötig</li>
+                </ul>
+              </div>
+              <div class="fw-card-action-bar">
+                <div class="fw-price-block">
+                  <div class="fw-price-large">140 € <span style="font-size: 0.85rem; font-weight: 500; color: var(--fw-text-mid);">/ Tag</span></div>
+                  <div class="fw-price-term">TAGESSATZ (24H): 140 € · GANZES WOCHENENDE (FR–MO): 210 €</div>
+                  <div class="fw-subprice-info">Kaution: 150 € · Abholung: Rothkreuz 14</div>
+                </div>
+                <div class="fw-btn-stack">
+                  <button type="button" class="fw-btn-book" style="cursor:pointer;" onclick="openRentalModal('RENT-LIGHT-01', 'Licht-Set »Pro Show«')">⚡ Mietangebot anfordern →</button>
+                  <a href="https://wa.me/4915155243164?text=Hallo%20FraWo%2C%20ich%20m%C3%B6chte%20das%20Licht-Set%20%C2%BBPro%20Show%C2%AB%20%28140%E2%82%AC%29%20anfragen." target="_blank" class="fw-btn-wa">💬 Per WhatsApp anfragen</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Item 02: Sound-System »Club & Open-Air« -->
+          <div class="fw-stack-card" data-cat="pakete ton">
+            <div class="fw-card-img-col">
+              <img src="/web/image/2693/club_sound_system_user_master.jpg?v=8" alt="Sound-System »Club &amp; Open-Air« FraWo Mietpark" loading="lazy"/>
+              <div class="fw-card-img-tag">🔊 3.600W DSP</div>
+              <div class="fw-card-status-tag" style="color:#f59e0b;"><span style="font-size: 8px;">●</span> AUF ANFRAGE</div>
+            </div>
+            <div class="fw-card-body-col">
+              <div>
+                <div class="fw-card-top-tag">PAKET 02 · SOUND-SYSTEM</div>
+                <h3 class="fw-item-title">Sound-System »Club &amp; Open-Air«</h3>
+                <p class="fw-item-desc">Leistungsstarkes Beschallungssystem für Club-Events, Open-Airs und Partys bis 300 Personen. Druckvoller Bassbereich und kristallklare Mitten/Höhen.</p>
+                <div class="fw-specs-grid">
+                  <div class="fw-spec-chip"><span>Kapazität:</span> 100–300 PAX</div><div class="fw-spec-chip"><span>Leistung:</span> 3.600W RMS DSP</div><div class="fw-spec-chip"><span>Tops:</span> KMT 2x10" Horn-Tops</div><div class="fw-spec-chip"><span>Bässe:</span> 2x 15" / 18" Subwoofer</div>
+                </div>
+                <ul class="fw-included-list">
+                  <li class="fw-included-item"><span class="fw-check">✓</span> System-Amprack mit vorkonfiguriertem DSP-Limiter &amp; EQ</li><li class="fw-included-item"><span class="fw-check">✓</span> Kompletter Speakon-Kabelsatz + Distanzstangen</li>
+                </ul>
+              </div>
+              <div class="fw-card-action-bar">
+                <div class="fw-price-block">
+                  <div class="fw-price-large">220 € <span style="font-size: 0.85rem; font-weight: 500; color: var(--fw-text-mid);">/ Tag</span></div>
+                  <div class="fw-price-term">TAGESSATZ (24H): 220 € · GANZES WOCHENENDE (FR–MO): 330 €</div>
+                  <div class="fw-subprice-info">Kaution: 250 € · Abholung: Rothkreuz 14</div>
+                </div>
+                <div class="fw-btn-stack">
+                  <button type="button" class="fw-btn-book" style="cursor:pointer;" onclick="openRentalModal('RENT-PA-CLUB', 'Sound-System »Club &amp; Open-Air«')">⚡ Mietangebot anfordern →</button>
+                  <a href="https://wa.me/4915155243164?text=Hallo%20FraWo%2C%20ich%20m%C3%B6chte%20das%20Sound-System%20%C2%BBClub%20%26%20Open-Air%C2%AB%20%28220%E2%82%AC%29%20anfragen." target="_blank" class="fw-btn-wa">💬 Per WhatsApp anfragen</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Item 03: 5m Riesen-Fußballdart -->
+          <div class="fw-stack-card" data-cat="pakete fun">
+            <div class="fw-card-img-col">
+              <img src="/web/image/2691/fussballdart_action_center_master.jpg?v=8" alt="5m Riesen-Fußballdart FraWo Mietpark" loading="lazy"/>
+              <div class="fw-card-img-tag">🎯 5M HIGHLIGHT</div>
+              <div class="fw-card-status-tag"><span style="font-size: 8px;">●</span> SOFORT VERFÜGBAR</div>
+            </div>
+            <div class="fw-card-body-col">
+              <div>
+                <div class="fw-card-top-tag">PAKET 03 · EVENT-MODUL</div>
+                <h3 class="fw-item-title">5m Riesen-Fußballdart</h3>
+                <p class="fw-item-desc">Der absolute Publikumsmagnet für Vereinsfeste, Firmenevents, Festivals und Stadtfeste. 5 Meter hohe aufblasbare Klettdart-Scheibe inklusive Bälle und Gebläse.</p>
+                <div class="fw-specs-grid">
+                  <div class="fw-spec-chip"><span>Höhe:</span> 5,0 Meter</div><div class="fw-spec-chip"><span>Aufbauzeit:</span> ca. 10 Minuten</div><div class="fw-spec-chip"><span>Gebläse:</span> 230V Dauergebläse</div><div class="fw-spec-chip"><span>Zubehör:</span> 6x Klett-Fußbälle + Teleskopstange</div>
+                </div>
+                <ul class="fw-included-list">
+                  <li class="fw-included-item"><span class="fw-check">✓</span> Inklusive Erdnägel, Abspannseile und Transporttasche</li><li class="fw-included-item"><span class="fw-check">✓</span> Selbstabholung im PKW-Kombi oder per Anhänger</li>
+                </ul>
+              </div>
+              <div class="fw-card-action-bar">
+                <div class="fw-price-block">
+                  <div class="fw-price-large">250 € <span style="font-size: 0.85rem; font-weight: 500; color: var(--fw-text-mid);">/ Tag</span></div>
+                  <div class="fw-price-term">TAGESSATZ (24H): 250 € · GANZES WOCHENENDE (FR–MO): 375 €</div>
+                  <div class="fw-subprice-info">Kaution: 200 € · Abholung: Rothkreuz 14</div>
+                </div>
+                <div class="fw-btn-stack">
+                  <button type="button" class="fw-btn-book" style="cursor:pointer;" onclick="openRentalModal('VER-005', '5m Riesen-Fußballdart Event-Modul')">⚡ Mietangebot anfordern →</button>
+                  <a href="https://wa.me/4915155243164?text=Hallo%20FraWo%2C%20ich%20m%C3%B6chte%20das%205m%20Riesen-Fu%C3%9Fballdart%20%28180%E2%82%AC%29%20anfragen." target="_blank" class="fw-btn-wa">💬 Per WhatsApp anfragen</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Item 04: Party-PA »Plug & Play« -->
+          <div class="fw-stack-card" data-cat="pakete ton">
+            <div class="fw-card-img-col">
+              <img src="/web/image/2692/compact_party_pa_user_master.jpg?v=8" alt="Party-PA »Plug &amp; Play« FraWo Mietpark" loading="lazy"/>
+              <div class="fw-card-img-tag">🔊 PARTY PA</div>
+              <div class="fw-card-status-tag"><span style="font-size: 8px;">●</span> SOFORT VERFÜGBAR</div>
+            </div>
+            <div class="fw-card-body-col">
+              <div>
+                <div class="fw-card-top-tag">PAKET 04 · PARTY-PA</div>
+                <h3 class="fw-item-title">Party-PA »Plug &amp; Play«</h3>
+                <p class="fw-item-desc">Kompaktes Plug &amp; Play PA-System für Geburtstage, Hochzeiten, Firmenfeiern und Events bis 80 Personen. Schneller Aufbau in 3 Minuten.</p>
+                <div class="fw-specs-grid">
+                  <div class="fw-spec-chip"><span>Kapazität:</span> bis 80 PAX</div><div class="fw-spec-chip"><span>Lautsprecher:</span> 2x 12" Fullrange Aktiv</div><div class="fw-spec-chip"><span>Konnektivität:</span> Bluetooth, XLR, Klinke</div><div class="fw-spec-chip"><span>Stative:</span> 2x Boxenstative inkl.</div>
+                </div>
+                <ul class="fw-included-list">
+                  <li class="fw-included-item"><span class="fw-check">✓</span> Direktes Musik-Streaming vom Smartphone / Tablet</li><li class="fw-included-item"><span class="fw-check">✓</span> Inklusive Mikrofon für Reden &amp; Ansprachen</li>
+                </ul>
+              </div>
+              <div class="fw-card-action-bar">
+                <div class="fw-price-block">
+                  <div class="fw-price-large">90 € <span style="font-size: 0.85rem; font-weight: 500; color: var(--fw-text-mid);">/ Tag</span></div>
+                  <div class="fw-price-term">TAGESSATZ (24H): 90 € · GANZES WOCHENENDE (FR–MO): 135 €</div>
+                  <div class="fw-subprice-info">Kaution: 100 € · Abholung: Rothkreuz 14</div>
+                </div>
+                <div class="fw-btn-stack">
+                  <button type="button" class="fw-btn-book" style="cursor:pointer;" onclick="openRentalModal('RENT-PA-COMPACT', 'Party-PA »Plug &amp; Play«')">⚡ Mietangebot anfordern →</button>
+                  <a href="https://wa.me/4915155243164?text=Hallo%20FraWo%2C%20ich%20m%C3%B6chte%20das%20Party-PA%20%C2%BBPlug%20%26%20Play%C2%AB%20%2890%E2%82%AC%29%20anfragen." target="_blank" class="fw-btn-wa">💬 Per WhatsApp anfragen</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Item 05: Ambient & Dance Licht-Set -->
+          <div class="fw-stack-card" data-cat="pakete licht">
+            <div class="fw-card-img-col">
+              <img src="/web/image/2185/service-stage.jpg?v=8" alt="Ambient &amp; Dance Licht-Set FraWo Mietpark" loading="lazy"/>
+              <div class="fw-card-img-tag">💡 AMBIENT LIGHT</div>
+              <div class="fw-card-status-tag"><span style="font-size: 8px;">●</span> SOFORT VERFÜGBAR</div>
+            </div>
+            <div class="fw-card-body-col">
+              <div>
+                <div class="fw-card-top-tag">PAKET 05 · AMBIENT &amp; DANCE</div>
+                <h3 class="fw-item-title">Ambient &amp; Dance Licht-Set</h3>
+                <p class="fw-item-desc">Stimmungsvolle Architektur- und Tanzflächenbeleuchtung für Hochzeiten, Bars und Firmenfeiern. Kräftige Farben, feiner Dunst und Sound-to-Light Modus.</p>
+                <div class="fw-specs-grid">
+                  <div class="fw-spec-chip"><span>Scheinwerfer:</span> 4x Outdoor RGB PAR</div><div class="fw-spec-chip"><span>Effekt:</span> 1x Dunst-Hazer 1000W</div><div class="fw-spec-chip"><span>Modi:</span> Sound-to-Light, Auto-Fade, Statisch</div><div class="fw-spec-chip"><span>Kabel:</span> Kompletter Strom- &amp; DMX-Satz</div>
+                </div>
+                <ul class="fw-included-list">
+                  <li class="fw-included-item"><span class="fw-check">✓</span> Einfache Steuerung ohne Programmieraufwand</li><li class="fw-included-item"><span class="fw-check">✓</span> IP65 wetterfeste Scheinwerfer für In- &amp; Outdoor</li>
+                </ul>
+              </div>
+              <div class="fw-card-action-bar">
+                <div class="fw-price-block">
+                  <div class="fw-price-large">80 € <span style="font-size: 0.85rem; font-weight: 500; color: var(--fw-text-mid);">/ Tag</span></div>
+                  <div class="fw-price-term">TAGESSATZ (24H): 80 € · GANZES WOCHENENDE (FR–MO): 120 €</div>
+                  <div class="fw-subprice-info">Kaution: 100 € · Abholung: Rothkreuz 14</div>
+                </div>
+                <div class="fw-btn-stack">
+                  <button type="button" class="fw-btn-book" style="cursor:pointer;" onclick="openRentalModal('RENT-LIGHT-SET', 'Ambient &amp; Dance Licht-Set')">⚡ Mietangebot anfordern →</button>
+                  <a href="https://wa.me/4915155243164?text=Hallo%20FraWo%2C%20ich%20m%C3%B6chte%20das%20Ambient%20%26%20Dance%20Licht-Set%20%2880%E2%82%AC%29%20anfragen." target="_blank" class="fw-btn-wa">💬 Per WhatsApp anfragen</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Item 06: DJ- & Audio-Regieplatz -->
+          <div class="fw-stack-card" data-cat="pakete regie">
+            <div class="fw-card-img-col">
+              <img src="/web/image/2676/rental_dj_regie_desk.jpg?v=8" alt="DJ- &amp; Audio-Regieplatz FraWo Mietpark" loading="lazy"/>
+              <div class="fw-card-img-tag">🎧 DJ &amp; REGIE</div>
+              <div class="fw-card-status-tag"><span style="font-size: 8px;">●</span> SOFORT VERFÜGBAR</div>
+            </div>
+            <div class="fw-card-body-col">
+              <div>
+                <div class="fw-card-top-tag">PAKET 06 · REGIE &amp; DJ</div>
+                <h3 class="fw-item-title">DJ- &amp; Audio-Regieplatz</h3>
+                <p class="fw-item-desc">Professioneller FOH- &amp; DJ-Arbeitsplatz für Live-Bands, DJs und Konferenzen. Integriertes Multitrack-Recording per USB und intuitive Bedienung.</p>
+                <div class="fw-specs-grid">
+                  <div class="fw-spec-chip"><span>Mischpult:</span> PreSonus StudioLive AR12c</div><div class="fw-spec-chip"><span>Controller:</span> Pioneer DDJ-FLX4 / DJ-Setup</div><div class="fw-spec-chip"><span>Kanäle:</span> 14 Audio-Kanäle / Bluetooth</div><div class="fw-spec-chip"><span>Recording:</span> USB Multitrack-Interface</div>
+                </div>
+                <ul class="fw-included-list">
+                  <li class="fw-included-item"><span class="fw-check">✓</span> Inklusive professionellem DJ-Kopfhörer &amp; Anschlusskabeln</li><li class="fw-included-item"><span class="fw-check">✓</span> Im schlagfesten Flightcase verkabelt</li>
+                </ul>
+              </div>
+              <div class="fw-card-action-bar">
+                <div class="fw-price-block">
+                  <div class="fw-price-large">50 € <span style="font-size: 0.85rem; font-weight: 500; color: var(--fw-text-mid);">/ Tag</span></div>
+                  <div class="fw-price-term">TAGESSATZ (24H): 50 € · GANZES WOCHENENDE (FR–MO): 75 €</div>
+                  <div class="fw-subprice-info">Kaution: 100 € · Abholung: Rothkreuz 14</div>
+                </div>
+                <div class="fw-btn-stack">
+                  <button type="button" class="fw-btn-book" style="cursor:pointer;" onclick="openRentalModal('RENT-AUDIO-DJ-SET', 'DJ- &amp; Audio-Regieplatz')">⚡ Mietangebot anfordern →</button>
+                  <a href="https://wa.me/4915155243164?text=Hallo%20FraWo%2C%20ich%20m%C3%B6chte%20den%20DJ-%20%26%20Audio-Regieplatz%20%2850%E2%82%AC%29%20anfragen." target="_blank" class="fw-btn-wa">💬 Per WhatsApp anfragen</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Item 07: JBL EON 615 (15" Aktivbox) -->
+          <div class="fw-stack-card" data-cat="ton">
+            <div class="fw-card-img-col">
+              <img src="/web/image/2697/jbl_eon_dj_action_master.jpg" alt="JBL EON 615 Aktivbox im Live-Einsatz beim DJ-Set FraWo Mietpark" loading="lazy"/>
+              <div class="fw-card-img-tag">🔊 JBL EON 615</div>
+              <div class="fw-card-status-tag"><span style="font-size: 8px;">●</span> SOFORT VERFÜGBAR</div>
+            </div>
+            <div class="fw-card-body-col">
+              <div>
+                <div class="fw-card-top-tag">EINZELGERÄT · TON &amp; MONITOR</div>
+                <h3 class="fw-item-title">JBL EON 615 (15" Aktivbox)</h3>
+                <p class="fw-item-desc">Vielseitige 1000W Aktivbox als Fullrange-Lautsprecher, Bühnenmonitor oder Sprachbox. Integrierter DSP mit Bluetooth-Steuerung.</p>
+                <div class="fw-specs-grid">
+                  <div class="fw-spec-chip"><span>Bestückung:</span> 15" Tieftöner + 1" Horn</div><div class="fw-spec-chip"><span>Leistung:</span> 1000 Watt Peak / 500W RMS</div><div class="fw-spec-chip"><span>Eingänge:</span> 2x Mic/Line XLR-Kombi</div><div class="fw-spec-chip"><span>Gewicht:</span> 17,7 kg mit Tragegriffen</div>
+                </div>
+                <ul class="fw-included-list">
+                  <li class="fw-included-item"><span class="fw-check">✓</span> Inklusive Netzkabel und XLR-Signalkabel</li><li class="fw-included-item"><span class="fw-check">✓</span> Optional mit Boxenstativ (+5 €)</li>
+                </ul>
+              </div>
+              <div class="fw-card-action-bar">
+                <div class="fw-price-block">
+                  <div class="fw-price-large">20 € <span style="font-size: 0.85rem; font-weight: 500; color: var(--fw-text-mid);">/ Tag</span></div>
+                  <div class="fw-price-term">TAGESSATZ (24H): 20 € · GANZES WOCHENENDE (FR–MO): 30 €</div>
+                  <div class="fw-subprice-info">Kaution: 50 € · Abholung: Rothkreuz 14</div>
+                </div>
+                <div class="fw-btn-stack">
+                  <button type="button" class="fw-btn-book" style="cursor:pointer;" onclick="openRentalModal('VT-TON-01', 'JBL EON 615 Aktivbox')">⚡ Mietangebot anfordern →</button>
+                  <a href="https://wa.me/4915155243164?text=Hallo%20FraWo%2C%20ich%20m%C3%B6chte%20die%20JBL%20EON%20615%20%2820%E2%82%AC%29%20anfragen." target="_blank" class="fw-btn-wa">💬 Per WhatsApp anfragen</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Item 08: Showtec Shark Spot (Moving Head) -->
+          <div class="fw-stack-card" data-cat="licht">
+            <div class="fw-card-img-col">
+              <img src="/web/image/2678/rental_showtec_shark_spot.jpg?v=8" alt="Showtec Shark Spot (Moving Head) FraWo Mietpark" loading="lazy"/>
+              <div class="fw-card-img-tag">💡 SHOWTEC SHARK</div>
+              <div class="fw-card-status-tag"><span style="font-size: 8px;">●</span> SOFORT VERFÜGBAR</div>
+            </div>
+            <div class="fw-card-body-col">
+              <div>
+                <div class="fw-card-top-tag">EINZELGERÄT · MOVING HEAD</div>
+                <h3 class="fw-item-title">Showtec Shark Spot (Moving Head)</h3>
+                <p class="fw-item-desc">Kompakter und leistungsstarker Moving Head mit separaten Farb- und Goborädern sowie Prismeneffekt. Ideal für dynamische Lightshows auf Bühnen und in Clubs.</p>
+                <div class="fw-specs-grid">
+                  <div class="fw-spec-chip"><span>Typ:</span> Spot / Beam Moving Head</div><div class="fw-spec-chip"><span>Effekte:</span> Gobos, rotierendes Prisma, Stroboskop</div><div class="fw-spec-chip"><span>Modi:</span> DMX-512, Sound-to-Light, Auto</div><div class="fw-spec-chip"><span>Montage:</span> Inkl. Quick-Lock Halterung</div>
+                </div>
+                <ul class="fw-included-list">
+                  <li class="fw-included-item"><span class="fw-check">✓</span> Im Flightcase geschützt transportierbar</li><li class="fw-included-item"><span class="fw-check">✓</span> Inklusive Strom- &amp; DMX-Kabel</li>
+                </ul>
+              </div>
+              <div class="fw-card-action-bar">
+                <div class="fw-price-block">
+                  <div class="fw-price-large">20 € <span style="font-size: 0.85rem; font-weight: 500; color: var(--fw-text-mid);">/ Tag</span></div>
+                  <div class="fw-price-term">TAGESSATZ (24H): 20 € · GANZES WOCHENENDE (FR–MO): 30 €</div>
+                  <div class="fw-subprice-info">Kaution: 50 € · Abholung: Rothkreuz 14</div>
+                </div>
+                <div class="fw-btn-stack">
+                  <button type="button" class="fw-btn-book" style="cursor:pointer;" onclick="openRentalModal('VT-LIC-02', 'Showtec Shark Spot Moving Head')">⚡ Mietangebot anfordern →</button>
+                  <a href="https://wa.me/4915155243164?text=Hallo%20FraWo%2C%20ich%20m%C3%B6chte%20den%20Showtec%20Shark%20Moving%20Head%20%2820%E2%82%AC%29%20anfragen." target="_blank" class="fw-btn-wa">💬 Per WhatsApp anfragen</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Item 09: BeamZ Panther 35 (Moving Head 2er-Set) -->
+          <div class="fw-stack-card" data-cat="licht">
+            <div class="fw-card-img-col">
+              <img src="/web/image/2679/rental_beamz_panther_spot.jpg?v=8" alt="BeamZ Panther 35 (Moving Head 2er-Set) FraWo Mietpark" loading="lazy"/>
+              <div class="fw-card-img-tag">💡 BEAMZ PANTHER</div>
+              <div class="fw-card-status-tag"><span style="font-size: 8px;">●</span> SOFORT VERFÜGBAR</div>
+            </div>
+            <div class="fw-card-body-col">
+              <div>
+                <div class="fw-card-top-tag">EINZELGERÄT · MOVING HEAD</div>
+                <h3 class="fw-item-title">BeamZ Panther 35 (Moving Head 2er-Set)</h3>
+                <p class="fw-item-desc">Kompakte und lichtstarke LED Moving Heads mit 35W High-Power LED, 7 Gobos + offen und 7 Farben. Scharfe Beams und schnelle Bewegungen.</p>
+                <div class="fw-specs-grid">
+                  <div class="fw-spec-chip"><span>Leuchtmittel:</span> 35W Weißlicht-LED</div><div class="fw-spec-chip"><span>Gobos / Farben:</span> 7 Gobos + Shake / 7 Farben</div><div class="fw-spec-chip"><span>Modi:</span> DMX (9/11 Ch), Auto, Sound</div><div class="fw-spec-chip"><span>Menge:</span> Immer als 2er-Set im Flightcase</div>
+                </div>
+                <ul class="fw-included-list">
+                  <li class="fw-included-item"><span class="fw-check">✓</span> Inklusive Quick-Trigger Schellen für Traversenmontage</li><li class="fw-included-item"><span class="fw-check">✓</span> Strom- &amp; DMX-Verbindungskabel inklusive</li>
+                </ul>
+              </div>
+              <div class="fw-card-action-bar">
+                <div class="fw-price-block">
+                  <div class="fw-price-large">15 € <span style="font-size: 0.85rem; font-weight: 500; color: var(--fw-text-mid);">/ Tag</span></div>
+                  <div class="fw-price-term">TAGESSATZ (24H): 15 € · GANZES WOCHENENDE (FR–MO): 22,50 €</div>
+                  <div class="fw-subprice-info">Kaution: 50 € · Abholung: Rothkreuz 14</div>
+                </div>
+                <div class="fw-btn-stack">
+                  <button type="button" class="fw-btn-book" style="cursor:pointer;" onclick="openRentalModal('VT-LIC-03', 'BeamZ Panther 35 Moving Heads')">⚡ Mietangebot anfordern →</button>
+                  <a href="https://wa.me/4915155243164?text=Hallo%20FraWo%2C%20ich%20m%C3%B6chte%20die%20BeamZ%20Moving%20Heads%20%2815%E2%82%AC%29%20anfragen." target="_blank" class="fw-btn-wa">💬 Per WhatsApp anfragen</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Item 10: PKW-Anhänger 750kg (mit Plane) -->
+          <div class="fw-stack-card" data-cat="transport">
+            <div class="fw-card-img-col">
+              <img src="/web/image/2671/rental_pkw_anhaenger_750kg.jpg?v=8" alt="PKW-Anhänger 750kg (mit Plane) FraWo Mietpark" loading="lazy"/>
+              <div class="fw-card-img-tag">🚗 750KG ANHÄNGER</div>
+              <div class="fw-card-status-tag"><span style="font-size: 8px;">●</span> SOFORT VERFÜGBAR</div>
+            </div>
+            <div class="fw-card-body-col">
+              <div>
+                <div class="fw-card-top-tag">LOGISTIK · TRANSPORT</div>
+                <h3 class="fw-item-title">PKW-Anhänger 750kg (mit Plane)</h3>
+                <p class="fw-item-desc">Praktischer 750kg Kastenanhänger mit Hochplane für den sicheren Transport von PA-Anlagen, Traversen oder dem 5m Fußballdart. Führerscheinklasse B ausreichend!</p>
+                <div class="fw-specs-grid">
+                  <div class="fw-spec-chip"><span>Zul. Ges.-Gewicht:</span> 750 kg</div><div class="fw-spec-chip"><span>Führerschein:</span> Klasse B (normaler PKW)</div><div class="fw-spec-chip"><span>Aufbau:</span> Kasten mit Hochplane</div><div class="fw-spec-chip"><span>Sicherung:</span> Verzurrösen &amp; Netz</div>
+                </div>
+                <ul class="fw-included-list">
+                  <li class="fw-included-item"><span class="fw-check">✓</span> 100 km/h Zulassung und Diebstahlsicherung inklusive</li><li class="fw-included-item"><span class="fw-check">✓</span> Ideal kombinierbar mit allen Mietpaketen</li>
+                </ul>
+              </div>
+              <div class="fw-card-action-bar">
+                <div class="fw-price-block">
+                  <div class="fw-price-large">15 € <span style="font-size: 0.85rem; font-weight: 500; color: var(--fw-text-mid);">/ Tag</span></div>
+                  <div class="fw-price-term">TAGESSATZ (24H): 15 € · GANZES WOCHENENDE (FR–MO): 25 €</div>
+                  <div class="fw-subprice-info">Kaution: 50 € · Abholung: Rothkreuz 14</div>
+                </div>
+                <div class="fw-btn-stack">
+                  <button type="button" class="fw-btn-book" style="cursor:pointer;" onclick="openRentalModal('VT-TRP-01', 'PKW-Anhänger 750kg Transport')">⚡ Mietangebot anfordern →</button>
+                  <a href="https://wa.me/4915155243164?text=Hallo%20FraWo%2C%20ich%20m%C3%B6chte%20den%20PKW-Anh%C3%A4nger%20%2815%E2%82%AC%29%20anfragen." target="_blank" class="fw-btn-wa">💬 Per WhatsApp anfragen</a>
+                </div>
+              </div>
+            </div>
+          </div>
+    </div>
+
+    <!-- Bottom Portal Action Hub -->
+    <div class="fw-bottom-portal-hub">
+      <div class="fw-portal-card-box">
+        <div style="display: inline-flex; align-items: center; gap: 8px; background: var(--fw-primary); border: 1px solid var(--fw-border); color: #2ecc71; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; padding: 6px 16px; margin-bottom: 20px;">
+          ✓ FRAWO ODOO KUNDENPORTAL
+        </div>
+        <h2 style="font-size: 1.8rem; font-weight: 800; text-transform: uppercase; color: #ffffff; margin-bottom: 14px;">
+          Anfrage &amp; Mietbuchung im Kundenportal
+        </h2>
+        <p style="font-size: 0.95rem; color: var(--fw-text-mid); max-width: 650px; margin: 0 auto 32px; line-height: 1.6;">
+          Erstelle dein persönliches Kundenprofil in 30 Sekunden. Du kannst Angebote digital freigeben, den Auftragsstatus in Echtzeit verfolgen und alle Rechnungen sowie Übergabeprotokolle herunterladen.
+        </p>
+
+        <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-bottom: 36px;">
+          <button type="button" class="fw-btn-book" style="padding: 16px 36px; font-size: 0.95rem; cursor:pointer;" onclick="openRentalModal('RENT-PA-COMPACT', 'Individuelle Mietanfrage')">
+            ⚡ Jetzt Mietangebot online anfordern →
+          </button>
+          <a href="/web/login?redirect=/my" class="fw-btn-wa" style="padding: 16px 28px; font-size: 0.95rem; color: #ffffff !important; border-color: var(--fw-border) !important;">
+            🔑 Bereits registriert? Zum Login
+          </a>
+        </div>
+
+        <div style="padding-top: 24px; border-top: 1px solid var(--fw-border); display: flex; justify-content: center; gap: 32px; flex-wrap: wrap; font-size: 0.85rem; color: var(--fw-text-mid);">
+          <div><span>✓</span> 1-Klick digitale Angebotsannahme</div>
+          <div><span>✓</span> Rechnungen &amp; PDF-Downloads</div>
+          <div><span>✓</span> 100% DSGVO &amp; sicher in Odoo</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script type="text/javascript">
+    window.filterCategory = function(cat, el) {
+      var buttons = document.querySelectorAll('.fw-filter-btn');
+      buttons.forEach(function(b) { b.classList.remove('active'); });
+      if (el) {
+        el.classList.add('active');
+      }
+
+      var cards = document.querySelectorAll('.fw-stack-card');
+      cards.forEach(function(card) {
+        if (cat === 'all') {
+          card.style.display = 'grid';
+        } else {
+          var cardCats = card.getAttribute('data-cat') || '';
+          if (cardCats.indexOf(cat) !== -1) {
+            card.style.display = 'grid';
+          } else {
+            card.style.display = 'none';
+          }
+        }
+      });
+    };
+  </script>
+
+  <!-- Interactive Rental Inquiry Modal (CI v3.0 Flat) -->
+  <div id="fwRentalModal" style="display:none; position:fixed; z-index:99999; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); backdrop-filter:blur(4px); justify-content:center; align-items:center; padding:15px; box-sizing:border-box;">
+    <div style="background:#141816; border:1px solid #2a2e2c; width:100%; max-width:560px; max-height:92vh; overflow-y:auto; padding:28px; position:relative; box-shadow:0 25px 50px rgba(0,0,0,0.8); color:#e8e8e8; font-family:'Inter', sans-serif; box-sizing:border-box;">
+      
+      <button type="button" onclick="closeRentalModal()" style="position:absolute; top:18px; right:18px; background:none; border:none; color:#98a29e; font-size:24px; cursor:pointer; line-height:1;">×</button>
+      
+      <div style="font-size:0.75rem; font-weight:700; color:#a050f0; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:6px;">Mietpark FraWo GbR</div>
+      <h3 id="fwModalTitle" style="margin:0 0 16px; font-size:1.35rem; color:#fff; font-weight:700;">Equipment mieten</h3>
+      
+      <form id="fwRentalForm" onsubmit="submitRentalInquiry(event)">
+        <input type="hidden" id="fwPackageCode" name="package_code" value="RENT-PA-COMPACT"/>
+        <input type="text" name="b_url" id="fwHoneypot" style="display:none !important;" tabindex="-1" autocomplete="off"/>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:14px;">
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:600; margin-bottom:4px; color:#98a29e;">Mietbeginn *</label>
+            <input type="date" id="fwDateStart" required="required" style="width:100%; background:#0a0a0a; border:1px solid #2a2e2c; color:#fff; padding:8px 10px; font-size:0.9rem; box-sizing:border-box;"/>
+          </div>
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:600; margin-bottom:4px; color:#98a29e;">Mietende *</label>
+            <input type="date" id="fwDateEnd" required="required" style="width:100%; background:#0a0a0a; border:1px solid #2a2e2c; color:#fff; padding:8px 10px; font-size:0.9rem; box-sizing:border-box;"/>
+          </div>
+        </div>
+
+        <div style="margin-bottom:14px;">
+          <label style="display:block; font-size:0.8rem; font-weight:600; margin-bottom:4px; color:#98a29e;">Name / Firma *</label>
+          <input type="text" id="fwName" required="required" placeholder="z. B. Max Mustermann" style="width:100%; background:#0a0a0a; border:1px solid #2a2e2c; color:#fff; padding:8px 10px; font-size:0.9rem; box-sizing:border-box;"/>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:14px;">
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:600; margin-bottom:4px; color:#98a29e;">E-Mail-Adresse *</label>
+            <input type="email" id="fwEmail" required="required" placeholder="max@example.de" style="width:100%; background:#0a0a0a; border:1px solid #2a2e2c; color:#fff; padding:8px 10px; font-size:0.9rem; box-sizing:border-box;"/>
+          </div>
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:600; margin-bottom:4px; color:#98a29e;">Telefonnummer</label>
+            <input type="tel" id="fwPhone" placeholder="0171 1234567" style="width:100%; background:#0a0a0a; border:1px solid #2a2e2c; color:#fff; padding:8px 10px; font-size:0.9rem; box-sizing:border-box;"/>
+          </div>
+        </div>
+
+        <div style="background:rgba(0,0,0,0.35); border:1px solid #2a2e2c; padding:12px; margin-bottom:14px;">
+          <div style="font-size:0.8rem; font-weight:700; color:#fff; margin-bottom:8px;">Zusatz-Optionen (optional)</div>
+          <label style="display:flex; align-items:center; gap:8px; font-size:0.85rem; cursor:pointer; margin-bottom:6px;">
+            <input type="checkbox" id="fwOptDelivery" style="accent-color:#a050f0;"/>
+            <span>Lieferung &amp; Abholung (Region Bodensee/Lindau) <strong>(+20 €)</strong></span>
+          </label>
+          <label style="display:flex; align-items:center; gap:8px; font-size:0.85rem; cursor:pointer;">
+            <input type="checkbox" id="fwOptSetup" style="accent-color:#a050f0;"/>
+            <span>Techniker vor Ort gewünscht – Aufbau, Betreuung, Abbau <strong>(Preis nach Aufwand, siehe Pakete S/M/L)</strong></span>
+          </label>
+        </div>
+
+        <div style="margin-bottom:18px;">
+          <label style="display:block; font-size:0.8rem; font-weight:600; margin-bottom:4px; color:#98a29e;">Veranstaltungsort / Anmerkungen</label>
+          <textarea id="fwMessage" rows="3" placeholder="z. B. Party in Lindau, ca. 60 Gäste, eigener DJ..." style="width:100%; background:#0a0a0a; border:1px solid #2a2e2c; color:#fff; padding:8px 10px; font-size:0.85rem; resize:vertical; box-sizing:border-box;"/>
+        </div>
+
+        <div id="fwModalStatus" style="display:none; padding:10px; margin-bottom:14px; font-size:0.85rem;"/>
+
+        <div style="display:flex; gap:10px; justify-content:flex-end;">
+          <button type="button" onclick="closeRentalModal()" style="background:none; border:1px solid #2a2e2c; color:#98a29e; padding:8px 16px; cursor:pointer; font-size:0.85rem;">Abbrechen</button>
+          <button type="submit" id="fwSubmitBtn" style="background:#a050f0; color:#fff; border:none; padding:10px 22px; font-weight:700; cursor:pointer; font-size:0.85rem;">
+            <span>⚡ Unverbindliches Angebot anfordern</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    window.openRentalModal = function(code, title) {
+      document.getElementById('fwPackageCode').value = code || 'RENT-PA-COMPACT';
+      document.getElementById('fwModalTitle').textContent = title || 'Equipment mieten';
+      
+      var tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      var dayAfter = new Date();
+      dayAfter.setDate(dayAfter.getDate() + 2);
+      
+      if (!document.getElementById('fwDateStart').value) {
+        document.getElementById('fwDateStart').value = tomorrow.toISOString().split('T')[0];
+        document.getElementById('fwDateEnd').value = dayAfter.toISOString().split('T')[0];
+      }
+      
+      var modal = document.getElementById('fwRentalModal');
+      modal.style.display = 'flex';
+    };
+
+    window.closeRentalModal = function() {
+      document.getElementById('fwRentalModal').style.display = 'none';
+    };
+
+    window.submitRentalInquiry = function(e) {
+      e.preventDefault();
+      var btn = document.getElementById('fwSubmitBtn');
+      var statusDiv = document.getElementById('fwModalStatus');
+      btn.disabled = true;
+      btn.textContent = 'Wird übermittelt...';
+      statusDiv.style.display = 'none';
+
+      var payload = {
+        params: {
+          name: document.getElementById('fwName').value,
+          email: document.getElementById('fwEmail').value,
+          phone: document.getElementById('fwPhone').value,
+          date_start: document.getElementById('fwDateStart').value,
+          date_end: document.getElementById('fwDateEnd').value,
+          package_code: document.getElementById('fwPackageCode').value,
+          delivery: document.getElementById('fwOptDelivery').checked,
+          setup: document.getElementById('fwOptSetup').checked,
+          message: document.getElementById('fwMessage').value,
+          b_url: document.getElementById('fwHoneypot').value
+        }
+      };
+
+      fetch('/api/rental/inquiry', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        btn.disabled = false;
+        btn.textContent = '⚡ Unverbindliches Angebot anfordern';
+        if (data.result &amp;&amp; data.result.status === 'success') {
+          statusDiv.style.display = 'block';
+          statusDiv.style.background = 'rgba(46, 204, 113, 0.15)';
+          statusDiv.style.border = '1px solid #2ecc71';
+          statusDiv.style.color = '#2ecc71';
+          statusDiv.innerHTML = '&lt;strong&gt;✓ ' + data.result.message + '&lt;/strong&gt;&lt;br&gt;&lt;small style="color:#e8e8e8;"&gt;Wir prüfen die Termine und senden dir dein Angebot direkt per E-Mail zu.&lt;/small&gt;';
+          document.getElementById('fwRentalForm').reset();
+          setTimeout(function() {
+            closeRentalModal();
+            statusDiv.style.display = 'none';
+          }, 4500);
+        } else {
+          statusDiv.style.display = 'block';
+          statusDiv.style.background = 'rgba(230, 57, 70, 0.15)';
+          statusDiv.style.border = '1px solid #e63946';
+          statusDiv.style.color = '#e63946';
+          statusDiv.textContent = (data.result &amp;&amp; data.result.message) || 'Fehler beim Absenden. Bitte kontaktiere uns per WhatsApp.';
+        }
+      })
+      .catch(function(err) {
+        btn.disabled = false;
+        btn.textContent = '⚡ Unverbindliches Angebot anfordern';
+        statusDiv.style.display = 'block';
+        statusDiv.style.background = 'rgba(230, 57, 70, 0.15)';
+        statusDiv.style.border = '1px solid #e63946';
+        statusDiv.style.color = '#e63946';
+        statusDiv.textContent = 'Verbindungsfehler. Bitte kontaktiere uns per WhatsApp.';
+      });
+    };
+  </script>
+</div>
+</t>
+</t>

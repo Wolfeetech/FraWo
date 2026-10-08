@@ -1,0 +1,328 @@
+<t t-name="website.contactus">
+<t t-call="website.layout">
+  <style>
+    :root {
+      --fw-bg: #0a0a0a;
+      --fw-surface: #141816;
+      --fw-border: #2a2e2c;
+      --fw-accent: #a050f0;
+      --fw-text-main: #e8e8e8;
+      --fw-text-muted: #98a29e;
+    }
+    html, body, #wrapwrap, #wrap, main {
+      background: var(--fw-bg) !important;
+      color: var(--fw-text-main) !important;
+      font-family: 'Inter', sans-serif !important;
+    }
+    .contact-dashboard {
+      max-width: 1200px;
+      margin: 80px auto;
+      padding: 0 20px;
+    }
+    .contact-header-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--fw-accent);
+      margin-bottom: 24px;
+    }
+    .contact-title-huge {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+    }
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 50px;
+      margin-top: 50px;
+    }
+    @media (max-width: 992px) {
+      .contact-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .contact-section-brutal {
+      background: var(--fw-surface);
+      border: 1px solid var(--fw-border);
+      padding: 40px;
+    }
+    .step-header-brutal {
+      font-family: monospace;
+      font-size: 0.8rem;
+      color: var(--fw-accent);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+    .step-title-brutal {
+      font-size: 1.4rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      margin-bottom: 30px;
+      border-bottom: 1px solid var(--fw-border);
+      padding-bottom: 12px;
+    }
+    .form-group-brutal {
+      margin-bottom: 24px;
+    }
+    .form-label-brutal {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--fw-text-muted);
+      margin-bottom: 8px;
+      font-family: monospace;
+    }
+    .form-input-brutal {
+      width: 100%;
+      background: #000000 !important;
+      border: 1px solid var(--fw-border) !important;
+      color: var(--fw-text-main) !important;
+      border-radius: 0 !important;
+      padding: 14px 18px !important;
+      font-size: 1rem !important;
+      transition: all 0.2s;
+    }
+    .form-input-brutal:focus {
+      border-color: var(--fw-accent) !important;
+      outline: 2px solid var(--fw-accent) !important;
+      box-shadow: none !important;
+    }
+    .submit-btn-brutal {
+      background: #e8e8e8;
+      color: #0a0a0a;
+      border: none;
+      width: 100%;
+      padding: 20px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 20px;
+    }
+    .submit-btn-brutal:hover {
+      background: var(--fw-accent);
+      color: white;
+    }
+    .requirements-check-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .requirements-check-list li {
+      padding: 12px 0;
+      border-bottom: 1px solid var(--fw-border);
+      font-size: 0.95rem;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .check-marker {
+      color: var(--fw-accent);
+      font-family: monospace;
+      font-weight: bold;
+    }
+  </style>
+
+  <div class="contact-dashboard">
+    <div style="margin-bottom: 30px;">
+      <a href="/" style="color: var(--fw-text-muted); text-decoration: none; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em;">← zurück zu frawo.tech</a>
+    </div>
+
+    <div class="contact-header-badge">
+      <span>Project Scope Configurator</span>
+    </div>
+    
+    <h1 class="contact-title-huge">Starte dein Projekt</h1>
+    <p style="color: var(--fw-text-muted); font-size: 1.1rem; line-height: 1.7; max-width: 800px;">
+      Ob Veranstaltungstechnik Integration, IHK-zertifizierte Veranstaltungstechnik oder maßgefertigter Lautsprecherbau — erzähl uns von deiner Idee. Wir melden uns innerhalb von zwei Werktagen mit einer technischen Ersteinschätzung.
+    </p>
+
+    <div class="contact-grid">
+      <!-- Left: Form -->
+      <div class="contact-section-brutal">
+        <form id="fw-contact-form" action="/contactus-thank-you" data-endpoint="/website/form/crm.lead" method="post" enctype="multipart/form-data" class="o_mark_required" data-mark="*" data-model_name="crm.lead">
+          <!-- Anti-Spam Honeypot -->
+          <div style="position: absolute; left: -9999px; top: -9999px; width: 0; height: 0; overflow: hidden; opacity: 0; pointer-events: none;" aria-hidden="true" tabindex="-1">
+            <label for="contact_hp_url">Website (bitte leer lassen)</label>
+            <input type="text" id="contact_hp_url" name="contact_hp_url" tabindex="-1" autocomplete="off" value=""/>
+          </div>
+          <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+          <input type="hidden" name="model_name" value="crm.lead"/>
+          <input type="hidden" name="success_page" value="/contactus-thank-you"/>
+          
+          <!-- Step 1 -->
+          <div class="step-header-brutal">[01] Kontaktdaten</div>
+          <div class="step-title-brutal">Persönliche Angaben</div>
+          
+          <div class="form-group-brutal">
+            <label class="form-label-brutal" for="contact_name">Dein Name *</label>
+            <input type="text" class="form-input-brutal" name="contact_name" required="True" placeholder="z.B. Max Mustermann"/>
+          </div>
+
+          <div class="form-group-brutal">
+            <label class="form-label-brutal" for="email_from">Deine E-Mail *</label>
+            <input type="email" class="form-input-brutal" name="email_from" required="True" placeholder="z.B. max@domain.de"/>
+          </div>
+
+          <div class="form-group-brutal">
+            <label class="form-label-brutal" for="phone">Telefon (Optional)</label>
+            <input type="tel" class="form-input-brutal" name="phone" placeholder="z.B. +49 151 1234567"/>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="step-header-brutal">[02] Service Category</div>
+          <div class="step-title-brutal">Projektbereich</div>
+
+          <div class="form-group-brutal">
+            <label class="form-label-brutal" for="name">Was planst du? *</label>
+            <select class="form-input-brutal" name="name" required="True" style="background: #000; color: #fff;">
+              <option value="">Bitte wählen...</option>
+              <option value="Website-Anfrage: Event-Technik">Event- &amp; FOH-Tontechnik (Konzerte / Festivals / Corporate)</option>
+              <option value="Website-Anfrage: Equipment-Miete">Equipment-Miete (PA-Systeme, Licht, 5m Fußballdart)</option>
+              <option value="Website-Anfrage: Buehnenbau">Bühnenbau, Traversen &amp; Ground Support</option>
+              <option value="Website-Anfrage: Holz-Sonderbau">Maßgefertigter Akustik- &amp; Holz-Sonderbau</option>
+              <option value="Website-Anfrage: B2B-Support">B2B Subunternehmer-Support &amp; Stage Crew</option>
+              <option value="Website-Anfrage: Sonstiges">Sonstige technische Anfrage</option>
+            </select>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="step-header-brutal">[03] Scope &amp; Schedule</div>
+          <div class="step-title-brutal">Zeitrahmen &amp; Budget</div>
+
+          <div class="form-group-brutal">
+            <label class="form-label-brutal" for="timeline">Wann soll es fertig sein? *</label>
+            <input type="text" class="form-input-brutal" name="timeline" required="True" placeholder="z.B. Juli 2026 / Flexibel"/>
+          </div>
+
+          <div class="form-group-brutal">
+            <label class="form-label-brutal" for="city">Ort der Veranstaltung / des Projekts</label>
+            <input type="text" class="form-input-brutal" name="city" placeholder="z.B. Lindau / Weißensberg"/>
+          </div>
+
+          <!-- Step 4 -->
+          <div class="step-header-brutal">[04] Technical Details</div>
+          <div class="step-title-brutal">Projektbeschreibung</div>
+
+          <div class="form-group-brutal">
+            <label class="form-label-brutal" for="description">Beschreibe dein Projekt *</label>
+            <textarea class="form-input-brutal" name="description" required="True" rows="6" placeholder="Was willst du machen? Was ist die größte Sorge? Welche Hardware ist vorhanden?"/>
+          </div>
+
+          <div class="form-group-brutal" style="display: flex; gap: 12px; align-items: flex-start; margin-top: 30px;">
+            <input type="checkbox" name="privacy_agree" required="True" style="margin-top: 4px; accent-color: var(--fw-accent);"/>
+            <span style="font-size: 0.85rem; color: var(--fw-text-muted); line-height: 1.5;">
+              Ich habe die <a href="/datenschutz" style="color: var(--fw-accent); text-decoration: none;">Datenschutzerklärung</a> gelesen und stimme der Verarbeitung meiner Daten zu. *
+            </span>
+          </div>
+
+          <button type="submit" class="submit-btn-brutal">[ Projekt anfragen ]</button>
+        </form>
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var form = document.getElementById('fw-contact-form');
+      if (!form) return;
+      var loadTime = Date.now();
+      form.addEventListener('submit', function (ev) {
+        ev.preventDefault();
+        var hp = form.querySelector('input[name="contact_hp_url"]');
+        var hpVal = hp ? hp.value.trim() : '';
+        var elapsed = Date.now() - loadTime;
+
+        // Anti-Spam Check: Honeypot muss leer sein und Mindestdauer 3.5s
+        if (hpVal.length !== 0 || elapsed &lt; 3500) {
+          console.warn('[FraWo Anti-Spam] Bot submission intercepted. Silently dropped.');
+          var btn = form.querySelector('button[type="submit"]');
+          if (btn) { btn.disabled = true; btn.textContent = '[ Wird gesendet... ]'; }
+          setTimeout(function () {
+            window.location.href = '/contactus-thank-you';
+          }, 600);
+          return;
+        }
+
+        var btn = form.querySelector('button[type="submit"]');
+        if (btn) { btn.disabled = true; btn.textContent = '[ Wird gesendet... ]'; }
+
+        var endpoint = form.getAttribute('data-endpoint') || '/website/form/crm.lead';
+        var formData = new FormData(form);
+        formData.delete('contact_hp_url');
+
+        fetch(endpoint, { method: 'POST', body: formData })
+          .then(function (r) { return r.json(); })
+          .then(function (data) {
+            if (data) {
+              if (data.id) {
+                window.location.href = '/contactus-thank-you';
+                return;
+              }
+            }
+            throw new Error('No lead ID returned');
+          })
+          .catch(function (err) {
+            console.error('[Contact Form Error]', err);
+            if (btn) { btn.disabled = false; btn.textContent = '[ Projekt anfragen ]'; }
+            alert('Senden fehlgeschlagen. Bitte per E-Mail an kontakt@frawo.tech oder telefonisch melden.');
+          });
+      });
+    });
+    </script>
+
+      </div>
+
+      <!-- Right: Technical Requirements & Info -->
+      <div class="contact-section-brutal" style="display: flex; flex-direction: column;">
+        <div class="step-header-brutal" style="color: var(--fw-accent);">[INFO] technical checklist</div>
+        <div class="step-title-brutal">Unsere Parameter</div>
+
+        <p style="color: var(--fw-text-muted); font-size: 0.95rem; line-height: 1.7; margin-bottom: 30px;">
+          Wir legen Wert auf präzise handwerkliche und digitale Qualität. Bei jeder Projektierung gelten folgende Kernkriterien:
+        </p>
+
+        <ul class="requirements-check-list" style="margin-bottom: 40px;">
+          <li>
+            <span class="check-marker">[✓]</span>
+            <span>Lokale Präsenz (Lindau, Bodensee, Vorarlberg, Allgäu)</span>
+          </li>
+          <li>
+            <span class="check-marker">[✓]</span>
+            <span>IHK-Fachkraft für Veranstaltungstechnik (FOH &amp; Licht)</span>
+          </li>
+          <li>
+            <span class="check-marker">[✓]</span>
+            <span>Bühnenbau &amp; Akustik-Sonderbau (sicherheitsgeprüft)</span>
+          </li>
+          <li>
+            <span class="check-marker">[✓]</span>
+            <span>DSP-abgesicherte Beschallungsanlagen (Überlastungsschutz)</span>
+          </li>
+          <li>
+            <span class="check-marker">[✓]</span>
+            <span>Normgerechte, sicherheitsgeprüfte Umsetzung</span>
+          </li>
+        </ul>
+
+        <div style="background: #000; border: 1px solid var(--fw-border); padding: 30px; margin-top: auto; font-family: monospace; font-size: 0.8rem; line-height: 1.6;">
+          <div style="color: var(--fw-accent); font-weight: 700; margin-bottom: 12px; text-transform: uppercase;">System Availability 2026</div>
+          <div>Status: BEGRENZTE KAPAZITÄTEN</div>
+          <div style="color: var(--fw-text-muted); margin-top: 8px;">
+            Durch hohe Auslastung im Eventbereich bitten wir um frühzeitige Einreichung der Projektbeschreibungen.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</t>
+</t>
