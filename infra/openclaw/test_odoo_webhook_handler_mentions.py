@@ -12,6 +12,9 @@ TEST_ENV = {
     "ODOO_LOGIN": "test",
     "ODOO_APIKEY": "test",
     "OLLAMA_URL": "http://ollama.invalid",
+    "OLLAMA_MODEL": "cpu-model",
+    "OLLAMA_POWER_URL": "http://studiopc.invalid:11434",
+    "OLLAMA_POWER_MODEL": "gpu-model",
     "OLLAMA_POWER_PARTNER_ID": "321",
 }
 
@@ -20,6 +23,7 @@ with patch.dict(os.environ, TEST_ENV):
         _is_power_mention,
         _post,
         _ask_ollama,
+        OLLAMA_ROUTINE_ZIELE,
         KeinRechenknoten,
         EMAIL_PROMPT_TEMPLATE,
     )
@@ -73,6 +77,34 @@ class PowerMentionTests(unittest.TestCase):
             with self.assertRaises(KeinRechenknoten) as ctx:
                 _ask_ollama("system", "prompt", power=True)
             self.assertIn("(aus)", str(ctx.exception))
+
+    def test_routine_prefers_studiopc_gpu_before_cpu_fallback(self):
+        self.assertEqual(
+            OLLAMA_ROUTINE_ZIELE,
+            [("http://studiopc.invalid:11434", "gpu-model"),
+             ("http://ollama.invalid", "cpu-model")],
+        )
+
+    def test_routine_falls_back_to_cpu_when_gpu_is_unreachable(self):
+        responses = iter([False, True])
+
+        class Response:
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *args):
+                return False
+
+            def read(self):
+                return b'{"message":{"content":"CPU fallback ok"}}'
+
+        with patch("odoo_webhook_handler._erreichbar", side_effect=lambda url: next(responses)), \
+             patch("odoo_webhook_handler.urllib.request.urlopen", return_value=Response()):
+            answer, model, url = _ask_ollama("system", "prompt", power=False)
+
+        self.assertEqual(answer, "CPU fallback ok")
+        self.assertEqual(model, "cpu-model")
+        self.assertEqual(url, "http://ollama.invalid")
 
     def test_power_not_configured_raises_kein_rechenknoten(self):
         with patch("odoo_webhook_handler.OLLAMA_POWER_ZIELE", []):

@@ -94,16 +94,23 @@ ALERT_MAX_AGE = int(os.environ.get("FRAWO_ALERT_MAX_AGE", "21600"))
 QUEUE_DB = os.environ.get(
     "FRAWO_QUEUE_DB", "/var/lib/frawo/odoo-webhook-queue.sqlite3")
 
-# Getrennte Rollen statt eines stillen Fallbacks:
-# - Routine-Lama (OptiPlex): 24/7, kurze Chatter-Zuarbeit.
-# - Power-Lama (StudioPC): nur bei ausdrücklicher Bitte "Power"; dafür ist
-#   ein stärkeres Modell und mehr Zeit vorgesehen. Fällt der StudioPC aus,
-#   wird NICHT heimlich auf die Routine-Qualität zurückgefallen.
-OLLAMA_ROUTINE_ZIELE = [(_need("OLLAMA_URL").rstrip("/"),
-                         os.environ.get("OLLAMA_MODEL", "frawo-mitarbeiter-fast"))]
-_power_url = os.environ.get("OLLAMA_POWER_URL", "").strip().rstrip("/")
-_power_model = os.environ.get("OLLAMA_POWER_MODEL", "").strip()
-OLLAMA_POWER_ZIELE = [(_power_url, _power_model)] if _power_url and _power_model else []
+# Rechenkaskade: normale Odoo-Aufgaben rechnen zuerst auf dem StudioPC-GPU-Knoten.
+# Nur wenn der StudioPC nicht erreichbar ist, fällt die Routine auf den 24/7-OptiPlex
+# zurück. So wird die GPU im Alltag genutzt, ohne den Betrieb bei ausgeschaltetem
+# StudioPC still zu verlieren.
+_gpu_url = os.environ.get("OLLAMA_POWER_URL", "").strip().rstrip("/")
+_gpu_model = os.environ.get("OLLAMA_POWER_MODEL", "").strip()
+_cpu_url = os.environ.get("OLLAMA_URL", "").strip().rstrip("/")
+_cpu_model = os.environ.get("OLLAMA_MODEL", "frawo-mitarbeiter-fast:latest").strip()
+OLLAMA_ROUTINE_ZIELE = []
+if _gpu_url and _gpu_model:
+    OLLAMA_ROUTINE_ZIELE.append((_gpu_url, _gpu_model))
+if _cpu_url and _cpu_model:
+    OLLAMA_ROUTINE_ZIELE.append((_cpu_url, _cpu_model))
+
+# Explizite Power-Erwähnungen bleiben auf dem StudioPC: kein stiller Wechsel auf
+# die schwächere Routinequalität.
+OLLAMA_POWER_ZIELE = [(_gpu_url, _gpu_model)] if _gpu_url and _gpu_model else []
 
 # Partner-ID des Odoo-Nutzers "🤖 Ollama Mitarbeiter" — eigene Beiträge dürfen
 # niemals eine neue Runde auslösen.
@@ -587,7 +594,7 @@ def _erreichbar(url: str) -> bool:
 
 
 def _ask_ollama(system: str, prompt: str, power: bool = False):
-    """Fragt die gewählte Rolle. Gibt (Antwort, Modellname) zurück."""
+    """Fragt die gewählte Rolle. Gibt (Antwort, Modellname, URL) zurück."""
     versucht = []
     ziele = OLLAMA_POWER_ZIELE if power else OLLAMA_ROUTINE_ZIELE
     rolle = "Power-Lama" if power else "Routine-Lama"
@@ -611,7 +618,7 @@ def _ask_ollama(system: str, prompt: str, power: bool = False):
             headers={"Content-Type": "application/json"})
         with urllib.request.urlopen(req, timeout=OLLAMA_TIMEOUT) as resp:
             data = json.loads(resp.read().decode("utf-8"))
-        return (data.get("message") or {}).get("content", "").strip(), model
+        return (data.get("message") or {}).get("content", "").strip(), model, url
     raise KeinRechenknoten(", ".join(versucht) or f"{rolle} nicht erreichbar")
 
 
@@ -641,7 +648,7 @@ def handle_ollama_async(model: str, res_id: int, record_name: str,
             % (record_name, context, author_id, question)
         )
         try:
-            answer, used_model = _ask_ollama(OLLAMA_SYSTEM, prompt, power=power)
+            answer, used_model, used_url = _ask_ollama(OLLAMA_SYSTEM, prompt, power=power)
         except (KeinRechenknoten, urllib.error.URLError, OSError) as e:
             log.warning(f"Kein Ollama-Knoten erreichbar für {label}: {e}")
             try:
@@ -662,8 +669,10 @@ def handle_ollama_async(model: str, res_id: int, record_name: str,
             return
         body = _to_html(answer[:6000])
         body += ('<p style="color:#888;font-size:90%%">🤖 Automatische Antwort von '
-                 '%s (lokales Modell, CT150). Keine Freigabe, keine Buchung, '
-                 'kein Abschluss.</p>' % used_model)
+                 '%s — Rechenknoten: %s (lokales Modell, CT150). Keine Freigabe, keine Buchung, '
+                 'kein Abschluss.</p>' % (
+                     used_model,
+                     "StudioPC-GPU" if "10.0.0.156" in used_url else "OptiPlex-CPU"))
         try:
             _post(rpc, model, res_id, body)
             log.info(f"Ollama-Antwort gepostet auf {label}")
