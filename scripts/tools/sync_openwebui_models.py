@@ -282,6 +282,17 @@ def sync(db_path=DB_PATH):
         (json.dumps(order_list),)
     )
 
+    ollama_urls = ["http://10.0.0.156:11434", "http://10.1.0.227:11434"]
+    ollama_api_configs = {"0": {"enable": True}, "1": {"enable": True}}
+    cur.execute(
+        "UPDATE config SET value = ? WHERE key = 'ollama.base_urls'",
+        (json.dumps(ollama_urls),)
+    )
+    cur.execute(
+        "UPDATE config SET value = ? WHERE key = 'ollama.api_configs'",
+        (json.dumps(ollama_api_configs),)
+    )
+
     conn.commit()
     conn.close()
     print("Sync complete.")
