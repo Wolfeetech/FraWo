@@ -157,6 +157,9 @@ def apply(playlists: list[dict], schedules: list[dict], existing_by_name: dict[s
                 )
     mvp_names = [p["name"] for p in playlists if p["name"].startswith("MVP ")]
     quoted = ",".join("'" + esc(n) + "'" for n in mvp_names + ["⭐ Best of the MVP"])
+    # Replace the old 7-day schedule entries, but preserve the existing
+    # Best-of-the-Week Sunday slot (playlist 869) and the power rotation.
+    sql.append("DELETE FROM station_schedules WHERE playlist_id IN (859,860,861,862,863,864,865,866,867,868);")
     sql.append(f"DELETE ss FROM station_schedules ss JOIN station_playlists sp ON sp.id=ss.playlist_id WHERE sp.name IN ({quoted});")
     for s in schedules:
         target = next(p["sql_id"] for p in playlists if p["name"] == s["name"])
