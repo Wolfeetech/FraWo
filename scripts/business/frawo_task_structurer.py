@@ -307,6 +307,8 @@ def process_wish(freitext: str, auto_create: bool = False, dry_run: bool = False
             assigned_name = str(p["assigned_to"]).lower()
             u_ids = [USER_MAP["wolf"]] if "wolf" in assigned_name else ([USER_MAP["franz"]] if "franz" in assigned_name else [USER_MAP["wolf"]])
             new_id = odoo.create_task(p["title"], p["project_id"], p["desc_html"], p["stage_id"], p["priority"], u_ids)
+            if isinstance(new_id, list):
+                new_id = new_id[0]
             print(f"✔ Task #{new_id} angelegt: {p['title']}")
             print(f"  Link: {ODOO_URL}/web#id={new_id}&model=project.task&view_type=form")
         print("\n✨ Fertig! Das Aufgaben-Chaos ist erfolgreich geordnet.")
