@@ -1,0 +1,2888 @@
+[
+  {
+    "station_id": 1,
+    "name": "01 Sunrise",
+    "description": "Ambient und organische Klänge zum sanften Start in den Tag.",
+    "type": "default",
+    "source": "songs",
+    "order": "shuffle",
+    "remote_url": null,
+    "remote_type": null,
+    "remote_buffer": 0,
+    "is_enabled": true,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 3,
+    "include_in_requests": true,
+    "include_in_on_demand": false,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": "2026-10-08T14:41:33.254208Z",
+    "queue_reset_at": "2026-10-06T06:43:17.535518Z",
+    "schedule_items": [],
+    "podcasts": [],
+    "id": 859,
+    "short_name": "01_sunrise",
+    "num_songs": 206,
+    "total_length": 92395,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/859",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/859/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/859/clone",
+      "queue": "https://10.1.0.38/api/station/1/playlist/859/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/859/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/859/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/859/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/859/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/859/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/859/export/m3u"
+      }
+    }
+  },
+  {
+    "station_id": 1,
+    "name": "02 Morning Drive",
+    "description": "Nu-Disco und Indie Dance für den Vormittag.",
+    "type": "default",
+    "source": "songs",
+    "order": "shuffle",
+    "remote_url": null,
+    "remote_type": null,
+    "remote_buffer": 0,
+    "is_enabled": true,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 3,
+    "include_in_requests": true,
+    "include_in_on_demand": false,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": "2026-10-08T09:17:07.236467Z",
+    "queue_reset_at": "2026-10-06T06:43:17.535518Z",
+    "schedule_items": [],
+    "podcasts": [],
+    "id": 860,
+    "short_name": "02_morning_drive",
+    "num_songs": 655,
+    "total_length": 238342,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/860",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/860/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/860/clone",
+      "queue": "https://10.1.0.38/api/station/1/playlist/860/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/860/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/860/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/860/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/860/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/860/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/860/export/m3u"
+      }
+    }
+  },
+  {
+    "station_id": 1,
+    "name": "03 Lunch Groove",
+    "description": "Funk, Soul und Disco zur Mittagspause.",
+    "type": "default",
+    "source": "songs",
+    "order": "shuffle",
+    "remote_url": null,
+    "remote_type": null,
+    "remote_buffer": 0,
+    "is_enabled": true,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 3,
+    "include_in_requests": true,
+    "include_in_on_demand": false,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": "2026-10-09T21:41:24.923943Z",
+    "queue_reset_at": "2026-10-06T06:43:17.535518Z",
+    "schedule_items": [],
+    "podcasts": [],
+    "id": 861,
+    "short_name": "03_lunch_groove",
+    "num_songs": 614,
+    "total_length": 249956,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/861",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/861/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/861/clone",
+      "queue": "https://10.1.0.38/api/station/1/playlist/861/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/861/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/861/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/861/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/861/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/861/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/861/export/m3u"
+      }
+    }
+  },
+  {
+    "station_id": 1,
+    "name": "04 Afternoon Flow",
+    "description": "Deep House und Melodic House für den Nachmittag.",
+    "type": "default",
+    "source": "songs",
+    "order": "shuffle",
+    "remote_url": null,
+    "remote_type": null,
+    "remote_buffer": 0,
+    "is_enabled": true,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 3,
+    "include_in_requests": true,
+    "include_in_on_demand": false,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": "2026-10-07T14:57:07.807548Z",
+    "queue_reset_at": "2026-10-06T06:43:17.535518Z",
+    "schedule_items": [],
+    "podcasts": [],
+    "id": 862,
+    "short_name": "04_afternoon_flow",
+    "num_songs": 355,
+    "total_length": 135920,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/862",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/862/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/862/clone",
+      "queue": "https://10.1.0.38/api/station/1/playlist/862/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/862/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/862/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/862/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/862/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/862/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/862/export/m3u"
+      }
+    }
+  },
+  {
+    "station_id": 1,
+    "name": "05 Evening Warmup",
+    "description": "House und Tech House zum Einstieg in den Abend.",
+    "type": "default",
+    "source": "songs",
+    "order": "shuffle",
+    "remote_url": null,
+    "remote_type": null,
+    "remote_buffer": 0,
+    "is_enabled": true,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 3,
+    "include_in_requests": true,
+    "include_in_on_demand": false,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": "2026-10-09T21:10:11.075762Z",
+    "queue_reset_at": "2026-10-06T06:43:17.535518Z",
+    "schedule_items": [],
+    "podcasts": [],
+    "id": 863,
+    "short_name": "05_evening_warmup",
+    "num_songs": 416,
+    "total_length": 145422,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/863",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/863/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/863/clone",
+      "queue": "https://10.1.0.38/api/station/1/playlist/863/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/863/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/863/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/863/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/863/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/863/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/863/export/m3u"
+      }
+    }
+  },
+  {
+    "station_id": 1,
+    "name": "06 Deep Night",
+    "description": "Minimal und Deep Techno für die Nacht.",
+    "type": "default",
+    "source": "songs",
+    "order": "shuffle",
+    "remote_url": null,
+    "remote_type": null,
+    "remote_buffer": 0,
+    "is_enabled": true,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 3,
+    "include_in_requests": true,
+    "include_in_on_demand": false,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": "2026-10-09T21:35:58.860542Z",
+    "queue_reset_at": "2026-10-06T06:43:17.535518Z",
+    "schedule_items": [],
+    "podcasts": [],
+    "id": 864,
+    "short_name": "06_deep_night",
+    "num_songs": 341,
+    "total_length": 122998,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/864",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/864/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/864/clone",
+      "queue": "https://10.1.0.38/api/station/1/playlist/864/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/864/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/864/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/864/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/864/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/864/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/864/export/m3u"
+      }
+    }
+  },
+  {
+    "station_id": 1,
+    "name": "07 Peak Time Club",
+    "description": "Techno zur Peak Time im Club.",
+    "type": "default",
+    "source": "songs",
+    "order": "shuffle",
+    "remote_url": null,
+    "remote_type": null,
+    "remote_buffer": 0,
+    "is_enabled": true,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 3,
+    "include_in_requests": true,
+    "include_in_on_demand": false,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": "2026-10-09T21:19:15.803721Z",
+    "queue_reset_at": "2026-10-06T06:43:17.535518Z",
+    "schedule_items": [],
+    "podcasts": [],
+    "id": 865,
+    "short_name": "07_peak_time_club",
+    "num_songs": 400,
+    "total_length": 141314,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/865",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/865/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/865/clone",
+      "queue": "https://10.1.0.38/api/station/1/playlist/865/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/865/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/865/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/865/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/865/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/865/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/865/export/m3u"
+      }
+    }
+  },
+  {
+    "station_id": 1,
+    "name": "08 Sunday Roadtrip",
+    "description": "Classics, Soul und Pop für den Sonntagsausflug.",
+    "type": "default",
+    "source": "songs",
+    "order": "shuffle",
+    "remote_url": null,
+    "remote_type": null,
+    "remote_buffer": 0,
+    "is_enabled": true,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 3,
+    "include_in_requests": true,
+    "include_in_on_demand": false,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": "2026-10-04T15:55:20.137520Z",
+    "queue_reset_at": "2026-10-06T06:43:17.535518Z",
+    "schedule_items": [],
+    "podcasts": [],
+    "id": 866,
+    "short_name": "08_sunday_roadtrip",
+    "num_songs": 730,
+    "total_length": 302902,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/866",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/866/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/866/clone",
+      "queue": "https://10.1.0.38/api/station/1/playlist/866/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/866/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/866/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/866/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/866/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/866/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/866/export/m3u"
+      }
+    }
+  },
+  {
+    "station_id": 1,
+    "name": "09 Afro World",
+    "description": "Afro House, Latin und organische Percussion.",
+    "type": "default",
+    "source": "songs",
+    "order": "shuffle",
+    "remote_url": null,
+    "remote_type": null,
+    "remote_buffer": 0,
+    "is_enabled": true,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 3,
+    "include_in_requests": true,
+    "include_in_on_demand": false,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": "2026-10-09T21:28:51.012016Z",
+    "queue_reset_at": "2026-10-06T06:43:17.535518Z",
+    "schedule_items": [],
+    "podcasts": [],
+    "id": 867,
+    "short_name": "09_afro_world",
+    "num_songs": 137,
+    "total_length": 48108,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/867",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/867/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/867/clone",
+      "queue": "https://10.1.0.38/api/station/1/playlist/867/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/867/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/867/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/867/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/867/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/867/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/867/export/m3u"
+      }
+    }
+  },
+  {
+    "station_id": 1,
+    "name": "10 DJ Sets",
+    "description": "Komplette DJ-Mixe von FraWo Funk.",
+    "type": "default",
+    "source": "songs",
+    "order": "shuffle",
+    "remote_url": null,
+    "remote_type": null,
+    "remote_buffer": 0,
+    "is_enabled": true,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 3,
+    "include_in_requests": true,
+    "include_in_on_demand": false,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": "2026-10-03T18:01:39.261559Z",
+    "queue_reset_at": "2026-10-06T06:43:17.535518Z",
+    "schedule_items": [],
+    "podcasts": [],
+    "id": 868,
+    "short_name": "10_dj_sets",
+    "num_songs": 71,
+    "total_length": 407483,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/868",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/868/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/868/clone",
+      "queue": "https://10.1.0.38/api/station/1/playlist/868/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/868/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/868/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/868/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/868/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/868/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/868/export/m3u"
+      }
+    }
+  },
+  {
+    "station_id": 1,
+    "name": "Afro-Noon",
+    "description": "Afro House mit warmen Percussions und organischem Druck für die Mittagszeit.",
+    "type": "default",
+    "source": "songs",
+    "order": "shuffle",
+    "remote_url": null,
+    "remote_type": null,
+    "remote_buffer": 0,
+    "is_enabled": true,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 10,
+    "include_in_requests": false,
+    "include_in_on_demand": false,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": null,
+    "queue_reset_at": null,
+    "schedule_items": [
+      {
+        "start_time": 1100,
+        "end_time": 1700,
+        "start_date": null,
+        "end_date": null,
+        "days": [
+          1
+        ],
+        "loop_once": false,
+        "id": 747
+      }
+    ],
+    "podcasts": [],
+    "id": 874,
+    "short_name": "afro-noon",
+    "num_songs": 100,
+    "total_length": 35215,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/874",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/874/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/874/clone",
+      "queue": "https://10.1.0.38/api/station/1/playlist/874/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/874/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/874/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/874/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/874/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/874/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/874/export/m3u"
+      }
+    }
+  },
+  {
+    "station_id": 1,
+    "name": "Afro-Noon Friday",
+    "description": "Freitags-Afro-House mit Percussion, Wärme und kontrolliertem Wochenendaufbau.",
+    "type": "default",
+    "source": "songs",
+    "order": "shuffle",
+    "remote_url": null,
+    "remote_type": null,
+    "remote_buffer": 0,
+    "is_enabled": true,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 10,
+    "include_in_requests": false,
+    "include_in_on_demand": false,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": "2026-10-09T14:57:50.397166Z",
+    "queue_reset_at": null,
+    "schedule_items": [
+      {
+        "start_time": 1100,
+        "end_time": 1700,
+        "start_date": null,
+        "end_date": null,
+        "days": [
+          5
+        ],
+        "loop_once": false,
+        "id": 763
+      }
+    ],
+    "podcasts": [],
+    "id": 890,
+    "short_name": "afro-noon_friday",
+    "num_songs": 100,
+    "total_length": 35215,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/890",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/890/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/890/clone",
+      "queue": "https://10.1.0.38/api/station/1/playlist/890/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/890/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/890/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/890/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/890/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/890/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/890/export/m3u"
+      }
+    }
+  },
+  {
+    "station_id": 1,
+    "name": "Afro-Noon Thursday",
+    "description": "Donnerstags-Afro-House mit organischem Groove und warmer Clubenergie.",
+    "type": "default",
+    "source": "songs",
+    "order": "shuffle",
+    "remote_url": null,
+    "remote_type": null,
+    "remote_buffer": 0,
+    "is_enabled": true,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 10,
+    "include_in_requests": false,
+    "include_in_on_demand": false,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": "2026-10-08T14:59:50.938935Z",
+    "queue_reset_at": null,
+    "schedule_items": [
+      {
+        "start_time": 1100,
+        "end_time": 1700,
+        "start_date": null,
+        "end_date": null,
+        "days": [
+          4
+        ],
+        "loop_once": false,
+        "id": 759
+      }
+    ],
+    "podcasts": [],
+    "id": 886,
+    "short_name": "afro-noon_thursday",
+    "num_songs": 102,
+    "total_length": 35918,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/886",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/886/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/886/clone",
+      "queue": "https://10.1.0.38/api/station/1/playlist/886/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/886/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/886/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/886/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/886/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/886/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/886/export/m3u"
+      }
+    }
+  },
+  {
+    "station_id": 1,
+    "name": "Afterwork Club",
+    "description": "Direkter Feierabend-Clubmix mit House, Disco und steigender Energie.",
+    "type": "default",
+    "source": "songs",
+    "order": "shuffle",
+    "remote_url": null,
+    "remote_type": null,
+    "remote_buffer": 0,
+    "is_enabled": true,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 10,
+    "include_in_requests": false,
+    "include_in_on_demand": false,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": null,
+    "queue_reset_at": null,
+    "schedule_items": [
+      {
+        "start_time": 1700,
+        "end_time": 0,
+        "start_date": null,
+        "end_date": null,
+        "days": [
+          3
+        ],
+        "loop_once": false,
+        "id": 756
+      }
+    ],
+    "podcasts": [],
+    "id": 883,
+    "short_name": "afterwork_club",
+    "num_songs": 100,
+    "total_length": 37359,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/883",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/883/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/883/clone",
+      "queue": "https://10.1.0.38/api/station/1/playlist/883/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/883/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/883/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/883/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/883/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/883/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/883/export/m3u"
+      }
+    }
+  },
+  {
+    "station_id": 1,
+    "name": "Channel 1 — Acoustik & Ambient",
+    "description": "Ruhige Klaenge zum Entspannen -- Akustik, Ambient, Chillout.",
+    "type": "default",
+    "source": "songs",
+    "order": "shuffle",
+    "remote_url": null,
+    "remote_type": null,
+    "remote_buffer": 0,
+    "is_enabled": false,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 3,
+    "include_in_requests": true,
+    "include_in_on_demand": true,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": "2026-09-06T08:58:02.343027Z",
+    "queue_reset_at": "2026-10-06T06:43:17.535518Z",
+    "schedule_items": [],
+    "podcasts": [],
+    "id": 846,
+    "short_name": "channel_1__acoustik__ambient",
+    "num_songs": 0,
+    "total_length": 0,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/846",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/846/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/846/clone",
+      "queue": "https://10.1.0.38/api/station/1/playlist/846/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/846/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/846/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/846/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/846/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/846/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/846/export/m3u"
+      }
+    }
+  },
+  {
+    "station_id": 1,
+    "name": "Channel 2 — Soft Groove",
+    "description": "Warmer Groove fuer den ganzen Tag -- Soul, Funk, House.",
+    "type": "default",
+    "source": "songs",
+    "order": "shuffle",
+    "remote_url": null,
+    "remote_type": null,
+    "remote_buffer": 0,
+    "is_enabled": false,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 3,
+    "include_in_requests": true,
+    "include_in_on_demand": true,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": "2026-09-14T10:38:46.446119Z",
+    "queue_reset_at": "2026-10-06T06:43:17.535518Z",
+    "schedule_items": [],
+    "podcasts": [],
+    "id": 847,
+    "short_name": "channel_2__soft_groove",
+    "num_songs": 0,
+    "total_length": 0,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/847",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/847/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/847/clone",
+      "queue": "https://10.1.0.38/api/station/1/playlist/847/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/847/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/847/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/847/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/847/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/847/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/847/export/m3u"
+      }
+    }
+  },
+  {
+    "station_id": 1,
+    "name": "Channel 3 — Harder Styles",
+    "description": "Energie pur -- Hardstyle, Techno, Uptempo.",
+    "type": "default",
+    "source": "songs",
+    "order": "shuffle",
+    "remote_url": null,
+    "remote_type": null,
+    "remote_buffer": 0,
+    "is_enabled": false,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 3,
+    "include_in_requests": true,
+    "include_in_on_demand": true,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": "2026-09-14T03:59:50.698184Z",
+    "queue_reset_at": "2026-10-06T06:43:17.535518Z",
+    "schedule_items": [],
+    "podcasts": [],
+    "id": 848,
+    "short_name": "channel_3__harder_styles",
+    "num_songs": 0,
+    "total_length": 0,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/848",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/848/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/848/clone",
+      "queue": "https://10.1.0.38/api/station/1/playlist/848/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/848/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/848/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/848/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/848/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/848/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/848/export/m3u"
+      }
+    }
+  },
+  {
+    "station_id": 1,
+    "name": "Channel 4 — Roadtrip & Classics",
+    "description": "Klassiker fuer die lange Fahrt -- Roadtrip-Sound und Classics.",
+    "type": "default",
+    "source": "songs",
+    "order": "shuffle",
+    "remote_url": null,
+    "remote_type": null,
+    "remote_buffer": 0,
+    "is_enabled": false,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 3,
+    "include_in_requests": true,
+    "include_in_on_demand": true,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": "2026-09-06T19:31:37.317078Z",
+    "queue_reset_at": "2026-10-06T06:43:17.535518Z",
+    "schedule_items": [],
+    "podcasts": [],
+    "id": 849,
+    "short_name": "channel_4__roadtrip__classics",
+    "num_songs": 0,
+    "total_length": 0,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/849",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/849/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/849/clone",
+      "queue": "https://10.1.0.38/api/station/1/playlist/849/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/849/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/849/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/849/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/849/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/849/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/849/export/m3u"
+      }
+    }
+  },
+  {
+    "station_id": 1,
+    "name": "City Lunch",
+    "description": "Urbaner Mittagsgroove mit Disco, House und entspanntem Vorwärtsdrang.",
+    "type": "default",
+    "source": "songs",
+    "order": "shuffle",
+    "remote_url": null,
+    "remote_type": null,
+    "remote_buffer": 0,
+    "is_enabled": true,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 10,
+    "include_in_requests": false,
+    "include_in_on_demand": false,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": null,
+    "queue_reset_at": null,
+    "schedule_items": [
+      {
+        "start_time": 1100,
+        "end_time": 1700,
+        "start_date": null,
+        "end_date": null,
+        "days": [
+          3
+        ],
+        "loop_once": false,
+        "id": 755
+      }
+    ],
+    "podcasts": [],
+    "id": 882,
+    "short_name": "city_lunch",
+    "num_songs": 100,
+    "total_length": 37117,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/882",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/882/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/882/clone",
+      "queue": "https://10.1.0.38/api/station/1/playlist/882/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/882/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/882/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/882/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/882/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/882/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/882/export/m3u"
+      }
+    }
+  },
+  {
+    "station_id": 1,
+    "name": "Deep Night",
+    "description": "Tiefe Nachtfarben mit Minimal, Techno und atmosphärischen, langsamen Entwicklungen.",
+    "type": "default",
+    "source": "songs",
+    "order": "shuffle",
+    "remote_url": null,
+    "remote_type": null,
+    "remote_buffer": 0,
+    "is_enabled": true,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 10,
+    "include_in_requests": false,
+    "include_in_on_demand": false,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": null,
+    "queue_reset_at": null,
+    "schedule_items": [
+      {
+        "start_time": 0,
+        "end_time": 600,
+        "start_date": null,
+        "end_date": null,
+        "days": [
+          3
+        ],
+        "loop_once": false,
+        "id": 753
+      }
+    ],
+    "podcasts": [],
+    "id": 880,
+    "short_name": "deep_night",
+    "num_songs": 100,
+    "total_length": 34342,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/880",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/880/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/880/clone",
+      "queue": "https://10.1.0.38/api/station/1/playlist/880/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/880/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/880/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/880/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/880/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/880/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/880/export/m3u"
+      }
+    }
+  },
+  {
+    "station_id": 1,
+    "name": "FraWo Funk — Station IDs & Jingles",
+    "description": "Kurze Stations-Kennungen alle 5 Tracks",
+    "type": "once_per_x_songs",
+    "source": "songs",
+    "order": "shuffle",
+    "remote_url": null,
+    "remote_type": null,
+    "remote_buffer": 0,
+    "is_enabled": true,
+    "is_jingle": true,
+    "play_per_songs": 5,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 3,
+    "include_in_requests": false,
+    "include_in_on_demand": false,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": "2026-10-09T21:45:38.829674Z",
+    "queue_reset_at": "2026-10-09T21:19:19.594682Z",
+    "schedule_items": [],
+    "podcasts": [],
+    "id": 870,
+    "short_name": "frawo_funk__station_ids__jingles",
+    "num_songs": 7,
+    "total_length": 76,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/870",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/870/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/870/clone",
+      "queue": "https://10.1.0.38/api/station/1/playlist/870/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/870/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/870/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/870/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/870/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/870/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/870/export/m3u"
+      }
+    }
+  },
+  {
+    "station_id": 1,
+    "name": "FraWo Selects",
+    "description": "FraWo Funk – kuratierter 7-Tage-Daypart-Betrieb.",
+    "type": "default",
+    "source": "songs",
+    "order": "shuffle",
+    "remote_url": null,
+    "remote_type": null,
+    "remote_buffer": 0,
+    "is_enabled": true,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 10,
+    "include_in_requests": false,
+    "include_in_on_demand": false,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": "2026-10-08T10:29:13.748902Z",
+    "queue_reset_at": null,
+    "schedule_items": [
+      {
+        "start_time": 1200,
+        "end_time": 1320,
+        "start_date": null,
+        "end_date": null,
+        "days": [
+          7
+        ],
+        "loop_once": false,
+        "id": 773
+      }
+    ],
+    "podcasts": [],
+    "id": 901,
+    "short_name": "frawo_selects",
+    "num_songs": 24,
+    "total_length": 9275,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/901",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/901/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/901/clone",
+      "queue": "https://10.1.0.38/api/station/1/playlist/901/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/901/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/901/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/901/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/901/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/901/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/901/export/m3u"
+      }
+    }
+  },
+  {
+    "station_id": 1,
+    "name": "Friday Disco Drive",
+    "description": null,
+    "type": "default",
+    "source": "songs",
+    "order": "shuffle",
+    "remote_url": null,
+    "remote_type": "stream",
+    "remote_buffer": 0,
+    "is_enabled": true,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 10,
+    "include_in_requests": false,
+    "include_in_on_demand": false,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": null,
+    "queue_reset_at": null,
+    "schedule_items": [
+      {
+        "start_time": 2200,
+        "end_time": 200,
+        "start_date": "2026-10-16",
+        "end_date": "2026-10-16",
+        "days": [
+          5
+        ],
+        "loop_once": false,
+        "id": 848
+      }
+    ],
+    "podcasts": [],
+    "id": 904,
+    "short_name": "friday_disco_drive",
+    "num_songs": 35,
+    "total_length": 13516,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/904",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/904/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/904/clone",
+      "queue": "https://10.1.0.38/api/station/1/playlist/904/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/904/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/904/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/904/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/904/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/904/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/904/export/m3u"
+      }
+    }
+  },
+  {
+    "station_id": 1,
+    "name": "Friday Flow",
+    "description": "Freitag startet fließend mit House, Indie Dance und elektronischem Vorwärtsdrang.",
+    "type": "default",
+    "source": "songs",
+    "order": "shuffle",
+    "remote_url": null,
+    "remote_type": null,
+    "remote_buffer": 0,
+    "is_enabled": true,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 10,
+    "include_in_requests": false,
+    "include_in_on_demand": false,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": "2026-10-09T08:54:49.326307Z",
+    "queue_reset_at": null,
+    "schedule_items": [
+      {
+        "start_time": 600,
+        "end_time": 1100,
+        "start_date": null,
+        "end_date": null,
+        "days": [
+          5
+        ],
+        "loop_once": false,
+        "id": 762
+      }
+    ],
+    "podcasts": [],
+    "id": 889,
+    "short_name": "friday_flow",
+    "num_songs": 100,
+    "total_length": 36493,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/889",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/889/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/889/clone",
+      "queue": "https://10.1.0.38/api/station/1/playlist/889/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/889/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/889/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/889/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/889/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/889/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/889/export/m3u"
+      }
+    }
+  },
+  {
+    "station_id": 1,
+    "name": "Friday Peak",
+    "description": "Freitagabend auf dem Höhepunkt: House, Disco und treibende Clubmomente.",
+    "type": "default",
+    "source": "songs",
+    "order": "shuffle",
+    "remote_url": null,
+    "remote_type": null,
+    "remote_buffer": 0,
+    "is_enabled": true,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 10,
+    "include_in_requests": false,
+    "include_in_on_demand": false,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": "2026-10-09T21:10:04.901335Z",
+    "queue_reset_at": null,
+    "schedule_items": [
+      {
+        "start_time": 1700,
+        "end_time": 0,
+        "start_date": "2026-10-23",
+        "end_date": null,
+        "days": [
+          5
+        ],
+        "loop_once": false,
+        "id": 845
+      }
+    ],
+    "podcasts": [],
+    "id": 891,
+    "short_name": "friday_peak",
+    "num_songs": 99,
+    "total_length": 35796,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/891",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/891/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/891/clone",
+      "queue": "https://10.1.0.38/api/station/1/playlist/891/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/891/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/891/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/891/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/891/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/891/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/891/export/m3u"
+      }
+    }
+  },
+  {
+    "station_id": 1,
+    "name": "Friday Peak — House & Tech House",
+    "description": null,
+    "type": "default",
+    "source": "songs",
+    "order": "shuffle",
+    "remote_url": null,
+    "remote_type": "stream",
+    "remote_buffer": 0,
+    "is_enabled": true,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 10,
+    "include_in_requests": false,
+    "include_in_on_demand": false,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": null,
+    "queue_reset_at": null,
+    "schedule_items": [
+      {
+        "start_time": 1700,
+        "end_time": 2000,
+        "start_date": "2026-10-16",
+        "end_date": "2026-10-16",
+        "days": [
+          5
+        ],
+        "loop_once": false,
+        "id": 846
+      }
+    ],
+    "podcasts": [],
+    "id": 902,
+    "short_name": "friday_peak__house__tech_house",
+    "num_songs": 33,
+    "total_length": 11071,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/902",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/902/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/902/clone",
+      "queue": "https://10.1.0.38/api/station/1/playlist/902/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/902/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/902/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/902/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/902/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/902/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/902/export/m3u"
+      }
+    }
+  },
+  {
+    "station_id": 1,
+    "name": "Friday Techno Drive",
+    "description": null,
+    "type": "default",
+    "source": "songs",
+    "order": "shuffle",
+    "remote_url": null,
+    "remote_type": "stream",
+    "remote_buffer": 0,
+    "is_enabled": true,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 10,
+    "include_in_requests": false,
+    "include_in_on_demand": false,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": null,
+    "queue_reset_at": null,
+    "schedule_items": [
+      {
+        "start_time": 2000,
+        "end_time": 2200,
+        "start_date": "2026-10-16",
+        "end_date": "2026-10-16",
+        "days": [
+          5
+        ],
+        "loop_once": false,
+        "id": 847
+      }
+    ],
+    "podcasts": [],
+    "id": 903,
+    "short_name": "friday_techno_drive",
+    "num_songs": 21,
+    "total_length": 7380,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/903",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/903/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/903/clone",
+      "queue": "https://10.1.0.38/api/station/1/playlist/903/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/903/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/903/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/903/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/903/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/903/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/903/export/m3u"
+      }
+    }
+  },
+  {
+    "station_id": 1,
+    "name": "Golden Hour",
+    "description": "Warme Übergänge aus Disco, House und melodischen Tracks für den Feierabend.",
+    "type": "default",
+    "source": "songs",
+    "order": "shuffle",
+    "remote_url": null,
+    "remote_type": null,
+    "remote_buffer": 0,
+    "is_enabled": true,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 10,
+    "include_in_requests": false,
+    "include_in_on_demand": false,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": null,
+    "queue_reset_at": null,
+    "schedule_items": [
+      {
+        "start_time": 1700,
+        "end_time": 0,
+        "start_date": null,
+        "end_date": null,
+        "days": [
+          2
+        ],
+        "loop_once": false,
+        "id": 752
+      }
+    ],
+    "podcasts": [],
+    "id": 879,
+    "short_name": "golden_hour",
+    "num_songs": 100,
+    "total_length": 38633,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/879",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/879/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/879/clone",
+      "queue": "https://10.1.0.38/api/station/1/playlist/879/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/879/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/879/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/879/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/879/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/879/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/879/export/m3u"
+      }
+    }
+  },
+  {
+    "station_id": 1,
+    "name": "Late Night Society",
+    "description": "Eleganter Spätabendmix mit dunklem House, Minimal und langen Grooves.",
+    "type": "default",
+    "source": "songs",
+    "order": "shuffle",
+    "remote_url": null,
+    "remote_type": null,
+    "remote_buffer": 0,
+    "is_enabled": true,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 10,
+    "include_in_requests": false,
+    "include_in_on_demand": false,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": "2026-10-09T03:54:53.354661Z",
+    "queue_reset_at": null,
+    "schedule_items": [
+      {
+        "start_time": 0,
+        "end_time": 600,
+        "start_date": null,
+        "end_date": null,
+        "days": [
+          5
+        ],
+        "loop_once": false,
+        "id": 761
+      }
+    ],
+    "podcasts": [],
+    "id": 888,
+    "short_name": "late_night_society",
+    "num_songs": 100,
+    "total_length": 35818,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/888",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/888/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/888/clone",
+      "queue": "https://10.1.0.38/api/station/1/playlist/888/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/888/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/888/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/888/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/888/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/888/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/888/export/m3u"
+      }
+    }
+  },
+  {
+    "station_id": 1,
+    "name": "Midweek Rise",
+    "description": "Mittwochs-Auftrieb mit klaren Beats, House und elektronischen Zwischenfarben.",
+    "type": "default",
+    "source": "songs",
+    "order": "shuffle",
+    "remote_url": null,
+    "remote_type": null,
+    "remote_buffer": 0,
+    "is_enabled": true,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 10,
+    "include_in_requests": false,
+    "include_in_on_demand": false,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": null,
+    "queue_reset_at": null,
+    "schedule_items": [
+      {
+        "start_time": 600,
+        "end_time": 1100,
+        "start_date": null,
+        "end_date": null,
+        "days": [
+          3
+        ],
+        "loop_once": false,
+        "id": 754
+      }
+    ],
+    "podcasts": [],
+    "id": 881,
+    "short_name": "midweek_rise",
+    "num_songs": 100,
+    "total_length": 35016,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/881",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/881/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/881/clone",
+      "queue": "https://10.1.0.38/api/station/1/playlist/881/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/881/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/881/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/881/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/881/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/881/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/881/export/m3u"
+      }
+    }
+  },
+  {
+    "station_id": 1,
+    "name": "Moonlight Motion",
+    "description": "Dunkler, gleitender Nachtmix mit Minimal, Deepness und langen Spannungsbögen.",
+    "type": "default",
+    "source": "songs",
+    "order": "shuffle",
+    "remote_url": null,
+    "remote_type": null,
+    "remote_buffer": 0,
+    "is_enabled": true,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 10,
+    "include_in_requests": false,
+    "include_in_on_demand": false,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": null,
+    "queue_reset_at": null,
+    "schedule_items": [
+      {
+        "start_time": 0,
+        "end_time": 600,
+        "start_date": null,
+        "end_date": null,
+        "days": [
+          2
+        ],
+        "loop_once": false,
+        "id": 749
+      }
+    ],
+    "podcasts": [],
+    "id": 876,
+    "short_name": "moonlight_motion",
+    "num_songs": 100,
+    "total_length": 33679,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/876",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/876/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/876/clone",
+      "queue": "https://10.1.0.38/api/station/1/playlist/876/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/876/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/876/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/876/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/876/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/876/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/876/export/m3u"
+      }
+    }
+  },
+  {
+    "station_id": 1,
+    "name": "Morning Bloom",
+    "description": "Heller Wochenstart mit melodischem House, Soul-Farben und positiver Energie.",
+    "type": "default",
+    "source": "songs",
+    "order": "shuffle",
+    "remote_url": null,
+    "remote_type": null,
+    "remote_buffer": 0,
+    "is_enabled": true,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 10,
+    "include_in_requests": false,
+    "include_in_on_demand": false,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": null,
+    "queue_reset_at": null,
+    "schedule_items": [
+      {
+        "start_time": 600,
+        "end_time": 1100,
+        "start_date": null,
+        "end_date": null,
+        "days": [
+          2
+        ],
+        "loop_once": false,
+        "id": 750
+      }
+    ],
+    "podcasts": [],
+    "id": 877,
+    "short_name": "morning_bloom",
+    "num_songs": 100,
+    "total_length": 35392,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/877",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/877/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/877/clone",
+      "queue": "https://10.1.0.38/api/station/1/playlist/877/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/877/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/877/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/877/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/877/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/877/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/877/export/m3u"
+      }
+    }
+  },
+  {
+    "station_id": 1,
+    "name": "Morning Flow",
+    "description": "Klarer Morgen-Flow mit federnden House-Grooves für einen leichten Start.",
+    "type": "default",
+    "source": "songs",
+    "order": "shuffle",
+    "remote_url": null,
+    "remote_type": null,
+    "remote_buffer": 0,
+    "is_enabled": true,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 10,
+    "include_in_requests": false,
+    "include_in_on_demand": false,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": null,
+    "queue_reset_at": null,
+    "schedule_items": [
+      {
+        "start_time": 600,
+        "end_time": 1100,
+        "start_date": null,
+        "end_date": null,
+        "days": [
+          1
+        ],
+        "loop_once": false,
+        "id": 746
+      }
+    ],
+    "podcasts": [],
+    "id": 873,
+    "short_name": "morning_flow",
+    "num_songs": 100,
+    "total_length": 34513,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/873",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/873/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/873/clone",
+      "queue": "https://10.1.0.38/api/station/1/playlist/873/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/873/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/873/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/873/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/873/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/873/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/873/export/m3u"
+      }
+    }
+  },
+  {
+    "station_id": 1,
+    "name": "Night Drive",
+    "description": "Ruhige Nachtfahrt mit tiefen Grooves, warmen Flächen und wenig Hektik.",
+    "type": "default",
+    "source": "songs",
+    "order": "shuffle",
+    "remote_url": null,
+    "remote_type": null,
+    "remote_buffer": 0,
+    "is_enabled": true,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 10,
+    "include_in_requests": false,
+    "include_in_on_demand": false,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": null,
+    "queue_reset_at": null,
+    "schedule_items": [
+      {
+        "start_time": 0,
+        "end_time": 600,
+        "start_date": null,
+        "end_date": null,
+        "days": [
+          1
+        ],
+        "loop_once": false,
+        "id": 745
+      }
+    ],
+    "podcasts": [],
+    "id": 872,
+    "short_name": "night_drive",
+    "num_songs": 100,
+    "total_length": 34339,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/872",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/872/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/872/clone",
+      "queue": "https://10.1.0.38/api/station/1/playlist/872/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/872/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/872/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/872/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/872/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/872/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/872/export/m3u"
+      }
+    }
+  },
+  {
+    "station_id": 1,
+    "name": "Night Owls",
+    "description": "Wochenendnacht für Nachtschwärmer mit tiefem House und dunkler Clubenergie.",
+    "type": "default",
+    "source": "songs",
+    "order": "shuffle",
+    "remote_url": null,
+    "remote_type": null,
+    "remote_buffer": 0,
+    "is_enabled": true,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 10,
+    "include_in_requests": false,
+    "include_in_on_demand": false,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": null,
+    "queue_reset_at": null,
+    "schedule_items": [
+      {
+        "start_time": 0,
+        "end_time": 600,
+        "start_date": "2026-10-24",
+        "end_date": null,
+        "days": [
+          6
+        ],
+        "loop_once": false,
+        "id": 849
+      },
+      {
+        "start_time": 200,
+        "end_time": 600,
+        "start_date": "2026-10-17",
+        "end_date": "2026-10-17",
+        "days": [
+          6
+        ],
+        "loop_once": false,
+        "id": 850
+      }
+    ],
+    "podcasts": [],
+    "id": 892,
+    "short_name": "night_owls",
+    "num_songs": 100,
+    "total_length": 34363,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/892",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/892/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/892/clone",
+      "queue": "https://10.1.0.38/api/station/1/playlist/892/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/892/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/892/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/892/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/892/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/892/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/892/export/m3u"
+      }
+    }
+  },
+  {
+    "station_id": 1,
+    "name": "Night Shift",
+    "description": "Späte Schicht für konzentrierte Nächte: reduziert, tief und elektronisch.",
+    "type": "default",
+    "source": "songs",
+    "order": "shuffle",
+    "remote_url": null,
+    "remote_type": null,
+    "remote_buffer": 0,
+    "is_enabled": true,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 10,
+    "include_in_requests": false,
+    "include_in_on_demand": false,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": null,
+    "queue_reset_at": null,
+    "schedule_items": [
+      {
+        "start_time": 0,
+        "end_time": 600,
+        "start_date": null,
+        "end_date": null,
+        "days": [
+          4
+        ],
+        "loop_once": false,
+        "id": 757
+      }
+    ],
+    "podcasts": [],
+    "id": 884,
+    "short_name": "night_shift",
+    "num_songs": 100,
+    "total_length": 34644,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/884",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/884/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/884/clone",
+      "queue": "https://10.1.0.38/api/station/1/playlist/884/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/884/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/884/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/884/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/884/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/884/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/884/export/m3u"
+      }
+    }
+  },
+  {
+    "station_id": 1,
+    "name": "Saturday Club",
+    "description": "Samstagabend mit klarer Clubkurve von Disco über House bis Techno.",
+    "type": "default",
+    "source": "songs",
+    "order": "shuffle",
+    "remote_url": null,
+    "remote_type": null,
+    "remote_buffer": 0,
+    "is_enabled": true,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 10,
+    "include_in_requests": false,
+    "include_in_on_demand": false,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": null,
+    "queue_reset_at": null,
+    "schedule_items": [
+      {
+        "start_time": 1700,
+        "end_time": 0,
+        "start_date": null,
+        "end_date": null,
+        "days": [
+          6
+        ],
+        "loop_once": false,
+        "id": 768
+      }
+    ],
+    "podcasts": [],
+    "id": 895,
+    "short_name": "saturday_club",
+    "num_songs": 99,
+    "total_length": 37110,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/895",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/895/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/895/clone",
+      "queue": "https://10.1.0.38/api/station/1/playlist/895/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/895/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/895/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/895/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/895/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/895/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/895/export/m3u"
+      }
+    }
+  },
+  {
+    "station_id": 1,
+    "name": "Saturday Soul",
+    "description": "Samstagsmix mit Soul, Disco und House für einen warmen, offenen Nachmittag.",
+    "type": "default",
+    "source": "songs",
+    "order": "shuffle",
+    "remote_url": null,
+    "remote_type": null,
+    "remote_buffer": 0,
+    "is_enabled": true,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 10,
+    "include_in_requests": false,
+    "include_in_on_demand": false,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": null,
+    "queue_reset_at": null,
+    "schedule_items": [
+      {
+        "start_time": 1100,
+        "end_time": 1700,
+        "start_date": null,
+        "end_date": null,
+        "days": [
+          6
+        ],
+        "loop_once": false,
+        "id": 767
+      }
+    ],
+    "podcasts": [],
+    "id": 894,
+    "short_name": "saturday_soul",
+    "num_songs": 100,
+    "total_length": 38579,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/894",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/894/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/894/clone",
+      "queue": "https://10.1.0.38/api/station/1/playlist/894/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/894/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/894/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/894/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/894/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/894/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/894/export/m3u"
+      }
+    }
+  },
+  {
+    "station_id": 1,
+    "name": "Sunday Deep",
+    "description": "Ruhiger Sonntagabend mit tiefen Flächen, Minimal und entschleunigtem Techno.",
+    "type": "default",
+    "source": "songs",
+    "order": "shuffle",
+    "remote_url": null,
+    "remote_type": null,
+    "remote_buffer": 0,
+    "is_enabled": true,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 10,
+    "include_in_requests": false,
+    "include_in_on_demand": false,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": null,
+    "queue_reset_at": null,
+    "schedule_items": [
+      {
+        "start_time": 0,
+        "end_time": 600,
+        "start_date": null,
+        "end_date": null,
+        "days": [
+          7
+        ],
+        "loop_once": false,
+        "id": 769
+      }
+    ],
+    "podcasts": [],
+    "id": 896,
+    "short_name": "sunday_deep",
+    "num_songs": 100,
+    "total_length": 34271,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/896",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/896/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/896/clone",
+      "queue": "https://10.1.0.38/api/station/1/playlist/896/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/896/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/896/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/896/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/896/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/896/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/896/export/m3u"
+      }
+    }
+  },
+  {
+    "station_id": 1,
+    "name": "Sunday Soul",
+    "description": "Sonntagsauswahl mit Soul, Disco und warmem House für den späten Tag.",
+    "type": "default",
+    "source": "songs",
+    "order": "shuffle",
+    "remote_url": null,
+    "remote_type": null,
+    "remote_buffer": 0,
+    "is_enabled": true,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 10,
+    "include_in_requests": false,
+    "include_in_on_demand": false,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": null,
+    "queue_reset_at": null,
+    "schedule_items": [
+      {
+        "start_time": 1100,
+        "end_time": 1700,
+        "start_date": null,
+        "end_date": null,
+        "days": [
+          7
+        ],
+        "loop_once": false,
+        "id": 771
+      }
+    ],
+    "podcasts": [],
+    "id": 898,
+    "short_name": "sunday_soul",
+    "num_songs": 100,
+    "total_length": 38392,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/898",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/898/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/898/clone",
+      "queue": "https://10.1.0.38/api/station/1/playlist/898/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/898/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/898/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/898/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/898/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/898/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/898/export/m3u"
+      }
+    }
+  },
+  {
+    "station_id": 1,
+    "name": "Sunday Sunrise",
+    "description": "Sanfter Sonntagmorgen mit melodischen Grooves und einem entspannten Start.",
+    "type": "default",
+    "source": "songs",
+    "order": "shuffle",
+    "remote_url": null,
+    "remote_type": null,
+    "remote_buffer": 0,
+    "is_enabled": true,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 10,
+    "include_in_requests": false,
+    "include_in_on_demand": false,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": null,
+    "queue_reset_at": null,
+    "schedule_items": [
+      {
+        "start_time": 600,
+        "end_time": 1100,
+        "start_date": null,
+        "end_date": null,
+        "days": [
+          7
+        ],
+        "loop_once": false,
+        "id": 770
+      }
+    ],
+    "podcasts": [],
+    "id": 897,
+    "short_name": "sunday_sunrise",
+    "num_songs": 100,
+    "total_length": 34705,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/897",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/897/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/897/clone",
+      "queue": "https://10.1.0.38/api/station/1/playlist/897/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/897/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/897/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/897/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/897/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/897/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/897/export/m3u"
+      }
+    }
+  },
+  {
+    "station_id": 1,
+    "name": "Sunday Sunset",
+    "description": "Sonntagssonnenuntergang zwischen melodischem House, Disco und ruhiger Clubwärme.",
+    "type": "default",
+    "source": "songs",
+    "order": "shuffle",
+    "remote_url": null,
+    "remote_type": null,
+    "remote_buffer": 0,
+    "is_enabled": true,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 10,
+    "include_in_requests": false,
+    "include_in_on_demand": false,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": null,
+    "queue_reset_at": null,
+    "schedule_items": [
+      {
+        "start_time": 1700,
+        "end_time": 0,
+        "start_date": null,
+        "end_date": null,
+        "days": [
+          7
+        ],
+        "loop_once": false,
+        "id": 772
+      }
+    ],
+    "podcasts": [],
+    "id": 899,
+    "short_name": "sunday_sunset",
+    "num_songs": 100,
+    "total_length": 38717,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/899",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/899/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/899/clone",
+      "queue": "https://10.1.0.38/api/station/1/playlist/899/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/899/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/899/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/899/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/899/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/899/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/899/export/m3u"
+      }
+    }
+  },
+  {
+    "station_id": 1,
+    "name": "Sunrise",
+    "description": "Kuratierte Show, Mo-Fr 06-09",
+    "type": "default",
+    "source": "songs",
+    "order": "shuffle",
+    "remote_url": null,
+    "remote_type": null,
+    "remote_buffer": 0,
+    "is_enabled": false,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 3,
+    "include_in_requests": true,
+    "include_in_on_demand": false,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": "2026-09-14T04:40:19.336642Z",
+    "queue_reset_at": "2026-10-06T06:43:17.535518Z",
+    "schedule_items": [],
+    "podcasts": [],
+    "id": 851,
+    "short_name": "sunrise",
+    "num_songs": 0,
+    "total_length": 0,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/851",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/851/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/851/clone",
+      "queue": "https://10.1.0.38/api/station/1/playlist/851/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/851/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/851/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/851/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/851/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/851/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/851/export/m3u"
+      }
+    }
+  },
+  {
+    "station_id": 1,
+    "name": "Sunrise Ritual",
+    "description": "Sanfter Tagesbeginn mit melodischen Flächen, Indie Dance und ruhigem House.",
+    "type": "default",
+    "source": "songs",
+    "order": "shuffle",
+    "remote_url": null,
+    "remote_type": null,
+    "remote_buffer": 0,
+    "is_enabled": true,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 10,
+    "include_in_requests": false,
+    "include_in_on_demand": false,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": null,
+    "queue_reset_at": null,
+    "schedule_items": [
+      {
+        "start_time": 600,
+        "end_time": 1100,
+        "start_date": null,
+        "end_date": null,
+        "days": [
+          4
+        ],
+        "loop_once": false,
+        "id": 758
+      }
+    ],
+    "podcasts": [],
+    "id": 885,
+    "short_name": "sunrise_ritual",
+    "num_songs": 100,
+    "total_length": 34780,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/885",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/885/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/885/clone",
+      "queue": "https://10.1.0.38/api/station/1/playlist/885/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/885/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/885/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/885/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/885/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/885/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/885/export/m3u"
+      }
+    }
+  },
+  {
+    "station_id": 1,
+    "name": "Sunset Pulse",
+    "description": "Melodischer Abend-Puls zwischen Disco, House und sanftem Clubgefühl.",
+    "type": "default",
+    "source": "songs",
+    "order": "shuffle",
+    "remote_url": null,
+    "remote_type": null,
+    "remote_buffer": 0,
+    "is_enabled": true,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 10,
+    "include_in_requests": false,
+    "include_in_on_demand": false,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": null,
+    "queue_reset_at": null,
+    "schedule_items": [
+      {
+        "start_time": 1700,
+        "end_time": 0,
+        "start_date": null,
+        "end_date": null,
+        "days": [
+          1
+        ],
+        "loop_once": false,
+        "id": 748
+      }
+    ],
+    "podcasts": [],
+    "id": 875,
+    "short_name": "sunset_pulse",
+    "num_songs": 100,
+    "total_length": 36090,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/875",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/875/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/875/clone",
+      "queue": "https://10.1.0.38/api/station/1/playlist/875/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/875/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/875/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/875/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/875/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/875/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/875/export/m3u"
+      }
+    }
+  },
+  {
+    "station_id": 1,
+    "name": "Thursday Heat",
+    "description": "Donnerstagabend zwischen House, Disco und treibender Clubspannung.",
+    "type": "default",
+    "source": "songs",
+    "order": "shuffle",
+    "remote_url": null,
+    "remote_type": null,
+    "remote_buffer": 0,
+    "is_enabled": true,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 10,
+    "include_in_requests": false,
+    "include_in_on_demand": false,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": "2026-10-08T21:50:23.980116Z",
+    "queue_reset_at": null,
+    "schedule_items": [
+      {
+        "start_time": 1700,
+        "end_time": 0,
+        "start_date": null,
+        "end_date": null,
+        "days": [
+          4
+        ],
+        "loop_once": false,
+        "id": 760
+      }
+    ],
+    "podcasts": [],
+    "id": 887,
+    "short_name": "thursday_heat",
+    "num_songs": 99,
+    "total_length": 37217,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/887",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/887/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/887/clone",
+      "queue": "https://10.1.0.38/api/station/1/playlist/887/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/887/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/887/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/887/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/887/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/887/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/887/export/m3u"
+      }
+    }
+  },
+  {
+    "station_id": 1,
+    "name": "Tropical Noon",
+    "description": "Leichter Mittagsmix mit organischen Grooves, House und sommerlicher Wärme.",
+    "type": "default",
+    "source": "songs",
+    "order": "shuffle",
+    "remote_url": null,
+    "remote_type": null,
+    "remote_buffer": 0,
+    "is_enabled": true,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 10,
+    "include_in_requests": false,
+    "include_in_on_demand": false,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": null,
+    "queue_reset_at": null,
+    "schedule_items": [
+      {
+        "start_time": 1100,
+        "end_time": 1700,
+        "start_date": null,
+        "end_date": null,
+        "days": [
+          2
+        ],
+        "loop_once": false,
+        "id": 751
+      }
+    ],
+    "podcasts": [],
+    "id": 878,
+    "short_name": "tropical_noon",
+    "num_songs": 100,
+    "total_length": 38721,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/878",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/878/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/878/clone",
+      "queue": "https://10.1.0.38/api/station/1/playlist/878/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/878/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/878/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/878/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/878/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/878/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/878/export/m3u"
+      }
+    }
+  },
+  {
+    "station_id": 1,
+    "name": "Weekend Rise",
+    "description": "Heller Samstagmorgen mit melodischem House, Bewegung und guter Grundstimmung.",
+    "type": "default",
+    "source": "songs",
+    "order": "shuffle",
+    "remote_url": null,
+    "remote_type": null,
+    "remote_buffer": 0,
+    "is_enabled": true,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 10,
+    "include_in_requests": false,
+    "include_in_on_demand": false,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": null,
+    "queue_reset_at": null,
+    "schedule_items": [
+      {
+        "start_time": 600,
+        "end_time": 1100,
+        "start_date": null,
+        "end_date": null,
+        "days": [
+          6
+        ],
+        "loop_once": false,
+        "id": 766
+      }
+    ],
+    "podcasts": [],
+    "id": 893,
+    "short_name": "weekend_rise",
+    "num_songs": 100,
+    "total_length": 35471,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/893",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/893/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/893/clone",
+      "queue": "https://10.1.0.38/api/station/1/playlist/893/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/893/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/893/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/893/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/893/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/893/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/893/export/m3u"
+      }
+    }
+  },
+  {
+    "station_id": 1,
+    "name": "☀️ Tagwerk (kuratiert)",
+    "description": null,
+    "type": "default",
+    "source": "songs",
+    "order": "sequential",
+    "remote_url": null,
+    "remote_type": "stream",
+    "remote_buffer": 0,
+    "is_enabled": false,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 3,
+    "include_in_requests": true,
+    "include_in_on_demand": false,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": "2026-09-14T10:40:28.029966Z",
+    "queue_reset_at": "2026-10-06T06:43:17.535518Z",
+    "schedule_items": [],
+    "podcasts": [],
+    "id": 853,
+    "short_name": "️_tagwerk_(kuratiert)",
+    "num_songs": 0,
+    "total_length": 0,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/853",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/853/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/853/clone",
+      "order": "https://10.1.0.38/api/station/1/playlist/853/order",
+      "queue": "https://10.1.0.38/api/station/1/playlist/853/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/853/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/853/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/853/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/853/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/853/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/853/export/m3u"
+      }
+    }
+  },
+  {
+    "station_id": 1,
+    "name": "⭐ Best of the Week",
+    "description": null,
+    "type": "default",
+    "source": "songs",
+    "order": "shuffle",
+    "remote_url": null,
+    "remote_type": "stream",
+    "remote_buffer": 0,
+    "is_enabled": true,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 3,
+    "include_in_requests": true,
+    "include_in_on_demand": true,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": "2026-10-04T17:56:02.412520Z",
+    "queue_reset_at": "2026-10-06T06:43:17.535518Z",
+    "schedule_items": [
+      {
+        "start_time": 1800,
+        "end_time": 2000,
+        "start_date": null,
+        "end_date": null,
+        "days": [
+          7
+        ],
+        "loop_once": false,
+        "id": 851
+      }
+    ],
+    "podcasts": [],
+    "id": 869,
+    "short_name": "_best_of_the_week",
+    "num_songs": 24,
+    "total_length": 9683,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/869",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/869/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/869/clone",
+      "queue": "https://10.1.0.38/api/station/1/playlist/869/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/869/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/869/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/869/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/869/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/869/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/869/export/m3u"
+      }
+    }
+  },
+  {
+    "station_id": 1,
+    "name": "🔥 FraWo Funk — Power Rotation (Hörer-Favoriten)",
+    "description": "Hörer-Favoriten und 5-Sterne-Titel alle 6 Songs in der Rotation",
+    "type": "once_per_x_songs",
+    "source": "songs",
+    "order": "shuffle",
+    "remote_url": null,
+    "remote_type": null,
+    "remote_buffer": 0,
+    "is_enabled": true,
+    "is_jingle": false,
+    "play_per_songs": 6,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 3,
+    "include_in_requests": true,
+    "include_in_on_demand": false,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": "2026-10-09T21:03:25.949136Z",
+    "queue_reset_at": "2026-10-09T20:44:56.293105Z",
+    "schedule_items": [],
+    "podcasts": [],
+    "id": 871,
+    "short_name": "_frawo_funk__power_rotation_(hörer-favoriten)",
+    "num_songs": 17,
+    "total_length": 7022,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/871",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/871/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/871/clone",
+      "queue": "https://10.1.0.38/api/station/1/playlist/871/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/871/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/871/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/871/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/871/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/871/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/871/export/m3u"
+      }
+    }
+  },
+  {
+    "station_id": 1,
+    "name": "🌅 Morgenlicht (kuratiert)",
+    "description": null,
+    "type": "default",
+    "source": "songs",
+    "order": "sequential",
+    "remote_url": null,
+    "remote_type": "stream",
+    "remote_buffer": 0,
+    "is_enabled": false,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 3,
+    "include_in_requests": true,
+    "include_in_on_demand": false,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": "2026-09-14T04:33:49.096642Z",
+    "queue_reset_at": "2026-10-06T06:43:17.535518Z",
+    "schedule_items": [],
+    "podcasts": [],
+    "id": 852,
+    "short_name": "_morgenlicht_(kuratiert)",
+    "num_songs": 0,
+    "total_length": 0,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/852",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/852/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/852/clone",
+      "order": "https://10.1.0.38/api/station/1/playlist/852/order",
+      "queue": "https://10.1.0.38/api/station/1/playlist/852/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/852/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/852/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/852/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/852/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/852/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/852/export/m3u"
+      }
+    }
+  },
+  {
+    "station_id": 1,
+    "name": "🌙 Nachtschicht (kuratiert)",
+    "description": null,
+    "type": "default",
+    "source": "songs",
+    "order": "sequential",
+    "remote_url": null,
+    "remote_type": "stream",
+    "remote_buffer": 0,
+    "is_enabled": false,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 3,
+    "include_in_requests": true,
+    "include_in_on_demand": false,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": "2026-09-06T21:56:50.800717Z",
+    "queue_reset_at": "2026-10-06T06:43:17.535518Z",
+    "schedule_items": [],
+    "podcasts": [],
+    "id": 855,
+    "short_name": "_nachtschicht_(kuratiert)",
+    "num_songs": 0,
+    "total_length": 0,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/855",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/855/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/855/clone",
+      "order": "https://10.1.0.38/api/station/1/playlist/855/order",
+      "queue": "https://10.1.0.38/api/station/1/playlist/855/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/855/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/855/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/855/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/855/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/855/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/855/export/m3u"
+      }
+    }
+  },
+  {
+    "station_id": 1,
+    "name": "🔥 Power Rotation",
+    "description": "FraWo Funk MVP – kuratiert, 7-Tage-Daypart-Betrieb.",
+    "type": "default",
+    "source": "songs",
+    "order": "shuffle",
+    "remote_url": null,
+    "remote_type": null,
+    "remote_buffer": 0,
+    "is_enabled": true,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 10,
+    "include_in_requests": false,
+    "include_in_on_demand": false,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": null,
+    "queue_reset_at": null,
+    "schedule_items": [],
+    "podcasts": [],
+    "id": 900,
+    "short_name": "_power_rotation",
+    "num_songs": 0,
+    "total_length": 0,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/900",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/900/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/900/clone",
+      "queue": "https://10.1.0.38/api/station/1/playlist/900/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/900/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/900/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/900/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/900/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/900/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/900/export/m3u"
+      }
+    }
+  },
+  {
+    "station_id": 1,
+    "name": "🌇 Sunset Drive (kuratiert)",
+    "description": null,
+    "type": "default",
+    "source": "songs",
+    "order": "sequential",
+    "remote_url": null,
+    "remote_type": "stream",
+    "remote_buffer": 0,
+    "is_enabled": false,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 3,
+    "include_in_requests": true,
+    "include_in_on_demand": false,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": "2026-09-06T18:56:36.129274Z",
+    "queue_reset_at": "2026-10-06T06:43:17.535518Z",
+    "schedule_items": [],
+    "podcasts": [],
+    "id": 854,
+    "short_name": "_sunset_drive_(kuratiert)",
+    "num_songs": 0,
+    "total_length": 0,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/854",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/854/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/854/clone",
+      "order": "https://10.1.0.38/api/station/1/playlist/854/order",
+      "queue": "https://10.1.0.38/api/station/1/playlist/854/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/854/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/854/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/854/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/854/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/854/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/854/export/m3u"
+      }
+    }
+  }
+]
