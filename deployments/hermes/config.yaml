@@ -2082,6 +2082,7 @@ mcp_servers:
     enabled: true
   homeassistant:
     url: http://10.1.0.40:8123/mcp_server/sse
+    transport: sse
     headers:
       Authorization: ${HOMEASSISTANT_TOKEN}
     connect_timeout: 60.0
