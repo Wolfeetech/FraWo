@@ -1,0 +1,82 @@
+{
+  "891": {
+    "name": "Friday Peak",
+    "enabled": false,
+    "order": "shuffle",
+    "songs": 99,
+    "hours": 9.94,
+    "schedule_items": [
+      {
+        "start_time": 1700,
+        "end_time": 0,
+        "start_date": null,
+        "end_date": null,
+        "days": [
+          5
+        ],
+        "loop_once": false,
+        "id": 764
+      }
+    ]
+  },
+  "902": {
+    "name": "Friday Peak — House & Tech House",
+    "enabled": true,
+    "order": "shuffle",
+    "songs": 33,
+    "hours": 3.08,
+    "schedule_items": [
+      {
+        "start_time": 1700,
+        "end_time": 2000,
+        "start_date": "2026-10-16",
+        "end_date": "2026-10-16",
+        "days": [
+          5
+        ],
+        "loop_once": false,
+        "id": 842
+      }
+    ]
+  },
+  "903": {
+    "name": "Friday Techno Drive",
+    "enabled": true,
+    "order": "shuffle",
+    "songs": 21,
+    "hours": 2.05,
+    "schedule_items": [
+      {
+        "start_time": 2000,
+        "end_time": 2200,
+        "start_date": "2026-10-16",
+        "end_date": "2026-10-16",
+        "days": [
+          5
+        ],
+        "loop_once": false,
+        "id": 843
+      }
+    ]
+  },
+  "904": {
+    "name": "Friday Disco Drive",
+    "enabled": true,
+    "order": "shuffle",
+    "songs": 35,
+    "hours": 3.75,
+    "schedule_items": [
+      {
+        "start_time": 2200,
+        "end_time": 0,
+        "start_date": "2026-10-16",
+        "end_date": "2026-10-16",
+        "days": [
+          5
+        ],
+        "loop_once": false,
+        "id": 844
+      }
+    ]
+  }
+}

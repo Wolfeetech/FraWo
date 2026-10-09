@@ -26,11 +26,11 @@ Aus der geprüften Playlist `Friday Peak` wurden drei neue, zunächst deaktivier
 
 | Playlist | ID | Titel | Laufzeit | Status |
 |---|---:|---:|---:|---|
-| Friday Peak — House & Tech House | 902 | 33 | ca. 3,4 h | deaktiviert, bereit zur Abnahme |
-| Friday Techno Drive | 903 | 21 | ca. 2,1 h | deaktiviert, bereit zur Abnahme |
-| Friday Disco Drive | 904 | 36 | ca. 3,9 h | deaktiviert, bereit zur Abnahme |
+| Friday Peak — House & Tech House | 902 | 33 | ca. 3,1 h | Pilot 16.10.2026, 17:00–20:00 |
+| Friday Techno Drive | 903 | 21 | ca. 2,1 h | Pilot 16.10.2026, 20:00–22:00 |
+| Friday Disco Drive | 904 | 35 | ca. 3,75 h | Pilot 16.10.2026, 22:00–02:00 |
 
-Die neuen Pools sind auf `shuffle` gestellt. Die Queue wurde nach der Änderung am echten AzuraCast-Ziel gelesen und bestätigt: 33, 21 und 36 Titel. Die bisherige Playlist `Friday Peak` und der laufende Sendebetrieb wurden nicht verändert.
+Die neuen Pools sind auf `shuffle` gestellt. Die Queue wurde nach der Änderung am echten AzuraCast-Ziel gelesen und bestätigt: 33, 21 und 35 Titel. Für den Pilot am 16. Oktober 2026 sind sie in drei einmaligen Zeitblöcken eingeplant; danach kehrt `Friday Peak` ab dem 23. Oktober als Fallback zurück.
 
 ## Redaktionelle Ideen für die nächste Ausbaustufe
 

@@ -1,0 +1,113 @@
+{
+  "891": {
+    "name": "Friday Peak",
+    "enabled": true,
+    "order": "shuffle",
+    "songs": 99,
+    "hours": 9.94,
+    "schedule_items": [
+      {
+        "start_time": 1700,
+        "end_time": 0,
+        "start_date": "2026-10-23",
+        "end_date": null,
+        "days": [
+          5
+        ],
+        "loop_once": false,
+        "id": 845
+      }
+    ]
+  },
+  "892": {
+    "name": "Night Owls",
+    "enabled": true,
+    "order": "shuffle",
+    "songs": 100,
+    "hours": 9.55,
+    "schedule_items": [
+      {
+        "start_time": 0,
+        "end_time": 600,
+        "start_date": "2026-10-24",
+        "end_date": null,
+        "days": [
+          6
+        ],
+        "loop_once": false,
+        "id": 849
+      },
+      {
+        "start_time": 200,
+        "end_time": 600,
+        "start_date": "2026-10-17",
+        "end_date": "2026-10-17",
+        "days": [
+          6
+        ],
+        "loop_once": false,
+        "id": 850
+      }
+    ]
+  },
+  "902": {
+    "name": "Friday Peak — House & Tech House",
+    "enabled": true,
+    "order": "shuffle",
+    "songs": 33,
+    "hours": 3.08,
+    "schedule_items": [
+      {
+        "start_time": 1700,
+        "end_time": 2000,
+        "start_date": "2026-10-16",
+        "end_date": "2026-10-16",
+        "days": [
+          5
+        ],
+        "loop_once": false,
+        "id": 846
+      }
+    ]
+  },
+  "903": {
+    "name": "Friday Techno Drive",
+    "enabled": true,
+    "order": "shuffle",
+    "songs": 21,
+    "hours": 2.05,
+    "schedule_items": [
+      {
+        "start_time": 2000,
+        "end_time": 2200,
+        "start_date": "2026-10-16",
+        "end_date": "2026-10-16",
+        "days": [
+          5
+        ],
+        "loop_once": false,
+        "id": 847
+      }
+    ]
+  },
+  "904": {
+    "name": "Friday Disco Drive",
+    "enabled": true,
+    "order": "shuffle",
+    "songs": 35,
+    "hours": 3.75,
+    "schedule_items": [
+      {
+        "start_time": 2200,
+        "end_time": 200,
+        "start_date": "2026-10-16",
+        "end_date": "2026-10-16",
+        "days": [
+          5
+        ],
+        "loop_once": false,
+        "id": 848
+      }
+    ]
+  }
+}

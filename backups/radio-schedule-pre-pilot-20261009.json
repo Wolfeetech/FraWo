@@ -1,0 +1,62 @@
+[
+  {
+    "id": 764,
+    "type": "playlist",
+    "name": "Friday Peak",
+    "title": "Friday Peak",
+    "description": "Playliste: Friday Peak",
+    "start_timestamp": 1791558000,
+    "start": "2026-10-09T17:00:00+02:00",
+    "end_timestamp": 1791583200,
+    "end": "2026-10-10T00:00:00+02:00",
+    "is_now": true
+  },
+  {
+    "id": 765,
+    "type": "playlist",
+    "name": "Night Owls",
+    "title": "Night Owls",
+    "description": "Playliste: Night Owls",
+    "start_timestamp": 1791583200,
+    "start": "2026-10-10T00:00:00+02:00",
+    "end_timestamp": 1791604800,
+    "end": "2026-10-10T06:00:00+02:00",
+    "is_now": false
+  },
+  {
+    "id": 766,
+    "type": "playlist",
+    "name": "Weekend Rise",
+    "title": "Weekend Rise",
+    "description": "Playliste: Weekend Rise",
+    "start_timestamp": 1791604800,
+    "start": "2026-10-10T06:00:00+02:00",
+    "end_timestamp": 1791622800,
+    "end": "2026-10-10T11:00:00+02:00",
+    "is_now": false
+  },
+  {
+    "id": 767,
+    "type": "playlist",
+    "name": "Saturday Soul",
+    "title": "Saturday Soul",
+    "description": "Playliste: Saturday Soul",
+    "start_timestamp": 1791622800,
+    "start": "2026-10-10T11:00:00+02:00",
+    "end_timestamp": 1791644400,
+    "end": "2026-10-10T17:00:00+02:00",
+    "is_now": false
+  },
+  {
+    "id": 768,
+    "type": "playlist",
+    "name": "Saturday Club",
+    "title": "Saturday Club",
+    "description": "Playliste: Saturday Club",
+    "start_timestamp": 1791644400,
+    "start": "2026-10-10T17:00:00+02:00",
+    "end_timestamp": 1791669600,
+    "end": "2026-10-11T00:00:00+02:00",
+    "is_now": false
+  }
+]
