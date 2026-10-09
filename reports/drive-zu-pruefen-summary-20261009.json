@@ -1,0 +1,1279 @@
+{
+  "source": "00_INBOX/_Dokumente-zur-Pruefung",
+  "files": 105280,
+  "bytes": 1130950759830,
+  "groups": {
+    "sonstig": {
+      "files": 21329,
+      "bytes": 11122334708
+    },
+    "backup_technik": {
+      "files": 517,
+      "bytes": 281998128674
+    },
+    "dokument": {
+      "files": 456,
+      "bytes": 142274633
+    },
+    "medien": {
+      "files": 19122,
+      "bytes": 73540336705
+    },
+    "technik_programm": {
+      "files": 745,
+      "bytes": 5071655692
+    },
+    "musik": {
+      "files": 63111,
+      "bytes": 759076029418
+    }
+  },
+  "top_folders": {
+    "<root>": {
+      "files": 15,
+      "bytes": 1516960234,
+      "groups": {
+        "sonstig": 2,
+        "backup_technik": 6,
+        "dokument": 3,
+        "medien": 2,
+        "technik_programm": 2
+      }
+    },
+    "Einarbeitungskonzept_Azubi (Automatisch wiederhergestellt)-Dateien": {
+      "files": 3,
+      "bytes": 4023,
+      "groups": {
+        "dokument": 2,
+        "sonstig": 1
+      }
+    },
+    "XL2 NTI Kumop": {
+      "files": 35,
+      "bytes": 4231103,
+      "groups": {
+        "dokument": 20,
+        "technik_programm": 1,
+        "medien": 1,
+        "sonstig": 13
+      }
+    },
+    "Colab Notebooks": {
+      "files": 1,
+      "bytes": 10275,
+      "groups": {
+        "sonstig": 1
+      }
+    },
+    "FraWo-ProDesk-VMs": {
+      "files": 5,
+      "bytes": 67164458711,
+      "groups": {
+        "backup_technik": 5
+      }
+    },
+    "Google AI Studio": {
+      "files": 1,
+      "bytes": 2,
+      "groups": {
+        "sonstig": 1
+      }
+    },
+    "drive-download-20260218T113055Z-1-001": {
+      "files": 38,
+      "bytes": 2383563,
+      "groups": {
+        "dokument": 25,
+        "sonstig": 1,
+        "backup_technik": 12
+      }
+    },
+    "Downloads": {
+      "files": 56,
+      "bytes": 109944447,
+      "groups": {
+        "dokument": 38,
+        "medien": 13,
+        "backup_technik": 1,
+        "sonstig": 4
+      }
+    },
+    "Ausbildung": {
+      "files": 1,
+      "bytes": 28417,
+      "groups": {
+        "dokument": 1
+      }
+    },
+    "MISC": {
+      "files": 2,
+      "bytes": 38,
+      "groups": {
+        "sonstig": 2
+      }
+    },
+    "WorkingHours": {
+      "files": 92,
+      "bytes": 427185,
+      "groups": {
+        "backup_technik": 92
+      }
+    },
+    "playlist_collective_docs_2025-05-05": {
+      "files": 5,
+      "bytes": 4359,
+      "groups": {
+        "dokument": 5
+      }
+    },
+    "netzwerk_collective_docs_2025-05-05": {
+      "files": 5,
+      "bytes": 4834,
+      "groups": {
+        "dokument": 5
+      }
+    },
+    "MObilEE ZZ": {
+      "files": 1735,
+      "bytes": 61929060363,
+      "groups": {
+        "sonstig": 41,
+        "medien": 1694
+      }
+    },
+    "Working Hours ": {
+      "files": 69,
+      "bytes": 395948,
+      "groups": {
+        "backup_technik": 69
+      }
+    },
+    "Sammlung": {
+      "files": 37420,
+      "bytes": 3181469616,
+      "groups": {
+        "sonstig": 21010,
+        "medien": 16409,
+        "dokument": 1
+      }
+    },
+    "FraWo_Musik": {
+      "files": 61389,
+      "bytes": 732475043273,
+      "groups": {
+        "musik": 61389
+      }
+    },
+    "Noerpel": {
+      "files": 14,
+      "bytes": 20504161,
+      "groups": {
+        "medien": 14
+      }
+    },
+    "FraWo_Radio_Library": {
+      "files": 534,
+      "bytes": 9905471778,
+      "groups": {
+        "musik": 534
+      }
+    },
+    "Image-Line": {
+      "files": 664,
+      "bytes": 95897489,
+      "groups": {
+        "technik_programm": 644,
+        "sonstig": 20
+      }
+    },
+    "_Verarbeitet_Technik_2026-10": {
+      "files": 5,
+      "bytes": 372547339,
+      "groups": {
+        "technik_programm": 5
+      }
+    },
+    "dump": {
+      "files": 261,
+      "bytes": 206723655980,
+      "groups": {
+        "backup_technik": 261
+      }
+    },
+    "_Programme-Technik": {
+      "files": 609,
+      "bytes": 11697447884,
+      "groups": {
+        "dokument": 191,
+        "backup_technik": 58,
+        "technik_programm": 93,
+        "medien": 267
+      }
+    },
+    "Soulseek Downloads": {
+      "files": 1591,
+      "bytes": 17346701508,
+      "groups": {
+        "musik": 1188,
+        "medien": 286,
+        "sonstig": 97,
+        "dokument": 20
+      }
+    },
+    "_Fotos-Videos": {
+      "files": 413,
+      "bytes": 15311036117,
+      "groups": {
+        "medien": 406,
+        "dokument": 6,
+        "sonstig": 1
+      }
+    },
+    "FraWo Logo": {
+      "files": 4,
+      "bytes": 178163,
+      "groups": {
+        "medien": 4
+      }
+    },
+    "My Games": {
+      "files": 181,
+      "bytes": 43511104,
+      "groups": {
+        "sonstig": 83,
+        "dokument": 92,
+        "medien": 6
+      }
+    },
+    "wwolfitec": {
+      "files": 40,
+      "bytes": 8459443,
+      "groups": {
+        "dokument": 27,
+        "sonstig": 1,
+        "backup_technik": 12
+      }
+    },
+    "_Duplikate": {
+      "files": 45,
+      "bytes": 93915210,
+      "groups": {
+        "dokument": 20,
+        "sonstig": 4,
+        "medien": 20,
+        "backup_technik": 1
+      }
+    },
+    "FraWo-Verschluesselt": {
+      "files": 47,
+      "bytes": 2947007263,
+      "groups": {
+        "sonstig": 47
+      }
+    }
+  },
+  "secret_candidate_count": 5,
+  "naming_candidate_count": 747,
+  "secret_candidates": [
+    {
+      "path": "client_secret_2_248228417309-j1pljjclbr1q6a83nj69bfu9e9dib7cr.apps.googleusercontent.com.json",
+      "size": 537,
+      "reason": "secret_candidate"
+    },
+    {
+      "path": "awanfragebetriebshaftpflichtfrawogbrveranstaltungst (1).zip",
+      "size": 1389744,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "drive-download-20260218T113055Z-1-001/Monatsbudget(1).xlsx",
+      "size": 12979,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "drive-download-20260218T113055Z-1-001/Projektvorschlag(1).docx",
+      "size": 656188,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "drive-download-20260218T113055Z-1-001/Project_Spec_YourPartyTech.md(1).docx",
+      "size": 10896,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "drive-download-20260218T113055Z-1-001/Aufgabenübersicht(1).xlsx",
+      "size": 9158,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "drive-download-20260218T113055Z-1-001/Unbenanntes Projekt.json",
+      "size": 776,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "drive-download-20260218T113055Z-1-001/Unbenanntes Dokument(2).docx",
+      "size": 7379,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "drive-download-20260218T113055Z-1-001/Magerer_Mai_2025_Profi_Kalender_mit_Flo (1).docx",
+      "size": 8263,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "drive-download-20260218T113055Z-1-001/Unbenanntes Dokument.docx",
+      "size": 9392,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "drive-download-20260218T113055Z-1-001/Unbenanntes Dokument(4).docx",
+      "size": 10932,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "drive-download-20260218T113055Z-1-001/Unbenanntes Dokument(1).docx",
+      "size": 15775,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "drive-download-20260218T113055Z-1-001/Unbenanntes Dokument(3).docx",
+      "size": 7149,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "Downloads/Beige Illustrated Craftsmanship Presentation (2).mp4",
+      "size": 14777715,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "Downloads/Beige Illustrated Craftsmanship Presentation (1).mp4",
+      "size": 14777715,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "Downloads/Angebot-2026-1-Prinz-Lago_Weinmesse2 (2).pdf",
+      "size": 722944,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "Downloads/Angebot-2026-1-Prinz-Lago_Weinmesse2 (1).pdf",
+      "size": 722944,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "Downloads/Angebot-2026-1-Prinz-Lago_Weinmesse (1).pdf",
+      "size": 722529,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "Downloads/W.Prinz Lebenslauf + Anhang (1).pdf",
+      "size": 5083770,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "Downloads/cpub-ESForum-QuickSessionCollection-CmsRdsh (2).rdp",
+      "size": 7833,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "Downloads/cpub-ESForum-QuickSessionCollection-CmsRdsh (1).rdp",
+      "size": 7833,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "Sammlung/Home_files/Cold Lake 24 A6 (1).jpg",
+      "size": 1406649,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Radio_Library/Quarantine/02 Pleasant Point (1).mp3",
+      "size": 17547164,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "wwolfitec/Unbenanntes Dokument(3).docx",
+      "size": 7149,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "wwolfitec/Monatsbudget(1).xlsx",
+      "size": 12979,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "wwolfitec/Projektvorschlag(1).docx",
+      "size": 656188,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "wwolfitec/Unbenanntes Projekt.json",
+      "size": 776,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "wwolfitec/Aufgabenübersicht(1).xlsx",
+      "size": 9158,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "wwolfitec/Unbenanntes Dokument.docx",
+      "size": 9392,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "wwolfitec/Unbenanntes Dokument(4).docx",
+      "size": 10932,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "wwolfitec/Project_Spec_YourPartyTech.md(1).docx",
+      "size": 10896,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "wwolfitec/Magerer_Mai_2025_Profi_Kalender_mit_Flo (1).docx",
+      "size": 8263,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "wwolfitec/Dark Devil Auto Anbau-Analyse(1).docx",
+      "size": 3037940,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "wwolfitec/Unbenanntes Dokument(2).docx",
+      "size": 7379,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "wwolfitec/Unbenanntes Dokument(1).docx",
+      "size": 15775,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "_Programme-Technik/Unbenannte Tabelle.xlsx",
+      "size": -1,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "_Duplikate/Unbenanntes Dokument.docx",
+      "size": -1,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Radio_Library/Quarantine/Provocation (Josh Baker Remix) (1).mp3",
+      "size": 15838621,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Radio_Library/Quarantine/2-04 DJ Tonka - Everybody in the 80s (1).mp3",
+      "size": 119900305,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "_Programme-Technik/traxx-demo-preview (1).png",
+      "size": 3507,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "_Programme-Technik/NotebookLM Mind Map (2).png",
+      "size": 228777,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "_Programme-Technik/NotebookLM Mind Map (1).png",
+      "size": 770115,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "_Programme-Technik/logo_transparent_dark (1).png",
+      "size": 1391801,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "_Programme-Technik/OneDrive_3_26.5.2025 (2).zip",
+      "size": 150160,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "_Programme-Technik/Unbenanntes Dokument(3).docx",
+      "size": 9351,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "_Programme-Technik/Projektvorschlag(1).docx",
+      "size": 656105,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "_Programme-Technik/Unbenanntes Dokument(4).docx",
+      "size": 15674,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "_Programme-Technik/Unbenanntes Dokument(2).docx",
+      "size": 7286,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "_Programme-Technik/Unbenanntes Dokument(1).docx",
+      "size": 7056,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "_Programme-Technik/Magerer_Mai_2025_Profi_Kalender_mit_Flo (1).docx",
+      "size": 8207,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "_Programme-Technik/WolfEE_Netzwerk_Technik_P024_v1.2 (1).drawio",
+      "size": 31078,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "_Programme-Technik/WolfEE_Pitchdecks_Summary_001_020 (1).zip",
+      "size": 4721,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "_Programme-Technik/WolfEE_Pitchdecks_001_020 (1).zip",
+      "size": 3362,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "_Programme-Technik/TRAXX_RADIO_BrandingKit (1).zip",
+      "size": 3966279,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "_Programme-Technik/Jeder Schritt zählt (1).png",
+      "size": 3437893,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "_Fotos-Videos/Gutschein (1).png",
+      "size": 2839901,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "_Programme-Technik/Unbenanntes Diagramm.drawio",
+      "size": 41910,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "_Programme-Technik/client_secret_321388847114-fgt09c7davsbtdbvh1birdudcaqbda0p.apps.googleusercontent.com.json",
+      "size": 411,
+      "reason": "secret_candidate"
+    },
+    {
+      "path": "_Programme-Technik/energy (1).csv",
+      "size": 15176,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "_Programme-Technik/Unbenanntes Dokument.docx",
+      "size": -1,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "_Programme-Technik/Photos (2).zip",
+      "size": 6549586,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "_Programme-Technik/Photos (1).zip",
+      "size": 6549586,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "_Programme-Technik/Savings_Game (1).xlsx",
+      "size": 5904,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "_Programme-Technik/Interim_Savings_Game_DE_Version (1).xlsx",
+      "size": 5872,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "_Programme-Technik/client_secret_872120078227-94q1fr49aqm77oklcubee95ilohtnk29.apps.googleusercontent.com.json",
+      "size": 369,
+      "reason": "secret_candidate"
+    },
+    {
+      "path": "_Programme-Technik/client_secret_872120078227-i01lc72hgpt010qfls09belbv9ugu1o0.apps.googleusercontent.com.json",
+      "size": 369,
+      "reason": "secret_candidate"
+    },
+    {
+      "path": "_Programme-Technik/client_secret_757430798275-vurha60e7gtrrjro3t1e0boq9puqn24t.apps.googleusercontent.com.json",
+      "size": 368,
+      "reason": "secret_candidate"
+    },
+    {
+      "path": "_Programme-Technik/imager_1.8.5 (1).exe",
+      "size": 20268248,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "_Programme-Technik/Dienstplan_September_2024_with_Tasks (1).xlsx",
+      "size": 12450,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "_Programme-Technik/Dienstplan_September_2024 (1).docx",
+      "size": 37470,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "_Programme-Technik/t1516289_wanderweg deutsche (1).kml",
+      "size": 2666738,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "_Fotos-Videos/IMG_0667 (1).JPG",
+      "size": 2646896,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "_Programme-Technik/t14420850_radweg deutsche weinstrasse (1).kml",
+      "size": 1959432,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "_Fotos-Videos/20240805_212507 (1).jpg",
+      "size": 9280687,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "_Programme-Technik/logo (1).png",
+      "size": 15723,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Master_Library/_/job jobse & palms trax/UNSORTED/01 brooklyn the lot radio september 19th 2024 (1).mp3",
+      "size": 169853066,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Quarantine/Duplicates_20261005/no genre/Unknown Artist/ghetto/Unknown Artist - #DRGS03A (unf) (1).mp3",
+      "size": 26015428,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/MusicBrainz_Input/UNSORTED/HORN (1).wav",
+      "size": 1622286,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Quarantine/Duplicates_20261005/House, Electronic/www.ftpdjemilio.com/Single/00 Last Christmas (Farruggio Electro Hype Edit - Full) (1).mp3",
+      "size": 9130704,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Master_Library/__/[1731]/00 Vinyl(2).wav",
+      "size": 121238582,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Master_Library/__/[1731]/00 TranceLate . Tribalistic(2).wav",
+      "size": 93993388,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Master_Library/__/[1731]/00 Sydney Youngblood Sit & Wait(2).wav",
+      "size": 555528162,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Master_Library/__/[1731]/00 Mischa Daniels In Session Vol 1(2).wav",
+      "size": 388303020,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Master_Library/__/[1725]/00 @@0@@20711278@@Vinyl(2).wav134522E_10000_261C_100_0.wav",
+      "size": 165691494,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Master_Library/New Wave, Rock/Men without Heads/UNSORTED/00 Safety Dance 1(2).wav",
+      "size": 577780266,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Library/Deep House/Michael Mayer  Miss Kittin/Michael Mayer  Miss Kittin - Voyage Interieur (1).flac",
+      "size": 24615062,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Library/Big Beat/Lionrock/02 - Packet of Peace (Prankster Sound System mix) (2).flac",
+      "size": 50870313,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Library/Deep House/KiNK/01 - KiNK - Wake Up (2).flac",
+      "size": 52941496,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Library/France/Kendal/04 - Ritmo Fatale (2).flac",
+      "size": 131072,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Library/Deep House/Isaac Tichauer/01 - Higher Level (Bicep Remix) (2).flac",
+      "size": 40137715,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Library/DISCO, HOUSE, ITALO-DISCO, TECHNO, SYNTH-POP/Third World/20 - Third World - Now That We Found Love (M&M mix) (1).flac",
+      "size": 66870343,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Library/DISCO, HOUSE, SYNTH-POP/S’Express/13 - S’Express - Theme From S’Express (Tony de Vit 12″ mix) (1).flac",
+      "size": 60000976,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Library/Disco/Black Box/4-05 - Black Box - Everybody Everybody (12″ version) (1).flac",
+      "size": 38344557,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Library/Disco/Andy Gibb/2-02 - Andy Gibb - Shadow Dancing (special disco version) (1).flac",
+      "size": 41540438,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Library/France/Kendal/02 - Intacto (2).flac",
+      "size": 44625377,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/_STAGING_RAW/Unbenannt-1-001/Unbenannt/2025-06-14(1).jpg",
+      "size": 309992,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Library/Deep House/Fred again..  The Blessed Madonna/Marea (weve lost dancing)/Fred again..  The Blessed Madonna - Marea (weve lost dancing) (1).flac",
+      "size": 32890923,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Library/Deep House/Chris Stussy/All Night Long (Original Mix)/Chris Stussy - All Night Long (Original Mix) (1).flac",
+      "size": 48722290,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Library/Dance/Tsepo/Twee/Tsepo - Twee (1).flac",
+      "size": 40049137,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Library/Dance/U.S.U.R.A./Open Your Mind/U.S.U.R.A. - Open Your Mind (Classic mix) (1).flac",
+      "size": 37788908,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Library/Dance/JaXel/Steps/JaXel - Steps (FarHigh remix) (1).flac",
+      "size": 34965392,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Library/Deep House/Isaac Tichauer/Street Lessons/Isaac Tichauer - Higher Level (Bicep Remix) (1).flac",
+      "size": 40281075,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/_Dokumente/Private_Fotos_ungeprueft/1743101151189 (1).mp4",
+      "size": 290726,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/_Dokumente/Private_Fotos_ungeprueft/Snapchat-589662139 (1).mp4",
+      "size": 24859162,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/_Dokumente/Private_Fotos_ungeprueft/Snapchat-391117391 (1).mp4",
+      "size": 8753862,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/_Dokumente/Private_Fotos_ungeprueft/Snapchat-268547967 (1).mp4",
+      "size": 20213180,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/_Dokumente/Private_Fotos_ungeprueft/Snapchat-117155693 (1).mp4",
+      "size": 20533832,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/_Dokumente/Private_Fotos_ungeprueft/Snapchat-1084647336 (1).mp4",
+      "size": 6565103,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/_Dokumente/Private_Fotos_ungeprueft/IMG_6084 (1).mp4",
+      "size": 4153665,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Master_Library/Electronic/@@0@@20711278@@Vinyl(2)/Single/@@0@@20711278@@Vinyl(2) - Vocals.wav134522D_10000_261C_100_0.wav",
+      "size": 165694408,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Master_Library/Electronic/@@0@@20711278@@Vinyl(2)/Single/@@0@@20711278@@Vinyl(2) - Other.wav134522D_10000_261C_100_0.wav",
+      "size": 165695466,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Master_Library/Electronic/@@0@@20711278@@Vinyl(2)/Single/@@0@@20711278@@Vinyl(2) - Drums.wav134522D_10000_261C_100_0.wav",
+      "size": 165695050,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Master_Library/Electronic/@@0@@20711278@@Vinyl(2)/Single/@@0@@20711278@@Vinyl(2) - Bass.wav134522D_10000_261C_100_0.wav",
+      "size": 165695614,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Master_Library/Electronic/Jose Feliciano/Single (2014)/Jose Feliciano - Feliz Navidad (House Remix Edit) 130 (1).mp3",
+      "size": 9080503,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Master_Library/Electronic/Vinyl(2)/Single/Vinyl(2) - Vocals.wav",
+      "size": 161650202,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Master_Library/Electronic/Vinyl(2)/Single/Vinyl(2) - Other.wav",
+      "size": 161650200,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Master_Library/Electronic/Vinyl(2)/Single/Vinyl(2) - Drums.wav",
+      "size": 161650200,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Master_Library/Electronic/Vinyl(2)/Single/Vinyl(2) - Bass.wav",
+      "size": 161650198,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Master_Library/Electronic/Men without Heads/Single (2025)/Men without Heads - Safety Dance 1(2).wav",
+      "size": 577780266,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary_R/01_WARMUP/02 - Way Out (2).flac",
+      "size": 25380449,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary_R/02_PEAKTIME/03 - ... Be Here (2).flac",
+      "size": 35584575,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary_R/02_PEAKTIME/01 - Emerge (2).flac",
+      "size": 31013082,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary_R/03_CLASSICS/01 - Let Me Be Your Fantasy (radio edit) (1).flac",
+      "size": 24794014,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary_R/03_CLASSICS/01 - Faithless - Insomnia (2).flac",
+      "size": 63900725,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary_R/03_CLASSICS/03 - One More Time (club mix) (2).flac",
+      "size": 61739870,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/ELECTRONIC; TRIP-HOP/Moloko/All Back to the Mine, Vol. II_ A Collection of Remixes/05 - Sing It Back (Mousse T.’s Feel Love mix) (1).flac",
+      "size": 42929426,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/ELECTRONIC; TECHNO/Wink/Higher State of Consciousness/03 - Higher State of Consciousness (Dex & Jonesey’s Higher Stated mix) (2).flac",
+      "size": 44207886,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/ELECTRONIC; TECHNO/Oni Ayhun/OAR003/02 - OAR003-B (2).flac",
+      "size": 74665521,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/ELECTRONIC; SPACE DISCO/Todd Terje/Delorean Dynamite/01 - Delorean Dynamite (Disco Mix) (1).flac",
+      "size": 49528668,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/ELECTRONIC; TECHNO/Local Suicide/Eros Anikate/03 - Local Suicide & Skelesys - Moustache (2).flac",
+      "size": 34120602,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/BREAKBEAT/Anz/OTMI001/01 - Unravel in the Designated Zone (2).flac",
+      "size": 34869625,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/ELECTRONIC; TECHNO/Gesaffelstein/I Love Techno 2013/06 - Maelstrom - The Line (2).flac",
+      "size": 33454892,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/ELECTRONIC; SPACE DISCO/Todd Terje/Ragysh/01 - Ragysh (1).flac",
+      "size": 55809560,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/ELECTRONIC; TECHNO/Helmut & Roy/He Chilled Out/01 - He Chilled Out (2).flac",
+      "size": 0,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/DEEP HOUSE/Isaac Tichauer/Street Lessons/01 - Higher Level (Bicep Remix) (2).flac",
+      "size": 0,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/DANCE/Technotronic/Best of Technotronic/01 - Pump Up the Jam (edit) (2).flac",
+      "size": 26752043,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/DANCE/Sonique/It Feels So Good/03 - It Feels So Good (Conductor & The Cowboy-Amnesia mix) (2).flac",
+      "size": 69642090,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/DANCE/Sonique/It Feels So Good/02 - It Feels So Good (Sonique Breakbeat edit 12_) (2).flac",
+      "size": 42361359,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/ELECTRO; TECHNO_HOUSE/Perdu/Soaring Flight/01 - Perdu,Tjade - Dystopia (2).flac",
+      "size": 56065528,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/80S; POP/Kim Wilde/Another Step/01 - You Keep Me Hangin’ On (1).flac",
+      "size": 28123588,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/80S; NEW WAVE/Eurythmics/Sweet Dreams (Are Made of This)/06 - Sweet Dreams (Are Made of This) (2).flac",
+      "size": 24616298,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/ACID; TECHNO/Extreme Trax/Best of EP/02 - Don't Hold Back (2).flac",
+      "size": 63293898,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/ELECTRONIC/Faithless/Forever Faithless_ The Greatest Hits/01 - Faithless - Insomnia (2).flac",
+      "size": 63900725,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/DANCE/Skatman/High Zeit EP/04 - 11th Hour (Lauer Italo Remix) (2).flac",
+      "size": 42976034,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/MINIMAL/Ellen Allien/Camping 2/12 - Paul Kalkbrenner - Gebrünn Gebrünn (2).flac",
+      "size": 26407371,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/DEEP HOUSE/Michael Mayer/&/06 - Michael Mayer & Miss Kittin - Voyage Interieur (2).flac",
+      "size": 24587059,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/DEEP HOUSE/KiNK/Hyper Epic/01 - KiNK - Wake Up (2).flac",
+      "size": 52819744,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/ELECTRONIC/Ellen Allien & Apparat/Orchestra of Bubbles/02 - Way Out (2).flac",
+      "size": 25380449,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/ELECTRONIC/Northern Lite/Small Chamber Works/03 - ... Be Here (2).flac",
+      "size": 35584575,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/MINIMAL/Gui Boratto/Chromophobia/11 - Beautiful Life (1).flac",
+      "size": 57081173,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/DANCE/Milk Inc_/Land of the Living/03 - Milk Inc. - Walk on Water (H₂O radio mix) (2).flac",
+      "size": 23311471,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/DEEP HOUSE/Fort Romeau/Fairlights/01 - Saku (2).flac",
+      "size": 44711176,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/DANCE; ELECTRONIC/Duke/So in Love With You/01 - So in Love With You (Full Intention 12_ mix) (2).flac",
+      "size": 59899169,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/MINIMAL/Sascha Funke/IFA/03 - MZ (2).flac",
+      "size": 40575745,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/ITALY/Mind Enterprises/Panorama/01 - Idol (2).flac",
+      "size": 29192639,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/DANCE/Man_ipulate/Eternity EP/03 - Eternity (Alex Kassian’s Ode to Sunshine mix) (1).flac",
+      "size": 50405093,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/ELECTRONIC/Iron Curtis & Johannes Albert/Moon II Remixes Pt. I/02 - Iron Curtis & Johannes Albert feat. Lisa Toh - Nektar (Benjamin Fröhlich remix) (2).flac",
+      "size": 34281625,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/PROGRESSIVE HOUSE/Paul Keeley/A Sort of Homecoming/02 - A Sort of Homecoming (Michael Cassette remix) (2).flac",
+      "size": 45231229,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/ELECTRONIC/The Prodigy/Selected Mixes for the Jilted Generation/02 - No Good (Start the Dance) (Bad for You mix) (2).flac",
+      "size": 54284364,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/DANCE/JaXel/Steps/02 - Steps (Far&High remix) (2).flac",
+      "size": 34965075,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/DEEP HOUSE/Frankey & Sandrino/Cephei EP/01 - Cephei (original mix) (2).flac",
+      "size": 58665785,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/ELECTRONIC/Jex Opolis/Earth Boy/02 - Desolation (dub) (2).flac",
+      "size": 42864277,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/DANCE; EURODANCE/U.S.U.R.A_/Open Your Mind/02 - Open Your Mind (Classic mix) (2).flac",
+      "size": 37620795,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/DANCE/Mysterious Art/Das Omen (Teil 1)/01 - Das Omen 1 (2).flac",
+      "size": 49355348,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/RAVE/Liquid/Sweet Harmony/01 - Sweet Harmony (original mix) (2).flac",
+      "size": 32812089,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/ELECTRONIC/Steve Barnes & Riley Reinhold/Mondrian/01 - Mondrian (2).flac",
+      "size": 44368970,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/ITALY/Super Paolo/In Your Shadow/02 - In Your Shadow (Andy Bros Remix) (2).flac",
+      "size": 47571415,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/ELECTROCLASH/Hong Kong Counterfeit/Metal Disco EP/04 - Metal Disco (Legowelt vs Orgue Electronique mix) (2).flac",
+      "size": 46481079,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/ELECTRONIC/Vitalic/Poney EP/04 - You Prefer Cocaine (2).flac",
+      "size": 40647942,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/ELECTRONIC/Moby/Go (Rex the Dog remix)/01 - Go (Rex the Dog remix) (2).flac",
+      "size": 47226925,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/ELECTRONIC/Wolfram/Automatic Dub 2/01 - Automatic Dub (2).flac",
+      "size": 47901765,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/ELECTRONIC/Underworld/A Hundred Days Off/02 - Two Months Off (2).flac",
+      "size": 66754183,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/MINIMAL/Daso/Meine Idee EP/01 - Meine (2).flac",
+      "size": 48618676,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/PROGRESSIVE HOUSE/Eric Prydz presents Pryda/Pryda/23 - Pryda - Armed (2).flac",
+      "size": 51279829,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/PROGRESSIVE HOUSE/Pryda/Stay With Me/01 - Stay With Me (2).flac",
+      "size": 53483813,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/DEEP HOUSE/Junior Fairplay/Sugar Puss/01 - Sugar Puss (2).flac",
+      "size": 47218484,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/ELECTRONIC/Daft Punk/One More Time/03 - One More Time (club mix) (2).flac",
+      "size": 61739870,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/ELECTRONIC/_Compilations/Dekmantel Ten_ A Decade of Dekmantel Festival/43 - DJ Python - Mare (1).flac",
+      "size": 0,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/DANCE/Krystal Klear & Kungs/Lipstick/02 - Lipstick (Krystal Klear Remix) (2).flac",
+      "size": 131072,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/DANCE/Larry Levan/Larry Levan’s Paradise Garage/02 - Sparkle - Handsome Man (1).flac",
+      "size": 131072,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/DANCE/Larry Levan/Larry Levan’s Paradise Garage/01 - Instant Funk - I Got My Mind Made Up (1).flac",
+      "size": 131072,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/JAPANESE/Loods/Pure Bliss Meltdown/01 - Pure Bliss Meltdown (2).flac",
+      "size": 0,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/DANCE; 90S/Baby D/Let Me Be Your Fantasy/01 - Let Me Be Your Fantasy (radio edit) (1).flac",
+      "size": 24742235,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/MINIMAL SYNTH/Experimental Products/Glowing in the Dark/01 - Glowing in the Dark (original) (2).flac",
+      "size": 67100938,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/OLD SKOOL RAVE/Love Revolution/Give It to Me Baby (Jon Doe Remixes)/02 - Give It to Me Baby (Jon Doe trance remix) (2).flac",
+      "size": 56626351,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/FREESTYLE/Shavonne/So, Tell Me, Tell Me/01 - So, Tell Me, Tell Me (vocal mix) (2).flac",
+      "size": 49607813,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/GERMANY/David Kochs/Pop Shock _ Dry Me (The Remixes)/02 - Pop Shock (Baril remix) (2).flac",
+      "size": 38475004,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/ELECTRO; ELECTROCLASH; ELECTRONIC; TECHNO/Daniel Watts/Cosmetic Ecstasy/02 - Cosmetic Ecstasy (Terr remix) (2).flac",
+      "size": 37775110,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/TOMMY VEE/Tommy Vee and Mr. V/Bang Bang/01 - Bang Bang (Club Mix) (2).flac",
+      "size": 54165797,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/HOUSE; ELECTRO/Hotel Lauer/Lauer & Lauer/02 - Sanger (1).flac",
+      "size": 43180801,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/SPEED GARAGE/Serious Danger/Deeper (Battle Plate)/02 - Battle Plate (2).flac",
+      "size": 51717938,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/INDIE; FEMALE VOCALISTS/Feist/My Moon My Man/03 - My Moon My Man (Boys Noize Classic remix) (2).flac",
+      "size": 39119986,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/MINIMAL SYNTH/Void Vision/Sub Rosa/04 - Sour (2).flac",
+      "size": 34162630,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/DNB; DRUM AND BASS/Alhox/Acid Drop EP/01 - Acid Drop (1).flac",
+      "size": 44903620,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/ELECTRO HOUSE; ELECTRONIC/Nyra/Canoe 11/01 - Both of Us Knowing (2).flac",
+      "size": 35432663,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/FRENCH/Myd/Superdiscoteca/01 - Superdiscoteca (2).flac",
+      "size": 29019841,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/HOUSE; MINIMAL/Damon Jee/Chamaniac/01 - Chamaniac (1).flac",
+      "size": 44370948,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/ELECTRO; ELECTROCLASH/The Hacker/Midnight Bliss/02 - Heavy Duty Disco (2).flac",
+      "size": 40879274,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/ELECTRO-POP; SYNTHPOP/Adam Port/Sonnenfinsternis EP/03 - Here Is Why - Tonight (Adam Port 12_ Autobahn Edit) (2).flac",
+      "size": 44233135,
+      "reason": "naming_cleanup_candidate"
+    },
+    {
+      "path": "FraWo_Musik/music_hdd/Inbox/yourparty_Libary/BREAKBEAT; TECHNO/Overmono/Calling Out/01 - Overmono - Calling Out (2).flac",
+      "size": 30768763,
+      "reason": "naming_cleanup_candidate"
+    }
+  ]
+}
