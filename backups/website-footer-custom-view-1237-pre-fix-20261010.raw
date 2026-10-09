@@ -1,0 +1,281 @@
+VIEW 1237 Default website.footer_custom True
+<data inherit_id="website.layout" name="Default" active="True">
+    <xpath expr="//div[@id='footer']" position="replace">
+        <div id="footer" class="oe_structure oe_structure_solo" t-ignore="true" t-if="not no_footer">
+<style>
+  #footer {
+    background: #0a0a0a !important;
+    border-top: 1px solid rgba(255,255,255,0.08) !important;
+    padding: 60px 0 90px !important; /* extra bottom padding for sticky radio bar */
+  }
+  #footer h5 {
+    color: #ffffff !important;
+    font-size: 0.8rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.12em !important;
+    margin-bottom: 20px !important;
+    font-family: monospace !important;
+  }
+  #footer a {
+    color: #94a3b8 !important;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  #footer a:hover {
+    color: #ffffff !important;
+  }
+  #footer p {
+    color: #94a3b8 !important;
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  /* Sticky Radio Player Bar */
+  .fw-radio-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 56px;
+    background: rgba(10, 15, 13, 0.95);
+    border-top: 1.5px solid #004030;
+    box-shadow: none;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    color: #ffffff;
+  }
+  .fw-radio-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 240px;
+  }
+  .fw-live-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(0, 64, 48, 0.8);
+    border: 1px solid #2ecc71;
+    padding: 3px 8px;
+    border-radius: 0px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: #2ecc71;
+  }
+  .fw-live-dot {
+    width: 6px;
+    height: 6px;
+    background: #2ecc71;
+    border-radius: 0px;
+    animation: fwPulse 2s infinite;
+  }
+  @keyframes fwPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(1.2); }
+  }
+  .fw-radio-meta {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .fw-radio-station {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: 0.02em;
+  }
+  .fw-radio-track {
+    font-size: 0.72rem;
+    color: #94a3b8;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 280px;
+  }
+
+  .fw-radio-center {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .fw-play-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 0px;
+    background: #004030;
+    border: 1px solid #2ecc71;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .fw-play-btn:hover {
+    background: #2ecc71;
+    color: #004030;
+    transform: scale(1.05);
+  }
+  .fw-play-btn svg {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+  }
+
+  .fw-radio-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .fw-volume-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .fw-vol-slider {
+    width: 80px;
+    height: 4px;
+    accent-color: #2ecc71;
+    cursor: pointer;
+  }
+  .fw-external-link {
+    font-size: 0.75rem;
+    color: #a050f0 !important;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .fw-external-link:hover {
+    color: #ffffff !important;
+  }
+
+  @media (max-width: 768px) {
+    .fw-radio-right, .fw-radio-track { display: none !important; }
+    .fw-radio-bar { padding: 0 16px; }
+  }
+
+  .o_brand_promotion, .o_footer_copyright .o_brand_promotion, .o_footer_copyright small { display: none !important; visibility: hidden !important; height: 0 !important; margin: 0 !important; padding: 0 !important; }
+</style>
+
+            <section class="s_text_block pt40 pb16" data-snippet="s_text_block" data-name="Text">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-2 pt24 pb24">
+                            <h5 class="mb-3">Navigation</h5>
+                            <ul class="list-unstyled">
+                                <li><a href="/">Home</a></li>
+                                <li><a href="/#services">Leistungen</a></li>
+                                <li><a href="/verleih">Mietpark</a></li>
+                                <li><a href="/referenzen">Referenzen</a></li>
+                                <li><a href="/impressum">Impressum</a></li>
+                                <li><a href="/datenschutz">Datenschutz</a></li>
+                                <li><a href="/contactus">Kontakt</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-lg-5 pt24 pb24">
+                            <h5 class="mb-3">Über FraWo</h5>
+                            <p>FraWo GbR — Veranstaltungstechnik, Veranstaltungstechnik, FOH-Regie, Equipment-Mietpark und präziser Holz-Sonderbau aus Lindau.
+                            <br/><br/> Persönlich, lokal und zuverlässig — von der einzelnen Box bis zur kompletten Bühne.</p>
+                        </div>
+                        <div id="connect" class="col-lg-4 offset-lg-1 pt24 pb24">
+                            <h5 class="mb-3">Kontakt</h5>
+                            <ul class="list-unstyled">
+                                <li><i class="fa fa-comment fa-fw me-2"/><span><a href="/contactus">Kontaktieren</a></span></li>
+                                <li><i class="fa fa-envelope fa-fw me-2"/><span><a href="mailto:kontakt@frawo.tech">kontakt@frawo.tech</a></span></li>
+                                <li><i class="fa fa-phone fa-fw me-2"/><span><a href="tel:+4915155243164">Telefonisch anfragen</a></span></li>
+                                <li><i class="fa fa-whatsapp fa-fw me-2"/><span><a href="https://wa.me/4915155243164" target="_blank">WhatsApp Chat</a></span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sticky FraWo Funk Player Bar -->
+            <div class="fw-radio-bar">
+                <div class="fw-radio-left">
+                    <div class="fw-live-badge">
+                        <span class="fw-live-dot"/> LIVE
+                    </div>
+                    <div class="fw-radio-meta">
+                        <div class="fw-radio-station">FraWo Funk Radio</div>
+                        <div class="fw-radio-track" id="fw-radio-track-title">Bodensee Dayparting Stream</div>
+                    </div>
+                </div>
+
+                <div class="fw-radio-center">
+                    <button class="fw-play-btn" id="fw-play-toggle" onclick="toggleFraWoRadio()" aria-label="FraWo Funk abspielen/pausieren">
+                        <svg id="fw-icon-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        <svg id="fw-icon-pause" viewBox="0 0 24 24" style="display:none;"><path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/></svg>
+                    </button>
+                </div>
+
+                <div class="fw-radio-right">
+                    <div class="fw-volume-box">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="#94a3b8"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+                        <input type="range" class="fw-vol-slider" min="0" max="100" value="80" oninput="setFraWoVolume(this.value)" aria-label="Lautstärke"/>
+                    </div>
+                    <a href="https://funk.frawo.tech/" target="_blank" class="fw-external-link">Web Player ↗</a>
+                </div>
+            </div>
+
+            <audio id="frawo-live-stream" preload="none">
+                <source src="https://funk.frawo.tech/listen/frawo_funk/radio.mp3" type="audio/mpeg"/>
+            </audio>
+
+            <script>
+                var radioAudio = document.getElementById('frawo-live-stream');
+                var isRadioPlaying = false;
+
+                function toggleFraWoRadio() {
+                    if (!radioAudio) radioAudio = document.getElementById('frawo-live-stream');
+                    if (isRadioPlaying) {
+                        radioAudio.pause();
+                        isRadioPlaying = false;
+                        document.getElementById('fw-icon-play').style.display = 'block';
+                        document.getElementById('fw-icon-pause').style.display = 'none';
+                    } else {
+                        radioAudio.play().then(function() {
+                            isRadioPlaying = true;
+                            document.getElementById('fw-icon-play').style.display = 'none';
+                            document.getElementById('fw-icon-pause').style.display = 'block';
+                        }).catch(function(err) {
+                            console.error('Playback error:', err);
+                        });
+                    }
+                }
+
+                function setFraWoVolume(val) {
+                    if (radioAudio) radioAudio.volume = val / 100;
+                }
+
+                function updateNowPlaying() {
+                    fetch('https://funk.frawo.tech/api/nowplaying/frawo_funk')
+                        .then(function(res) { return res.json(); })
+                        .then(function(data) {
+                            if (data &amp;&amp; data.now_playing &amp;&amp; data.now_playing.song) {
+                                var s = data.now_playing.song;
+                                var t = (s.artist ? s.artist + ' – ' : '') + (s.title || 'Live Rotation');
+                                var elem = document.getElementById('fw-radio-track-title');
+                                if (elem) elem.textContent = t;
+                            }
+                        })
+                        .catch(function(e) { /* silent */ });
+                }
+
+                setInterval(updateNowPlaying, 20000);
+                setTimeout(updateNowPlaying, 2000);
+            </script>
+        </div>
+    </xpath>
+</data>

@@ -243,37 +243,6 @@
   var azuraApi = 'https://funk.frawo.tech/api/nowplaying/frawo_funk';
   var audio = new Audio();
   audio.preload = 'none';
-  var manualStop = false;
-  var reconnectTimer = null;
-  var reconnectAttempt = 0;
-  var reconnectDelay = 3000;
-
-  function reconnectStream(reason) {
-    if (manualStop || reconnectTimer) return;
-    reconnectAttempt += 1;
-    var delay = Math.min(15000, reconnectDelay * Math.min(reconnectAttempt, 4));
-    console.log('FraWo Funk: Stream unterbrochen (' + reason + '), neuer Versuch in ' + delay + 'ms.');
-    reconnectTimer = setTimeout(function() {
-      reconnectTimer = null;
-      if (manualStop) return;
-      try {
-        audio.pause();
-        audio.removeAttribute('src');
-        audio.load();
-        audio.src = streamUrl + '?fw_reconnect=' + Date.now();
-        audio.load();
-        audio.play().then(function() {
-          reconnectAttempt = 0;
-          state.isPlaying = true;
-          updateUI();
-        }).catch(function(e) {
-          reconnectStream('play ' + (e && e.name ? e.name : 'error'));
-        });
-      } catch (e) {
-        reconnectStream('load ' + (e && e.name ? e.name : 'error'));
-      }
-    }, delay);
-  }
   /* Fuer die Tonanalyse (Beat-Visual auf /radio) muss der Stream per CORS
      gelesen werden. funk.frawo.tech sendet dafuer
      access-control-allow-origin: https://frawo.tech (geprueft 07.10.2026).
@@ -349,26 +318,9 @@
   });
 
   audio.addEventListener('error', function(e) {
-    console.log('Streamfehler:', e);
+    console.log('Stream reconnecting...', e);
     state.isPlaying = false;
     updateUI();
-    reconnectStream('error');
-  });
-
-  audio.addEventListener('stalled', function() {
-    reconnectStream('stalled');
-  });
-
-  audio.addEventListener('waiting', function() {
-    reconnectStream('waiting');
-  });
-
-  audio.addEventListener('abort', function() {
-    reconnectStream('abort');
-  });
-
-  audio.addEventListener('emptied', function() {
-    if (!manualStop) reconnectStream('emptied');
   });
 
   function updateUI() {
@@ -427,11 +379,9 @@
   }
 
   function startPlayback() {
-    manualStop = false;
-    reconnectAttempt = 0;
     /* Zuerst die Analyse: hier sind wir noch in der Nutzergeste. */
     analyseStarten();
-    audio.src = streamUrl + '?fw_start=' + Date.now();
+    audio.src = streamUrl;
     audio.load();
     audio.play().then(function() {
       state.isPlaying = true;
@@ -441,22 +391,14 @@
       updateUI();
     }).catch(function(e) {
       console.log('Play err:', e);
-      reconnectStream('initial play');
     });
   }
 
   window.fwAudio = {
     togglePlay: function() {
       if (state.isPlaying) {
-        manualStop = true;
-        if (reconnectTimer) {
-          clearTimeout(reconnectTimer);
-          reconnectTimer = null;
-        }
         audio.pause();
         audio.src = '';
-        state.isPlaying = false;
-        updateUI();
       } else {
         startPlayback();
       }
