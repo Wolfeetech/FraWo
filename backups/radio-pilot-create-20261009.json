@@ -1,0 +1,32 @@
+[
+  {
+    "name": "Friday Peak — House & Tech House",
+    "id": 902,
+    "created": true,
+    "tracks": 30,
+    "assign_http": 500,
+    "assign_result": {
+      "error": "{\"code\":500,\"type\":\"TypeError\",\"message\":\"App\\\\Entity\\\\Repository\\\\StationMediaRepository::findByPath(): Argument #1 ($path) must be of type string, int given, called in /var/azuracast/www/backend/src/Entity/Repository/StationMediaRepository.php on line 104\",\"formatted_message\":\"App\\\\Entity\\\\Repository\\\\StationMediaRepository::findByPath(): Argument #1 ($path) must be of type string, int given, called in /var/azuracast/www/backend/src/Entity/Repository/StationMediaRepository.php on line 104\",\"ex"
+    }
+  },
+  {
+    "name": "Friday Techno Drive",
+    "id": 903,
+    "created": true,
+    "tracks": 25,
+    "assign_http": 500,
+    "assign_result": {
+      "error": "{\"code\":500,\"type\":\"TypeError\",\"message\":\"App\\\\Entity\\\\Repository\\\\StationMediaRepository::findByPath(): Argument #1 ($path) must be of type string, int given, called in /var/azuracast/www/backend/src/Entity/Repository/StationMediaRepository.php on line 104\",\"formatted_message\":\"App\\\\Entity\\\\Repository\\\\StationMediaRepository::findByPath(): Argument #1 ($path) must be of type string, int given, called in /var/azuracast/www/backend/src/Entity/Repository/StationMediaRepository.php on line 104\",\"ex"
+    }
+  },
+  {
+    "name": "Friday Disco Drive",
+    "id": 904,
+    "created": true,
+    "tracks": 34,
+    "assign_http": 500,
+    "assign_result": {
+      "error": "{\"code\":500,\"type\":\"TypeError\",\"message\":\"App\\\\Entity\\\\Repository\\\\StationMediaRepository::findByPath(): Argument #1 ($path) must be of type string, int given, called in /var/azuracast/www/backend/src/Entity/Repository/StationMediaRepository.php on line 104\",\"formatted_message\":\"App\\\\Entity\\\\Repository\\\\StationMediaRepository::findByPath(): Argument #1 ($path) must be of type string, int given, called in /var/azuracast/www/backend/src/Entity/Repository/StationMediaRepository.php on line 104\",\"ex"
+    }
+  }
+]

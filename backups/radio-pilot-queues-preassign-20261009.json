@@ -1,0 +1,623 @@
+{
+  "891": {
+    "station_id": 1,
+    "name": "Friday Peak",
+    "description": "Freitagabend auf dem Höhepunkt: House, Disco und treibende Clubmomente.",
+    "type": "default",
+    "source": "songs",
+    "order": "shuffle",
+    "remote_url": null,
+    "remote_type": null,
+    "remote_buffer": 0,
+    "is_enabled": true,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 10,
+    "include_in_requests": false,
+    "include_in_on_demand": false,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": "2026-10-09T20:49:37.250084Z",
+    "queue_reset_at": null,
+    "schedule_items": [
+      {
+        "start_time": 1700,
+        "end_time": 0,
+        "start_date": null,
+        "end_date": null,
+        "days": [
+          5
+        ],
+        "loop_once": false,
+        "id": 764
+      }
+    ],
+    "podcasts": [],
+    "id": 891,
+    "short_name": "friday_peak",
+    "num_songs": 100,
+    "total_length": 36180,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/891",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/891/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/891/clone",
+      "queue": "https://10.1.0.38/api/station/1/playlist/891/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/891/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/891/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/891/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/891/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/891/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/891/export/m3u"
+      }
+    }
+  },
+  "891/queue": [
+    {
+      "spm_id": 238700,
+      "media_id": 217793,
+      "song_id": "1f9d89140b6bfd2bb46080b755250318",
+      "artist": "Mantronix",
+      "title": "Got to Have Your Love (club with bonus beats)",
+      "last_played": 0
+    },
+    {
+      "spm_id": 238651,
+      "media_id": 217607,
+      "song_id": "856aa333b83370845984abb29c1855f7",
+      "artist": "Amii Stewart",
+      "title": "Knock on Wood (12″ Version)",
+      "last_played": 0
+    },
+    {
+      "spm_id": 238727,
+      "media_id": 217528,
+      "song_id": "4efa5d4087c0051c382291c007748bae",
+      "artist": "Joe Smooth",
+      "title": "Promised Land (Club Mix)",
+      "last_played": 1791567885
+    },
+    {
+      "spm_id": 238678,
+      "media_id": 217074,
+      "song_id": "98bfeb7cdf39f42a13bb45a17deabd2b",
+      "artist": "Mariana Bo",
+      "title": "Handel (Extended)",
+      "last_played": 0
+    },
+    {
+      "spm_id": 238679,
+      "media_id": 206576,
+      "song_id": "2e7f9b4a07683b8d82f6021dc2e6ac52",
+      "artist": "Sam Karlson, Magnolia, Ron Carroll",
+      "title": "Everybody Move (Extended Mix)",
+      "last_played": 0
+    },
+    {
+      "spm_id": 238680,
+      "media_id": 218122,
+      "song_id": "bb473814b1b3aa89805b2192d75677ac",
+      "artist": "Black Eyes",
+      "title": "Bohemian Waters",
+      "last_played": 0
+    },
+    {
+      "spm_id": 238681,
+      "media_id": 217821,
+      "song_id": "24e919714a8637ee6f58fdce0b578f8c",
+      "artist": "Sheila & B. Devotion",
+      "title": "Spacer (Vocal 12″ Version)",
+      "last_played": 0
+    },
+    {
+      "spm_id": 238682,
+      "media_id": 218198,
+      "song_id": "6ee9a8c01644f23d36507fbc00975230",
+      "artist": "FELIX",
+      "title": "Don't You Want Me (Fierce Mix)",
+      "last_played": 0
+    },
+    {
+      "spm_id": 238683,
+      "media_id": 217801,
+      "song_id": "cc5802fc212961d11246d9985c298eee",
+      "artist": "Donna Allen",
+      "title": "Serious",
+      "last_played": 0
+    },
+    {
+      "spm_id": 238684,
+      "media_id": 217176,
+      "song_id": "274f841ec4eb992887382b6165a7bf53",
+      "artist": "Karim Soliman",
+      "title": "Dawgs (Extended Mix)",
+      "last_played": 0
+    },
+    {
+      "spm_id": 238685,
+      "media_id": 217829,
+      "song_id": "0e9e51bbc972b8c6fa2bfcd2fcc23e46",
+      "artist": "Kim Wilde",
+      "title": "You Keep Me Hangin' On",
+      "last_played": 0
+    },
+    {
+      "spm_id": 238686,
+      "media_id": 217348,
+      "song_id": "c4fd59f7f3a1c1edb67fbe8e937d9f91",
+      "artist": "VanLL",
+      "title": "Mistiq",
+      "last_played": 0
+    },
+    {
+      "spm_id": 238687,
+      "media_id": 206274,
+      "song_id": "d39d55d83c96e45e19f37ad8fade094e",
+      "artist": "Booka Shade, Yaruba",
+      "title": "Get Funky, Henri Extended Mix",
+      "last_played": 0
+    },
+    {
+      "spm_id": 238688,
+      "media_id": 217109,
+      "song_id": "188b9c9d118dc2fe53ce82f7ebe7958f",
+      "artist": "Scheermann",
+      "title": "Viciosa",
+      "last_played": 0
+    },
+    {
+      "spm_id": 238689,
+      "media_id": 217572,
+      "song_id": "dbbeeb323e52566374331d6e3cd0ad90",
+      "artist": "Phyllis Hyman",
+      "title": "You Know How to Love Me (Album Version)",
+      "last_played": 0
+    },
+    {
+      "spm_id": 238690,
+      "media_id": 218089,
+      "song_id": "3049881a2e22aaf221a1ff140c2d3d50",
+      "artist": "Jellybean ft. Madonna",
+      "title": "Sidewalk Talk (Dance Mix)",
+      "last_played": 0
+    },
+    {
+      "spm_id": 238691,
+      "media_id": 218077,
+      "song_id": "1cc660e0c3e0fd41a9e4233ca1dea58d",
+      "artist": "Voyage",
+      "title": "Lady America (Album Version)",
+      "last_played": 0
+    },
+    {
+      "spm_id": 238692,
+      "media_id": 206494,
+      "song_id": "ec5a5572c97ad60b0f9d9d4383ee2f31",
+      "artist": "Joshwa",
+      "title": "Magalenha (Extended Mix)",
+      "last_played": 0
+    },
+    {
+      "spm_id": 238693,
+      "media_id": 206284,
+      "song_id": "7c02774cd1711322bb22d353d8ea4e7d",
+      "artist": "Roland Clark",
+      "title": "The DJ Stole My Soul (Acapella) (Acapella)",
+      "last_played": 0
+    },
+    {
+      "spm_id": 238694,
+      "media_id": 217059,
+      "song_id": "44544d2e82c9ea64a36d640e4b4491fd",
+      "artist": "RNDMZR",
+      "title": "Against My Mind",
+      "last_played": 0
+    },
+    {
+      "spm_id": 238695,
+      "media_id": 217916,
+      "song_id": "95e9b6c9131751617cb88945e56ae053",
+      "artist": "Delegation",
+      "title": "You and I (Club Mix)",
+      "last_played": 0
+    },
+    {
+      "spm_id": 238696,
+      "media_id": 217786,
+      "song_id": "51508adf796dab4a69cc4b8bd80fa34c",
+      "artist": "Oxia",
+      "title": "Domino",
+      "last_played": 0
+    },
+    {
+      "spm_id": 238697,
+      "media_id": 206564,
+      "song_id": "f596c395ff1ed00b4afec00e38b8e8d5",
+      "artist": "Claudio Giordano",
+      "title": "Nocturnal Rhythms",
+      "last_played": 0
+    },
+    {
+      "spm_id": 238698,
+      "media_id": 218033,
+      "song_id": "40b8f5bddd8f30d3fc2d066775f22b53",
+      "artist": "Ce Ce Peniston",
+      "title": "Finally (12\" Choice Mix)",
+      "last_played": 0
+    },
+    {
+      "spm_id": 238699,
+      "media_id": 206399,
+      "song_id": "3a31efc4fe9c09b0152bc7c48eae498a",
+      "artist": "GRIT.",
+      "title": "Deep Down Inside",
+      "last_played": 0
+    },
+    {
+      "spm_id": 238701,
+      "media_id": 206485,
+      "song_id": "37f216b9eaa7be6cba677a202ef84a88",
+      "artist": "Wheats",
+      "title": "Why",
+      "last_played": 0
+    },
+    {
+      "spm_id": 238702,
+      "media_id": 206529,
+      "song_id": "d4c3a5543c58dd1bdbd105839095636e",
+      "artist": "Pleasurekraft",
+      "title": "Tarantula",
+      "last_played": 0
+    },
+    {
+      "spm_id": 238703,
+      "media_id": 206235,
+      "song_id": "9fbf0165dc2d8ff7e9816bf87bcf6f19",
+      "artist": "R Rivera Grooves, Benjamin Barth",
+      "title": "Back to the Old School (R Rivera Grooves Extended Remix)",
+      "last_played": 0
+    },
+    {
+      "spm_id": 238704,
+      "media_id": 217254,
+      "song_id": "73b88140c49aa4212d8d6fd765b7c6e9",
+      "artist": "Aldo Cadiz",
+      "title": "Raiz",
+      "last_played": 0
+    },
+    {
+      "spm_id": 238705,
+      "media_id": 216985,
+      "song_id": "2faec93501100722ed76f3afd321ea66",
+      "artist": "Temudo",
+      "title": "Meteora",
+      "last_played": 0
+    },
+    {
+      "spm_id": 238706,
+      "media_id": 216998,
+      "song_id": "620520c032608c8d3bdcc80da1bfcc74",
+      "artist": "Exit EEE",
+      "title": "Epidemic (Daddy Cool Remix)",
+      "last_played": 0
+    },
+    {
+      "spm_id": 238707,
+      "media_id": 217333,
+      "song_id": "b71f0e2231752f1b25406940befe1608",
+      "artist": "Etwas (IT), Bruno Bona",
+      "title": "The Call",
+      "last_played": 0
+    },
+    {
+      "spm_id": 238708,
+      "media_id": 218179,
+      "song_id": "6f654fb028b0bf49b1a243c2b5569ad7",
+      "artist": "Ray Parker Jr.",
+      "title": "Ghostbusters (Extended Version)",
+      "last_played": 0
+    },
+    {
+      "spm_id": 238709,
+      "media_id": 217171,
+      "song_id": "0581edf156b8b9ddde2e09ed71d004b3",
+      "artist": "Timmo",
+      "title": "Salty (Extended Mix)",
+      "last_played": 0
+    },
+    {
+      "spm_id": 238710,
+      "media_id": 217842,
+      "song_id": "1afd50b031b17167b891c1ae736a1cff",
+      "artist": "Odyssey",
+      "title": "Don't Tell Me, Tell Her (12″ Disco Version)",
+      "last_played": 0
+    },
+    {
+      "spm_id": 238711,
+      "media_id": 206230,
+      "song_id": "f8e94d9a8ad9dd7d102deb7255dcea59",
+      "artist": "Jay Potter",
+      "title": "That Groove",
+      "last_played": 0
+    },
+    {
+      "spm_id": 238712,
+      "media_id": 217802,
+      "song_id": "c2ee292a66968ade5ff0a7b30614ca00",
+      "artist": "Sharon Redd",
+      "title": "Can You Handle It",
+      "last_played": 0
+    },
+    {
+      "spm_id": 238713,
+      "media_id": 217753,
+      "song_id": "7bea586ff4150195b1d8d8699859e9c3",
+      "artist": "Jellybean",
+      "title": "Was Dog a Doughnut (Front Line Mix)",
+      "last_played": 0
+    },
+    {
+      "spm_id": 238714,
+      "media_id": 217331,
+      "song_id": "6e845d0987b06ca30d92027dc3df31bc",
+      "artist": "J-Zbel",
+      "title": "Tunnel Vision",
+      "last_played": 0
+    },
+    {
+      "spm_id": 238715,
+      "media_id": 206223,
+      "song_id": "efb03723501b4b57068a4036a1107910",
+      "artist": "Johannes Albert",
+      "title": "More Action Pleeease!",
+      "last_played": 0
+    },
+    {
+      "spm_id": 238716,
+      "media_id": 218170,
+      "song_id": "47ec070841be46e1c7a021590a4fe54a",
+      "artist": "52nd Street",
+      "title": "Tell Me (How It Feels) (extended)",
+      "last_played": 0
+    },
+    {
+      "spm_id": 238717,
+      "media_id": 218143,
+      "song_id": "bb41bf5af9d1852dd7829e909d6fcc43",
+      "artist": "Eurythmics",
+      "title": "Sweet Dreams (Are Made of This)",
+      "last_played": 0
+    },
+    {
+      "spm_id": 238718,
+      "media_id": 217228,
+      "song_id": "f79596119c67e6761f38a84f8d7b71f9",
+      "artist": "Devid Dega",
+      "title": "You",
+      "last_played": 0
+    },
+    {
+      "spm_id": 238719,
+      "media_id": 217914,
+      "song_id": "4a47bb8662bfc8a96173079d74316494",
+      "artist": "Sharon Redd",
+      "title": "Beat the Street (Special Dub-Vocal Edit)",
+      "last_played": 0
+    },
+    {
+      "spm_id": 238720,
+      "media_id": 217596,
+      "song_id": "058b41e1cbe8f3990df00f42212b6d44",
+      "artist": "The Salsoul Orchestra",
+      "title": "Nice 'n' Naasty (Disco Mix 12″)",
+      "last_played": 0
+    },
+    {
+      "spm_id": 238721,
+      "media_id": 206607,
+      "song_id": "a5f3a0d100c3ea5a57d142c3f4f8786a",
+      "artist": "Bomb Beat",
+      "title": "Jesus Montalvo, Vulturez",
+      "last_played": 0
+    },
+    {
+      "spm_id": 238722,
+      "media_id": 217522,
+      "song_id": "62f153737d53fce3e3d848927a2bd3d6",
+      "artist": "Sheryl Lee Ralph",
+      "title": "In the Evening (Extended 12 Inch Version)",
+      "last_played": 0
+    },
+    {
+      "spm_id": 238723,
+      "media_id": 206468,
+      "song_id": "9c5c814e9060b86552236015b50dc58e",
+      "artist": "Matt Sassari, HUGEL ft. Sonique",
+      "title": "It Feels So Good (Extended Mix)",
+      "last_played": 0
+    },
+    {
+      "spm_id": 238724,
+      "media_id": 217845,
+      "song_id": "bf1854a4d57cb586a3838d91d9e62d40",
+      "artist": "Jordan Shaw, Justin Mylo, Money For Nothing",
+      "title": "Before The Dawn (Jeonghyeon Extended Remix)",
+      "last_played": 0
+    },
+    {
+      "spm_id": 238725,
+      "media_id": 217058,
+      "song_id": "31fa462594a7a922cca4fc5987b94e5d",
+      "artist": "Yanamaste",
+      "title": "Evil",
+      "last_played": 0
+    },
+    {
+      "spm_id": 238726,
+      "media_id": 217089,
+      "song_id": "c58ef5b3a1197ea41d0d8cd7bd7d947e",
+      "artist": "VENGA",
+      "title": "Shake It (Extended Mix)",
+      "last_played": 0
+    },
+    {
+      "spm_id": 238728,
+      "media_id": 206365,
+      "song_id": "fe80061eb99433437402a294585936d2",
+      "artist": "Dale Howard",
+      "title": "Kickback",
+      "last_played": 0
+    },
+    {
+      "spm_id": 238729,
+      "media_id": 206317,
+      "song_id": "d4e25119fcdcfc65e52e01405edde33d",
+      "artist": "Norty Cotto",
+      "title": "Stand On Up (United House Mix)",
+      "last_played": 0
+    }
+  ],
+  "902": {
+    "station_id": 1,
+    "name": "Friday Peak — House & Tech House",
+    "description": null,
+    "type": "default",
+    "source": "songs",
+    "order": "shuffle",
+    "remote_url": null,
+    "remote_type": "stream",
+    "remote_buffer": 0,
+    "is_enabled": false,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 10,
+    "include_in_requests": false,
+    "include_in_on_demand": false,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": null,
+    "queue_reset_at": null,
+    "schedule_items": [],
+    "podcasts": [],
+    "id": 902,
+    "short_name": "friday_peak__house__tech_house",
+    "num_songs": 0,
+    "total_length": 0,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/902",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/902/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/902/clone",
+      "queue": "https://10.1.0.38/api/station/1/playlist/902/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/902/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/902/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/902/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/902/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/902/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/902/export/m3u"
+      }
+    }
+  },
+  "902/queue": [],
+  "903": {
+    "station_id": 1,
+    "name": "Friday Techno Drive",
+    "description": null,
+    "type": "default",
+    "source": "songs",
+    "order": "shuffle",
+    "remote_url": null,
+    "remote_type": "stream",
+    "remote_buffer": 0,
+    "is_enabled": false,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 10,
+    "include_in_requests": false,
+    "include_in_on_demand": false,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": null,
+    "queue_reset_at": null,
+    "schedule_items": [],
+    "podcasts": [],
+    "id": 903,
+    "short_name": "friday_techno_drive",
+    "num_songs": 0,
+    "total_length": 0,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/903",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/903/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/903/clone",
+      "queue": "https://10.1.0.38/api/station/1/playlist/903/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/903/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/903/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/903/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/903/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/903/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/903/export/m3u"
+      }
+    }
+  },
+  "903/queue": [],
+  "904": {
+    "station_id": 1,
+    "name": "Friday Disco Drive",
+    "description": null,
+    "type": "default",
+    "source": "songs",
+    "order": "shuffle",
+    "remote_url": null,
+    "remote_type": "stream",
+    "remote_buffer": 0,
+    "is_enabled": false,
+    "is_jingle": false,
+    "play_per_songs": 0,
+    "play_per_minutes": 0,
+    "play_per_hour_minute": 0,
+    "weight": 10,
+    "include_in_requests": false,
+    "include_in_on_demand": false,
+    "backend_options": [
+      ""
+    ],
+    "avoid_duplicates": true,
+    "played_at": null,
+    "queue_reset_at": null,
+    "schedule_items": [],
+    "podcasts": [],
+    "id": 904,
+    "short_name": "friday_disco_drive",
+    "num_songs": 0,
+    "total_length": 0,
+    "links": {
+      "self": "https://10.1.0.38/api/station/1/playlist/904",
+      "toggle": "https://10.1.0.38/api/station/1/playlist/904/toggle",
+      "clone": "https://10.1.0.38/api/station/1/playlist/904/clone",
+      "queue": "https://10.1.0.38/api/station/1/playlist/904/queue",
+      "import": "https://10.1.0.38/api/station/1/playlist/904/import",
+      "reshuffle": "https://10.1.0.38/api/station/1/playlist/904/reshuffle",
+      "applyto": "https://10.1.0.38/api/station/1/playlist/904/apply-to",
+      "empty": "https://10.1.0.38/api/station/1/playlist/904/empty",
+      "export": {
+        "pls": "https://10.1.0.38/api/station/1/playlist/904/export/pls",
+        "m3u": "https://10.1.0.38/api/station/1/playlist/904/export/m3u"
+      }
+    }
+  },
+  "904/queue": []
+}
