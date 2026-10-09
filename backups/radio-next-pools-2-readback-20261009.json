@@ -1,0 +1,38 @@
+{
+  "909": {
+    "name": "Sunrise Ritual — Calm Motion",
+    "enabled": false,
+    "order": "shuffle",
+    "songs": 30,
+    "hours": 2.92,
+    "queue_count": 30,
+    "schedule_items": []
+  },
+  "910": {
+    "name": "Weekend Rise — Daylight Groove",
+    "enabled": false,
+    "order": "shuffle",
+    "songs": 35,
+    "hours": 3.64,
+    "queue_count": 35,
+    "schedule_items": []
+  },
+  "911": {
+    "name": "Tropical Noon — Sun & Soul",
+    "enabled": false,
+    "order": "shuffle",
+    "songs": 35,
+    "hours": 3.98,
+    "queue_count": 35,
+    "schedule_items": []
+  },
+  "912": {
+    "name": "Golden Hour — Velvet Sunset",
+    "enabled": false,
+    "order": "shuffle",
+    "songs": 35,
+    "hours": 3.85,
+    "queue_count": 35,
+    "schedule_items": []
+  }
+}

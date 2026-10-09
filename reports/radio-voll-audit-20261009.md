@@ -59,6 +59,10 @@ Als nächste, noch nicht eingeplante Kandidaten wurden vier weitere Shuffle-Pool
 | Morning Bloom — Bright Flow | 906 | 35 | ca. 3,6 h | deaktiviert, bereit für Pilot |
 | City Lunch — Soul & Groove | 907 | 35 | ca. 3,8 h | deaktiviert, bereit für Pilot |
 | Deep Night — Hypnotic Drift | 908 | 35 | ca. 3,2 h | deaktiviert, bereit für Pilot |
+| Sunrise Ritual — Calm Motion | 909 | 30 | ca. 2,9 h | deaktiviert, bereit für Pilot |
+| Weekend Rise — Daylight Groove | 910 | 35 | ca. 3,6 h | deaktiviert, bereit für Pilot |
+| Tropical Noon — Sun & Soul | 911 | 35 | ca. 4,0 h | deaktiviert, bereit für Pilot |
+| Golden Hour — Velvet Sunset | 912 | 35 | ca. 3,9 h | deaktiviert, bereit für Pilot |
 
 Die Afro-Auswahl enthält bewusst nur Titel mit belegtem Afro-/Global-Genre. Die 60 genreleeren Titel des Quellpools wurden nicht geraten und bleiben außerhalb dieses Folge-Pools.
 
