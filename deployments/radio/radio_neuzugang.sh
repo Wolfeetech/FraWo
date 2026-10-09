@@ -12,7 +12,7 @@
 set -euo pipefail
 QUELLE=${1:?Drive-Pfad fehlt}
 AUS=${2:-}
-NAME=neuzugang-$(date +%Y%m%d)
+NAME=${3:-neuzugang-$(date +%Y%m%d)}
 LIVE=/anker-backup/musik-umzug-20261005          # nach SSD-Einbau: Pfad anpassen (#1919)
 CT_EIN=/mnt/music/Inbox/$NAME
 SICH=/var/lib/beets/$NAME
