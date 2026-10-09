@@ -54,6 +54,9 @@ def run_once():
         metric('sensor.frawo_'+inst.replace('-','_')+'_root_speicher', scalar('100 * (1 - node_filesystem_avail_bytes'+root+' / node_filesystem_size_bytes'+root+')'), label+' Root-Speicher')
     metric('sensor.frawo_studiopc_cpu_auslastung', scalar('(1 - avg by(instance) (rate(windows_cpu_time_total{instance="studiopc",mode="idle"}[5m]))) * 100'), 'StudioPC CPU-Auslastung')
     metric('sensor.frawo_studiopc_ram_auslastung', scalar('100 * (1 - windows_memory_available_bytes{instance="studiopc"} / windows_cs_physical_memory_bytes{instance="studiopc"})'), 'StudioPC RAM-Auslastung')
+    metric('sensor.frawo_studiopc_temperatur', scalar('windows_thermalzone_temperature_celsius{instance="studiopc"}'), 'StudioPC Temperatur', '°C', 'mdi:thermometer')
+    publish('sensor.frawo_studiopc_prozesse', int(scalar('windows_system_processes{instance="studiopc"}',0) or 0), {'friendly_name':'StudioPC Prozesse','icon':'mdi:application-cog-outline','source':'Prometheus CT155'})
+    metric('sensor.frawo_studiopc_systemlaufwerk', scalar('100 * (1 - windows_logical_disk_free_bytes{instance="studiopc",volume="C:"} / windows_logical_disk_size_bytes{instance="studiopc",volume="C:"})'), 'StudioPC Systemlaufwerk')
     publish('sensor.frawo_monitoring_aktualisiert', time.strftime('%Y-%m-%d %H:%M:%S %z'), {'friendly_name':'Monitoring zuletzt aktualisiert','icon':'mdi:clock-check-outline','source':'Prometheus CT155'})
 
 def main():
