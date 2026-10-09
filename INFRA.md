@@ -61,7 +61,7 @@
    - **Service:** `/etc/systemd/system/frawo-ha-prometheus-publisher.service` auf CT160 (`10.1.0.160`), dauerhaft aktiv, Zyklus 60 Sekunden.
    - **Skript:** `/usr/local/bin/frawo-ha-prometheus-publisher.py` (Repo: `scripts/ha_prometheus_publisher.py`).
    - **Quelle:** Prometheus CT155 (`10.1.0.35`), read-only über SSH-Abfrage; Ziel Home Assistant (`10.1.0.40:8123`) über API.
-   - **Metriken:** Monitoring-Ziele, Erreichbarkeit, CPU/RAM/Root-Speicher von Anker, ProDesk, OptiPlex sowie CPU/RAM des StudioPC. GPU/VRAM ist erst nach einer belastbaren NVIDIA-Exporterquelle ergänzbar und wird nicht geraten.
+   - **Metriken:** Monitoring-Ziele, Erreichbarkeit, CPU/RAM/Root-Speicher von Anker, ProDesk, OptiPlex sowie CPU/RAM des StudioPC. Zusätzlich werden der globale Drive-Fingerprintlauf und der Radio-Import mit Prozessstatus, PID, Datensatzanzahl und letztem Logauszug eingeblendet. GPU/VRAM ist erst nach einer belastbaren NVIDIA-Exporterquelle ergänzbar und wird nicht geraten.
    - **Dashboard:** `https://home.frawo.tech/betrieb-monitoring` — Live-Karten im Bereich „Betrieb & Monitoring".
 5. **Paperless Ingest & Triage:**
    - **Service & Timer:** `frawo-gdrive-inbox-pull.timer` auf `anker-pve` (alle 10 Minuten)

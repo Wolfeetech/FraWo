@@ -36,10 +36,30 @@ def publish(entity, state, attrs):
     with urllib.request.urlopen(req, timeout=10) as r:
         if r.status not in (200,201): raise RuntimeError(f'{entity}: HTTP {r.status}')
 
+def remote(host, command):
+    try:
+        return subprocess.check_output(["ssh","-o","BatchMode=yes","-o","ConnectTimeout=5","root@"+host,command], text=True, timeout=15, stderr=subprocess.DEVNULL).strip()
+    except Exception:
+        return ""
+
+def task_state(entity, name, state, attrs):
+    attrs=dict(attrs); attrs.update({'friendly_name':name,'icon':'mdi:progress-clock','source':'FraWo Betriebsmonitoring'})
+    publish(entity,state,attrs)
+
 def metric(entity, value, name, unit='%', icon='mdi:chart-line'):
     publish(entity, 'unavailable' if value is None else round(value,2), {'friendly_name':name,'unit_of_measurement':unit,'icon':icon,'source':'Prometheus CT155'})
 
-def run_once():
+def run_tasks():
+    drive_proc=remote('10.1.0.92', "pgrep -af 'fingerprint_reconcile.py.*--source /mnt/google-drive' | grep -v 'pgrep' || true")
+    drive_lines=remote('10.1.0.92', "wc -l < /anker-backup/drive-inventar-20261009/fingerprints-global/all-drive-audio.jsonl 2>/dev/null || true")
+    drive_tail=remote('10.1.0.92', "tail -n 1 /anker-backup/drive-inventar-20261009/fingerprints-global/all-drive-audio.log 2>/dev/null || true")
+    task_state('sensor.frawo_drive_fingerprint_status','Drive-Audio-Fingerprint','läuft' if drive_proc else 'nicht aktiv', {'pid':drive_proc.split()[0] if drive_proc else '', 'datensätze':drive_lines or '0','letzter_logeintrag':drive_tail})
+    radio_proc=remote('10.1.0.128', "pgrep -af 'radio_neuzugang|rclone copy.*neuzugang-music-clean' | grep -v 'pgrep' || true")
+    radio_tail=remote('10.1.0.128', "tail -n 1 /root/radio_neuzugang_music_clean_ausfuehren.log 2>/dev/null || true")
+    radio_log=remote('10.1.0.128', "tail -n 20 /root/radio_neuzugang_music_clean_ausfuehren.log 2>/dev/null || true")
+    task_state('sensor.frawo_radio_import_status','Radio-Import','läuft' if radio_proc else 'nicht aktiv', {'pid':radio_proc.split()[0] if radio_proc else '', 'letzter_logeintrag':radio_tail,'log_auszug':radio_log[-1000:]})
+
+
     total=scalar('count(up{job=~"node_exporter|windows_studiopc"})',0)
     up=scalar('count(up{job=~"node_exporter|windows_studiopc"} == 1)',0)
     publish('sensor.frawo_monitoring_ziele_gesamt', int(total), {'friendly_name':'Monitoring-Ziele gesamt','icon':'mdi:monitor-dashboard','source':'Prometheus CT155'})
@@ -62,7 +82,7 @@ def run_once():
 def main():
     load_env()
     while True:
-        try: run_once()
+        try: run_tasks()
         except Exception as e: print('publisher error:',type(e).__name__,flush=True)
         time.sleep(60)
 if __name__=='__main__': main()
