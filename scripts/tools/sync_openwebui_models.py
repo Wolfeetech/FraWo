@@ -12,6 +12,7 @@ Optimierungen:
 """
 
 import json
+import os
 import sqlite3
 import sys
 import time
@@ -22,40 +23,10 @@ USER_ID = "1bfd75ae-10c8-4d69-9f70-2c29281fa22a"  # Wolf (admin)
 MODELS = [
     # --- Kuratierte FraWo Personas & Fach-Assistenten ---
     {
-        "id": "frawo-task-odoo",
-        "user_id": USER_ID,
-        "base_model_id": "frawo-mitarbeiter:latest",
-        "name": "📋 FraWo Task & Odoo Manager (GPU)",
-        "params": json.dumps({
-            "function_calling": "none",
-            "temperature": 0.6,
-            "system": (
-                "Du bist der FraWo Task & Odoo Manager.\n\n"
-                "Rolle & Verhalten:\n"
-                "- Du unterstützt Wolf bei der Organisation von Projekten, Odoo-Tickets und Handlungsschritten.\n"
-                "- Du antwortest IMMER zu 100% auf Deutsch, präzise und professionell.\n"
-                "- Gib NIEMALS Dummy-Tool-Calls oder JSON-Funktionsaufrufe aus.\n"
-                "- Halte dich an das FraWo Agenten-Protokoll: Aufgaben gliedern, Definition of Done (DoD) klar formulieren, Prioritäten setzen.\n"
-                "- Schlage pro Antwort 1 bis 3 konkrete, sofort umsetzbare nächste Schritte vor."
-            )
-        }),
-        "meta": json.dumps({
-            "description": "Odoo-Aufgaben, Projekt-Etappenziele, Definition of Done, Deadlines und strukturierte Aktionspläne.",
-            "capabilities": {"builtin_tools": False, "vision": False, "citations": True},
-            "suggestion_prompts": [
-                {"content": "Erstelle ein Odoo-Ticket für ein neues Kundenprojekt mit DoD und Schritten"},
-                {"content": "Wie strukturieren wir die anstehenden Event-Technik Aufgaben für dieses Wochenende?"},
-                {"content": "Formuliere eine klare Aufgabenbeschreibung für die nächste Radio-Sendeplanung"}
-            ],
-            "tags": [{"name": "FraWo"}, {"name": "Produktivität"}]
-        }),
-        "is_active": 1,
-    },
-    {
         "id": "frawo-code-dev",
         "user_id": USER_ID,
         "base_model_id": "qwen2.5-coder:7b",
-        "name": "💻 FraWo Code & IT-Architekt (GPU)",
+        "name": "💻 IT & Code · Programmieren, Linux, Netzwerk, Bugs",
         "params": json.dumps({
             "function_calling": "none",
             "temperature": 0.6,
@@ -82,10 +53,69 @@ MODELS = [
         "is_active": 1,
     },
     {
+        "id": "frawo-task-odoo",
+        "user_id": USER_ID,
+        "base_model_id": "frawo-mitarbeiter:latest",
+        "name": "📋 Task & Odoo · Aufgaben planen, Tickets, Deadlines",
+        "params": json.dumps({
+            "function_calling": "none",
+            "temperature": 0.6,
+            "system": (
+                "Du bist der FraWo Task & Odoo Manager.\n\n"
+                "Rolle & Verhalten:\n"
+                "- Du unterstützt Wolf bei der Organisation von Projekten, Odoo-Tickets und Handlungsschritten.\n"
+                "- Du antwortest IMMER zu 100% auf Deutsch, präzise und professionell.\n"
+                "- Gib NIEMALS Dummy-Tool-Calls oder JSON-Funktionsaufrufe aus.\n"
+                "- Halte dich an das FraWo Agenten-Protokoll: Aufgaben gliedern, Definition of Done (DoD) klar formulieren, Prioritäten setzen.\n"
+                "- Schlage pro Antwort 1 bis 3 konkrete, sofort umsetzbare nächste Schritte vor."
+            )
+        }),
+        "meta": json.dumps({
+            "description": "Odoo-Aufgaben, Projekt-Etappenziele, Definition of Done, Deadlines und strukturierte Aktionspläne.",
+            "capabilities": {"builtin_tools": False, "vision": False, "citations": True},
+            "suggestion_prompts": [
+                {"content": "Erstelle ein Odoo-Ticket für ein neues Kundenprojekt mit DoD und Schritten"},
+                {"content": "Wie strukturieren wir die anstehenden Event-Technik Aufgaben für dieses Wochenende?"},
+                {"content": "Formuliere eine klare Aufgabenbeschreibung für die nächste Radio-Sendeplanung"}
+            ],
+            "tags": [{"name": "FraWo"}, {"name": "Produktivität"}]
+        }),
+        "is_active": 1,
+    },
+    {
+        "id": "frawo-denker-r1",
+        "user_id": USER_ID,
+        "base_model_id": "deepseek-r1:8b",
+        "name": "🧠 DeepSeek R1 · Logik, schwierige Analysen & Strategie",
+        "params": json.dumps({
+            "function_calling": "none",
+            "temperature": 0.6,
+            "system": (
+                "Du bist das analytische Denkmodell von FraWo (DeepSeek R1).\n\n"
+                "Rolle & Verhalten:\n"
+                "- Nutze tiefgehende logische Schlussfolgerungen, prüfe Randbedingungen, hinterfrage Annahmen und liefere gründlich durchdachte, fundierte Lösungen für schwierige IT-, System- und Business-Herausforderungen.\n"
+                "- Antworte auf Deutsch.\n"
+                "- Gib keine Dummy-Tool-Calls oder JSON-Befehle aus.\n"
+                "- Fasse deine finale Empfehlung am Ende immer klar und handlungsorientiert zusammen."
+            )
+        }),
+        "meta": json.dumps({
+            "description": "Tiefes Denken & Reasoning: Komplexe Analysen, logische Probleme, schwierige Architekturentscheidungen und strategische Abwägungen.",
+            "capabilities": {"builtin_tools": False, "vision": False, "citations": True},
+            "suggestion_prompts": [
+                {"content": "Analysiere die Vor- und Nachteile von zwei verschiedenen Backup-Strategien für FraWo"},
+                {"content": "Finde den logischen Denkfehler in folgendem Systemablauf"},
+                {"content": "Erstelle eine strukturierte Risikoanalyse für den Ausfall einzelner Proxmox-Container"}
+            ],
+            "tags": [{"name": "FraWo"}, {"name": "Reasoning"}]
+        }),
+        "is_active": 1,
+    },
+    {
         "id": "frawo-fast-247",
         "user_id": USER_ID,
         "base_model_id": "frawo-mitarbeiter-fast:latest",
-        "name": "⚡ FraWo 24/7 Schnell-Assistent (OptiPlex)",
+        "name": "⚡ Schnell-Assistent · Kurze Memos, E-Mails, Blitz-Ideen (24/7)",
         "params": json.dumps({
             "function_calling": "none",
             "temperature": 0.6,
@@ -111,39 +141,10 @@ MODELS = [
         "is_active": 1,
     },
     {
-        "id": "frawo-denker-r1",
-        "user_id": USER_ID,
-        "base_model_id": "deepseek-r1:8b",
-        "name": "🧠 DeepSeek R1 Denk- & Analyse-Modell (GPU)",
-        "params": json.dumps({
-            "function_calling": "none",
-            "temperature": 0.6,
-            "system": (
-                "Du bist das analytische Denkmodell von FraWo.\n\n"
-                "Rolle & Verhalten:\n"
-                "- Nutze tiefgehende logische Schlussfolgerungen, prüfe Randbedingungen, hinterfrage Annahmen und liefere gründlich durchdachte, fundierte Lösungen für schwierige IT-, System- und Business-Herausforderungen.\n"
-                "- Antworte auf Deutsch.\n"
-                "- Gib keine Dummy-Tool-Calls oder JSON-Befehle aus.\n"
-                "- Fasse deine finale Empfehlung am Ende immer klar und handlungsorientiert zusammen."
-            )
-        }),
-        "meta": json.dumps({
-            "description": "Tiefes Denken & Reasoning: Komplexe Analysen, logische Probleme, schwierige Architekturentscheidungen und strategische Abwägungen.",
-            "capabilities": {"builtin_tools": False, "vision": False, "citations": True},
-            "suggestion_prompts": [
-                {"content": "Analysiere die Vor- und Nachteile von zwei verschiedenen Backup-Strategien für FraWo"},
-                {"content": "Finde den logischen Denkfehler in folgendem Systemablauf"},
-                {"content": "Erstelle eine strukturierte Risikoanalyse für den Ausfall einzelner Proxmox-Container"}
-            ],
-            "tags": [{"name": "FraWo"}, {"name": "Reasoning"}]
-        }),
-        "is_active": 1,
-    },
-    {
         "id": "frawo-funk-content",
         "user_id": USER_ID,
         "base_model_id": "frawo-mitarbeiter:latest",
-        "name": "🎙️ FraWo Funk & Content-Kurator (GPU)",
+        "name": "🎙️ FraWo Funk · Webradio, Musikstile, Moderation, Playlisten",
         "params": json.dumps({
             "function_calling": "none",
             "temperature": 0.7,
@@ -168,7 +169,34 @@ MODELS = [
         }),
         "is_active": 1,
     },
-    # --- Bereinigung: Technische / doppelte Modelle ausblenden ---
+    {
+        "id": "frawo-cloud-gpt4o",
+        "user_id": USER_ID,
+        "base_model_id": "gpt-4o",
+        "name": "☁️ Cloud-Intelligenz · Höchste Genauigkeit & anspruchsvolle Fragen (GPT-4o)",
+        "params": json.dumps({
+            "temperature": 0.5,
+            "system": (
+                "Du bist die FraWo Cloud-Intelligenz (OpenAI GPT-4o).\n\n"
+                "Rolle & Einsatzbereich:\n"
+                "- Wolf nutzt dich für besonders anspruchsvolle, wichtige Fragen, rechtliche und steuerliche Recherchen, komplexe Planungen und Aufgaben, die maximale Präzision, tiefes Weltwissen und exaktes Urteilsvermögen erfordern.\n"
+                "- Du antwortest stets fundiert, professionell, strukturiert und auf Deutsch.\n"
+                "- Gib klare, praxiserprobte Handlungsempfehlungen mit nachvollziehbarer Begründung."
+            )
+        }),
+        "meta": json.dumps({
+            "description": "Höchste Genauigkeit & Weltwissen (OpenAI GPT-4o): Für anspruchsvolle Fragen, juristische/steuerliche Recherchen, komplexe Strategien und maximale Präzision.",
+            "capabilities": {"builtin_tools": False, "vision": True, "citations": True},
+            "suggestion_prompts": [
+                {"content": "Recherchiere die steuerlichen und rechtlichen Grundlagen für Kleinunternehmer bei GbR-Gründung"},
+                {"content": "Prüfe folgenden Vertragstext auf Fallstricke und unklare Klauseln"},
+                {"content": "Entwirf eine fundierte strategische Planung für die Skalierung unserer Eventtechnik"}
+            ],
+            "tags": [{"name": "FraWo"}, {"name": "Cloud"}, {"name": "GPT-4o"}]
+        }),
+        "is_active": 1,
+    },
+    # --- Technische / rohe Modelle ausblenden (Übersichtlichkeit) ---
     {
         "id": "nomic-embed-text:latest",
         "user_id": USER_ID,
@@ -187,18 +215,14 @@ MODELS = [
         "meta": "{}",
         "is_active": 0,
     },
-    # --- Basismodelle mit sauberen Klarnamen versehen ---
     {
         "id": "frawo-mitarbeiter:latest",
         "user_id": USER_ID,
         "base_model_id": None,
         "name": "⚙️ FraWo Basis (Qwen 7B Mitarbeiter)",
         "params": "{}",
-        "meta": json.dumps({
-            "description": "Basismodell für FraWo mit allgemeinem Kontext (7B Qwen 2.5).",
-            "capabilities": {"builtin_tools": False, "vision": False, "citations": True},
-        }),
-        "is_active": 1,
+        "meta": "{}",
+        "is_active": 0,
     },
     {
         "id": "frawo-mitarbeiter-fast:latest",
@@ -206,11 +230,8 @@ MODELS = [
         "base_model_id": None,
         "name": "⚙️ FraWo Basis Fast (Qwen 3B Mitarbeiter)",
         "params": "{}",
-        "meta": json.dumps({
-            "description": "Leichtgewichtiges Basismodell für schnelle Textaufgaben (3B Qwen 2.5).",
-            "capabilities": {"builtin_tools": False, "vision": False, "citations": True},
-        }),
-        "is_active": 1,
+        "meta": "{}",
+        "is_active": 0,
     },
     {
         "id": "qwen2.5-coder:7b",
@@ -218,11 +239,8 @@ MODELS = [
         "base_model_id": None,
         "name": "⚙️ Qwen 2.5 Coder 7B (Rohmodell)",
         "params": "{}",
-        "meta": json.dumps({
-            "description": "Standard Code-Modell ohne spezielle FraWo-Instruktionen.",
-            "capabilities": {"builtin_tools": False, "vision": False, "citations": True},
-        }),
-        "is_active": 1,
+        "meta": "{}",
+        "is_active": 0,
     },
     {
         "id": "qwen2.5:7b",
@@ -230,11 +248,8 @@ MODELS = [
         "base_model_id": None,
         "name": "⚙️ Qwen 2.5 7B (Allgemein)",
         "params": "{}",
-        "meta": json.dumps({
-            "description": "Allgemeines 7B Sprachmodell von Alibaba Cloud.",
-            "capabilities": {"builtin_tools": False, "vision": False, "citations": True},
-        }),
-        "is_active": 1,
+        "meta": "{}",
+        "is_active": 0,
     }
 ]
 
@@ -270,22 +285,19 @@ def sync(db_path=DB_PATH):
             ),
         )
 
-    pinned_str = "frawo-task-odoo,frawo-fast-247,frawo-code-dev,frawo-denker-r1,frawo-funk-content"
+    pinned_str = "frawo-code-dev,frawo-task-odoo,frawo-denker-r1,frawo-cloud-gpt4o,frawo-fast-247,frawo-funk-content"
     order_list = [
-        "frawo-task-odoo",
-        "frawo-fast-247",
         "frawo-code-dev",
+        "frawo-task-odoo",
         "frawo-denker-r1",
-        "frawo-funk-content",
-        "frawo-mitarbeiter:latest",
-        "frawo-mitarbeiter-fast:latest",
-        "qwen2.5-coder:7b",
-        "qwen2.5:7b"
+        "frawo-cloud-gpt4o",
+        "frawo-fast-247",
+        "frawo-funk-content"
     ]
 
     cur.execute(
         "UPDATE config SET value = ? WHERE key = 'ui.default_models'",
-        (json.dumps("frawo-task-odoo"),)
+        (json.dumps("frawo-code-dev"),)
     )
     cur.execute(
         "UPDATE config SET value = ? WHERE key = 'ui.default_pinned_models'",
@@ -306,6 +318,26 @@ def sync(db_path=DB_PATH):
         "UPDATE config SET value = ? WHERE key = 'ollama.api_configs'",
         (json.dumps(ollama_api_configs),)
     )
+
+    # OpenAI Anbindung für anspruchsvolle Fragen
+    openai_key = os.environ.get("OPENAI_API_KEY", "").strip()
+    if openai_key:
+        cur.execute(
+            "UPDATE config SET value = ? WHERE key = 'openai.enable'",
+            (json.dumps(True),)
+        )
+        cur.execute(
+            "UPDATE config SET value = ? WHERE key = 'openai.api_keys'",
+            (json.dumps([openai_key]),)
+        )
+        cur.execute(
+            "UPDATE config SET value = ? WHERE key = 'openai.api_base_urls'",
+            (json.dumps(["https://api.openai.com/v1"]),)
+        )
+        cur.execute(
+            "UPDATE config SET value = ? WHERE key = 'openai.api_configs'",
+            (json.dumps({"0": {"enable": True}}),)
+        )
 
     # Web Search & Locale
     cur.execute(
