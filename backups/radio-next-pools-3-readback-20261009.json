@@ -1,0 +1,65 @@
+{
+  "913": {
+    "name": "Afterwork Club — Warm Up",
+    "enabled": false,
+    "order": "shuffle",
+    "songs": 30,
+    "hours": 2.91,
+    "queue_count": 30,
+    "schedule_items": []
+  },
+  "914": {
+    "name": "Saturday Soul — Salsoul",
+    "enabled": false,
+    "order": "shuffle",
+    "songs": 35,
+    "hours": 4.07,
+    "queue_count": 35,
+    "schedule_items": []
+  },
+  "915": {
+    "name": "Sunday Deep — Deep Focus",
+    "enabled": false,
+    "order": "shuffle",
+    "songs": 25,
+    "hours": 2.41,
+    "queue_count": 25,
+    "schedule_items": []
+  },
+  "916": {
+    "name": "Night Drive — Midnight Motion",
+    "enabled": false,
+    "order": "shuffle",
+    "songs": 35,
+    "hours": 3.36,
+    "queue_count": 35,
+    "schedule_items": []
+  },
+  "917": {
+    "name": "Friday Flow — Indie Pulse",
+    "enabled": false,
+    "order": "shuffle",
+    "songs": 35,
+    "hours": 3.6,
+    "queue_count": 35,
+    "schedule_items": []
+  },
+  "918": {
+    "name": "Thursday Heat — Club Heat",
+    "enabled": false,
+    "order": "shuffle",
+    "songs": 35,
+    "hours": 3.28,
+    "queue_count": 35,
+    "schedule_items": []
+  },
+  "919": {
+    "name": "Sunday Sunset — Sunday Glow",
+    "enabled": false,
+    "order": "shuffle",
+    "songs": 35,
+    "hours": 4.07,
+    "queue_count": 35,
+    "schedule_items": []
+  }
+}

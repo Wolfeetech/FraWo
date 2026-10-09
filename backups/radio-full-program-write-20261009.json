@@ -1,0 +1,278 @@
+[
+  {
+    "id": 905,
+    "name": "Afro Noon — Global Pulse",
+    "http": 200,
+    "error": null
+  },
+  {
+    "id": 874,
+    "name": "Afro-Noon",
+    "http": 200,
+    "error": null
+  },
+  {
+    "id": 890,
+    "name": "Afro-Noon Friday",
+    "http": 200,
+    "error": null
+  },
+  {
+    "id": 886,
+    "name": "Afro-Noon Thursday",
+    "http": 200,
+    "error": null
+  },
+  {
+    "id": 883,
+    "name": "Afterwork Club",
+    "http": 200,
+    "error": null
+  },
+  {
+    "id": 913,
+    "name": "Afterwork Club — Warm Up",
+    "http": 200,
+    "error": null
+  },
+  {
+    "id": 882,
+    "name": "City Lunch",
+    "http": 200,
+    "error": null
+  },
+  {
+    "id": 907,
+    "name": "City Lunch — Soul & Groove",
+    "http": 200,
+    "error": null
+  },
+  {
+    "id": 880,
+    "name": "Deep Night",
+    "http": 200,
+    "error": null
+  },
+  {
+    "id": 908,
+    "name": "Deep Night — Hypnotic Drift",
+    "http": 200,
+    "error": null
+  },
+  {
+    "id": 901,
+    "name": "FraWo Selects",
+    "http": 200,
+    "error": null
+  },
+  {
+    "id": 904,
+    "name": "Friday Disco Drive",
+    "http": 200,
+    "error": null
+  },
+  {
+    "id": 889,
+    "name": "Friday Flow",
+    "http": 200,
+    "error": null
+  },
+  {
+    "id": 917,
+    "name": "Friday Flow — Indie Pulse",
+    "http": 200,
+    "error": null
+  },
+  {
+    "id": 902,
+    "name": "Friday Peak — House & Tech House",
+    "http": 200,
+    "error": null
+  },
+  {
+    "id": 903,
+    "name": "Friday Techno Drive",
+    "http": 200,
+    "error": null
+  },
+  {
+    "id": 879,
+    "name": "Golden Hour",
+    "http": 200,
+    "error": null
+  },
+  {
+    "id": 912,
+    "name": "Golden Hour — Velvet Sunset",
+    "http": 200,
+    "error": null
+  },
+  {
+    "id": 888,
+    "name": "Late Night Society",
+    "http": 200,
+    "error": null
+  },
+  {
+    "id": 881,
+    "name": "Midweek Rise",
+    "http": 200,
+    "error": null
+  },
+  {
+    "id": 876,
+    "name": "Moonlight Motion",
+    "http": 200,
+    "error": null
+  },
+  {
+    "id": 877,
+    "name": "Morning Bloom",
+    "http": 200,
+    "error": null
+  },
+  {
+    "id": 906,
+    "name": "Morning Bloom — Bright Flow",
+    "http": 200,
+    "error": null
+  },
+  {
+    "id": 873,
+    "name": "Morning Flow",
+    "http": 200,
+    "error": null
+  },
+  {
+    "id": 872,
+    "name": "Night Drive",
+    "http": 200,
+    "error": null
+  },
+  {
+    "id": 916,
+    "name": "Night Drive — Midnight Motion",
+    "http": 200,
+    "error": null
+  },
+  {
+    "id": 884,
+    "name": "Night Shift",
+    "http": 200,
+    "error": null
+  },
+  {
+    "id": 895,
+    "name": "Saturday Club",
+    "http": 200,
+    "error": null
+  },
+  {
+    "id": 894,
+    "name": "Saturday Soul",
+    "http": 200,
+    "error": null
+  },
+  {
+    "id": 914,
+    "name": "Saturday Soul — Salsoul",
+    "http": 200,
+    "error": null
+  },
+  {
+    "id": 896,
+    "name": "Sunday Deep",
+    "http": 200,
+    "error": null
+  },
+  {
+    "id": 915,
+    "name": "Sunday Deep — Deep Focus",
+    "http": 200,
+    "error": null
+  },
+  {
+    "id": 898,
+    "name": "Sunday Soul",
+    "http": 200,
+    "error": null
+  },
+  {
+    "id": 897,
+    "name": "Sunday Sunrise",
+    "http": 200,
+    "error": null
+  },
+  {
+    "id": 899,
+    "name": "Sunday Sunset",
+    "http": 200,
+    "error": null
+  },
+  {
+    "id": 919,
+    "name": "Sunday Sunset — Sunday Glow",
+    "http": 200,
+    "error": null
+  },
+  {
+    "id": 885,
+    "name": "Sunrise Ritual",
+    "http": 200,
+    "error": null
+  },
+  {
+    "id": 909,
+    "name": "Sunrise Ritual — Calm Motion",
+    "http": 200,
+    "error": null
+  },
+  {
+    "id": 875,
+    "name": "Sunset Pulse",
+    "http": 200,
+    "error": null
+  },
+  {
+    "id": 887,
+    "name": "Thursday Heat",
+    "http": 200,
+    "error": null
+  },
+  {
+    "id": 918,
+    "name": "Thursday Heat — Club Heat",
+    "http": 200,
+    "error": null
+  },
+  {
+    "id": 878,
+    "name": "Tropical Noon",
+    "http": 200,
+    "error": null
+  },
+  {
+    "id": 911,
+    "name": "Tropical Noon — Sun & Soul",
+    "http": 200,
+    "error": null
+  },
+  {
+    "id": 893,
+    "name": "Weekend Rise",
+    "http": 200,
+    "error": null
+  },
+  {
+    "id": 910,
+    "name": "Weekend Rise — Daylight Groove",
+    "http": 200,
+    "error": null
+  },
+  {
+    "id": 869,
+    "name": "⭐ Best of the Week",
+    "http": 200,
+    "error": null
+  }
+]

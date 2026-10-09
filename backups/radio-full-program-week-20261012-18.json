@@ -1,0 +1,578 @@
+{
+  "902": [
+    {
+      "start_time": 1700,
+      "end_time": 2000,
+      "start_date": "2026-10-16",
+      "end_date": "2026-10-16",
+      "days": [
+        5
+      ],
+      "loop_once": false
+    }
+  ],
+  "903": [
+    {
+      "start_time": 2100,
+      "end_time": 0,
+      "start_date": "2026-10-14",
+      "end_date": "2026-10-14",
+      "days": [
+        3
+      ],
+      "loop_once": false
+    },
+    {
+      "start_time": 2000,
+      "end_time": 2200,
+      "start_date": "2026-10-16",
+      "end_date": "2026-10-16",
+      "days": [
+        5
+      ],
+      "loop_once": false
+    },
+    {
+      "start_time": 2200,
+      "end_time": 200,
+      "start_date": "2026-10-17",
+      "end_date": "2026-10-17",
+      "days": [
+        6
+      ],
+      "loop_once": false
+    }
+  ],
+  "904": [
+    {
+      "start_time": 2200,
+      "end_time": 200,
+      "start_date": "2026-10-16",
+      "end_date": "2026-10-16",
+      "days": [
+        5
+      ],
+      "loop_once": false
+    },
+    {
+      "start_time": 1800,
+      "end_time": 2200,
+      "start_date": "2026-10-17",
+      "end_date": "2026-10-17",
+      "days": [
+        6
+      ],
+      "loop_once": false
+    }
+  ],
+  "905": [
+    {
+      "start_time": 1500,
+      "end_time": 1800,
+      "start_date": "2026-10-12",
+      "end_date": "2026-10-12",
+      "days": [
+        1
+      ],
+      "loop_once": false
+    },
+    {
+      "start_time": 1500,
+      "end_time": 1800,
+      "start_date": "2026-10-13",
+      "end_date": "2026-10-13",
+      "days": [
+        2
+      ],
+      "loop_once": false
+    },
+    {
+      "start_time": 1200,
+      "end_time": 1500,
+      "start_date": "2026-10-15",
+      "end_date": "2026-10-15",
+      "days": [
+        4
+      ],
+      "loop_once": false
+    },
+    {
+      "start_time": 1200,
+      "end_time": 1500,
+      "start_date": "2026-10-16",
+      "end_date": "2026-10-16",
+      "days": [
+        5
+      ],
+      "loop_once": false
+    }
+  ],
+  "906": [
+    {
+      "start_time": 600,
+      "end_time": 900,
+      "start_date": "2026-10-12",
+      "end_date": "2026-10-12",
+      "days": [
+        1
+      ],
+      "loop_once": false
+    },
+    {
+      "start_time": 900,
+      "end_time": 1200,
+      "start_date": "2026-10-13",
+      "end_date": "2026-10-13",
+      "days": [
+        2
+      ],
+      "loop_once": false
+    },
+    {
+      "start_time": 600,
+      "end_time": 900,
+      "start_date": "2026-10-15",
+      "end_date": "2026-10-15",
+      "days": [
+        4
+      ],
+      "loop_once": false
+    }
+  ],
+  "907": [
+    {
+      "start_time": 1200,
+      "end_time": 1500,
+      "start_date": "2026-10-12",
+      "end_date": "2026-10-12",
+      "days": [
+        1
+      ],
+      "loop_once": false
+    },
+    {
+      "start_time": 1200,
+      "end_time": 1500,
+      "start_date": "2026-10-14",
+      "end_date": "2026-10-14",
+      "days": [
+        3
+      ],
+      "loop_once": false
+    },
+    {
+      "start_time": 1500,
+      "end_time": 1800,
+      "start_date": "2026-10-15",
+      "end_date": "2026-10-15",
+      "days": [
+        4
+      ],
+      "loop_once": false
+    },
+    {
+      "start_time": 1500,
+      "end_time": 1700,
+      "start_date": "2026-10-16",
+      "end_date": "2026-10-16",
+      "days": [
+        5
+      ],
+      "loop_once": false
+    },
+    {
+      "start_time": 1100,
+      "end_time": 1400,
+      "start_date": "2026-10-18",
+      "end_date": "2026-10-18",
+      "days": [
+        7
+      ],
+      "loop_once": false
+    }
+  ],
+  "908": [
+    {
+      "start_time": 300,
+      "end_time": 600,
+      "start_date": "2026-10-12",
+      "end_date": "2026-10-12",
+      "days": [
+        1
+      ],
+      "loop_once": false
+    },
+    {
+      "start_time": 300,
+      "end_time": 600,
+      "start_date": "2026-10-13",
+      "end_date": "2026-10-13",
+      "days": [
+        2
+      ],
+      "loop_once": false
+    },
+    {
+      "start_time": 300,
+      "end_time": 600,
+      "start_date": "2026-10-14",
+      "end_date": "2026-10-14",
+      "days": [
+        3
+      ],
+      "loop_once": false
+    },
+    {
+      "start_time": 0,
+      "end_time": 300,
+      "start_date": "2026-10-16",
+      "end_date": "2026-10-16",
+      "days": [
+        5
+      ],
+      "loop_once": false
+    },
+    {
+      "start_time": 500,
+      "end_time": 800,
+      "start_date": "2026-10-18",
+      "end_date": "2026-10-18",
+      "days": [
+        7
+      ],
+      "loop_once": false
+    }
+  ],
+  "909": [
+    {
+      "start_time": 900,
+      "end_time": 1200,
+      "start_date": "2026-10-12",
+      "end_date": "2026-10-12",
+      "days": [
+        1
+      ],
+      "loop_once": false
+    },
+    {
+      "start_time": 600,
+      "end_time": 900,
+      "start_date": "2026-10-14",
+      "end_date": "2026-10-14",
+      "days": [
+        3
+      ],
+      "loop_once": false
+    },
+    {
+      "start_time": 900,
+      "end_time": 1200,
+      "start_date": "2026-10-15",
+      "end_date": "2026-10-15",
+      "days": [
+        4
+      ],
+      "loop_once": false
+    },
+    {
+      "start_time": 800,
+      "end_time": 1100,
+      "start_date": "2026-10-18",
+      "end_date": "2026-10-18",
+      "days": [
+        7
+      ],
+      "loop_once": false
+    }
+  ],
+  "910": [
+    {
+      "start_time": 600,
+      "end_time": 900,
+      "start_date": "2026-10-13",
+      "end_date": "2026-10-13",
+      "days": [
+        2
+      ],
+      "loop_once": false
+    },
+    {
+      "start_time": 900,
+      "end_time": 1200,
+      "start_date": "2026-10-14",
+      "end_date": "2026-10-14",
+      "days": [
+        3
+      ],
+      "loop_once": false
+    },
+    {
+      "start_time": 900,
+      "end_time": 1200,
+      "start_date": "2026-10-16",
+      "end_date": "2026-10-16",
+      "days": [
+        5
+      ],
+      "loop_once": false
+    },
+    {
+      "start_time": 600,
+      "end_time": 1000,
+      "start_date": "2026-10-17",
+      "end_date": "2026-10-17",
+      "days": [
+        6
+      ],
+      "loop_once": false
+    }
+  ],
+  "911": [
+    {
+      "start_time": 1200,
+      "end_time": 1500,
+      "start_date": "2026-10-13",
+      "end_date": "2026-10-13",
+      "days": [
+        2
+      ],
+      "loop_once": false
+    },
+    {
+      "start_time": 1500,
+      "end_time": 1800,
+      "start_date": "2026-10-14",
+      "end_date": "2026-10-14",
+      "days": [
+        3
+      ],
+      "loop_once": false
+    },
+    {
+      "start_time": 1400,
+      "end_time": 1800,
+      "start_date": "2026-10-17",
+      "end_date": "2026-10-17",
+      "days": [
+        6
+      ],
+      "loop_once": false
+    }
+  ],
+  "912": [
+    {
+      "start_time": 1800,
+      "end_time": 2100,
+      "start_date": "2026-10-13",
+      "end_date": "2026-10-13",
+      "days": [
+        2
+      ],
+      "loop_once": false
+    },
+    {
+      "start_time": 2100,
+      "end_time": 0,
+      "start_date": "2026-10-15",
+      "end_date": "2026-10-15",
+      "days": [
+        4
+      ],
+      "loop_once": false
+    },
+    {
+      "start_time": 1700,
+      "end_time": 2000,
+      "start_date": "2026-10-18",
+      "end_date": "2026-10-18",
+      "days": [
+        7
+      ],
+      "loop_once": false
+    }
+  ],
+  "913": [
+    {
+      "start_time": 1800,
+      "end_time": 2100,
+      "start_date": "2026-10-12",
+      "end_date": "2026-10-12",
+      "days": [
+        1
+      ],
+      "loop_once": false
+    },
+    {
+      "start_time": 1800,
+      "end_time": 2100,
+      "start_date": "2026-10-14",
+      "end_date": "2026-10-14",
+      "days": [
+        3
+      ],
+      "loop_once": false
+    },
+    {
+      "start_time": 2000,
+      "end_time": 2300,
+      "start_date": "2026-10-18",
+      "end_date": "2026-10-18",
+      "days": [
+        7
+      ],
+      "loop_once": false
+    }
+  ],
+  "914": [
+    {
+      "start_time": 1000,
+      "end_time": 1400,
+      "start_date": "2026-10-17",
+      "end_date": "2026-10-17",
+      "days": [
+        6
+      ],
+      "loop_once": false
+    }
+  ],
+  "915": [
+    {
+      "start_time": 0,
+      "end_time": 300,
+      "start_date": "2026-10-13",
+      "end_date": "2026-10-13",
+      "days": [
+        2
+      ],
+      "loop_once": false
+    },
+    {
+      "start_time": 0,
+      "end_time": 300,
+      "start_date": "2026-10-15",
+      "end_date": "2026-10-15",
+      "days": [
+        4
+      ],
+      "loop_once": false
+    },
+    {
+      "start_time": 200,
+      "end_time": 500,
+      "start_date": "2026-10-18",
+      "end_date": "2026-10-18",
+      "days": [
+        7
+      ],
+      "loop_once": false
+    }
+  ],
+  "916": [
+    {
+      "start_time": 0,
+      "end_time": 300,
+      "start_date": "2026-10-12",
+      "end_date": "2026-10-12",
+      "days": [
+        1
+      ],
+      "loop_once": false
+    },
+    {
+      "start_time": 0,
+      "end_time": 300,
+      "start_date": "2026-10-14",
+      "end_date": "2026-10-14",
+      "days": [
+        3
+      ],
+      "loop_once": false
+    },
+    {
+      "start_time": 300,
+      "end_time": 600,
+      "start_date": "2026-10-15",
+      "end_date": "2026-10-15",
+      "days": [
+        4
+      ],
+      "loop_once": false
+    },
+    {
+      "start_time": 300,
+      "end_time": 600,
+      "start_date": "2026-10-16",
+      "end_date": "2026-10-16",
+      "days": [
+        5
+      ],
+      "loop_once": false
+    },
+    {
+      "start_time": 2300,
+      "end_time": 200,
+      "start_date": "2026-10-18",
+      "end_date": "2026-10-18",
+      "days": [
+        7
+      ],
+      "loop_once": false
+    }
+  ],
+  "917": [
+    {
+      "start_time": 2100,
+      "end_time": 0,
+      "start_date": "2026-10-13",
+      "end_date": "2026-10-13",
+      "days": [
+        2
+      ],
+      "loop_once": false
+    },
+    {
+      "start_time": 600,
+      "end_time": 900,
+      "start_date": "2026-10-16",
+      "end_date": "2026-10-16",
+      "days": [
+        5
+      ],
+      "loop_once": false
+    }
+  ],
+  "918": [
+    {
+      "start_time": 2100,
+      "end_time": 0,
+      "start_date": "2026-10-12",
+      "end_date": "2026-10-12",
+      "days": [
+        1
+      ],
+      "loop_once": false
+    },
+    {
+      "start_time": 1800,
+      "end_time": 2100,
+      "start_date": "2026-10-15",
+      "end_date": "2026-10-15",
+      "days": [
+        4
+      ],
+      "loop_once": false
+    }
+  ],
+  "919": [
+    {
+      "start_time": 1400,
+      "end_time": 1700,
+      "start_date": "2026-10-18",
+      "end_date": "2026-10-18",
+      "days": [
+        7
+      ],
+      "loop_once": false
+    }
+  ]
+}
