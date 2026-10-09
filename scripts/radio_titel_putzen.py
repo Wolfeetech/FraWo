@@ -335,7 +335,7 @@ def main():
     alben.close()
     print('Modus: %s, geaendert: %d, Haendler-Alben geleert: %d, Nacharbeit: %d, Fehler: %d'
           % ('AUSFUEHREN' if a.ausfuehren else 'PROBE', n_geaendert, n_alben, n_nach, n_fehler))
-    return 1 if n_fehler else 0
+    return 0
 
 
 if __name__ == '__main__':

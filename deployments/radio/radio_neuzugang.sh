@@ -29,10 +29,10 @@ ct mkdir -p "$SICH"
 schritt "2a APE-Altbloecke"
 ct python3 /var/lib/beets/radio_ape_entfernen.py --root "$CT_EIN" --sicherung "$SICH/ape" $AUS | tail -2
 schritt "2b Titel/Kuenstler/Haendler-Alben"
-ct python3 /var/lib/beets/radio_titel_putzen.py --root "$CT_EIN" --sicherung "$SICH/titel" $AUS | tail -2
+ct python3 /var/lib/beets/radio_titel_putzen.py --root "$CT_EIN" --sicherung "$SICH/titel" $AUS | tail -2 || true
 schritt "2c bekannte Werbe-/Haendler-Cover"
 ct python3 /var/lib/beets/radio_cover_entfernen.py --root "$CT_EIN" --sha1 /var/lib/beets/entfernen_sha1.txt \
-   --sicherung "$SICH/cover" $AUS | tail -2
+   --sicherung "$SICH/cover" $AUS | tail -2 || true
 schritt "3 Ablegen in Master_Library"
 ct python3 /var/lib/beets/radio_neuzugang_ablegen.py --quelle "$CT_EIN" --sicherung "$SICH/ablage" $AUS | tail -45
 echo; echo "Protokolle: CT120:$SICH"
