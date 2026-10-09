@@ -31,10 +31,14 @@ def classify(row: dict) -> dict:
     low = f'{path}/{name}'.lower()
     e = ext(name)
     # Strong path/content families first.
-    if e in AUDIO or any(s in low for s in ('frawo_musik/', 'frawo_radio_library/', 'soulseek downloads/')):
-        kind, target, confidence = 'musik', 'radio-bibliothek', 'hoch'
-        reason = 'Audioformat oder Musikbestand'
-    elif any(s in low for s in ('frawo-prodesk-vms/', '/dump', 'dump/', 'backups/', 'pbs-backups/')) or e in {'.vma','.zst','.wh','.bak','.dump'}:
+    if e in AUDIO:
+        if 'frawo_musik/' in low:
+            kind, target, confidence = 'backup', 'backup-archiv', 'hoch'
+            reason = 'Bibliotheks-Sicherung (FraWo_Musik); verbleibt als Backup in Drive'
+        else:
+            kind, target, confidence = 'musik', 'radio-bibliothek', 'hoch'
+            reason = 'Audioformat für Radio-Bibliothek'
+    elif any(s in low for s in ('frawo-prodesk-vms/', '/dump', 'dump/', 'backups/', 'pbs-backups/', 'frawo_musik/')) or e in {'.vma','.zst','.wh','.bak','.dump'}:
         kind, target, confidence = 'backup', 'backup-archiv', 'hoch'
         reason = 'Sicherung/Dump; nicht als Arbeitsdatei einsortieren'
     elif e in PROGRAM or any(s in low for s in ('_programme-technik/', 'firmware', 'rekordbox', 'workinghours')):
