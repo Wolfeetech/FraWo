@@ -2080,6 +2080,12 @@ mcp_servers:
     command: /home/hermes/bin/odoo-mcp.sh
     connect_timeout: 120.0
     enabled: true
+  homeassistant:
+    url: http://10.1.0.40:8123/mcp_server/sse
+    headers:
+      Authorization: ${HOMEASSISTANT_TOKEN}
+    connect_timeout: 60.0
+    enabled: true
 
 # 07.10.2026 (#1966, Wolf): Codex -> Claude (Copilot) -> Sparbetrieb. Sparbetrieb = fester Text, fuehrt nie etwas aus.
 fallback_providers:
