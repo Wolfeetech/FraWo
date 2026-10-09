@@ -1,10 +1,12 @@
 # Kritische Review – FraWo-Funk-Vollprogramm-Pilot
 
-Stand: 2026-10-09, nach Schedule- und Live-Readback.
+Stand: 2026-10-10, nach Schedule-Korrektur, Cache-Bereinigung und erneutem Live-Readback.
 
 ## Freigabestatus
 
-**Der datierte Pilot 12.–18. Oktober 2026 ist technisch sauber. Der Fallback ab 19. Oktober ist noch nicht freigabefertig.**
+**Der datierte Pilot 12.–18. Oktober 2026 und der Fallback ab 19. Oktober sind technisch konfliktfrei.**
+
+Die redaktionelle Dauerfreigabe bleibt für die noch offenen BPM-/Energie-/Übergangs- und Wiederholungsabstände ein eigener nächster Prüfschritt. Der technische Scheduler-Blocker ist behoben.
 
 ## Was bestanden ist
 
@@ -17,19 +19,32 @@ Stand: 2026-10-09, nach Schedule- und Live-Readback.
 - Stream HTTP 206, `audio/mpeg`.
 - Restart der Radiostation nach der Schedule-Änderung erfolgreich; Live-Ausspielung kam sauber zurück.
 
-## Kritische Befunde
+## Kritische Befunde und Korrektur
 
-### 1. Fallback-Schedule stimmt noch nicht mit Playlist-Definitionen überein
+### 1. Scheduler-Cache und datierte Fallback-Einträge
 
-Die Playlist-API zeigt für mehrere Einträge bereits die korrigierten Zeitblöcke. Die öffentliche und interne Schedule-Ansicht liefert jedoch weiterhin alte, bereits ersetzte Vorkommen:
+Die erste Prüfung zeigte eine Abweichung zwischen Playlistdefinition und ausgelieferter Schedule-Ansicht. Ursache war eine Kombination aus alten generierten Schedule-Vorkommen und nicht geleertem AzuraCast-Scheduler-Cache.
 
-- `Night Drive — Midnight Motion` erscheint am 19.10. noch 00:00–02:00 zusätzlich zu `Night Drive`.
-- `FraWo Selects` überschneidet sich am 25.10. noch mit `Sunday Soul`.
-- `⭐ Best of the Week` überschneidet sich am 25.10. noch mit `Sunday Sunset`.
+Korrigiert wurden die datierten Sonntagseinträge für:
 
-Das ist kein redaktionelles Detail, sondern eine Abweichung zwischen gespeicherter Playlistdefinition und tatsächlich ausgelieferter Schedule-Ansicht. Der Fallback darf deshalb noch nicht als sauber abgenommen gelten. Vermutete Ursache: alte generierte Schedule-Vorkommen bzw. Scheduler-Cache werden durch die Playlist-Updates nicht vollständig entfernt.
+- `FraWo Selects` (ID 901)
+- `Sunday Soul` (ID 898)
+- `Sunday Sunset` (ID 899)
+- `⭐ Best of the Week` (ID 869)
 
-### 2. Pool-Kuration ist noch regelbasiert, nicht vollständig musikalisch geprüft
+Die ersten regulären Fallback-Vorkommen sind jetzt ab Dienstag, 20.10.2026, datiert; dadurch entsteht kein rückwirkendes Vorkommen mehr im Pilotfenster. Danach wurde der AzuraCast-Cache über den Admin-Endpunkt geleert.
+
+### 2. Finaler Schedule-Readback
+
+Nach der Korrektur und Cache-Bereinigung wurde die öffentliche Schedule-API erneut geprüft:
+
+- Pilot 12.–18.10.2026: 54 relevante Einträge, 168 Stunden Abdeckung, 0 Lücken, 0 Überschneidungen.
+- Fallback 19.–25.10.2026: 32 relevante Einträge, 168 Stunden Abdeckung, 0 Lücken, 0 Überschneidungen.
+- Nachtübergang auf Montag, 26.10.2026: `Night Drive` 00:00–06:00, danach `Morning Flow` und `Afro-Noon` ohne Lücke.
+
+Die zuvor gefundenen Fälle `Night Drive`/`Night Drive`, `FraWo Selects`/`Sunday Soul` und `⭐ Best of the Week`/`Sunday Sunset` sind im finalen Readback nicht mehr vorhanden.
+
+### 3. Pool-Kuration ist noch regelbasiert, nicht vollständig musikalisch geprüft
 
 Die neuen Pools wurden aus belegten Genregruppen und tatsächlichen Quellplaylists gebaut. Das ist sicherer als Dateinamenraten, ersetzt aber noch nicht die vollständige Prüfung von:
 
@@ -39,13 +54,13 @@ Die neuen Pools wurden aus belegten Genregruppen und tatsächlichen Quellplaylis
 - Lautheits-/Qualitätsunterschieden
 - tatsächlicher Hörwirkung
 
-Vor einer endgültigen Dauerrotation müssen diese Punkte pro Mood-Familie nachgeprüft werden.
+Vor einer endgültigen redaktionellen Dauerrotation müssen diese Punkte pro Mood-Familie nachgeprüft werden.
 
-### 3. Cross-Pool-Dubletten sind bewusst vorhanden, aber noch nicht global gesteuert
+### 4. Cross-Pool-Dubletten sind bewusst vorhanden, aber noch nicht global gesteuert
 
 Die 18 neuen Pools teilen sich insgesamt 93 Titelüberschneidungen über 19 Pool-Paare. Das ist musikalisch teilweise sinnvoll, aber ohne globale Titel- und Künstler-Sperrzeiten kann ein Titel bei dicht aufeinanderfolgenden Pools zu früh wieder auftauchen.
 
-### 4. Manche Pools haben wiederholte Künstler
+### 5. Manche Pools haben wiederholte Künstler
 
 Beispiele aus den geprüften Pools:
 
@@ -55,10 +70,10 @@ Beispiele aus den geprüften Pools:
 
 Shuffle allein löst dieses Problem nicht zuverlässig.
 
-## Korrektur vor endgültiger Freigabe
+## Verbleibende redaktionelle Aufgaben
 
-1. Die generierten alten Schedule-Vorkommen am echten AzuraCast-Scheduler entfernen oder sauber neu aufbauen.
-2. Den Fallback erneut über die öffentliche Schedule-API prüfen.
-3. Globale Titel-/Künstler-Sperrzeiten festlegen.
-4. Pro Mood-Familie BPM, Energie und Übergänge auditieren.
-5. Erst dann den Wochenplan als dauerhaften Regelbetrieb statt als datierten Pilot verwenden.
+1. Pro Mood-Familie BPM, Energie und Übergänge auditieren.
+2. Globale Titel-/Künstler-Sperrzeiten festlegen und mit einem mehrtägigen Queue-Test prüfen.
+3. Danach den technisch konfliktfreien Plan als redaktionellen Dauerbetrieb freigeben.
+
+Der technische Scheduler-Blocker ist erledigt; die verbleibenden Punkte sind keine Schedule-Lücken oder Überschneidungen, sondern Qualitäts- und Rotationsprüfung.
