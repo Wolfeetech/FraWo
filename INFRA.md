@@ -57,7 +57,13 @@
    - **Cron:** `/etc/cron.d/frawo-wache` auf `anker-pve` (alle 10 Minuten)
    - **Skript:** `/usr/local/bin/monitoring-watchdog.sh`
    - **Funktion:** Prüft von außen, ob Prometheus, Alertmanager und Grafana auf CT155 antworten. `absent()`-Regel in Prometheus sichert gegen stillen Ausfall.
-4. **Paperless Ingest & Triage:**
+4. **Home-Assistant-Adminmonitoring (`frawo-ha-prometheus-publisher`):**
+   - **Service:** `/etc/systemd/system/frawo-ha-prometheus-publisher.service` auf CT160 (`10.1.0.160`), dauerhaft aktiv, Zyklus 60 Sekunden.
+   - **Skript:** `/usr/local/bin/frawo-ha-prometheus-publisher.py` (Repo: `scripts/ha_prometheus_publisher.py`).
+   - **Quelle:** Prometheus CT155 (`10.1.0.35`), read-only über SSH-Abfrage; Ziel Home Assistant (`10.1.0.40:8123`) über API.
+   - **Metriken:** Monitoring-Ziele, Erreichbarkeit, CPU/RAM/Root-Speicher von Anker, ProDesk, OptiPlex sowie CPU/RAM des StudioPC. GPU/VRAM ist erst nach einer belastbaren NVIDIA-Exporterquelle ergänzbar und wird nicht geraten.
+   - **Dashboard:** `https://home.frawo.tech/betrieb-monitoring` — Live-Karten im Bereich „Betrieb & Monitoring".
+5. **Paperless Ingest & Triage:**
    - **Service & Timer:** `frawo-gdrive-inbox-pull.timer` auf `anker-pve` (alle 10 Minuten)
    - **Funktion:** Holt neue Dokumente aus `gdrive:00_INBOX/_Dokumente-zur-Pruefung` via `rclone move` und schiebt sie per `pct push 110` in den Consume-Ordner von CT110.
    - **Triage-Status:** Altbestand (1066 Dateien) vollständig in `_Fotos-Videos`, `_Programme-Technik` und `_Duplikate` aufgeteilt. 0 lose Dateien im Wurzelverzeichnis.

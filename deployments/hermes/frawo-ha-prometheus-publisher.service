@@ -1,0 +1,16 @@
+[Unit]
+Description=FraWo Prometheus-Metriken nach Home Assistant
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=hermes
+ExecStart=/usr/bin/python3 /usr/local/bin/frawo-ha-prometheus-publisher.py
+Restart=always
+RestartSec=30
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
