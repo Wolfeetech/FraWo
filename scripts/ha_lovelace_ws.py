@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Minimal Home Assistant WebSocket Lovelace helper using only stdlib."""
-import argparse, base64, json, os, secrets, socket, struct
+import argparse, base64, json, os, secrets, socket, struct, time
 from pathlib import Path
 
 def load_env():
@@ -45,7 +45,17 @@ def main():
     load_env(); token=(os.environ.get('HASS_TOKEN') or os.environ.get('HOMEASSISTANT_TOKEN') or os.environ.get('HASS_API_KEY') or '').removeprefix('Bearer ').strip()
     if not token: raise SystemExit('HASS_TOKEN fehlt')
     base=(os.environ.get('HASS_URL') or os.environ.get('HOMEASSISTANT_URL') or 'http://10.1.0.40:8123').rstrip('/')
-    s=ws(base); assert recv(s).get('type')=='auth_required'; send(s,{'type':'auth','access_token':token}); assert recv(s).get('type')=='auth_ok'
+    s=None
+    for attempt in range(5):
+        try:
+            s=ws(base); first=recv(s)
+            if first.get('type')!='auth_required': raise RuntimeError(str(first))
+            send(s,{'type':'auth','access_token':token}); auth=recv(s)
+            if auth.get('type')!='auth_ok': raise RuntimeError(str(auth))
+            break
+        except Exception:
+            if attempt==4: raise
+            time.sleep(1+attempt)
     ap=argparse.ArgumentParser(); ap.add_argument('action',choices=['get','save','create']); ap.add_argument('--url-path',default='kiosk-frawo'); ap.add_argument('--file'); a=ap.parse_args()
     if a.action=='create':
         send(s,{'id':1,'type':'lovelace/dashboards/create','url_path':a.url_path,'title':'FraWo Betrieb & Monitoring','icon':'mdi:server-network','show_in_sidebar':True,'require_admin':False}); r=recv(s)
