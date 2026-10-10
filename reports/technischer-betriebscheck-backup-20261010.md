@@ -19,11 +19,15 @@ Der vorhandene, unveränderte Upload-Befehl für die geprüfte lokale VM-220-Sic
 
 `vzdump-qemu-220-2026_10_04-03_00_02.vma.zst`
 
-Quelle und Zielgröße werden nach Abschluss erneut geprüft. Während des Laufs werden keine Proxmox-Knoten und keine Gäste neu gestartet.
+Der Upload ist am 10.10.2026 normal mit Exit-Code 0 beendet worden. Die Datei ist im Zielbestand vorhanden; der Backup-TÜV auf dem ProDesk bestätigt `vm220_cloud` mit 17 GB als bestanden. Während des Laufs wurden keine Proxmox-Knoten und keine Gäste neu gestartet.
 
-## Offen bis zum Abschluss
+## Aktueller Nachweis
 
-- Upload erfolgreich abgeschlossen und Zielgröße identisch
-- `vm220_cloud` im Backup-TÜV wieder grün
-- `gaeste_cloud` nach Abklingen des Drive-Rate-Limits erneut lesbar
-- dauerhafte Sperre gegen globale Rekursivscans über den produktiven Drive-Mount
+- ProDesk-TÜV: **6 von 6 Prüfungen bestanden**.
+- `vm220_cloud`: **bestanden**, 17 GB, Sicherung vom 04.10.2026.
+- Anker-TÜV: 6 von 7 Prüfungen bestanden.
+- Offen bleibt ausschließlich `gaeste_cloud`: Der direkte Google-Drive-Lesezugriff erhält weiterhin `403 RATE_LIMIT_EXCEEDED` vom Drive-Projekt. Der verschlüsselte Mount ist aktiv und enthält lokal einen Gast-Backup-Bestand; die externe Direktprüfung ist wegen des API-Limits noch nicht belastbar.
+
+## Nächster technischer Schritt
+
+Nach Abklingen des Google-Drive-API-Limits erneut direkt prüfen. Erst danach wird `gaeste_cloud` als grün gemeldet. Der alte globale Rekursivscan bleibt beendet; zusätzlich muss die dauerhafte Sperre gegen solche Scans umgesetzt werden.
