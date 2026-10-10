@@ -239,10 +239,7 @@
 (function() {
   if (window.fwAudio) return; // already initialized
 
-  var isMobileDevice = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) || window.matchMedia('(max-width: 768px)').matches;
-  var streamUrl = isMobileDevice
-    ? 'https://funk.frawo.tech/listen/frawo_funk/radio_light'
-    : 'https://funk.frawo.tech/listen/frawo_funk/radio.mp3';
+  var streamUrl = 'https://funk.frawo.tech/listen/frawo_funk/radio.mp3';
   var azuraApi = 'https://funk.frawo.tech/api/nowplaying/frawo_funk';
   var audio = new Audio();
   audio.preload = 'none';
@@ -298,9 +295,6 @@
      Nullen UND der Ton wird stumm, weil das Audio-Element dann durch einen
      schlafenden Kontext geleitet wird. */
   function analyseStarten() {
-    /* Auf Mobilgeräten den direkten Audiopfad verwenden. Web Audio kann dort
-       zusätzliches Resampling/Knackser verursachen, besonders bei Bluetooth. */
-    if (isMobileDevice) return;
     if (analyseAktiv) return;
     try {
       var Ctx = window.AudioContext || window.webkitAudioContext;

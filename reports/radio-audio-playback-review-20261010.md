@@ -48,6 +48,17 @@ Nach dem Deploy:
 - `window.fwAudio` im echten Browser vorhanden
 - Stream-Header weiterhin 44,1 kHz / 320 kbit/s
 
-## Entscheidung zu 44,1 vs. 48 kHz
+## Mobile-Anpassung
+
+Die Störung trat laut Betreiber nur am Handy auf. Deshalb wurde zusätzlich eine mobile Schonstrecke aktiviert:
+
+- Mobilgeräte und schmale Ansichten verwenden `radio_light` mit 192 kbit/s.
+- Desktop bleibt bei `radio.mp3` mit 320 kbit/s.
+- Die Web-Audio-Tonanalyse wird mobil abgeschaltet; der Ton läuft direkt über das Audio-Element. Das vermeidet zusätzliche Web-Audio-/Bluetooth-Resampling-Probleme.
+- Der automatische Reconnect bleibt auch mobil aktiv.
+- Der 192-kbit/s-Stream wurde separat mit FFmpeg 30 Sekunden dekodiert: fehlerfrei.
+
+Im emulierten Android-Chrome-Browser blieb die Wiedergabe nach zehn Sekunden aktiv; die Radioseite enthält kein zweites `<audio>`-Element mehr.
+
 
 Die Samplerate wurde nicht blind verändert. Der öffentliche MP3-Stream ist für Webradio technisch normal mit 44,1 kHz. Der aktuelle Nachweis spricht zuerst für ein Browser-/Player-Problem, nicht für eine belegte Serverüberlastung oder einen fehlerhaften Resampler. Eine Umstellung auf 48 kHz wäre erst nach einem direkten Vergleichstest mit einer kontrollierten Quelle sinnvoll.
