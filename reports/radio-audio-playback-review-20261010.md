@@ -60,7 +60,20 @@ Die Störung trat laut Betreiber nur am Handy auf. Deshalb wurde zusätzlich ein
 
 Im emulierten Android-Chrome-Browser blieb die Wiedergabe nach zehn Sekunden aktiv; die Radioseite enthält kein zweites `<audio>`-Element mehr.
 
-## HLS-Anpassung gegen weitere mobile Abbrüche
+## Pause-/Weiter-Schleife korrigiert
+
+Der HLS-Weg hat ein normales `waiting`-Ereignis beim Nachladen eines Segments zu aggressiv als Streamabbruch behandelt. Dadurch konnte der eigene Reconnect den Player unnötig pausieren und neu starten.
+
+Korrektur:
+
+- `waiting` löst keinen sofortigen Reconnect mehr aus.
+- `stalled`/`waiting` werden erst nach zehn Sekunden ohne ausreichende Daten als echter Stall bewertet.
+- `playing` und `timeupdate` löschen den Stall-Timer sofort.
+- Ein manueller Stopp löscht alle offenen Reconnect-Timer.
+- `error`, `abort` und echte `emptied`-Fehler bleiben weiterhin abgesichert.
+
+Damit soll der normale HLS-Segmentwechsel nicht mehr als Pause/Weiter-Schleife sichtbar werden.
+
 
 Der 192-kbit/s-MP3-Stream war technisch fehlerfrei, die Abbrüche am Handy bestanden aber weiter. Deshalb nutzt die mobile Wiedergabe jetzt zuerst den verfügbaren HLS-Livestream:
 

@@ -250,26 +250,8 @@
   audio.preload = 'none';
   var manualStop = false;
   var reconnectTimer = null;
-  var stallTimer = null;
   var reconnectAttempt = 0;
   var reconnectDelay = 3000;
-
-  function clearStallTimer() {
-    if (stallTimer) {
-      clearTimeout(stallTimer);
-      stallTimer = null;
-    }
-  }
-
-  function delayedStallReconnect(reason) {
-    if (manualStop || reconnectTimer || stallTimer) return;
-    stallTimer = setTimeout(function() {
-      stallTimer = null;
-      if (!manualStop && !audio.paused && audio.readyState < 3) {
-        reconnectStream(reason);
-      }
-    }, 10000);
-  }
 
   function reconnectStream(reason) {
     if (manualStop || reconnectTimer) return;
@@ -381,17 +363,12 @@
     reconnectStream('error');
   });
 
-  audio.addEventListener('playing', clearStallTimer);
-  audio.addEventListener('timeupdate', clearStallTimer);
-
   audio.addEventListener('stalled', function() {
-    delayedStallReconnect('stalled');
+    reconnectStream('stalled');
   });
 
-  /* HLS feuert `waiting` auch bei normalem Segmentwechsel. Nicht sofort
-     neu verbinden, sonst erzeugt der Player selbst Pause/Weiter-Schleifen. */
   audio.addEventListener('waiting', function() {
-    delayedStallReconnect('waiting');
+    reconnectStream('waiting');
   });
 
   audio.addEventListener('abort', function() {
@@ -484,7 +461,6 @@
     togglePlay: function() {
       if (state.isPlaying) {
         manualStop = true;
-        clearStallTimer();
         if (reconnectTimer) {
           clearTimeout(reconnectTimer);
           reconnectTimer = null;
