@@ -74,7 +74,18 @@ Diese Punkte müssen vor finalen Seitentexten mit Wolf/Franz oder belastbaren Un
 5. Wie beschreibt Franz seine Rolle in einem Satz, ohne dass der Holzbau größer dargestellt wird als die reale Kapazität?
 6. Soll die Website primär betreute Technikleistungen verkaufen, Vermietung oder beides mit klarer Rangfolge?
 
-## 8. Konsequenz für den Website-Umbau
+## 8. Betreiberantworten aus der Frage-Antwort-Session
+
+Diese Aussagen stammen direkt von Wolf und ersetzen die vorherigen Arbeitsannahmen:
+
+- **Kern:** „Zimmermann + Veranstaltungstechniker, die das Beste aus dem herausholen wollen, was verfügbar ist. Für jede Feier ein +.“
+- **Wolfs Schwerpunkt:** Veranstaltungstechnik, Lichtdesign, Tondesign, Stage Management, Event & Backline.
+- **Franz’ Schwerpunkt:** Holz und Sonderbauten.
+- **Nicht gewünscht:** KI-erzeugte Angebote ohne professionellen Nutzen.
+- **Unterscheidung:** menschlich nah, individuelle Reaktion auf Kundenwünsche statt anonymer Standard-Verleiher.
+- **Bildlage:** Es gibt noch keine systematisch selbst erstellte Event-Fotodokumentation. Vorhandene geeignete Bilder dürfen geprüft und verwendet werden, aber nicht so, dass Auftraggeber-Produktionen vereinnahmt werden.
+
+## 9. Konsequenz für den Website-Umbau
 
 Die nächste Umsetzung soll nicht mit einem neuen Farbverlauf oder einer weiteren Kartenoptik beginnen. Reihenfolge:
 
