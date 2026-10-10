@@ -60,7 +60,24 @@ Die Störung trat laut Betreiber nur am Handy auf. Deshalb wurde zusätzlich ein
 
 Im emulierten Android-Chrome-Browser blieb die Wiedergabe nach zehn Sekunden aktiv; die Radioseite enthält kein zweites `<audio>`-Element mehr.
 
-## Pause-/Weiter-Schleife korrigiert
+## Endgültige Pause-/Weiter-Ursache
+
+Der Ereignistest im emulierten Android-Chrome hat die Schleife sichtbar gemacht:
+
+- initiales `emptied` beim ersten Setzen der Streamquelle
+- danach `waiting`/`stalled` beim normalen mobilen Pufferverhalten
+- der alte Code behandelte `emptied` bzw. `stalled` als Abbruch und startete alle wenigen Sekunden eine neue Verbindung
+
+Korrektur:
+
+- `emptied` startet keinen Reconnect mehr.
+- `waiting` und `stalled` bleiben passive Pufferereignisse.
+- Nur echte `error`-/`abort`-Ereignisse dürfen neu verbinden.
+- Interne Reconnect-Vorgänge sind gegen eigene `pause`-/`emptied`-Ereignisse geschützt.
+- Android-Chrome nutzt MP3; natives HLS bleibt auf iPhone/iPad-Safari begrenzt.
+
+Nach dem Live-Fix blieb der Android-Test 30 Sekunden im Wiedergabestatus und erzeugte keine künstlichen neuen `play`-/`emptied`-Folgen mehr.
+
 
 Der HLS-Weg hat ein normales `waiting`-Ereignis beim Nachladen eines Segments zu aggressiv als Streamabbruch behandelt. Dadurch konnte der eigene Reconnect den Player unnötig pausieren und neu starten.
 

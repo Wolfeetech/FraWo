@@ -240,17 +240,15 @@
   if (window.fwAudio) return; // already initialized
 
   var isMobileDevice = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) || window.matchMedia('(max-width: 768px)').matches;
-  var isIosNativeHls = /iPhone|iPad|iPod/i.test(navigator.userAgent) && !/CriOS|FxiOS/i.test(navigator.userAgent);
   var mobileMp3Url = 'https://funk.frawo.tech/listen/frawo_funk/radio_light';
   var mobileHlsUrl = 'https://funk.frawo.tech/hls/frawo_funk/live.m3u8';
-  var streamUrl = isIosNativeHls
+  var streamUrl = isMobileDevice
     ? mobileHlsUrl
-    : (isMobileDevice ? mobileMp3Url : 'https://funk.frawo.tech/listen/frawo_funk/radio.mp3');
+    : 'https://funk.frawo.tech/listen/frawo_funk/radio.mp3';
   var azuraApi = 'https://funk.frawo.tech/api/nowplaying/frawo_funk';
   var audio = new Audio();
   audio.preload = 'none';
   var manualStop = false;
-  var reconnecting = false;
   var reconnectTimer = null;
   var stallTimer = null;
   var reconnectAttempt = 0;
@@ -281,7 +279,6 @@
     reconnectTimer = setTimeout(function() {
       reconnectTimer = null;
       if (manualStop) return;
-      reconnecting = true;
       try {
         audio.pause();
         audio.removeAttribute('src');
@@ -289,16 +286,13 @@
         audio.src = streamUrl + '?fw_reconnect=' + Date.now();
         audio.load();
         audio.play().then(function() {
-          reconnecting = false;
           reconnectAttempt = 0;
           state.isPlaying = true;
           updateUI();
         }).catch(function(e) {
-          reconnecting = false;
           reconnectStream('play ' + (e && e.name ? e.name : 'error'));
         });
       } catch (e) {
-        reconnecting = false;
         reconnectStream('load ' + (e && e.name ? e.name : 'error'));
       }
     }, delay);
@@ -375,14 +369,12 @@
   });
 
   audio.addEventListener('pause', function() {
-    if (reconnecting) return;
     state.isPlaying = false;
     try { localStorage.setItem('fwRadioWasPlaying', '0'); } catch (e) {}
     updateUI();
   });
 
   audio.addEventListener('error', function(e) {
-    if (reconnecting) return;
     console.log('Streamfehler:', e);
     state.isPlaying = false;
     updateUI();
@@ -392,16 +384,23 @@
   audio.addEventListener('playing', clearStallTimer);
   audio.addEventListener('timeupdate', clearStallTimer);
 
-  /* `waiting` und `stalled` sind bei mobilen Live-Streams häufige,
-     selbstheilende Pufferereignisse. Kein automatischer Eingriff hier;
-     nur echte `error`-/`abort`-Ereignisse dürfen neu verbinden. */
-
-  audio.addEventListener('abort', function() {
-    if (!reconnecting && state.isPlaying) reconnectStream('abort');
+  audio.addEventListener('stalled', function() {
+    delayedStallReconnect('stalled');
   });
 
-  /* `emptied` ist beim ersten Setzen von src und beim normalen HLS/MP3-Laden
-     erwartbar. Es darf keinen Reconnect starten, sonst entsteht eine Schleife. */
+  /* HLS feuert `waiting` auch bei normalem Segmentwechsel. Nicht sofort
+     neu verbinden, sonst erzeugt der Player selbst Pause/Weiter-Schleifen. */
+  audio.addEventListener('waiting', function() {
+    delayedStallReconnect('waiting');
+  });
+
+  audio.addEventListener('abort', function() {
+    reconnectStream('abort');
+  });
+
+  audio.addEventListener('emptied', function() {
+    if (!manualStop) reconnectStream('emptied');
+  });
 
   function updateUI() {
     var bar = document.getElementById('fwPersistentPlayerBar');
@@ -463,10 +462,8 @@
     reconnectAttempt = 0;
     /* Zuerst die Analyse: hier sind wir noch in der Nutzergeste. */
     analyseStarten();
-    /* Nur iPhone/iPad-Safari nutzt HLS nativ. Android-Chrome bleibt beim
-       robusten MP3-Fallback; `canPlayType(...)=maybe` ist dort kein Beweis,
-       dass ein Live-HLS-Stream stabil ausgespielt wird. */
-    if (isMobileDevice && !isIosNativeHls) {
+    /* Mobil: HLS zuerst, MP3-Fallback für Browser ohne native HLS-Unterstützung. */
+    if (isMobileDevice && !audio.canPlayType('application/vnd.apple.mpegurl')) {
       streamUrl = mobileMp3Url;
     }
     audio.src = streamUrl + '?fw_start=' + Date.now();
@@ -487,7 +484,6 @@
     togglePlay: function() {
       if (state.isPlaying) {
         manualStop = true;
-        reconnecting = false;
         clearStallTimer();
         if (reconnectTimer) {
           clearTimeout(reconnectTimer);
