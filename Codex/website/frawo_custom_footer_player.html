@@ -240,8 +240,10 @@
   if (window.fwAudio) return; // already initialized
 
   var isMobileDevice = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) || window.matchMedia('(max-width: 768px)').matches;
+  var mobileMp3Url = 'https://funk.frawo.tech/listen/frawo_funk/radio_light';
+  var mobileHlsUrl = 'https://funk.frawo.tech/hls/frawo_funk/live.m3u8';
   var streamUrl = isMobileDevice
-    ? 'https://funk.frawo.tech/listen/frawo_funk/radio_light'
+    ? mobileHlsUrl
     : 'https://funk.frawo.tech/listen/frawo_funk/radio.mp3';
   var azuraApi = 'https://funk.frawo.tech/api/nowplaying/frawo_funk';
   var audio = new Audio();
@@ -437,6 +439,10 @@
     reconnectAttempt = 0;
     /* Zuerst die Analyse: hier sind wir noch in der Nutzergeste. */
     analyseStarten();
+    /* Mobil: HLS zuerst, MP3-Fallback für Browser ohne native HLS-Unterstützung. */
+    if (isMobileDevice && !audio.canPlayType('application/vnd.apple.mpegurl')) {
+      streamUrl = mobileMp3Url;
+    }
     audio.src = streamUrl + '?fw_start=' + Date.now();
     audio.load();
     audio.play().then(function() {

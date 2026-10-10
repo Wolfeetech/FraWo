@@ -60,5 +60,15 @@ Die Störung trat laut Betreiber nur am Handy auf. Deshalb wurde zusätzlich ein
 
 Im emulierten Android-Chrome-Browser blieb die Wiedergabe nach zehn Sekunden aktiv; die Radioseite enthält kein zweites `<audio>`-Element mehr.
 
+## HLS-Anpassung gegen weitere mobile Abbrüche
+
+Der 192-kbit/s-MP3-Stream war technisch fehlerfrei, die Abbrüche am Handy bestanden aber weiter. Deshalb nutzt die mobile Wiedergabe jetzt zuerst den verfügbaren HLS-Livestream:
+
+- Master: `https://funk.frawo.tech/hls/frawo_funk/live.m3u8`
+- AAC-Varianten: ca. 106, 141 und 352 kbit/s
+- Browser ohne native HLS-Unterstützung fallen automatisch auf `radio_light` zurück.
+- Desktop bleibt beim direkten 320-kbit/s-MP3.
+
+HLS wurde öffentlich mit HTTP 200 gelesen und per FFmpeg 30 Sekunden ohne Fehler dekodiert. Im emulierten Android-Chrome blieb der Player nach zehn Sekunden im Wiedergabestatus aktiv.
 
 Die Samplerate wurde nicht blind verändert. Der öffentliche MP3-Stream ist für Webradio technisch normal mit 44,1 kHz. Der aktuelle Nachweis spricht zuerst für ein Browser-/Player-Problem, nicht für eine belegte Serverüberlastung oder einen fehlerhaften Resampler. Eine Umstellung auf 48 kHz wäre erst nach einem direkten Vergleichstest mit einer kontrollierten Quelle sinnvoll.
