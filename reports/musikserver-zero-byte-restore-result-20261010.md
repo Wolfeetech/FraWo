@@ -1,14 +1,14 @@
 # Wiederherstellung 0-Byte-Titel — 2026-10-10
 
-Wiederhergestellt: 11
+Wiederhergestellt: 14
 
 ## Nachprüfung
 
-- Die ursprünglichen sieben Restore-Ziele aus dem ersten Lauf sowie vier weitere echte 0-Byte-Ziele sind wieder nichtleer.
-- Die vier zusätzlichen Dateien wurden aus dem bereits geprüften AzuraCast-Speicher zurückkopiert; Quelle/Ziel-SHA-256 ist jeweils identisch.
-- Die verbleibende lokale 0-Byte-Zählung beträgt 3 echte Audiodateien. Für diese drei existiert zwar ein AzuraCast-Datenbankeintrag, die zugehörige Datei ist im live eingehängten AzuraCast-Speicher nicht auffindbar: Marlon Hoffstadt — Mucho Intensivo, Marlon Hoffstadt — Blade Runner und Matthias Meyer & Budakid — Sweet Ease. Sie bleiben offen; es wird keine Quelle geraten.
+- Alle 14 echten 0-Byte-Zielpfade sind wieder nichtleer.
+- Vier Titel wurden aus dem bereits geprüften AzuraCast-Speicher zurückkopiert; drei weitere aus eindeutig passenden, lesbaren kanonischen Kopien in CT120. Die Quelle/Ziel-SHA-256 stimmt bei allen nachgeprüften Rücklegungen überein.
+- Die verbleibende lokale 0-Byte-Zählung beträgt **0 echte Audiodateien**. Die getrennten NTFS-Rückstände bleiben unangetastet.
 - Die `.bak-20261010`-Sicherungen liegen neben jedem überschriebenen Zielpfad.
-- Der begrenzte AzuraCast-Medienimport ist für die sieben zuerst wiederhergestellten Titel bereits live nachgewiesen (Medien 218525–218531). Kein globaler Reprocess-Lauf wurde ausgelöst.
+- Der begrenzte AzuraCast-Medienimport ist für die sieben zuerst wiederhergestellten Titel live nachgewiesen (Medien 218525–218531). Kein globaler Reprocess-Lauf wurde ausgelöst.
 
 
 ## Marlon Hoffstadt - Planet Love
