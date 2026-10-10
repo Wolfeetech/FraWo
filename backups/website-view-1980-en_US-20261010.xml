@@ -315,10 +315,10 @@
         </ul>
 
         <div style="background: #000; border: 1px solid var(--fw-border); padding: 30px; margin-top: auto; font-family: monospace; font-size: 0.8rem; line-height: 1.6;">
-          <div style="color: var(--fw-accent); font-weight: 700; margin-bottom: 12px; text-transform: uppercase;">TERMIN &amp; ORT</div>
-          <div>Wir prüfen die Verfügbarkeit passend zu deinem Termin.</div>
+          <div style="color: var(--fw-accent); font-weight: 700; margin-bottom: 12px; text-transform: uppercase;">System Availability 2026</div>
+          <div>Status: BEGRENZTE KAPAZITÄTEN</div>
           <div style="color: var(--fw-text-muted); margin-top: 8px;">
-            Schick uns kurz Datum, Ort und deinen Bedarf – wir melden uns mit einer realistischen Einschätzung.
+            Durch hohe Auslastung im Eventbereich bitten wir um frühzeitige Einreichung der Projektbeschreibungen.
           </div>
         </div>
       </div>
