@@ -32,10 +32,14 @@ Die 7.634 NTFS-Dateien sind keine normalen sendefähigen Audiodateien, sondern o
 - Da Klubb Kings — It's Time 2 Get Funky (Klubb Mix)
 - Rozalla x Dave Ralph — Everybody's Free (Paul Oakenfold extended Nu Rave remix)
 
-## Bewertung
+## Quellenabgleich (read-only)
 
-Die alte Angabe „14 in Master_Library“ war nur für die echten 0-Byte-Audiodateien richtig; die Gesamtzahl enthält zusätzlich 7.634 NTFS-Rückstände. Die echten 14 Titel brauchen eine quellenbasierte Ersatzprüfung. Die NTFS-Rückstände dürfen erst nach Sicherung, Mount-/Dateisystemprüfung und Abgleich gegen Bibliothek, Sendelinks und Drive-Quellen bereinigt werden.
+Für alle 14 echten 0-Byte-Titel wurden lokale, nichtleere Kandidaten gefunden. Die Kandidaten liegen in Inbox, Master_Library oder Quarantäne; sie wurden nicht zurückgelegt. Stichproben- und Vollprüfung der ausgewählten größten Kandidaten mit `ffprobe` war erfolgreich: FLAC, Stereo, 44,1 kHz, Dauerwerte vorhanden.
 
-## Nächster sicherer Schritt
+Damit ist der nächste Schritt kein blindes Wiederherstellen, sondern eine kontrollierte Zuordnung pro Titel:
 
-Read-only-Quellenabgleich der 14 echten Audiodateien und Prüfung, ob die 7.634 NTFS-Rückstände ausschließlich technische Artefakte sind. Keine Bereinigung ohne belastbare Quelle und Backup.
+- Quelle auswählen und gegen die leere Zielposition vergleichen.
+- Aktive Sendelinks und vorhandene Playlist-Mitgliedschaften prüfen.
+- Vor jedem Zurücklegen ein Dateibackup und ein Manifest mit Quelle, Ziel, Größe, Dauer und Fingerprint erzeugen.
+- Nur die 14 echten Audiodateien behandeln; die 7.634 NTFS-Rückstände separat als Dateisystem-/Kopierartefakte untersuchen.
+
